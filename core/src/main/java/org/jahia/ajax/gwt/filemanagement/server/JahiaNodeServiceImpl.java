@@ -1,36 +1,19 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.filemanagement.server;
 
 import ij.ImagePlus;
@@ -52,7 +35,6 @@ import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
 import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.filemanagement.server.helper.FileManagerWorker;
-import org.jahia.ajax.gwt.filemanagement.server.helper.JCRVersioningHelper;
 import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
@@ -63,8 +45,8 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
 import org.apache.log4j.Logger;
-
-import javax.jcr.RepositoryException;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -77,6 +59,10 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
     public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
         return FileManagerWorker.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, retrieveParamBean());
+    }
+
+    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
+        return new BaseListLoadResult<GWTJahiaNode>(FileManagerWorker.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, retrieveParamBean())) ;
     }
 
     public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, String openPaths) throws GWTJahiaServiceException {
@@ -134,6 +120,12 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
     public void setLock(List<String> paths, boolean locked) throws GWTJahiaServiceException {
         FileManagerWorker.setLock(paths, locked, getUser());
+    }
+
+    public void checkExistence(String path) throws GWTJahiaServiceException {
+        if (FileManagerWorker.checkExistence(path, getUser())) {
+            throw new ExistingFileException(path);
+        }
     }
 
     public void createFolder(String parentPath, String name) throws GWTJahiaServiceException {
@@ -224,9 +216,8 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
     }
 
     public void mount(String path, String target, String root) throws GWTJahiaServiceException {
-        FileManagerWorker.mount(path, target, root, getUser());
+        FileManagerWorker.mount(target, root, getUser());
     }
-
 
     private JahiaUser getUser() {
         return getRemoteJahiaUser();
@@ -234,12 +225,12 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
     public void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace) throws GWTJahiaServiceException {
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRNodeWrapper node = jcr.getFileNode(path, getUser());
-        JCRNodeWrapper targetCheck = jcr.getFileNode(node.getPath().replace(node.getName(), target), getUser());
-        if (targetCheck.isValid() && !forceReplace) {
-            throw new ExistingFileException("The file " + target + " already exists.");
-        }
         try {
+            JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
+            if (FileManagerWorker.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
+                throw new ExistingFileException("The file " + target + " already exists.");
+            }
+
             File tmp = File.createTempFile("image", "tmp");
             FileUtils.copyStream(node.getFileContent().downloadFile(), new FileOutputStream(tmp));
             Opener op = new Opener();
@@ -252,10 +243,12 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
             File f = File.createTempFile("image", "tmp");
             ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
-            JCRNodeWrapper newFile = ((JCRNodeWrapper) node.getParent()).uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
+            ((JCRNodeWrapper) node.getParent()).uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
             node.getParent().save();
             tmp.delete();
             f.delete();
+        } catch (ExistingFileException e) {
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -264,12 +257,12 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
     public void resizeImage(String path, String target, int width, int height, boolean forceReplace) throws GWTJahiaServiceException {
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRNodeWrapper node = jcr.getFileNode(path, getUser());
-        JCRNodeWrapper targetCheck = jcr.getFileNode(node.getPath().replace(node.getName(), target), getUser());
-        if (targetCheck.isValid() && !forceReplace) {
-            throw new ExistingFileException("The file " + target + " already exists.");
-        }
         try {
+            JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
+            if (FileManagerWorker.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
+                throw new ExistingFileException("The file " + target + " already exists.");
+            }
+
             File tmp = File.createTempFile("image", "tmp");
             FileUtils.copyStream(node.getFileContent().downloadFile(), new FileOutputStream(tmp));
             Opener op = new Opener();
@@ -280,10 +273,12 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
             File f = File.createTempFile("image", "tmp");
             ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
-            JCRNodeWrapper newFile = ((JCRNodeWrapper) node.getParent()).uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
+            ((JCRNodeWrapper) node.getParent()).uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
             node.getParent().save();
             tmp.delete();
             f.delete();
+        } catch (ExistingFileException e) {
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -293,12 +288,12 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
     public void rotateImage(String path, String target, boolean clockwise, boolean forceReplace) throws GWTJahiaServiceException {
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRNodeWrapper node = jcr.getFileNode(path, getUser());
-        JCRNodeWrapper targetCheck = jcr.getFileNode(node.getPath().replace(node.getName(), target), getUser());
-        if (targetCheck.isValid() && !forceReplace) {
-            throw new ExistingFileException("The file " + target + " already exists.");
-        }
         try {
+            JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
+            if (FileManagerWorker.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
+                throw new ExistingFileException("The file " + target + " already exists.");
+            }
+
             File tmp = File.createTempFile("image", "tmp");
             FileUtils.copyStream(node.getFileContent().downloadFile(), new FileOutputStream(tmp));
             Opener op = new Opener();
@@ -313,10 +308,12 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
             File f = File.createTempFile("image", "tmp");
             ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
-            JCRNodeWrapper newFile = ((JCRNodeWrapper) node.getParent()).uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
+            ((JCRNodeWrapper) node.getParent()).uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
             node.getParent().save();
             tmp.delete();
             f.delete();
+        } catch (ExistingFileException e) {
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -331,24 +328,11 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
         }
     }
 
-    public void activateVersioning(List<String> path) throws GWTJahiaServiceException {
-        JCRVersioningHelper.activateVersioning(path, retrieveParamBean());
-    }
-
-    public List<GWTJahiaNodeVersion> getVersions(String path) throws GWTJahiaServiceException {
-        try {
-            JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
-            return JCRVersioningHelper.getVersions(jcr.getThreadSession(getUser()).getNode(path), retrieveParamBean());
-        } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
-    }
-
     public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz) throws GWTJahiaServiceException {
         return FileManagerWorker.createPortletInstance(path, wiz, retrieveParamBean());
     }
 
-    public GWTJahiaNode createRSSPortletInstance(String path, String url, String name) throws GWTJahiaServiceException {
+    public GWTJahiaNode createRSSPortletInstance(String path,String name,String url) throws GWTJahiaServiceException {
         return FileManagerWorker.createRSSPortletInstance(path, name, url, retrieveParamBean());
     }
 

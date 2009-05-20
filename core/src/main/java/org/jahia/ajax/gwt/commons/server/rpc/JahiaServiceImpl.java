@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.commons.server.rpc;
 
 import au.id.jericho.lib.html.OutputDocument;
@@ -76,11 +59,13 @@ import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.JahiaSaveVersion;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.JahiaTools;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.gui.GuiBean;
 
 import javax.jcr.RepositoryException;
@@ -100,7 +85,7 @@ import java.util.*;
  */
 public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements JahiaService {
     private static final ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
-    private static JahiaPreferencesProvider bookmarksPreferencesProvider;
+    private static JahiaPreferencesProvider<BookmarksJahiaPreference> bookmarksPreferencesProvider;
     private static final Logger logger = Logger.getLogger(JahiaContentServiceImpl.class);
 
     public String drawAddContainerUrl(GWTJahiaPageContext page, int parentConatainerId, String containerListName) {
@@ -343,16 +328,16 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
     }
 
 
-    public void deleteBookmark(GWTJahiaPageContext page, GWTJahiaBookmark gwtJahiaBookmark) {
+     public void deleteBookmark(GWTJahiaPageContext page, GWTJahiaBookmark gwtJahiaBookmark) {
         if (gwtJahiaBookmark == null) {
             logger.error("bookmark object is null.");
             return;
         }
         // get bookmarks provider
-        JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
+        JahiaPreferencesProvider<BookmarksJahiaPreference> jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
 
         // create a jahiaPreferenceKey
-        JahiaPreference jahiaPreferenceKey = jahiaPreferencesProvider.getNewJahiaPreferenceNode(retrieveParamBean(page));
+        JahiaPreference<BookmarksJahiaPreference> jahiaPreferenceKey = jahiaPreferencesProvider.createJahiaPreferenceNode(retrieveParamBean(page));
 
         // set preference
         jahiaPreferencesProvider.deleteJahiaPreference(jahiaPreferenceKey);
@@ -368,12 +353,12 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
         List<GWTJahiaBookmark> gwtBookmarks = new ArrayList<GWTJahiaBookmark>();
 
         // get bookmarks provider
-        JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
-        List<JahiaPreference> jahiaPreferencesMap = jahiaPreferencesProvider.getJahiaAllPreferences(getRemoteJahiaUser());
+        JahiaPreferencesProvider<BookmarksJahiaPreference> jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
+        List<JahiaPreference<BookmarksJahiaPreference>> jahiaPreferencesMap = jahiaPreferencesProvider.getJahiaAllPreferences(getRemoteJahiaUser());
         if (jahiaPreferencesMap != null) {
-            for (JahiaPreference jahiaPreference : jahiaPreferencesMap) {
+            for (JahiaPreference<BookmarksJahiaPreference> jahiaPreference : jahiaPreferencesMap) {
                 // current bookmark
-                BookmarksJahiaPreference bPref = (BookmarksJahiaPreference) jahiaPreference;
+                BookmarksJahiaPreference bPref = jahiaPreference.getNode();
 
                 // pid
                 try {
@@ -419,10 +404,10 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
      *
      * @return
      */
-    private JahiaPreferencesProvider getBookmarksJahiaPreferencesProvider() {
+    private JahiaPreferencesProvider<BookmarksJahiaPreference> getBookmarksJahiaPreferencesProvider() {
         try {
             if (bookmarksPreferencesProvider == null) {
-                bookmarksPreferencesProvider = ServicesRegistry.getInstance().getJahiaPreferencesService().getPreferencesProviderByType("bookmarks");
+                bookmarksPreferencesProvider = ServicesRegistry.getInstance().getJahiaPreferencesService().getPreferencesProviderByClass(BookmarksJahiaPreference.class);
             }
             return bookmarksPreferencesProvider;
         } catch (JahiaPreferenceProviderException e) {
@@ -586,10 +571,9 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
     }
 
     public Boolean isInlineEditingAllowed(Integer containerID, Integer fieldID) {
-        logger.debug("isInlineEditingAllowed called for containerID=" + containerID + " fieldID=" + fieldID);
+        if (logger.isDebugEnabled()) logger.debug("isInlineEditingAllowed called for containerID=" + containerID + " fieldID=" + fieldID);
         ProcessingContext jParams = retrieveParamBean();
-        final boolean inlineEditingActivatedPreference = ServicesRegistry.getInstance().getJahiaPreferencesService().
-                getGenericPreferenceBooleanValue("inlineediting.activated", false, jParams);
+        final boolean inlineEditingActivatedPreference = UserPreferencesHelper.isEnableInlineEditing(jParams.getUser());
         if (!inlineEditingActivatedPreference) {
             return false;
         }
@@ -614,7 +598,7 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
     public void changeLocaleForAllPagesAndEngines(String languageSelected) throws GWTJahiaServiceException {
         ProcessingContext jParams = retrieveParamBean();
         try {
-            jParams.changeLanguage(new Locale(languageSelected));
+            jParams.changeLanguage(LanguageCodeConverters.getLocaleFromCode(languageSelected));
         } catch (JahiaException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -623,7 +607,7 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
     public void changeLocaleForCurrentEngine(String languageSelected) {
         ProcessingContext jParams = retrieveParamBean();
         if (languageSelected != null)
-            jParams.getSessionState().setAttribute(ProcessingContext.SESSION_LOCALE_ENGINE, new Locale(languageSelected));
+            jParams.getSessionState().setAttribute(ProcessingContext.SESSION_LOCALE_ENGINE, LanguageCodeConverters.getLocaleFromCode(languageSelected));
         else jParams.getSessionState().removeAttribute(ProcessingContext.SESSION_LOCALE_ENGINE);
     }
 
@@ -646,6 +630,7 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
                 GWTJahiaSite gwtJahiaSite = new GWTJahiaSite();
                 gwtJahiaSite.setSiteId(jahiaSite.getID());
                 gwtJahiaSite.setSiteName(jahiaSite.getServerName());
+                gwtJahiaSite.setSiteKey(jahiaSite.getSiteKey());
                 returnedSites.add(gwtJahiaSite);
             }
         } catch (JahiaException e) {
@@ -673,7 +658,7 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
         return result;
     }
 
-    private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
+     private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
         try {
             JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(uuid, jahiaUser);
             return (ContentPage) nodeWrapper.getContentObject();

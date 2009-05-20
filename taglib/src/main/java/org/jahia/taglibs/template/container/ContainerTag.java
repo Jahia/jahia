@@ -1,36 +1,19 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.taglibs.template.container;
 
 import org.apache.commons.lang.StringUtils;
@@ -73,6 +56,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -84,6 +68,7 @@ import javax.servlet.jsp.jstl.core.LoopTagStatus;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.ByteArrayOutputStream;
 import java.util.*;
 
 
@@ -99,11 +84,12 @@ import java.util.*;
  * href='actionMenu.html' target='tagFrame'>jahiaHtml:actionMenu</a> tag for example. </attriInfo>"
  */
 
+@SuppressWarnings("serial")
 public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
     private static transient final Category logger = org.apache.log4j.Logger.getLogger(ContainerTag.class);
     public static final String CACHETAG = "cachetag";
 
-    private Iterator containers;
+    private Iterator<JahiaContainer> containers;
 
     private boolean first = true;
     private boolean last = true;
@@ -296,7 +282,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
 
         ContainerSupport containerSupport = (ContainerSupport) findAncestorWithClass(this, ContainerSupport.class, pageContext.getRequest());
         if (containerSupport instanceof GetContainerTag) {
-            setSrcBeanId(((GetContainerTag) containerSupport).getValueID());
+            setSrcBeanId(((GetContainerTag) containerSupport).getVar());
         }
         if (getSrcBeanId() == null && containerSupport instanceof ContainerListTag) {
             ContainerListTag cListTag = (ContainerListTag) containerSupport;
@@ -533,8 +519,9 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
                         buf.append("</div><!-- css user defined -->");
                     }
 
+                    String content = buf.toString().trim();
                     if (currentCache) {
-                        writeToContainerCache(container, jData, buf.toString());
+                        writeToContainerCache(container, jData, content);
                     }
                     if (random && !ProcessingContext.EDIT.equals(context.getOperationMode())) {
                         if (randomCounter == 0)
@@ -547,7 +534,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
 
                         }
                     }
-                    ContainerCacheTag.writeOut(getPreviousOut(), buf.toString(), currentCache, debug, container, cacheKey,
+                    ContainerCacheTag.writeOut(getPreviousOut(), content, currentCache, debug, container, cacheKey,
                             context.getSiteURL(context.getSite(), context.getPageID(), false, true, true),
                             pageContext);
                 }
@@ -651,7 +638,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
                                        JahiaData jahiaData,
                                        String bodyContent) throws JahiaInitializationException {
         if (bodyContent.contains("<!-- cache:include src=")) return;
-        ContainerHTMLCache containerHTMLCache =
+        ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> containerHTMLCache =
                 ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
         ProcessingContext processingContext = jahiaData.getProcessingContext();
         String mode = jahiaData.getProcessingContext().getOperationMode();
@@ -691,7 +678,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
     private String getFromContainerCache(JahiaContainer jahiaContainer,
                                          JahiaData jahiaData
     ) throws JahiaInitializationException, JspTagException {
-        ContainerHTMLCache containerHTMLCache =
+        ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> containerHTMLCache =
                 ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
         ProcessingContext processingContext = jahiaData.getProcessingContext();
         if (processingContext.getEntryLoadRequest() != null && processingContext.getEntryLoadRequest().isVersioned()) {
@@ -709,7 +696,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
                         curLanguageCode,
                         mode,
                         processingContext.getScheme());
-        CacheEntry cacheEntry = containerHTMLCache.getCacheEntry(containerKey);
+        CacheEntry<ContainerHTMLCacheEntry> cacheEntry = containerHTMLCache.getCacheEntry(containerKey);
         if (cacheEntry == null)
             return null;
         expirDate = cacheEntry.getExpirationDate();
@@ -850,12 +837,24 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
         }
 
         final StringWriter stringWriter = new StringWriter();
-
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(1024);
+        final boolean[] isWriter = new boolean[1];
         RequestDispatcher rd = request.getRequestDispatcher(resolvedPath);
         try {
             if (rd != null) {
                 rd.include(request, new HttpServletResponseWrapper(resp) {
+                    @Override
+                    public ServletOutputStream getOutputStream() throws IOException {
+                        return new ServletOutputStream() {
+                            @Override
+                            public void write(int i) throws IOException {
+                                outputStream.write(i);
+                            }
+                        };
+                    }
+
                     public PrintWriter getWriter() throws IOException {
+                        isWriter[0] = true;
                         return new PrintWriter(stringWriter);
                     }
                 });
@@ -865,7 +864,13 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
             return body;
         }
         request.removeAttribute("skinned");
-        return stringWriter.getBuffer();
+        if(isWriter[0]) {
+            return stringWriter.getBuffer();
+        }
+        else {
+            String s = outputStream.toString("UTF-8");
+            return new StringBuffer(s);
+        }
     }
 
     @Override

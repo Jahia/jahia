@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.fields;
 
 import org.jahia.data.files.JahiaFileField;
@@ -41,9 +24,16 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.*;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.webdav.JahiaWebdavBaseService;
+import org.jahia.services.webdav.WebDAVCallback;
+import org.jahia.services.webdav.WebDAVTemplate;
+import org.jahia.utils.xml.XMLSerializationOptions;
+import org.jahia.utils.xml.XmlWriter;
 import org.jahia.hibernate.manager.JahiaFieldXRefManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 
+import javax.jcr.RepositoryException;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,6 +41,9 @@ import java.util.Set;
 
 public class ContentFileField extends ContentField {
     private static final long serialVersionUID = 701288568949223178L;
+    
+        private static org.apache.log4j.Logger logger =
+            org.apache.log4j.Logger.getLogger (ContentFileField.class);
 
     protected ContentFileField (Integer ID,
                                 Integer jahiaID,
@@ -215,6 +208,50 @@ public class ContentFileField extends ContentField {
      */
     public boolean isShared () {
         return false;
+    }
+
+    /**
+     * This is called on all content fields to have them serialized only their
+     * specific part. The actual field metadata seriliazing is handled by the
+     * ContentField class. This method is called multiple times per field
+     * according to the workflow state, languages and versioning entries we
+     * want to serialize.
+     *
+     * @param xmlWriter               the XML writer object in which to write the XML output
+     * @param xmlSerializationOptions options used to activate/bypass certain
+     *                                output of elements.
+     * @param entryState              the ContentFieldEntryState for which to generate the
+     *                                XML export.
+     * @param processingContext               specifies context of serialization, such as current
+     *                                user, current request parameters, entry load request, URL generation
+     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
+     *                                generation is an important part of XML serialization and this is why
+     *                                we pass this parameter down, as well as user rights checking.
+     *
+     * @throws IOException in case there was an error writing to the Writer
+     *                     output object.
+     */
+    protected void serializeContentToXML (XmlWriter xmlWriter,
+                                          XMLSerializationOptions xmlSerializationOptions,
+                                          ContentObjectEntryState entryState,
+                                          ProcessingContext processingContext) throws java.io.IOException {
+
+        try {
+            if (xmlSerializationOptions.isEmbeddingBinary ()) {
+            } else {
+                // let's only build a reference to the file's content, using an
+                // URL to download the file's content :
+
+                JahiaFileField jahiaFileField = JahiaWebdavBaseService.getInstance ()
+                        .getJahiaFileField (processingContext, (processingContext!=null)?processingContext.getSite():null, (processingContext!=null)?processingContext.getUser():null, getDBValue (entryState));
+                xmlWriter.writeEntity ("file").
+                        writeAttribute ("url", jahiaFileField != null ? jahiaFileField.getDownloadUrl() : getDBValue (entryState));
+                xmlWriter.endEntity ();
+            }
+
+        } catch (JahiaException je) {
+            logger.debug ("Error while serializing file field to XML :", je);
+        }
     }
 
     protected void purgeContent ()

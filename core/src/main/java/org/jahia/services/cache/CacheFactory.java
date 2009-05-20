@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.cache;
 
 import org.jahia.exceptions.JahiaException;
@@ -81,7 +64,7 @@ public class CacheFactory extends CacheService {
     {
         // do nothing when settings are missing
         if (settingsBean == null) {
-            cacheLimits = new ConcurrentHashMap(2503);
+            cacheLimits = new ConcurrentHashMap<String, Long>(2503);
             return;
         }
         Iterator<CacheProvider> providerIterator = cacheProviders.values().iterator();
@@ -158,10 +141,10 @@ public class CacheFactory extends CacheService {
         }
 
         if (cacheLimits == null) {
-            cacheLimits = new ConcurrentHashMap(2503);
+            cacheLimits = new ConcurrentHashMap<String, Long>(2503);
         }
         if (cacheGroupsLimits == null) {
-            cacheGroupsLimits = new ConcurrentHashMap(2503);
+            cacheGroupsLimits = new ConcurrentHashMap<String, Long>(2503);
         }
 
         // instanciate the new cache, can throw an JahiaInitialization exception
@@ -187,7 +170,7 @@ public class CacheFactory extends CacheService {
         return null;
     }
 
-    private boolean registerCache (Cache cache) {
+    private boolean registerCache (Cache<?, ?> cache) {
         // Add the cache to the table
         caches.put (cache.getName (), cache);
 
@@ -200,9 +183,9 @@ public class CacheFactory extends CacheService {
     }
 
 
-    public ContainerHTMLCache getContainerHTMLCacheInstance() throws JahiaInitializationException {
+    public ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> getContainerHTMLCacheInstance() throws JahiaInitializationException {
         // if the Html cache already exists, then return the instance
-        ContainerHTMLCache cache = (ContainerHTMLCache)getCache (ContainerHTMLCache.CONTAINER_HTML_CACHE);
+        ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cache = (ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry>)getCache (ContainerHTMLCache.CONTAINER_HTML_CACHE);
         if (cache != null)
             return cache;
 
@@ -211,7 +194,7 @@ public class CacheFactory extends CacheService {
         if(providerName ==null)
             providerName = DEFAULT_CACHE;
         CacheProvider provider = cacheProviders.get(providerName);
-        cache = new ContainerHTMLCache (provider.newCacheImplementation(ContainerHTMLCache.CONTAINER_HTML_CACHE));
+        cache = new ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> (provider.newCacheImplementation(ContainerHTMLCache.CONTAINER_HTML_CACHE));
         if (cacheLimits.containsKey(cache.getName())) {
             Long cacheLimit = (Long) cacheLimits.get(cache.getName());
             cache.setCacheLimit(cacheLimit.longValue());
@@ -222,9 +205,9 @@ public class CacheFactory extends CacheService {
         return cache;
     }
 
-    public SkeletonCache getSkeletonCacheInstance() throws JahiaInitializationException {
+    public SkeletonCache<GroupCacheKey, SkeletonCacheEntry> getSkeletonCacheInstance() throws JahiaInitializationException {
         // if the Html cache already exists, then return the instance
-        SkeletonCache cache = (SkeletonCache) getCache (SkeletonCache.SKELETON_CACHE);
+        SkeletonCache<GroupCacheKey, SkeletonCacheEntry> cache = (SkeletonCache<GroupCacheKey, SkeletonCacheEntry>) getCache (SkeletonCache.SKELETON_CACHE);
         if (cache != null)
             return cache;
 
@@ -233,7 +216,7 @@ public class CacheFactory extends CacheService {
         if(providerName == null)
             providerName = DEFAULT_CACHE;
         CacheProvider provider = cacheProviders.get(providerName);
-        cache = new SkeletonCache (provider.newCacheImplementation(SkeletonCache.SKELETON_CACHE));
+        cache = new SkeletonCache<GroupCacheKey, SkeletonCacheEntry> (provider.newCacheImplementation(SkeletonCache.SKELETON_CACHE));
         if (cacheLimits.containsKey(cache.getName())) {
             Long cacheLimit = (Long) cacheLimits.get(cache.getName());
             cache.setCacheLimit(cacheLimit.longValue());
@@ -267,7 +250,7 @@ public class CacheFactory extends CacheService {
         Iterator<String> cacheNames = getNames().iterator();
         while (cacheNames.hasNext ()) {
             String curCacheName = cacheNames.next ();
-            Cache cache = caches.get (curCacheName);
+            Cache<?, ?> cache = caches.get (curCacheName);
 
             cache.flush();
         }

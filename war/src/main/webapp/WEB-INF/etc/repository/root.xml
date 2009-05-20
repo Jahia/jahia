@@ -1,3 +1,4 @@
+
 <content jcr:primaryType="jnt:systemfolder"
 
            xmlns:jcr="http://www.jcp.org/jcr/1.0"
@@ -22,7 +23,7 @@
 
     <imports jcr:primaryType="jnt:importDropBox" />
 
-    <layoutmanager jcr:primaryType="jnt:folder" >
+    <layoutmanager jcr:primaryType="jnt:layoutManager" >
         <j:acl jcr:primaryType="jnt:acl">
             <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"/>
             <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"/>
@@ -30,7 +31,9 @@
         </j:acl>
     </layoutmanager>
 
-    <mounts jcr:primaryType="jnt:folder" >
+    <referencesKeeper jcr:primaryType="jnt:referencesKeeper" />
+
+    <mounts jcr:primaryType="jnt:systemfolder" >
         <j:acl jcr:primaryType="jnt:acl">
             <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"/>
             <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"/>

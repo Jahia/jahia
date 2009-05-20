@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.data.fields;
 
 import org.jahia.data.ConnectionTypes;
@@ -228,34 +211,45 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
 
         Map<String, List<String>> tempValues = new HashMap<String, List<String>>();
         List<String> fieldRawValues = new ArrayList<String>();
-        String[] strVals = getValue() != null && Category_Field.NOSELECTION_MARKER.equals(getValue()) ? EMPTY_STRING_ARRAY : this.getValues();
+        String[] strVals = getValue() != null
+                && Category_Field.NOSELECTION_MARKER.equals(getValue()) ? EMPTY_STRING_ARRAY
+                : this.getValues();
         if (strVals != null) {
             fieldRawValues.addAll(Arrays.asList(strVals));
         }
 
         for (String curFieldRawValue : fieldRawValues) {
-            JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSite(this.getJahiaID());
-            List<SiteLanguageSettings> siteLanguageSettings = site.getLanguageSettings();
-            if (siteLanguageSettings != null) {
-                for (SiteLanguageSettings curSetting : siteLanguageSettings) {
-                    if (curSetting.isActivated()) {
-                        Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(curSetting.getCode());
-                        Category curCategory = Category.getCategory(curFieldRawValue, null);
-                        if (curCategory == null) {
-                            logger.warn("Couldn't find category " + curFieldRawValue + " when indexing field, ignoring entry...");
-                            continue;
+            if (curFieldRawValue.trim().length() > 0) {
+                JahiaSite site = ServicesRegistry.getInstance()
+                    .getJahiaSitesService().getSite(this.getJahiaID());
+                List<SiteLanguageSettings> siteLanguageSettings = site
+                    .getLanguageSettings();
+                if (siteLanguageSettings != null) {
+                    for (SiteLanguageSettings curSetting : siteLanguageSettings) {
+                        if (curSetting.isActivated()) {
+                            Locale tempLocale = LanguageCodeConverters
+                                .languageCodeToLocale(curSetting.getCode());
+                            Category curCategory = Category.getCategory(
+                                curFieldRawValue, null);
+                            if (curCategory == null) {
+                                logger
+                                    .warn("Couldn't find category "
+                                            + curFieldRawValue
+                                            + " when indexing field, ignoring entry...");
+                                continue;
+                            }
+                            String value = curCategory.getTitle(tempLocale);
+                            if (value == null || value.length() == 0) {
+                                value = curCategory.getKey();
+                            }
+                            List<String> vals = tempValues.get(tempLocale
+                                .toString());
+                            if (vals == null) {
+                                vals = new ArrayList<String>();
+                            }
+                            vals.add(value);
+                            tempValues.put(tempLocale.toString(), vals);
                         }
-                        String curLangTitle = curCategory.getTitle(tempLocale);
-                        String value = curLangTitle;
-                        if (value == null) {
-                            value = "";
-                        }
-                        List<String> vals = tempValues.get(tempLocale.toString());
-                        if (vals == null) {
-                            vals = new ArrayList<String>();
-                        }
-                        vals.add(value);
-                        tempValues.put(tempLocale.toString(), vals);
                     }
                 }
             }
@@ -284,19 +278,23 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
             fieldRawValues.addAll(Arrays.asList(strVals));
         }
 
-        Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(languageCode);
+        Locale tempLocale = LanguageCodeConverters
+            .languageCodeToLocale(languageCode);
         List<String> vals = new ArrayList<String>();
         for (String val : fieldRawValues) {
-            Category curCategory = Category.getCategory(val, null);
-            if (curCategory == null) {
-                logger.warn("Couldn't find category " + val + " when indexing field, ignoring entry...");
-                continue;
+            if (val.trim().length() > 0) {
+                Category curCategory = Category.getCategory(val, null);
+                if (curCategory == null) {
+                    logger.warn("Couldn't find category " + val
+                            + " when indexing field, ignoring entry...");
+                    continue;
+                }
+                val = curCategory.getTitle(tempLocale);
+                if (val == null || val.length() == 0) {
+                    val = curCategory.getKey();
+                }
+                vals.add(val);
             }
-            val = curCategory.getTitle(tempLocale);
-            if (val == null) {
-                val = "";
-            }
-            vals.add(val);
         }
       
         return vals.toArray(new String[vals.size()]);

@@ -16,12 +16,12 @@
 [jnt:workflow]
  - j:type (string)
 
-[jnt:jahiacontent] > nt:base, jmix:contentmetadata, mix:referenceable
+[jnt:jahiacontent] > nt:base, jmix:contentmetadata, mix:referenceable, jmix:collection
  + j:acl (jnt:acl)
  + j:workflow (jnt:workflow)
+ + j:workflowState (jnt:workflowState)
  + j:jahialink (jnt:jahialink) *
  - j:diff (string)
- - j:workflowState (string) < 'staging','active'
 
 [jnt:page] > jnt:jahiacontent
  - j:pageTitle (string) primary mandatory i15d sortable
@@ -45,12 +45,12 @@
 
 [jnt:container] > jnt:jahiacontent
 
-[jnt:jahiaVirtualsite]
+[jnt:jahiaVirtualsite] > nt:base, jmix:collection
  - j:name (string)
  - j:server (string)
  + * (jnt:page)
 
-[jnt:systemRoot]
+[jnt:systemRoot] > nt:base, jmix:collection
  + * (jnt:jahiaVirtualsite) multiple
 
 [jnt:portletDefinition]
@@ -71,9 +71,20 @@
  - j:status (string)
  - j:portlet (reference) < jnt:portlet
 
-[jnt:layout]  > nt:base, mix:referenceable, jmix:hierarchyNode
- - j:page (string)
+[jnt:layout]  > nt:base, mix:referenceable, jmix:hierarchyNode, jmix:collection
+ - j:page (weakreference)
  - j:nbColumns (long)
  - j:liveEditable (boolean)
  - j:liveDraggable (boolean)
  + j:item (jnt:layoutItem) multiple
+
+[jnt:layoutManager] > jnt:folder, jmix:collection
++ j:layout (jnt:layout) multiple
+
+[jnt:reference] > nt:base, jmix:hierarchyNode
+ - j:node (weakreference)
+ - j:propertyName (string)
+ - j:originalUuid (string)
+
+[jnt:referencesKeeper] > nt:base, jmix:hierarchyNode, jmix:collection
+ + j:reference (jnt:reference) multiple

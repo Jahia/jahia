@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.content;
 
 import java.util.*;
@@ -62,7 +45,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.webdav.UsageEntry;
-import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaLoginModule;
 import org.jahia.jaas.JahiaPrincipal;
 import org.springframework.web.context.ServletContextAware;
@@ -85,6 +67,8 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     private JahiaUserManagerService userService;
     private String servletContextAttributeName;
     private ServletContext servletContext;
+
+    private Map<String,String> decorators = new HashMap<String,String>();
 
     static private JCRStoreService instance = null;
 
@@ -135,6 +119,14 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         }
     }
 
+    public Map<String, String> getDecorators() {
+        return decorators;
+    }
+
+    public void setDecorators(Map<String, String> decorators) {
+        this.decorators = decorators;
+    }
+
     public void stop() throws JahiaException {
     }
 
@@ -161,13 +153,19 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     //    private ThreadLocal systemSession = new ThreadLocal();
-    protected ThreadLocal<JCRSessionWrapper> userSession = new ThreadLocal<JCRSessionWrapper>();
+    protected ThreadLocal<Map<String,JCRSessionWrapper>> userSession = new ThreadLocal<Map<String,JCRSessionWrapper>>();
 
 
     public JCRSessionWrapper getThreadSession(JahiaUser user) throws RepositoryException {
         // thread user session might be inited/closed in an http filter, instead of keeping it
 
-        JCRSessionWrapper s = userSession.get();
+
+        Map<String,JCRSessionWrapper> smap = userSession.get();
+        if (smap == null) {
+            smap = new HashMap<String,JCRSessionWrapper>();
+        }
+        userSession.set(smap);
+
         String username;
 
         if (JahiaUserManagerService.isGuest(user)) {
@@ -176,16 +174,17 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             username = user.getUsername();
         }
 
-        try {
-            if (s != null && !username.equals(s.getUserID())) {
-                logger.error("Session is switching user, was :"+ s.getUserID() + " now :" + username+ " @"+Thread.currentThread().getName());
-                s.logout();
-            }
-        } catch (IllegalStateException e) {
-            logger.error("Exception on session : "+e);
-            s = null;
-        }
+//        try {
+//            if (s != null && !username.equals(s.getUserID())) {
+//                logger.error("Session is switching user, was :"+ s.getUserID() + " now :" + username);
+//                s.logout();
+//            }
+//        } catch (IllegalStateException e) {
+//            logger.error("Exception on session : "+e);
+//            s = null;
+//        }
 
+        JCRSessionWrapper s = smap.get(username);
         if (s == null || !s.isLive()) {
             if (!JahiaLoginModule.GUEST.equals(username)) {
                 s = login(org.jahia.jaas.JahiaLoginModule.getCredentials(username));
@@ -194,19 +193,11 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             } else {
                 s = login(org.jahia.jaas.JahiaLoginModule.getGuestCredentials());
             }
-            userSession.set(s);
+            smap.put(username, s);
         } else {
             s.refresh(true);
         }
         return s;
-    }
-
-    public void closeThreadSession() throws RepositoryException {
-        Session s = userSession.get();
-        if (s != null) {
-            s.logout();
-            userSession.set(null);
-        }
     }
 
     public JCRSessionWrapper getSystemSession() throws RepositoryException {
@@ -215,6 +206,10 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
     public JCRSessionWrapper getSystemSession(String username) throws RepositoryException {
         return login(JahiaLoginModule.getSystemCredentials(username));
+    }
+
+    public JCRSessionWrapper getSystemSession(String username, String workspace) throws RepositoryException {
+        return login(JahiaLoginModule.getSystemCredentials(username), workspace);
     }
 
     public void deployNewSite(JahiaSite site, JahiaUser user) throws RepositoryException {
@@ -360,9 +355,11 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     public void closeAllSessions() {
-        Session s = userSession.get();
-        if (s != null) {
-            s.logout();
+        Map<String, JCRSessionWrapper> smap = userSession.get();
+        if (smap != null) {
+            for (Session s : smap.values()) {
+                s.logout();
+            }
             userSession.set(null);
         }
     }
@@ -378,7 +375,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             fieldXRefManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldXRefManager.class.getName());
         }
 
-        Collection<JahiaFieldXRef> c = fieldXRefManager.getReferencesForTargetWithWildcard(JahiaFieldXRefManager.FILE+sourceUri);
+        Collection<JahiaFieldXRef> c = fieldXRefManager.getReferencesForTarget(JahiaFieldXRefManager.FILE+sourceUri);
 
         for (Iterator<JahiaFieldXRef> iterator = c.iterator(); iterator.hasNext();) {
             JahiaFieldXRef jahiaFieldXRef = iterator.next();
@@ -441,23 +438,29 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
     public JCRNodeWrapper decorate(JCRNodeWrapper w) {
         try {
-            if (w.isNodeType(Constants.NT_FILE)) {
-                return new JCRFileNode(w);
-            } else if (w.isNodeType(Constants.NT_FOLDER)) {
-                return new JCRFileNode(w);
-            } else if (w.isNodeType(Constants.JAHIANT_PORTLET)) {
-                return new JCRPortletNode(w);
-            } else if (w.isNodeType(Constants.NT_QUERY)) {
-                return new JCRQueryNode(w);
-            } else if (w.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
-                return new JCRMountPointNode(w);
-            } else if (w.isNodeType(Constants.JAHIANT_JAHIACONTENT)) {
-                return new JCRJahiaContentNode(w);
-            } else if (w.isNodeType(Constants.NT_VERSION)) {
-                return new JCRVersion(w);
-            } else if (w.isNodeType(Constants.NT_VERSIONHISTORY)) {
-                return new JCRVersionHistory(w);
+            for (String type : decorators.keySet()) {
+                if (w.isNodeType(type)) {
+                    String className = decorators.get(type);
+                    try {
+                        return (JCRNodeWrapper) Class.forName(className).getConstructor(JCRNodeWrapper.class).newInstance(w);
+                    } catch (Exception e) {
+                        logger.error("Cannot decorate node",e);
+                    }
+                }
             }
+//            if (w.isNodeType(Constants.NT_FILE)) {
+//                return new JCRFileNode(w);
+//            } else if (w.isNodeType(Constants.NT_FOLDER)) {
+//                return new JCRFileNode(w);
+//            } else if (w.isNodeType(Constants.JAHIANT_PORTLET)) {
+//                return new JCRPortletNode(w);
+//            } else if (w.isNodeType(Constants.NT_QUERY)) {
+//                return new JCRQueryNode(w);
+//            } else if (w.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
+//                return new JCRMountPointNode(w);
+//            } else if (w.isNodeType(Constants.JAHIANT_JAHIACONTENT)) {
+//                return new JCRJahiaContentNode(w);
+//            }
         } catch (RepositoryException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -563,7 +566,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     public JCRSessionWrapper login(Credentials credentials) throws LoginException, RepositoryException {
-        return login(credentials, "default");
+        return login(credentials, null);
     }
 
     public JCRSessionWrapper login(String workspace) throws LoginException, NoSuchWorkspaceException, RepositoryException {
@@ -571,7 +574,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     public JCRSessionWrapper login() throws LoginException, RepositoryException {
-        return login("default");
+        return login(null, null);
     }
 
 }

@@ -33,6 +33,7 @@
 
 [jnt:navLink] > jnt:container
  page navLink primary
+ smallText separator
 
 [jnt:box] > jnt:container abstract
  smallText boxTitle primary mandatory

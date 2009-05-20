@@ -1,45 +1,25 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.importexport;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.log4j.Logger;
 import org.jahia.content.ContentObject;
 import org.jahia.content.StructuralRelationship;
-import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointInstance;
-import org.jahia.data.applications.WebAppContext;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.params.ProcessingContext;
@@ -56,9 +36,6 @@ import org.jahia.services.fields.ContentFieldTypes;
 import org.jahia.services.fields.ContentFileField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.xml.sax.ContentHandler;
@@ -87,17 +64,17 @@ public abstract class Exporter {
     private static Logger logger = Logger
             .getLogger(Exporter.class);
 
-    protected List structRelations;
-    protected List pickerRelations;
+    protected List<String> structRelations;
+    protected List<String> pickerRelations;
 
     public Exporter() {
-        structRelations = new ArrayList();
+        structRelations = new ArrayList<String>();
         structRelations.add(StructuralRelationship.CONTENT_LINK);
         structRelations.add(StructuralRelationship.METADATA_LINK);
         structRelations.add(StructuralRelationship.METADATADEFINITION_LINK);
         structRelations.add("category");
         structRelations.add("reference");
-        pickerRelations = new ArrayList();
+        pickerRelations = new ArrayList<String>();
         pickerRelations.add(StructuralRelationship.ACTIVATION_PICKER_LINK);
         pickerRelations.add(StructuralRelationship.CHANGE_PICKER_LINK);
     }
@@ -105,7 +82,7 @@ public abstract class Exporter {
 
     public abstract void export(ContentObject object, String languageCode, ContentHandler h, Set files, ProcessingContext jParams, Map params) throws JahiaException, SAXException;
 
-    protected String getFieldValue(ContentField contentField, Set files, ProcessingContext jParams, ContentObjectEntryState entryState, AttributesImpl attr) throws JahiaException {
+    protected String getFieldValue(ContentField contentField, Set<JCRNodeWrapper> files, ProcessingContext jParams, ContentObjectEntryState entryState, AttributesImpl attr) throws JahiaException {
         if (contentField.getType() != ContentFieldTypes.APPLICATION) {
             String value = contentField.getValue(jParams, entryState);
             if ("<empty>".equals(value) || value == null) {
@@ -169,7 +146,7 @@ public abstract class Exporter {
         }
     }
 
-    public void getFiles(ContentObject object, String language, Set files, ProcessingContext jParams, Set included, EntryLoadRequest toLoadRequest) throws JahiaException {
+    public void getFiles(ContentObject object, String language, Set<JCRNodeWrapper> files, ProcessingContext jParams, Set included, EntryLoadRequest toLoadRequest) throws JahiaException {
         if (!object.checkReadAccess(jParams.getUser())) {
             return;
         }
@@ -179,21 +156,20 @@ public abstract class Exporter {
         // Recurse on children
         EntryLoadRequest withDeleted = new EntryLoadRequest(toLoadRequest);
         withDeleted.setWithMarkedForDeletion(true);
-        List l = object.getChilds(jParams.getUser(), withDeleted);
+        List<? extends ContentObject> l = object.getChilds(jParams.getUser(), withDeleted);
 
         if (object instanceof ContentContainerList) {
             ImportExportUtils.orderContainerList(l, jParams);
         }
 
-        for (Iterator iterator = l.iterator(); iterator.hasNext();) {
-            ContentObject child = (ContentObject) iterator.next();
+        for (ContentObject child : l) {
             if (included == null || included.contains(child.getObjectKey())) {
                 getFiles(child, language, files, jParams, included, toLoadRequest);
             }
         }
     }
 
-    public void getFilesForField(ContentObject object, ProcessingContext jParams, String language, EntryLoadRequest loadRequest, Set files) throws JahiaException {
+    public void getFilesForField(ContentObject object, ProcessingContext jParams, String language, EntryLoadRequest loadRequest, Set<JCRNodeWrapper> files) throws JahiaException {
         ContentObjectEntryState entryState = getEntryState(object, language, loadRequest);
 
         if (entryState == null) {
@@ -211,10 +187,10 @@ public abstract class Exporter {
             }
         } else if (object instanceof ContentBigTextField) {
             String value = ((ContentBigTextField)object).getValue(jParams, entryState);
-            Set f =  new HashSet();
+            Set<JCRNodeWrapper> f =  new HashSet<JCRNodeWrapper>();
             parseBigtextFiles(value, f, jParams);
-            for (Iterator iterator = f.iterator(); iterator.hasNext();) {
-                JCRNodeWrapper file = (JCRNodeWrapper) iterator.next();
+            for (Iterator<JCRNodeWrapper> iterator = f.iterator(); iterator.hasNext();) {
+                JCRNodeWrapper file = iterator.next();
 
                 if (file.isValid() && !files.contains(file)) {
                     logger.debug("Found file for "+object.getObjectKey() + " : " +file.getPath());
@@ -224,7 +200,7 @@ public abstract class Exporter {
         }
     }
 
-    public String parseBigtextFiles(String rawValue, Set files, ProcessingContext jParams) throws JahiaException {
+    public String parseBigtextFiles(String rawValue, Set<JCRNodeWrapper> files, ProcessingContext jParams) throws JahiaException {
         String str = "###/webdav";
         if (rawValue == null || rawValue.length() == 0 ||
                 rawValue.toLowerCase().indexOf(str) < 0) {

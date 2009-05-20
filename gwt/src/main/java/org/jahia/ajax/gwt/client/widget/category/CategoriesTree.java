@@ -1,63 +1,38 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget.category;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.binder.TreeBinder;
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.ModelComparer;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.event.CheckChangedEvent;
-import com.extjs.gxt.ui.client.event.CheckChangedListener;
-import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.StoreFilterField;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.tree.Tree;
-import com.extjs.gxt.ui.client.widget.tree.TreeItem;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.service.category.CategoryService;
 import org.jahia.ajax.gwt.client.service.category.CategoryServiceAsync;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
+import org.jahia.ajax.gwt.client.util.tree.PreviousPathsOpener;
+import org.jahia.ajax.gwt.client.util.tree.CustomTreeBinder;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: ktlili
@@ -65,162 +40,195 @@ import java.util.List;
  * Time: 17:00:19
  */
 public class CategoriesTree extends ContentPanel {
-    private String categoryKey;
-    private TreeBinder<GWTJahiaCategoryNode> binder;
-    private CategoriesPickerLeftComponent parentComponent;
-    private final List<GWTJahiaCategoryNode> selectedCategories;
-    private final String categoryLocale;
-    private final boolean autoSelectParent;
+    private MyTreeBinder<GWTJahiaCategoryNode> binder;
+    private CustomTreeLoader<GWTJahiaCategoryNode> loader;
+    private TreeStore<GWTJahiaCategoryNode> store;
+    private PreviousPathsOpener<GWTJahiaCategoryNode> previousPathsOpener = null ;
+    private Tree tree ;
+    private boolean init = true ;
+    private boolean autoSelectParent = true ;
 
-    public CategoriesTree(String categoryKey, CategoriesPickerLeftComponent parentComponent, List<GWTJahiaCategoryNode> selectedCategories, String categoryLocale, boolean autoSelectParent) {
-        this.categoryKey = categoryKey;
-        this.parentComponent = parentComponent;
-        this.selectedCategories = selectedCategories;
-        this.categoryLocale = categoryLocale;
+    public CategoriesTree(final String categoryKey, final List<GWTJahiaCategoryNode> selectedCategories, final String categoryLocale, boolean autoSelectParent, final boolean multiple) {
+        super(new FitLayout());
         this.autoSelectParent = autoSelectParent;
-    }
 
-    @Override
-    protected void onRender (Element parent, int pos) {
-        super.onRender(parent, pos);
-        setHeading(getResource("categories"));
+        setHeading(Messages.getResource("categories"));
         setScrollMode(Style.Scroll.AUTO);
 
         final CategoryServiceAsync service = CategoryService.App.getInstance();
 
+        /*checkListener = new CheckChangedListener() {
+            @Override
+            public void checkChanged(CheckChangedEvent event) {
+                if (!muteListener) {
+                    Log.debug("check listener fired");
+                    List<GWTJahiaCategoryNode> checked = binder.getCheckedSelection();
+                    if (!multiple) {
+                        Log.debug("not multiple");
+                        if (lastChecked == null) {
+                            Log.debug("no last checked");
+                            if (checked.size() == 1) {
+                                Log.debug("size is 1");
+                                lastChecked = checked.get(0);
+                            } else {
+                                Log.error("checked list should not be this size : " + checked.size());
+                            }
+                        } else if (checked.size() == 2) {
+                            Log.debug("last checked exists and size 2");
+                            checked.remove(lastChecked);
+                            lastChecked = checked.get(0);
+                        } else {
+                            Log.error("checked list should not be this size : " + checked.size());
+                        }
+                        muteListener = true;
+                        Log.debug("listener muted");
+                        binder.setCheckedSelection(checked);
+                        muteListener = false;
+                        Log.debug("listener unmuted");
+                    }
+                    parentComponent.addCategories(checked);
+                }
+            }
+        };*/
+
         // data proxy
         RpcProxy<GWTJahiaCategoryNode, List<GWTJahiaCategoryNode>> proxy = new RpcProxy<GWTJahiaCategoryNode, List<GWTJahiaCategoryNode>>() {
             @Override
-            protected void load (GWTJahiaCategoryNode gwtJahiaCategoryNode, AsyncCallback<List<GWTJahiaCategoryNode>> listAsyncCallback) {
-                service.ls(gwtJahiaCategoryNode,categoryLocale, listAsyncCallback);
-            }
-        };
-        final CheckChangedListener listener = new CheckChangedListener() {
-            @Override
-            public void checkChanged (CheckChangedEvent event) {
-                super.checkChanged(event);
-                final List<GWTJahiaCategoryNode> list = event.getCheckedSelection();
-                final List<GWTJahiaCategoryNode> gwtJahiaCategoryNodeList = new ArrayList<GWTJahiaCategoryNode>(list.size()-1);
-                parentComponent.removeAllCategories();
-                for (GWTJahiaCategoryNode selectedCategory : list) {
-                    if(!selectedCategory.getParentKey().equals(selectedCategory.getKey())){
-                        gwtJahiaCategoryNodeList.add(selectedCategory);
-                    }
+            protected void load(GWTJahiaCategoryNode gwtJahiaCategoryNode, AsyncCallback<List<GWTJahiaCategoryNode>> listAsyncCallback) {
+                if (init) {
+                    service.lsInit(categoryKey, selectedCategories, categoryLocale, listAsyncCallback);
+                } else {
+                    service.ls(gwtJahiaCategoryNode,categoryLocale, listAsyncCallback);
                 }
-                parentComponent.addCategories(gwtJahiaCategoryNodeList);
             }
         };
         // tree loader
-        TreeLoader<GWTJahiaCategoryNode> loader = new BaseTreeLoader<GWTJahiaCategoryNode>(proxy) {
+        loader = new CustomTreeLoader<GWTJahiaCategoryNode>(proxy) {
             @Override
-            public boolean hasChildren (GWTJahiaCategoryNode parent) {
+            public boolean hasChildren(GWTJahiaCategoryNode parent) {
                 return !parent.isLeaf();
             }
 
-
-            public boolean load (GWTJahiaCategoryNode gwtJahiaCategoryNode) {
-                if (gwtJahiaCategoryNode != null) {
-                    List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes = gwtJahiaCategoryNode.getChildren();
-                    for (GWTJahiaCategoryNode currentNode : gwtJahiaCategoryNodes) {
-                        loadChildren(currentNode);
-                    }
-                }
-                return super.load(gwtJahiaCategoryNode);
+            protected void expandPreviousPaths() {
+                expandAllPreviousPaths();
+                //initSelectedCategories(multiple);
             }
 
             @Override
-            protected void onLoadSuccess (GWTJahiaCategoryNode gwtJahiaCategoryNode, List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
+            protected void onLoadSuccess(GWTJahiaCategoryNode gwtJahiaCategoryNode, List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
                 super.onLoadSuccess(gwtJahiaCategoryNode, gwtJahiaCategoryNodes);
-                if (gwtJahiaCategoryNode == null) {
-                    for (GWTJahiaCategoryNode currentNode : gwtJahiaCategoryNodes) {
-                        loadChildren(currentNode);
-                        TreeItem item = (TreeItem) binder.findItem(currentNode);
-                        item.setExpanded(true);
-                    }
+                if (init) {
+                    init = false ;
                 } else {
-                    for (GWTJahiaCategoryNode jahiaCategoryNode : gwtJahiaCategoryNodes) {
-                        TreeItem item = (TreeItem) binder.findItem(jahiaCategoryNode);
-                            for (GWTJahiaCategoryNode selectedCategory : selectedCategories) {
-                                if (selectedCategory.getCategoryId().equals(jahiaCategoryNode.getCategoryId())) {
-                                    item.setChecked(true);
-                                    item.setExpanded(true);
-                                    CheckChangedEvent evt = new CheckChangedEvent(binder, binder.getCheckedSelection());
-                                    listener.checkChanged(evt);
-                                }
-                            }
+                    for (GWTJahiaCategoryNode n: gwtJahiaCategoryNodes) {
+                        n.setParent(gwtJahiaCategoryNode);
                     }
-
-                    TreeItem item = (TreeItem) binder.findItem(gwtJahiaCategoryNode);
-                    if (item != null) {
-                        for (GWTJahiaCategoryNode selectedCategory : selectedCategories) {
-                            if (selectedCategory.getCategoryId().equals(gwtJahiaCategoryNode.getCategoryId())) {
-                                item.setChecked(true);
-                                item.setExpanded(true);
-                                CheckChangedEvent evt = new CheckChangedEvent(binder, binder.getCheckedSelection());
-                                listener.checkChanged(evt);
-                            }
-                        }
-                    }
-                    doLayout();
+                    gwtJahiaCategoryNode.setChildren(gwtJahiaCategoryNodes);
                 }
             }
         };
 
         // trees store
-        TreeStore<GWTJahiaCategoryNode> store = new TreeStore<GWTJahiaCategoryNode>(loader);
+        store = new TreeStore<GWTJahiaCategoryNode>(loader);
         store.setModelComparer(new ModelComparer<GWTJahiaCategoryNode>() {
             public boolean equals (GWTJahiaCategoryNode gwtJahiaCategoryNode, GWTJahiaCategoryNode gwtJahiaCategoryNode1) {
                 return gwtJahiaCategoryNode != null && gwtJahiaCategoryNode1 != null && gwtJahiaCategoryNode.getCategoryId().equals(gwtJahiaCategoryNode1.getCategoryId());
             }
         });
         // tree
-        final Tree tree = new Tree();
-        tree.setCheckable(true);
-        if (autoSelectParent) {
+        tree = new Tree();
+        if (multiple) {
+            tree.setSelectionMode(Style.SelectionMode.MULTI);
+        }
+        /*tree.setCheckable(true);
+        if (autoSelectParent && multiple) {
             tree.setCheckStyle(Tree.CheckCascade.PARENTS);
         } else {
             tree.setCheckStyle(Tree.CheckCascade.NONE);
-        }
-        tree.setHeight(400);
-        binder = new TreeBinder<GWTJahiaCategoryNode>(tree, store);
-        binder.setDisplayProperty("name");
-        binder.setAutoLoad(true);
-        binder.setCaching(true);
+        }*/
+        binder = new MyTreeBinder<GWTJahiaCategoryNode>(tree, store);
+        binder.setDisplayProperty("extendedName");
 
-        binder.addCheckListener(listener);
-        loader.load(null);
-        for (GWTJahiaCategoryNode gwtJahiaCategoryNode : selectedCategories) {
-            loader.load(gwtJahiaCategoryNode);
-        }
-        binder.setSelection(selectedCategories);
+        add(tree);
+    }
 
-        StoreFilterField filter = new StoreFilterField() {
-            @Override
-            protected boolean doSelect (Store store, ModelData parent, ModelData record, String property, String filter) {
-                if (record instanceof GWTJahiaCategoryNode) {
-                    GWTJahiaCategoryNode node = (GWTJahiaCategoryNode) record;
-                    if(node.getName().toLowerCase().startsWith(filter.toLowerCase())) return true;
+    public TreeStore<GWTJahiaCategoryNode> getStore() {
+        return store;
+    }
+
+    public void init() {
+        loader.load();
+    }
+
+    private void expandAllPreviousPaths() {
+        if (previousPathsOpener == null) {
+            previousPathsOpener = new PreviousPathsOpener<GWTJahiaCategoryNode>(tree, store, binder) ;
+        }
+        previousPathsOpener.expandPreviousPaths();
+    }
+
+    public List<GWTJahiaCategoryNode> getSelection() {
+        if (!autoSelectParent) {
+            return binder.getSelection() ;
+        }
+        Set<GWTJahiaCategoryNode> nodes = new HashSet<GWTJahiaCategoryNode>(binder.getSelection());
+        for (GWTJahiaCategoryNode n: binder.getSelection()) {
+            GWTJahiaCategoryNode parent = n.getParent();
+            while (parent != null) {
+                if("root".equals(parent.getKey())) {
+                    break;
                 }
-                return false;
+                nodes.add(parent);
+                parent = parent.getParent();
             }
-        };
-        filter.bind(store);
-        filter.setWidth("100%");
-        VerticalPanel panel = new VerticalPanel();
-        panel.setAutoHeight(true);
-        panel.setWidth("100%");
-        setWidth("100%");
-        panel.add(filter);
-        panel.add(tree);
-
-        add(panel);
-//        binder.setCheckedSelection(selectedCategories);
-        doLayout();
+        }
+        return new ArrayList<GWTJahiaCategoryNode>(nodes);
     }
 
-    public static String getResource(String key) {
-        return Messages.getResource(key);
+/*    private void initSelectedCategories(boolean multiple) {
+        List<GWTJahiaCategoryNode> toCheck = new ArrayList<GWTJahiaCategoryNode>();
+        for (GWTJahiaCategoryNode n: store.getAllItems()) {
+            for (GWTJahiaCategoryNode selected: selectedCategories) {
+                if (n.getKey().equals(selected.getKey())) {
+                    toCheck.add(n);
+                }
+            }
+        }
+        binder.setCheckedSelection(toCheck);
+        binder.addCheckListener(checkListener);
     }
 
+    private void checkSelectedCategories() {
+        List<GWTJahiaCategoryNode> toCheck = (List<GWTJahiaCategoryNode>) parentComponent.getLinker().getTableSelection() ;
+        for (GWTJahiaCategoryNode n: store.getAllItems()) {
+            for (GWTJahiaCategoryNode selected: selectedCategories) {
+                if (n.getKey().equals(selected.getKey())) {
+                    toCheck.add(n);
+                }
+            }
+        }
+        binder.setCheckedSelection(toCheck);
+    }*/
+
+    /**
+     * TreeBinder that has renderChildren public.
+     *
+     * @param <M>
+     */
+    private class MyTreeBinder<M extends BaseTreeModel> extends TreeBinder<M> implements CustomTreeBinder<M> {
+
+        public MyTreeBinder(Tree t, TreeStore<M> s) {
+            super(t, s) ;
+        }
+
+        public void renderChildren(M parent, List<M> children) {
+            try {
+                super.renderChildren(parent, children);
+            } catch (ConcurrentModificationException e) {
+                // weird harmless exception
+            }
+        }
+
+    }
 
 }

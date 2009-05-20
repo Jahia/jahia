@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.content.automation;
 
 import org.drools.spi.KnowledgeHelper;
@@ -48,6 +31,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.lang.reflect.Array;
 
 /**
  * Created by IntelliJ IDEA.
@@ -129,48 +113,29 @@ public class PropertyWrapper implements Updateable  {
                 return;
             }
             ValueFactory factory = node.getSession().getValueFactory();
-            Value value = null;
-            if (objectValue instanceof String) {
-                if (propDef.getSelector() == SelectorType.CATEGORY) {
-                    try {
-                        value = factory.createValue(Category.getCategoryPath((String) objectValue));
-                    } catch (Exception e) {
-                        logger.warn("Can't get category "+objectValue + ", cause " + e.getMessage());
-                    }
-                } else {
-                    value = factory.createValue((String) objectValue);
+
+            Value[] values = null;
+            if (objectValue.getClass().isArray()) {
+                values = new Value[Array.getLength(objectValue)];
+                for (int i=0; i<Array.getLength(objectValue); i++) {
+                    values[i] = createValue(Array.get(objectValue, i), propDef, factory);
                 }
-            } else if (objectValue instanceof Long) {
-                value = factory.createValue((Long) objectValue);
-            } else if (objectValue instanceof Integer) {
-                value = factory.createValue(((Integer) objectValue).longValue());
-            } else if (objectValue instanceof Calendar) {
-                value = factory.createValue((Calendar) objectValue);
-            } else if (objectValue instanceof Date) {
-                Calendar c = new GregorianCalendar();
-                c.setTime((Date) objectValue);
-                value = factory.createValue(c);
-            } else if (objectValue instanceof byte[]) {
-                value = factory.createValue(new ByteArrayInputStream((byte[]) objectValue));
-            } else if (objectValue instanceof File) {
-                try {
-                    value = factory.createValue(new FileInputStream((File) objectValue));
-                } catch (FileNotFoundException e) {
-                    logger.error("File not found ",e);
-                }
+            } else {
+                values = new Value[] {createValue(objectValue, propDef, factory)};
             }
-            if (value != null) {
+
+            if (values != null && values.length>0) {
                 if (!propDef.isMultiple()) {
-                    property = node.setProperty(name, value);
+                    property = node.setProperty(name, values[0]);
                 } else {
                     if (node.hasProperty(name)) {
-                        Value[] values = property.getValues();
-                        Value[] newValues = new Value[values.length+1];
-                        System.arraycopy(values, 0, newValues, 0, values.length);
-                        newValues[values.length] = value;
+                        Value[] oldValues = property.getValues();
+                        Value[] newValues = new Value[oldValues.length+values.length];
+                        System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
+                        System.arraycopy(values, oldValues.length, newValues, 0, values.length);
                         property.setValue(newValues);
                     } else {
-                        property = node.setProperty(name, new Value[] {value});
+                        property = node.setProperty(name, values);
                     }
                 }
 
@@ -187,6 +152,39 @@ public class PropertyWrapper implements Updateable  {
         }
     }
 
+    private Value createValue(Object objectValue, ExtendedPropertyDefinition propDef, ValueFactory factory) {
+        if (objectValue instanceof String) {
+            if (propDef.getSelector() == SelectorType.CATEGORY) {
+                try {
+                    return factory.createValue(Category.getCategoryPath((String) objectValue)) ;
+                } catch (Exception e) {
+                    logger.warn("Can't get category "+objectValue + ", cause " + e.getMessage());
+                }
+            } else {
+                return factory.createValue((String) objectValue) ;
+            }
+        } else if (objectValue instanceof Long) {
+            return factory.createValue((Long) objectValue) ;
+        } else if (objectValue instanceof Integer) {
+            return factory.createValue(((Integer) objectValue).longValue()) ;
+        } else if (objectValue instanceof Calendar) {
+            return factory.createValue((Calendar) objectValue) ;
+        } else if (objectValue instanceof Date) {
+            Calendar c = new GregorianCalendar();
+            c.setTime((Date) objectValue);
+            return factory.createValue(c) ;
+        } else if (objectValue instanceof byte[]) {
+            return factory.createValue(new ByteArrayInputStream((byte[]) objectValue)) ;
+        } else if (objectValue instanceof File) {
+            try {
+                return factory.createValue(new FileInputStream((File) objectValue)) ;
+            } catch (FileNotFoundException e) {
+                logger.error("File not found ",e);
+            }
+        }
+        return null;
+    }
+
     public String getName() throws RepositoryException {
         if (property != null) {
             return property.getName();
@@ -196,6 +194,9 @@ public class PropertyWrapper implements Updateable  {
 
     public String getStringValue() throws RepositoryException {
         if (property != null) {
+            if (property.getDefinition().isMultiple()) {
+                return getStringValues().toString();
+            }
             return property.getString();
         }
         return null;
@@ -211,6 +212,13 @@ public class PropertyWrapper implements Updateable  {
             }
         }
         return r;
+    }
+
+    public Object getValue() throws RepositoryException {
+        if (property != null) {
+            return  property.getValues();
+        }
+        return null;
     }
 
     public int getType() throws RepositoryException {

@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.content.nodetypes;
 
 import javax.jcr.PropertyType;
@@ -49,7 +32,8 @@ public class SelectorType {
     public static final int RICHTEXT = 2;
     public static final int DATETIMEPICKER = 3;
     public static final int DATEPICKER = 4;
-    public static final int FILE = 9;
+    public static final int FILEPICKER = 9;
+    public static final int FILEUPLOAD = 10;
     public static final int CHECKBOX = 11;
     public static final int COLOR = 12;
     public static final int CATEGORY = 13;
@@ -64,7 +48,8 @@ public class SelectorType {
     public static final String SELECTORNAME_RICHTEXT = "RichText";
     public static final String SELECTORNAME_DATETIMEPICKER = "DateTimePicker";
     public static final String SELECTORNAME_DATEPICKER = "DatePicker";
-    public static final String SELECTORNAME_FILE = "File";
+    public static final String SELECTORNAME_FILEPICKER = "File";
+    public static final String SELECTORNAME_FILEUPLOAD = "FileUpload";
     public static final String SELECTORNAME_CHECKBOX = "Checkbox";
     public static final String SELECTORNAME_COLOR = "Color";
     public static final String SELECTORNAME_CATEGORY = "Category";
@@ -83,7 +68,8 @@ public class SelectorType {
         nameToValue.put(SELECTORNAME_RICHTEXT, RICHTEXT);
         nameToValue.put(SELECTORNAME_DATETIMEPICKER, DATETIMEPICKER);
         nameToValue.put(SELECTORNAME_DATEPICKER, DATEPICKER);
-        nameToValue.put(SELECTORNAME_FILE, FILE);
+        nameToValue.put(SELECTORNAME_FILEPICKER, FILEPICKER);
+        nameToValue.put(SELECTORNAME_FILEUPLOAD, FILEUPLOAD);
         nameToValue.put(SELECTORNAME_CHECKBOX, CHECKBOX);
         nameToValue.put(SELECTORNAME_COLOR, COLOR);
         nameToValue.put(SELECTORNAME_CATEGORY, CATEGORY);
@@ -97,7 +83,8 @@ public class SelectorType {
         valueToName.put(RICHTEXT, SELECTORNAME_RICHTEXT);
         valueToName.put(DATETIMEPICKER, SELECTORNAME_DATETIMEPICKER);
         valueToName.put(DATEPICKER, SELECTORNAME_DATEPICKER);
-        valueToName.put(FILE, SELECTORNAME_FILE);
+        valueToName.put(FILEPICKER, SELECTORNAME_FILEPICKER);
+        valueToName.put(FILEUPLOAD, SELECTORNAME_FILEUPLOAD);
         valueToName.put(CHECKBOX, SELECTORNAME_CHECKBOX);
         valueToName.put(COLOR, SELECTORNAME_COLOR);
         valueToName.put(CATEGORY, SELECTORNAME_CATEGORY);

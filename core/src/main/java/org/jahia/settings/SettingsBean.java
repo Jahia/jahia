@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 // $Id$
 //
 //  JahiaPrivateSettings
@@ -54,8 +37,7 @@ package org.jahia.settings;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.log4j.Logger;
 import org.jahia.admin.database.DatabaseScripts;
-import org.jahia.data.constants.JahiaConstants;
-import org.jahia.tools.files.MimeTypesFromWebAppXmlFile;
+import org.jahia.services.templates.JahiaTemplatesPackageHandler;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.PathResolver;
 import org.jahia.utils.properties.PropertiesManager;
@@ -68,15 +50,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class SettingsBean {
-
-    public boolean isConsiderPreferredLanguageAfterLogin() {
-        return considerPreferredLanguageAfterLogin;
-    }
-
-    public void setConsiderPreferredLanguageAfterLogin(
-            boolean considerPreferredLanguageAfterLogin) {
-        this.considerPreferredLanguageAfterLogin = considerPreferredLanguageAfterLogin;
-    }
 
     private static final transient Logger logger =
             Logger.getLogger (SettingsBean.class);
@@ -106,14 +79,13 @@ public class SettingsBean {
     private String jahiaEtcDiskPath;
     private String jahiaVarDiskPath;
     private String jahiaFilesBigTextDiskPath;
-    private String jahiaFilesTemplatesDiskPath;
     private String jahiaCasDiskPath;
     private String jahiaHostHttpPath;
     private String jahiaTemplatesHttpPath;
     private String jahiaEnginesHttpPath;
     private String jahiaWebAppsDeployerBaseURL;
     private String jahiaJavaScriptDiskPath;
-    private String jahiaNewTemplatesDiskPath;
+    private String jahiaPreparePortletJCRPath;
     private String jahiaNewWebAppsDiskPath;
     private String jahiaImportsDiskPath;
     private String jahiaSharedTemplatesDiskPath;
@@ -131,23 +103,14 @@ public class SettingsBean {
 
     private String jahiaJavaScriptHttpPath;
     private String classDiskPath;
-    private String componentsDiskPath;
     private String localAccessUri;
-
-    // directory to output cache configuration file
-    private String jahiaOutputCacheConfigDiskPath;
 
     // map containing all max_cached_*...
     private Map<String, Long> maxCachedValues;
     // map containing all max_cachedgroups_*...
     private Map<String, Long> maxCachedGroupsValues;
 
-
-    // this is the list of jahia.properties autodeployer values...
-    private int jahiaWebAppsAutoDeploy;
-
     // this is the list of jahia.properties files values...
-    private String jahiaFileRepositoryDiskPath;
     private long jahiaFileUploadMaxSize;
 
     // Characters encoding
@@ -155,9 +118,6 @@ public class SettingsBean {
 
     // Lock activation
     private boolean locksActivated;
-
-    // flat view activation
-    private boolean enableSelectPageFlatView;
 
     private boolean outputContainerCacheActivated = false;
 
@@ -173,25 +133,10 @@ public class SettingsBean {
     // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
     private boolean useRelativeSiteURLs;
 
-    // Flag that indicates whether applications can inherit from Jahia session
-    // attributes.
-    private boolean appInheritJahiaSessionAttributes;
-
     // Default language code for multi-language system
     private String defaultLanguageCode;
 
-    // Default site
-    private String defaultSite;
-
     private boolean aclPreloadActive = true;
-
-    // should the webdav filenames be converted into full-ascii
-    private boolean transformFilenames;
-
-    private boolean transformDirnames;
-
-    private boolean preloadFolders;
-
 
     // the (optional) url the user will be redirected after logout
     public String logoutRedirectUrl;
@@ -209,7 +154,6 @@ public class SettingsBean {
     public int mail_maxRegroupingOfPreviousException = 500;
 
     private DtdEntityResolver mResolver;
-    protected Properties mimeTypes;
 
     private boolean jmxHTTPAdaptorActivated = false;
     private boolean jmxXSLProcessorActivated = false;
@@ -228,7 +172,6 @@ public class SettingsBean {
     private String jmxRMISSLServerSocketFactoryKeyManagerPassword = null;
     private String defaultResponseBodyEncoding;
     private String defaultURIEncoding;
-    private int preloadCountForPageProperties;
     private boolean jmxActivated;
 
     private int cookieAuthIDLength;
@@ -238,15 +181,8 @@ public class SettingsBean {
     private boolean cookieAuthRenewalActivated;
     private boolean cookieAuthActivated;
 
-    private String authPipelineFileName;
-    private String authPipelineClassName;
-
-    private String processPipelineClassName;
-    private String processPipelineFileName;
-
     private String tmpContentDiskPath;
     private long templatesObserverInterval;
-    private long webAppsObserverInterval;
     private String schedulerConfigFile;
     private String ramSchedulerConfigFile;
 
@@ -258,12 +194,6 @@ public class SettingsBean {
 
     private boolean isSiteErrorEnabled;
 
-    private String jetspeedDeploymentDirectory;
-
-    private int workflowMaxNotificationEmails = 20;
-    private boolean workflowNotifyAdminOnMaxNotificationReached = true;
-    private String workflowMaxNotificationReachedTemplate;
-
     private String freeMemoryLimit= new Double((Runtime.getRuntime().maxMemory()*0.2)/ (1024*1024)).longValue() + "MB";
 
     private int clusterCacheMaxBatchSize = 100000;
@@ -273,23 +203,16 @@ public class SettingsBean {
 
     private int maxAggregatedEvents = 5000;
 
-    private boolean useFlatFileManager;
     private boolean showTimeBasedPublishingIcons;
     private boolean developmentMode = true;
     private boolean readOnlyMode = false;
-    private boolean waiAutoAddMissingAttributes;
     private int connectionTimeoutForProductionJob;
 
     //flags for aes
     private boolean tbpDisp;
     private boolean wflowDisp;
-    private boolean chatDisp;
     private boolean aclDisp;
-    private boolean pdispDisp=true;
-
-    // Title size display
-    private int siteMapTitlesLength;
-    private int workflowTitlesLength;
+    private boolean integrityDisp;    
 
     // hibernate batchloading
     private boolean batchLoadingEnabled = true;
@@ -316,12 +239,7 @@ public class SettingsBean {
 
     private boolean workflowDisplayStatusForLinkedPages;
 
-    private boolean workflowUseExternalByDefault;
-
-    // pdisplay
-    private String pdisplayTimerRefresh;
-
-    private int nbMaxContentAliasName = 10;
+    private String workflowDefaultType;
 
     private boolean displayMarkedForDeletedContentObjects;
 
@@ -329,7 +247,6 @@ public class SettingsBean {
 
     // Settings to control servlet response wrapper flushing
     private boolean wrapperBufferFlushingActivated = true;
-    private boolean wrapperBufferFlushingAlsoForPortlets = true;
 
 
     // ESI, default expiration age in seconds
@@ -347,10 +264,13 @@ public class SettingsBean {
     private boolean gmailPasswordExported = true;
 
     private boolean considerPreferredLanguageAfterLogin;
+    
+    private boolean considerDefaultJVMLocal;
 
     // enable ACL check when displaying the current page path
     private boolean checkAclInPagePath ;
 
+    private String ehCacheJahiaFile;
     /**
      * Default constructor.
      *
@@ -395,10 +315,6 @@ public class SettingsBean {
         return propertiesManager.getPropertiesObject ();
     } // end readJahiaPropertiesFile
 
-    public boolean isEnableSelectPageFlatView() {
-        return enableSelectPageFlatView;
-    }
-
     /**
      * This method load and convert properties from the jahia.properties file,
      * and set some variables used by the SettingsBean class.
@@ -418,19 +334,15 @@ public class SettingsBean {
             jahiaEnginesDiskPath = pathResolver.resolvePath (getString("jahiaEnginesDiskPath"));
             jahiaJavaScriptDiskPath = pathResolver.resolvePath (getString("jahiaJavaScriptDiskPath"));
             classDiskPath = pathResolver.resolvePath (getString("classDiskPath"));
-            componentsDiskPath = pathResolver.resolvePath (getString("componentsDiskPath"));
             jahiaFilesDiskPath = JahiaTools.convertContexted (getString("jahiaFilesDiskPath"), pathResolver);
             jahiaEtcDiskPath = JahiaTools.convertContexted (getString("jahiaEtcDiskPath"), pathResolver);
             jahiaVarDiskPath = JahiaTools.convertContexted (getString("jahiaVarDiskPath"), pathResolver);
             jahiaFilesBigTextDiskPath = JahiaTools.convertContexted (getString("jahiaFilesBigTextDiskPath"), pathResolver);
             tmpContentDiskPath = JahiaTools.convertContexted (getString("tmpContentDiskPath"), pathResolver);
-            jahiaFilesTemplatesDiskPath = JahiaTools.convertContexted (getString("jahiaFilesTemplatesDiskPath"), pathResolver);
             jahiaCasDiskPath = JahiaTools.convertContexted (getString("jahiaCasDiskPath"), pathResolver);
-            jahiaNewTemplatesDiskPath = JahiaTools.convertContexted (getString("jahiaNewTemplatesDiskPath"), pathResolver);
             jahiaNewWebAppsDiskPath = JahiaTools.convertContexted (getString("jahiaNewWebAppsDiskPath"), pathResolver);
             jahiaImportsDiskPath = JahiaTools.convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
             jahiaSharedTemplatesDiskPath = JahiaTools.convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
-            jahiaOutputCacheConfigDiskPath = JahiaTools.convertContexted (getString("jahiaOutputCacheConfigDiskPath"), pathResolver);
             jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
 
             jahiaHostHttpPath = getString("jahiaHostHttpPath");
@@ -442,19 +354,21 @@ public class SettingsBean {
             htmlEditorsContext = getString("jahiaHtmlEditorsDiskPath");
             enginesContext = getString("jahiaEnginesDiskPath");
             javascriptContext = getString("jahiaJavaScriptDiskPath");
-            enableSelectPageFlatView = getBoolean("enableSelectPageFlatView", true);
             displayMarkedForDeletedContentObjects = getBoolean("displayMarkedForDeletedContentObjects", false);
 
             // jahia real path...
             File jahiaContextFolder = new File (pathResolver.resolvePath("." + File.separator));
             File parent = jahiaContextFolder.getAbsoluteFile().getParentFile ();
 
-            if (server.indexOf (JahiaConstants.SERVER_TOMCAT4_BETA1) != -1) {         // the server is tomcatb1...
-                jahiaHomeDiskPath = jahiaContextFolder.getAbsolutePath ();
-                jahiaWebAppsDiskPath = parent.getAbsolutePath () + File.separator;
-            } else if (server.indexOf (JahiaConstants.SERVER_TOMCAT) != -1) {      // the server is tomcat
+            if (server.indexOf ("Tomcat") != -1) {      // the server is tomcat
                 jahiaHomeDiskPath = parent.getAbsolutePath ();
-                jahiaWebAppsDiskPath = parent.getParentFile ().getAbsolutePath () + File.separator;
+                // look in the properties file. If not found guess from jahiaContextFolder
+                jahiaWebAppsDiskPath = properties.getProperty("jahiaWebAppsDiskPath");
+                if(jahiaWebAppsDiskPath == null || jahiaWebAppsDiskPath.length() == 0){
+                    jahiaWebAppsDiskPath = parent.getParentFile ().getAbsolutePath () + File.separator;
+                }else{
+                   jahiaWebAppsDiskPath.trim();
+                }
                 /*
                 } else if ( (server.indexOf(JahiaConstants.SERVER_TOMCAT4_BETA2) != -1)
                         || (server.indexOf(JahiaConstants.SERVER_TOMCAT4_BETA3) != -1)
@@ -468,16 +382,10 @@ public class SettingsBean {
             }
 
             // autodeployer...
-            String webappAutoDeploy = getString("jahiaWebAppsAutoDeploy");
-            if (webappAutoDeploy != null) {
-                jahiaWebAppsAutoDeploy = Integer.parseInt (webappAutoDeploy);
-            }
             templatesObserverInterval = getLong("templates.observer.interval", 5000);
-            webAppsObserverInterval = getLong("webapps.observer.interval", 5000);
 
             // files...
-            jahiaFileRepositoryDiskPath = JahiaTools.convertContexted (getString("jahiaFileRepositoryDiskPath"), pathResolver);
-            jahiaFileUploadMaxSize = Long.parseLong (getString("jahiaFileUploadMaxSize"));
+            jahiaFileUploadMaxSize = getLong("jahiaFileUploadMaxSize");
 
             // chars encoding
             utf8Encoding = getBoolean("utf8Encoding");
@@ -501,21 +409,17 @@ public class SettingsBean {
             // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
             useRelativeSiteURLs = getBoolean ("useRelativeSiteURLs", false);
 
-            // Flag that indicates whether applications can inherit from Jahia session
-            // attributes.
-            appInheritJahiaSessionAttributes =getBoolean ("webapps.dispatcher.inheritJahiaSessionAttributes", false);
-
             // base URL (schema, host, port) to call the web apps deployer service.
             jahiaWebAppsDeployerBaseURL = getString ("jahiaWebAppsDeployerBaseURL", "http://127.0.0.1:8080/manager");
 
             // multi language default language code property.
             defaultLanguageCode = getString ("org.jahia.multilang.default_language_code", "en");
 
+            considerDefaultJVMLocal = getBoolean("considerDefaultJVMLocal", false);
+                
             considerPreferredLanguageAfterLogin = getBoolean("considerPreferredLanguageAfterLogin", false);
 
             aclPreloadActive = getBoolean("org.jahia.acl.preload_active", true);
-
-            preloadCountForPageProperties = getInt("org.jahia.pages.properties.preload_count", 2000);
 
             // mail settings...
             mail_service_activated = getBoolean("mail_service_activated", false);
@@ -545,9 +449,6 @@ public class SettingsBean {
 
             // load mime types
             initDtdEntityResolver ();
-            loadMimeTypes ();
-
-            defaultSite = getString("defautSite");
 
             // load MaxCached values (max_cached_*)
             maxCachedValues = new HashMap<String, Long>();
@@ -601,11 +502,6 @@ public class SettingsBean {
                 }
             }
 
-            // webdav settings
-            transformFilenames = getBoolean("transformFilenames", false);
-            transformDirnames  = getBoolean("transformDirnames", true);
-            preloadFolders  = getBoolean("preloadFolders", false);
-
             cookieAuthActivated = getBoolean("cookieAuthActivated", true);
             cookieAuthIDLength = getInt("cookieAuthIDLength", 30);
             cookieAuthUserPropertyName = getString("cookieAuthUserPropertyName", "org.jahia.user.cookieauth.id");
@@ -613,11 +509,6 @@ public class SettingsBean {
             cookieAuthMaxAgeInSeconds = getInt("cookieAuthMaxAgeInSeconds", 60*60*24*30 /* 30 days expiration */);
             cookieAuthRenewalActivated = getBoolean("cookieAuthRenewalActivated", true);
 
-            authPipelineFileName = getString("authPipelineFileName", "/WEB-INF/etc/config/auth-pipeline.xml");
-            authPipelineClassName = getString("authPipelineClassName", "org.jahia.pipelines.impl.GenericPipeline");
-
-            processPipelineFileName = getString("processPipelineFileName", "/WEB-INF/etc/config/process-pipeline.xml");
-            processPipelineClassName = getString("processPipelineClassName", "org.jahia.pipelines.impl.GenericPipeline");
             schedulerConfigFile = JahiaTools.convertContexted (getString("schedulerConfigFile", "$context/WEB-INF/etc/config/quartz.properties"), pathResolver);
             ramSchedulerConfigFile = JahiaTools.convertContexted (getString("ramSchedulerConfigFile", "$context/WEB-INF/etc/config/quartz-ram.properties"), pathResolver);
             isProcessingServer = getBoolean("processingServer", true);
@@ -627,13 +518,8 @@ public class SettingsBean {
 
             siteURLPortOverride = getInt("siteURLPortOverride", 0);
 
-            workflowMaxNotificationEmails = getInt("workflowMaxNotificationEmails", 20);
-            workflowNotifyAdminOnMaxNotificationReached = getBoolean("workflowNotifyAdminOnMaxNotificationReached", true);
-            workflowMaxNotificationReachedTemplate = JahiaTools.convertContexted (getString("workflowMaxNotificationReachedTemplate", "workflow_maxnotif.groovy"), pathResolver);
             workflowDisplayStatusForLinkedPages = getBoolean("workflowDisplayStatusForLinkedPages", true);
-            workflowUseExternalByDefault = getBoolean("workflowUseExternalByDefault", true);
-
-            jetspeedDeploymentDirectory = JahiaTools.convertContexted (getString("jetspeedDeploymentDirectory", "$context/WEB-INF/deploy"), pathResolver);
+            workflowDefaultType = getString("workflowDefaultType", "two_validation_step_workflow");
 
             // the (optional) url the user will be redirected after logout
             logoutRedirectUrl = getString("logoutRedirectUrl", null);
@@ -654,8 +540,6 @@ public class SettingsBean {
 
             maxAggregatedEvents = getInt("maxAggregatedEvents", 5000);
 
-            useFlatFileManager = getBoolean("useFlatFileManager", true);
-            waiAutoAddMissingAttributes = getBoolean("waiAutoAddMissingAttributes", true);
             showTimeBasedPublishingIcons = getBoolean("showTimeBasedPublishingIcons", true);
             localAccessUri = getString("localAccessUri", "http://localhost:8080");
             developmentMode = getBoolean("developmentMode",true);
@@ -663,11 +547,8 @@ public class SettingsBean {
             tbpDisp = getBoolean("timebased_display",false);
             aclDisp = getBoolean("aclDiff_display",false);
             wflowDisp =getBoolean("workflow_display",false);
-            chatDisp =getBoolean("chat_display",false);
-            pdispDisp =getBoolean("process_display",true);
+            integrityDisp =getBoolean("integrityChecks_display",false);
             connectionTimeoutForProductionJob = getInt("connectionTimeoutForProductionJob",60000);
-            siteMapTitlesLength = getInt("siteMapTitlesLength", 25);
-            workflowTitlesLength = getInt("workflowTitlesLength", 25);
 
             // hibernate batchloading
             batchLoadingEnabled = getBoolean("batchLoadingEnabled",true);
@@ -687,12 +568,7 @@ public class SettingsBean {
 
             dBMaxElementsForInClause = getInt("db_max_elements_for_in_clause", dBMaxElementsForInClause);
 
-            pdisplayTimerRefresh = getString("pdisplay.timer.refresh","5000");
-
-            nbMaxContentAliasName = getInt("nbMaxContentAliasName",nbMaxContentAliasName);
-
             wrapperBufferFlushingActivated = getBoolean("wrapperBufferFlushingActivated", true);
-            wrapperBufferFlushingAlsoForPortlets = getBoolean("wrapperBufferFlushingAlsoForPortlets", true);
 
             containerCacheDefaultExpirationDelay = getLong("containerCacheDefaultExpirationDelay",3600*4); //4 hours
 
@@ -706,6 +582,8 @@ public class SettingsBean {
             gmailPasswordExported = getBoolean("gmailPasswordExported", true);
 
             checkAclInPagePath = getBoolean("checkAclInPagePath", true) ;
+
+            jahiaPreparePortletJCRPath = getString("prepare.portlet.jcr.path");
 
             try {
                 DatabaseScripts scriptsManager = new DatabaseScripts();
@@ -744,6 +622,22 @@ public class SettingsBean {
                     getString("templates.boxes.onError", null));
 
             settings.setFast(true);
+            ehCacheJahiaFile = getString("ehcache.jahia.file","ehcache-jahia.xml");
+            // If cluster is activated then try to expose some properties as system properties for JGroups
+            boolean clusterActivated = getBoolean("cluster.activated",false);
+            if(clusterActivated) {
+                // First expose tcp ip binding address
+                String tcpIpBinding = getString("cluster.tcp.start.ip_address");
+                String numInitialMembers = getString("cluster.tcp.num_initial_members");
+                System.setProperty("cluster.tcp.start.ip_address",tcpIpBinding);
+                System.setProperty("cluster.tcp.num_initial_members",numInitialMembers);
+                // Second get ehcache jgroups configuration for jahia
+                System.setProperty("cluster.tcp.ehcache.jahia.nodes.ip_address",getString("cluster.tcp.ehcache.jahia.nodes.ip_address"));
+                System.setProperty("cluster.tcp.ehcache.jahia.port",getString("cluster.tcp.ehcache.jahia.port"));
+                // Second get ehcache jgroups configuration for hibernate
+                System.setProperty("cluster.tcp.ehcache.hibernate.nodes.ip_address",getString("cluster.tcp.ehcache.hibernate.nodes.ip_address"));
+                System.setProperty("cluster.tcp.ehcache.hibernate.port",getString("cluster.tcp.ehcache.hibernate.port"));
+            }
         } catch (NullPointerException npe) {
             logger.debug ("Properties file is not valid...!", npe);
         } catch (NumberFormatException nfe) {
@@ -930,72 +824,21 @@ public class SettingsBean {
 
     //--------------------------------------------------------------------------
     /**
-     * Load mime types from web.xml files
-     *
-     * <mime-mapping>
-     *   <extension>abs</extension>
-     *   <mime-type>audio/x-mpeg</mime-type>
-     * </mime-mapping>
-     * <mime-mapping>
-     *   <extension>ai</extension>
-     *   <mime-type>application/postscript</mime-type>
-     * </mime-mapping>
-     */
-    private void loadMimeTypes () {
-
-        String filepath = pathResolver.resolvePath ("/WEB-INF/web.xml");
-        File f = new File (filepath);
-        if (f.exists () && f.canRead ()) {
-            try {
-                MimeTypesFromWebAppXmlFile mtHandler
-                        = new MimeTypesFromWebAppXmlFile (f.getAbsolutePath (), mResolver);
-
-                mimeTypes = mtHandler.getMimeTypes ();
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-        if (mimeTypes == null)
-            mimeTypes = new Properties ();
-
-    }
-
-    //--------------------------------------------------------------------------
-    /**
      * initiate the Dtd entity resolver we use with local dtd
      */
     private void initDtdEntityResolver () {
 
-        mResolver = new DtdEntityResolver ();
+        mResolver = new DtdEntityResolver();
         String diskPath = this.jahiaEtcDiskPath;
 
         // register local DTD
-        //System.out.println(diskPath + JahiaConstants.WEB_DTD_RESOURCE_PATH_22);
-        File resourceFile = new File (diskPath, JahiaConstants.WEB_DTD_RESOURCE_PATH_22);
-        mResolver.registerDTD (JahiaConstants.WEB_DTD_PUBLICID_22, resourceFile);
+        mResolver.registerDTD(
+                "-//Sun Microsystems, Inc.//DTD J2EE Application 1.2//EN",
+                new File(diskPath, "xml_dtd/application_1_2.dtd"));
 
-        //System.out.println(diskPath + JahiaConstants.WEB_DTD_RESOURCE_PATH_23);
-        resourceFile = new File (diskPath, JahiaConstants.WEB_DTD_RESOURCE_PATH_23);
-        mResolver.registerDTD (JahiaConstants.WEB_DTD_PUBLICID_23, resourceFile);
-
-        //System.out.println(diskPath + JahiaConstants.J2EE_APP_DTD_RESOURCE_PATH_12);
-        resourceFile = new File (diskPath, JahiaConstants.J2EE_APP_DTD_RESOURCE_PATH_12);
-        mResolver.registerDTD (JahiaConstants.J2EE_APP_DTD_PUBLICID_12, resourceFile);
-
-        mResolver
-                .registerSchema(JahiaConstants.TEMPLATES_DESCRIPTOR_20_URI,
-                        new File(diskPath,
-                                JahiaConstants.TEMPLATES_DESCRIPTOR_20_PATH));
-    }
-
-    //--------------------------------------------------------------------------
-    /**
-     * Return the mime types
-     *
-     * @return Properties mimeTypes
-     */
-    public Properties getMimeTypes () {
-        return mimeTypes;
+        mResolver.registerSchema(
+                JahiaTemplatesPackageHandler.TEMPLATES_DESCRIPTOR_20_URI,
+                new File(diskPath, "xml_dtd/templates_2_0.xsd"));
     }
 
     //--------------------------------------------------------------------------
@@ -1065,12 +908,6 @@ public class SettingsBean {
     public void setUseRelativeSiteURLs(boolean val) {
         this.useRelativeSiteURLs = val;
     }
-
-
-    public boolean isAppInheritingJahiaSessionAttributes () {
-        return appInheritJahiaSessionAttributes;
-    }
-
 
     public String getJahiaWebAppsDeployerBaseURL () {
         return jahiaWebAppsDeployerBaseURL;
@@ -1196,16 +1033,6 @@ public class SettingsBean {
     } // end getJahiaFilesDataDiskPath
 
     /**
-     * Used to get the templates jahiafiles disk path.
-     *
-     * @return  The templates jahiafiles disk path.
-     */
-    public String getJahiaFilesTemplatesDiskPath() {
-        return jahiaFilesTemplatesDiskPath;
-    } // end getJahiaFilesTemplatesDiskPath
-
-
-    /**
      * Used to get the CAS configuration directory disk path.
      *
      * @return  The Cas configuration disk path.
@@ -1213,26 +1040,6 @@ public class SettingsBean {
     public String getJahiaCasDiskPath() {
         return jahiaCasDiskPath;
     } // end getJahiaCasDiskPath
-
-    /**
-     * Returns the disk path to the output cache configuration directory
-     * @return a String containing the disk path to the output cache configuration
-     * directory
-     */
-
-    public String getJahiaOutputCacheConfigDiskPath() {
-        return jahiaOutputCacheConfigDiskPath;
-    }
-
-    /**
-     * Used to get the new templates disk path.
-     *
-     * @return  The new templates disk path.
-     */
-    public String getJahiaNewTemplatesDiskPath() {
-        return jahiaNewTemplatesDiskPath;
-    } // end getJahiaNewTemplatesDiskPath
-
 
     /**
      * Used to get the shared templates disk path.
@@ -1243,15 +1050,6 @@ public class SettingsBean {
         return jahiaSharedTemplatesDiskPath;
     }
 
-
-    /**
-     * Used to get the components disk path.
-     *
-     * @return  The components disk path.
-     */
-    public String getComponentsDiskPath() {
-        return componentsDiskPath;
-    } // end getComponentsDiskPath
 
     /**
      * Url to make a local jahia request
@@ -1312,7 +1110,7 @@ public class SettingsBean {
      */
     public String getTemplatesContext() {
         return templatesContext;
-    } // end getTemplatesContext
+    }
 
     /**
      * Used to get the engines context.
@@ -1321,7 +1119,7 @@ public class SettingsBean {
      */
     public String getEnginesContext() {
         return enginesContext;
-    } // end getEnginesContext(
+    }
 
     /**
      * Used to get the javascript context.
@@ -1330,31 +1128,10 @@ public class SettingsBean {
      */
     public String getJavascriptContext() {
         return javascriptContext;
-    } // end getJavascriptContext(
-
-    /**
-     * Used to get the webapps autodeployer flag.
-     *
-     * @return  The webapps autodeployer flag.
-     */
-    public int getJahiaWebAppsAutoDeploy() {
-        return jahiaWebAppsAutoDeploy;
-    } // end getJahiaWebAppsAutoDeploy
-
-    /*
-    public ServletConfig getConfig() {
-        return config;
     }
-    public ServletContext getContext() {
-        return context;
-    }
-    */
 
     public String getClassDiskPath() {
         return classDiskPath;
-    }
-    public String getJahiaFileRepositoryDiskPath() {
-        return jahiaFileRepositoryDiskPath;
     }
     public String getJahiaFilesBigTextDiskPath() {
         return jahiaFilesBigTextDiskPath;
@@ -1459,23 +1236,7 @@ public class SettingsBean {
     public String getDefaultURIEncoding() {
         return defaultURIEncoding;
     }
-    public String getDefaultSite() {
-        return defaultSite;
-    }
-    public int getPreloadCountForPageProperties() {
-        return preloadCountForPageProperties;
-    }
 
-    public boolean isTransformFilenames() {
-        return transformFilenames;
-    }
-
-    public boolean isTransformDirnames() {
-        return transformDirnames;
-    }
-    public boolean isPreloadFolders() {
-        return preloadFolders;
-    }
     public int getCookieAuthIDLength() {
         return cookieAuthIDLength;
     }
@@ -1490,18 +1251,6 @@ public class SettingsBean {
     }
     public boolean isCookieAuthRenewalActivated() {
         return cookieAuthRenewalActivated;
-    }
-    public String getAuthPipelineFileName() {
-        return authPipelineFileName;
-    }
-    public String getAuthPipelineClassName() {
-        return authPipelineClassName;
-    }
-    public String getProcessPipelineClassName() {
-        return processPipelineClassName;
-    }
-    public String getProcessPipelineFileName() {
-        return processPipelineFileName;
     }
     public PathResolver getPathResolver() {
         return pathResolver;
@@ -1520,9 +1269,7 @@ public class SettingsBean {
     public long getTemplatesObserverInterval() {
         return templatesObserverInterval;
     }
-    public long getWebAppsObserverInterval() {
-        return webAppsObserverInterval;
-    }
+
     public String getSchedulerConfigFile() {
         return schedulerConfigFile;
     }
@@ -1545,11 +1292,8 @@ public class SettingsBean {
     }
 
     public String getJetspeedDeploymentDirectory() {
-        return jetspeedDeploymentDirectory;
-    }
-
-    public void setJetspeedDeploymentDirectory(String jetspeedDeploymentDirectory) {
-        this.jetspeedDeploymentDirectory = jetspeedDeploymentDirectory;
+        return null;
+        //throw new UnsupportedOperationException("jetspeedDeploymentDirectory no longer supported!");
     }
 
     public String getPropertiesFileName() {
@@ -1558,30 +1302,6 @@ public class SettingsBean {
 
     public void setPropertiesFileName(String propertiesFileName) {
         this.propertiesFileName = propertiesFileName;
-    }
-
-    public int getWorkflowMaxNotificationEmails() {
-        return workflowMaxNotificationEmails;
-    }
-
-    public void setWorkflowMaxNotificationEmails(int workflowMaxNotificationEmails) {
-        this.workflowMaxNotificationEmails = workflowMaxNotificationEmails;
-    }
-
-    public boolean isWorkflowNotifyAdminOnMaxNotificationReached() {
-        return workflowNotifyAdminOnMaxNotificationReached;
-    }
-
-    public void setWorkflowNotifyAdminOnMaxNotificationReached(boolean workflowNotifyAdminOnMaxNotificationReached) {
-        this.workflowNotifyAdminOnMaxNotificationReached = workflowNotifyAdminOnMaxNotificationReached;
-    }
-
-    public String getWorkflowMaxNotificationReachedTemplate() {
-        return workflowMaxNotificationReachedTemplate;
-    }
-
-    public void setWorkflowMaxNotificationReachedTemplate(String workflowMaxNotificationReachedTemplate) {
-        this.workflowMaxNotificationReachedTemplate = workflowMaxNotificationReachedTemplate;
     }
 
     public int getSiteURLPortOverride() {
@@ -1640,14 +1360,6 @@ public class SettingsBean {
         this.clusterCacheMaxBatchSize = clusterCacheMaxBatchSize;
     }
 
-    public boolean isUseFlatFileManager() {
-        return useFlatFileManager;
-    }
-
-    public boolean isWaiAutoAddMissingAttributes() {
-        return waiAutoAddMissingAttributes;
-    }
-
     public boolean showTimeBasedPublishingIcons() {
         return showTimeBasedPublishingIcons;
     }
@@ -1682,22 +1394,6 @@ public class SettingsBean {
 
     public boolean isWflowDisp() {
         return wflowDisp;
-    }
-
-    public boolean isChatDisp() {
-        return chatDisp;
-    }
-
-    public boolean isPdispDisp() {
-        return pdispDisp;
-    }
-
-    public int getSiteMapTitlesLength() {
-        return siteMapTitlesLength;
-    }
-
-    public int getWorkflowTitlesLength() {
-        return workflowTitlesLength;
     }
 
     public boolean isBatchLoadingEnabled() {
@@ -1806,22 +1502,6 @@ public class SettingsBean {
         return preloadDBGroupMembersActivated;
     }
 
-    public String getPdisplayTimerRefresh() {
-        return pdisplayTimerRefresh;
-    }
-
-    /**
-     * Return the number max of alias name.
-     * @return
-     */
-    public int getNbMaxContentAliasName() {
-        return nbMaxContentAliasName;
-    }
-
-    public void setNbMaxContentAliasName(int nbMaxContentAliasName) {
-        this.nbMaxContentAliasName = nbMaxContentAliasName;
-    }
-
     public boolean isDisplayMarkedForDeletedContentObjects() {
         return displayMarkedForDeletedContentObjects;
     }
@@ -1845,14 +1525,6 @@ public class SettingsBean {
 
     public void setWrapperBufferFlushingActivated(boolean wrapperBufferFlushingActivated) {
         this.wrapperBufferFlushingActivated = wrapperBufferFlushingActivated;
-    }
-
-    public boolean isWrapperBufferFlushingAlsoForPortlets() {
-        return wrapperBufferFlushingAlsoForPortlets;
-    }
-
-    public void setWrapperBufferFlushingAlsoForPortlets(boolean wrapperBufferFlushingAlsoForPortlets) {
-        this.wrapperBufferFlushingAlsoForPortlets = wrapperBufferFlushingAlsoForPortlets;
     }
 
     public long getContainerCacheDefaultExpirationDelay() {
@@ -1880,12 +1552,12 @@ public class SettingsBean {
         this.workflowDisplayStatusForLinkedPages = workflowDisplayStatusForLinkedPages;
     }
 
-    public boolean isWorkflowUseExternalByDefault() {
-        return workflowUseExternalByDefault;
+    public String getWorkflowDefaultType() {
+        return workflowDefaultType;
     }
 
-    public void setWorkflowUseExternalByDefault(boolean workflowUseExternalByDefault) {
-        this.workflowUseExternalByDefault = workflowUseExternalByDefault;
+    public void setWorkflowDefaultType(String workflowDefaultType) {
+        this.workflowDefaultType = workflowDefaultType;
     }
 
     public boolean isInlineEditingActivated() {
@@ -1922,5 +1594,42 @@ public class SettingsBean {
 
     public boolean isCheckAclInPagePath() {
         return this.checkAclInPagePath ;
+    }
+
+    public String getEhCacheJahiaFile() {
+        return ehCacheJahiaFile;
+    }
+
+    public String getJahiaPreparePortletJCRPath() {
+        return jahiaPreparePortletJCRPath;
+    }
+
+    public void setJahiaPreparePortletJCRPath(String jahiaPreparePortletJCRPath) {
+        this.jahiaPreparePortletJCRPath = jahiaPreparePortletJCRPath;
+    }
+
+    public boolean isIntegrityDisp() {
+        return integrityDisp;
+    }
+
+    public void setIntegrityDisp(boolean integrityDisp) {
+        this.integrityDisp = integrityDisp;
+    }
+
+    public boolean isConsiderDefaultJVMLocal() {
+        return considerDefaultJVMLocal;
+    }
+
+    public void setConsiderDefaultJVMLocal(boolean considerDefaultJVMLocal) {
+        this.considerDefaultJVMLocal = considerDefaultJVMLocal;
+    }
+
+    public boolean isConsiderPreferredLanguageAfterLogin() {
+        return considerPreferredLanguageAfterLogin;
+    }
+
+    public void setConsiderPreferredLanguageAfterLogin(
+            boolean considerPreferredLanguageAfterLogin) {
+        this.considerPreferredLanguageAfterLogin = considerPreferredLanguageAfterLogin;
     }
 }

@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.engines.shared;
 
 import org.jahia.data.containers.JahiaContainer;
@@ -49,6 +32,7 @@ import org.jahia.services.categories.Category;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockPrerequisites;
 import org.jahia.services.lock.LockPrerequisitesResult;
+import org.jahia.utils.JahiaTools;
 
 import java.util.*;
 
@@ -85,6 +69,7 @@ public class Category_Field implements FieldSubEngine {
 
     public static final String NOSELECTION_MARKER = "$$$NO_SELECTION_MARKER$$$";
     public static final String CATEGORIESUPDATED_ENGINEMAPKEY = "categoriesUpdated";
+    public static final String START_CATEGORY = "startCategory";
 
     public static synchronized Category_Field getInstance() {
         if (theObject == null) {
@@ -225,6 +210,10 @@ public class Category_Field implements FieldSubEngine {
 
         List<String> defaultSelectedCategories = new ArrayList<String>();
         boolean foundNoSelectionMarker = false;
+        
+        String rootCategoryKey = theField.getDefinition().getItemDefinition().getSelectorOptions().get("root");
+        Category startCategory = (rootCategoryKey != null) ? Category.getCategory(rootCategoryKey, jParams.getUser()) : null;
+        
         String fieldDefaultValue = theField.getDefinition().getDefaultValue();
 
         // the field default value contains a combination of :
@@ -233,7 +222,6 @@ public class Category_Field implements FieldSubEngine {
         // [rootCategoryKey]defaultCategoryKey1,defaultCategory2,...
         // the rootCategoryKey part is optional.
 
-        Category startCategory = null;
 
         logger.debug("fieldDefaultValue: " + fieldDefaultValue);
         if ((fieldDefaultValue != null) && !"".equals(fieldDefaultValue)) {
@@ -241,15 +229,12 @@ public class Category_Field implements FieldSubEngine {
             int defaultCategoryKeysStartPos = 0;
             if ((fieldDefaultValue.indexOf("]") > 0) &&
                     (fieldDefaultValue.indexOf("[") == 0)) {
-                // we have detected a root category key
-                String rootCategoryKey = fieldDefaultValue.substring(1, fieldDefaultValue.indexOf("]"));
-                startCategory = Category.getCategory(rootCategoryKey, jParams.getUser());
                 defaultCategoryKeysStartPos = fieldDefaultValue.indexOf("]") + 1;
             }
 
-            final StringTokenizer categoryKeyTokens = new StringTokenizer(fieldDefaultValue.substring(defaultCategoryKeysStartPos));
-            while (categoryKeyTokens.hasMoreTokens()) {
-                final String curCategoryKey = categoryKeyTokens.nextToken();
+            for (final String curCategoryKey : JahiaTools.getTokens(
+                fieldDefaultValue.substring(defaultCategoryKeysStartPos),
+                JahiaField.MULTIPLE_VALUES_SEP)) {
                 final Category curCategory = Category.getCategory(curCategoryKey, jParams.getUser());
                 if (curCategory != null) {
                     defaultSelectedCategories.add(curCategoryKey);
@@ -270,8 +255,8 @@ public class Category_Field implements FieldSubEngine {
             engineMap.put("NoCategories", "NoCategories");
             return false;
         }
-        logger.debug("startCategory: " + startCategory.getKey());
-        engineMap.put("startCategory", startCategory.getKey());
+        logger.debug(START_CATEGORY+": " + startCategory.getKey());
+        engineMap.put(START_CATEGORY, startCategory.getKey());
         engineMap.remove("NoCategories");
 
         if (selectedCategories == null) {
@@ -340,7 +325,6 @@ public class Category_Field implements FieldSubEngine {
 
         final Iterator<String> paramNameIter = parameterMap.keySet().iterator();
         final List<String> newSelectedCategories = new ArrayList<String>();
-        boolean adding = true;
         while (paramNameIter.hasNext()) {
             String curParamName = paramNameIter.next();
             if (curParamName.startsWith(CATEGORYPREFIX_HTMLPARAMETER)) {

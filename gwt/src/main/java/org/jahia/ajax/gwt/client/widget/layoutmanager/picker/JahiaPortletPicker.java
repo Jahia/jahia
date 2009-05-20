@@ -1,40 +1,24 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget.layoutmanager.picker;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -64,7 +48,7 @@ import java.util.*;
 
 public class JahiaPortletPicker extends ContentPanel {
     private final String rootPath = "/content/shared/mashups";
-    private final GWTJahiaNode directory = new GWTJahiaNode(null, null, null, rootPath, null, null, null, null, false, false, false, null);
+    private final GWTJahiaNode directory = new GWTJahiaNode(null, null, null, rootPath, null, null, null, null, null, false, false, false, null);
 
 
 
@@ -167,7 +151,7 @@ public class JahiaPortletPicker extends ContentPanel {
 
     private void initCreatePortletInstanceToolItem() {
         // add to my portal
-        createPortletInstance = new TextToolItem(Messages.getNotEmptyResource("p_mashup_create","Create module"));
+        createPortletInstance = new TextToolItem(Messages.getNotEmptyResource("p_mashup_create","Create mashup"));
         createPortletInstance.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 PortletWizardWindow window = new PortletWizardWindow(null,selection) {
@@ -254,8 +238,7 @@ public class JahiaPortletPicker extends ContentPanel {
     public static void addToMyPortal(String uuid) {
         Element ele = DOM.getElementById(uuid);
         DOM.setElementAttribute(ele, "disabled", "disabled");
-        final List<GWTJahiaLayoutItem> layoutItemList = new ArrayList<GWTJahiaLayoutItem>();
-
+        DOM.setElementAttribute(ele, "value", "added !");
         GWTJahiaNode gwtJahiaNode = new GWTJahiaNode();
         gwtJahiaNode.setUUID(uuid);
         GWTJahiaLayoutItem gwtLayoutItem = new GWTJahiaLayoutItem();
@@ -263,12 +246,11 @@ public class JahiaPortletPicker extends ContentPanel {
         gwtLayoutItem.setRow(0);
         gwtLayoutItem.setStatus(JahiaPropertyHelper.getStatusNormaleValue());
         gwtLayoutItem.setGwtJahiaNode(gwtJahiaNode);
-        layoutItemList.add(gwtLayoutItem);
 
         // make a call ajax
-        LayoutmanagerService.App.getInstance().saveLayoutItems(JahiaPageEntryPoint.getJahiaGWTPage(), layoutItemList, new AsyncCallback() {
+        LayoutmanagerService.App.getInstance().addLayoutItem(JahiaPageEntryPoint.getJahiaGWTPage(),gwtLayoutItem, new AsyncCallback() {
             public void onSuccess(Object o) {
-
+                Info.display("",Messages.getNotEmptyResource("p_mashup_added_myPortal", "Mashup added to 'MyPortal'"));
             }
 
             public void onFailure(Throwable t) {

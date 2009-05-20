@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 /*
  * Copyright (c) 2005 Your Corporation. All Rights Reserved.
  */
@@ -264,7 +247,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         for (Object prop : props) {
             Object[] objects = (Object[]) prop;
             key = (Integer) objects[0];
-            properties = (Map<Object, Object>) propertiesByContainerId.get(key);
+            properties = propertiesByContainerId.get(key);
             if (properties == null) {
                 properties = new HashMap<Object, Object>();
                 propertiesByContainerId.put(key, properties);
@@ -935,9 +918,9 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return getJahiaContainerFromList(list);
     }
 
-    public int getMaxRankingValue() {
+    public int getMaxRankingValue(int listId) {
         final HibernateTemplate hibernateTemplate = getHibernateTemplate();
-        List<Integer> list = hibernateTemplate.find("select max(c.rank) from JahiaContainer c");
+        List<Integer> list = hibernateTemplate.find("select max(c.rank) from JahiaContainer c where c.listid=?", listId);
         if (!list.isEmpty() && list.get(0) != null) {
             return (list.get(0));
         } else {
@@ -1100,13 +1083,13 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
                                       boolean ascendingOrder, BitSet ctnIdsBitSet, int dbMaxResult) {
 
         StringBuffer buff = new StringBuffer(1024);
-        Map parameters = new HashMap();
+        Map<String, Object> parameters = new HashMap<String, Object>();
 
         if (sortByMetadata) {
             parameters.put("contentType", ContentContainerKey.CONTAINER_TYPE);
         }
 
-        buff.append(" SELECT f.comp_id.id, f.comp_id.workflowState, f.comp_id.versionId, f.metadataOwnerId, f.containerId FROM JahiaFieldsData f ");
+        buff.append(" SELECT f.comp_id.id, f.comp_id.workflowState, f.comp_id.versionId, f.metadataOwnerId, f.containerId FROM JahiaFieldsData f, JahiaContainer c  ");
         boolean addSiteParam = false;
         boolean addContainerDefinitionNameParam = false;
         boolean addContainerListIdParam = false;
@@ -1115,25 +1098,22 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
                 addSiteParam = true;
             }
             if (ctnDefIDs != null && !ctnDefIDs.isEmpty()) {
-                buff.append(", JahiaContainer c ");
                 addContainerDefinitionNameParam = true;
             }
         } else {
             if (ctnDefIDs != null && !ctnDefIDs.isEmpty()) {
-                buff.append(", JahiaContainer c ");
                 addContainerDefinitionNameParam = true;
             } else if (ctListId != null && ctListId > 0) {
-                buff.append(", JahiaContainer c ");
                 parameters.put("ctListId", ctListId);
                 addContainerListIdParam = true;
             }
         }
-        List ctnIDs = null;
+        List<Integer> ctnIDs = null;
         if (ctnIdsBitSet != null
                 && ctnIdsBitSet.length() > 0
                 && ctnIdsBitSet.cardinality() <= org.jahia.settings.SettingsBean.getInstance()
                 .getDBMaxElementsForInClause()) {
-            ctnIDs = new ArrayList();
+            ctnIDs = new ArrayList<Integer>();
             for (int index = ctnIdsBitSet.nextSetBit(0); index >= 0; index = ctnIdsBitSet
                     .nextSetBit(index + 1)) {
                 ctnIDs.add((index));
@@ -1154,7 +1134,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
             buff.append(" AND c.listid= :ctListId ");
         }
         if (addSiteParam) {
-            buff.append(" AND c.siteId IN (:siteIds) ");
+            buff.append(" AND f.siteId IN (:siteIds) ");
         }
         if (sortByMetadata) {
             buff.append(" AND c.comp_id.id=f.metadataOwnerId ");
@@ -1195,13 +1175,13 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return query.list();
     }
 
-    public List getSortedContainerIdsByChildPage(Integer ctListId, Integer[] siteIds, Boolean siteLevel,
-                                                 List ctnDefIDs, List fieldDefIDs, List pageFieldDefIDs,
+    public List<Object[]> getSortedContainerIdsByChildPage(Integer ctListId, Integer[] siteIds, Boolean siteLevel,
+                                                 List<Integer> ctnDefIDs, List<Integer> fieldDefIDs, List<Integer> pageFieldDefIDs,
                                                  EntryLoadRequest loadRequest, boolean ignoreLang, boolean stagingOnly,
                                                  boolean ascendingOrder, BitSet ctnIdsBitSet, int dbMaxResult) {
 
         StringBuffer buff = new StringBuffer(1024);
-        Map parameters = new HashMap();
+        Map<String, Object> parameters = new HashMap<String, Object>();
 
         parameters.put("contentType", ContentPageKey.PAGE_TYPE);
 
@@ -1227,15 +1207,15 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
                 addContainerListIdParam = true;
             }
         }
-        List ctnIDs = null;
+        List<Integer> ctnIDs = null;
         if (ctnIdsBitSet != null
                 && ctnIdsBitSet.length() > 0
                 && ctnIdsBitSet.cardinality() <= org.jahia.settings.SettingsBean.getInstance()
                 .getDBMaxElementsForInClause()) {
-            ctnIDs = new ArrayList();
+            ctnIDs = new ArrayList<Integer>();
             for (int index = ctnIdsBitSet.nextSetBit(0); index >= 0; index = ctnIdsBitSet
                     .nextSetBit(index + 1)) {
-                ctnIDs.add((index));
+                ctnIDs.add(index);
             }
         }
         buff.append(" WHERE (");
@@ -1264,7 +1244,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
             buff.append(" AND c.listid= :ctListId ");
         }
         if (addSiteParam) {
-            buff.append(" AND c.siteId IN (:siteIds) ");
+            buff.append(" AND f.siteId IN (:siteIds) ");
         }
 
         appendFieldMultilangAndWorkflowParams(buff, parameters, loadRequest,
@@ -1309,7 +1289,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
      * @param stagingOnly
      */
     private void appendFieldMultilangAndWorkflowParams(StringBuffer query,
-                                                       Map params,
+                                                       Map<String, Object> params,
                                                        EntryLoadRequest entryLoadRequest,
                                                        boolean ignoreLang,
                                                        boolean stagingOnly) {
@@ -1340,7 +1320,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
     }
 
     private void appendContainerMultilangAndWorkflowParams(StringBuffer query,
-                                                           Map params, EntryLoadRequest entryLoadRequest,
+                                                           Map<String, Object> params, EntryLoadRequest entryLoadRequest,
                                                            boolean ignoreLang, boolean stagingOnly) {
         if (stagingOnly || entryLoadRequest.isStaging() || !ignoreLang) {
             query.append(" c.comp_id.id=f.containerId AND (");
@@ -1369,13 +1349,13 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         }
     }
 
-    public <E> List<E> executeQuery(String queryString, Map parameters) {
+    public <E> List<E> executeQuery(String queryString, Map<Object, Object> parameters) {
         Query query = this.getSession().createQuery(queryString);
         for (Object o : parameters.keySet()) {
             String name = (String) o;
             Object parameter = parameters.get(name);
             if (parameter instanceof Collection) {
-                query.setParameterList(name, (Collection) parameter);
+                query.setParameterList(name, (Collection<?>) parameter);
             } else if (parameter instanceof Object[]) {
                 query.setParameterList(name, (Object[]) parameter);
             } else {
@@ -1385,7 +1365,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return query.list();
     }
 
-    public List<Integer> getContainerIDsOnPagesHavingAcls(Set pageIDs, Set aclIDs) {
+    public List<Integer> getContainerIDsOnPagesHavingAcls(Set<Integer> pageIDs, Set<Integer> aclIDs) {
         Query query = this.getSession().createQuery(
                 "select distinct c.comp_id.id from JahiaContainer c where c.pageid in (:pageIDs) and c.jahiaAclId in (:aclIDs) and c.comp_id.workflowState >= 1 and c.comp_id.versionId != -1");
 
@@ -1395,7 +1375,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return query.list();
     }
 
-    public List<Integer> getContainerIDsHavingAcls(Set aclIDs) {
+    public List<Integer> getContainerIDsHavingAcls(Set<Integer> aclIDs) {
         Query query = this.getSession().createQuery(
                 "select distinct c.comp_id.id from JahiaContainer c where c.jahiaAclId in (:aclIDs) and c.comp_id.workflowState >= 1 and c.comp_id.versionId != -1");
 
@@ -1410,7 +1390,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
      * @param ctnIds
      * @return
      */
-    public Map<Integer, Integer> getContainerACLIDs(List ctnIds) {
+    public Map<Integer, Integer> getContainerACLIDs(List<Integer> ctnIds) {
         Session session = this.getSession();
         if (!session.isOpen()) {
             session = this.getSession(true);
@@ -1422,12 +1402,9 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         criteria.setProjection(projectionList);
         Property propCrit = Property.forName("comp_id.id");
         criteria.add(propCrit.in(ctnIds));
-        List result = criteria.list();
+        List<Object[]> result = criteria.list();
         Map<Integer, Integer> acls = new HashMap<Integer, Integer>();
-        Iterator it = result.iterator();
-        Object[] row;
-        while (it.hasNext()) {
-            row = (Object[]) it.next();
+        for (Object[] row : result) {
             acls.put((Integer)row[0], (Integer)row[1]);
         }
         return acls;
@@ -1435,13 +1412,12 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
 
     public Map<String, String> getVersions(int site) {
         final HibernateTemplate template = getHibernateTemplate();
-        List items = template.find("select uuid.comp_id.name, uuid.value, version.comp_id.name, version.value " +
+        List<Object[]> items = template.find("select uuid.comp_id.name, uuid.value, version.comp_id.name, version.value " +
                 "from JahiaContainerProperty uuid, JahiaContainerProperty version " +
                 "where uuid.siteId=? and uuid.comp_id.containerId=version.comp_id.containerId and uuid.comp_id.name='originalUuid' " +
                 "and version.comp_id.name='lastImportedVersion'", site);
-        Map<String, String> results = new HashMap();
-        for (Object item : items) {
-            Object[] o = (Object[]) item;
+        Map<String, String> results = new HashMap<String, String>();
+        for (Object[] o : items) {
             results.put((String)o[1], (String)o[3]);
         }
         return results;

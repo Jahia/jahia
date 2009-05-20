@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget.toolbar;
 
 
@@ -44,7 +27,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
-import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaState;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
@@ -59,7 +41,9 @@ import org.jahia.ajax.gwt.client.widget.toolbar.dnd.ToolbarIndexedDropController
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -79,6 +63,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Time: 15:27:13
  */
 public class ToolbarManager {
+
     private RootPanel topPanel;
 
     // target toolbar panel
@@ -109,14 +94,17 @@ public class ToolbarManager {
     // number of displayed toolbar
     private int displayedToolbars = 0;
 
+    private List<Listener<BaseEvent>> contextMenuReadyListeners = new ArrayList<Listener<BaseEvent>>(
+            1);
+
     public ToolbarManager() {
+        super();
     }
 
     public ToolbarManager(RootPanel topPanel, GWTJahiaPageContext pageContext) {
         this.topPanel = topPanel;
         this.pageContext = pageContext;
     }
-
 
 
     /**
@@ -238,10 +226,11 @@ public class ToolbarManager {
     public void clear() {
         for (final JahiaToolbar jahiaToolbar : getJahiaToolbars()) {
             jahiaToolbar.clearAndRemoveFromParent();
-            jahiaToolbars = new ArrayList<JahiaToolbar>();
-            displayedToolbars = 0;
-            toolbarContextMenu.removeAll();
         }
+        jahiaToolbars = new ArrayList<JahiaToolbar>();
+        displayedToolbars = 0;
+        toolbarContextMenu.removeAll();
+        contextMenuReadyListeners.clear();
     }
 
 
@@ -339,24 +328,36 @@ public class ToolbarManager {
     private void initContextMenu() {
         if (getJahiaToolbars() != null) {
             for (final JahiaToolbar jahiaToolbar : getJahiaToolbars()) {
-                final CheckMenuItem item = new CheckMenuItem();
-                item.setChecked(jahiaToolbar.getGwtToolbar().getState().isDisplay());
-                item.setEnabled(!jahiaToolbar.getGwtToolbar().isMandatory());
-                item.setText(jahiaToolbar.getGwtToolbar().getTitle());
-                item.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                    public void componentSelected(ComponentEvent event) {
-                        // check if there are more that 2 toolbar diplsay
-                        Log.debug("Displayed toolabr: " + displayedToolbars);
-                        if (!item.isChecked() && displayedToolbars == 1) {
-                            MessageBox.alert(getResource("alert"), getResource("hide_alert"), null);
-                            item.setChecked(true);
-                        } else {
-                            jahiaToolbar.setDisplay(item.isChecked());
+                if (!jahiaToolbar.getGwtToolbar().isMandatory()) {
+                    final CheckMenuItem item = new CheckMenuItem();
+                    item.setChecked(jahiaToolbar.getGwtToolbar().getState().isDisplay());
+                    item.setEnabled(!jahiaToolbar.getGwtToolbar().isMandatory());
+                    item.setText(jahiaToolbar.getGwtToolbar().getTitle());
+                    item.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                        public void componentSelected(ComponentEvent event) {
+                            // check if there are more that 2 toolbar diplsay
+                            Log.debug("Displayed toolabr: " + displayedToolbars);
+                            if (!item.isChecked() && displayedToolbars == 1) {
+                                MessageBox.alert(getResource("alert"), getResource("hide_alert"), null);
+                                item.setChecked(true);
+                            } else {
+                                jahiaToolbar.setDisplay(item.isChecked());
+                            }
                         }
-                    }
-                });
-                toolbarContextMenu.add(item);
+                    });
+                    toolbarContextMenu.add(item);
+                }
             }
+            // reset position
+            MenuItem resetPosition = new MenuItem(getResource("reset"));
+            resetPosition.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                public void componentSelected(ComponentEvent event) {
+                    loadToolbars(true);
+                }
+            });
+            toolbarContextMenu.add(resetPosition);
+            BaseEvent evt = new BaseEvent(toolbarContextMenu);
+
             toolbarContextMenu.add(new SeparatorMenuItem());
 
             // hide all
@@ -368,14 +369,10 @@ public class ToolbarManager {
             });
             toolbarContextMenu.add(hideAllMenu);
 
-            // reset position
-            MenuItem resetPosition = new MenuItem(getResource("reset"));
-            resetPosition.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
-                    loadToolbars(true);
-                }
-            });
-            toolbarContextMenu.add(resetPosition);
+            for (Listener<BaseEvent> listener : contextMenuReadyListeners) {
+                listener.handleEvent(evt);
+            }
+
 
         }
     }
@@ -438,7 +435,11 @@ public class ToolbarManager {
             jahiaToolbars.add(jahiaToolbar);
             // handle drag option
             handleDraggable(jahiaToolbar);
-            jahiaToolbar.setContextMenu(toolbarContextMenu);
+            // deactivate right click context menu if the listener was provided
+            // (we will display this menu in another place then)
+            if (contextMenuReadyListeners.size() == 0) {
+                jahiaToolbar.setContextMenu(toolbarContextMenu);
+            }
             if (jahiaToolbar.isLoaded() && hideToolbarsButton != null) {
                 hideToolbarsButton.setVisible(false);
             }
@@ -450,13 +451,13 @@ public class ToolbarManager {
 
         // get X position
         int pagePositionX = state.getPagePositionX();
-       /* if(pagePositionX > Window.getClientHeight()){
-            pagePositionX = Window.getClientHeight() - jahiaToolbar.getOffsetHeight();
-        } */
+        /* if(pagePositionX > Window.getClientHeight()){
+           pagePositionX = Window.getClientHeight() - jahiaToolbar.getOffsetHeight();
+       } */
 
         // get Y position
         int pagePositionY = state.getPagePositionY();
-       /* if(pagePositionY  > Window.getClientWidth()){
+        /* if(pagePositionY  > Window.getClientWidth()){
             pagePositionY  = Window.getClientWidth() - jahiaToolbar.getOffsetWidth();
         }*/
 
@@ -497,5 +498,9 @@ public class ToolbarManager {
 
     public String getResource(String key) {
         return Messages.getResource(key);
+    }
+
+    public void addContextMenuReadyListener(Listener<BaseEvent> listener) {
+        contextMenuReadyListeners.add(listener);
     }
 }

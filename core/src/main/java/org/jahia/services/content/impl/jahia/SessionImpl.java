@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.content.impl.jahia;
 
 import org.apache.log4j.Logger;
@@ -62,7 +45,7 @@ import java.security.AccessControlException;
 import java.util.*;
 
 /**
- * Implementation of the JCR Session. 
+ * Implementation of the JCR Session.
  * User: Serge Huber
  * Date: 17 d�c. 2007
  * Time: 10:04:39
@@ -70,7 +53,7 @@ import java.util.*;
 public class SessionImpl implements Session {
 
     private static final transient Logger logger = Logger.getLogger(SessionImpl.class);
-    
+
     private JahiaUser jahiaUser;
     private String userId;
     private RepositoryImpl repository;
@@ -90,8 +73,12 @@ public class SessionImpl implements Session {
         return Jahia.getThreadParamBean();
     }
 
-    public EntryLoadRequest getEntryLoadRequest(JahiaSite jahiaSite)  throws RepositoryException {
-        return new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE,0,getProcessingContext(jahiaSite).getEntryLoadRequest().getLocales(),false);
+    public EntryLoadRequest getEntryLoadRequest(JahiaSite jahiaSite) throws RepositoryException {
+        try {
+            return new EntryLoadRequest(workspace.getWorkflowState(), 0, jahiaSite.getLanguageSettingsAsLocales(true), workspace.getWorkflowState()==2);
+        } catch (JahiaException e) {
+            throw new RepositoryException(e);
+        }
     }
 
     public RepositoryImpl getRepository() {
@@ -110,7 +97,7 @@ public class SessionImpl implements Session {
         return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Workspace getWorkspace() {
+    public WorkspaceImpl getWorkspace() {
         return workspace;
     }
 
@@ -183,7 +170,10 @@ public class SessionImpl implements Session {
 
     public Item getItem(String s) throws PathNotFoundException, RepositoryException {
         Node n = getRootNode();
-        StringTokenizer st = new StringTokenizer(s,"/");
+        StringTokenizer st = new StringTokenizer(s, "/");
+        if (!s.startsWith("/")) {
+            n = getNodeByUUID(st.nextToken());
+        }
         while (st.hasMoreTokens()) {
             String name = st.nextToken();
             try {
@@ -223,7 +213,7 @@ public class SessionImpl implements Session {
             perm = JahiaBaseACL.WRITE_RIGHTS;
         }
         if (i instanceof JahiaContentNodeImpl) {
-            if (!((JahiaContentNodeImpl)i).getContentObject().checkAccess(jahiaUser, perm, false)) {
+            if (!((JahiaContentNodeImpl) i).getContentObject().checkAccess(jahiaUser, perm, false)) {
                 throw new AccessControlException(path);
             }
         }
@@ -252,11 +242,11 @@ public class SessionImpl implements Session {
         ContentObject object = null;
         Item i = getItem(s);
         if (i instanceof JahiaPageNodeImpl) {
-            object = ((JahiaPageNodeImpl)i).getContentObject();
+            object = ((JahiaPageNodeImpl) i).getContentObject();
         } else if (i instanceof JahiaContainerNodeImpl) {
-            object =  ((JahiaContainerNodeImpl)i).getContentObject();
+            object = ((JahiaContainerNodeImpl) i).getContentObject();
         }
-        if (object != null ) {
+        if (object != null) {
             try {
                 ProcessingContext processingContext = getProcessingContext(((ItemImpl) i).getSite());
                 ServicesRegistry.getInstance().getImportExportService().export(object, processingContext.getLocale().toString(), contentHandler, new HashSet(), processingContext, params);
@@ -353,33 +343,32 @@ public class SessionImpl implements Session {
         return nodesByPath.get("/");
     }
 
-    NodeImpl getJahiaSiteNode(JahiaSite site)throws RepositoryException {
+    NodeImpl getJahiaSiteNode(JahiaSite site) throws RepositoryException {
         String path = "/" + site.getSiteKey();
         NodeImpl node = nodesByPath.get(path);
-        if (node == null || ((JahiaSiteNodeImpl)node).getSite() != site) {
+        if (node == null || ((JahiaSiteNodeImpl) node).getSite() != site) {
             node = new JahiaSiteNodeImpl(this, site);
             nodesByPath.put(path, node);
         }
         return node;
     }
 
-    NodeImpl getJahiaPageNode(ContentPage page)throws RepositoryException {
+    NodeImpl getJahiaPageNode(ContentPage page) throws RepositoryException {
         return getContentNode(page);
     }
 
-    NodeImpl getJahiaContainerListNode(ContentContainerList list) throws RepositoryException{
+    NodeImpl getJahiaContainerListNode(ContentContainerList list) throws RepositoryException {
         return getContentNode(list);
     }
 
-    NodeImpl getJahiaContainerNode(ContentContainer cont)throws RepositoryException {
+    NodeImpl getJahiaContainerNode(ContentContainer cont) throws RepositoryException {
         return getContentNode(cont);
     }
 
     private JahiaContentNodeImpl getContentNode(ContentObject obj)
             throws RepositoryException {
         String uuid = JahiaContentNodeImpl.getUUID(obj);
-        JahiaContentNodeImpl node = (JahiaContentNodeImpl) nodesByUUID
-                .get(uuid);
+        JahiaContentNodeImpl node = (JahiaContentNodeImpl) nodesByUUID.get(uuid);
         if (node == null || node.getContentObject() != obj) {
             if (obj instanceof ContentPage) {
                 node = new JahiaPageNodeImpl(this, (ContentPage) obj);
@@ -394,6 +383,14 @@ public class SessionImpl implements Session {
             }
             nodesByPath.put(node.getPath(), node);
             nodesByUUID.put(uuid, node);
+        }
+
+        try {
+            if (workspace.getWorkflowState() == 1 && !obj.hasActiveEntries()) {
+                throw new ItemNotFoundException(uuid);
+            }
+        } catch (JahiaException e) {
+            e.printStackTrace();
         }
 
         return node;

@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
  package org.jahia.services.importexport;
 
 import java.io.File;
@@ -52,6 +35,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.w3c.dom.Document;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -119,19 +103,19 @@ public interface ImportExportService {
 
     // Export
 
-    void exportAll(OutputStream out, Map params, ProcessingContext jParams) throws JahiaException, SAXException, IOException;
+    void exportAll(OutputStream out, Map<String, Object> params, ProcessingContext jParams) throws JahiaException, SAXException, IOException;
 
-    void exportSites(OutputStream outputStream, Map params, ProcessingContext processingContext, List sites) throws JahiaException, IOException, SAXException;
+    void exportSites(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext, List<JahiaSite> sites) throws JahiaException, IOException, SAXException;
 
-    void exportSite(JahiaSite jahiaSite, OutputStream out, ProcessingContext processingContext, Map params) throws JahiaException, SAXException, IOException;
+    void exportSite(JahiaSite jahiaSite, OutputStream out, ProcessingContext processingContext, Map<String, Object> params) throws JahiaException, SAXException, IOException;
 
-    Document exportDocument(ContentObject object, String languageCode, ProcessingContext jParams, Map params) throws JahiaException, SAXException;
+    Document exportDocument(ContentObject object, String languageCode, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException;
 
-    void exportFile(ContentObject object, String languageCode, OutputStream out, ProcessingContext jParams, Map params) throws JahiaException, SAXException, IOException;
+    void exportFile(ContentObject object, String languageCode, OutputStream out, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException, IOException;
 
-    void exportZip(ContentObject object, Set languageCodes, OutputStream out, ProcessingContext jParams, Map params) throws JahiaException, SAXException, IOException;
+    void exportZip(ContentObject object, Set<String> languageCodes, OutputStream out, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException, IOException;
 
-    void export(ContentObject object, String languageCodes, ContentHandler h, Set files, ProcessingContext jParams, Map params) throws JahiaException, SAXException;
+    void export(ContentObject object, String languageCodes, ContentHandler h, Set<JCRNodeWrapper> files, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException;
 
     void exportCategories(OutputStream out, ProcessingContext jParams) throws JahiaException, SAXException, IOException;
 
@@ -143,7 +127,7 @@ public interface ImportExportService {
 
     ContentObject importFile(ContentObject parent, ProcessingContext jParams, File file, boolean setUuid, List<ImportAction> actions, ExtendedImportResult result) throws IOException;
 
-    ContentObject importDocument(ContentObject parent, String lang, ProcessingContext jParams, InputStream inputStream, boolean updateOnly, boolean setUuid, List<ImportAction> actions, ExtendedImportResult result, Map<String, String> pathMapping, Map<String, Map<String, String>> typeMapping, Map<String, String> tplMapping, Map<String, String> importedMapping);
+    ContentObject importDocument(ContentObject parent, String lang, ProcessingContext jParams, InputStream inputStream, boolean updateOnly, boolean setUuid, List<ImportAction> actions, ExtendedImportResult result, Map<String, String> uuidMapping, Map<String, String> pathMapping, Map<String, Map<String, String>> typeMapping, Map<String, String> tplMapping, Map<String, String> importedMapping);
 
     void importCategories(ProcessingContext jParams, InputStream is);
 
@@ -151,7 +135,7 @@ public interface ImportExportService {
 
     ContentObject copy(ContentObject source, ContentObject parentDest, ProcessingContext jParams, EntryLoadRequest loadRequest, String link, List<ImportAction> actions, ExtendedImportResult result);
 
-    ContentObject copy(ContentObject source, ContentObject parentDest, Set languages, ProcessingContext jParams, EntryLoadRequest loadRequest, String link, List<ImportAction> actions, ExtendedImportResult result);
+    ContentObject copy(ContentObject source, ContentObject parentDest, Set<String> languages, ProcessingContext jParams, EntryLoadRequest loadRequest, String link, List<ImportAction> actions, ExtendedImportResult result);
 
     boolean isCompatible(JahiaContainerDefinition dest, JahiaContainerDefinition source);
 
@@ -159,7 +143,7 @@ public interface ImportExportService {
 
     boolean isPicker(ContentObject object) throws JahiaException;
 
-    void getFilesForField(ContentObject object, ProcessingContext jParams, String language, EntryLoadRequest loadRequest, Set files) throws JahiaException;
+    void getFilesForField(ContentObject object, ProcessingContext jParams, String language, EntryLoadRequest loadRequest, Set<JCRNodeWrapper> files) throws JahiaException;
 
     void ensureFile(String path, InputStream inputStream, String type, ProcessingContext jParams, JahiaSite destSite, Map<String,String> pathMapping);
 

@@ -1,38 +1,21 @@
 <%--
 
-    
-    This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
-    
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-    
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU General Public License for more details.
-    
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-    
-    As a special exception to the terms and conditions of version 2.0 of
-    the GPL (or any later version), you may redistribute this Program in connection
-    with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have received a copy of the text
-    describing the FLOSS exception, and it is also available here:
-    http://www.jahia.com/license
-    
-    Commercial and Supported Versions of the program
-    Alternatively, commercial and supported versions of the program may be used
-    in accordance with the terms contained in a separate written agreement
-    between you and Jahia Limited. If you are unsure which license is appropriate
-    for your use, please contact the sales department at sales@jahia.com.
+    Jahia Enterprise Edition v6
+
+    Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+
+    Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+    with Document Management and Portal features.
+
+    The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+    IMPLIED.
+
+    Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+    you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+
+    If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ page import="org.jahia.params.ParamBean" %>
 <%@ page import="org.jahia.services.pages.JahiaPage" %>
@@ -47,6 +30,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <utility:setBundle basename="JahiaInternalResources"/>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 
@@ -191,24 +175,32 @@
                       <input type="text" name="pageTitle" value="<%=pageTitle%>"/>
                     </td>
                   </tr>
-                  <% if (templateListEnum.hasNext()) { %>
+
+
+
+
+                    <% if (templateListEnum.hasNext()) { %>
                     <tr>
-                      <th>
-                        <fmt:message key="org.jahia.engines.template.label"/>
+                      <th width="120">
+                        <fmt:message key="org.jahia.engines.template.label"/>:
                       </th>
                       <td>
-                        <select name="pageTemplate">
-                          <%
-                          while (templateListEnum.hasNext()) {
-                            final JahiaPageDefinition theTemplate = (JahiaPageDefinition) templateListEnum.next();
-                            pageContext.setAttribute("pageTemplate", theTemplate);
-                          %>
-                            <option value="<%=theTemplate.getID()%>" <% if (theTemplate.getID() == pageTemplateID) { %> selected="selected" <% } %> title="<fmt:message key='${pageTemplate.description}'/>"><fmt:message key="${pageTemplate.displayName}"/></option>
-                          <%}%>
-                        </select>
+                        <%
+                        while (templateListEnum.hasNext()) {
+                          final JahiaPageDefinition theTemplate = (JahiaPageDefinition) templateListEnum.next();
+                        %>
+                          <% if (theTemplate.getID() == pageTemplateID) { %>
+                            <%=theTemplate.getName()%>
+                            <%  break;
+                          }
+                        } %>
                       </td>
                     </tr>
-                  <% } %>
+                    <% } %>
+
+
+
+
                   <% if (displayURLKeyInput) { %>
                     <tr>
                       <th>
@@ -239,6 +231,10 @@
                       <td>
                         <input type="text" name="pageURLKey" value="<%=pageURLKey%>"/>
                       </td>
+                    </tr>
+                    <tr>
+                        <th><fmt:message key="org.jahia.engines.pages.PageProperties_Engine.themeSettings.label"/></th>
+                        <td><ui:themeSelector scope="page"/></td>
                     </tr>
                   <% } %>
                 </table>

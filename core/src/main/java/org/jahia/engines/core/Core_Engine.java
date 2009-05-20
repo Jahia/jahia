@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //  AK   14.12.2000
 //  AK   19.12.2000  use the EngineRenderer class
 //  AK   04.01.2001  change EngineRenderer call
@@ -169,7 +152,7 @@ public class Core_Engine implements JahiaEngine {
             fireLoadPage(theEvent);
 
         // compose a new hashmap with engine properties...
-        Map engineHashMap = new HashMap();
+        Map<String, Object> engineHashMap = new HashMap<String, Object>();
         engineHashMap.put (ENGINE_NAME_PARAM, ENGINE_NAME);
         engineHashMap.put (ENGINE_OUTPUT_FILE_PARAM, fileName);
         engineHashMap.put (RENDER_TYPE_PARAM, Integer.valueOf(JahiaEngine.RENDERTYPE_FORWARD));
@@ -307,21 +290,21 @@ public class Core_Engine implements JahiaEngine {
             throws JahiaException {
         // first let's retrieve the accesses maps from the JahiaData structure
 //        Set absoluteFieldAccesses = jData.fields ().getAbsoluteFieldAccesses ();
-        Set absoluteContainerListAccesses = jData.containers ()
+        Set<Integer> absoluteContainerListAccesses = jData.containers ()
                 .getAbsoluteContainerListAccesses ();
 
         // now we must compare it to the database store to see if there are
         // differences, and if so update the database...
 
-        Set fieldKeys = new TreeSet();
-        Set containerListKeys = new TreeSet();
+        Set<Object> fieldKeys = new TreeSet<Object>();
+        Set<Object> containerListKeys = new TreeSet<Object>();
 
         ContentPageKey pageKey = new ContentPageKey( jData.getProcessingContext ().getPageID() );
-        Set objectRefs = CrossReferenceManager.getInstance().getReverseObjectXRefs(pageKey);
+        Set<ObjectKey> objectRefs = CrossReferenceManager.getInstance().getReverseObjectXRefs(pageKey);
         if (objectRefs != null) {
-            Iterator objectRefIter = objectRefs.iterator();
+            Iterator<ObjectKey> objectRefIter = objectRefs.iterator();
             while (objectRefIter.hasNext()) {
-                Object source = objectRefIter.next();
+                ObjectKey source = objectRefIter.next();
                 if (source instanceof ContentContainerListKey) {
                     containerListKeys.add(source);
                 } else if (source instanceof ContentFieldKey) {
@@ -333,15 +316,15 @@ public class Core_Engine implements JahiaEngine {
         }
 
         // first let's convert the keys into IDs.
-        Set databaseAbsoluteFieldIDs = new HashSet();
-        Iterator fieldKeyIter = fieldKeys.iterator ();
+        Set<Integer> databaseAbsoluteFieldIDs = new HashSet<Integer>();
+        Iterator<Object> fieldKeyIter = fieldKeys.iterator ();
         while (fieldKeyIter.hasNext ()) {
             ObjectKey curKey = (ObjectKey) fieldKeyIter.next ();
             logger.debug ("Converting databaseAbsoluteFieldKey " + curKey);
             databaseAbsoluteFieldIDs.add (new Integer (curKey.getIDInType ()));
         }
-        Set databaseAbsoluteContainerListIDs = new HashSet();
-        Iterator containerListKeyIter = containerListKeys.iterator ();
+        Set<Integer> databaseAbsoluteContainerListIDs = new HashSet<Integer>();
+        Iterator<Object> containerListKeyIter = containerListKeys.iterator ();
         while (containerListKeyIter.hasNext ()) {
             ObjectKey curKey = (ObjectKey) containerListKeyIter.next ();
             logger.debug ("Converting databaseAbsoluteContainerListKey " + curKey);
@@ -349,13 +332,13 @@ public class Core_Engine implements JahiaEngine {
         }
 
         // okay now we have two sets of IDs that we can compare.
-        Set addedContainerListIDs = new HashSet(absoluteContainerListAccesses);
+        Set<Integer> addedContainerListIDs = new HashSet<Integer>(absoluteContainerListAccesses);
         addedContainerListIDs.removeAll (databaseAbsoluteContainerListIDs);
-        Set removedContainerListIDs = new HashSet(databaseAbsoluteContainerListIDs);
+        Set<Integer> removedContainerListIDs = new HashSet<Integer>(databaseAbsoluteContainerListIDs);
         removedContainerListIDs.removeAll (absoluteContainerListAccesses);
 
         // we know have the differences, we can process them...
-        Iterator addedContainerListIDIter = addedContainerListIDs.iterator ();
+        Iterator<Integer> addedContainerListIDIter = addedContainerListIDs.iterator ();
         while (addedContainerListIDIter.hasNext ()) {
             Integer curContainerListID = (Integer) addedContainerListIDIter.next ();
             logger.debug (
@@ -365,9 +348,9 @@ public class Core_Engine implements JahiaEngine {
             ContentContainerListsXRefManager.getInstance ().setAbsoluteContainerListPageID (
                     curContainerListID.intValue (), jData.getProcessingContext ().getPageID ());
         }
-        Iterator removedContainerListIDIter = removedContainerListIDs.iterator ();
+        Iterator<Integer> removedContainerListIDIter = removedContainerListIDs.iterator ();
         while (removedContainerListIDIter.hasNext ()) {
-            Integer curContainerListID = (Integer) removedContainerListIDIter.next ();
+            Integer curContainerListID = removedContainerListIDIter.next ();
             logger.debug (
                     "Removing reference from page ID " + jData.getProcessingContext ().getPageID () +
                     " to container list " +

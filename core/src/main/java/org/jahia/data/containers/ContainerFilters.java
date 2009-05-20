@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //
 //
 //
@@ -263,19 +246,11 @@ public class ContainerFilters implements Serializable {
         OrderedBitSet result = new OrderedBitSet();
 
         BitSet bits = null;
-        ContainerFilterInterface containerFilter = null;
-        List<ContainerFilterInterface> v = getContainerFilters();
-        int size = v.size();
-        for (int i = 0; i < size; i++) {
-            containerFilter = (ContainerFilterInterface) v.get(i);
+        int i = 0;
+        for (ContainerFilterInterface containerFilter : getContainerFilters()) {
             if (this.isSiteModeFiltering()) {
-                if (oldMode) {
-                    bits = containerFilter.doFilterBySite(getSiteId(), this
-                            .getContainerDefinitionName(), getCtnListID());
-                } else {
-                    bits = containerFilter.doFilterBySite(getSiteIds(), this
-                            .getContainerDefinitionNames(), getCtnListID());
-                }
+                bits = containerFilter.doFilterBySite(getSiteIds(), this
+                        .getContainerDefinitionNames(), getCtnListID());
             } else {
                 bits = containerFilter.doFilter(getCtnListID());
             }
@@ -286,9 +261,10 @@ public class ContainerFilters implements Serializable {
                     result.and(bits);
                 }
             }
+            i++;
         }
 
-        if (size == 1 && bits instanceof OrderedBitSet) {
+        if (i == 1 && bits instanceof OrderedBitSet) {
             OrderedBitSet orderedBitSet = (OrderedBitSet) bits;
             if (orderedBitSet.isOrdered()) {
                 result.setOrdered(true);
@@ -627,27 +603,18 @@ public class ContainerFilters implements Serializable {
         }
         this.queryParameters = new HashMap<String, Object>();
         StringBuffer buff = new StringBuffer();
-        String fieldFilterQuery;
-        ContainerFilterInterface containerFilter;
-        int size = containerFilters.size();
-        for (int i = 0; i < size; i++) {
-            containerFilter = (ContainerFilterInterface) containerFilters
-                    .get(i);
+
+        for (ContainerFilterInterface containerFilter : containerFilters) {
             if (containerFilter == null)
                 return;
-            if (this.isSiteModeFiltering()) {
-                fieldFilterQuery = containerFilter.getSelect(this.getSiteId(), 0, 
-                        queryParameters);
-            } else {
-                fieldFilterQuery = containerFilter.getSelect(this
-                        .getCtnListID(), 0, queryParameters);
-            }
+            String fieldFilterQuery = containerFilter.getSelect(this.isSiteModeFiltering() ? this.getSiteId() : this
+                    .getCtnListID(), 0, queryParameters);
 
             if (fieldFilterQuery != null && !fieldFilterQuery.trim().equals("")) {
+                if (buff.length() > 0) {
+                    buff.append(" INTERSECT ");
+                }
                 buff.append(fieldFilterQuery);
-            }
-            if (i < size - 1) {
-                buff.append(" INTERSECT ");
             }
         }
 

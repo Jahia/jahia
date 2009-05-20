@@ -16,16 +16,19 @@
  + j:acl (jnt:acl)
  + thumbnail (jnt:extraResource)
 
+[jmix:collection] mixin
+
 [jnt:query] > nt:query, jmix:hierarchyNode
 
 // Files
 [jnt:resource] > nt:resource
  - j:extractedText (string)
+ - j:lastExtractionDate (date)
 
 [jnt:extraResource] > nt:resource
  - j:name
 
-[jnt:folder] > nt:folder, jmix:hierarchyNode
+[jnt:folder] > nt:folder, jmix:hierarchyNode, jmix:collection
  + * (jmix:hierarchyNode)
 
 [jnt:systemfolder] > jnt:folder
@@ -71,7 +74,7 @@
  - j:type (string)
  - j:url (string)
 
-[jnt:mountPoint] > nt:hierarchyNode, jmix:hierarchyNode
+[jnt:mountPoint] > nt:hierarchyNode, jmix:hierarchyNode, jmix:collection
 
 [jnt:vfsMountPoint] > jnt:mountPoint
  - j:root (string)

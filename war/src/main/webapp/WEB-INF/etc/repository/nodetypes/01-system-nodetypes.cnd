@@ -73,7 +73,7 @@ initialize
   - jcr:encoding (string)
 
 [nt:base]
-  - jcr:primaryType (name) mandatory autocreated protected compute
+  - jcr:primaryType (name) mandatory autocreated protected compute analyzer='keyword'
   - jcr:mixinTypes (name) protected multiple compute
 
 [nt:unstructured]

@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget;
 
 import com.extjs.gxt.ui.client.core.XTemplate;
@@ -56,11 +39,11 @@ import java.util.Map;
 public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
 
     public ReportGrid(final Map<String, List<GWTJahiaProcessJobAction>> actions, final Map<String, String> titleForObjectKey){
-        this(actions, titleForObjectKey, false, null);
+        this(actions, titleForObjectKey, false, null, false);
     }
 
-    public ReportGrid(final Map<String, List<GWTJahiaProcessJobAction>> actions, final Map<String, String> titleForObjectKey, boolean enableExpander, final Map<String, Map<String, GWTJahiaNodeOperationResult>> errorsAndWarnings) {
-        super(buildStore(actions, titleForObjectKey, enableExpander, errorsAndWarnings), buildColumnModel(enableExpander, errorsAndWarnings));
+    public ReportGrid(final Map<String, List<GWTJahiaProcessJobAction>> actions, final Map<String, String> titleForObjectKey, boolean enableExpander, final Map<String, Map<String, GWTJahiaNodeOperationResult>> errorsAndWarnings, boolean enableWorkflowStates) {
+        super(buildStore(actions, titleForObjectKey, enableExpander, errorsAndWarnings), buildColumnModel(enableExpander, errorsAndWarnings, enableWorkflowStates));
 
         GroupingView view = new GroupingView();
         view.setForceFit(true);
@@ -87,26 +70,46 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
         GroupingStore<GWTReportElement> store = new GroupingStore<GWTReportElement>();
 
         if (enableExpander && errorsAndWarnings != null) {
+            if (errorsAndWarnings.containsKey(null) && errorsAndWarnings.get(null).containsKey(null)) {
+                GWTJahiaNodeOperationResult res = errorsAndWarnings.get(null).get(null);
+                for (GWTJahiaNodeOperationResultItem err : res.getErrorsAndWarnings()) {
+                    store.add(new GWTReportElement("", err.getMessage(), "", "", "", ""));
+                }
+            }
             for (String action : actions.keySet()) {
                 for (GWTJahiaProcessJobAction gwtaction : actions.get(action)) {
                     Map<String, GWTJahiaNodeOperationResult> errorsAndWarningsForThisKey = errorsAndWarnings.get(gwtaction.getKey());
                     for (String lang : gwtaction.getLangs()) {
                         String errs = null;
                         if (errorsAndWarningsForThisKey != null && errorsAndWarningsForThisKey.containsKey(lang)) {
+                            List<String> warList = new ArrayList<String>();
+                            List<String> errList = new ArrayList<String>();
+
+                            for (GWTJahiaNodeOperationResultItem err : errorsAndWarningsForThisKey.get(lang).getErrorsAndWarnings()) {
+                                String msg = err.getMessage();
+                                if (err.getLevel().intValue() == GWTJahiaNodeOperationResultItem.ERROR) {
+                                    if (!errList.contains(msg)) {
+                                        errList.add(msg);
+                                    }
+                                } else if (err.getLevel().intValue() == GWTJahiaNodeOperationResultItem.WARNING) {
+                                    if (!warList.contains(msg)) {
+                                        warList.add(msg);
+                                    }
+                                }
+                            }
                             StringBuilder sbWars = new StringBuilder("<ul class=\"batchWarnings\">");
                             StringBuilder sbErrs = new StringBuilder("<ul class=\"batchErrors\">");
-                            for (GWTJahiaNodeOperationResultItem err : errorsAndWarningsForThisKey.get(lang).getErrorsAndWarnings()) {
-                                if (err.getLevel().intValue() == GWTJahiaNodeOperationResultItem.ERROR) {
-                                    sbErrs.append("\n<li>").append(err.getMessage()).append("</li>");
-                                } else if (err.getLevel().intValue() == GWTJahiaNodeOperationResultItem.WARNING) {
-                                    sbWars.append("\n<li>").append(err.getMessage()).append("</li>");
-                                }
+                            for (String err: errList) {
+                                sbErrs.append("\n<li>").append(err).append("</li>");
+                            }
+                            for (String war: warList) {
+                                sbWars.append("\n<li>").append(war).append("</li>");
                             }
                             sbWars.append("\n</ul>");
                             sbErrs.append("\n</ul>");
                             errs = new StringBuilder(sbErrs.toString()).append("\n").append(sbWars.toString()).toString();
                         }
-                        store.add(new GWTReportElement(gwtaction.getKey(), titleForObjectKey.get(gwtaction.getKey()), action, lang, errs));
+                        store.add(new GWTReportElement(gwtaction.getKey(), titleForObjectKey.get(gwtaction.getKey()), action, lang, errs, gwtaction.getWorkflowStateForLanguage().get(lang)));
                     }
                 }
             }
@@ -114,7 +117,7 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
             for (String action : actions.keySet()) {
                 for (GWTJahiaProcessJobAction gwtaction : actions.get(action)) {
                     for (String lang : gwtaction.getLangs()) {
-                        store.add(new GWTReportElement(gwtaction.getKey(), titleForObjectKey.get(gwtaction.getKey()), action, lang));
+                        store.add(new GWTReportElement(gwtaction.getKey(), titleForObjectKey.get(gwtaction.getKey()), action, lang, gwtaction.getWorkflowStateForLanguage().get(lang)));
                     }
                 }
             }
@@ -123,7 +126,7 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
         return store;
     }
 
-    public static ColumnModel buildColumnModel(boolean enableExpander, final Map<String, Map<String, GWTJahiaNodeOperationResult>> errorsAndWarnings) {
+    public static ColumnModel buildColumnModel(boolean enableExpander, final Map<String, Map<String, GWTJahiaNodeOperationResult>> errorsAndWarnings, boolean enableWorkflowStates) {
         XTemplate tpl = XTemplate.create("<div class=\"batchErrorsAndWarnings\">{errors}</div>");
 
         RowExpander expander = new RowExpander();
@@ -167,6 +170,22 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
         ColumnConfig langCol = new ColumnConfig("language", "Language", 70);
         langCol.setFixed(true);
         config.add(langCol);
+
+        if (enableWorkflowStates) {
+            ColumnConfig wfCol = new ColumnConfig("workflow", "Workflow", 60);
+            wfCol.setRenderer(new GridCellRenderer<ReportGrid.GWTReportElement>() {
+                public String render(ReportGrid.GWTReportElement modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
+                    String state = modelData.getWorkflowState() ;
+                    if (state != null) {
+                        return "<div class='workflow-" + modelData.getWorkflowState() + "'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>" ;
+                    } else {
+                        return "" ;
+                    }
+                }
+            });
+            config.add(wfCol) ;
+        }
+
         config.add(new ColumnConfig("key", "Key", 120));
         final ColumnModel cm = new ColumnModel(config);
 
@@ -179,16 +198,17 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
         public GWTReportElement() {
         }
 
-        public GWTReportElement(String key, String title, String action, String language) {
-            this(key, title, action, language, "");
+        public GWTReportElement(String key, String title, String action, String language, String workflowStates) {
+            this(key, title, action, language, "", workflowStates);
         }
 
-        public GWTReportElement(String key, String title, String action, String language, String errors) {
+        public GWTReportElement(String key, String title, String action, String language, String errors, String workflowState) {
             setKey(key);
             setTitle(title);
             setAction(action);
             setLanguage(language);
             setErrors(errors);
+            setWorkflowState(workflowState) ;
         }
 
         public void setKey(String key) {
@@ -211,6 +231,10 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
             set("errors", errors);
         }
 
+        public void setWorkflowState(String wfState) {
+            set("workflowState", wfState) ;
+        }
+
         public String getKey() {
             return get("key");
         }
@@ -229,6 +253,10 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
 
         public String getErrors() {
             return get("errors");
+        }
+
+        public String getWorkflowState() {
+            return get("workflowState") ;
         }
 
     }

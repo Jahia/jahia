@@ -1,41 +1,22 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.data.beans;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.usersession.userSettings;
-import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.content.JahiaObject;
 import org.jahia.content.PropertiesInterface;
@@ -61,9 +42,11 @@ import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockService;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.InsertionSortedMap;
 
 import java.util.*;
@@ -86,8 +69,8 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
 
     private JahiaContainer jahiaContainer;
     private ContentContainer contentContainer;
-    private Map fields;
-    private Map actionURIs;
+    private Map<String, FieldBean> fields;
+    private Map<String, ActionURIBean> actionURIs;
     private boolean completelyLocked;
     private boolean independantWorkflow;
     private boolean independantWorkflowInitialized = false;
@@ -268,14 +251,14 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
     }
 
 
-    public Map getFields() {
+    public Map<String, FieldBean> getFields() {
         if (fields != null) {
             return fields;
         }
-        fields = new TreeMap();
+        fields = new TreeMap<String, FieldBean>();
         final Iterator<JahiaField> fieldEnum = jahiaContainer.getFields();
         while (fieldEnum.hasNext()) {
-            final JahiaField curJahiaField = (JahiaField) fieldEnum.next();
+            final JahiaField curJahiaField = fieldEnum.next();
             final FieldBean curFieldBean = new FieldBean(curJahiaField, processingContext);
             fields.put(curFieldBean.getName(), curFieldBean);
         }
@@ -358,7 +341,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
         jahiaContainer.setProperty(propertyName, propertyValue);
     }
 
-    public Map getActionURIBeans() {
+    public Map<String, ActionURIBean> getActionURIBeans() {
         if (actionURIs == null) {
             buildActionURIs();
         }
@@ -377,10 +360,8 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
             buildActionURIs();
         }
         if (!completelyLocked) {
-            final Iterator actionURIIter = actionURIs.entrySet().iterator();
             boolean partiallyLocked = false;
-            while (actionURIIter.hasNext()) {
-                final Map.Entry curActionURIEntry = (Map.Entry) actionURIIter.next();
+            for (final Map.Entry<String, ActionURIBean>curActionURIEntry : actionURIs.entrySet()) {
                 final ActionURIBean curActionURIBean = (ActionURIBean) curActionURIEntry.getValue();
                 if (curActionURIBean.isLocked()) {
                     partiallyLocked = true;
@@ -415,7 +396,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                         theContainer);
                 Integer languageState = languagesStates.get(
                         processingContext.getLocale().toString());
-                final Integer sharedLanguageState = (Integer) languagesStates.get(
+                final Integer sharedLanguageState = languagesStates.get(
                         ContentObject.SHARED_LANGUAGE);
                 if (languageState != null && languageState.intValue() != -1) {
                     if (sharedLanguageState != null &&
@@ -466,7 +447,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
     }
 
     private void buildActionURIs() {
-        actionURIs = new InsertionSortedMap();
+        actionURIs = new InsertionSortedMap<String, ActionURIBean>();
         final GuiBean guiBean = new GuiBean(processingContext);
         final HTMLToolBox htmlToolBox = new HTMLToolBox(guiBean, processingContext);
         completelyLocked = true;
@@ -501,8 +482,8 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                                 logger.debug("cross-site");
                             }
                         }
-                        final List l = pickedContainer.getChilds(null, EntryLoadRequest.STAGED);
-                        for (final Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
+                        final List<? extends ContentObject> l = pickedContainer.getChilds(null, EntryLoadRequest.STAGED);
+                        for (final Iterator<? extends ContentObject> iterator1 = l.iterator(); iterator1.hasNext();) {
                             final Object o = iterator1.next();
                             if (!(o instanceof ContentPageField)) continue;
                             //defensive code relative to poor impl of exception catching/throwing of method getPage below
@@ -651,7 +632,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                 actionURIs.put(curActionURIBean.getName(), curActionURIBean);
 
                 //looping for pickers to display the list directly in actionmenu
-                Iterator pickers = theContainer.getPickerObjects().iterator();
+                Iterator<ContentObject> pickers = theContainer.getPickerObjects().iterator();
                 int count = 0;
                 while (pickers.hasNext() && count < 4) {
                     ContentObject co = (ContentObject) pickers.next();
@@ -670,11 +651,9 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
             // If the container is displayed as an absolute reference, add a link to the source page where it has been declared
             // unless the workflow icon is already displayed next to it
             if (theContainer.getPageID() != processingContext.getPageID()
-                    && (!isIndependantWorkflow() || !(org.jahia.settings.SettingsBean.getInstance()
+                    && (!isIndependantWorkflow() || !(SettingsBean.getInstance()
                             .isDevelopmentMode()
-                            || processingContext.getSessionState()
-                                    .getAttribute(userSettings.WF_VISU_ENABLED) != null || Jahia
-                            .getSettings().isWflowDisp()))) {
+                            || UserPreferencesHelper.isDisplayWorkflowState(processingContext.getUser())))) {
                 curURL = processingContext.composePageUrl(theContainer
                         .getPageID(), processingContext.getLocale().toString());
                 final StringBuffer url = new StringBuffer();
@@ -719,9 +698,9 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                 pageID = o.getPageID();
                 siteID = o.getSiteID();
 
-                List l = o.getChilds(processingContext.getUser(), EntryLoadRequest.STAGED, JahiaContainerStructure.JAHIA_FIELD);
+                List<? extends ContentObject> l = o.getChilds(processingContext.getUser(), EntryLoadRequest.STAGED, JahiaContainerStructure.JAHIA_FIELD);
 
-                for (Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
+                for (Iterator<? extends ContentObject> iterator1 = l.iterator(); iterator1.hasNext();) {
 
                     ContentField contentField = (ContentField) iterator1.next();
                     String value = contentField.getValue(processingContext, EntryLoadRequest.STAGED);
@@ -735,7 +714,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                 }
 
                 // case the content object is text
-                for (Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
+                for (Iterator<? extends ContentObject> iterator1 = l.iterator(); iterator1.hasNext();) {
 
                     ContentField contentField = (ContentField) iterator1.next();
                     if (contentField instanceof ContentSmallTextField) {
@@ -753,7 +732,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                 }
 
                 //looping list of childs to check page type?
-                for (Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
+                for (Iterator<? extends ContentObject> iterator1 = l.iterator(); iterator1.hasNext();) {
 
                     ContentField contentField = (ContentField) iterator1.next();
                     if (contentField instanceof ContentPageField) {
@@ -762,7 +741,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                         ContentPage contentPage = ((ContentPageField) contentField).getContentPage(EntryLoadRequest.STAGED);
                         if (contentPage != null) {
                             if (contentPage.getPageType(EntryLoadRequest.STAGED) == JahiaPage.TYPE_DIRECT) {
-                                List li=new ArrayList();
+                                List<Locale> li=new ArrayList<Locale>();
                                 li.add(processingContext.getLocale());
                                 EntryLoadRequest lr = new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0,
                                         li, org.jahia.settings.SettingsBean.getInstance().isDisplayMarkedForDeletedContentObjects());

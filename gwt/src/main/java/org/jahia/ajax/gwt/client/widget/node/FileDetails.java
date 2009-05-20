@@ -1,84 +1,59 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget.node;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.table.Table;
 import com.extjs.gxt.ui.client.widget.table.TableColumn;
 import com.extjs.gxt.ui.client.widget.table.TableColumnModel;
 import com.extjs.gxt.ui.client.widget.table.TableItem;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.user.client.Window;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.TableListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.Window;
+
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionService;
+import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
+import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
+import org.jahia.ajax.gwt.client.util.Formatter;
+import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
+import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionService;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionServiceAsync;
-import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
-import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
-import org.jahia.ajax.gwt.client.util.Formatter;
-import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
-import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.nodes.actions.FileActions;
-import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -96,7 +71,6 @@ public class FileDetails extends BottomRightComponent {
     private AsyncTabItem rolesTabItem;
     private AsyncTabItem modesTabItem;
     private AsyncTabItem usagesTabItem;
-    private AsyncTabItem versioningTabItem;
     private FlowPanel infoPanel;
     private TabPanel tabs;
     private AclEditor modeAclEditor;
@@ -154,11 +128,6 @@ public class FileDetails extends BottomRightComponent {
         usagesTabItem.setText(Messages.getResource("fm_usages"));
         usagesTabItem.setLayout(new FitLayout());
 
-        // versions
-        versioningTabItem = new AsyncTabItem();
-        versioningTabItem.setText("Versioning");
-        versioningTabItem.setLayout(new FitLayout());
-
         // add all tabs
         tabs.add(infoTabItem);
         tabs.add(propertiesTabItem);
@@ -170,7 +139,6 @@ public class FileDetails extends BottomRightComponent {
         }
         tabs.add(authorizationsTabItem);
         tabs.add(usagesTabItem);
-        tabs.add(versioningTabItem);
 
         tabs.addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
@@ -196,7 +164,6 @@ public class FileDetails extends BottomRightComponent {
         modesTabItem.removeAll();
         authorizationsTabItem.removeAll();
         usagesTabItem.removeAll();
-        versioningTabItem.removeAll();
         selectedNodes = null;
         infoTabItem.setProcessed(false);
         propertiesTabItem.setProcessed(false);
@@ -204,13 +171,17 @@ public class FileDetails extends BottomRightComponent {
         modesTabItem.setProcessed(false);
         authorizationsTabItem.setProcessed(false);
         usagesTabItem.setProcessed(false);
-        versioningTabItem.setProcessed(false);
     }
 
     public void fillData(Object selectedItem) {
         clear();
         if (selectedItem != null) {
-            selectedNodes = (List<GWTJahiaNode>) selectedItem;
+            if (selectedItem instanceof GWTJahiaNode) {
+                selectedNodes = new ArrayList<GWTJahiaNode>() ;
+                selectedNodes.add((GWTJahiaNode) selectedItem) ;
+            } else {
+                selectedNodes = (List<GWTJahiaNode>) selectedItem;
+            }
             String heading;
             if (selectedNodes.size() == 0) {
                 heading = "&nbsp;";
@@ -275,8 +246,6 @@ public class FileDetails extends BottomRightComponent {
             displayAuthorization();
         } else if (currentTab == usagesTabItem) {
             displayFileUsages();
-        } else if (currentTab == versioningTabItem) {
-            displayVersioning();
         }
     }
 
@@ -297,7 +266,7 @@ public class FileDetails extends BottomRightComponent {
                     if (preview != null) {
                         g.setWidget(0, 0, new Image(preview));
                     }
-                    String name = selectedNode.getName();
+                    String name = selectedNode.getDisplayName();
                     if (name != null) {
                         flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_name") + " :</b> " + name));
                     }
@@ -370,6 +339,7 @@ public class FileDetails extends BottomRightComponent {
                         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
                         TextToolItem item = new TextToolItem(Messages.getResource("fm_save"), "fm-save");
                         item.setIconStyle("gwt-icons-save");
+                        item.setEnabled( selectedNode.isWriteable() && !selectedNode.isLocked() );
 
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
@@ -390,6 +360,8 @@ public class FileDetails extends BottomRightComponent {
                         toolBar.add(item);
                         item = new TextToolItem(Messages.getResource("fm_restore"), "fm-restore");
                         item.setIconStyle("gwt-icons-restore");
+                        item.setEnabled( selectedNode.isWriteable() && !selectedNode.isLocked() );
+
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
                                 propertiesEditor.resetForm();
@@ -412,13 +384,17 @@ public class FileDetails extends BottomRightComponent {
                     getLinker().loading("collecting properties...");
                 }
                 List<String> nodeTypes = new ArrayList<String>();
+
+                boolean writeable = true;
                 for (GWTJahiaNode selectedNode : selectedNodes) {
                     for (String nodeType : selectedNode.getNodeTypes()) {
                         if (!nodeTypes.contains(nodeType)) {
                             nodeTypes.add(nodeType);
                         }
                     }
+                    writeable &= selectedNode.isWriteable() && !selectedNode.isLocked() ;
                 }
+                final boolean w = writeable;
                 cDefService.getNodeTypes(nodeTypes, new AsyncCallback<List<GWTJahiaNodeType>>() {
                     public void onFailure(Throwable throwable) {
                         Log.debug("Cannot get properties", throwable);
@@ -429,6 +405,7 @@ public class FileDetails extends BottomRightComponent {
 
                         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
                         TextToolItem item = new TextToolItem(Messages.getResource("fm_save"), "fm-save");
+                        item.setEnabled(w);
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
                                 JahiaNodeService.App.getInstance().saveProperties(selectedNodes, propertiesEditor.getProperties(), new AsyncCallback() {
@@ -446,6 +423,7 @@ public class FileDetails extends BottomRightComponent {
                         });
                         toolBar.add(item);
                         item = new TextToolItem(Messages.getResource("fm_restore"), "fm-restore");
+                        item.setEnabled(w);
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
                                 propertiesEditor.resetForm();
@@ -469,7 +447,12 @@ public class FileDetails extends BottomRightComponent {
 
     // ACL TAB
     private void renderRoles() {
-        rolesTabItem.add(roleAclEditor.renderNewAclPanel());
+        if (!roleAclEditor.isEmpty()) {
+            rolesTabItem.setEnabled(true);
+            rolesTabItem.add(roleAclEditor.renderNewAclPanel());
+        } else {
+            rolesTabItem.setEnabled(false);
+        }
         rolesTabItem.layout();
     }
 
@@ -481,7 +464,12 @@ public class FileDetails extends BottomRightComponent {
     }
 
     private void renderModes() {
-        modesTabItem.add(modeAclEditor.renderNewAclPanel());
+        if (!modeAclEditor.isEmpty()) {
+            modesTabItem.setEnabled(true);
+            modesTabItem.add(modeAclEditor.renderNewAclPanel());
+        } else {
+            modesTabItem.setEnabled(false);
+        }
         modesTabItem.layout();
     }
 
@@ -519,12 +507,12 @@ public class FileDetails extends BottomRightComponent {
                      */
                     public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
                         // auth. editor
-                        roleAclEditor = new AclEditor(gwtJahiaNodeACL, false, false);
-                        roleAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_roles","Add group-role mapping"));
-                        roleAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_roles","Add user-role mapping"));                                                                        
+                        roleAclEditor = new AclEditor(gwtJahiaNodeACL, selectedNode.getAclContext(), false);
+                        roleAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_roles", "Add group-role mapping"));
+                        roleAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_roles", "Add user-role mapping"));
                         roleAclEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
                         roleAclEditor.setCanBreakInheritance(false);
-                        roleAclEditor.setReadOnly(!selectedNode.isWriteable());
+                        roleAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
                         TextToolItem saveButton = roleAclEditor.getSaveButton();
                         saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, ROLES_TAB_ITEM));
                         renderRoles();
@@ -562,12 +550,12 @@ public class FileDetails extends BottomRightComponent {
                      */
                     public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
                         // auth. editor
-                        modeAclEditor = new AclEditor(gwtJahiaNodeACL, false, false);
-                        modeAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_modes","Add group-mode mapping"));
-                        modeAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_modes","Add user-mode mapping"));
+                        modeAclEditor = new AclEditor(gwtJahiaNodeACL, selectedNode.getAclContext(), false);
+                        modeAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_modes", "Add group-mode mapping"));
+                        modeAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_modes", "Add user-mode mapping"));
                         modeAclEditor.setAclGroup(JCRClientUtils.MODES_ACL);
                         modeAclEditor.setCanBreakInheritance(false);
-                        modeAclEditor.setReadOnly(!selectedNode.isWriteable());
+                        modeAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
                         TextToolItem saveButton = modeAclEditor.getSaveButton();
                         saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, MODES_TAB_ITEM));
                         renderModes();
@@ -606,10 +594,10 @@ public class FileDetails extends BottomRightComponent {
                      */
                     public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
                         // auth. editor
-                        authAclEditor = new AclEditor(gwtJahiaNodeACL, false);
+                        authAclEditor = new AclEditor(gwtJahiaNodeACL, selectedNode.getAclContext());
                         authAclEditor.setAclGroup(JCRClientUtils.AUTHORIZATIONS_ACL);
                         authAclEditor.setCanBreakInheritance(false);
-                        authAclEditor.setReadOnly(!selectedNode.isWriteable());
+                        authAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
                         TextToolItem saveButton = authAclEditor.getSaveButton();
                         saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, AUTH_TAB_ITEM));
                         renderAuthorization();
@@ -672,7 +660,7 @@ public class FileDetails extends BottomRightComponent {
                             values[1] = gwtJahiaNodeUsage.getUrl();
                             values[2] = gwtJahiaNodeUsage.getLang();
                             String[] ws = new String[]{Messages.getResource("fm_versioned"), Messages.getResource("fm_live"), Messages.getResource("fm_staging"), Messages.getResource("fm_notify")};
-                            String[] images = new String[]{"600", "111", "211", "220"};
+                            String[] images = new String[]{"600", "111", "121", "130"};
                             values[3] = "<img src=\"../images/icons/workflow/" + images[gwtJahiaNodeUsage.getWorkflow()] + ".png\">&nbsp;" + ws[gwtJahiaNodeUsage.getWorkflow()];
                             TableItem item = new TableItem(values);
                             tbl.add(item);
@@ -731,84 +719,4 @@ public class FileDetails extends BottomRightComponent {
 
         }
     }
-
-    public void displayVersioning() {
-        if (selectedNodes.size() == 1) {
-            final GWTJahiaNode selectedNode = selectedNodes.get(0);
-            if (!versioningTabItem.isProcessed()) {
-                if (selectedNode.getNodeTypes().contains("mix:versionable") || selectedNode.getNodeTypes().contains("mix:simpleVersionable")) {
-                    List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-
-                    ColumnConfig col = new ColumnConfig("versionNumber","version number", 100);
-                    columns.add(col);
-                    col = new ColumnConfig("date","date", 200);
-                    columns.add(col);
-
-                    final ListStore<GWTJahiaNodeVersion> store = new ListStore<GWTJahiaNodeVersion>();
-                    
-                    ColumnModel cm = new ColumnModel(columns);
-                    final com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeVersion> grid = new com.extjs.gxt.ui.client.widget.grid.Grid(store, cm);
-                    versioningTabItem.add(grid);
-
-                    grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
-                        public void handleEvent(GridEvent event) {
-                            List<GWTJahiaNodeVersion> sel = grid.getSelectionModel().getSelectedItems();
-                            if (sel != null && sel.size() == 1) {
-                                GWTJahiaNodeVersion el = sel.get(0);
-                                if (config.isEnableFileDoubleClick()) {
-                                    if (selectedNode.isDisplayable()) {
-                                        ImagePopup.popImage(el.getNode());
-                                    } else {
-                                        FileActions.download(getLinker(),el.getNode(), el.getNode().getUrl());
-                                    }
-                                }
-                            }
-                        }
-                    });
-
-                    service.getVersions(selectedNode.getPath(), new AsyncCallback<List<GWTJahiaNodeVersion>>() {
-                        public void onFailure(Throwable caught) {
-                            Window.alert("failure");
-                        }
-
-                        public void onSuccess(List<GWTJahiaNodeVersion> result) {
-                            store.add(result);
-                        }
-                    });
-                } else {
-                    versioningTabItem.setLayout(new FlowLayout());
-                    versioningTabItem.add(new Text("File is not versioned yet"));
-                    com.extjs.gxt.ui.client.widget.button.Button button = new com.extjs.gxt.ui.client.widget.button.Button("Activate versioning");
-
-                    button.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                        public void componentSelected(ComponentEvent event) {
-                            List list = new ArrayList<String>();
-                            list.add(selectedNode.getPath());
-                            service.activateVersioning(list, new AsyncCallback() {
-                                public void onFailure(Throwable caught) {
-                                    Window.alert("failure");
-                                }
-
-                                public void onSuccess(Object result) {
-                                    selectedNode.getNodeTypes().add("mix:versionable");
-                                    versioningTabItem.removeAll();
-                                    versioningTabItem.setProcessed(false);
-                                    versioningTabItem.setLayout(new FitLayout());
-                                    TabItem currentTab = tabs.getSelectedItem();
-                                    if (currentTab == versioningTabItem) {
-                                        displayVersioning();
-                                    }
-                                }
-                            });
-                        }
-                    });
-                    versioningTabItem.add(button);
-                }
-                versioningTabItem.setProcessed(true);
-                versioningTabItem.layout();
-            }
-        }
-    }
-
-
 }

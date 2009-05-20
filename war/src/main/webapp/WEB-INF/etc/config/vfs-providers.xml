@@ -1,3 +1,4 @@
+
 <providers>
     <default-provider class-name="org.apache.commons.vfs.provider.url.UrlFileProvider"/>
     <provider class-name="org.apache.commons.vfs.provider.local.DefaultLocalFileProvider">

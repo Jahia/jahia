@@ -1,37 +1,24 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.fields;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
@@ -47,6 +34,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.containers.ContentContainer;
@@ -58,13 +46,21 @@ import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.*;
+import org.jahia.services.version.ActivationTestResults;
+import org.jahia.services.version.ContentObjectEntryState;
+import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.version.EntrySaveRequest;
+import org.jahia.services.version.EntryStateable;
+import org.jahia.services.version.IsValidForActivationResults;
+import org.jahia.services.version.JahiaSaveVersion;
+import org.jahia.services.version.JahiaVersionService;
+import org.jahia.services.version.RestoreVersionStateModificationContext;
+import org.jahia.services.version.RestoreVersionTestResults;
+import org.jahia.services.version.StateModificationContext;
 import org.jahia.services.workflow.WorkflowEvent;
+import org.jahia.utils.xml.XMLSerializationOptions;
+import org.jahia.utils.xml.XmlWriter;
 import org.jahia.utils.LanguageCodeConverters;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * This class represents a Field in Jahia (it should replace JahiaFields in the
@@ -527,17 +523,32 @@ public abstract class ContentField extends ContentObject
 
         boolean versioningEnabled = getJahiaVersionService ().isVersioningEnabled (jahiaID);
         List<ContentObjectEntryState> stagedEntries = new ArrayList<ContentObjectEntryState> ();
-
+                          
         boolean stateModified = false;
-        if (willBeCompletelyDeleted (null, languageCodes)) {
+        if (isMarkedForDelete()) {
             stateModified = true;
             stateModifContext.pushAllLanguages (true);
         }
 
         Set<String> activateLanguageCodes = new HashSet<String> (languageCodes);
         if (stateModifContext.isAllLanguages ()) {
-            activateLanguageCodes.addAll (getStagingLanguages (true));
+            activateLanguageCodes = new HashSet<String>(LanguageCodeConverters.localesToLanguageCodes(jParams.getSite().getLanguageSettingsAsLocales(true)));
         }
+
+        if (isShared())  {
+            if (getStagingLanguages(false,true).isEmpty()) {
+                return activationResults;
+            } else {
+                activateLanguageCodes = new HashSet<String>(LanguageCodeConverters.localesToLanguageCodes(jParams.getSite().getLanguageSettingsAsLocales(true)));
+            }
+        } else {
+            activateLanguageCodes.retainAll(getStagingLanguages(false,true));
+            if (activateLanguageCodes.isEmpty()) {
+                return activationResults;
+            }
+        }
+
+
 
         activationResults.merge (
                 isValidForActivation (activateLanguageCodes, jParams, stateModifContext));
@@ -545,15 +556,6 @@ public abstract class ContentField extends ContentObject
         if ( !this.isMetadata() ){
             activationResults.merge (
                 isPickedValidForActivation(activateLanguageCodes, stateModifContext));
-        }
-
-        /* FIXME NK : should we really abort the activation if there are only warning ?
-         * In case of page field (LINK) created initially without any link, the page field will fail activate
-         * because there is a warning stating that the Content Page is not valid for activation 
-         */
-        if ( getType() == org.jahia.data.fields.FieldTypes.PAGE &&
-        				activationResults.getStatus() != ActivationTestResults.COMPLETED_OPERATION_STATUS) {
-            return activationResults;
         }
 
         if (activationResults.getStatus () == ActivationTestResults.FAILED_OPERATION_STATUS) {
@@ -715,7 +717,7 @@ public abstract class ContentField extends ContentObject
                 versioningEnabled, newVersionID);
 
         if (!isMetadata()) {
-            fireContentActivationEvent(languageCodes,
+            fireContentActivationEvent(activateLanguageCodes,
                     versioningEnabled,
                     saveVersion,
                     jParams,
@@ -743,7 +745,7 @@ public abstract class ContentField extends ContentObject
      * polymorphic and implemented for each class of ContentField.
      *
      * @return an ActivationTestResults object that indicates if the activation
-     *         would fail, only partially succeed (for exemple because a page field
+     *         would fail, only partially succeed (for example because a page field
      *         depends on a pages that hasn't been validated), or successfully completes.
      *         There are two types of messages returned by the test results : errors,
      *         and warnings. Errors are associated with a test failure, while warnings
@@ -802,9 +804,11 @@ public abstract class ContentField extends ContentObject
                             final boolean isAdminMember = jParams.getUser().isAdminMember(jParams.getSiteID());
                             activationTestResults.mergeStatus(!isAdminMember ? ActivationTestResults.FAILED_OPERATION_STATUS : ActivationTestResults.PARTIAL_OPERATION_STATUS);
                             try {
+                                String containerName = JahiaContainerDefinitionsRegistry.getInstance().getDefinition(getParent(null).getDefinitionID(null)).getTitle(jParams.getLocale());
+
                                 final EngineMessage msg = new EngineMessage(
                                         "org.jahia.services.fields.ContentField.mandatoryLangMissingError",
-                                        getFieldTitle(jParams), curSettings.getCode());
+                                        getFieldTitle(jParams), curSettings.getCode(), containerName, getContainerID());
                                 for (String code : languageCodes) {
                                     if (!code.equals(curSettings.getCode())) {
                                         IsValidForActivationResults activationResults = new IsValidForActivationResults(
@@ -1027,7 +1031,7 @@ public abstract class ContentField extends ContentObject
      * hasn't been activated yet, or missing languages for mandatory languages.
      *
      * @return an ActivationTestResults object that indicates if the activation
-     *         would fail, only partially succeed (for exemple because a page field
+     *         would fail, only partially succeed (for example because a page field
      *         depends on a pages that hasn't been validated), or successfully completes.
      *         There are two types of messages returned by the test results : errors,
      *         and warnings. Errors are associated with a test failure, while warnings
@@ -1040,6 +1044,33 @@ public abstract class ContentField extends ContentObject
 
 
     /**
+     * This is called on all content fields to have them serialized only their
+     * specific part. The actual field metadata serializing is handled by the
+     * ContentField class. This method is called multiple times per field
+     * according to the workflow state, languages and versioning entries we
+     * want to serialize.
+     *
+     * @param xmlWriter               the XML writer object in which to write the XML output
+     * @param xmlSerializationOptions options used to activate/bypass certain
+     *                                output of elements.
+     * @param entryState              the ContentFieldEntryState for which to generate the
+     *                                XML export.
+     * @param processingContext               specifies context of serialization, such as current
+     *                                user, current request parameters, entry load request, URL generation
+     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
+     *                                generation is an important part of XML serialization and this is why
+     *                                we pass this parameter down, as well as user rights checking.
+     *
+     * @throws IOException in case there was an error writing to the Writer
+     *                     output object.
+     */
+    protected abstract void serializeContentToXML (XmlWriter xmlWriter,
+                                                   XMLSerializationOptions xmlSerializationOptions,
+                                                   ContentObjectEntryState entryState,
+                                                   ProcessingContext processingContext)
+            throws IOException;
+
+    /**
      * Called at the beginning of a purge operation and must remove all the
      * field related data, recursively if necessary.
      * throws JahiaException if an exception is thrown during the purging of
@@ -1047,27 +1078,6 @@ public abstract class ContentField extends ContentObject
      */
     protected void purgeContent () throws JahiaException {
         // default implementation does nothing.
-    }
-
-    /**
-     * Returns the workflow state of all the languages contained in this fields
-     * content object. This is used for example to get the internal state of
-     * page objects.
-     * In this class we provide a default implementation as most fields that
-     * are not shared will not need to do this. Ideally we might want to have
-     * seperate interfaces for shared and non-shared fields or something like
-     * this.
-     * This returns the state of both the active and staged languages, the
-     * staging version taking priority over the active for a given language.
-     *
-     * @param entryState the field entry state for which to retrieve the
-     *                   content language states.
-     *
-     * @return an Map that contains the language code String as the key,
-     *         and the current workflow state of the language is the value
-     */
-    protected Map<String, Integer> getContentLanguageStates (ContentObjectEntryState entryState) {
-        return new HashMap<String, Integer>();
     }
 
     /**
@@ -1415,6 +1425,10 @@ public abstract class ContentField extends ContentObject
     protected String getDBValue (EntryStateable entryState) throws JahiaException {
         // We ensure to check if this content object is Shared or not even though
         // the entryState is provided with a specific language ( en, fr, ... )
+        if (entryState == null) {
+            return "";
+        }
+
         String languageCode = entryState.getLanguageCode ();
         if (this.isShared ()) {
             languageCode = ContentObject.SHARED_LANGUAGE;
@@ -1429,8 +1443,8 @@ public abstract class ContentField extends ContentObject
             if(theResult!=null) {
                 loadedDBValues.put (objectEntryState, theResult);
             } else {
-                loadedDBValues.put (objectEntryState, org.jahia.data.constants.JahiaConstants.NULL_STRING_MARKER);
-                return org.jahia.data.constants.JahiaConstants.NULL_STRING_MARKER;
+                loadedDBValues.put (objectEntryState, org.jahia.data.fields.JahiaField.NULL_STRING_MARKER);
+                return org.jahia.data.fields.JahiaField.NULL_STRING_MARKER;
             }
         }
         return theResult;
@@ -1550,14 +1564,6 @@ public abstract class ContentField extends ContentObject
                         new Integer (entryState.getWorkflowState ()));
             }
 
-        // now let's ask all the different field implementations to provide
-        // their internal language status.
-            Map<String, Integer> contentLanguageStates = getContentLanguageStates(entryState);
-            if (contentLanguageStates != null) {
-                for (Map.Entry<String, Integer> curLanguage : contentLanguageStates.entrySet()) {
-                    languageStates.put(curLanguage.getKey(), curLanguage.getValue());
-                }
-            }
         }
 
         return languageStates;
@@ -1603,7 +1609,7 @@ public abstract class ContentField extends ContentObject
      *                         will also be asked to change their state.
      *
      * @throws JahiaException raised if we have trouble storing the new
-     *                        workflow state in persistant storage.
+     *                        workflow state in persistent storage.
      */
     public void setWorkflowState (Set<String> languageCodes,
                                   int newWorkflowState,
@@ -1673,7 +1679,7 @@ public abstract class ContentField extends ContentObject
                 languageCodes.add (actEntryState.getLanguageCode ());
             }
             if (actEntryState.isActive ()) {
-                // ok appollo, we catched an active entry here! we handle this..
+                // ok appollo, we caught an active entry here! we handle this..
                 if (versioningEnabled) {
                     // we backup the active version
                     ContentObjectEntryState backupEntryState = fieldsDataManager.backupField (this, actEntryState);
@@ -1724,6 +1730,71 @@ public abstract class ContentField extends ContentObject
         if (entryStates != null) {
             this.versioningEntryStates = entryStates;
         }
+    }
+
+    /**
+     * Writes an XML serialization version of this content field, according to
+     * the serialization options specified. This is very useful for exporting
+     * Jahia content to external systems.
+     *
+     * @param xmlWriter               the XML writer object in which to output the XML
+     *                                exported data
+     * @param xmlSerializationOptions the options that activate/deactivate
+     *                                parts of the XML exported data.
+     * @param processingContext               specifies context of serialization, such as current
+     *                                user, current request parameters, entry load request, URL generation
+     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
+     *                                generation is an important part of XML serialization and this is why
+     *                                we pass this parameter down, as well as user rights checking.
+     *
+     * @throws IOException upon error writing to the XMLWriter
+     */
+    public synchronized void serializeToXML (XmlWriter xmlWriter,
+                                             XMLSerializationOptions xmlSerializationOptions,
+                                             ProcessingContext processingContext) throws IOException {
+
+        // quick & dirty implementation that serializes the active and staging
+        // entries.
+
+        int fieldDefID = getFieldDefID ();
+        String name = null;
+        try {
+            JahiaFieldDefinition definition = JahiaFieldDefinitionsRegistry.getInstance ()
+                    .getDefinition (fieldDefID);
+            name = definition.getName ();
+        } catch (JahiaException je) {
+            logger.debug (
+                    "Error while accessing field definition registry for field " + getID (),
+                    je);
+        }
+
+        xmlWriter.writeEntity ("contentField");
+        if (name != null) {
+            xmlWriter.writeAttribute ("name", name);
+        }
+        xmlWriter.writeAttribute ("type", this.getClass ().getName ());
+        xmlWriter.writeAttribute ("shared", Boolean.valueOf(isShared ()).toString ());
+
+        /**
+         * @todo here we should normally include code that will check for the
+         * various options that can concern all field types, such as export of
+         * ACL, different workflow states, etc...
+         */
+
+        for (ContentObjectEntryState entryState : activeAndStagingEntryStates) {
+            xmlWriter.writeEntity ("entry").
+                    writeAttribute ("language", entryState.getLanguageCode ()).
+                    writeAttribute ("workflowState",
+                            Integer.toString (entryState.getWorkflowState ())).
+                    writeAttribute ("versionID", Long.toString (entryState.getVersionID ()));
+
+            serializeContentToXML (xmlWriter, xmlSerializationOptions, entryState, processingContext);
+
+            xmlWriter.endEntity ();
+        }
+
+        xmlWriter.endEntity ();
+
     }
 
     /**
@@ -1865,7 +1936,7 @@ public abstract class ContentField extends ContentObject
     }
 
     /**
-     * Call overrided restoreVersion then, reindex the field in search index
+     * Call overridden restoreVersion then, reindex the field in search index
      * if it is not actually marked for delete.
      *
      * @param user

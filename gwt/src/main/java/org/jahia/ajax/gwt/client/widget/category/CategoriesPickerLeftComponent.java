@@ -1,45 +1,32 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget.category;
 
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
-import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
 import java.util.List;
 
@@ -49,49 +36,68 @@ import java.util.List;
  * Time: 17:30:21
  */
 public class CategoriesPickerLeftComponent extends LeftComponent {
-    private TabPanel m_component;
-    private CategoriesSearchPanel searchPanel;
+    private ContentPanel m_component;
+//    private CategoryFilter categoryFilter;
     private CategoriesTree categoriesTree;
-    private CategoriesList categoriesList;
 
-    public CategoriesPickerLeftComponent(final String categoryKey, final List<GWTJahiaCategoryNode> selectedCategories, String categoryLocale, boolean autoSelectParent) {
-        categoriesTree = new CategoriesTree(categoryKey, this,selectedCategories,categoryLocale,autoSelectParent);
+    public CategoriesPickerLeftComponent(final String categoryKey, final List<GWTJahiaCategoryNode> selectedCategories, String categoryLocale, boolean autoSelectParent, boolean multiple, final boolean readonly) {
+        m_component = new ContentPanel(new BorderLayout()) ;
+        m_component.setBodyBorder(false);
+        m_component.setBorders(false);
+        m_component.setHeaderVisible(false);
+
+//        categoryFilter = new CategoryFilter() ;
+
+        categoriesTree = new CategoriesTree(categoryKey, selectedCategories, categoryLocale, autoSelectParent, multiple);
         categoriesTree.setHeaderVisible(false);
         categoriesTree.setBodyBorder(false);
 
-        /*categoriesList = new CategoriesList(this);
-        categoriesList.setHeaderVisible(false);
-        categoriesList.setBodyBorder(false);
+//        StoreFilterField filter = categoryFilter.getFilter();
+//        filter.bind(categoriesTree.getStore());
 
-        searchPanel = new CategoriesSearchPanel(this);
-        searchPanel.setHeaderVisible(false);
-        searchPanel.setBodyBorder(false);*/
+//        m_component.setTopComponent(categoryFilter.getComponent());
 
-        TabItem cTreeTabItem = new TabItem(getResource("categories"));
-        cTreeTabItem.add(categoriesTree);
-        cTreeTabItem.setScrollMode(Style.Scroll.AUTO);
-        /*TabItem listTabItem = new TabItem(getResource("List"));
-        listTabItem.add(categoriesList);
+        Button add = new Button(">>", new SelectionListener<ComponentEvent>() {
+            public void componentSelected(ComponentEvent componentEvent) {
+                addCategories(categoriesTree.getSelection());
+            }
+        });
+        Button remove = new Button("<<", new SelectionListener<ComponentEvent>() {
+            public void componentSelected(ComponentEvent componentEvent) {
+                removeCategories();
+            }
+        });
+        if (readonly) {
+            add.setEnabled(false);
+            remove.setEnabled(false);
+        }
 
-        TabItem searchTabItem = new TabItem(getResource("Search"));
-        searchTabItem.add(searchPanel);*/
-
-        m_component = new TabPanel();
-        m_component.add(cTreeTabItem);
-       /* m_component.add(listTabItem);
-        m_component.add(searchTabItem);*/
+        VerticalPanel panel = new VerticalPanel();
+        panel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+        panel.add(add);
+        panel.add(remove);
+        LayoutContainer buttons = new LayoutContainer(new CenterLayout());
+        buttons.add(panel);
+        BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.EAST, 30, 30, 30);
+        data.setFloatable(false);
+        data.setSplit(false);
+        m_component.add(buttons, data);
+        data = new BorderLayoutData(Style.LayoutRegion.CENTER);
+        data.setSplit(false);
+        m_component.add(categoriesTree, data);
     }
 
-    public void openAndSelectItem(Object item) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void initWithLinker(BrowserLinker linker) {
+        super.initWithLinker(linker);
+        categoriesTree.init();
     }
 
-    public void refresh() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public void openAndSelectItem(Object item) {}
+
+    public void refresh() {}
 
     public Object getSelectedItem() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getLinker().getTopRightObject().getSelection();
     }
 
     public Component getComponent() {
@@ -102,12 +108,8 @@ public class CategoriesPickerLeftComponent extends LeftComponent {
         ((PickedCategoriesGrid) getLinker().getTopRightObject()).addCategories(gwtJahiaCategoryNodes);
     }
 
-    public void removeAllCategories() {
-        getLinker().getTopRightObject().clearTable();
-    }
-
-    public static String getResource(String key) {
-        return Messages.getResource(key);
+    public void removeCategories() {
+        ((PickedCategoriesGrid) getLinker().getTopRightObject()).removeSelectedCategories();
     }
 
 }

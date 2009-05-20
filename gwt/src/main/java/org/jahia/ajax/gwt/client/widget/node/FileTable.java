@@ -1,46 +1,27 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget.node;
 
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.nodes.FileStoreSorter;
 import org.jahia.ajax.gwt.client.util.nodes.actions.FileActions;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
@@ -55,14 +36,11 @@ import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Events;
-import com.extjs.gxt.ui.client.dnd.DragSource;
-import com.extjs.gxt.ui.client.dnd.GridDragSource;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +56,7 @@ public class FileTable extends TopRightComponent {
     private LayoutContainer m_component;
     private Grid<GWTJahiaNode> m_table;
     private ListStore<GWTJahiaNode> store;
+    private ListLoader<GWTJahiaNode> loader ;
     private ManagerConfiguration configuration;
 
     public FileTable(final ManagerConfiguration config) {
@@ -86,7 +65,38 @@ public class FileTable extends TopRightComponent {
 
         configuration = config;
 
-        store = new ListStore<GWTJahiaNode>();
+        // data proxy
+        RpcProxy<GWTJahiaNode, ListLoadResult<GWTJahiaNode>> privateProxy = new RpcProxy<GWTJahiaNode, ListLoadResult<GWTJahiaNode>>() {
+            @Override
+            protected void load(GWTJahiaNode gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
+                Log.debug("retrieving children of " + gwtJahiaFolder.getName()) ;
+                JahiaNodeService.App.getInstance().lsLoad(gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, false, listAsyncCallback);
+            }
+        };
+
+        loader = new BaseListLoader<GWTJahiaNode, ListLoadResult<GWTJahiaNode>>(privateProxy) {
+            @Override
+            protected void onLoadSuccess(GWTJahiaNode gwtJahiaNode, ListLoadResult<GWTJahiaNode> gwtJahiaNodeListLoadResult) {
+                super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodeListLoadResult);
+                if (getLinker() != null) {
+                    getLinker().loaded() ;
+                }
+            }
+        };
+        store = new ListStore<GWTJahiaNode>(loader) {
+            protected void onBeforeLoad(LoadEvent e) {
+                if (getLinker() != null) {
+                    getLinker().loading("listing directory content...") ;
+                }
+                super.onBeforeLoad(e);
+            }
+
+            @Override
+            protected void onLoadException(LoadEvent loadEvent) {
+                super.onLoadException(loadEvent);
+                Log.error("Error listing directory content " + loadEvent.exception.toString()) ;
+            }
+        };
         store.setStoreSorter(new FileStoreSorter());
 
         m_table = new Grid<GWTJahiaNode>(store, getHeaders());
@@ -113,20 +123,12 @@ public class FileTable extends TopRightComponent {
                         }
                     } else {
                         getLinker().onTableItemDoubleClicked(sel.get(0));
-
                     }
                 }
             }
         });
 
         m_component.add(m_table);
-    }
-
-    @Override
-    public void initWithLinker(BrowserLinker linker) {
-        super.initWithLinker(linker);
-        DragSource source = new GridDragSource(m_table);
-        source.addDNDListener(linker.getDndListener());
     }
 
     public void setContextMenu(Menu menu) {
@@ -136,37 +138,7 @@ public class FileTable extends TopRightComponent {
     public void setContent(final Object root) {
         clearTable();
         if (root != null) {
-            final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance();
-            if (getLinker() != null) {
-                getLinker().loading("listing directory content...");
-            }
-            service.ls((GWTJahiaNode) root, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, false, new AsyncCallback<List<GWTJahiaNode>>() {
-                public void onFailure(Throwable throwable) {
-                    Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage());
-                    if (getLinker() != null) {
-                        getLinker().loaded();
-                    }
-                }
-
-                public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
-                    if (gwtJahiaNodes != null && gwtJahiaNodes.size() > 0) {
-                        store.add(gwtJahiaNodes);
-                        //store.sort("ext", Style.SortDir.ASC);
-                    }
-                    if (getLinker() != null) {
-                        getLinker().loaded();
-                    }
-                    List<GWTJahiaNode> treeSelection = new ArrayList<GWTJahiaNode>(1);
-                    treeSelection.add((GWTJahiaNode) root);
-                    getLinker().getBottomRightObject().fillData(treeSelection);
-                    // hack to avoid scrolling to the bottom of a huge list
-                    DeferredCommand.addCommand(new Command() {
-                        public void execute() {
-                            m_table.getView().scrollToTop();
-                        }
-                    });
-                }
-            });
+            loader.load((GWTJahiaNode) root) ;
         }
     }
 
@@ -176,6 +148,11 @@ public class FileTable extends TopRightComponent {
             List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) content;
             store.add(gwtJahiaNodes);
             getLinker().onTableItemSelected();
+            if (store.getSortState().getSortField() != null && store.getSortState().getSortDir() != null) {
+                store.sort(store.getSortState().getSortField(), store.getSortState().getSortDir());
+            } else {
+                store.sort("date", Style.SortDir.DESC);
+            }
         }
     }
 
@@ -205,7 +182,7 @@ public class FileTable extends TopRightComponent {
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
         ColumnConfig col;
         if (configuration.isDisplayExt()) {
-            col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 50);
+            col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 40);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                 public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
@@ -218,7 +195,7 @@ public class FileTable extends TopRightComponent {
         }
 
         if (configuration.isDisplayLock()) {
-            col = new ColumnConfig("locked", Messages.getResource("fm_column_locked"), 32);
+            col = new ColumnConfig("locked", Messages.getResource("fm_column_locked"), 40);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                 public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
@@ -243,7 +220,7 @@ public class FileTable extends TopRightComponent {
         headerList.add(col);
 
 
-        col = new ColumnConfig("path", Messages.getResource("fm_column_path"), 300);
+        col = new ColumnConfig("path", Messages.getResource("fm_column_path"), 270);
         col.setSortable(true);
         col.setResizable(true);
         headerList.add(col);
@@ -269,7 +246,7 @@ public class FileTable extends TopRightComponent {
         }
 
         if (configuration.isDisplayDate()) {
-            col = new ColumnConfig("date", Messages.getResource("fm_column_date"), 90);
+            col = new ColumnConfig("date", Messages.getResource("fm_column_date"), 100);
             col.setAlignment(Style.HorizontalAlignment.LEFT);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                 public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {

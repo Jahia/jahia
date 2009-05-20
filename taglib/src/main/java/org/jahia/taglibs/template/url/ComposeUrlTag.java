@@ -1,66 +1,44 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.taglibs.template.url;
 
+import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.ValueJahiaTag;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspWriter;
 
 /**
- * Generates a URL to the current page in the given cache mode
+ * Generates a URL to the current page in the given cache mode.
  *
  * @author Xavier Lawrence
  */
-public class ComposeUrlTag extends AbstractJahiaTag {
+@SuppressWarnings("serial")
+public class ComposeUrlTag extends ValueJahiaTag {
 
-    private static final transient org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(ComposeUrlTag.class);
+    private static final transient Logger logger = Logger.getLogger(ComposeUrlTag.class);
 
     private int pageID;
-    private String valueID;
     private boolean fullURL = false;
     private String page;
 
     public void setPageID(int pageID) {
         this.pageID = pageID;
-    }
-
-    public void setValueID(String valueID) {
-        this.valueID = valueID;
     }
 
     public void setFullURL(boolean fullURL) {
@@ -95,15 +73,10 @@ public class ComposeUrlTag extends AbstractJahiaTag {
                     }
                     
                 } else if (page.equals("login")) {                     	
-                	  final String popupLoginURL;
-                    if (pageID > 0) {
-                        popupLoginURL = jData.gui().drawPopupLoginUrl(pageID);
-                    } else {
-                        popupLoginURL = jData.gui().drawPopupLoginUrl();
-                    }
-                    final String params = "width=450,height=500,left=10,top=10,resizable=yes,scrollbars=no,status=no";
-                    buffer.append("window.open('").append(popupLoginURL).append("','Login','").append(params).append("')");
-
+                    buffer.append("javascript:").append(pageID > 0 ? jData.gui().html()
+                        .drawLoginLauncher(pageID) : jData.gui().html()
+                        .drawLoginLauncher());
+                    
                 } else if (page.equals("mySettings")) {
                     buffer.append(jData.gui().html().drawMySettingsLauncher());
                     
@@ -123,16 +96,19 @@ public class ComposeUrlTag extends AbstractJahiaTag {
 
             } else if (pageID > 0) {
                 buffer.append(jParams.composePageUrl(pageID));
-
             } else {
                 buffer.append(jParams.composePageUrl(jData.page()));
             }
 
-            if (valueID != null && valueID.length() > 0) {
-                pageContext.setAttribute(valueID, buffer.toString());
+            if (getVar() != null || getValueID() != null) {
+                if (getVar() != null) {
+                    pageContext.setAttribute(getVar(), buffer.toString());
+                }
+                if (getValueID() != null) {
+                    pageContext.setAttribute(getValueID(), buffer.toString());
+                }
             } else {
-                final JspWriter out = pageContext.getOut();
-                out.print(buffer.toString());
+                pageContext.getOut().print(buffer.toString());
             }
         } catch (final Exception e) {
             logger.error("Error in PageURLTag", e);
@@ -142,10 +118,15 @@ public class ComposeUrlTag extends AbstractJahiaTag {
     }
 
     public int doEndTag() {
-        valueID = null;
+        resetState();
+        return EVAL_PAGE;
+    }
+    
+    @Override
+    protected void resetState() {
+        super.resetState();
         pageID = -1;
         fullURL = false;
         page = null;
-        return EVAL_PAGE;
     }
 }

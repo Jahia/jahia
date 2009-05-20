@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.workflow;
 
 import java.util.ArrayList;
@@ -415,7 +398,7 @@ public class WorkflowService extends JahiaService {
             // create group
             grp = ServicesRegistry.getInstance().
                     getJahiaGroupManagerService().
-                    createGroup(0, "workflowrole_" + main + "_" + role, new Properties());
+                    createGroup(0, "workflowrole_" + main + "_" + role, new Properties(), true);
         }
         WorkflowRole r = new WorkflowRole(role, grp, main);
 
@@ -579,6 +562,12 @@ public class WorkflowService extends JahiaService {
         }
         if (oldMode == LINKED || mode == LINKED) {
             ServicesRegistry.getInstance().getJahiaSiteMapService().resetSiteMap();
+
+            List<Locale> locales = jParams.getSite().getLanguageSettingsAsLocales(true);
+            for (Locale locale : locales) {
+                WorkflowEvent theEvent = new WorkflowEvent (this, contentObject, jParams.getUser(), locale.toString(), false);
+                ServicesRegistry.getInstance().getJahiaEventService().fireObjectChanged(theEvent);
+            }
         }
         if (oldMode == LINKED) {
             storeLanguageState(oldMainObject, jParams.getSiteID());
@@ -588,9 +577,6 @@ public class WorkflowService extends JahiaService {
             storeLanguageState(getMainLinkObject(object), jParams.getSiteID());
             languagesStatesManager.clearEntries(object.toString());
         }
-
-        WorkflowEvent theEvent = new WorkflowEvent (this, contentObject, jParams.getUser(), jParams.getCurrentLocale().toString(), false);
-        ServicesRegistry.getInstance().getJahiaEventService().fireObjectChanged(theEvent);
     }
 
     public boolean hasChanged(ContentObjectKey object, int mode, String workflowName, String processId) throws JahiaException {
@@ -1136,11 +1122,18 @@ public class WorkflowService extends JahiaService {
        for (ContentObjectKey contentObjectKey : objects) {
            try {
                ContentObject contentObject = (ContentObject) ContentObject.getInstance(contentObjectKey);
-               if (!contentObject.getStagingLanguages(false, true).isEmpty()) {
+               Set<String> stagingLanguages = contentObject.getStagingLanguages(false, true);
+               boolean ok = false;
+               for (String languageCode : languageCodes) {
+                   if (stagingLanguages.contains(languageCode)) {
+                       ok = true;
+                   }
+               }
+               if (ok) {
                    if (contentObject.checkWriteAccess(jParams.getUser())) {
                        
+                       ActivationTestResults testActivationResults = isValidForActivation(contentObjectKey, languageCodes, jParams, stateModifContext);
                        if (!bypassValidation) {
-                           ActivationTestResults testActivationResults = isValidForActivation(contentObjectKey, languageCodes, jParams, stateModifContext);
                            if (testActivationResults.getStatus() == ActivationTestResults.FAILED_OPERATION_STATUS) {
                                if (testActivationResults.getErrors().size() == 0) {
                                    testActivationResults.appendError(new NodeOperationResult(null,
@@ -1153,6 +1146,10 @@ public class WorkflowService extends JahiaService {
                                return;
                            }
                        }
+                       ContentActivationEvent event = new ContentActivationEvent(contentObject, contentObject.getObjectKey(), jParams.getUser(),
+                               languageCodes, true, new JahiaSaveVersion(), jParams, stateModifContext, testActivationResults);
+
+                       ServicesRegistry.getInstance().getJahiaEventService().fireContentWorkflowStatusChanged(event);
 
                        contentObject.setWorkflowState(languageCodes, newWorkflowState, jParams, stateModifContext);
                        if ( rollBackMarkForDelete && contentObject.isMarkedForDelete() ){
@@ -1188,16 +1185,7 @@ public class WorkflowService extends JahiaService {
             try {
                 ContentObject contentObject = (ContentObject) ContentObject.getInstance(contentObjectKey);
                 if (contentObject != null) {
-                    ActivationTestResults childResults = contentObject.isValidForActivation(languageCodes, jParams, stateModifContext);
-                    if (objectKey instanceof ContentPageKey && !(contentObject instanceof ContentPage)) {
-                        for (Object error : childResults.getErrors()) {
-                            ((NodeOperationResult)error).setBlocker(false);
-                        }
-                        for (Object warning : childResults.getWarnings()) {
-                            ((NodeOperationResult)warning).setBlocker(false);
-                        }
-                    }
-                    activationTestResults.merge(childResults);
+                    activationTestResults.merge(contentObject.isValidForActivation(languageCodes, jParams, stateModifContext));
                 }
             } catch (ClassNotFoundException e) {
             }
@@ -1643,7 +1631,7 @@ public class WorkflowService extends JahiaService {
                 String processName = getInheritedExternalWorkflowName(objKey);
                 ExternalWorkflow workflow = getExternalWorkflow(processName);
                 if (workflow != null) {
-                    ExternalWorkflowInstanceCurrentInfos info = workflow.getCurrentInfo(processName, objKey.getKey(), language);
+                    ExternalWorkflowInstanceCurrentInfos info = workflow.getCurrentInfo(objKey.getKey(), language);
                     if (info != null) {
                         extWorkflowStep = info.getNextStep();
                     }
@@ -1678,10 +1666,6 @@ public class WorkflowService extends JahiaService {
      *             in case of an error
      */
     public String getExtendedWorkflowState(ContentObject contentObject, String language) throws Exception {
-
-        if (contentObject.isMarkedForDelete(language)){
-            return "600";
-        }
 
         int workflowMode = getInheritedMode(contentObject);
         final Map<String, Integer> languagesStates = getLanguagesStates(contentObject);
@@ -1719,9 +1703,7 @@ public class WorkflowService extends JahiaService {
         Integer languageState = languagesStates.get(language);
         Integer sharedLanguageState = languagesStates.get(ContentObject.SHARED_LANGUAGE);
 
-        if (contentObject.isMarkedForDelete(language)) {
-            extendedWorkflowState = "600";
-        } else if (WorkflowService.INACTIVE == workflowMode) {
+        if (WorkflowService.INACTIVE == workflowMode) {
             if (SettingsBean.getInstance().isWorkflowDisplayStatusForLinkedPages()
                     && getWorkflowMode(contentObject) == LINKED) {
                 if (languageState != null) {
@@ -1751,11 +1733,11 @@ public class WorkflowService extends JahiaService {
 
             if (WorkflowService.EXTERNAL == workflowMode) {
                 if (!languagesStates.containsKey(language)) {
-                    workflowState = 1;
+                    workflowState = 2;
                 } else if (workflowState >= EntryLoadRequest.STAGING_WORKFLOW_STATE) {
-                    workflowState = getExternalWorkflowNextStep(contentObject, language);
+                    workflowState = getExternalWorkflowNextStep(getHardLinkedMainObject(contentObject), language) + 1;
                 } else {
-                    workflowState = 0;
+                    workflowState = 1;
                 }
             }
 
@@ -1771,18 +1753,11 @@ public class WorkflowService extends JahiaService {
                 }
             }
 
-            if (SettingsBean.getInstance().isWorkflowDisplayStatusForLinkedPages() && getWorkflowMode(contentObject) == LINKED) {
-                // here are special icons for linked pages
-                if (WorkflowService.EXTERNAL == workflowMode) {
-                    int newWfState = 3;
-                    if (workflowState == 0) {
-                        newWfState = 1;
-                    } else if (workflowState == 1 || isEditable) {
-                        newWfState = 2;
-                    }
-                    workflowState = newWfState;
-                }
+            if (getWorkflowMode(contentObject) == LINKED) {
                 workflowMode = 9;
+            }
+            if (contentObject.isMarkedForDelete(language)) {
+                workflowMode = 6;
                 isEditable = false;
             }
 
@@ -1794,14 +1769,17 @@ public class WorkflowService extends JahiaService {
     public WorkflowInfo getDefaultWorkflowEntry() {
 
         WorkflowInfo workflowEntry = null;
+        String defType = getSettingsBean().getWorkflowDefaultType();
 
-        // get the first available external workflow
-        if (externals != null
+        if ("standard".equals(defType)) {
+            workflowEntry = WorkflowInfo.STANDARD;
+        } else if ("inactive".equals(defType)) {
+            workflowEntry = WorkflowInfo.INACTIVE;
+        } else if (externals != null
                 && !externals.isEmpty()
-                && getSettingsBean().isWorkflowUseExternalByDefault()
                 && LicenseActionChecker.isAuthorizedByLicense(
                         "org.jahia.engines.workflow.ExternalWorkflows", 0)) {
-            
+
             Map.Entry<String, ExternalWorkflow> defaultWokflow = externals
                     .entrySet().iterator().next();
             // create workflow entry
@@ -1809,7 +1787,8 @@ public class WorkflowService extends JahiaService {
             ExternalWorkflow workflow = defaultWokflow.getValue();
             Collection<String> processes = workflow.getAvailableProcesses();
             if (!processes.isEmpty()) {
-                String processId = processes.iterator().next();
+                String processId = processes.contains(defType) ? defType
+                        : processes.iterator().next();
                 workflowEntry = new WorkflowInfo(WorkflowService.EXTERNAL,
                         name, processId);
             }

@@ -1,9 +1,0 @@
-<social_templates = 'http://www.jahia.org/jahia/social-templates/nt/1.0'>
-
-[social_templates:blogEntry] > jnt:container
-date        date = now() sortable 
-smallText   title primary
-bigText     content
-
-[social_templates:blog] > jnt:page
-containerList   blogEntries (social_templates:blogEntry [addMixin="jmix:commentable"])

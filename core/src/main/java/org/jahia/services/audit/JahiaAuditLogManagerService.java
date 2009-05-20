@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 // MJ 19.02.2001
 //
 //
@@ -78,7 +61,7 @@ public abstract class JahiaAuditLogManagerService extends JahiaService {
      * @param   objectID    an <code>int</code> representing the ID of the object to retrieve logs for
      * @return              a <code>List</code> of HashMaps containing keys for time, username, operation, and their value for each logged event
      */
-    public abstract List getLog (int objectType, int objectID, ProcessingContext jParams);
+    public abstract List<Map<String, Object>> getLog (int objectType, int objectID, ProcessingContext jParams);
 
 
     /**
@@ -89,7 +72,7 @@ public abstract class JahiaAuditLogManagerService extends JahiaService {
      * long !
      * @return              a <code>List</code> of HashMaps containing keys for time, username, operation, and their value for each logged event
      */
-    public abstract List getLog (long fromDate, ProcessingContext jParams);
+    public abstract List<Map<String, Object>> getLog (long fromDate, ProcessingContext jParams);
 
     /**
      * utility method to flush log entries for a specific object type and  ID
@@ -150,7 +133,7 @@ public abstract class JahiaAuditLogManagerService extends JahiaService {
      * @return
      * @throws JahiaException
      */
-    public abstract List executeNamedQuery(String queryName, Map parameters) throws JahiaException;
+    public abstract <E> List<E> executeNamedQuery(String queryName, Map<String, Object> parameters) throws JahiaException;
 
     //--------------------------------------------------------------------------
     /**

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
-    "http://www.springframework.org/dtd/spring-beans.dtd">
-<beans>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
     <!--
 # Jahia Event Listeners Registry
 #
@@ -95,7 +96,6 @@
     </bean>
 
     <bean id="JahiaSearchListener" class="org.jahia.services.search.JahiaSearchListener" />
-    <!-- bean id="JAMonEventListener" class="org.jahia.data.events.JAMonEventListener" / -->
 
     <bean id="listenersRegistry" class="org.jahia.registries.JahiaListenersRegistry">
         <property name="listeners">
@@ -115,7 +115,7 @@
                 <ref bean="JSPEventListener" />
                 <ref bean="GroovyEventListener" />
                 <ref bean="JahiaSearchListener" />
-                <!-- ref bean="JAMonEventListener" /  -->
+                <bean class="org.jahia.services.notification.NotificationService$NotificationEventListener"/>
             </list>
         </property>
     </bean>

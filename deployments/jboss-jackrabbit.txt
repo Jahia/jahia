@@ -9,7 +9,19 @@ JDK : 1.5.0_11
 
 Download and unzip Jboss
 Edit the bin/run.conf or bin/run.bat (on Windows) to set the max permgen space to 128M with the following parameter in the JAVA_OPTS :
--XX:PermSize=256m -Dorg.jboss.logging.Log4jService.catchSystemOut=false
+-XX:PermSize=256m -Dorg.jboss.logging.Log4jService.catchSystemOut=false -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp -verbose:gc -Dhibernate.jdbc.use_streams_for_binary=true -Djava.awt.headless=true 
+
+If you run into JMX problems, you could also add
+
+(for Windows in run.bat)
+
+set JAVA_OPTS=%JAVA_OPTS% -Djboss.platform.mbeanserver
+
+(for Unix in run.conf)
+
+# Tell JBossAS to use the platform MBean server
+JAVA_OPTS="$JAVA_OPTS -Djboss.platform.mbeanserver"
+ 
 
 2/ Deploy Jahia
 Activate the profiles jboss-deployment and one andromeda-deployment-jboss* profile in your settings.xml, 
@@ -49,6 +61,8 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd
 http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
 
 Please move the server\default\lib\jaxb-impl*.jar to jboss\lib and remove the existing jaxb-impl.jar from there.
+
+Ensure that jboss\lib\endorsed\ has the xalan.jar and xercesImpl.jar inside
 
 5/ Configure Jahia
 Modify the "configure" profile with the settings according to your database and other custom settings and

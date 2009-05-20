@@ -1,86 +1,85 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.preferences;
 
 
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
-import org.jahia.services.content.JCRJahiaContentNode;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.preferences.generic.GenericJahiaPreference;
 import org.jahia.services.preferences.page.PageJahiaPreference;
+import org.jahia.services.preferences.impl.JahiaPreferencesJCRProviders;
 import org.jahia.registries.ServicesRegistry;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.beans.BeansException;
 
 import javax.jcr.RepositoryException;
 import java.security.Principal;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Iterator;
 
 /**
+ * Preference service for Jahia.
  * User: jahia
  * Date: 19 mars 2008
  * Time: 11:39:09
  */
-public class JahiaPreferencesService extends JahiaService implements ApplicationContextAware {
+public class JahiaPreferencesService extends JahiaService {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaPreferencesService.class);
     private static JahiaPreferencesService instance;
     private CacheService cacheService;
-    private ApplicationContext applicationContext;
+    private JCRStoreService jcrStoreService;
 
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
+    private Map<String, String> providerTypes;
+    private Map<String, JahiaPreferencesProvider> providers;
+    private Map<Class, JahiaPreferencesProvider> providersByClass;
 
     public synchronized void start() throws JahiaInitializationException {
         logger.debug("** Initializing the Preferences Service ...");
-        debug();
+        providers = new HashMap<String, JahiaPreferencesProvider>();
+        providersByClass = new HashMap<Class, JahiaPreferencesProvider>();
+        for (String providerType : providerTypes.keySet()) {
+            String className = jcrStoreService.getDecorators().get(providerTypes.get(providerType));
+            JahiaPreferencesJCRProviders provider;
+            try {
+                Class<? extends JCRNodeWrapper> aClass = Class.forName(className).asSubclass(JCRNodeWrapper.class);
+                provider = createProvider(aClass);
+                providersByClass.put(aClass, provider);
+            } catch (ClassNotFoundException e) {
+                provider = new JahiaPreferencesJCRProviders();
+            }
+            provider.setType(providerType);
+            provider.setNodeType(providerTypes.get(providerType));
+            provider.setJCRStoreService(jcrStoreService);
+            providers.put(providerType, provider);
+        }
+    }
 
+    public <T extends JCRNodeWrapper> JahiaPreferencesJCRProviders<T> createProvider(Class<T> c) {
+        return new JahiaPreferencesJCRProviders<T>();
     }
 
     public synchronized void stop() {
         logger.debug("** Stop the Preferences Service ...");
-
     }
-
 
     public static synchronized JahiaPreferencesService getInstance() {
         if (instance == null) {
@@ -97,15 +96,28 @@ public class JahiaPreferencesService extends JahiaService implements Application
         this.cacheService = cacheService;
     }
 
-    private void debug() {
-        if (logger.isDebugEnabled()) {
-            Map allProviders = getProvidersMap();
-            Iterator providersIt = allProviders.values().iterator();
-            while (providersIt.hasNext()) {
-                JahiaPreferencesProvider jahiaPreferencesProvider = (JahiaPreferencesProvider) providersIt.next();
-                logger.debug("jahiaPreferencesProvider:" + jahiaPreferencesProvider.getType());
-            }
-        }
+    public JCRStoreService getJcrStoreService() {
+        return jcrStoreService;
+    }
+
+    public void setJcrStoreService(JCRStoreService jcrStoreService) {
+        this.jcrStoreService = jcrStoreService;
+    }
+
+    public Map<String, String> getProviderTypes() {
+        return providerTypes;
+    }
+
+    public void setProviderTypes(Map<String, String> providerTypes) {
+        this.providerTypes = providerTypes;
+    }
+
+    public Map getProviders() {
+        return providers;
+    }
+
+    public void setProviders(Map providers) {
+        this.providers = providers;
     }
 
     /**
@@ -123,7 +135,7 @@ public class JahiaPreferencesService extends JahiaService implements Application
      * @param principal
      */
     public void deleteAllPreferencesByPrincipal(Principal principal) {
-        Map allProviders = getProvidersMap();
+        Map<String, JahiaPreferencesProvider> allProviders = getProvidersMap();
         Iterator providersIt = allProviders.values().iterator();
         while (providersIt.hasNext()) {
             JahiaPreferencesProvider jahiaPreferencesProvider = (JahiaPreferencesProvider) providersIt.next();
@@ -141,15 +153,13 @@ public class JahiaPreferencesService extends JahiaService implements Application
      *
      */
     public JahiaPreferencesProvider getPreferencesProviderByType(String providerType) throws JahiaPreferenceProviderException {
-        Object o = applicationContext.getBean("org.jahia.preferences.provider."+providerType);
-        if (o == null) {
-            throw new JahiaPreferenceProviderException();
-        } else if (o instanceof JahiaPreferencesProvider) {
-            return (JahiaPreferencesProvider) o;
-        } else {
-            throw new JahiaPreferenceProviderException();
-        }
+        return providers.get(providerType);
     }
+
+    public <T extends JCRNodeWrapper> JahiaPreferencesProvider<T> getPreferencesProviderByClass(Class<T> c) throws JahiaPreferenceProviderException {
+        return providersByClass.get(c);
+    }
+
 
     /**
      * Get Generic preference provider
@@ -158,7 +168,7 @@ public class JahiaPreferencesService extends JahiaService implements Application
      * @throws JahiaPreferenceProviderException
      *
      */
-    public JahiaPreferencesProvider getGenericPreferencesProvider() throws JahiaPreferenceProviderException {
+    public JahiaPreferencesProvider<GenericJahiaPreference> getGenericPreferencesProvider() throws JahiaPreferenceProviderException {
         return getPreferencesProviderByType("simple");
     }
 
@@ -169,18 +179,8 @@ public class JahiaPreferencesService extends JahiaService implements Application
      * @throws JahiaPreferenceProviderException
      *
      */
-    public JahiaPreferencesProvider getPagePreferencesProvider() throws JahiaPreferenceProviderException {
+    public JahiaPreferencesProvider<PageJahiaPreference> getPagePreferencesProvider() throws JahiaPreferenceProviderException {
         return getPreferencesProviderByType("page");
-    }
-
-    /**
-     * Get all providers
-     *
-     * @return
-     */
-    public Iterator getAllProviders() {
-        Map allProviders = getProvidersMap();
-        return allProviders.keySet().iterator();
     }
 
     /**
@@ -188,13 +188,8 @@ public class JahiaPreferencesService extends JahiaService implements Application
      *
      * @return
      */
-    private Map getProvidersMap() {
-        Map providersMap = applicationContext.getBeansOfType(JahiaPreferencesProvider.class);
-        if (providersMap == null) {
-            logger.warn("There is no preference provider set.");
-            return new HashMap();
-        }
-        return providersMap;
+    private Map<String, JahiaPreferencesProvider> getProvidersMap() {
+        return providers;
     }
 
     /**
@@ -205,12 +200,23 @@ public class JahiaPreferencesService extends JahiaService implements Application
      * @return the value
      */
     public String getGenericPreferenceValue(String key, ProcessingContext jParams) {
+        return getGenericPreferenceValue(key, jParams.getUser());
+    }
+
+    /**
+     * Return the value associated with the given key using the generic preference provider.
+     *
+     * @param key     the key
+     * @param principal current principal
+     * @return the value
+     */
+    public String getGenericPreferenceValue(String key, Principal principal) {
         try {
 
-            JahiaPreference preference = getGenericPreferencesProvider().getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getSimpleXpath(key));
-            if (preference != null && !preference.isEmpty()) {
+            JahiaPreference preference = getGenericPreferencesProvider().getJahiaPreference(principal, JahiaPreferencesXpathHelper.getSimpleXpath(key));
+            if (preference != null) {
                 try {
-                    return ((GenericJahiaPreference) preference).getPrefValue();
+                    return ((GenericJahiaPreference) preference.getNode()).getPrefValue();
                 } catch (RepositoryException e) {
                     logger.error("Preference provider was not found.", e);
                 }
@@ -225,12 +231,24 @@ public class JahiaPreferencesService extends JahiaService implements Application
      * Return the value associated with the given key using the generic preference provider.
      *
      * @param key          the key
-     * @param defaultValue the default value to be returned in te preference was not found
+     * @param defaultValue the default value to be returned in the preference was not found
      * @param jParams      the processing context
      * @return the value
      */
     public boolean getGenericPreferenceBooleanValue(String key, boolean defaultValue, ProcessingContext jParams) {
-        String value = getGenericPreferenceValue(key, jParams);
+        return getGenericPreferenceBooleanValue(key, defaultValue, jParams.getUser());
+    }
+
+    /**
+     * Return the value associated with the given key using the generic preference provider.
+     *
+     * @param key          the key
+     * @param defaultValue the default value to be returned in the preference was not found
+     * @param principal current principal
+     * @return the value
+     */
+    public boolean getGenericPreferenceBooleanValue(String key, boolean defaultValue, Principal principal) {
+        String value = getGenericPreferenceValue(key, principal);
         return value != null ? Boolean.parseBoolean(value) : defaultValue;
     }
 
@@ -243,9 +261,9 @@ public class JahiaPreferencesService extends JahiaService implements Application
      */
     public String getPagePreferenceValue(String key, ProcessingContext jParams) {
         try {
-            JahiaPreference preference = getPagePreferencesProvider().getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getPageXpath(jParams.getPageID(), key));
-            if (!preference.isEmpty()) {
-                return ((PageJahiaPreference) preference).getPrefValue();
+            JahiaPreference<PageJahiaPreference> preference = getPagePreferencesProvider().getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getPageXpath(jParams.getPageID(), key));
+            if (preference != null) {
+                return preference.getNode().getPrefValue();
             }
         } catch (Exception e) {
             logger.error("Preference provider was not found.", e);
@@ -263,17 +281,31 @@ public class JahiaPreferencesService extends JahiaService implements Application
      */
     public void setGenericPreferenceValue(String prefName, String prefValue, ProcessingContext jParams) {
         try {
-            JahiaPreferencesProvider basicProvider = getGenericPreferencesProvider();
+            if (jParams.getUser().getUsername().equals("guest")) {
+                return;
+            }
+            JahiaPreferencesProvider<GenericJahiaPreference> basicProvider = getGenericPreferencesProvider();
 
             // create generic preference key
-            GenericJahiaPreference preference = (GenericJahiaPreference) basicProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getSimpleXpath(prefName));
+            JahiaPreference<GenericJahiaPreference> preference = basicProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getSimpleXpath(prefName));
             if (preference == null) {
-                preference = (GenericJahiaPreference) basicProvider.getNewJahiaPreferenceNode(jParams);
-                preference.setPrefName(prefName);
+                if(prefValue == null){
+                    return;
+                }
+
+                preference = basicProvider.createJahiaPreferenceNode(jParams);
+                preference.getNode().setPrefName(prefName);
+            }else{
+                // delete preference
+                if(prefValue == null){
+                    basicProvider.deleteJahiaPreference(preference);
+                    return;
+                }
             }
 
             // create genereic preference value
-            preference.setPrefValue(prefValue);
+            preference.getNode().setPrefValue(prefValue);
+
 
             basicProvider.setJahiaPreference(preference);
         } catch (Exception e) {
@@ -290,22 +322,26 @@ public class JahiaPreferencesService extends JahiaService implements Application
      */
     public void setPagePreferenceValue(String prefName, String prefValue, ProcessingContext jParams) {
         try {
-            JahiaPreferencesProvider basicProvider = getGenericPreferencesProvider();
+            if (jParams.getUser().getUsername().equals("guest")) {
+                return;
+            }
+            JahiaPreferencesProvider<PageJahiaPreference> pageProvider = getPagePreferencesProvider();
 
             // create generic preference key
-            PageJahiaPreference preference = (PageJahiaPreference) basicProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getPageXpath(jParams.getPageID(), prefName));
+            JahiaPreference<PageJahiaPreference> preference = pageProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getPageXpath(jParams.getPageID(), prefName));
             if (preference == null) {
-                preference = (PageJahiaPreference) basicProvider.getNewJahiaPreferenceNode(jParams);
-                preference.setPrefName(prefName);
+                preference = pageProvider.createJahiaPreferenceNode(jParams);
+                PageJahiaPreference node = preference.getNode();
+                node.setPrefName(prefName);
                 ContentPage page = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(jParams.getPageID(), false);
                 String pageUUID = page.getUUID();
-                preference.setPageUUID(pageUUID);
+                node.setPageUUID(pageUUID);
             }
 
             // create genereic preference value
-            preference.setPrefValue(prefValue);
+            preference.getNode().setPrefValue(prefValue);
 
-            basicProvider.setJahiaPreference(preference);
+            pageProvider.setJahiaPreference(preference);
         } catch (Exception e) {
             logger.error("Preference provider was not found.", e);
         }
@@ -317,9 +353,12 @@ public class JahiaPreferencesService extends JahiaService implements Application
      */
     public void deleteGenericPreferenceValue(String prefName, ProcessingContext jParams) {
         try {
+            if (jParams.getUser().getUsername().equals("guest")) {
+                return;
+            }
             // create generic preference key
-            GenericJahiaPreference preference = (GenericJahiaPreference) getGenericPreferencesProvider().getNewJahiaPreferenceNode(jParams);
-            preference.setPrefName(prefName);
+            JahiaPreference<GenericJahiaPreference> preference = getGenericPreferencesProvider().createJahiaPreferenceNode(jParams);
+            preference.getNode().setPrefName(prefName);
 
             getGenericPreferencesProvider().deleteJahiaPreference(preference);
         } catch (Exception e) {
@@ -333,36 +372,22 @@ public class JahiaPreferencesService extends JahiaService implements Application
      */
     public void deletePagePreferenceValue(String prefName, ProcessingContext jParams) {
         try {
+            if (jParams.getUser().getUsername().equals("guest")) {
+                return;
+            }
+
             // create generic preference key
-            PageJahiaPreference preference = (PageJahiaPreference) getPagePreferencesProvider().getNewJahiaPreferenceNode(jParams);
+            JahiaPreference<PageJahiaPreference> preference = getPagePreferencesProvider().createJahiaPreferenceNode(jParams);
             ContentPage page = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(jParams.getPageID(), false);
             String pageUUID = page.getUUID();
-            preference.setPageUUID(pageUUID);
-            preference.setPrefName(prefName);
+            preference.getNode().setPageUUID(pageUUID);
+            preference.getNode().setPrefName(prefName);
 
             getPagePreferencesProvider().deleteJahiaPreference(preference);
         } catch (Exception e) {
             logger.error("Preference provider was not found.", e);
         }
     }
-
-    /**
-     * Get content page
-     *
-     * @param uuid
-     * @param jahiaUser
-     * @return
-     */
-    private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
-        try {
-            JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(uuid, jahiaUser);
-            return (ContentPage) nodeWrapper.getContentObject();
-        } catch (Exception e) {
-            logger.error(e, e);
-            return null;
-        }
-    }
-
 
 }
 

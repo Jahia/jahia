@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 // $Id$
 //
 
@@ -53,6 +36,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentPageKey;
@@ -101,6 +85,7 @@ import org.jahia.services.pages.PageProperty;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.views.engines.versioning.actions.ContentVersioningAction;
+import org.jahia.operations.valves.ThemeValve;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -624,6 +609,17 @@ public class PageProperties_Engine implements JahiaEngine {
                         thePage.getContentPage().setPageKey(null);
                         engineMap.put(PageProperty.PAGE_URL_KEY_PROPNAME, pageKey);
                     }
+                    String themePropertyName = ThemeValve.THEME_ATTRIBUTE_NAME;
+                    String oldTheme = thePage.getProperty(themePropertyName);
+                    String newTheme= pageTempBean.getTheme();
+                    changed |= (oldTheme == null && (newTheme != null && newTheme.length() > 0)) || (oldTheme != null && (newTheme == null
+                            || !newTheme.equals(oldTheme)));
+                    if(newTheme==null || "".equals(newTheme)) {
+                        thePage.removeProperty(themePropertyName);
+                    } else if((oldTheme==null && !"".equals(newTheme))|| !oldTheme.equals(newTheme)) {
+                        thePage.setProperty(themePropertyName,newTheme);
+                    }
+
                     if (changed) {
                         thePage.getContentPage().setUnversionedChanged();
                     }
@@ -1042,26 +1038,14 @@ public class PageProperties_Engine implements JahiaEngine {
     private boolean updatePageData(final ProcessingContext jParams, final Map engineMap,
                                    final String languageCode) throws JahiaException {
         final EngineMessages engineMessages = new EngineMessages();
-        boolean setPageTitleSuccessfull = setPageTitleIfNecessary(jParams, languageCode, engineMap);
+        boolean setPageTitleSuccessfull = setPageTitleIfNecessary(jParams, languageCode, engineMessages, engineMap);
         boolean setPageURLKeySuccessfull = setPageURLKeyIfValidAndNotEmpty(jParams, engineMessages, engineMap);
-        setPageTemplateIDInEngineMapIfNecessary(jParams, engineMap);
+        boolean setPageThemeIfNecessary = setPageThemeIfNecessary(jParams, engineMessages, engineMap);
+
         saveMessagesIfNotEmpty(engineMessages, jParams);
 
-        return setPageTitleSuccessfull && setPageURLKeySuccessfull;
+        return setPageTitleSuccessfull && setPageURLKeySuccessfull && setPageThemeIfNecessary;
     }
-
-//    private void DisplayEngineMap(Map engineMap) {
-//        StringBuffer output = new StringBuffer("Detail of engineMap :\n");
-//
-//        Set keys = engineMap.keySet();
-//        Iterator iter = keys.iterator();
-//
-//        while (iter.hasNext()) {
-//            String name = (String) iter.next();
-//            Object object = engineMap.get(name);
-//            output.append("-").append(name).append(" = [").append(object.toString()).append("]\n");
-//        }
-//    }
 
     /**
      * loads the page cache bean with info from an existing JahiaPage
@@ -1133,7 +1117,7 @@ public class PageProperties_Engine implements JahiaEngine {
      * Validate and set page URL key if its present.
      * To be valid, the key must :
      * - not be a jahia reserved word
-     * - be composed of caracters in 0 to 9, a to z or A to Z, length min 2 max 250
+     * - be composed of characters in 0 to 9, a to z or A to Z, length min 2 max 250
      * - not be used by another page on current jahia site
      * <p/>
      * The validation stops as soon as one error condition is encountered. Higher cost validation is performed last in the chain.
@@ -1141,7 +1125,7 @@ public class PageProperties_Engine implements JahiaEngine {
      * @param jParams
      * @param engineMessages
      * @param engineMap
-     * @return true if the key is valid and was setted, false if empty or not valid.
+     * @return true if the key is valid and was set, false if empty or not valid.
      */
     private boolean setPageURLKeyIfValidAndNotEmpty(ProcessingContext jParams, EngineMessages engineMessages, Map engineMap) throws JahiaException {
         final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
@@ -1177,17 +1161,30 @@ public class PageProperties_Engine implements JahiaEngine {
      *
      * @param jParams
      * @param languageCode
+     * @param engineMessages
      * @param engineMap
-     * @return true if page title was successfully setted, false if empty
+     * @return true if page title was successfully set, false if empty
      */
-    private boolean setPageTitleIfNecessary(ProcessingContext jParams, String languageCode, Map engineMap) {
+    private boolean setPageTitleIfNecessary(ProcessingContext jParams, String languageCode, EngineMessages engineMessages, Map engineMap) {
         String pageTitle = jParams.getParameter("pageTitle");
-        if (pageTitle == null) return false;
         JahiaPageEngineTempBean pageTempBean = (JahiaPageEngineTempBean) engineMap.get("pageTempBean");
         pageTempBean.setTitle(languageCode, pageTitle);
+        engineMap.put("dataPageTitle", pageTitle);
         engineMap.put("validate", Boolean.valueOf(jParams.getParameter("validate") != null));
+        if (StringUtils.isBlank(pageTitle)) {
+            engineMessages.add("pageTitle", new EngineMessage("org.jahia.engines.pages.PageProperties_Engine.pageTitle.required.label"));
+            return false;
+        }
         return true;
+    }
 
+    private boolean setPageThemeIfNecessary(ProcessingContext jParams, EngineMessages engineMessages, Map engineMap) {
+        String theme = jParams.getParameter("jahiaThemeSelector");
+        JahiaPageEngineTempBean pageTempBean = (JahiaPageEngineTempBean) engineMap.get("pageTempBean");
+        if (theme != null) {
+            pageTempBean.setTheme(theme);
+        }
+        return true;
     }
 
     /**

@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //  EV  23.01.20001
 
 package org.jahia.engines.login;
@@ -50,6 +33,7 @@ import org.jahia.engines.validation.EngineValidationHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.params.ProcessingContext;
+import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
@@ -122,7 +106,7 @@ public class Login_Engine implements JahiaEngine {
             throws JahiaException,
             JahiaSessionExpirationException {
         // initalizes the hashmap
-        Map engineMap = new HashMap();
+        Map<String, Object> engineMap = new HashMap<String, Object>();
         initEngineMap(jParams, engineMap);
 
         processScreen(jParams, engineMap);
@@ -148,7 +132,7 @@ public class Login_Engine implements JahiaEngine {
      *
      * @param jParams a ProcessingContext object
      */
-    public void processScreen(ProcessingContext jParams, Map engineMap)
+    public void processScreen(ProcessingContext jParams, Map<String, Object> engineMap)
             throws JahiaException,
             JahiaSessionExpirationException {
 
@@ -166,7 +150,7 @@ public class Login_Engine implements JahiaEngine {
 
         if ("ok".equals(res)) {
             String loginChoice = jParams.getParameter ("loginChoice");
-            boolean stayAtCurrentPage = (loginChoice != null && loginChoice.equals ("1") || theUser.isRoot());
+            boolean stayAtCurrentPage = (loginChoice != null && loginChoice.equals (LoginEngineAuthValveImpl.STAY_AT_CURRENT_PAGE) || theUser.isRoot());
             JahiaPage loginPage = null;
             if (stayAtCurrentPage) {
                 logger.debug("Staying at current page...") ;
@@ -181,15 +165,14 @@ public class Login_Engine implements JahiaEngine {
                                 "The user do not have read access to the requested page ( other than GUEST ) !");
 
                         logger.error("User " + username + " cannot log in from this page");
+                        engineMap.put("notAllowedToLoginFromThisPage", Boolean.TRUE);
+                        engineMap.put("screen", "edit");                        
+                        
                         if (jParams.getParameter("logtag") != null) {
-                            engineMap.put("notAllowedToLoginFromThisPage", Boolean.TRUE);
-                            engineMap.put("screen", "edit");
                             engineMap.put(ENGINE_URL_PARAM, jParams.composeEngineUrl("", EMPTY_STRING));
                             jParams.setAttribute("NotAllowedLogin", Boolean.TRUE); 
 
                         } else {
-                            engineMap.put("notAllowedToLoginFromThisPage", Boolean.TRUE);
-                            engineMap.put("screen", "edit");
                             engineMap.put(ENGINE_URL_PARAM, jParams.composeEngineUrl(ENGINE_NAME, EMPTY_STRING));
                             engineMap.put("jspSource", BADLOGIN_JSP);
                         }
@@ -264,7 +247,7 @@ public class Login_Engine implements JahiaEngine {
      *
      * @param jParams a ProcessingContext object (with request and response)
      */
-    private void initEngineMap(ProcessingContext jParams, Map engineMap)
+    private void initEngineMap(ProcessingContext jParams, Map<String, Object> engineMap)
             throws JahiaException {
         // init map
         String theScreen = jParams.getParameter("screen");
@@ -291,8 +274,7 @@ public class Login_Engine implements JahiaEngine {
         jParams.setAttribute("engineTitle", "Login");
         //jParams.getRequest().setAttribute( "engineMap", engineMap );
     }
-
-
+    
     /**
      * Return the first available home page for this user. Personal homepage has precedence over
      * groups' homepage.
@@ -301,7 +283,7 @@ public class Login_Engine implements JahiaEngine {
      * @param user the user.
      * @return JahiaPage the first available home page, null if none.
      */
-    private JahiaPage getHomepage(JahiaSite site, JahiaUser user, ProcessingContext jParams) {
+    public static JahiaPage getHomepage(JahiaSite site, JahiaUser user, ProcessingContext jParams) {
 
         if (logger.isDebugEnabled()) {
             logger.debug("started homepage retrieval for user '" + user.getUserKey() + "'");
@@ -334,7 +316,7 @@ public class Login_Engine implements JahiaEngine {
             logger.debug("Searching groups for homepage") ;
             JahiaGroupManagerService grpServ = ServicesRegistry.getInstance ().getJahiaGroupManagerService ();
 
-            List v = grpServ.getUserMembership(user);
+            List<String> v = grpServ.getUserMembership(user);
             int size = v.size();
             String grpKey;
             JahiaGroup grp;

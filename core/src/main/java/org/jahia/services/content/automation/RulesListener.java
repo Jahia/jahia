@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.content.automation;
 
 import org.apache.log4j.Logger;
@@ -46,7 +29,6 @@ import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaLoginModule;
 import org.jahia.services.content.DefaultEventListener;
-import org.jahia.services.notification.NotificationService;
 import org.jahia.settings.SettingsBean;
 
 import javax.jcr.*;
@@ -71,10 +53,13 @@ public class RulesListener extends DefaultEventListener {
     private Timer rulesTimer = new Timer("rules-timer", true);
 
     private RuleBase ruleBase;
+    private long lastRead = 0;
 
     private static final int UPDATE_DELAY_FOR_LOCKED_NODE = 2000;
     private Set<String> ruleFiles;
     private String serverId;
+
+    private ThreadLocal inRules = new ThreadLocal();
 
     public RulesListener() {
         instances.add(this);
@@ -104,7 +89,7 @@ public class RulesListener extends DefaultEventListener {
     public Set<String> getRuleFiles() {
         return ruleFiles;
     }
-    
+
     private StatelessSession getStatelessSession (Map<String, Object> globals) {
         StatelessSession session = ruleBase.newStatelessSession();
         for (Map.Entry<String, Object> entry : globals.entrySet()) {
@@ -112,18 +97,18 @@ public class RulesListener extends DefaultEventListener {
         }
         return session;
     }
-    
+
     public void executeRules(Object fact, Map<String, Object> globals) {
         getStatelessSession(globals).execute(fact);
     }
-    
+
     public void executeRules(Object[] facts, Map<String, Object> globals) {
         getStatelessSession(globals).execute(facts);
     }
-    
+
     public void executeRules(Collection<?> facts, Map<String, Object> globals) {
         getStatelessSession(globals).execute(facts);
-    }            
+    }
 
     public void setRuleFiles(Set<String> ruleFiles) {
         this.ruleFiles = ruleFiles;
@@ -147,8 +132,9 @@ public class RulesListener extends DefaultEventListener {
             //conf.setAssertBehaviour( AssertBehaviour.IDENTITY );
             //conf.setRemoveIdentities( true );
             ruleBase = RuleBaseFactory.newRuleBase(conf);
-
-            PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
+            Properties properties = new Properties();
+            properties.setProperty("drools.dialect.java.compiler","JANINO");
+            PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(properties);
             JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
             javaConf.setCompiler(JavaDialectConfiguration.JANINO);
 
@@ -171,6 +157,7 @@ public class RulesListener extends DefaultEventListener {
                 logger.error("Errors when compiling rules : " + errors.toString());
                 logger.error("---------------------------------------------------------------------------------");
             }
+            lastRead = System.currentTimeMillis();
         } catch (ClassNotFoundException e) {
             logger.error(e.getMessage(), e);
         } catch (Exception e) {
@@ -180,7 +167,9 @@ public class RulesListener extends DefaultEventListener {
 
     public void addRules(File dsrlFile) {
         try {
-            PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
+            Properties properties = new Properties();
+            properties.setProperty("drools.dialect.java.compiler","JANINO");
+            PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(properties);
             JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
             javaConf.setCompiler(JavaDialectConfiguration.JANINO);
 
@@ -214,11 +203,23 @@ public class RulesListener extends DefaultEventListener {
         }
     }
 
+    private long lastModified() {
+        long last = 0;
+        for (String s : ruleFiles) {
+            last = Math.max(last, new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + s).lastModified());
+        }
+        return last;
+    }
+
 
     public void onEvent(EventIterator eventIterator) {
         Map<String, NodeWrapper> eventsMap = new HashMap<String, NodeWrapper>();
 
-        if (ruleBase == null) {
+        if (Boolean.TRUE.equals(inRules.get())) {
+            return;
+        }
+
+        if (ruleBase == null || SettingsBean.getInstance().isDevelopmentMode() && lastModified() > lastRead) {
             initRules();
             if (ruleBase == null) {
                 return;
@@ -233,13 +234,10 @@ public class RulesListener extends DefaultEventListener {
             while (eventIterator.hasNext()) {
                 Event event = eventIterator.nextEvent();
                 username = event.getUserID();
-                if (event.getPath().startsWith("/j:tmpRules")) {
-                    return;
-                }
                 events.add(event);
             }
 
-            Session s = provider.getSystemSession(username);
+            Session s = provider.getSystemSession(username, workspace);
 
             Iterator<Event> it = events.iterator();
 
@@ -269,16 +267,17 @@ public class RulesListener extends DefaultEventListener {
                                     Property p = (Property) s.getItem(path);
 
                                     Node parent = p.getParent();
-                                    if (parent.isNodeType(Constants.NT_RESOURCE)) {
-                                        parent = parent.getParent();
-                                    }
-                                    if (parent.isNodeType(Constants.NT_HIERARCHYNODE) || parent.isNodeType(Constants.JAHIANT_JAHIACONTENT)) {
-                                        NodeWrapper rn = eventsMap.get(parent.getUUID());
-                                        if (rn == null) {
+                                    if (parent.isNodeType(Constants.NT_HIERARCHYNODE) || parent.isNodeType(Constants.JAHIANT_JAHIACONTENT) || parent.isNodeType(Constants.NT_RESOURCE) || parent.isNodeType("jnt:workflowState")) {
+                                        NodeWrapper rn;
+                                        if (parent .isNodeType(Constants.MIX_REFERENCEABLE)) {
+                                            rn = eventsMap.get(parent.getUUID());
+                                            if (rn == null) {
+                                                rn = new NodeWrapper(parent);
+                                                eventsMap.put(parent.getUUID(), rn);
+                                            }
+                                        } else {
                                             rn = new NodeWrapper(parent);
-                                            eventsMap.put(parent.getUUID(), rn);
                                         }
-
                                         list.add(new PropertyWrapper(rn, p));
                                     }
                                 }
@@ -311,6 +310,7 @@ public class RulesListener extends DefaultEventListener {
                     }
                 }
                 if (!list.isEmpty()) {
+                    long time = System.currentTimeMillis();
                     if (list.size()>3) {
                         logger.info("Executing rules for " + list.subList(0,3)+ " ... and "+(list.size()-3)+" other nodes");
                     } else {
@@ -319,28 +319,7 @@ public class RulesListener extends DefaultEventListener {
 
                     final List<Updateable> delayedUpdates = new ArrayList<Updateable>();
 
-                    try {
-                        Node r;
-                        try {
-                            r = (Node) s.getItem("/j:tmpRules");
-                        } catch (PathNotFoundException e) {
-                            r = s.getRootNode().addNode("j:tmpRules", Constants.JAHIANT_FOLDER);
-                            r.setProperty("j:hidden", true);
-                        }
-                        try {
-                            r = r.getNode("j:" + serverId);
-                        } catch (PathNotFoundException e) {
-                            r = r.addNode("j:" + serverId, Constants.JAHIANT_FOLDER);
-                        }
-                        if (r != null) {
-                            r.setProperty("jcr:lastModified", new GregorianCalendar());
-                        }
-                    } catch (UnsupportedRepositoryOperationException e) {
-                        // not supported
-                    }
-                    
-                    AggregatedNotificationEvent aggregatedNotificationEvent = new AggregatedNotificationEvent();
-                    
+
                     Map<String, Object> globals = new HashMap<String, Object>();
 
                     globals.put("service", Service.getInstance());
@@ -350,27 +329,26 @@ public class RulesListener extends DefaultEventListener {
                     globals.put("user", new User(username));
                     globals.put("provider", provider);
                     globals.put("delayedUpdates", delayedUpdates);
-                    globals.put("aggregatedNotificationEvent", aggregatedNotificationEvent);
-                    
+
                     executeRules(list, globals);
 
                     if (list.size()>3) {
-                        logger.info("Rules executed for " + list.subList(0,3)+ " ... and "+(list.size()-3)+" other nodes");
+                        logger.info("Rules executed for " + list.subList(0,3)+ " ... and "+(list.size()-3)+" other nodes in " + (System.currentTimeMillis()- time)+"ms");
                     } else {
-                        logger.info("Rules executed for " + list);
+                        logger.info("Rules executed for " + list + " in " + (System.currentTimeMillis()- time)+"ms");
                     }
 
-                    if (s.hasPendingChanges()) s.save();
+                    if (s.hasPendingChanges()) {
+                        inRules.set(Boolean.TRUE);
+                        s.save();
+                        inRules.set(null);
+                    }
 
                     if (!delayedUpdates.isEmpty()) {
                         TimerTask t = new DelayedUpdatesTimerTask(username, delayedUpdates);
                         rulesTimer.schedule(t, UPDATE_DELAY_FOR_LOCKED_NODE);
                     }
 
-                    if (!aggregatedNotificationEvent.getEvents().isEmpty()) {
-                        NotificationService.getInstance().fireEvents(aggregatedNotificationEvent.getEvents());
-                    }
-                    
                     Set<Object> objects = new HashSet<Object>();
                     for (Iterator<Object> iterator = list.iterator(); iterator.hasNext();) {
                         Object o = iterator.next();
@@ -415,7 +393,7 @@ public class RulesListener extends DefaultEventListener {
 
         public void run() {
             try {
-                Session s = provider.getSystemSession(username);
+                Session s = provider.getSystemSession(username, workspace);
                 try {
                     List<Updateable> newDelayed = new ArrayList<Updateable>();
 

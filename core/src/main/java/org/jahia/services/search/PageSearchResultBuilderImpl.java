@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
  package org.jahia.services.search;
 
 import java.util.ArrayList;
@@ -50,7 +33,6 @@ import org.jahia.data.search.JahiaSearchHit;
 import org.jahia.data.search.JahiaSearchHitInterface;
 import org.jahia.data.search.JahiaSearchResult;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
@@ -252,54 +234,35 @@ public class PageSearchResultBuilderImpl extends
                             if (isFile) {
                                 String mimeType = null;
                                 if (jcrName == null) {
-                                    JahiaField jahiaField = contentField
-                                            .getJahiaField(jParams
-                                                    .getEntryLoadRequest());
+                                    JahiaField jahiaField = contentField.getJahiaField(jParams.getEntryLoadRequest());
                                     jcrName = jahiaField.getValue();
                                 }
-                                JCRNodeWrapper file = JCRStoreService
-                                        .getInstance().getNodeByUUID(
-                                                jcrName.substring(jcrName
-                                                        .lastIndexOf(':') + 1),
-                                                currentUser);
+                                JCRNodeWrapper file = JCRStoreService.getInstance().getNodeByUUID(
+                                        jcrName.substring(jcrName.lastIndexOf(':') + 1), currentUser);
                                 info.setObject(file);
 
-                                url = file
-                                        .getAbsoluteWebdavUrl((ParamBean) jParams);
-
                                 if (mimeType == null) {
-                                    parsedObject
-                                            .getLazyFieldValue(JahiaSearchConstant.FILE_CONTENT_TYPE);
+                                    parsedObject.getLazyFieldValue(JahiaSearchConstant.FILE_CONTENT_TYPE);
                                 } else {
-                                    parsedObject
-                                            .getFields()
-                                            .put(
-                                                    JahiaSearchConstant.FILE_CONTENT_TYPE,
-                                                    new String[] { mimeType });
+                                    parsedObject.getFields().put(JahiaSearchConstant.FILE_CONTENT_TYPE,
+                                            new String[] { mimeType });
                                 }
 
-                                parsedObject
-                                        .getLazyFieldValue(JahiaSearchConstant.FILE_PROPERTY_PREFIX
-                                                + "author");
-                                parsedObject
-                                        .getLazyFieldValue(JahiaSearchConstant.FILE_PROPERTY_PREFIX
-                                                + "contributor");
-                            } else {
-                                try {
-                                    if (SettingsBean.getInstance()
-                                            .isSiteIDInSearchHitPageURL()
-                                            && aPage.getJahiaID() != jParams
-                                                    .getJahiaID()) {
-                                        jParams.setForceAppendSiteKey(true);
-                                    }
-                                    url = aPage.getPageType() == JahiaPage.TYPE_URL ? aPage
-                                            .getRemoteURL()
-                                            : aPage.getURL(jParams);
-                                } catch (Exception t) {
-                                    logger.warn("Error obtaining page search hit details", t);
-                                } finally {
-                                    jParams.setForceAppendSiteKey(false);
+                                parsedObject.getLazyFieldValue(JahiaSearchConstant.FILE_CREATOR);
+                                parsedObject.getLazyFieldValue(JahiaSearchConstant.FILE_LAST_CONTRIBUTOR);
+                                parsedObject.getLazyFieldValue(JahiaSearchConstant.FILE_LAST_MODIFICATION_DATE);
+                            }
+                            try {
+                                if (SettingsBean.getInstance().isSiteIDInSearchHitPageURL()
+                                        && aPage.getJahiaID() != jParams.getJahiaID()) {
+                                    jParams.setForceAppendSiteKey(true);
                                 }
+                                url = aPage.getPageType() == JahiaPage.TYPE_URL ? aPage.getRemoteURL() : aPage
+                                        .getURL(jParams);
+                            } catch (Exception t) {
+                                logger.warn("Error obtaining page search hit details", t);
+                            } finally {
+                                jParams.setForceAppendSiteKey(false);
                             }
                         }
 
@@ -441,41 +404,35 @@ public class PageSearchResultBuilderImpl extends
     
     private boolean shouldAddHit (JahiaSearchHit info, JahiaSearchResult result, String languageCode) {
         boolean shouldAdd = true;
-        boolean removePreviousHit = false;
-        int hitIndex = 0;
-        JahiaSearchHit searchHit = null;
         if (this.onlyOneHitByPage) {
+            boolean removePreviousHit = false;
+            boolean duplicateFound = false;
+            int hitIndex = 0;
+            JahiaSearchHit searchHit = null;
             for (int j = 0; j < result.getHitCount(); j++) { // page already found
-                shouldAdd = true;
-                removePreviousHit = false;
                 searchHit = result.results().get(j);
-                boolean biggerScore = searchHit.getScore() < info
-                        .getScore();
+                boolean biggerScore = searchHit.getScore() < info.getScore();
                 hitIndex = j;
                 if (info.getType() == JahiaSearchHitInterface.FILE_TYPE) {
-                    if (searchHit.getType() == JahiaSearchHitInterface.FILE_TYPE) {
-                        if (!"#".equals(searchHit.getURL())
-                                && searchHit.getURL().equals(
-                                        info.getURL())) {
-                            // its a same linked file
-                            if (biggerScore) {
-                                removePreviousHit = true;
-                            } else {
-                                shouldAdd = false;
-                            }
-                        }
-                    }
-                } else {
-                    if (info.getPageId() == searchHit
-                            .getPageId()) {
-                        if (searchHit.getType() != JahiaSearchHitInterface.FILE_TYPE) {
-                            if (searchHit.getScore() < info
-                                    .getScore()) {
-                                removePreviousHit = true;
-                            } else {
-                                shouldAdd = false;
-                            }
-                        }
+                    if (searchHit.getType() == JahiaSearchHitInterface.FILE_TYPE
+                            && !"#".equals(searchHit.getURL())
+                            && searchHit.getObject() != null
+                            && info.getObject() != null
+                            && ((JCRNodeWrapper) searchHit.getObject()).getUrl().equals(
+                                    ((JCRNodeWrapper) info.getObject()).getUrl())) {
+                        // its a same linked file
+                        duplicateFound = true;
+                    } 
+                } else if (info.getPageId() == searchHit.getPageId()) {
+                    if (searchHit.getType() != JahiaSearchHitInterface.FILE_TYPE) {
+                        duplicateFound = true;
+                    } 
+                }
+                if (duplicateFound) {
+                    if (biggerScore) {
+                        removePreviousHit = true;
+                    } else {
+                        shouldAdd = false;
                     }
                 }
                 if (removePreviousHit || !shouldAdd) {

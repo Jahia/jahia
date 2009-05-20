@@ -1,0 +1,31 @@
+#created on: 20 dec. 2007
+package org.jahia.services.content.automation
+
+#list any import classes here.
+import org.jahia.services.content.JCRStoreProvider
+import javax.jcr.observation.Event
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global Logger logger
+global JCRStoreProvider provider
+
+rule "Test"
+    when
+        A new node is created
+ then
+        Log "new node in live"
+end
+
+rule "Notifications: comment added (jnt:comment)"
+    when
+        A new node is created
+            - it has the type jnt:comment
+ then
+        Fire commentAdded notification event for node
+        Log "Fired commentAdded event for node " + node.getPath()
+end

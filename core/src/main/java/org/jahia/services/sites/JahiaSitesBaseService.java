@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //
 //  JahiaSitesBaseService
 //
@@ -67,7 +50,6 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.webapps_deployer.JahiaWebAppsDeployerService;
 import org.jahia.services.workflow.WorkflowInfo;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.acl.JahiaBaseACL;
@@ -121,7 +103,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     private boolean started = false;
 
     protected JahiaGroupManagerService groupService;
-    protected JahiaWebAppsDeployerService webAppsDeployerService;
     protected JahiaFileWatcherService fileWatcherService;
     protected JahiaACLManagerService jahiaAclService;
 
@@ -147,10 +128,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
     public void setGroupService(JahiaGroupManagerService groupService) {
         this.groupService = groupService;
-    }
-
-    public void setWebAppsDeployerService(JahiaWebAppsDeployerService webAppsDeployerService) {
-        this.webAppsDeployerService = webAppsDeployerService;
     }
 
     public void setFileWatcherService(JahiaFileWatcherService fileWatcherService) {
@@ -422,12 +399,19 @@ public class JahiaSitesBaseService extends JahiaSitesService {
             site.getACL().setGroupEntry(adminGrp, adminAclEntry);
 
             // create default groups...
+            JahiaGroup usersGroup = jgms.lookupGroup(0,JahiaGroupManagerService.USERS_GROUPNAME);
+            if (usersGroup == null) {
+                usersGroup = jgms.createGroup(0, JahiaGroupManagerService.USERS_GROUPNAME, null, false);
+            }
+
+            JahiaGroup guestGroup = jgms.lookupGroup(0,JahiaGroupManagerService.GUEST_GROUPNAME);
+            if (guestGroup == null) {
+                guestGroup = jgms.createGroup(0, JahiaGroupManagerService.GUEST_GROUPNAME, null, false);
+            }
+
             JahiaGroup adminGroup = jgms.createGroup(site.getID(),
-                    JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME, null);
-            JahiaGroup usersGroup = jgms.createGroup(site.getID(),
-                    JahiaGroupManagerService.USERS_GROUPNAME, null);
-            JahiaGroup guestGroup = jgms.createGroup(site.getID(),
-                    JahiaGroupManagerService.GUEST_GROUPNAME, null);
+                    JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME, null, false);
+
 
             // create groups memberships...
             JahiaSiteTools.addGroup(adminGroup, site);
@@ -519,6 +503,11 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                             .setWorkflowMode(page.getContentPage(),
                                     wfInfo.getMode(), wfInfo.getWorkflowName(),
                                     wfInfo.getProcessId(), jParams);
+                } else if (WorkflowService.INACTIVE == wfInfo.getMode()) {
+                    ServicesRegistry.getInstance().getWorkflowService()
+                            .setWorkflowMode(page.getContentPage(),
+                                    WorkflowService.INACTIVE, null, null,
+                                    jParams);
                 }
                 
                 jParams.setSubstituteEntryLoadRequest(savedEntryLoadRequest);
@@ -683,7 +672,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     protected void loadSitesInCache (SettingsBean settingsBean) throws JahiaException {
 
         List<JahiaSite> sites = siteManager.getSites();
-        JahiaSiteTools.startWebAppsObserver (settingsBean, this,webAppsDeployerService, fileWatcherService);
         if (sites != null) {
             int size = sites.size ();
             for (int i = 0; i < size; i++) {

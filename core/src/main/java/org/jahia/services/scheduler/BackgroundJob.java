@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
  package org.jahia.services.scheduler;
 
 import java.util.Date;
@@ -55,6 +38,7 @@ import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.workflow.AbstractActivationJob;
 import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -109,7 +93,7 @@ public abstract class BackgroundJob implements StatefulJob {
     public static final String STATUS_ABORTED = "aborted";
     public static final String STATUS_INTERRUPTED = "interrupted";
 
-    public static JobDetail createJahiaJob(String desc, Class jobClass, ProcessingContext jParams) {
+    public static JobDetail createJahiaJob(String desc, Class<? extends BackgroundJob> jobClass, ProcessingContext jParams) {
         long now = System.currentTimeMillis();
         // jobdetail is non-volatile,durable,non-recoverable
         JobDetail jobDetail = new JobDetail("BackgroundJob-" + idGen.nextIdentifier(),
@@ -138,7 +122,7 @@ public abstract class BackgroundJob implements StatefulJob {
         return jobDetail;
     }
 
-    public static String getGroupName(Class c) {
+    public static String getGroupName(Class<? extends BackgroundJob> c) {
         String name = c.getName();
         return name.substring(name.lastIndexOf('.')+1);
     }
@@ -159,11 +143,11 @@ public abstract class BackgroundJob implements StatefulJob {
             ServicesRegistry.getInstance().getSchedulerService().startRequest();
 
             context = getProcessingContextFromBackgroundJobDataMap(data);
-            context.setAttribute(BackgroundJob.class.getName() + "_name", jobDetail.getName());
-            context.setAttribute(BackgroundJob.class.getName() + "_group", jobDetail.getGroup());
+            if (this instanceof AbstractActivationJob) {
+                context.setAttribute(BackgroundJob.class.getName() + "_name", jobDetail.getName());
+                context.setAttribute(BackgroundJob.class.getName() + "_group", jobDetail.getGroup());
+            }
             executeJahiaJob(jobExecutionContext, context);
-            context.removeAttribute(BackgroundJob.class.getName() + "_name");
-            context.removeAttribute(BackgroundJob.class.getName() + "_group");
             status = data.getString(BackgroundJob.JOB_STATUS);
             if ( !(BackgroundJob.STATUS_ABORTED.equals(status) ||
                     BackgroundJob.STATUS_FAILED.equals(status) ||
@@ -175,13 +159,11 @@ public abstract class BackgroundJob implements StatefulJob {
             data.put("message", e.toString());
             throw new JobExecutionException(e);
         } finally {
-            try {
-                ServicesRegistry.getInstance().getSchedulerService().endRequest();
-            } catch (JahiaException e) {
-                logger.error("Cannot execute waiting jobs", e);
-            }
-
             ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
+            if (this instanceof AbstractActivationJob) {
+                context.removeAttribute(BackgroundJob.class.getName() + "_name");
+                context.removeAttribute(BackgroundJob.class.getName() + "_group");
+            }
 
             try {
                 releaseAllLocks(context, jobDetail);
@@ -214,10 +196,6 @@ public abstract class BackgroundJob implements StatefulJob {
                 logger.error("Cannot get triggers for job",e);
             }
 
-            if (nextFireTime != null) {
-                status = STATUS_POOLED;
-                data.putAsString(JOB_SCHEDULED,nextFireTime.getTime());
-            }
             if (status == STATUS_FAILED) {
                 try {
                     boolean ramScheduler = this instanceof RamJob;
@@ -225,9 +203,21 @@ public abstract class BackgroundJob implements StatefulJob {
                 } catch (JahiaException e) {
                     logger.error("Cannot unschedule job",e);
                 }
+            } else {
+                if (nextFireTime != null) {
+                    status = STATUS_POOLED;
+                    data.putAsString(JOB_SCHEDULED,nextFireTime.getTime());
+                }
             }
             data.put(JOB_STATUS, status);
             this.postExecution(jobExecutionContext, context);
+            ServicesRegistry.getInstance().getJCRStoreService().closeAllSessions();
+
+            try {
+                ServicesRegistry.getInstance().getSchedulerService().endRequest();
+            } catch (JahiaException e) {
+                logger.error("Cannot execute waiting jobs", e);
+            }
         }
     }
 
@@ -280,10 +270,10 @@ public abstract class BackgroundJob implements StatefulJob {
 
     private void updateAllLocks(JobDetail jobDetail) {
         LockService lockRegistry = ServicesRegistry.getInstance().getLockService();
-        Set locks = (Set) jobDetail.getJobDataMap().get(JOB_LOCKS);
+        Set<LockKey> locks = (Set<LockKey>) jobDetail.getJobDataMap().get(JOB_LOCKS);
         if (locks != null) {
-            for (Iterator iterator = locks.iterator(); iterator.hasNext();) {
-                LockKey lockKey = (LockKey) iterator.next();
+            for (Iterator<LockKey> iterator = locks.iterator(); iterator.hasNext();) {
+                LockKey lockKey = iterator.next();
                 lockRegistry.setServerId(lockKey, jobDetail.getName());
             }
         }
@@ -291,10 +281,10 @@ public abstract class BackgroundJob implements StatefulJob {
 
     private void releaseAllLocks(ProcessingContext processingContext, JobDetail jobDetail) {
         LockService lockRegistry = ServicesRegistry.getInstance().getLockService();
-        Set locks = (Set) jobDetail.getJobDataMap().get(JOB_LOCKS);
+        Set<LockKey> locks = (Set<LockKey>) jobDetail.getJobDataMap().get(JOB_LOCKS);
         if (locks != null) {
-            for (Iterator iterator = locks.iterator(); iterator.hasNext();) {
-                LockKey lockKey = (LockKey) iterator.next();
+            for (Iterator<LockKey> iterator = locks.iterator(); iterator.hasNext();) {
+                LockKey lockKey = iterator.next();
                 lockRegistry.release(lockKey, processingContext.getUser(),jobDetail.getName());
             }
         }

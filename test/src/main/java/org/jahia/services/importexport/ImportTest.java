@@ -1,27 +1,33 @@
+/**
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
+ */
 package org.jahia.services.importexport;
 
-import junit.framework.TestCase;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.framework.TestResult;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.usermanager.JahiaAdminUser;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.test.TestHelper;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.custommonkey.xmlunit.*;
 import org.xml.sax.InputSource;
 
-import java.util.Properties;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 
@@ -40,8 +46,7 @@ public class ImportTest extends XMLTestCase {
 
     @Override
     protected void setUp() throws Exception {
-        TestHelper.cleanDatabase();
-        site = TestHelper.createSite("testSite");
+        site = TestHelper.createSite("importTest");
         ctx = Jahia.getThreadParamBean();
         assertNotNull(site);
 
@@ -54,9 +59,9 @@ public class ImportTest extends XMLTestCase {
         ImportExportService exportService = ServicesRegistry.getInstance().getImportExportService();
         exportService.importDocument(site.getHomeContentPage(), ctx.getLocale().toString(),
                 ctx,getClass().getClassLoader().getResourceAsStream("imports/import.xml"), false, true, list,
-                importResult, new HashMap<String,String>(), null,null, importedMapping);
+                importResult, new HashMap<String,String>(), new HashMap<String,String>(), null,null, importedMapping);
 
-        assertEquals("Invalid status code : "+importResult.getStatus(), importResult.getStatus(),ImportResult.COMPLETED_OPERATION_STATUS);
+        assertEquals("Invalid status code : "+importResult.getStatus(), ImportResult.COMPLETED_OPERATION_STATUS, importResult.getStatus());
         assertEquals(importResult.getWarnings().size() + " warnings",importResult.getWarnings().size(), 0);
         assertEquals(importResult.getErrors().size() + " errors", importResult.getErrors().size(), 0);
 
@@ -69,6 +74,7 @@ public class ImportTest extends XMLTestCase {
         DifferenceListener myDifferenceListener = new DifferenceListener() {
             public int differenceFound(Difference difference) {
                 switch (difference.getId()) {
+                    case DifferenceConstants.CHILD_NODELIST_SEQUENCE_ID:
                     case DifferenceConstants.ATTR_NAME_NOT_FOUND_ID:
                     case DifferenceConstants.ATTR_SEQUENCE_ID:
                     case DifferenceConstants.ELEMENT_NUM_ATTRIBUTES_ID:
@@ -89,7 +95,7 @@ public class ImportTest extends XMLTestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        TestHelper.cleanDatabase();
+        TestHelper.deleteSite("importTest");
     }
 }
 

@@ -1,36 +1,19 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget.toolbar.provider;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -54,6 +37,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.analytics.GWTJahiaAnalyticsParamet
 import org.jahia.ajax.gwt.client.data.toolbar.analytics.GWTJahiaGAprofile;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.form.*;
@@ -63,6 +47,8 @@ import com.extjs.gxt.ui.client.data.ChangeEvent;
 import com.extjs.gxt.ui.client.data.ChangeListener;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Command;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -308,13 +294,13 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
 
         final HashMap<String, GWTJahiaGAprofile>[] jahiaGAprofiles = new HashMap[2];
-        if (siteORpage.equals("pageStats")) w.setHeading("Statistics for the current page");
-        else w.setHeading("Statistics for the current site");
+        if (siteORpage.equals("pageStats")) w.setHeading(Messages.getResource("pageStatistics"));
+        else w.setHeading(Messages.getResource("siteStatistics"));
 
 
         w.setModal(true);
         w.setActive(true);
-        w.setSize(1000, 600);
+        w.setSize(1100, 700);
         w.setMaximizable(true);
         w.setLayout(new BorderLayout());
 
@@ -333,7 +319,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         BorderLayoutData chartData = new BorderLayoutData(Style.LayoutRegion.CENTER);
         ///  NEW
         final ContentPanel infoPanel = new ContentPanel();
-        infoPanel.setHeading("Jahia analytics profiles");
+        infoPanel.setHeading(Messages.getResource("analyticsProfile"));
         BorderLayoutData infoData = new BorderLayoutData(Style.LayoutRegion.WEST);
         infoData.setSplit(true);
         infoData.setCollapsible(true);
@@ -343,11 +329,11 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         sb.append("<br><br><br>");
         sb.append("<div class=text style='line-height: 1.5em'>");
         sb.append("<table>");
-        sb.append("<tr><td><b>User-account</b></td><td>{gaUserAccount}</td></tr>");
-        sb.append("<tr><td><b>Profile</b></td><td>{gaProfile}</td></tr>");
-        sb.append("<tr><td><b>Login</b></td><td>{gaLogin}</td></tr>");
-        sb.append("<tr><td><b>Tracked-urls</b></td><td>{trackedUrls}</td></tr>");
-        sb.append("<tr><td><b>State</b></td><td>{trackingEnabled}</td></tr>");
+        sb.append("<tr><td><b>"+Messages.getResource("userAccount")+"</b></td><td>{gaUserAccount}</td></tr>");
+        sb.append("<tr><td><b>"+Messages.getResource("profile")+"</b></td><td>{gaProfile}</td></tr>");
+        sb.append("<tr><td><b>"+Messages.getResource("login")+"</b></td><td>{gaLogin}</td></tr>");
+        sb.append("<tr><td><b>"+Messages.getResource("trackedurl")+"</b></td><td>{trackedUrls}</td></tr>");
+        sb.append("<tr><td><b>"+Messages.getResource("state")+"</b></td><td>{trackingEnabled}</td></tr>");
         sb.append("</table>");
         sb.append("</div>");
         Map<String, Object> properties = new HashMap<String, Object>();
@@ -395,8 +381,9 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
        }
      }));
         */
-          final String site_or_page = siteORpage;
+        final String site_or_page = siteORpage;
         final SimpleComboBox<String> profilesComboBox = new SimpleComboBox<String>();
+        profilesComboBox.setEditable(false);
         profilesComboBox.addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
                 //Log.info(be.toString());
@@ -426,27 +413,30 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                 bm.set("trackingEnabled", state);
             }
         });
+
         infoPanel.add(profilesComboBox);
         infoPanel.add(html);
-        
+
         // the combobox for stat type selector
         final SimpleComboBox<StatSiteType> siteStats = new SimpleComboBox<StatSiteType>();
         siteStats.setEditable(false);
         siteStats.setTriggerAction(ComboBox.TriggerAction.ALL);
         siteStats.setSimpleValue(StatSiteType.VISITS);
-        siteStats.setWidth(12);
+        //siteStats.setWidth(12);
 
         final SimpleComboBox<StatPageType> pageStats = new SimpleComboBox<StatPageType>();
         pageStats.add(Arrays.asList(StatPageType.values()));
         pageStats.setEditable(false);
         pageStats.setTriggerAction(ComboBox.TriggerAction.ALL);
         pageStats.setSimpleValue(StatPageType.PAGEVIEWS);
-        pageStats.setWidth(12);
+        //pageStats.setWidth(12);
 
-        LabelToolItem languageSelection_Label = new LabelToolItem("Select a language");
+
+        LabelToolItem languageSelection_Label = new LabelToolItem(Messages.getResource("languageSelection"));
         final SimpleComboBox<String> siteLanguages = new SimpleComboBox<String>();
-        siteLanguages.add("all");
-        siteLanguages.setSimpleValue("all");
+        siteLanguages.setEditable(false);
+        siteLanguages.add(Messages.getResource("selectAll"));
+        siteLanguages.setSimpleValue(Messages.getResource("selectAll"));
 
         final String[] uuid = new String[]{""};
         final GWTJahiaAnalyticsParameter gaParams = new GWTJahiaAnalyticsParameter();
@@ -457,7 +447,9 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         // will always be the last registered one
 
         ToolbarService.App.getInstance().getGAsiteProperties(pid, new AsyncCallback<Map<String, String>>() {
+
             public void onSuccess(Map<String, String> data) {
+                Log.debug("in getGAsiteProperties");
                 Map<String, String> profileNames = new HashMap<String, String>();
                 jahiaGAprofiles[0] = new HashMap();// for real urls
                 jahiaGAprofiles[1] = new HashMap();// for virtual urls
@@ -493,20 +485,22 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                     jahiaGAprofiles[tu].put(currentProfile, jGAp);
                 }
                 if (site_or_page.equals("siteStats")) {
+
+                    String profile="hello";
                     Iterator itOnJgaP = jahiaGAprofiles[0].keySet().iterator();
-                    String japName = "";
                     while (itOnJgaP.hasNext()) {
-                        japName = (String) itOnJgaP.next();
-                        profilesComboBox.add(japName);
+                        profile=(String) itOnJgaP.next();
+                        Log.debug("Setting value1 "+profile);
+                        profilesComboBox.add(profile);
                     }
                     itOnJgaP = jahiaGAprofiles[1].keySet().iterator();
-                    japName = "";
                     while (itOnJgaP.hasNext()) {
-                        japName = (String) itOnJgaP.next();
-                        profilesComboBox.add(japName);
+                        profile=(String) itOnJgaP.next();
+                        Log.debug("Setting value2 "+profile);
+                        profilesComboBox.add(profile);
                     }
-                    profilesComboBox.setSimpleValue(japName);
-                    GWTJahiaGAprofile jGAp = jahiaGAprofiles[1].get(japName);
+                    profilesComboBox.setSimpleValue(profile);
+                    GWTJahiaGAprofile jGAp = jahiaGAprofiles[1].get(profile);
                     bm.set("gaUserAccount", jGAp.getGaUserAccount());
                     bm.set("gaProfile", jGAp.getGaProfile());
                     bm.set("gaLogin", jGAp.getGaLogin());
@@ -518,14 +512,16 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                     bm.set("trackingEnabled", state);
                     gaParams.setJahiaGAprofile(jGAp.getJahiaGAprofile());
                 } else {
-                   Iterator itOnJgaP = jahiaGAprofiles[1].keySet().iterator();
-                    String japName = "";
+                    String profile="hello2";
+                    Iterator itOnJgaP = jahiaGAprofiles[1].keySet().iterator();
                     while (itOnJgaP.hasNext()) {
-                        japName = (String) itOnJgaP.next();
-                        profilesComboBox.add(japName);
+                        profile=(String) itOnJgaP.next();
+                        Log.debug("Setting value3 "+profile);
+                        profilesComboBox.add(profile);
+
                     }
-                    profilesComboBox.setSimpleValue(japName);
-                    GWTJahiaGAprofile jGAp = jahiaGAprofiles[1].get(japName);
+                    profilesComboBox.setSimpleValue(profile);
+                    GWTJahiaGAprofile jGAp = jahiaGAprofiles[1].get(profilesComboBox.getSimpleValue().toString());
                     bm.set("gaUserAccount", jGAp.getGaUserAccount());
                     bm.set("gaProfile", jGAp.getGaProfile());
                     bm.set("gaLogin", jGAp.getGaLogin());
@@ -542,58 +538,55 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                 for (int i = 0; i < tab.length; i++) {
                     siteLanguages.add(tab[i]);
                 }
-            }
 
+            }
             public void onFailure(Throwable throwable) {
-                Window.alert("Failure of ga parameters retreiving");
+                Log.debug("in getGAsiteProperties onFailure"+throwable);
+                Window.alert(Messages.getResource("error"));
             }
         });
 
-        LabelToolItem begin_date_Label = new LabelToolItem("Select begin date");
+        LabelToolItem begin_date_Label = new LabelToolItem(Messages.getResource("selectBeginDate"));
         final DateField begin_date_field = new DateField();
         long twentyFourDaysAgoLong = ((new Date()).getTime()) - (24 * 86400000);// 1 day = 86400000 ms
         begin_date_field.setMaxValue(new Date());
         begin_date_field.setValue(new Date(twentyFourDaysAgoLong - 8 * 86400000));
         begin_date_field.setAllowBlank(false);
 
-
-        LabelToolItem end_date_Label = new LabelToolItem("Select end date");
+        LabelToolItem end_date_Label = new LabelToolItem(Messages.getResource("selectEndDate"));
         final DateField end_date_field = new DateField();
         end_date_field.setMaxValue(new Date());
         end_date_field.setValue(new Date());
         end_date_field.setAllowBlank(false);
 
         ToolBar toolbar = new ToolBar();
-
-        AdapterToolItem atiSiteStats = new AdapterToolItem(siteStats);
-        AdapterToolItem atiBeginDate = new AdapterToolItem(begin_date_field);
-        AdapterToolItem atiEndDate = new AdapterToolItem(end_date_field);
-
-        AdapterToolItem atiPageStats = new AdapterToolItem(pageStats);
-        AdapterToolItem atiSiteLanguages = new AdapterToolItem(siteLanguages);
-        AdapterToolItem atiSiteLanguagesSelectionLabel = new AdapterToolItem(languageSelection_Label);
-
-
-        if (siteORpage.startsWith("site")) toolbar.add(atiSiteStats);
-        else toolbar.add(atiPageStats);
-        toolbar.add(new SeparatorToolItem());
-        toolbar.add(new SeparatorToolItem());
-        if (siteORpage.startsWith("page")) {
+        if (siteORpage.startsWith("site")){
+            AdapterToolItem atiSiteStats = new AdapterToolItem(siteStats);
+            toolbar.add(atiSiteStats);
+        }
+        else{//the pages part
+            AdapterToolItem atiPageStats = new AdapterToolItem(pageStats);
+            AdapterToolItem atiSiteLanguages = new AdapterToolItem(siteLanguages);
+            AdapterToolItem atiSiteLanguagesSelectionLabel = new AdapterToolItem(languageSelection_Label);
+            toolbar.add(atiPageStats);
+            toolbar.add(new SeparatorToolItem());
             toolbar.add(atiSiteLanguagesSelectionLabel);
             toolbar.add(new SeparatorToolItem());
-            toolbar.add(new SeparatorToolItem());
             toolbar.add(atiSiteLanguages);
-            toolbar.add(new SeparatorToolItem());
-            toolbar.add(new SeparatorToolItem());
         }
-        toolbar.add(begin_date_Label);
+        //common part on both site and page 
+        AdapterToolItem atiBeginDate = new AdapterToolItem(begin_date_field);
+        AdapterToolItem atiEndDate = new AdapterToolItem(end_date_field);
         toolbar.add(new SeparatorToolItem());
+        toolbar.add(new SeparatorToolItem());
+
+        toolbar.add(begin_date_Label);
         toolbar.add(new SeparatorToolItem());
         toolbar.add(atiBeginDate);
         toolbar.add(new SeparatorToolItem());
         toolbar.add(new SeparatorToolItem());
         toolbar.add(end_date_Label);
-        toolbar.add(new SeparatorToolItem());
+
         toolbar.add(new SeparatorToolItem());
         toolbar.add(atiEndDate);
         toolbar.add(new SeparatorToolItem());
@@ -603,7 +596,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         TabPanel charts = new TabPanel();
         charts.setWidth(1000);
 
-        final TabItem annotatedTimeLineTab = new TabItem("Annotated time line");
+        final TabItem annotatedTimeLineTab = new TabItem(Messages.getResource("annotatedTimelime"));
         annotatedTimeLineTab.addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
                 siteStats.removeAll();
@@ -623,7 +616,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         annotatedTimeLineTab.add(annotatedTimeLinePanel, chartData);
 
 
-        final TabItem geoMapTab = new TabItem("Geographic map");
+        final TabItem geoMapTab = new TabItem(Messages.getResource("geographicMap"));
         geoMapTab.addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
                 siteStats.removeAll();
@@ -706,11 +699,11 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                     }
                     gaParams.setJahiaGAprofile(profilesComboBox.getSimpleValue().toString());
                     if (chartType.equals("AnnotatedTimeLine")) {
-                        annotatedTimeLinePanel.getElement().setInnerHTML("Requested report is being downloaded");
+                        annotatedTimeLinePanel.getElement().setInnerHTML(Messages.getResource("downloadingData"));
                     } else if (chartType.equals("Pie")) {
-                        piePanel.getElement().setInnerHTML("Requested report is being downloaded");
+                        piePanel.getElement().setInnerHTML(Messages.getResource("downloadingData"));
                     } else if (chartType.equals("GeoMap")) {
-                        geoMapPanel.getElement().setInnerHTML("Requested report is being downloaded");
+                        geoMapPanel.getElement().setInnerHTML(Messages.getResource("downloadingData"));
                     }
 
                     ToolbarService.App.getInstance().getGAdata(gaParams, new AsyncCallback<Map<String, String>>() {
@@ -736,25 +729,31 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                         }
 
                         public void onFailure(Throwable throwable) {
-                            Window.alert("Failure of data retreiving");
+                            Log.info("in Failure 1");
+
+                           // Window.alert(Messages.getResource("error"));
                         }
                     });
                 } else {
-                    Window.alert("Please select a begin and an end date");
+                    Log.info("in Failure 2");
+                   // Window.alert(Messages.getResource("error"));
                 }
             }
         };
-        Button button = new Button("OK");
-        button.addSelectionListener(executeActionListener);
-        AdapterToolItem atiButton = new AdapterToolItem(button);
-        toolbar.add(atiButton);
+        final TextToolItem button = new TextToolItem(Messages.getResource("showData")) ;
 
+        button.addSelectionListener(executeActionListener);
+        toolbar.add(button);
         w.setTopComponent(toolbar);
         w.add(charts, chartData);
         w.add(infoPanel, infoData);
         w.show();
-
-
+        DeferredCommand.addCommand(new Command() {
+            public void execute() {
+                button.fireEvent(Events.Select);
+            }
+        });
+        Log.debug("showing the window");
     }
 
     /*
@@ -791,6 +790,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
        options['height'] = 240;
        options['is3D'] = true;
        options['title'] = "'"+statType+"'";
+       options['wmode'] = 'transparent';
 
         var chart = new  $wnd.google.visualization.BarChart(element);
         chart.draw(data, options);
@@ -824,6 +824,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
 
           var options = {};
           options['dataMode'] = 'regions';
+          options['wmode'] = 'transparent';
           var geomap = new $wnd.google.visualization.GeoMap(element);
           geomap.draw(data, options);
         }-*/;
@@ -858,6 +859,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
          options['displayAnnotations']= true;
          options['annotationsWidth'] = 5;
          options['scaleType'] = 'maximize';
+         options['wmode'] = 'transparent';
          var chart = new $wnd.google.visualization.AnnotatedTimeLine(element);
          chart.draw(data, options);
 
@@ -868,15 +870,13 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
    * */
     private enum StatSiteType {
 
-        BOUNCERATE("Bounce Rate"), BROWSER("Browser"), CONNECTIONSPEED("Connection Speed"), DIRECT("Direct"),
-        /*GOAL1("Goal1"), GOAL2("Goal2"), GOAL3("Goal3"), GOAL4("Goal4"),*/ KEYWORD("Keyword"),
-        NEWVISITS("New Visits"), PAGEVIEWS("Pageviews"), REFERRAL("Referral"), SEARCH("Search"),
-         /**/SOURCE("Source"), TIMEONSITE("Time On Site"), VISITORS("Visitors"), VISITS("Visits"),
-        PAGESPERVISIT("Pages Per Visit"), AVGTIMEONSITE("Avgerage Time on Site"), PERCENTAGEOFNEWVISITS("Percentage Of New Visits"), BOUNCES("Bounces");
+        BOUNCERATE(Messages.getResource("bounceRate")), BROWSER(Messages.getResource("browser")), CONNECTIONSPEED(Messages.getResource("connectionSpeed")), DIRECT(Messages.getResource("direct")),
+        /*GOAL1("Goal1"), GOAL2("Goal2"), GOAL3("Goal3"), GOAL4("Goal4"),*/ KEYWORD(Messages.getResource("keyword")),
+        NEWVISITS(Messages.getResource("newVisits")), PAGEVIEWS(Messages.getResource("pageViews")), REFERRAL(Messages.getResource("referral")), SEARCH(Messages.getResource("search")),
+         /**/SOURCE(Messages.getResource("source")), TIMEONSITE(Messages.getResource("timeOnSite")), VISITORS(Messages.getResource("visitors")), VISITS(Messages.getResource("visits")),
+        PAGESPERVISIT(Messages.getResource("pagesPerVisit")), AVGTIMEONSITE("Avgerage Time on Site"), PERCENTAGEOFNEWVISITS(Messages.getResource("percentageNewVisits")), BOUNCES(Messages.getResource("bounces"));
 
         //todo unlock goals
-
-
         private String name;
 
         StatSiteType(String name) {
@@ -894,8 +894,8 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
    * */
     private enum StatPageType {
 
-        BOUNCERATE("Bounce Rate"), DOLLARINDEX("$ Index"), EXITPERCENT("% Exit"),
-        PAGEVIEWS("Pageviews"), TIMEONPAGE("Time on Page"), UNIQUEVIEWS("Unique Pageviews");
+        BOUNCERATE(Messages.getResource("bounceRate")), DOLLARINDEX(Messages.getResource("index")), EXITPERCENT(Messages.getResource("exit")),
+        PAGEVIEWS(Messages.getResource("pageViews")), TIMEONPAGE(Messages.getResource("timeOnPage")), UNIQUEVIEWS(Messages.getResource("uniquePageviews"));
 
         private String name;
 
@@ -1023,83 +1023,83 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                         SimpleComboBox<String> profilesComboBox,final ContentPanel annotatedTimeLinePanel1,final ContentPanel piePanel1,final ContentPanel geoMapPanel1){
         {
 
-                // get google analytics parameters from the form
-                DateTimeFormat fmt = DateTimeFormat.getFormat("yyyyMMdd");
-                if (!(fmt.format(begin_date_field.getValue()).length() < 8) && (!(fmt.format(end_date_field.getValue()).length() < 8))) {
-                    String dateRange = fmt.format(begin_date_field.getValue()) + "-" + fmt.format(end_date_field.getValue());
-                    String statType = "";
-                    gaParams.setDateRange(dateRange);
-                    // Info.display("date range ",dateRange);
-                    String chartType = "";
-                    String url = "";
-                    if (site_or_page.equals("siteStats")) {
-                        url = "site";
-                        gaParams.setSiteORpage(url);
+            // get google analytics parameters from the form
+            DateTimeFormat fmt = DateTimeFormat.getFormat("yyyyMMdd");
+            if (!(fmt.format(begin_date_field.getValue()).length() < 8) && (!(fmt.format(end_date_field.getValue()).length() < 8))) {
+                String dateRange = fmt.format(begin_date_field.getValue()) + "-" + fmt.format(end_date_field.getValue());
+                String statType = "";
+                gaParams.setDateRange(dateRange);
+                // Info.display("date range ",dateRange);
+                String chartType = "";
+                String url = "";
+                if (site_or_page.equals("siteStats")) {
+                    url = "site";
+                    gaParams.setSiteORpage(url);
 
-                        if (annotatedTimeLineTab1.isVisible()) {
-                            chartType = "AnnotatedTimeLine";
-                        } else if (pieTab1.isVisible()) {
-                            chartType = "Pie";
-                        } else if (geoMapTab1.isVisible()) {
-                            chartType = "GeoMap";
-                        }
-                        statType = siteStats.getSimpleValue().toString().replace(" ", "");
-                        gaParams.setStatType(statType);
-                        gaParams.setChartType(chartType);
-                        //Info.display("", statType + " in " + chartType);
-
-                    } else {
-                        if (siteLanguages.getSimpleValue().equals("all")) {
-                            url = "/Universal_Unique_Id/" + uuid+ "/";
-                        } else {
-                            url = "/Universal_Unique_Id/" + uuid + "/" + siteLanguages.getSimpleValue() + "/";
-                        }
-                        gaParams.setSiteORpage(url);
-                        statType = pageStats.getSimpleValue().toString();
+                    if (annotatedTimeLineTab1.isVisible()) {
                         chartType = "AnnotatedTimeLine";
-                        gaParams.setStatType(statType);
-                        gaParams.setChartType(chartType);
-
+                    } else if (pieTab1.isVisible()) {
+                        chartType = "Pie";
+                    } else if (geoMapTab1.isVisible()) {
+                        chartType = "GeoMap";
                     }
-                    gaParams.setJahiaGAprofile(profilesComboBox.getSimpleValue().toString());
-                    if (chartType.equals("AnnotatedTimeLine")) {
-                        annotatedTimeLinePanel1.getElement().setInnerHTML("Requested report is being downloaded");
-                    } else if (chartType.equals("Pie")) {
-                        piePanel1.getElement().setInnerHTML("Requested report is being downloaded");
-                    } else if (chartType.equals("GeoMap")) {
-                        geoMapPanel1.getElement().setInnerHTML("Requested report is being downloaded");
-                    }
+                    statType = siteStats.getSimpleValue().toString().replace(" ", "");
+                    gaParams.setStatType(statType);
+                    gaParams.setChartType(chartType);
+                    //Info.display("", statType + " in " + chartType);
 
-                    ToolbarService.App.getInstance().getGAdata(gaParams, new AsyncCallback<Map<String, String>>() {
-                        public void onSuccess(Map<String, String> gaData) {
-                            data.clear();
-                            data.putAll(gaData);
-                            boolean error = false;
-                            if (data.containsKey("Error")) {
-                                error = true;
-                                Window.alert(data.get("Error"));
-                            }
-                            if (!error) {
-                                if (annotatedTimeLineTab1.isVisible()) {
-                                    displayAnnotatedTimeLine(annotatedTimeLinePanel1.getElement());
-                                } else if (pieTab1.isVisible()) {
-                                    //piePanel.getElement().setInnerHTML("Coming soon");
-                                    //  displayPieChart(piePanel.getElement());
-                                } else if (geoMapTab1.isVisible()) {
-                                    displayGeoMap(geoMapPanel1.getElement());
-                                }
-                            }
-
-                        }
-
-                        public void onFailure(Throwable throwable) {
-                            Window.alert("Failure of data retreiving");
-                        }
-                    });
                 } else {
-                    Window.alert("Please select a begin and an end date");
+                    if (siteLanguages.getSimpleValue().equals("all")) {
+                        url = "/Universal_Unique_Id/" + uuid+ "/";
+                    } else {
+                        url = "/Universal_Unique_Id/" + uuid + "/" + siteLanguages.getSimpleValue() + "/";
+                    }
+                    gaParams.setSiteORpage(url);
+                    statType = pageStats.getSimpleValue().toString();
+                    chartType = "AnnotatedTimeLine";
+                    gaParams.setStatType(statType);
+                    gaParams.setChartType(chartType);
+
                 }
+                gaParams.setJahiaGAprofile(profilesComboBox.getSimpleValue().toString());
+                if (chartType.equals("AnnotatedTimeLine")) {
+                    annotatedTimeLinePanel1.getElement().setInnerHTML("Requested report is being downloaded");
+                } else if (chartType.equals("Pie")) {
+                    piePanel1.getElement().setInnerHTML("Requested report is being downloaded");
+                } else if (chartType.equals("GeoMap")) {
+                    geoMapPanel1.getElement().setInnerHTML("Requested report is being downloaded");
+                }
+
+                ToolbarService.App.getInstance().getGAdata(gaParams, new AsyncCallback<Map<String, String>>() {
+                    public void onSuccess(Map<String, String> gaData) {
+                        data.clear();
+                        data.putAll(gaData);
+                        boolean error = false;
+                        if (data.containsKey("Error")) {
+                            error = true;
+                            Window.alert(data.get("Error"));
+                        }
+                        if (!error) {
+                            if (annotatedTimeLineTab1.isVisible()) {
+                                displayAnnotatedTimeLine(annotatedTimeLinePanel1.getElement());
+                            } else if (pieTab1.isVisible()) {
+                                //piePanel.getElement().setInnerHTML("Coming soon");
+                                //  displayPieChart(piePanel.getElement());
+                            } else if (geoMapTab1.isVisible()) {
+                                displayGeoMap(geoMapPanel1.getElement());
+                            }
+                        }
+
+                    }
+
+                    public void onFailure(Throwable throwable) {
+                        Window.alert("Failure of data retreiving");
+                    }
+                });
+            } else {
+                Window.alert("Please select a begin and an end date");
             }
+        }
     }
 
 

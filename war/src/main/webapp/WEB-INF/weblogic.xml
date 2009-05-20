@@ -1,4 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
+
 <weblogic-web-app
         xmlns="http://www.bea.com/ns/weblogic/90"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -13,11 +14,12 @@
     </resource-description>
     <jsp-descriptor>
         <keepgenerated>true</keepgenerated>
+        <!-- Chnage this value on to higher level on production to avoid too many recompilations of jsps-->
+        <page-check-seconds>3600</page-check-seconds>
         <precompile>false</precompile>
         <verbose>true</verbose>
     </jsp-descriptor>
     <container-descriptor>
-        <
         <prefer-web-inf-classes>false</prefer-web-inf-classes>
     </container-descriptor>    
 </weblogic-web-app>

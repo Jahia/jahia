@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <parent>
+        <groupId>org.jahia.prepackagedsites</groupId>
+        <artifactId>prepackagedSites</artifactId>
+        <version>6.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>testSite</artifactId>
+    <name>Test site with test templates</name>
+    <packaging>pom</packaging>
+
+    <build>
+        <plugins>
+
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>testSite</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/testSite.xml</descriptor>
+                            </descriptors>
+                            <finalName>testSite</finalName>
+                        </configuration>
+
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>shared</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/shared.xml</descriptor>
+                            </descriptors>
+                            <finalName>shared</finalName>
+                        </configuration>
+
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>root</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/root.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+        </plugins>
+    </build>
+</project>

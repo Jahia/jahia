@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
-    "http://www.springframework.org/dtd/spring-beans.dtd">
-<beans>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <bean id="coreEngine" class="org.jahia.engines.core.Core_Engine" />
+    <bean id="updateFieldEngine" class="org.jahia.engines.updatefield.UpdateField_Engine" />
     <bean id="addContainerEngine" class="org.jahia.engines.addcontainer.AddContainer_Engine">
         <property name="lockRegistry" ref="LockService" />
     </bean>
@@ -12,6 +14,9 @@
         <property name="pageService" ref="JahiaPageService" />
     </bean>
     <bean id="restoreContainerEngine" class="org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine" />
+    <bean id="selectDataSourceEngine" class="org.jahia.engines.selectdatasource.SelectDataSource_Engine" />
+    <bean id="xmlSourceEngine" class="org.jahia.engines.xmlsource.XmlSource" />
+    <bean id="viewDataSourceIDEngine" class="org.jahia.engines.viewdatasourceid.ViewDataSourceID_Engine" />
     <bean id="searchEngine" class="org.jahia.engines.search.Search_Engine" />
     <bean id="loginEngine" class="org.jahia.engines.login.Login_Engine" />
     <bean id="logoutEngine" class="org.jahia.engines.logout.Logout_Engine" />
@@ -46,10 +51,14 @@
         <property name="engineInstances">
             <list>
                 <ref bean="coreEngine" />
+                <ref bean="updateFieldEngine" />
                 <ref bean="addContainerEngine" />
                 <ref bean="updateContainerEngine" />
                 <ref bean="deleteContainerEngine" />
                 <ref bean="restoreContainerEngine" />
+                <ref bean="selectDataSourceEngine" />
+                <ref bean="xmlSourceEngine" />
+                <ref bean="viewDataSourceIDEngine" />
                 <ref bean="searchEngine" />
                 <ref bean="loginEngine" />
                 <ref bean="logoutEngine" />

@@ -1,41 +1,24 @@
 <%--
 
-    
-    This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
-    
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-    
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU General Public License for more details.
-    
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-    
-    As a special exception to the terms and conditions of version 2.0 of
-    the GPL (or any later version), you may redistribute this Program in connection
-    with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
-    describing the FLOSS exception, and it is also available here:
-    http://www.jahia.com/license
-    
-    Commercial and Supported Versions of the program
-    Alternatively, commercial and supported versions of the program may be used
-    in accordance with the terms contained in a separate written agreement
-    between you and Jahia Limited. If you are unsure which license is appropriate
-    for your use, please contact the sales department at sales@jahia.com.
+    Jahia Enterprise Edition v6
+
+    Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+
+    Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+    with Document Management and Portal features.
+
+    The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+    IMPLIED.
+
+    Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+    you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+
+    If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-
 <%@ include file="../common/declarations.jspf" %>
 
-<fmt:message key='loginpopup'/>&nbsp;
+<fmt:message key='loginpopup'/><a href="<template:composePageURL page="login"/>" ><fmt:message key='login'/></a>
 
 
 <ui:loginArea>
@@ -43,22 +26,24 @@
         <fieldset>
             <legend>&nbsp;<fmt:message key='login'/>&nbsp;</legend>
             <p>
-                <ui:loginUsername labelCssClassName="left" cssClassName="field" labelKey="username" tabIndex="1"/>
+                <label class="left" for="username1"><fmt:message key="username"/></label><ui:loginUsername class="field" id="username1" size="8"/>
             </p>
 
             <p>
-                <ui:loginPassword labelCssClassName="left" cssClassName="field" labelKey="password" tabIndex="2"/>
+                <label class="left" for="password1"><fmt:message key="password"/></label><ui:loginPassword class="field" id="password1" size="8"/>
             </p>
 
             <p>
-                <ui:loginRememberMe labelCssClassName="left" cssClassName="field" labelKey="rememberme" tabIndex="3"/>
+                <label class="left" for="rememberme"><fmt:message key="rememberme"/></label><ui:loginRememberMe class="field" id="rememberme"/>
             </p>
 
             <p style="float:left">
-                <ui:loginButton cssClassName="button" labelKey="loginbutton" tabIndex="4"/>
+                <input type="submit" name="login" value="<fmt:message key='loginbutton'/>" class="button"/>
             </p>
 
-            <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePasswordKey" cssClassName="error"/>
+            <ui:isLoginError>
+              <p><span class="error"><fmt:message key="invalidUsernamePasswordKey"/></span></p>
+            </ui:isLoginError>
 
         </fieldset>
     </div>
@@ -69,17 +54,19 @@
         <fieldset>
             <legend>&nbsp;<fmt:message key='loginstandard'/>&nbsp;</legend>
             <p>
-                <ui:loginUsername labelCssClassName="left" cssClassName="field" labelKey="username" tabIndex="5"/>
+                <label class="left" for="username2"><fmt:message key="username"/></label><ui:loginUsername class="field" id="username2" size="8"/>
             </p>
 
             <p>
-                <ui:loginPassword labelCssClassName="left" cssClassName="field" labelKey="password" tabIndex="6"/>
+                <label class="left" for="password2"><fmt:message key="password"/></label><ui:loginPassword class="field" id="password2" size="8"/>
             </p>
 
             <p style="float:left">
-                <ui:loginButton cssClassName="button" labelKey="loginbutton" tabIndex="7"/>
+                <input type="submit" name="login" value="<fmt:message key='loginbutton'/>" class="button"/>
             </p>
-            <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePasswordKey" cssClassName="error"/>
+            <ui:isLoginError>
+              <p><span class="error"><fmt:message key="invalidUsernamePasswordKey"/></span></p>
+            </ui:isLoginError>
         </fieldset>
     </div>
 </ui:loginArea>

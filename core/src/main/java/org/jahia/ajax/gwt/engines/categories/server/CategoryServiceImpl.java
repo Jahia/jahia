@@ -1,36 +1,19 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.engines.categories.server;
 
 import org.jahia.ajax.gwt.client.service.category.CategoryService;
@@ -53,10 +36,10 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.gui.GuiBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.data.events.JahiaEvent;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 
 import java.util.*;
+import java.security.Principal;
 
 /**
  * User: ktlili
@@ -67,20 +50,87 @@ import java.util.*;
 public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements CategoryService {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(CategoryServiceImpl.class);
 
+    public List<GWTJahiaCategoryNode> lsInit(final String rootKey, final List<GWTJahiaCategoryNode> selectedCategories, final String categoryLocale) throws GWTJahiaServiceException {
+        try {
+            final JahiaUser currentUser = getRemoteJahiaUser();
+            Category rootCategory;
+            boolean rootKeySupplied = (rootKey != null && rootKey.trim().length() > 0);
+            if (!rootKeySupplied) {
+                rootCategory = Category.getRootCategory(currentUser);
+            } else {
+                rootCategory = Category.getCategory(rootKey, currentUser);
+            }
+
+            List<String> selectedPaths = new ArrayList<String>();
+            for (GWTJahiaCategoryNode node : selectedCategories) {
+                selectedPaths.add(node.getPath());
+            }
+
+            List<GWTJahiaCategoryNode> result = new ArrayList<GWTJahiaCategoryNode>(1);
+
+            if ("root".equals(rootCategory.getKey())) { // don't retrieve root category, get its children instead
+                final TreeSet<Category> sortedChildrenCategories = new TreeSet<Category>(new NumericStringComparator<Category>());
+                sortedChildrenCategories.addAll(rootCategory.getChildCategories());
+                for (Category child : sortedChildrenCategories) {
+                    List<Category> parents = child.getParentCategories();
+                    String parentKey = null;
+                    if (parents != null && parents.size() > 0) {
+                        parentKey = parents.get(0).getKey();
+                    }
+                    GWTJahiaCategoryNode rootNode = createGWTJahiaCategoryNode(parentKey, child, false, categoryLocale);
+                    addChildrenToCategory(rootNode, selectedPaths, currentUser, categoryLocale);
+                    result.add(rootNode);
+                }
+            } else {
+                List<Category> parents = rootCategory.getParentCategories();
+                String parentKey = null;
+                if (parents != null && parents.size() > 0) {
+                    parentKey = parents.get(0).getKey();
+                }
+                GWTJahiaCategoryNode rootNode = createGWTJahiaCategoryNode(parentKey, rootCategory, false, categoryLocale);
+                addChildrenToCategory(rootNode, selectedPaths, currentUser, categoryLocale);
+                result.add(rootNode);
+            }
+            return result;
+        } catch (Exception e) {
+            logger.error(e.toString(), e);
+            throw new GWTJahiaServiceException(e.toString());
+        }
+    }
+
+    private void addChildrenToCategory(final GWTJahiaCategoryNode node, final List<String> pathsToAdd, final JahiaUser currentUser, final String locale) throws JahiaException {
+        Category cat = Category.getCategory(node.getKey(), currentUser);
+        final TreeSet<Category> childrenCategories = new TreeSet<Category>(new NumericStringComparator<Category>());
+        childrenCategories.addAll(cat.getChildCategories());
+        for (Category childCategory : childrenCategories) {
+            if (pathsToAdd.contains(childCategory.getCategoryPath((Principal) null))) {
+                GWTJahiaCategoryNode childNode = createGWTJahiaCategoryNode(node.getKey(), childCategory, false, locale);
+                addChildrenToCategory(childNode, pathsToAdd, currentUser, locale);
+                node.add(childNode);
+                childNode.setParent(node);
+            }
+        }
+    }
+
     public List<GWTJahiaCategoryNode> ls(GWTJahiaCategoryNode gwtJahiaCategoryNode, String categoryLocale) throws GWTJahiaServiceException {
         List<GWTJahiaCategoryNode> gwtJahiaNodes = new ArrayList<GWTJahiaCategoryNode>();
         try {
             final JahiaUser currentUser = getRemoteJahiaUser();
             logger.debug("Get categories for user " + currentUser);
             final Category parentCategory;
-            List<Category> childrenCategories = new ArrayList<Category>();
+            List<Category> childrenCategories;
             if (gwtJahiaCategoryNode == null) {
                 // load root
                 parentCategory = Category.getRootCategory(currentUser);
+                childrenCategories = new ArrayList<Category>();
                 childrenCategories.add(parentCategory);
+                //childrenCategories = parentCategory.getChildCategories(currentUser);
             } else {
                 logger.debug("load category with key[" + gwtJahiaCategoryNode.getKey() + "].");
                 parentCategory = Category.getCategory(gwtJahiaCategoryNode.getKey(), currentUser);
+                if (parentCategory == null) {
+                    return new ArrayList<GWTJahiaCategoryNode>();
+                }
                 childrenCategories = parentCategory.getChildCategories(currentUser);
             }
             String parentKey = "";
@@ -89,7 +139,7 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
             }
 
             // sort categories
-            final TreeSet<Category> sortedChildrenCategories = new TreeSet<Category>(new NumericStringComparator());
+            final TreeSet<Category> sortedChildrenCategories = new TreeSet<Category>(new NumericStringComparator<Category>());
             if (childrenCategories != null) {
                 sortedChildrenCategories.addAll(childrenCategories);
                 Iterator<Category> it = sortedChildrenCategories.iterator();
@@ -263,57 +313,30 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
         }
         final JahiaUser currentUser = getRemoteJahiaUser();
         try {
-            Category newParentCat = Category.getCategory(newParentJahiaCategoryNode.getKey(), currentUser);
-            for (GWTJahiaCategoryNode categoryNode : copiedNode) {
-                Category categoryToMove = Category.getCategory(categoryNode.getKey(), currentUser);
-                if (newParentCat.getKey() != categoryToMove.getKey()) {
-                    if (cut) {
-                        // remove from old parent
-                        Category parentCat = Category.getCategory(categoryNode.getParentKey(), currentUser);
-                        parentCat.removeChildObjectKey(categoryToMove.getObjectKey());
+            if (newParentJahiaCategoryNode != null) {
+                Category newParentCat = Category.getCategory(newParentJahiaCategoryNode.getKey(), currentUser);
+                for (GWTJahiaCategoryNode categoryNode : copiedNode) {
+                    Category categoryToMove = Category.getCategory(categoryNode.getKey(), currentUser);
+                    if (categoryToMove != null) {
+                        String newParentPath = newParentCat.getCategoryPath(currentUser);
+                        List<Category> oldParentCategories = categoryToMove.getParentCategories(currentUser);
+                        // paste categories if it's not root and if newParent is not a child of the catgeories to move
+                        if ((oldParentCategories != null && !oldParentCategories.isEmpty()) && newParentPath.indexOf(categoryToMove.getCategoryPath(currentUser)) != 0) {
+                            if (cut) {
+                                // remove from old parent
+                                Category parentCat = Category.getCategory(categoryNode.getParentKey(), currentUser);
+                                parentCat.removeChildObjectKey(categoryToMove.getObjectKey());
+                            }
+                            // link to new parent
+                            newParentCat.addChildObjectKey(categoryToMove.getObjectKey());
+                        }
                     }
-                    // link to new parent
-                    newParentCat.addChildObjectKey(categoryToMove.getObjectKey());
                 }
-
             }
         } catch (Exception e) {
             logger.error("Unable to paste category", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
-    }
-
-    /**
-     * Cut category
-     *
-     * @param gwtJahiaCategoryNodes
-     * @throws GWTJahiaServiceException
-     */
-    public void cut(List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) throws GWTJahiaServiceException {
-        // not implemented
-    }
-
-    /**
-     * Copy categoris
-     *
-     * @param gwtJahiaCategoryNodes
-     * @throws GWTJahiaServiceException
-     */
-    public void copy(List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) throws GWTJahiaServiceException {
-        // not implemented
-    }
-
-    /**
-     * Get download path
-     *
-     * @param path
-     * @return
-     * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
-     *
-     */
-    public String getDownloadPath(String path) throws GWTJahiaServiceException {
-        // No implemented
-        return null;
     }
 
 
@@ -327,7 +350,7 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
         final JahiaUser currentUser = getRemoteJahiaUser();
         try {
             // test if category exists
-            if(Category.getCategory(newCategory.getKey()) != null){
+            if (Category.getCategory(newCategory.getKey()) != null) {
                 throw new GWTJahiaServiceException(getLocaleJahiaAdminResource("org.jahia.admin.categories.ManageCategories.editCategory.categoryAlreadyExists.label"));
             }
 
@@ -448,7 +471,7 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
 
             JahiaBaseACL baseACL = cat.getACL();
 
-            GWTJahiaNodeACL gwtacl = ACLHelper.getGWTJahiaNodeACL(baseACL, false, retrieveParamBean());
+            GWTJahiaNodeACL gwtacl = ACLHelper.getGWTJahiaNodeACL(baseACL, cat, cat, false, retrieveParamBean());
             return gwtacl;
         } catch (JahiaException e) {
             logger.error("Error retrieveing ACL for " + gwtJahiaCategoryNode
@@ -484,6 +507,12 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
         for (Category curChildCategory : childCategories) {
             recursiveDeleteCategory(curChildCategory);
         }
+
+        //  do not remove 'root' category
+        List<Category> parentCategories = currentCategory.getParentCategories();
+        if (parentCategories == null || parentCategories.size() == 0) {
+            return;
+        }
         currentCategory.delete();
     }
 
@@ -506,12 +535,17 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
             engineLocale = LanguageCodeConverters.languageCodeToLocale(categoryLocale);
         }
         String name = category.getTitle(engineLocale);
-        if (name == null) {
+        String extendedName;
+        if (name == null || name.length() == 0) {
             name = "(" + category.getKey() + ")";
+            extendedName = "(" + category.getKey() + ")";
+        }else{
+            extendedName = "(" + category.getKey() + ") "+category.getTitle(engineLocale);
         }
         gwtJahiaNode.setCategoryId("" + category.getJahiaCategory().getId());
         gwtJahiaNode.setParentKey(parentKey);
         gwtJahiaNode.setName(name);
+        gwtJahiaNode.setExtendedName(extendedName);
         gwtJahiaNode.setKey(category.getKey());
         gwtJahiaNode.setPath(category.getCategoryPath(getRemoteJahiaUser()));
 

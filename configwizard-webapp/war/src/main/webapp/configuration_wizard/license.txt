@@ -1,339 +1,374 @@
-		    GNU GENERAL PUBLIC LICENSE
-		       Version 2, June 1991
+JAHIA SUSTAINABLE ENTERPRISE LICENSE (JSEL)
+Version 2.0
 
- Copyright (C) 1989, 1991 Free Software Foundation, Inc.,
- 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- Everyone is permitted to copy and distribute verbatim copies
- of this license document, but changing it is not allowed.
+INTRODUCTION
 
-			    Preamble
+The JAHIA Sustainable Enterprise License ("License") may include: 1) Test,
+Research and Development Right of Usage and 2) Commercial Right of Usage. You
+have agreed to the terms of this License by selecting the "Accept" button at the
+end of the JSEL or executing a hardcopy JSEL or a document that expressly
+referred to the License with Jahia Solutions Group SA ("JSG").
 
-  The licenses for most software are designed to take away your
-freedom to share and change it.  By contrast, the GNU General Public
-License is intended to guarantee your freedom to share and change free
-software--to make sure the software is free for all its users.  This
-General Public License applies to most of the Free Software
-Foundation's software and to any other program whose authors commit to
-using it.  (Some other Free Software Foundation software is covered by
-the GNU Lesser General Public License instead.)  You can apply it to
-your programs, too.
+The Commercial Use must be approved by You and JSG with the signature of a
+related document, delivered by JSG, in order to become effective. Capitalized
+terms used in this License are defined in the Definitions section.
 
-  When we speak of free software, we are referring to freedom, not
-price.  Our General Public Licenses are designed to make sure that you
-have the freedom to distribute copies of free software (and charge for
-this service if you wish), that you receive source code or can get it
-if you want it, that you can change the software or use pieces of it
-in new free programs; and that you know you can do these things.
+1. DEFINITIONS.
 
-  To protect your rights, we need to make restrictions that forbid
-anyone to deny you these rights or to ask you to surrender the rights.
-These restrictions translate to certain responsibilities for you if you
-distribute copies of the software, or if you modify it.
+1.1. "Approved Counterpart" means the Modification(s), which are identified by
+You as potential Generic Elements, which you suggest as a counterpart to JSG and
+which were accepted, validated and developed by JSG.
 
-  For example, if you distribute copies of such a program, whether
-gratis or for a fee, you must give the recipients all the rights that
-you have.  You must make sure that they, too, receive or can get the
-source code.  And you must show them these terms so they know their
-rights.
+1.2. "Commercial Use" means any use of Original Software by You, alone or
+bundled with any other software or hardware, at the exclusion of any Test,
+Research and Development Use.
 
-  We protect your rights with two steps: (1) copyright the software, and
-(2) offer you this license which gives you legal permission to copy,
-distribute and/or modify the software.
+1.3. "Contributor" means each individual or entity that creates or contributes
+to the creation of Modifications.
 
-  Also, for each author's protection and ours, we want to make certain
-that everyone understands that there is no warranty for this free
-software.  If the software is modified by someone else and passed on, we
-want its recipients to know that what they have is not the original, so
-that any problems introduced by others will not reflect on the original
-authors' reputations.
+1.4. "Covered Software" means (a) the Original Software, or (b) Generic
+Developments, or (c) the combination of files containing Original Software with
+files containing Generic Developments, in each case including portions thereof.
 
-  Finally, any free program is threatened constantly by software
-patents.  We wish to avoid the danger that redistributors of a free
-program will individually obtain patent licenses, in effect making the
-program proprietary.  To prevent this, we have made it clear that any
-patent must be licensed for everyone's free use or not licensed at all.
+1.5. "Executable" means the Covered Software in any form other than Source Code.
 
-  The precise terms and conditions for copying, distribution and
-modification follow.
+1.6. "Generic Developments" are defined as Modifications done at Your request by
+JSG as a contribution to the Original Software and identified as such on the JSG
+Order Forms signed by You. Once incorporated into the Original Software, Generic
+Developments are by nature subject to the terms of the licenses used by JSG.
 
-		    GNU GENERAL PUBLIC LICENSE
-   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+1.7. "Generic Elements" means, without limitation: software, modules, patches,
+bug fixes, API, ideas, methods, concepts, know-how, structures, techniques,
+inventions, developments, processes, discoveries, improvements and other
+information and materials developed by JSG before or during the execution of JSG
+Offering.
 
-  0. This License applies to any program or other work which contains
-a notice placed by the copyright holder saying it may be distributed
-under the terms of this General Public License.  The "Program", below,
-refers to any such program or work, and a "work based on the Program"
-means either the Program or any derivative work under copyright law:
-that is to say, a work containing the Program or a portion of it,
-either verbatim or with modifications and/or translated into another
-language.  (Hereinafter, translation is included without limitation in
-the term "modification".)  Each licensee is addressed as "you".
+1.8. "JSG Offering": software and services proposed by JSG under JSG terms and
+conditions.
 
-Activities other than copying, distribution and modification are not
-covered by this License; they are outside its scope.  The act of
-running the Program is not restricted, and the output from the Program
-is covered only if its contents constitute a work based on the
-Program (independent of having been made by running the Program).
-Whether that is true depends on what the Program does.
+1.9. "JSG Terms and Conditions": terms and conditions under which JSG is
+providing JSG Offering to You.
 
-  1. You may copy and distribute verbatim copies of the Program's
-source code as you receive it, in any medium, provided that you
-conspicuously and appropriately publish on each copy an appropriate
-copyright notice and disclaimer of warranty; keep intact all the
-notices that refer to this License and to the absence of any warranty;
-and give any other recipients of the Program a copy of this License
-along with the Program.
+1.10. "Larger Work" means a work which combines Covered Software or portions
+thereof with code not governed by the terms of this License.
 
-You may charge a fee for the physical act of transferring a copy, and
-you may at your option offer warranty protection in exchange for a fee.
+1.11. "License" means this document.
 
-  2. You may modify your copy or copies of the Program or any portion
-of it, thus forming a work based on the Program, and copy and
-distribute such modifications or work under the terms of Section 1
-above, provided that you also meet all of these conditions:
+1.12. "Licensable" means having the right to grant, to the maximum extent
+possible, whether at the time of the initial grant or subsequently acquired, any
+and all of the rights conveyed herein.
 
-    a) You must cause the modified files to carry prominent notices
-    stating that you changed the files and the date of any change.
+1.13. "Modifications" means the Source Code and Executable form of any of the
+following:
 
-    b) You must cause any work that you distribute or publish, that in
-    whole or in part contains or is derived from the Program or any
-    part thereof, to be licensed as a whole at no charge to all third
-    parties under the terms of this License.
+A. Any file that results from an addition to, deletion from or modification of
+the contents of a file containing Original Software or previous Modifications;
 
-    c) If the modified program normally reads commands interactively
-    when run, you must cause it, when started running for such
-    interactive use in the most ordinary way, to print or display an
-    announcement including an appropriate copyright notice and a
-    notice that there is no warranty (or else, saying that you provide
-    a warranty) and that users may redistribute the program under
-    these conditions, and telling the user how to view a copy of this
-    License.  (Exception: if the Program itself is interactive but
-    does not normally print such an announcement, your work based on
-    the Program is not required to print an announcement.)
+B. Any new file that contains any part of the Original Software or previous
+Modification; or
 
-These requirements apply to the modified work as a whole.  If
-identifiable sections of that work are not derived from the Program,
-and can be reasonably considered independent and separate works in
-themselves, then this License, and its terms, do not apply to those
-sections when you distribute them as separate works.  But when you
-distribute the same sections as part of a whole which is a work based
-on the Program, the distribution of the whole must be on the terms of
-this License, whose permissions for other licensees extend to the
-entire whole, and thus to each and every part regardless of who wrote it.
+C. Any new file that is contributed or otherwise made available under the terms
+of this License.
 
-Thus, it is not the intent of this section to claim rights or contest
-your rights to work written entirely by you; rather, the intent is to
-exercise the right to control the distribution of derivative or
-collective works based on the Program.
+1.14. "Original Software" means the Source Code and Executable form of the Jahia
+Enterprise Edition software code that is released under this License.
 
-In addition, mere aggregation of another work not based on the Program
-with the Program (or with a work based on the Program) on a volume of
-a storage or distribution medium does not bring the other work under
-the scope of this License.
+1.15. "Patent Claims" means any patent claim(s), now owned or hereafter
+acquired, including without limitation, method, process, and apparatus claims,
+in any patent Licensable by grantor.
 
-  3. You may copy and distribute the Program (or a work based on it,
-under Section 2) in object code or executable form under the terms of
-Sections 1 and 2 above provided that you also do one of the following:
+1.16. "Source Code" means (a) the common form of computer software code in which
+modifications are made and (b) associated documentation included in or with such
+code.
 
-    a) Accompany it with the complete corresponding machine-readable
-    source code, which must be distributed under the terms of Sections
-    1 and 2 above on a medium customarily used for software interchange; or,
+1.17. "Specific Developments" are defined as the work performed at Your request
+and identified as such in the context of JSG Order Forms that are associated
+with said Specific Developments and are signed by You before any work is done.
 
-    b) Accompany it with a written offer, valid for at least three
-    years, to give any third party, for a charge no more than your
-    cost of physically performing source distribution, a complete
-    machine-readable copy of the corresponding source code, to be
-    distributed under the terms of Sections 1 and 2 above on a medium
-    customarily used for software interchange; or,
+1.18. "Specific Elements" are defined as all of the elements supplied to JSG by
+You in the context of performance of the Services, for which You owns the
+intellectual property rights.
 
-    c) Accompany it with the information you received as to the offer
-    to distribute corresponding source code.  (This alternative is
-    allowed only for noncommercial distribution and only if you
-    received the program in object code or executable form with such
-    an offer, in accord with Subsection b above.)
+1.19. "Test, Research and Development Use" means use of the Original Software
+only for testing, researching and developing the Original Software and expressly
+excludes any distribution rights and use for direct or indirect commercial or
+strategic gain or advantage which is subject to execution of a purchase or
+reselling agreement by You and JSG.
 
-The source code for a work means the preferred form of the work for
-making modifications to it.  For an executable work, complete source
-code means all the source code for all modules it contains, plus any
-associated interface definition files, plus the scripts used to
-control compilation and installation of the executable.  However, as a
-special exception, the source code distributed need not include
-anything that is normally distributed (in either source or binary
-form) with the major components (compiler, kernel, and so on) of the
-operating system on which the executable runs, unless that component
-itself accompanies the executable.
+1.20. "You" (or "Your") means an individual or a legal entity exercising rights
+under, and complying with all of the terms of, this License. For legal entities,
+"You" includes any entity which controls, is controlled by, or is under common
+control with You. For purposes of this definition, "control" means (a) the
+power, direct or indirect, to cause the direction or management of such entity,
+whether by contract or otherwise, or (b) ownership of more than fifty percent
+(50%) of the outstanding shares or beneficial ownership of such entity.
 
-If distribution of executable or object code is made by offering
-access to copy from a designated place, then offering equivalent
-access to copy the source code from the same place counts as
-distribution of the source code, even though third parties are not
-compelled to copy the source along with the object code.
+2. LICENSE GRANTS FOR RESEARCH AND DEVELOPMENT USE.
 
-  4. You may not copy, modify, sublicense, or distribute the Program
-except as expressly provided under this License.  Any attempt
-otherwise to copy, modify, sublicense or distribute the Program is
-void, and will automatically terminate your rights under this License.
-However, parties who have received copies, or rights, from you under
-this License will not have their licenses terminated so long as such
-parties remain in full compliance.
+JSG hereby grants You a world-wide, royalty-free, non-exclusive Test, Research
+and Development Use license:
 
-  5. You are not required to accept this License, since you have not
-signed it.  However, nothing else grants you permission to modify or
-distribute the Program or its derivative works.  These actions are
-prohibited by law if you do not accept this License.  Therefore, by
-modifying or distributing the Program (or any work based on the
-Program), you indicate your acceptance of this License to do so, and
-all its terms and conditions for copying, distributing or modifying
-the Program or works based on it.
+(a) under intellectual property rights (other than patent or trademark),
+licensable by JSG, to use, modify, display, and perform the Original Software
+(or portions thereof), with or without Modifications, and/or as part of a Larger
+Work, for Test, Research and Development Use by You; and
 
-  6. Each time you redistribute the Program (or any work based on the
-Program), the recipient automatically receives a license from the
-original licensor to copy, distribute or modify the Program subject to
-these terms and conditions.  You may not impose any further
-restrictions on the recipients' exercise of the rights granted herein.
-You are not responsible for enforcing compliance by third parties to
+(b) under Patent Claims infringed by the making or using of Original Software,
+to make, have made, use, practice and/or otherwise dispose of the Original
+Software (or portions thereof) for Test, Research and Development Use by You.
+
+(c) The licenses granted in Sections 2(a) and 2(b) are effective on the date JSG
+first distributes or otherwise makes the Original Software available to a third
+party under the terms of this License for Test, Research and Development Use by
+You.
+
+(d) Notwithstanding Section 2(b) above, no patent license is granted: (1) for
+code that You delete from the Original Software, or (2) for infringements caused
+by: (i) the modification of the Original Software, or (ii) the combination of
+the Original Software with other software or devices.
+
+(e) Execution of the Covered Software for all other purposes than mentioned in
+this Section is subject to a fee, payable to JSG and to be mutually agreed upon
+by You and JSG. The grant explicitly does not apply to Commercial Use of the
+Original Software. Commercial Use of Original Software requires a signed
+approval explicitly issued for that purpose by JSG.
+
+(f) Other than the rights expressly granted in this License, JSG retains all
+rights, titles, and interests in the Original Software.
+
+3. LICENSE GRANTS FOR COMMERCIAL USE.
+
+3.1. Commercial Use of the Original Software requires the payment of a fee as
+describe by JSG in JSG Offering. The details of Your fees, payment schedule and
+scope of use (subscription, number of JVM, users, servers, modules, support
+scope,...) applicable have to be agreed on a document provided by JSG and signed
+by You according to JSG Offering.
+
+3.2. Conditioned upon the payment of the appropriate fee to JSG, the respect of
+this License terms and limited to the scope of Commercial Use as defined by JSG,
+JSG hereby grants You a world-wide, non-exclusive and fee-bearing license:
+
+(a) under intellectual property rights (other than patent or trademark)
+Licensable by JSG, to use, display, perform the Original Software (or portions
+thereof), with or without Modifications, and/or as part of a Larger Work for
+Commercial Use; and
+
+(b) under Patent Claims infringed by the making or using of Original Software,
+to make, have made, use, practice, sell, and offer for sale, and/or otherwise
+dispose of the Original Software (or portions thereof) for Commercial Use.
+
+(c) The licenses granted are effective on the date JSG first distributes or
+otherwise makes the Original Software available to a third party under the terms
+of this License.
+
+(d) Notwithstanding Section 3(b) above, no patent license is granted: (1) for
+code that You delete from the Original Software, or (2) for infringements caused
+by: (i) the modification of the Original Software, or (ii) the combination of
+the Original Software with other software or devices.
+
+(e) Other than the rights expressly granted in this License, JSG retains all
+rights, titles, and interests in Original Software
+
+3.3. Commercial Distribution Requirement / OEM Agreement
+You may distribute copies for Commercial Use or integrate Original Software in a
+Larger Work under a license agreement of Your choice which is consistent with
+Your rights and obligations under the License including with the fact that you
+need to pay fees to JSG for each copy of the Original Software you distribute
+for Commercial Use according to a specific Agreement, You and JSG have to sign
+before the Distribution of the Larger work.  You may provide warranties,
+indemnities and/or other additional terms and conditions in Your license
+agreements, provided that it is clear that such additional terms and conditions
+are offered by You only. You hereby agree to indemnify JSG for any liability
+incurred by the Initial Developer as a result of any such terms You offer.
+
+4. AVAILABILITY AND POTENTIAL MODIFICATIONS OF SOURCE CODE.
+
+4.1. Conditioned upon Your compliance with this License, JSG hereby grants You
+an access to the Original Software Source Code. The Modifications of the Source
+Code that You may create or to which You may contribute, are, by nature,
+governed by the terms of this License. JSG Offering (for example, support
+services) may not cover Modifications on the Original Software otherwise than
+those explicitly accepted by JSG in a dedicated agreement as, for example, when
+those Modifications are integrated in the Original Software and therefore
+considered as a Generic Development according to the term of paragraph 12 of
 this License.
 
-  7. If, as a consequence of a court judgment or allegation of patent
-infringement or for any other reason (not limited to patent issues),
-conditions are imposed on you (whether by court order, agreement or
-otherwise) that contradict the conditions of this License, they do not
-excuse you from the conditions of this License.  If you cannot
-distribute so as to satisfy simultaneously your obligations under this
-License and any other pertinent obligations, then as a consequence you
-may not distribute the Program at all.  For example, if a patent
-license would not permit royalty-free redistribution of the Program by
-all those who receive copies directly or indirectly through you, then
-the only way you could satisfy both it and this License would be to
-refrain entirely from distribution of the Program.
+4.2. JSG may optionally offer coverage on a Larger Work. Details of the related
+fees, payment schedule and scope of coverage have to be defined in a dedicated
+agreement signed between You and JSG.
 
-If any portion of this section is held invalid or unenforceable under
-any particular circumstance, the balance of the section is intended to
-apply and the section as a whole is intended to apply in other
-circumstances.
+5. VERSION OF THE LICENSE
 
-It is not the purpose of this section to induce you to infringe any
-patents or other property right claims or to contest validity of any
-such claims; this section has the sole purpose of protecting the
-integrity of the free software distribution system, which is
-implemented by public license practices.  Many people have made
-generous contributions to the wide range of software distributed
-through that system in reliance on consistent application of that
-system; it is up to the author/donor to decide if he or she is willing
-to distribute software through any other system and a licensee cannot
-impose that choice.
+5.1. New Versions
+JSG is the initial license steward and may publish revised and/or new versions
+of this License from time to time. Each version will be given a distinguishing
+version number. No one other than the license steward has the right to modify
+this License.
 
-This section is intended to make thoroughly clear what is believed to
-be a consequence of the rest of this License.
+5.2. Effect of New Versions
+You may always continue to a)use the version of the Original Software under the
+terms of the version of the License under which You originally received the
+version of Original Software or b)use the new version.
 
-  8. If the distribution and/or use of the Program is restricted in
-certain countries either by patents or by copyrighted interfaces, the
-original copyright holder who places the Program under this License
-may add an explicit geographical distribution limitation excluding
-those countries, so that distribution is permitted only in or among
-countries not thus excluded.  In such case, this License incorporates
-the limitation as if written in the body of this License.
+6. CONFIDENTIALITY
 
-  9. The Free Software Foundation may publish revised and/or new versions
-of the General Public License from time to time.  Such new versions will
-be similar in spirit to the present version, but may differ in detail to
-address new problems or concerns.
+You and JSG agree to maintain the confidentiality of any proprietary information
+received by the other party during, or prior to entering into, this Agreement
+including non-public technical and business information for a period of two (2)
+years after the termination of this Agreement. This section shall not apply to
+any publicly available or independently developed information. The receiving
+party of any confidential information of the other party agrees not to use said
+confidential information for any purpose except as necessary to fulfil its
+obligations and exercise its rights under this Agreement. The receiving party
+shall protect the secrecy of and avoid disclosure and unauthorized use of the
+disclosing party's confidential information to the same degree that it takes to
+protect its own confidential information and in no event less than reasonable
+care.
 
-Each version is given a distinguishing version number.  If the Program
-specifies a version number of this License which applies to it and "any
-later version", you have the option of following the terms and conditions
-either of that version or of any later version published by the Free
-Software Foundation.  If the Program does not specify a version number of
-this License, you may choose any version ever published by the Free Software
-Foundation.
+7. DISCLAIMER OF WARRANTY.
 
-  10. If you wish to incorporate parts of the Program into other free
-programs whose distribution conditions are different, write to the author
-to ask for permission.  For software which is copyrighted by the Free
-Software Foundation, write to the Free Software Foundation; we sometimes
-make exceptions for this.  Our decision will be guided by the two goals
-of preserving the free status of all derivatives of our free software and
-of promoting the sharing and reuse of software generally.
+COVERED SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "AS IS" BASIS, WITHOUT
+WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, WITHOUT
+LIMITATION, WARRANTIES THAT THE COVERED SOFTWARE IS FREE OF DEFECTS,
+MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE OR NON-INFRINGING. THE ENTIRE RISK AS
+TO THE QUALITY AND PERFORMANCE OF THE COVERED SOFTWARE IS WITH YOU. SHOULD ANY
+COVERED SOFTWARE PROVE DEFECTIVE IN ANY RESPECT, YOU (NOT THE INITIAL DEVELOPER
+OR ANY OTHER CONTRIBUTOR) ASSUME THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS
+LICENSE. NO USE OF ANY COVERED SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER
+THIS DISCLAIMER.
 
-			    NO WARRANTY
+8. LIMITATION OF LIABILITY.
 
-  11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
-FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN
-OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
-PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED
-OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS
-TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE
-PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,
-REPAIR OR CORRECTION.
+UNDER NO CIRCUMSTANCES AND UNDER NO LEGAL THEORY, WHETHER TORT (INCLUDING
+NEGLIGENCE), CONTRACT, OR OTHERWISE, SHALL YOU, THE INITIAL DEVELOPER, ANY OTHER
+CONTRIBUTOR, OR ANY DISTRIBUTOR OF COVERED SOFTWARE, OR ANY SUPPLIER OF ANY OF
+SUCH PARTIES, BE LIABLE TO ANY PERSON FOR ANY INDIRECT, SPECIAL, INCIDENTAL, OR
+CONSEQUENTIAL DAMAGES OF ANY CHARACTER INCLUDING, WITHOUT LIMITATION, DAMAGES
+FOR LOST PROFITS, LOSS OF GOODWILL, WORK STOPPAGE, COMPUTER FAILURE OR
+MALFUNCTION, OR ANY AND ALL OTHER COMMERCIAL DAMAGES OR LOSSES, EVEN IF SUCH
+PARTY SHALL HAVE BEEN INFORMED OF THE POSSIBILITY OF SUCH DAMAGES. THIS
+LIMITATION OF LIABILITY SHALL NOT APPLY TO LIABILITY FOR DEATH OR PERSONAL
+INJURY RESULTING FROM SUCH PARTY"S NEGLIGENCE TO THE EXTENT APPLICABLE LAW
+PROHIBITS SUCH LIMITATION. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OR
+LIMITATION OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, SO THIS EXCLUSION AND
+LIMITATION MAY NOT APPLY TO YOU.
 
-  12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
-WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
-REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,
-INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING
-OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED
-TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY
-YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER
-PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGES.
+9. U.S. GOVERNMENT END USERS.
 
-		     END OF TERMS AND CONDITIONS
+The Original Software is a "commercial item," as that term is defined in 48
+C.F.R. 2.101 (Oct. 1995), consisting of "commercial computer software" (as that
+term is defined at 48 C.F.R. 252.227-7014(a)(1)) and "commercial computer
+software documentation" as such terms are used in 48 C.F.R. 12.212 (Sept. 1995).
+Consistent with 48 C.F.R. 12.212 and 48 C.F.R. 227.7202-1 through 227.7202-4
+(June 1995), all U.S. Government End Users acquire Covered Software with only
+those rights set forth herein. This U.S. Government Rights clause is in lieu of,
+and supersedes, any other FAR, DFAR, or other clause or provision that addresses
+Government rights in computer software under this License.
 
-	    How to Apply These Terms to Your New Programs
+10. TERMINATION.
 
-  If you develop a new program, and you want it to be of the greatest
-possible use to the public, the best way to achieve this is to make it
-free software which everyone can redistribute and change under these terms.
+This License and the rights granted hereunder will terminate automatically if
+You fail to comply with terms herein and fail to cure such breach within 30 days
+of becoming aware of the breach. Provisions which, by their nature, must remain
+in effect beyond the termination of this License shall survive.
 
-  To do so, attach the following notices to the program.  It is safest
-to attach them to the start of each source file to most effectively
-convey the exclusion of warranty; and each file should have at least
-the "copyright" line and a pointer to where the full notice is found.
+The Term of this License is subject to your compliance with the term of this
+License and the payment of the appropriate fee according to JSG Offering
+considering the Commercial Use of the Software.
 
-    <one line to give the program's name and a brief idea of what it does.>
-    Copyright (C) <year>  <name of author>
+11. MISCELLANEOUS.
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+This License represents the complete agreement concerning subject matter hereof.
+If any provision of this License is held to be unenforceable, such provision
+shall be reformed only to the extent necessary to make it enforceable. This
+License shall be governed by the law of the jurisdiction specified in the JSG
+Terms and Conditions (except to the extent applicable law, if any, provides
+otherwise), excluding such jurisdiction"s conflict-of-law provisions. Any
+litigation relating to this License shall be subject to the jurisdiction of the
+courts located in the jurisdiction and venue specified in a notice contained
+within in the JSG Terms and Conditions, with the losing party responsible for
+costs, including, without limitation, court costs and reasonable attorney"s fees
+and expenses. The application of the United Nations Convention on Contracts for
+the International Sale of Goods is expressly excluded. Any law or regulation
+which provides that the language of a contract shall be construed against the
+drafter shall not apply to this License. You agree that You alone are
+responsible for compliance with the United States export administration
+regulations (and the export control laws and regulation of any other countries)
+when You use, distribute or otherwise make available any Covered Software.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+12. GENERIC DEVELOPMENT, APPROVED COUNTERPART, AND JOIN CONTRIBUTION
 
-    You should have received a copy of the GNU General Public License along
-    with this program; if not, write to the Free Software Foundation, Inc.,
-    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+12.1. JSG offers a counterpart, usually under the form of a free Commercial
+Right of usage of the Software attached to the payment of a subscription, in
+exchange of a Generic Developments and Your copyright assignment to JSG, when
+the related Generic Developments are financed by You, except for the co-
+development cases of join contribution (12.7)).
 
-Also add information on how to contact you by electronic and paper mail.
+12.2. The decision to accept a Generic Development as an Approved Counterpart,
+its value, the form of compensation and the criteria applied are let to the sole
+discretion of JSG.
 
-If the program is interactive, make it output a short notice like this
-when it starts in an interactive mode:
+12.3. Description of the Approved Counterpart, its value and the type of
+compensation which shall be approved by both parties in a separated document
+provided by JSG.
 
-    Gnomovision version 69, Copyright (C) year name of author
-    Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
-    This is free software, and you are welcome to redistribute it
-    under certain conditions; type `show c' for details.
+12.4. Modifications considered as Approved Counterpart are, by nature, Generic
+Developments.
 
-The hypothetical commands `show w' and `show c' should show the appropriate
-parts of the General Public License.  Of course, the commands you use may
-be called something other than `show w' and `show c'; they could even be
-mouse-clicks or menu items--whatever suits your program.
+12.5. All Specific Elements, not owned by JSG and provided by You to JSG for
+Services execution, shall remain Your exclusive property when You owns the
+property of specific materials.
 
-You should also get your employer (if you work as a programmer) or your
-school, if any, to sign a "copyright disclaimer" for the program, if
-necessary.  Here is a sample; alter the names:
+12.6. All specific development, requested by You from JSG and listed on
+dedicated JSG document shall remain Your exclusive property except for the
+Generic Elements, even if these Generic Elements are developed at the same time
+as the Specific development and/or are needed by the Specific development to
+work, particularly when Generic Elements are integrated in the Original Software
+and therefore are by nature subject to the terms of the licenses used by JSG.
 
-  Yoyodyne, Inc., hereby disclaims all copyright interest in the program
-  `Gnomovision' (which makes passes at compilers) written by James Hacker.
+12.7. Join contribution:
+As an exclusive exception to the Generic Developments definition, JSG may agree
+to accept some Modifications done by You in order to complete all - or part of -
+Generic Developments. This particular type of Generic Developments is considered
+as "Join Contributions" between You and JSG and You are considered as a
+Contributor for the related Generic Development You agreed to take in charge
+under the following rules:
 
-  <signature of Ty Coon>, 1 April 1989
-  Ty Coon, President of Vice
+a) Contributor owns, and has sufficient rights to contribute, all source code
+and related material intended to be compiled or integrated with the source code
+for the Modifications Contributor has ever delivered, and JSG has accepted, for
+incorporation into the Covered Software.
 
-This General Public License does not permit incorporating your program into
-proprietary programs.  If your program is a subroutine library, you may
-consider it more useful to permit linking proprietary applications with the
-library.  If this is what you want to do, use the GNU Lesser General
-Public License instead of this License.
+b) Contributor hereby assigns to JSG joint ownership in all worldwide common law
+and statutory rights associated with the copyrights, copyright application,
+copyright registration and moral rights in the Approved Counterpart to the
+extent allowable under applicable local laws and copyright conventions.
+Contributor agrees that this assignment may be submitted by JSG to register a
+copyright in the Approved Counterpart. Contributor retains the right to use the
+Approved Counterpart for Contributor's own purposes. This joint copyright
+Assignment supersedes and replaces all prior copyright assignments made by
+Contributor to JSG for the related Modifications provided by Contributor in this
+case of join contribution.
+
+c) Contributor grants JSG the ability to use the related Modifications he
+provided in any way with a sublicenseable, non-exclusive, irrevocable,
+worldwide, royalty-free, transferable license to relicense, use, copy, modify,
+distribute and publicly perform and display the related Modifications on any
+licensing terms (commercial or not).
+
+d) Contributor is legally entitled to grant the above assignment and agrees not
+to provide any Contribution that violates any law or breaches any contract.
+
+e) JSG may require You to submit your Modifications within a specific period of
+time. The default period is 6 months.
+
+f) The right to validate your Modifications as an Approved Counterpart is only
+applicable by JSG. JSG may ask for additional corrections on Your Modifications
+before definitively accepting it as an Approved Counterpart.
+
+g) Each party is responsible for claims and damages arising, directly or
+indirectly, out of its utilization of rights under this License and You agree to
+work with JSG to distribute such responsibility according to the Modifications
+Contributor provided. Nothing herein is intended or shall be deemed to
+constitute any admission of liability.

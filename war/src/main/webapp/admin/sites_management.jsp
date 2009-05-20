@@ -1,29 +1,21 @@
 <%--
 
-        
-        This file is part of Jahia Enterprise Edition v6 - Early Adopter Package
-        
-        Copyright (C) 2002-2009 Jahia. All rights reserved.
-    
-    	  Jahia delivers the first Open Source Web Content Integration Software 
-    	  by combining Enterprise Web Content Management 
-    	  with Document Management and Portal features. 
-        
-        The Jahia Enterprise Edition - Early Adopter package is delivered ON AN "AS IS" BASIS, 
-        WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED.
-       
-       	Jahia Enterprise Edition - Early Adopter Package CANNOT be used for 
-       	any production environment and is strictly and exclusively delivered to You by Jahia 
-       	for test and development purpose.
-        
-        Jahia Enterprise Edition must be used in accordance with the terms contained 
-        in a separate license agreement between you and Jahia (JSEL).
-         
-        If you are unsure which license is appropriate
-        for your use, please contact the sales department at sales@jahia.com.
+    Jahia Enterprise Edition v6
+
+    Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+
+    Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+    with Document Management and Portal features.
+
+    The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+    IMPLIED.
+
+    Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+    you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+
+    If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-
 <%@include file="/admin/include/header.inc" %>
 <%@page import="org.jahia.bin.JahiaAdministration" %>
 <%@ page import="org.jahia.params.ProcessingContext" %>
@@ -35,7 +27,6 @@
 <%@page import="org.jahia.registries.ServicesRegistry" %>
 <%@page import="org.jahia.services.acl.JahiaBaseACL" %>
 <%@ page import="org.jahia.security.license.LicenseActionChecker" %>
-<%@ page import="org.jahia.engines.calendar.CalendarHandler" %>
 <%@ page import="org.jahia.admin.sites.ManageSites" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
@@ -63,26 +54,14 @@
         }
     }
     function copyTemplateToVarFolder(selectedTemplate) {
-
-        //selectSite(selectedSite);
-        //document.main.action = '<%=jParams.composeSiteUrl() + "/engineName/export/export_" + new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT).format(new Date()) + ".zip"%>';
-        //document.main.submit();
-
-        logger.debug("selecting ..."+selectedTemplate);
     }
 
     function sendExportForm(selectedSite) {
         selectSite(selectedSite);
-        document.main.action = '<%=jParams.composeSiteUrl() + "/engineName/export/export_" + new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT).format(new Date()) + ".zip"%>';
+        document.main.action = '<%=jParams.composeSiteUrl() + "/engineName/export/"%>' + (selectedSite ? selectedSite + '_' : '') + '<%= "export_" + new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date()) + ".zip"%>';
         document.main.submit();
     }
 
-
-    function sendExportForm(selectedSite) {
-        selectSite(selectedSite);
-        document.main.action = '<%=jParams.composeSiteUrl() + "/engineName/export/export_" + new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT).format(new Date()) + ".zip"%>';
-        document.main.submit();
-    }
 
     function sendDeleteForm(selectedSite) {
         selectSite(selectedSite);
@@ -265,9 +244,9 @@
                 } %>
             </tbody>
         </form>
-        
+
     </table>
-    
+
     <!-- prepackaged site -->
     <div class="head headtop">
         <div class="object-title">
@@ -287,7 +266,7 @@
                     </td>
                     <td>
                         &nbsp;<select name="importpath">
-                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Acme demo</option>
+                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Corporate demo</option>
                         <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/testSite.zip"%>'>TCK (test compatibility kit) demo</option>
                     </select>
                     </td>
@@ -310,7 +289,7 @@
     <!--   import backup -->
     <div class="head headtop">
         <div class="object-title">
-           <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
+            <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
         </div>
     </div>
     <div  class="content-item">
@@ -332,7 +311,7 @@
                         <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
                     </td>
                     <td>
-                        :&nbsp;<input type="file" name="import">
+                        :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
                     </td>
 
                     <td>
@@ -428,9 +407,8 @@ else { %>
                     </td>
                     <td>
                         &nbsp;<select name="importpath">
-                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Acme demo</option>
-												<option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/testSite.zip"%>'>TCK (test compatibility kit) demo</option>
-
+                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Corporate demo</option>
+                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/testSite.zip"%>'>Test and training demo</option>
                     </select>
                     </td>
                     <td>
@@ -451,7 +429,7 @@ else { %>
     <!--   import backup -->
     <div class="head headtop">
         <div class="object-title">
-             <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
+            <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
         </div>
     </div>
     <div  class="content-item">
@@ -473,7 +451,7 @@ else { %>
                         <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
                     </td>
                     <td>
-                        :&nbsp;<input type="file" name="import">
+                        :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
                     </td>
 
                     <td>
@@ -505,10 +483,8 @@ else { %>
 
         <div class="head headtop">
             <div class="object-title">
-            	<font color=red>
                 1.&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>&nbsp;<fmt:message key="org.jahia.admin.virtualSitesManagement.label.default"/>
-            </font>
-</div>
+            </div>
         </div>
         <div  class="content-item">
 
@@ -523,9 +499,8 @@ else { %>
                         </td>
                         <td>
                             &nbsp;<select name="importpath">
-                            <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Acme demo</option>
-														<option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/testSite.zip"%>'>TCK (test compatibility kit) demo</option>
-
+                            <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Corporate demo</option>
+                            <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/testSite.zip"%>'>Test and training demo</option>
                         </select>
                         </td>
                         <td>
@@ -578,7 +553,7 @@ else { %>
                             <label for="siteImport"><fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/></label>
                         </td>
                         <td>
-                            :&nbsp;<input type="file" name="import">
+                            :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
                         </td>
 
                     </tr>
@@ -664,14 +639,14 @@ else { %>
             return;
         var radioLength = radioObj.length;
         if(radioLength == undefined) {
-        	  //window.alert("setting new checked value for ");
+            //window.alert("setting new checked value for ");
             radioObj.checked = (radioObj.value == newValue.toString());
             return;
         }
         for(var i = 0; i < radioLength; i++) {
             radioObj[i].checked = false;
             if(radioObj[i].value == newValue.toString()) {
-            	//window.alert("setting new checked value for "+newValue.toString());
+                //window.alert("setting new checked value for "+newValue.toString());
                 radioObj[i].checked = true;
             }
         }
@@ -679,7 +654,7 @@ else { %>
 
     function submitform()
     {
-    	
+
         if(getCheckedValue(document.forms['blank'].elements['blank'])=="blank"){
             //window.alert("radio button checked   "+getCheckedValue(document.forms['blank'].elements['blank']));
             document.blank.submit();

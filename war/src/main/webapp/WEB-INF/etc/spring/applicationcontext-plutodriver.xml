@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
-        "http://www.springframework.org/dtd/spring-beans.dtd">
+
 <!--
 Licensed to the Apache Software Foundation (ASF) under one or more
 contributor license agreements.  See the NOTICE file distributed with
@@ -42,12 +41,14 @@ limitations under the License.
 
   -->
 
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <bean id="RequiredContainerServices"
           name="OptionalContainerServices"
           class="org.apache.pluto.driver.services.container.ContainerServicesImpl"
-          singleton="true">
+          scope="singleton">
       <constructor-arg><ref bean="PortalContext"/></constructor-arg>
       <constructor-arg><ref bean="DriverConfiguration"/></constructor-arg>
       <constructor-arg><ref bean="CCPPProfileService"/></constructor-arg>
@@ -99,28 +100,28 @@ limitations under the License.
     <bean id="PortalURLParser"
           class="org.apache.pluto.driver.url.impl.PortalURLParserImpl"
           factory-method="getParser"
-          singleton="true">
+          scope="singleton">
     </bean>
 
     <bean id="PropertyConfigService"
           class="org.apache.pluto.driver.services.impl.resource.PropertyConfigServiceImpl"
-          singleton="true">
+          scope="singleton">
     </bean>
 
     <bean id="RenderConfigService"
-          class="org.apache.pluto.driver.services.impl.resource.RenderConfigServiceImpl"
-          singleton="true">
+          class="org.jahia.services.applications.pluto.JahiaRenderConfigServiceImpl"
+          scope="singleton">
     </bean>
 
     <bean id="SupportedModesService"
           class="org.apache.pluto.driver.services.impl.resource.SupportedModesServiceImpl"
-          singleton="true">
+          scope="singleton">
           <constructor-arg><ref bean="PropertyConfigService"/></constructor-arg>
     </bean>
 
     <bean id="SupportedWindowStatesService"
           class="org.apache.pluto.driver.services.impl.resource.SupportedWindowStateServiceImpl"
-          singleton="true">
+          scope="singleton">
           <constructor-arg><ref bean="PropertyConfigService"/></constructor-arg>
     </bean>
 
@@ -129,12 +130,12 @@ limitations under the License.
     <!-- ================================================ -->
     <bean id="PortalCallbackService"
           class="org.apache.pluto.driver.services.container.PortalCallbackServiceImpl"
-          singleton="true">
+          scope="singleton">
     </bean>
 
     <bean id="CCPPProfileService"
     	  class="org.apache.pluto.spi.DummyCCPPProfileServiceImpl"
-    	  singleton="true">
+          scope="singleton">
     </bean>
 
 </beans>

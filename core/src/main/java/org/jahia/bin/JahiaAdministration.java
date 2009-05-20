@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 // $Id$
 //
 //  JahiaAdministration
@@ -78,12 +61,7 @@ import org.jahia.params.ProcessingContextFactory;
 import org.jahia.params.ServletURLGeneratorImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.security.license.CommonDaysLeftValidator;
-import org.jahia.security.license.License;
-import org.jahia.security.license.LicenseConstants;
 import org.jahia.security.license.LicenseManager;
-import org.jahia.security.license.LicensePackage;
-import org.jahia.security.license.Limit;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.ContentPage;
@@ -94,9 +72,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.JahiaChrono;
 import org.jahia.utils.JahiaTools;
-import org.jahia.utils.WebAppPathResolver;
 import org.jahia.utils.properties.PropertiesManager;
 import org.springframework.beans.factory.BeanFactory;
 
@@ -179,8 +155,6 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         // get servlet config and context...
         JahiaAdministration.config = aConfig;
         JahiaAdministration.context = aConfig.getServletContext();
-        WebAppPathResolver webPathResolver = new WebAppPathResolver();
-        webPathResolver.setServletContext(aConfig.getServletContext());
 
         JahiaAdministration.contentServletPath = Jahia.getDefaultServletPath(aConfig.getServletContext());
     } // end init
@@ -821,27 +795,11 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
             return;
         }
 
-        final LicenseManager licenseManager = LicenseManager.getInstance();
-        final LicensePackage jahiaLicensePackage = licenseManager.
-                getLicensePackage(LicenseConstants.JAHIA_PRODUCT_NAME);
-        // we take a component that has an expiration date here. Please modify this
-        // if licensing policy changes.
-        License manageSiteLicense = jahiaLicensePackage.getLicense("org.jahia.actions.server.admin.sites.ManageSites");
-        final Limit daysLeftLimit = manageSiteLicense.getLimit("maxUsageDays");
-        // the limit might be null if a license has been created without
-        // this limit.
-        if (daysLeftLimit != null) {
-            CommonDaysLeftValidator daysLeftValidator = (CommonDaysLeftValidator)
-                    daysLeftLimit.getValidator();
-            int maxDays = Integer.parseInt(daysLeftLimit.getValueStr());
-            long expirationTime = daysLeftValidator.getCommonInstallDate().getTime() + DAY_MILLIS * maxDays;
-            long nowTime = System.currentTimeMillis();
-            long timeLeft = expirationTime - nowTime;
-            if (timeLeft < 0) {
-                timeLeft = 0;
-            }
-            int daysLeft = (int) (timeLeft / DAY_MILLIS);
-            request.setAttribute("daysLeft", daysLeft);
+        long expirationTime = LicenseManager.getInstance().getJahiaExpirationDate();
+        if (expirationTime > 0) {
+            long timeLeft = expirationTime - System.currentTimeMillis();
+            timeLeft = timeLeft < 0 ? 0 : timeLeft;
+            request.setAttribute("daysLeft", (int) (timeLeft / DAY_MILLIS));
         }
 
         request.setAttribute("site", theSite);
@@ -1023,7 +981,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         logger.debug("Path Info: " + pathInfo);
         if (pathInfo == null)
             return false;
-        if (pathInfo.indexOf("engineName") == -1)
+        if (pathInfo.indexOf(ProcessingContext.ENGINE_NAME_PARAMETER) == -1)
             return false;
 
         // get the main http method...
@@ -1061,7 +1019,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                         " engine for user " +
                         jParams.getUser().getUsername() + " from [" +
                         jParams.getRequest().getRemoteAddr() + "] in [" +
-                        JahiaChrono.getInstance().read(jParams.getStartTime()) +
+                        (System.currentTimeMillis() - jParams.getStartTime()) +
                         "ms]");
             }
         }
@@ -1155,7 +1113,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         }
 
         // start the chrono...
-        long startTime = JahiaChrono.getInstance().start();
+        long startTime = System.currentTimeMillis();
 
         // get the main http method...
         String requestMethod = request.getMethod();

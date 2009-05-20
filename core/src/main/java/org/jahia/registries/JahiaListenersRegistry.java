@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //
 //  EV      25.11.2000
 //  MJ      23.03.2001  fixed addListener, removeListener, getListener
@@ -54,8 +37,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 
 public class JahiaListenersRegistry {
 
-    private static Logger logger =
-        Logger.getLogger(JahiaListenersRegistry.class);
+    private static Logger logger = Logger.getLogger(JahiaListenersRegistry.class);
 
     private static final Logger monitorLogger = Logger.getLogger(SilentJamonPerformanceMonitorInterceptor.class);
 
@@ -115,7 +97,7 @@ public class JahiaListenersRegistry {
      *
      */
     public JahiaEventListenerInterface getListenerByClassName (String listenerClassName) {
-        return (JahiaEventListenerInterface) classNameToInstance.get(listenerClassName);
+        return classNameToInstance.get(listenerClassName);
     } // end getListener
 
     /***
@@ -173,35 +155,26 @@ public class JahiaListenersRegistry {
     public void wakeupListeners (String methodName, JahiaEvent theEvent) {
         for (JahiaEventListenerInterface theListener : getListeners()) {
             try {
-                Class theClass = theListener.getClass();
-                Class eventClass = theEvent.getClass();
-                Method theMethod = theClass.getMethod(methodName,
-                        new Class[] { eventClass });
+                Class<? extends JahiaEventListenerInterface> theClass = theListener.getClass();
+                Class<? extends JahiaEvent> eventClass = theEvent.getClass();
+                Method theMethod = theClass.getMethod(methodName, new Class[] { eventClass });
                 if (theMethod != null) {
                     Monitor listenerMonitor = null;
-                    if (monitorLogger.isDebugEnabled())
-                        listenerMonitor = MonitorFactory.start(theMethod
-                                .toString());
-                    theMethod.invoke(theListener,
-                            new Object[] { (JahiaEvent) theEvent });
-                    if (monitorLogger.isDebugEnabled())
+                    if (monitorLogger.isDebugEnabled()) {
+                        listenerMonitor = MonitorFactory.start(theMethod.toString());
+                    }
+                    //logger.error("Calling " + theMethod.toString() + " using " + theListener.toString() + " for " + theEvent.toString());
+                    theMethod.invoke(theListener, theEvent);
+                    if (monitorLogger.isDebugEnabled() && listenerMonitor != null) {
                         listenerMonitor.stop();
+                    }
                 }
             } catch (NoSuchMethodException nsme) {
-                logger.error(
-                        "NoSuchMethodException when trying to execute method "
-                                + methodName + ". Cause: " + nsme.getMessage(),
-                        nsme);
+                logger.error( "NoSuchMethodException when trying to execute method " + methodName + ". Cause: " + nsme.getMessage(), nsme);
             } catch (InvocationTargetException ite) {
-                logger.error(
-                        "InvocationTargetException when trying to execute method "
-                                + methodName + ". Cause: " + ite.getMessage(),
-                        ite.getTargetException());
+                logger.error("InvocationTargetException when trying to execute method " + methodName + ". Cause: " + ite.getMessage(), ite.getTargetException());
             } catch (IllegalAccessException iae) {
-                logger.error(
-                        "IllegalAccessException when trying to execute method "
-                                + methodName + ". Cause: " + iae.getMessage(),
-                        iae);
+                logger.error("IllegalAccessException when trying to execute method " + methodName + ". Cause: " + iae.getMessage(), iae);
             }
         }
     } // end wakeupListener

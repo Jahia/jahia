@@ -1,34 +1,18 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
 package org.jahia.admin.database;
 
@@ -329,23 +313,21 @@ public class DatabaseScripts {
                 continue;
             }
 
-            int curPos = 0;
-            int separatorPos = findNextSeparator(buffer, ";", curPos);
-            while (separatorPos != -1) {
+            buffer = buffer.trim();
+
+            if (buffer.endsWith(";")) {
                 // found seperator char in the script file, finish constructing
-                curSQLStatement.append(buffer.substring(curPos, separatorPos));
+                curSQLStatement.append(buffer.substring(0, buffer.length()-1));
                 String sqlStatement = curSQLStatement.toString().trim();
                 if (!"".equals(sqlStatement)) {
-                    logger.debug("Found statement [" + sqlStatement +
-                                 "]");
+                    // System.out.println("Found statement [" + sqlStatement + "]");
                     scriptsRuntimeList.add(sqlStatement);
                 }
                 curSQLStatement = new StringBuffer();
-                curPos = separatorPos + 1;
-                separatorPos = findNextSeparator(buffer, ";", curPos);
+            } else {
+                curSQLStatement.append(buffer);
+                curSQLStatement.append('\n');
             }
-            curSQLStatement.append(buffer.substring(curPos));
-            curSQLStatement.append('\n');
 
         }
         String sqlStatement = curSQLStatement.toString().trim();
@@ -357,15 +339,6 @@ public class DatabaseScripts {
 
         return scriptsRuntimeList;
     } // getDatabaseScriptsRuntime
-
-    private int findNextSeparator(String sqlStatement, String separator, int curPos) {
-        int nextPos = sqlStatement.indexOf(separator, curPos);
-        while ((nextPos != -1) && isInQuotes(sqlStatement, nextPos)) {
-            curPos = nextPos + 1;
-            nextPos = sqlStatement.indexOf(separator, curPos);
-        }
-        return nextPos;
-    }
 
     private boolean isInQuotes(String sqlStatement, int pos) {
         if (pos < 0) {

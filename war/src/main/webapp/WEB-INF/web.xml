@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
+
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
@@ -6,6 +7,14 @@
 
     <display-name>Jahia</display-name>
 
+    <!-- Uncomment the following if running Jahia under Websphere 6.1+ -->
+    <!--
+    <context-param>
+        <param-name>com.ibm.websphere.portletcontainer.PortletDeploymentEnabled</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    -->
+    
     <context-param>
         <description>
             The location of Spring's configuration files used by the listener upon startup
@@ -32,12 +41,6 @@
         <param-value>${jahia.deploy.war.servletPath}</param-value>
     </context-param>
 
-    <!--
-     <context-param>
-         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-         <param-value>server</param-value>
-     </context-param>
-     -->
     <context-param>
         <param-name>javax.servlet.jsp.jstl.fmt.fallbackLocale</param-name>
         <param-value>en</param-value>
@@ -306,8 +309,6 @@
         <listener-class>org.jahia.bin.JahiaWebAppListener</listener-class>
     </listener>
 
-    <!-- JavaServer Faces Servlet Configuration -->
-
     <servlet>
         <servlet-name>
             Jahia
@@ -338,12 +339,8 @@
         </init-param>
         <init-param>
             <param-name>config</param-name>
-            <!-- <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>-->
-            <param-value>
-                /WEB-INF/etc/struts/struts-config.xml,/WEB-INF/etc/struts/struts-config-corporateportal.xml
-            </param-value>
+            <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>
         </init-param>
-        <!-- commented out because we did provide any resource file yet -->
         <init-param>
             <param-name>application</param-name>
             <param-value>ApplicationResources</param-value>
@@ -388,7 +385,7 @@
         <init-param>
             <description>Repository Name that is used to retrieve it via a servlet context attribute</description>
             <param-name>repository.context.attribute.name</param-name>
-            <param-value>jcrStoreService</param-value>
+            <param-value>org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository</param-value>
         </init-param>
 
         <!--
@@ -528,14 +525,6 @@
         <load-on-startup>99</load-on-startup>
     </servlet>
 
-    <!--<servlet id="abdera">-->
-        <!--<servlet-name>Abdera</servlet-name>-->
-        <!--<servlet-class>org.apache.abdera.spring.SpringAbderaServlet</servlet-class>-->
-        <!--<init-param>-->
-            <!--<param-name>providerBeanName</param-name>-->
-            <!--<param-value>abdera</param-value>-->
-        <!--</init-param>-->
-    <!--</servlet>-->
 
     <servlet>
         <servlet-name>
@@ -550,12 +539,8 @@
         </init-param>
         <init-param>
             <param-name>config</param-name>
-            <!-- <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>-->
-            <param-value>
-                /WEB-INF/etc/struts/struts-config.xml,/WEB-INF/etc/struts/struts-config-corporateportal.xml
-            </param-value>
+            <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>
         </init-param>
-        <!-- commented out because we did provide any resource file yet -->
         <init-param>
             <param-name>application</param-name>
             <param-value>ApplicationResources</param-value>
@@ -590,11 +575,8 @@
         <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
         <init-param>
             <param-name>config</param-name>
-            <param-value>
-                /WEB-INF/etc/struts/struts-config.xml,/WEB-INF/etc/struts/struts-config-corporateportal.xml
-            </param-value>
+            <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>
         </init-param>
-        <!-- commented out because we did provide any resource file yet -->
         <init-param>
             <param-name>application</param-name>
             <param-value>ApplicationResources</param-value>
@@ -730,16 +712,6 @@
       <servlet-name>ViewCacheServlet</servlet-name>
       <servlet-class>org.jahia.tools.cache.ViewCacheServlet</servlet-class>
     </servlet>   
-    <!-- ====================================================================== -->
-    <!-- A N A L Y T I C SS E R V L E T S                                       -->
-    <!-- ====================================================================== -->
-
-    <servlet>
-        <servlet-name>analyticsGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.analytics.jahiaanalytics.AnalyticsServiceImpl
-        </servlet-class>
-    </servlet>
 
     <!-- ====================================================================== -->
     <!-- P O R T L E T   S E R V L E T S                                        -->
@@ -758,6 +730,15 @@
         <servlet-class>org.jahia.bin.ImageCaptchaServlet</servlet-class>
         <load-on-startup>11</load-on-startup>
     </servlet>
+    <!-- ====================================================================== -->
+    <!-- T O K E N   G E N E R A T O R                                       -->
+    <!-- ====================================================================== -->
+    <servlet>
+        <servlet-name>tokenGenerator</servlet-name>
+        <servlet-class>org.jahia.bin.TokenGeneratorServlet</servlet-class>
+        <load-on-startup>12</load-on-startup>
+    </servlet>
+
 
     <!-- [INSERT FRAGMENT HERE] -->
 
@@ -816,10 +797,6 @@
     </servlet-mapping>
 
     <!-- gwt mapping-->
-    <servlet-mapping>
-        <servlet-name>analyticsGWTService</servlet-name>
-        <url-pattern>/gwt/analytics/*</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>jahiaBaseGWTService</servlet-name>
         <url-pattern>/gwt/base/*</url-pattern>
@@ -904,10 +881,6 @@
         <servlet-name>Test</servlet-name>
         <url-pattern>/test/*</url-pattern>
     </servlet-mapping>
-    <!--<servlet-mapping id="abdera-mapping">-->
-        <!--<servlet-name>Abdera</servlet-name>-->
-        <!--<url-pattern>/atom/*</url-pattern>-->
-    <!--</servlet-mapping>-->
 
     <!-- XMLRPCServlet mapping for the blogs -->
     <servlet-mapping>
@@ -951,6 +924,11 @@
     <servlet-mapping>
         <servlet-name>jcaptcha</servlet-name>
         <url-pattern>/jcaptcha</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>tokenGenerator</servlet-name>
+        <url-pattern>/tokenGenerator</url-pattern>
     </servlet-mapping>
     
     <!-- Session timeout value is set in minutes. Comment this section out

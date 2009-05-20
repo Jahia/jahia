@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 // $Id$
 //
 //  Jahia
@@ -93,7 +76,6 @@ import org.jahia.resourcebundle.ResourceMessage;
 import org.jahia.security.license.License;
 import org.jahia.security.license.LicenseConstants;
 import org.jahia.security.license.LicenseManager;
-import org.jahia.security.license.LicensePackage;
 import org.jahia.security.license.Limit;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.deamons.filewatcher.FileListSync;
@@ -104,17 +86,15 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.urls.URI;
 import org.jahia.urls.URICodec;
-import org.jahia.utils.JahiaChrono;
 import org.jahia.utils.JahiaConsole;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Version;
-import org.jahia.utils.WebAppPathResolver;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.modifier.TomcatUsersModifier;
 import org.xml.sax.SAXException;
 
 /**
- * desc:  This is the main servlet of Jahia.
+ * This is the main servlet of Jahia.
  *   ----=[  Welcome to the Jahia portal  ]=----
  *
  * Copyright:    Copyright (c) 2002
@@ -172,12 +152,12 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
 
     /** ... */
     static public final String COPYRIGHT =
-            "&copy; Copyright 2002-2009  <a href=\"http://www.jahia.org\" target=\"newJahia\">Jahia Ltd</a> -";
+            "&copy; Copyright 2002-2009  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
 
-    public final static String COPYRIGHT_TXT = "2009 Jahia Ltd." ;
+    public final static String COPYRIGHT_TXT = "2009 Jahia Solutions Group SA" ;
 
     /**
-     * the lock name in the lock registery
+     * the lock name in the lock registry
      */
     public static final String JAHIA_LOCK_NAME = CLASS_NAME + "_lock_name";
 
@@ -311,18 +291,10 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             JahiaConsole.startupWithTrust(getBuildNumber());
         }
 
-        // get servlet basic variables, like confid and context...
+        // get servlet basic variables, like config and context...
         this.config = aConfig;
         staticServletConfig = aConfig;
         final ServletContext context = aConfig.getServletContext();
-        final WebAppPathResolver pathResolver = new WebAppPathResolver();
-        pathResolver.setServletContext(aConfig.getServletContext());
-
-        /* old system, that doesn't work well when setting up Jahia in root
-           context
-        Jahia.jahiaContextPath = "/" + this.context.getServletContextName();
-        Jahia.jahiaServletPath = "/" + config.getServletName();
-        */
 
         if (jahiaContextPath == null) {
             initContextData(getServletContext());
@@ -562,7 +534,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             createProcessingPipeline(config);
 
             // initialize content portlets
-            ServicesRegistry.getInstance().getJahiaWebAppsDeployerService().initPortletListener();
+            // ServicesRegistry.getInstance().getJahiaWebAppsDeployerService().initPortletListener();
 
             /* todo let's find a cleaner way to initialize this static repository reference, maybe if we move
              * Jackrabbit to be initialized using Spring we could initialize these dependencies using Spring
@@ -630,7 +602,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
 
     public void destroy() {
 
-        logger.info("shutdown requested !");
+        logger.info("Shutdown requested");
 
         // check first if Jahia was initialized or if we just ran the configuration wizard.
         if (!mInitiated) {
@@ -666,7 +638,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         }
         super.destroy();
 
-        logger.info("done shuting down !");
+        logger.info("...done shutting down");
 
     }
 
@@ -801,11 +773,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             if (ParamBean.getDefaultSite() == null) {
                 JahiaSitesService jahiaSitesService = ServicesRegistry.getInstance().getJahiaSitesService();
                 if (jahiaSitesService.getNbSites() > 0) {
-                    JahiaSite jahiaSite = jahiaSitesService.getSiteByKey(org.jahia.settings.SettingsBean.getInstance().getDefaultSite());
-                    if (jahiaSite == null) {
-                        jahiaSite = (JahiaSite) jahiaSitesService.getSites().next();
-                    }
-                    jahiaSitesService.setDefaultSite(jahiaSite);
+                    jahiaSitesService.setDefaultSite(jahiaSitesService.getSites().next());
                 } else {
                     Cookie[] cookies = request.getCookies();
                     if (cookies != null) {
@@ -874,7 +842,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
                     sb.append("] user=[").append(jParams.getUser().getUsername() )
                             .append("] ip=[" ).append(jParams.getRequest().getRemoteAddr() )
                             .append("] sessionID=[").append(jParams.getSessionID())
-                            .append("] in [" ).append(JahiaChrono.getInstance().read(jParams.getStartTime()) )
+                            .append("] in [" ).append(System.currentTimeMillis() - jParams.getStartTime())
                             .append("ms]");
                             
                     logger.info(sb.toString());
@@ -1114,9 +1082,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             try {
                 final LicenseManager licenseManager = LicenseManager.getInstance();
                 licenseManager.load(mLicenseFilename);
-                final LicensePackage jahiaLicensePackage = licenseManager.
-                        getLicensePackage(LicenseConstants.JAHIA_PRODUCT_NAME);
-                coreLicense = jahiaLicensePackage.getLicense(LicenseConstants.CORE_COMPONENT);
+                coreLicense = licenseManager.getJahiaLicensePackage().getLicense(LicenseConstants.CORE_COMPONENT);
                 final InputStream keystoreIn =
                     Jahia.class.getResourceAsStream(
                         publicKeyStoreResourceName);

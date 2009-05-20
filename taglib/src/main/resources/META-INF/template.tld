@@ -53,7 +53,7 @@
            &lt;/template:templateHead&gt;
            &lt;template:templateBody&gt;
            &lt;/template:templateBody&gt;
-         &lt;/template:template&gt;            
+         &lt;/template:template&gt;
         </example>
     </tag>
     <tag>
@@ -266,12 +266,14 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>if false (default) hide title. If true, display box title, surrounded by &lt;span class="boxTitle"&gt; &lt;/span&gt;</description>
             <name>displayTitle</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>if true (default) inline edititing active on the title</description>
             <name>inlineEditingActivated</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -356,6 +358,28 @@
         </attribute>
     </tag>
     <tag>
+      <description>
+  Embed file from jahia repository
+      </description>
+      <name>fileImport</name>
+        <tag-class>org.jahia.taglibs.template.include.FileIncludeTag</tag-class>
+      <body-content>JSP</body-content>
+      <attribute>
+          <description>
+  Path of the file in jahia repository
+          </description>
+          <name>path</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+          <name>processHtml</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+          <type>boolean</type>
+      </attribute>
+    </tag>
+    <tag>
         <description>
             Used to call the overriden JSP from the parent set. Does nothing, if it is not found.
         </description>
@@ -402,72 +426,96 @@
         <tag-class>org.jahia.taglibs.template.containerlist.ContainerListTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>This attribute can be used to set the maximum size of the container list ( the max containers to load )</description>
             <name>maxSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                This is an identifier that must be unique within the current parent object (page or containerlist).
+                Usually it is good practice to avoid using spaces in this name, which makes manipulation easier in general.
+            </description>
             <name>name</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                It is possible to allow the user to change the number of items per page used in the Pagination of a given Container List.
+                Say, if a container list contains a 1000 containers/fields, you'll want to spread this list across mutilple pages. If you don't, then
+                enjoy the wait...
+                The default value is -1 meaning the functionality is deactivated.
+            </description>
             <name>windowSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>
+                This attribute dictates the initial number of pages into the paginated list for this containerList. The default value is 0.
+                Note that if windowOffset is superior to the number of elements in the container list, it defaults back to a zero value.
+            </description>
             <name>windowOffset</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Set the number of containers display in a page</description>
             <name>nbStepPerPage</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>set this attribute to true to activate pagination</description>
             <name>displayPagination</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Define a containerListBean exposed in pageContext Scope</description>
             <name>id</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is true. Display containerList action menu bar</description>
             <name>displayActionMenu</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>set ressource for the left part of the action menu ("manage" in "manage boxes")</description>
             <name>actionMenuNamePostFix</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Set a css class around the action menu code with a &lt;div&gt; statement</description>
             <name>actionMenuCssClassName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>set ressource for the right part of the action menu ("boxes" in "manage boxes")</description>
             <name>actionMenuNameLabelKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is false. If true, the action menu for the containerList is display at then end of the list.</description>
             <name>displayActionMenuAtBottom</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Add a css style to the icon represent the action menu</description>
             <name>actionMenuIconStyle</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -512,14 +560,6 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-        <attribute>
-            <description>This allows to always override the automatic sort by the one defined in the tag.
-            </description>
-            <name>enforceDefinedSort</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
     </tag>
     <tag>
         <description>Displays an absolute container list (declares it if needed)</description>
@@ -527,72 +567,96 @@
         <tag-class>org.jahia.taglibs.template.containerlist.AbsoluteContainerListTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>This attribute can be used to set the maximum size of the container list ( the max containers to load )</description>
             <name>maxSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                This is an identifier that must be unique within the current parent object (page or containerlist).
+                Usually it is good practice to avoid using spaces in this name, which makes manipulation easier in general.
+            </description>
             <name>name</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                It is possible to allow the user to change the number of items per page used in the Pagination of a given Container List.
+                Say, if a container list contains a 1000 containers/fields, you'll want to spread this list across mutilple pages. If you don't, then
+                enjoy the wait...
+                The default value is -1 meaning the functionality is deactivated.
+            </description>
             <name>windowSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>
+                This attribute dictates the initial number of pages into the paginated list for this containerList. The default value is 0.
+                Note that if windowOffset is superior to the number of elements in the container list, it defaults back to a zero value.
+            </description>
             <name>windowOffset</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Set the number of containers display in a page</description>
             <name>nbStepPerPage</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>set this attribute to true to activate pagination</description>
             <name>displayPagination</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Define a containerListBean exposed in pageContext Scope</description>
             <name>id</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is true. Display containerList action menu bar</description>
             <name>displayActionMenu</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>set ressource for the left part of the action menu ("manage" in "manage boxes")</description>
             <name>actionMenuNamePostFix</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Set a css class around the action menu code with a &lt;div&gt; statement</description>
             <name>actionMenuCssClassName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>set ressource for the right part of the action menu ("boxes" in "manage boxes")</description>
             <name>actionMenuNameLabelKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is false. If true, the action menu for the containerList is display at then end of the list.</description>
             <name>displayActionMenuAtBottom</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Add a css style to the icon represent the action menu</description>
             <name>actionMenuIconStyle</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -614,18 +678,22 @@
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>the Page ID of the page which contains the desired container.</description>
             <name>pageId</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>the offset from the root page, specifying the number of
+            levels to go down in the tree.</description>
             <name>pageLevel</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>the Page Key of the page which contains the desired container.</description>
             <name>pageKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -637,72 +705,96 @@
         <tag-class>org.jahia.taglibs.template.containerlist.RelativeContainerListTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>This attribute can be used to set the maximum size of the container list ( the max containers to load )</description>
             <name>maxSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                This is an identifier that must be unique within the current parent object (page or containerlist).
+                Usually it is good practice to avoid using spaces in this name, which makes manipulation easier in general.
+            </description>
             <name>name</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                It is possible to allow the user to change the number of items per page used in the Pagination of a given Container List.
+                Say, if a container list contains a 1000 containers/fields, you'll want to spread this list across mutilple pages. If you don't, then
+                enjoy the wait...
+                The default value is -1 meaning the functionality is deactivated.
+            </description>
             <name>windowSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>
+                This attribute dictates the initial number of pages into the paginated list for this containerList. The default value is 0.
+                Note that if windowOffset is superior to the number of elements in the container list, it defaults back to a zero value.
+            </description>
             <name>windowOffset</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Set the number of containers display in a page</description>
             <name>nbStepPerPage</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>set this attribute to true to activate pagination</description>
             <name>displayPagination</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Define a containerListBean exposed in pageContext Scope</description>
             <name>id</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is true. Display containerList action menu bar</description>
             <name>displayActionMenu</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>set ressource for the left part of the action menu ("manage" in "manage boxes")</description>
             <name>actionMenuNamePostFix</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Set a css class around the action menu code with a &lt;div&gt; statement</description>
             <name>actionMenuCssClassName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>set ressource for the right part of the action menu ("boxes" in "manage boxes")</description>
             <name>actionMenuNameLabelKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is false. If true, the action menu for the containerList is display at then end of the list.</description>
             <name>displayActionMenuAtBottom</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Add a css style to the icon represent the action menu</description>
             <name>actionMenuIconStyle</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -724,6 +816,8 @@
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>the offset from the current page, specifying the number of
+      levels to up down in the tree</description>
             <name>levelNb</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -867,7 +961,19 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                The name of the page scope variable to expose a ContainerBean instance for the requested container.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                The name of the page scope variable to expose a ContainerBean instance for the requested container.
+            </description>
+            <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -889,8 +995,20 @@
             <type>org.jahia.data.beans.ContainerBean</type>
         </attribute>
         <attribute>
+            <description>
+                The name of the page scope variable to expose a field's value.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
-            <required>true</required>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                The name of the page scope variable to expose a field's value.
+            </description>
+            <name>var</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
@@ -906,8 +1024,20 @@
             <type>int</type>
         </attribute>
         <attribute>
+            <description>
+                The name of the page scope variable to expose the FieldBean instance for the requested field.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
-            <required>true</required>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                The name of the page scope variable to expose the FieldBean instance for the requested field.
+            </description>
+            <name>var</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
@@ -1003,7 +1133,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The name of the page scope variable, to expose the FieldValueBean instance</description>
+            <description>The name of the page scope variable to expose the FieldValueBean instance</description>
             <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1057,6 +1187,40 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+
+    <tag>
+         <description>Generate an html form to update/create a container</description>
+         <name>containerForm</name>
+         <tag-class>org.jahia.taglibs.template.form.ContainerFormTag</tag-class>
+         <body-content>JSP</body-content>
+         <attribute>
+             <name>name</name>
+             <required>false</required>
+             <rtexprvalue>true</rtexprvalue>
+         </attribute>
+         <attribute>
+             <name>var</name>
+             <required>false</required>
+             <rtexprvalue>true</rtexprvalue>
+         </attribute>
+         <attribute>
+             <name>ignoreAcl</name>
+             <required>false</required>
+             <rtexprvalue>true</rtexprvalue>
+         </attribute>
+        <attribute>
+            <name>action</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+     </tag>
+
+    <tag>
+         <description>Generate a captcha</description>
+         <name>captcha</name>
+         <tag-class>org.jahia.taglibs.template.form.CaptchaTag</tag-class>
+         <body-content>empty</body-content>
+     </tag>
 
     <tag>
         <description>Generate an html form defined by a specific CND node type</description>
@@ -1158,31 +1322,37 @@
         <tag-class>org.jahia.taglibs.template.field.DisplayImageTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description>Name of the bean contains the image to displqy</description>
             <name>file</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>img class attribute</description>
             <name>cssClassName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>img align attribute</description>
             <name>align</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>img title attribute</description>
             <name>title</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>img alt attribute</description>
             <name>alt</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>bean name of the container containing the file</description>
             <name>containerName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1327,20 +1497,32 @@
         <tag-class>org.jahia.taglibs.template.category.GetContentObjectCategoriesTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <name>asSet</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
             <name>objectKey</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                The name of the page scope variable to expose the collection of CategoryBean instances.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <name>asSet</name>
+            <description>
+                The name of the page scope variable to expose the collection of CategoryBean instances.
+            </description>
+            <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
         </attribute>
     </tag>
 
@@ -1350,38 +1532,45 @@
         <tag-class>org.jahia.taglibs.template.cache.CacheTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>define the cache key of the current cache object</description>
             <name>cacheKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>used for old call name of jsp:useBean</description>
             <name>cacheKeyName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>used for old call property of jsp:useBean</description>
             <name>cacheKeyProperty</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>used for old call scope of jsp:useBean</description>
             <name>cacheKeyScope</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Hash set of cache dependecies</description>
             <name>dependencies</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.util.Set</type>
         </attribute>
         <attribute>
+            <description>if true disable cache in edit mode (default false)</description>
             <name>forceExecutionInEditMode</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>define expiration in seconds</description>
             <name>expiration</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1394,12 +1583,14 @@
         <tag-class>org.jahia.taglibs.template.cache.AddDependencyTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description>define the depedency set</description>
             <name>set</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.util.Set</type>
         </attribute>
         <attribute>
+            <description>Bean dependency associated</description>
             <name>bean</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1418,6 +1609,9 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>jahiaType is one of : actionmenu,calendar,calendar,form,inlineediting,jobreport,layoutmanager,layoutmanager,
+                layoutmanagerbox,mediaGallery,mySettings,opensearch,pdisplay,
+                portletrender,query,rss,subscription,toolsbars,usergroup,versioncomparison</description>
             <name>jahiaType</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1428,6 +1622,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>if false (default) use gxt-admin module, if true use gxt-template module</description>
             <name>templateUsage</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1487,18 +1682,34 @@
         <tag-class>org.jahia.taglibs.template.url.ComposeUrlTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description>URL Page ID</description>
             <name>pageID</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Page type.
+                Valid values are 'administration', 'login', 'logout', 'mySettings', 'siteMap', 'search'
+            </description>
             <name>page</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                The name of the page scope variable to expose the result URL.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                The name of the page scope variable to expose the result URL.
+            </description>
+            <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -1516,6 +1727,7 @@
         <tag-class>org.jahia.taglibs.template.theme.ThemeDisplayTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description>name of the default theme</description>
             <name>defaultTheme</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

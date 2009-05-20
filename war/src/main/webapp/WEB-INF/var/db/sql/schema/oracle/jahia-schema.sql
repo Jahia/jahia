@@ -380,6 +380,7 @@
         name_jahia_grps varchar2(195 char),
         key_jahia_grps varchar2(200 char) unique,
         siteid_jahia_grps number(10,0),
+        hidden_jahia_grps number(1,0),
         primary key (id_jahia_grps)
     );
 
@@ -943,14 +944,14 @@
         references jahia_sites;
 
     alter table jahia_sites_grps 
-        add constraint FK7B24559790F996AC 
-        foreign key (grpid_sites_grps) 
-        references jahia_grps (key_jahia_grps);
-
-    alter table jahia_sites_grps 
         add constraint FK7B245597F46755FE 
         foreign key (siteid_sites_grps) 
         references jahia_sites;
+
+    alter table jahia_sites_grps 
+        add constraint FK7B24559790F996AC 
+        foreign key (grpid_sites_grps) 
+        references jahia_grps (key_jahia_grps);
 
     alter table jahia_sites_users 
         add constraint FKEA2BF1BF6CF683C0 

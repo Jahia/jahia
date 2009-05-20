@@ -4,7 +4,7 @@
   <artifactId>jahia-root</artifactId>
   <name>Jahia Project Root</name>
   <groupId>org.jahia.server</groupId>
-  <version>6.1-SNAPSHOT</version>
+  <version>6.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <inceptionYear>2004</inceptionYear>
   <!--logo>/images/jahia.gif</logo-->
@@ -16,7 +16,7 @@
     <spring.version>2.5.5</spring.version>
     <jackrabbit.version>1.5.0</jackrabbit.version>
     <lucene.version>2.3.2</lucene.version>
-    <jahia.package.version>6.1-SNAPSHOT</jahia.package.version>
+    <jahia.package.version>6.0-SNAPSHOT</jahia.package.version>
   </properties>
 
   <repositories>
@@ -64,11 +64,9 @@
                       <configuration>
                           <generateHistorical>true</generateHistorical>
                           <targetPercentage>7%</targetPercentage>
-                          <!--
-                          <historyDir>${user.home}/history/${project.artifact}</historyDir>
-                          <snapshot>${user.home}/.clover/atlassian-plugins-clover.snapshot</snapshot>
-                          <singleCloverDatabase>true</singleCloverDatabase>
-                          -->
+                          <!--<generateXml>true</generateXml>-->
+                          <generatePdf>true</generatePdf>
+                          <historyDir>${user.home}/history</historyDir>
                           <!--
                           <cloverDatabase>/foo/bar</cloverDatabase>
                           <cloverMergeDatabase>/foo/bar</cloverMergeDatabase>
@@ -87,6 +85,7 @@
                               <phase>verify</phase>
                               <goals>
                                   <goal>aggregate</goal>
+                                  <goal>save-history</goal>
                                   <goal>clover</goal>
                               </goals>
                           </execution>
@@ -95,8 +94,65 @@
               </plugins>
           </build>
       </profile>
+
+        <profile>
+            <id>license</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.code.maven-license-plugin</groupId>
+                        <artifactId>maven-license-plugin</artifactId>
+                        <version>1.4.0</version>
+                        <configuration>
+                            <basedir>${basedir}</basedir>
+                            <header>header.txt</header>
+                            <quiet>false</quiet>
+                            <failIfMissing>true</failIfMissing>
+                            <aggregate>true</aggregate>
+                            <includes>
+                                <include>src/**/*.java</include>
+                                <include>src/**/*.tag</include>
+                                <include>src/**/*.jsp</include>
+                                <include>src/**/*.jspf</include>
+                                <include>src/**/*.inc</include>
+                            </includes>
+                            <excludes>
+                                <exclude>src/main/java/compressionFilters/**</exclude>
+                                <exclude>src/main/java/name/fraser/**</exclude>
+                                <exclude>src/main/java/org/apache/**</exclude>
+                                <exclude>src/main/java/org/compass/**</exclude>
+                                <exclude>src/main/java/EDU/oswego/**</exclude>
+                            </excludes>
+                            <useDefaultExcludes>true</useDefaultExcludes>
+                            <mapping>
+                                <tag>DYNASCRIPT_STYLE</tag>
+                                <inc>DYNASCRIPT_STYLE</inc>
+                                <jspf>DYNASCRIPT_STYLE</jspf>
+                            </mapping>
+                            <useDefaultMapping>true</useDefaultMapping>
+                            <properties>
+                                <year>2009</year>
+                            </properties>
+                            <encoding>UTF-8</encoding>
+                            <headerDefinitions>
+                                <headerDefinition>style.xml</headerDefinition>
+                            </headerDefinitions>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>format</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
-    
+
   <modules>
     <module>public-api</module>
     <module>bridges</module>
@@ -106,6 +162,7 @@
     <module>test</module>
     <module>gwt</module>
     <module>templates</module>
+    <module>prepackagedSites</module>
     <module>war</module>
     <module>ear</module>
   </modules>

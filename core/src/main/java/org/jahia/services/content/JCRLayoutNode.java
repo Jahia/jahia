@@ -1,7 +1,22 @@
+/**
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
+ */
 package org.jahia.services.content;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.Node;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -30,7 +45,10 @@ public class JCRLayoutNode extends JCRNodeDecorator {
     }
 
     public boolean isLiveDraggable() throws RepositoryException {
-        return getProperty("j:liveDraggable").getBoolean();
+        if (hasProperty("j:liveDraggable")) {
+            return getProperty("j:liveDraggable").getBoolean();
+        }
+        return true;
     }
 
     public void setLiveDraggable(boolean liveDraggable) throws RepositoryException {
@@ -38,7 +56,10 @@ public class JCRLayoutNode extends JCRNodeDecorator {
     }
 
     public boolean isLiveEditable() throws RepositoryException {
-        return getProperty("j:liveEditable").getBoolean();
+        if (hasProperty("j:liveEditable")) {
+            return getProperty("j:liveEditable").getBoolean();
+        }
+        return true;
     }
 
     public void setLiveEditable(boolean liveEditable) throws RepositoryException {
@@ -46,8 +67,11 @@ public class JCRLayoutNode extends JCRNodeDecorator {
     }
 
     public long getNbColumns() throws RepositoryException {
-        return getProperty("j:nbColumns").getLong();
-    }                  
+        if (hasProperty("j:nbColumns")) {
+            return getProperty("j:nbColumns").getLong();
+        }
+        return 3;
+    }
 
     public void setNbColumns(long nbColumns) throws RepositoryException {
         setProperty("j:nbColumns", nbColumns);

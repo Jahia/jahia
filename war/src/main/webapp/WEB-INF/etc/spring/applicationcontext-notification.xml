@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
-    "http://www.springframework.org/dtd/spring-beans.dtd">
-<beans>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
     <bean id="MailService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.mail.MailServiceImpl" parent="jahiaServiceTemplate">
@@ -20,14 +21,21 @@
         </property>
     </bean>
 
+    <bean id="EmailNotificationEventHandlerTemplate" class="org.jahia.services.notification.EmailNotificationEventHandler" abstract="true">
+        <property name="mailService" ref="MailService"/>
+    </bean>
+
     <bean id="NotificationService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.notification.NotificationService" parent="jahiaServiceTemplate" factory-method="getInstance">
                 <property name="subscriptionService" ref="SubscriptionService"/>
                 <property name="handlers">
                     <list>
-                        <bean class="org.jahia.services.notification.EmailNotificationEventHandler">
-                            <property name="mailService" ref="MailService"/>
+                        <bean class="org.jahia.services.notification.EmailNotificationEventHandler" parent="EmailNotificationEventHandlerTemplate">
+                            <property name="ignoreEventTypesPattern" value="workflow.*"/>
+                        </bean>
+                        <bean class="org.jahia.services.notification.WorkflowNotificationEventHandler" parent="EmailNotificationEventHandlerTemplate">
+                            <property name="processEventTypesPattern" value="workflow.*"/>
                         </bean>
                     </list>
                 </property>

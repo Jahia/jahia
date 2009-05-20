@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //  EV      04.12.2000
 
 package org.jahia.engines;
@@ -38,31 +21,19 @@ package org.jahia.engines;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.jstl.core.Config;
-import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.usersession.userSettings;
 import org.jahia.data.JahiaData;
-import org.jahia.data.beans.JahiaBean;
-import org.jahia.data.beans.PageBean;
-import org.jahia.data.beans.RequestBean;
-import org.jahia.data.beans.SiteBean;
-import org.jahia.engines.calendar.CalendarHandler;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.gui.GuiBean;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.expressions.DateBean;
 import org.jahia.spring.aop.interceptor.SilentJamonPerformanceMonitorInterceptor;
 import org.jahia.utils.FileUtils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -71,7 +42,7 @@ public class EngineRenderer {
 
     private static Logger logger = Logger.getLogger (EngineRenderer.class);
 
-    private static final org.apache.log4j.Logger monitorLogger = org.apache.log4j.Logger.getLogger(SilentJamonPerformanceMonitorInterceptor.class);
+    private static final Logger monitorLogger = Logger.getLogger(SilentJamonPerformanceMonitorInterceptor.class);
 
     public static final String FORM_TOKEN = "<!--ENGINE_CONTENT-->";
     private static final EngineRenderer instance = new EngineRenderer ();
@@ -92,7 +63,7 @@ public class EngineRenderer {
      * render ProcessingContext render EV    23.12.2000 AK    04.01.2001  remove the fileName from
      * method arguments
      */
-    public void render (final ProcessingContext jParams, final Map engineHashMap)
+    public void render (final ProcessingContext jParams, final Map<String, Object> engineHashMap)
             throws JahiaException {
         renderCore (jParams, engineHashMap);
     }
@@ -101,7 +72,7 @@ public class EngineRenderer {
      * render JahiaData render EV    23.12.2000 AK    04.01.2001  remove the fileName from
      * method arguments
      */
-    public void render (final JahiaData jData, final Map engineHashMap)
+    public void render (final JahiaData jData, final Map<String, Object> engineHashMap)
             throws JahiaException {
         jData.getProcessingContext().setAttribute ("org.jahia.data.JahiaData",
                 jData);
@@ -114,7 +85,7 @@ public class EngineRenderer {
      * get the render type from the engineHashMap (include or forward) AK    04.01.2001  correct
      * the jahiaChrono call consoleMsg
      */
-    private void renderCore (final ProcessingContext processingContext, final Map engineHashMap)
+    private void renderCore (final ProcessingContext processingContext, final Map<String, Object> engineHashMap)
             throws JahiaException {
 
         String fileName = JahiaEngine.EMPTY_STRING;
@@ -161,63 +132,8 @@ public class EngineRenderer {
 
             request.setAttribute ("org.jahia.params.ParamBean", jParams);
 
-            // now let's set the content access beans.
-            PageBean pageBean = null;
-            if (jParams.getPage()!=null) {
-                pageBean = new PageBean (jParams.getPage (), jParams);
-                request.setAttribute ("currentPage", pageBean);
-            }
-            SiteBean siteBean = new SiteBean (jParams.getSite (), jParams);
-            request.setAttribute ("currentSite", siteBean);
-            
-            request.setAttribute ("currentUser", jParams.getUser ());
-            
-            RequestBean requestBean = new RequestBean (new GuiBean (jParams), jParams);
-            request.setAttribute ("currentRequest", requestBean);
-
-            DateBean dateBean = new DateBean(jParams,
-                    new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT));
-            request.setAttribute("dateBean", dateBean);
-
-            JahiaBean jahiaBean = new JahiaBean(jParams, siteBean, pageBean, requestBean, dateBean, jParams.getUser());
-            request.setAttribute ("currentJahia", jahiaBean);
-            request.setAttribute("jahia", jahiaBean);
-            
-            // init localization context
-            Config.set(jParams.getRequest(), Config.FMT_LOCALIZATION_CONTEXT,
-                    new LocalizationContext(new JahiaResourceBundle(jParams
-                            .getLocale(), jParams.getSite()
-                            .getTemplatePackageName()), jParams.getLocale()));
-
-            boolean isIE = false;
-            final String userAgent = jParams.getRequest ().getHeader ("user-agent");
-            if (userAgent != null) {
-                isIE = (userAgent.indexOf ("IE") != -1);
-            }
-
-            if (isIE) {
-                request.setAttribute ("isIE", Boolean.TRUE);
-            } else {
-                request.setAttribute ("isIE", Boolean.FALSE);
-            }
             request.setAttribute ("org.jahia.engines.EngineHashMap",
                     engineHashMap);
-            request.setAttribute ("javaScriptPath",
-                    jParams.settings ().getJsHttpPath ());
-            request.setAttribute ("URL",
-                    getJahiaCoreHttpPath (jParams) +
-                    jParams.settings ().
-                    getEnginesContext ());
-            request.setAttribute (JahiaEngine.ENGINE_URL_PARAM,
-                    getJahiaCoreHttpPath (jParams) +
-                    jParams.settings ().
-                    getEnginesContext ());
-            request.setAttribute ("serverURL",
-                    getJahiaCoreHttpPath (jParams));
-            request.setAttribute ("httpJsContextPath",
-                    getJahiaCoreHttpPath (jParams) +
-                    jParams.settings ().
-                    getJavascriptContext ());
 
             String jspSource = (String) engineHashMap.get ("jspSource");
             if (jspSource == null)
@@ -238,8 +154,6 @@ public class EngineRenderer {
                     " using render type " + renderType + "...");
             }
 
-            userSettings.initSessionSettingForDevMode(request);
-            
             Monitor listenerMonitor = null;
             if (monitorLogger.isDebugEnabled()) listenerMonitor = MonitorFactory.start(fileName);
             if (renderType.intValue () == JahiaEngine.RENDERTYPE_INCLUDE) {
@@ -294,17 +208,6 @@ public class EngineRenderer {
         } catch(IllegalStateException ise) {
             logger.debug("Error while forwarding the Engine "+fileName,ise);
         }
-    }
-
-    /**
-     * Build an http path containing the server name for the current site, instead of the path
-     * from JahiaPrivateSettings.
-     *
-     * @return An http path leading to Jahia, built with the server name, and the server port if
-     *         nonstandard.
-     */
-    private String getJahiaCoreHttpPath (final ProcessingContext jParams) {
-        return jParams.getContextPath ();
     }
 
     /*******************************************************************************

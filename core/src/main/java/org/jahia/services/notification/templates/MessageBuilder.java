@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.notification.templates;
 
 import groovy.lang.Binding;
@@ -39,6 +22,7 @@ import groovy.util.GroovyScriptEngine;
 import groovy.util.ResourceException;
 import groovy.util.ScriptException;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -61,8 +45,8 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.mail.MailHelper;
 import org.jahia.services.notification.Subscription;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
@@ -79,43 +63,50 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
 
     private static Logger logger = Logger.getLogger(MessageBuilder.class);
 
-    public static String getPageUrl(int pageId, JahiaSite site) {
-        return pageId > 0 ? getSiteUrl(site) + "/"
-                + ProcessingContext.PAGE_ID_PARAMETER + "/" + pageId
-                : getSiteUrl(site);
-    }
-
-    public static String getServerUrl(int siteId) {
-        return getServerUrl(TemplateUtils.getSite(siteId));
-    }
-
-    public static String getServerUrl(JahiaSite site) {
-        String url = "http://localhost:8080";
-        if (site != null) {
-            SettingsBean settings = SettingsBean.getInstance();
-
-            url = "http://"
-                    + site.getServerName()
-                    + (settings.getSiteURLPortOverride() > 0 ? ":"
-                            + settings.getSiteURLPortOverride() : "");
+    /**
+     * Returns the e-mail address with the personal name of the current user (or
+     * the system's default one).
+     * 
+     * @param ctx
+     *            current processing context with the user information
+     * @return the e-mail address with the personal name of the current user (or
+     *         the system's default one)
+     */
+    public static String getSenderEmailAddress(ProcessingContext ctx) {
+        String email = ServicesRegistry.getInstance().getMailService()
+                .defaultSender();
+        if (email.contains("<")) {
+            return email;
         }
-
-        return url;
-    }
-
-    public static String getSiteUrl(JahiaSite site) {
-        String url = Jahia.getContextPath() + Jahia.getServletPath();
-        if (site != null) {
-            if (!site.isDefault()) {
-                url = url + "/" + ProcessingContext.SITE_KEY_PARAMETER + "/"
-                        + site.getSiteKey();
+        JahiaUser user = ctx != null ? ctx.getUser() : null;
+        if (user != null) {
+            String name = UserPreferencesHelper.getPersonalName(user);
+            JahiaSite site = ctx.getSite();
+            if (site != null) {
+                name = name != null ? name + " (" + site.getTitle() + ")"
+                        : site.getTitle();
+            }
+            try {
+                email = new InternetAddress(email, name, SettingsBean
+                        .getInstance().getDefaultResponseBodyEncoding())
+                        .toString();
+            } catch (UnsupportedEncodingException e) {
+                logger.warn(e.getMessage(), e);
+                try {
+                    email = new InternetAddress(email, name).toString();
+                } catch (UnsupportedEncodingException e2) {
+                    // ignore
+                }
             }
         }
-
-        return url;
+        return email;
     }
 
     private Locale preferredLocale;
+
+    private String relativeSiteUrl;
+
+    private String serverUrl;
 
     private JahiaSite site;
 
@@ -136,7 +127,8 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
      *            the site ID
      */
     public MessageBuilder(JahiaUser subscriber, int siteId) {
-        this(subscriber, MailHelper.getEmailAddress(subscriber), siteId);
+        this(subscriber, UserPreferencesHelper.getEmailAddress(subscriber),
+                siteId);
     }
 
     /**
@@ -155,6 +147,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         this.subscriber = subscriber;
         this.subscriberEmail = subscriberEmail;
         this.siteId = siteId;
+        resolveServerAndSiteUrl();
         resolveTemplatePackageName();
     }
 
@@ -192,18 +185,22 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
     }
 
     protected String getPageUrl(int pageId) {
-        return getPageUrl(pageId, getSite());
+        // TODO consider page URL key
+        return pageId > 0 ? getSiteUrl() + "/"
+                + ProcessingContext.PAGE_ID_PARAMETER + "/" + pageId
+                : getSiteUrl();
     }
 
     protected Locale getPreferredLocale() {
         if (preferredLocale == null) {
-            preferredLocale = MailHelper.getPreferredLocale(subscriber, siteId);
+            preferredLocale = UserPreferencesHelper.getPreferredLocale(
+                    subscriber, siteId);
         }
         return preferredLocale;
     }
 
     protected String getServerUrl() {
-        return getServerUrl(getSite());
+        return serverUrl;
     }
 
     protected JahiaSite getSite() {
@@ -213,8 +210,13 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         return site;
     }
 
+    /**
+     * Return the relative site URL (without scheme, server name and port).
+     * 
+     * @return the relative site URL (without scheme, server name and port)
+     */
     protected String getSiteUrl() {
-        return getSiteUrl(getSite());
+        return relativeSiteUrl;
     }
 
     protected Link getSubscriptionManagementLink() {
@@ -254,6 +256,8 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         return text;
     }
 
+    protected abstract Link getUnsubscribeLink();
+
     protected Link getWatchedContentLink(String objectKey) {
         Link lnk = null;
         ContentObject watchedObject = null;
@@ -267,7 +271,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         }
 
         if (watchedObject != null) {
-            String url = getPageUrl(watchedObject.getPageID(), getSite());
+            String url = getPageUrl(watchedObject.getPageID());
             lnk = new Link("Watched content", url, getServerUrl() + url);
         }
 
@@ -287,9 +291,8 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
 
         mimeMessage.addRecipients(Message.RecipientType.TO, InternetAddress
                 .parse(vars.get("to") != null ? (String) vars.get("to")
-                        : MailHelper
-                        .getPersonalizedEmailAddress(subscriberEmail,
-                                subscriber)));
+                        : UserPreferencesHelper.getPersonalizedEmailAddress(
+                                subscriberEmail, subscriber)));
 
         if (vars.get("cc") != null) {
             mimeMessage.addRecipients(Message.RecipientType.CC, InternetAddress
@@ -304,15 +307,18 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
     }
 
     protected void populateBinding(Binding binding) {
-        binding.setVariable("subscriber", new Subscriber(MailHelper
-                .getFirstName(subscriber), MailHelper.getLastName(subscriber),
-                MailHelper.getFullName(subscriber), MailHelper
-                        .getPersonalizedEmailAddress(subscriberEmail,
-                                subscriber), subscriber));
+        binding.setVariable("subscriber", new Subscriber(UserPreferencesHelper
+                .getFirstName(subscriber), UserPreferencesHelper
+                .getLastName(subscriber), UserPreferencesHelper
+                .getFullName(subscriber), UserPreferencesHelper
+                .getPersonalizedEmailAddress(subscriberEmail, subscriber),
+                subscriber));
         binding.setVariable("locale", getPreferredLocale());
-        binding.setVariable("i18n", new JahiaResourceBundle(getPreferredLocale(), templatePackageName));
+        binding.setVariable("i18n", new JahiaResourceBundle(
+                getPreferredLocale(), templatePackageName));
         binding.setVariable("subscriptionManagementLink",
                 getSubscriptionManagementLink());
+        binding.setVariable("unsubscribeLink", getUnsubscribeLink());
     }
 
     public void prepare(MimeMessage mimeMessage) throws MessagingException,
@@ -358,7 +364,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         }
 
         if (content.getCount() == 0) {
-            new JahiaInitializationException(
+            throw new JahiaInitializationException(
                     "Unable to find neither text nor html body part of the notification e-mail. Skip sending notification");
         }
 
@@ -378,8 +384,48 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         return TemplateUtils.resolvePath(path, templatePackageName);
     }
 
+    protected void resolveServerAndSiteUrl() {
+        ProcessingContext ctx = Jahia.getThreadParamBean();
+        String scheme = null;
+        String serverName = null;
+        int serverPort = 0;
+
+        if (ctx != null) {
+            scheme = ctx.getScheme();
+            serverName = ctx.getServerName();
+            serverPort = SettingsBean.getInstance().getSiteURLPortOverride();
+            if (serverPort <= 0) {
+                serverPort = ctx.getServerPort();
+            }
+            JahiaSite site = getSite();
+            if (site != null) {
+                serverName = site.getServerName();
+            }
+            StringBuilder url = new StringBuilder(32).append(scheme).append(
+                    "://").append(serverName);
+            if (serverPort != 80) {
+                url.append(":").append(serverPort);
+            }
+            serverUrl = url.toString();
+        } else {
+            serverUrl = "http://localhost:8080";
+            logger
+                    .warn("ProcessingContext is not available."
+                            + " Unable to resolve server name, port and scheme for absolute server and site links.");
+        }
+
+        StringBuilder siteUrl = new StringBuilder(32).append(
+                Jahia.getContextPath()).append(Jahia.getServletPath());
+        JahiaSite site = getSite();
+        if (site != null && !site.isDefault()) {
+            siteUrl.append("/" + ProcessingContext.SITE_KEY_PARAMETER + "/")
+                    .append(site.getSiteKey());
+        }
+        relativeSiteUrl = siteUrl.toString();
+    }
+
     protected void resolveTemplatePackageName() {
-        JahiaSite site = TemplateUtils.getSite(siteId);
+        JahiaSite site = getSite();
         templatePackageName = site != null ? site.getTemplatePackageName()
                 : null;
     }
@@ -394,5 +440,4 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
                 .substringAfter(mailTemplate, templatesPath) : mailTemplate,
                 binding);
     }
-
 }

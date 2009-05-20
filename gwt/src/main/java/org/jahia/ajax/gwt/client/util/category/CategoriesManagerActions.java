@@ -1,40 +1,24 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.util.category;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.i18n.client.impl.DateRecord;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.Style;
@@ -67,16 +51,8 @@ public abstract class CategoriesManagerActions {
     public static void copy(final BrowserLinker linker) {
         final List<GWTJahiaCategoryNode> selectedItems = (List<GWTJahiaCategoryNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
-            service.copy(selectedItems, new AsyncCallback() {
-                public void onFailure(Throwable throwable) {
-                    Window.alert("Copy failed :\n" + throwable.getLocalizedMessage());
-                }
-
-                public void onSuccess(Object o) {
-                    CopyPasteEngine.getInstance().setCopiedCategories(selectedItems);
-                    linker.handleNewSelection();
-                }
-            });
+            CopyPasteEngine.getInstance().setCopiedCategories(selectedItems);
+            linker.handleNewSelection();
         }
     }
 
@@ -88,16 +64,8 @@ public abstract class CategoriesManagerActions {
     public static void cut(final BrowserLinker linker) {
         final List<GWTJahiaCategoryNode> selectedItems = (List<GWTJahiaCategoryNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
-            service.cut(selectedItems, new AsyncCallback() {
-                public void onFailure(Throwable throwable) {
-                    Window.alert("Cut failed :\n" + throwable.getLocalizedMessage());
-                }
-
-                public void onSuccess(Object o) {
-                    CopyPasteEngine.getInstance().setCutPaths(selectedItems);
-                    linker.handleNewSelection();
-                }
-            });
+            CopyPasteEngine.getInstance().setCutPaths(selectedItems);
+            linker.handleNewSelection();
         }
     }
 
@@ -108,19 +76,20 @@ public abstract class CategoriesManagerActions {
      */
     public static void paste(final BrowserLinker linker) {
         GWTJahiaCategoryNode m = getSingleSelectedNode(linker);
+        if (m != null) {
+            final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
+            service.paste(copyPasteEngine.getCopiedCategories(), m, copyPasteEngine.isCut(), new AsyncCallback() {
+                public void onFailure(Throwable throwable) {
+                    Log.error("Error", throwable);
+                    Window.alert("Paste failed :\n" + throwable.getLocalizedMessage());
+                }
 
-        final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-        service.paste(copyPasteEngine.getCopiedCategories(), m, copyPasteEngine.isCut(), new AsyncCallback() {
-            public void onFailure(Throwable throwable) {
-                Log.error("Error", throwable);
-                Window.alert("Paste failed :\n" + throwable.getLocalizedMessage());
-            }
-
-            public void onSuccess(Object o) {
-                copyPasteEngine.onPastedPath();
-                linker.refreshAll();
-            }
-        });
+                public void onSuccess(Object o) {
+                    copyPasteEngine.onPastedPath();
+                    linker.refreshAll();
+                }
+            });
+        }
 
     }
 
@@ -187,9 +156,13 @@ public abstract class CategoriesManagerActions {
             boolean rem;
             if (selectedItems.size() == 1) {
                 GWTJahiaCategoryNode selection = selectedItems.get(0);
-                rem = Window.confirm("Do you really want to remove the category " + selection.getName() + " ?");
+                if (selection.getKey() != null && selection.getKey().equalsIgnoreCase("root")) {
+                    rem = Window.confirm(Messages.getResource("cat_deleteRoot_confirm"));
+                } else {
+                    rem = Window.confirm(Messages.getResource("cat_delete_confirm") + " " + selection.getName() + "?");
+                }
             } else {
-                rem = Window.confirm("Do you really want to remove the current selection ? (" + selectedItems.size() + " items)");
+                rem = Window.confirm(Messages.getResource("cat_confMultiRemove"));
             }
             if (rem) {
                 List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
@@ -247,6 +220,27 @@ public abstract class CategoriesManagerActions {
             w.layout();
             w.show();
 
+        } else {
+            com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
+            w.setModal(true);
+            w.setResizable(false);
+            w.setBodyBorder(false);
+            w.setLayout(new FillLayout());
+            if (newCategory) {
+                w.setHeading(getResource("cat_create"));
+            } else {
+                w.setHeading(getResource("cat_update"));
+            }
+            w.setWidth(400);
+            GWTJahiaCategoryNode jahiaCategoryNode = new GWTJahiaCategoryNode();
+            jahiaCategoryNode.setParentKey(null);
+            jahiaCategoryNode.setName("root");
+            jahiaCategoryNode.setKey("root");
+            jahiaCategoryNode.setPath("/root");
+            w.add(new InfoEditor(linker, w, jahiaCategoryNode, newCategory));
+            w.setScrollMode(Style.Scroll.AUTO);
+            w.layout();
+            w.show();
         }
     }
 

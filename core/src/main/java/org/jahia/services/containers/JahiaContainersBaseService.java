@@ -1,38 +1,22 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.containers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
@@ -49,6 +33,7 @@ import java.util.TreeSet;
 
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Literal;
@@ -91,12 +76,15 @@ import org.jahia.query.qom.ConstraintItem;
 import org.jahia.query.qom.ContainerQueryBuilder;
 import org.jahia.query.qom.DescendantNodeImpl;
 import org.jahia.query.qom.JahiaQueryObjectModelConstants;
+import org.jahia.query.qom.LiteralImpl;
 import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 import org.jahia.registries.JahiaListenersRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLNotFoundException;
 import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
@@ -110,6 +98,8 @@ import org.jahia.services.version.JahiaSaveVersion;
 import org.jahia.services.version.StateModificationContext;
 import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.utils.JahiaTools;
+import org.jahia.utils.xml.XMLSerializationOptions;
+import org.jahia.utils.xml.XmlWriter;
 
 public class JahiaContainersBaseService extends JahiaContainersService {
 
@@ -1108,6 +1098,110 @@ public class JahiaContainersBaseService extends JahiaContainersService {
             activationTestResults.merge(curTestResults);
         }
         return activationTestResults;
+
+    }
+
+    public synchronized void serializePageContainerListsToXML(XmlWriter
+            xmlWriter,
+                                                              XMLSerializationOptions xmlSerializationOptions,
+                                                              int pageID, ProcessingContext processingContext)
+            throws IOException {
+        List<Integer> listIDs = containerListManager.getPageTopLevelContainerListIDs(pageID,
+                EntryLoadRequest.CURRENT);
+        // for each container, we check if the user has write+admin access to it,
+        // if so we can validate it
+        for (int curContainerListID : listIDs) {
+            serializeContainerListToXML(xmlWriter, xmlSerializationOptions,
+                    curContainerListID, processingContext);
+        }
+    }
+
+    public synchronized void serializeContainerListToXML(XmlWriter xmlWriter,
+                                                         XMLSerializationOptions xmlSerializationOptions,
+                                                         int containerListID,
+                                                         ProcessingContext processingContext)
+            throws IOException {
+
+        try {
+
+            JahiaContainerList containerList = loadContainerListInfo(containerListID, EntryLoadRequest.CURRENT);
+            if (containerList == null) {
+                logger.debug("Unable to load container list " + containerListID +
+                        ", ignoring...");
+                return;
+            }
+
+            xmlWriter.writeEntity("contentContainerList").
+                    writeAttribute("name", containerList.getDefinition().getName());
+
+            List<Integer> ctnIDs = new ArrayList<Integer>(containerManager.getContainerIdsInContainerList(containerListID,
+                    EntryLoadRequest.CURRENT,
+                    false));
+            // for each container, we check if the user has write+admin access to it,
+            // if so we can validate it
+            for (int curContainerID : ctnIDs) {
+                serializeContainerToXML(xmlWriter, xmlSerializationOptions,
+                        curContainerID, processingContext);
+
+            }
+
+            xmlWriter.endEntity();
+
+        } catch (JahiaException je) {
+            logger.debug("Error while exporting container list " +
+                    containerListID + " to XML : ", je);
+        }
+
+    }
+
+    public synchronized void serializeContainerToXML(XmlWriter xmlWriter,
+                                                     XMLSerializationOptions xmlSerializationOptions,
+                                                     int containerID, ProcessingContext processingContext)
+            throws IOException {
+
+        /**
+         * todo FIXME : only handles serialization of active container data
+         */
+
+        try {
+
+            // quick & dirty implementation that serializes the active and staging
+            // entries.
+            JahiaContainer theContainer = loadContainerInfo(containerID,
+                    EntryLoadRequest.CURRENT);
+            if (theContainer == null) {
+                logger.debug("Unable to load container " + containerID +
+                        ", ignoring...");
+                return;
+            }
+
+            xmlWriter.writeEntity("contentContainer");
+
+            // we must now check to see if this container has fields that
+            // don't exist in an active version.
+
+            // we might want to cache the next field id retrieval code ?
+            for (int fieldID : getFieldIDsInContainer(containerID,
+                    EntryLoadRequest.CURRENT)) {
+                ContentField currentField = ContentField.getField(fieldID);
+                currentField.serializeToXML(xmlWriter, xmlSerializationOptions, processingContext);
+            }
+
+            // now we must load and display all the sub container lists.
+            List<Integer> subCtnListIDs = containerListManager.getSubContainerListIDs(containerID, EntryLoadRequest.CURRENT);
+
+            for (int i = 0; i < subCtnListIDs.size(); i++) {
+                int curSubContainerListID = ((Integer) subCtnListIDs.get(i)).intValue();
+                serializeContainerListToXML(xmlWriter, xmlSerializationOptions,
+                        curSubContainerListID, processingContext);
+            }
+
+            xmlWriter.endEntity();
+
+        } catch (JahiaException je) {
+            logger.debug("Error while serializing container " + containerID +
+                    " to XML : ", je);
+        }
 
     }
 
@@ -2359,7 +2453,22 @@ public class JahiaContainersBaseService extends JahiaContainersService {
     public List<String> getContainerDefinitionNamesWithType(String type){
         Set<String> types = new HashSet<String>(1);
         types.add(type);
+        types.addAll(getAllSubTypeNames(type));        
         return this.containerDefinitionManager.getContainerDefinitionNamesWithType(types);
+    }
+    
+    private Set<String> getAllSubTypeNames(String typeName) {
+        Set<String> subTypeNames = new HashSet<String>();
+        try {
+            for (ExtendedNodeType nodeType : NodeTypeRegistry.getInstance()
+                    .getNodeType(typeName).getSubtypes()) {
+                subTypeNames.add(nodeType.getName());
+                subTypeNames.addAll(getAllSubTypeNames(nodeType.getName()));
+            }
+        } catch (NoSuchNodeTypeException e) {
+            logger.warn("Node type not found", e); 
+        }
+        return subTypeNames;
     }
     
     /**
@@ -2393,6 +2502,7 @@ public class JahiaContainersBaseService extends JahiaContainersService {
         ContainerQueryBuilder builder = new ContainerQueryBuilder(jParams,new HashMap<String, Value>());
         ContainerQueryContext queryContext = ContainerQueryContext.getQueryContext(queryModel,
                 queryContextCtnID,parameters,jParams);
+
         ContainerQueryBean queryBean = builder.getContainerQueryBean(queryModel,queryContext);
         if (queryBean != null
                 && queryBean.getQueryContext().isSiteLevelQuery()
@@ -2416,10 +2526,12 @@ public class JahiaContainersBaseService extends JahiaContainersService {
                     String[] definitionsAr = (String[]) definitions
                             .toArray(new String[] {});
                     String definitionNamesStr = JahiaTools
-                            .getStringArrayToString(definitionsAr, ",");
+                        .getStringArrayToString(definitionsAr,
+                            JahiaQueryObjectModelConstants.MULTI_VALUE_SEP);
                     Value val = valueFactory.createValue(definitionNamesStr);
                     try {
                         Literal literal = queryFactory.literal(val);
+                        ((LiteralImpl) literal).setMultiValueANDLogic(false);
                         PropertyValue prop = queryFactory
                                 .propertyValue(FilterCreator.CONTENT_DEFINITION_NAME);
                         Constraint constraint = queryFactory

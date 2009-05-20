@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.templates;
 
 import static org.jahia.services.templates.JahiaTemplatesPackageHandler.NS_URI_DEF;
@@ -141,6 +124,15 @@ final class TemplateDeploymentDescriptorHelper {
         digester.addBeanPropertySetter(
                 "template-set/common-pages/search-results",
                 "searchResultsPageName");
+        digester.addBeanPropertySetter(
+            "template-set/common-pages/new-user-registration",
+            "newUserRegistrationPageName");
+        digester.addBeanPropertySetter(
+            "template-set/common-pages/new-user-registration-success",
+            "newUserRegistrationSuccessPageName");        
+        digester.addBeanPropertySetter(
+            "template-set/common-pages/sitemap",
+            "sitemapPageName");        
 
         digester.addCallMethod("template-set/properties/property",
                 "addProperty", 2);
@@ -231,7 +223,7 @@ final class TemplateDeploymentDescriptorHelper {
                 "thumbnail"));
 
         // build the templates list
-        List nodesList = XMLParser.getChildNodes(docElNode, "template");
+        List<Node> nodesList = XMLParser.getChildNodes(docElNode, "template");
 
         int size = nodesList.size();
         if (size > 0) {
@@ -413,6 +405,16 @@ final class TemplateDeploymentDescriptorHelper {
                     ch.dataElement("search-results", pkg
                             .getSearchResultsPageName());
                 }
+                if (pkg.getNewUserRegistrationPageName() != null) {
+                    ch.dataElement("new-user-registration", pkg.getNewUserRegistrationPageName());
+                }
+                if (pkg.getNewUserRegistrationSuccessPageName() != null) {
+                    ch.dataElement("new-user-registration-success", pkg
+                            .getNewUserRegistrationSuccessPageName());
+                }    
+                if (pkg.getSitemapPageName() != null) {
+                    ch.dataElement("sitemap", pkg.getSitemapPageName());
+                }
                 ch.endElement(NS_URI_JAHIA,
                         "common-pages", "common-pages");
             }
@@ -447,7 +449,7 @@ final class TemplateDeploymentDescriptorHelper {
             }
             ch.startElement(NS_URI_JAHIA,
                     "templates", "templates", attr);
-            for (Iterator iterator = pkg.getTemplates().iterator(); iterator
+            for (Iterator<JahiaTemplateDef> iterator = pkg.getTemplates().iterator(); iterator
                     .hasNext();) {
                 JahiaTemplateDef template = (JahiaTemplateDef) iterator.next();
                 attr = new AttributesImpl();

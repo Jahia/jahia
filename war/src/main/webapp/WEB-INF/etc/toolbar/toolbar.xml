@@ -21,7 +21,7 @@
         <toolbar name="subscriptions" ref-type="org.jahia.toolbar.subscriptions" state="top" draggable="true" displayed="false"
                  mandatory="false" display-title="true"/>
     </display>
-    <!-- define toolbar -->                            mys
+    <!-- define toolbar -->
     <custom-toolbar>
         <!-- switching mode -->
         <toolbar type="org.jahia.toolbar.switchingmode">
@@ -30,8 +30,10 @@
 
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.User"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.sites" separator="false"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.View"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.Tools"/>
-
+            
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.License"/>
             <!-- push to right-->
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.Fill" separator="false"/>
 
@@ -39,7 +41,6 @@
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.Notification"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.Page"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.EditMode"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.PreviewMode"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.CompareMode"/>
 
@@ -104,7 +105,12 @@
         <itemsgroup type="org.jahia.toolbar.itemsgroup.Fill">
             <item ref-type="org.jahia.toolbar.item.Fill"/>
         </itemsgroup>
-
+        
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.License" layout="button-label">
+            <visibility authentication="true"/>        
+            <item ref-type="org.jahia.toolbar.item.License"/>
+        </itemsgroup>
+         
         <!-- User-->
         <itemsgroup type="org.jahia.toolbar.itemsgroup.User" layout="button-label">
             <title-resourcebundle-key key='toolbar.itemgroups.user'/>
@@ -154,14 +160,14 @@
             <item ref-type="org.jahia.toolbar.item.PageProperties"/>
         </itemsgroup>
 
-        <!-- items that are visible only during the edit mode context-->
-        <itemsgroup type="org.jahia.toolbar.itemsgroup.EditMode" layout="menu-checkbox">
-            <title-resourcebundle-key key='toolbar.advanced'/>
-            <visibility authentication="true" mode="edit"/>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.View" layout="menu-checkbox">
+            <title-resourcebundle-key key='toolbar.view'/>
             <item ref-type="org.jahia.toolbar.item.acldiff"/>
             <item ref-type="org.jahia.toolbar.item.timebasepublishing"/>
             <item ref-type="org.jahia.toolbar.item.integrity"/>
             <item ref-type="org.jahia.toolbar.item.inlineediting"/>
+            <item ref-type="org.jahia.toolbar.item.Separator"/>
+            <item ref-type="org.jahia.toolbar.item.ToolbarsTitle"/>
         </itemsgroup>
 
         <!-- items that are visible only during the edit mode context-->
@@ -185,7 +191,7 @@
         <!-- tools-->
         <itemsgroup type="org.jahia.toolbar.itemsgroup.Tools" layout="menu">
             <title-resourcebundle-key key='toolbar.itemgroups.tools'/>
-            <visibility authentication="true" mode="edit,compare,preview"/>
+            <visibility authentication="true"/>
             <item ref-type="org.jahia.toolbar.item.FileManager"/>
             <item ref-type="org.jahia.toolbar.item.MashupManager"/>
             <item ref-type="org.jahia.toolbar.item.GWTWorkflow"/>
@@ -340,7 +346,22 @@
 
         <!-- fill item-->
         <item type="org.jahia.toolbar.item.Fill"/>
-
+        
+        <item type="org.jahia.toolbar.item.Toolbars"/>
+        
+        <item type="org.jahia.toolbar.item.ToolbarsTitle" extends="org.jahia.toolbar.item.Toolbars">
+            <title-resourcebundle-key key="toolbar.view.toolbars"/>
+        </item>
+        
+        <!-- License information -->
+        <item type="org.jahia.toolbar.item.License" extends="org.jahia.toolbar.item.InfoPanel">
+        		<title-resourcebundle-key key="button.license"/>
+            <visibility authentication="false" mode="edit" />
+            <property name="info">
+                <value-resolver class="org.jahia.services.toolbar.resolver.impl.InfoPropertyResolver" input="license_30"/>
+            </property>
+        </item>
+        
         <!-- Connected user -->
         <item type="org.jahia.toolbar.item.User" extends="org.jahia.toolbar.item.InfoPanel">
             <title-resourcebundle-key key="button.user"/>
@@ -473,7 +494,7 @@
             <icon-style min="gwt-toolbar-ItemsGroup-icons-filemanager-min"
                         max="gwt-toolbar-ItemsGroup-icons-filemanager-normal"/>
             <description-resourcebundle-key key="button.filemanager"/>
-            <visibility mode="edit,preview,compare"/>
+            <visibility site-action-permission="engines.filemanager"/>
             <property name="url">
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
                                 input="gwtfilemanager"/>
@@ -486,7 +507,7 @@
             <icon-style min="gwt-toolbar-ItemsGroup-icons-mashupmanager-min"
                         max="gwt-toolbar-ItemsGroup-icons-mashupmanager-normal"/>
             <description-resourcebundle-key key="button.filemanager"/>
-            <visibility mode="edit,preview,compare"/>
+            <visibility site-action-permission="engines.mashupmanager"/>
             <property name="url">
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
                                 input="gwtmashupmanager"/>
@@ -537,7 +558,7 @@
             <icon-style min="gwt-toolbar-ItemsGroup-icons-pageproperties-min"
                         max="gwt-toolbar-ItemsGroup-icons-pageproperties-normal"/>
             <description-resourcebundle-key key="button.pageSettings"/>
-            <visibility mode="edit"/>
+            <visibility mode="edit" permission="write"/>
             <property name="url">
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
                                 input="pageproperties"/>
@@ -646,7 +667,7 @@
                         max="gwt-toolbar-ItemsGroup-icons-acldiff-normal"/>
             <description-resourcebundle-key key="button.acldiff"/>
             <visibility authentication="true" mode="edit"/>
-            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.JahiaPreferenceResolver"
+            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"
                                input="acldiff.activated"/>
             <property name="toggle" value="true"/>
             <property name="onSuccess" value="refresh"/>
@@ -662,7 +683,7 @@
                         max="gwt-toolbar-ItemsGroup-icons-timebasepublishing-normal"/>
             <description-resourcebundle-key key="button.timebasepublishing"/>
             <visibility authentication="true" mode="edit"/>
-            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.JahiaPreferenceResolver"
+            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"
                                input="timebasepublishing.activated"/>
             <property name="toggle" value="true"/>
             <property name="onSuccess" value="refresh"/>
@@ -678,7 +699,7 @@
                         max="gwt-toolbar-ItemsGroup-icons-inlineediting-normal"/>
             <description-resourcebundle-key key="button.inlineediting"/>
             <visibility authentication="true" mode="edit"/>
-            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.JahiaPreferenceResolver"
+            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"
                                input="inlineediting.activated"/>
             <property name="toggle" value="true"/>
             <property name="flushPageCache" value="true" />
@@ -696,7 +717,7 @@
             <visibility>
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.IntegrityVisibilityResolver"/>
             </visibility>
-            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.JahiaPreferenceResolver"
+            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"
                                input="integrity.activated"/>
             <property name="toggle" value="true"/>
             <property name="onSuccess" value="refresh"/>

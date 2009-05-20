@@ -1,36 +1,19 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.templates.components.toolbar.server;
 
 
@@ -56,7 +39,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
-import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
+import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.preferences.toolbar.ToolbarJahiaPreference;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
@@ -328,17 +311,18 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
 
     private GWTJahiaState createJahiaToolbarState(GWTJahiaToolbar gwtToolbar, GWTJahiaState defaultState) {
         try {
-            ToolbarJahiaPreference preference = getToolbarPreference(gwtToolbar.getName(), gwtToolbar.getType());
+            JahiaPreference preference = getToolbarPreference(gwtToolbar.getName(), gwtToolbar.getType());
             if (preference == null) {
                 return defaultState;
             }
             logger.debug("Preference found for toolbar: " + gwtToolbar.getName());
+            ToolbarJahiaPreference node = (ToolbarJahiaPreference) preference.getNode();
             GWTJahiaState state = new GWTJahiaState();
-            state.setValue(preference.getState());
-            state.setIndex(preference.getToolbarIndex());
-            state.setPagePositionX(preference.getPositionX());
-            state.setPagePositionY(preference.getPositionY());
-            state.setDisplay(gwtToolbar.isMandatory() || preference.isDisplay());
+            state.setValue(node.getState());
+            state.setIndex(node.getToolbarIndex());
+            state.setPagePositionX(node.getPositionX());
+            state.setPagePositionY(node.getPositionY());
+            state.setDisplay(gwtToolbar.isMandatory() || node.isDisplay());
             return state;
 
         } catch (Exception e) {
@@ -349,20 +333,21 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
 
     }
 
-    private ToolbarJahiaPreference createToolbarPreference(GWTJahiaToolbar gwtToolbar) {
+    private JahiaPreference createToolbarPreference(GWTJahiaToolbar gwtToolbar) {
         JahiaUser remoteJahiaUser = getRemoteJahiaUser();
         try {
-            ToolbarJahiaPreference jahiaPreference = getToolbarPreference(gwtToolbar.getName(), gwtToolbar.getType());
+            JahiaPreference jahiaPreference = getToolbarPreference(gwtToolbar.getName(), gwtToolbar.getType());
             if (jahiaPreference == null) {
-                jahiaPreference = (ToolbarJahiaPreference) getToolbarJahiaPreferencesProvider().createJahiaPreferenceNode(remoteJahiaUser);
+                jahiaPreference = (JahiaPreference) getToolbarJahiaPreferencesProvider().createJahiaPreferenceNode(remoteJahiaUser);
             }
-            jahiaPreference.setToolbarName(gwtToolbar.getName());
-            jahiaPreference.setType(gwtToolbar.getType());
-            jahiaPreference.setState(gwtToolbar.getState().getValue());
-            jahiaPreference.setToolbarIndex(gwtToolbar.getState().getIndex());
-            jahiaPreference.setPositionX(gwtToolbar.getState().getPagePositionX());
-            jahiaPreference.setPositionY(gwtToolbar.getState().getPagePositionY());
-            jahiaPreference.setDisplay(gwtToolbar.getState().isDisplay());
+            ToolbarJahiaPreference node = (ToolbarJahiaPreference) jahiaPreference.getNode();
+            node.setToolbarName(gwtToolbar.getName());
+            node.setType(gwtToolbar.getType());
+            node.setState(gwtToolbar.getState().getValue());
+            node.setToolbarIndex(gwtToolbar.getState().getIndex());
+            node.setPositionX(gwtToolbar.getState().getPagePositionX());
+            node.setPositionY(gwtToolbar.getState().getPagePositionY());
+            node.setDisplay(gwtToolbar.getState().isDisplay());
             logger.debug("toolbar: " + gwtToolbar.getType() + "," + gwtToolbar.getName());
             return jahiaPreference;
         } catch (RepositoryException e) {
@@ -378,9 +363,9 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
      * @param type
      * @return
      */
-    private ToolbarJahiaPreference getToolbarPreference(String name, String type) {
+    private JahiaPreference getToolbarPreference(String name, String type) {
         JahiaUser remoteJahiaUser = getRemoteJahiaUser();
-        return (ToolbarJahiaPreference) getToolbarJahiaPreferencesProvider().getJahiaPreference(remoteJahiaUser, JahiaPreferencesXpathHelper.getToolbarXpath(name, type));
+        return getToolbarJahiaPreferencesProvider().getJahiaPreference(remoteJahiaUser, JahiaPreferencesXpathHelper.getToolbarXpath(name, type));
     }
 
 
@@ -568,6 +553,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         boolean isSystemJob = true;
         boolean isCurrentPageValided = false;
         String lastExecutedJobLabel = "";
+        String lastExecutionJobTitle = "" ;
         String link = null;
         JobDetail lastExecutedJobDetail = getSchedulerService().getLastCompletedJobDetail();
         if (lastExecutedJobDetail != null) {
@@ -580,6 +566,9 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
                 if (lastExecutedJobUserKey != null) {
                     isCurrentUser = lastExecutedJobUserKey.equalsIgnoreCase(getRemoteUser());
                 }
+
+                // set title if any
+                lastExecutionJobTitle = lastExecutedJobDataMap.getString(BackgroundJob.JOB_TITLE) ;
 
                 // set 'is System Job'
                 String lastExecutedJobType = lastExecutedJobDataMap.getString(BackgroundJob.JOB_TYPE);
@@ -695,7 +684,11 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
             gwtProcessJobInfo.setCurrentPageValidated(isCurrentPageValided);
             gwtProcessJobInfo.setSystemJob(isSystemJob);
             gwtProcessJobInfo.setJobReportUrl(link);
+            if (lastExecutionJobTitle == null) {
+                lastExecutionJobTitle = "" ;
+            }
             gwtProcessJobInfo.setJobType(lastExecutedJobLabel);
+            gwtProcessJobInfo.setLastTitle(lastExecutionJobTitle);
             gwtProcessJobInfo.setAutoRefresh(pageRefresh);
             gwtProcessJobInfo.setLastViewTime(lastExecutedJob);
             gwtProcessJobInfo.setNumberWaitingJobs(waitingJobNumber);
@@ -784,7 +777,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
     }
 
     /*
-   * Google analytics  
+   * Google analytics
    *
    * */
     public Map<String, String> getGAsiteProperties(int pid) {

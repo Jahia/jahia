@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.utils;
 
 import java.text.Collator;
@@ -40,8 +23,12 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
+
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 /**
  * <p>Title: Utility class to convert between the different type of language
@@ -88,6 +75,37 @@ public class LanguageCodeConverters {
         }
 
         return newLocale(language, country, variant);
+    }
+
+    /**
+     * Converts (alt) string such as
+     *   en_US, fr_CH_unix, fr, en, _GB, fr__UNIX
+     * into Locale objects. This method is the reverse operation of the
+     * Locale.toString() output. So a good test case for this method could
+     * be :
+     *   languageCodeToLocale(Locale.toString()).equals(Locale)
+     * @param code the encoded string
+     * @return the resulting Locale object, or the default language code if
+     * no language was found.
+     */
+    public static Locale getLocaleFromCode(String code) {
+        if (code == null || code.length() == 0) {
+            return Locale.getDefault() ;
+        }
+        Locale loc ;
+        String[] codes = code.split("_") ;
+        if (codes.length == 0) {
+            return Locale.getDefault() ;
+        } else if (codes.length == 1) {
+            loc = new Locale(codes[0]) ;
+        } else if (codes.length == 2) {
+            loc = new Locale(codes[0], codes[1]) ;
+        } else if (codes.length == 3) {
+            loc = new Locale(codes[0], codes[1], codes[2]) ;
+        } else {
+            return Locale.getDefault() ;
+        }
+        return loc ;
     }
 
     /**
@@ -213,9 +231,9 @@ public class LanguageCodeConverters {
         }
     }
 
-    public static List getSortedLocaleList(Locale currentLocale) {
+    public static List<Locale> getSortedLocaleList(Locale currentLocale) {
         Locale[] availableLocales = Locale.getAvailableLocales();
-        List sortedLocaleList = new ArrayList();
+        List<Locale> sortedLocaleList = new ArrayList<Locale>();
         for (int i=0; i < availableLocales.length; i++) {
           Locale curLocale = availableLocales[i];
           sortedLocaleList.add(curLocale);
@@ -228,7 +246,7 @@ public class LanguageCodeConverters {
      * Comparator implementation that compares locale display names in a certain
      * current locale.
      */
-    public static class LocaleDisplayNameComparator implements Comparator {
+    public static class LocaleDisplayNameComparator implements Comparator<Locale> {
 
         private Collator collator = Collator.getInstance();
         private Locale currentLocale;
@@ -240,10 +258,8 @@ public class LanguageCodeConverters {
             }
         }
 
-        public int compare(Object o1,
-                   Object o2) {
-            Locale locale1 = (Locale) o1;
-            Locale locale2 = (Locale) o2;
+        public int compare(Locale locale1,
+                Locale locale2) {
             return collator.compare(locale1.getDisplayName(currentLocale), locale2.getDisplayName(currentLocale));
         }
 
@@ -292,5 +308,20 @@ public class LanguageCodeConverters {
             languageCodes.add(locale.toString());
         }
         return languageCodes;
+    }
+
+    public static List<Locale> getAvailableBundleLocales() {
+        return getAvailableBundleLocales(
+                JahiaResourceBundle.JAHIA_MESSAGE_RESOURCES, null);
+    }
+
+    public static List<Locale> getAvailableBundleLocalesSorted(
+            Locale currentLocale) {
+        Map<String, Locale> sortedLocales = new TreeMap<String, Locale>();
+        for (Locale locale : getAvailableBundleLocales(
+                JahiaResourceBundle.JAHIA_MESSAGE_RESOURCES, null)) {
+            sortedLocales.put(locale.getDisplayName(currentLocale), locale);
+        }
+        return new LinkedList<Locale>(sortedLocales.values());
     }
 }

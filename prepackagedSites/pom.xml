@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <parent>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-root</artifactId>
+        <version>6.0-SNAPSHOT</version>
+    </parent>
+    <groupId>org.jahia.prepackagedsites</groupId>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>prepackagedSites</artifactId>
+    <name>Prepackaged sites</name>
+    <packaging>pom</packaging>
+
+
+  <modules>
+    <module>webtemplates</module>
+    <module>testSite</module>
+  </modules>
+
+
+</project>

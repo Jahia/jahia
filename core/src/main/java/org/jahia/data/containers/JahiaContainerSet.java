@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //
 //  JahiaContainerSet
 //  EV      01.01.2001      Happy New Year, Folks !
@@ -47,6 +30,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContainerFactory;
 import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageDefinition;
@@ -54,6 +38,8 @@ import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.content.PageDefinitionKey;
 
 import java.util.*;
+
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 /**
  * @version $Rev$
@@ -165,6 +151,52 @@ public class JahiaContainerSet implements Map<String, JahiaContainerList> {
         }
     } // end constructor
 
+    
+    public static String resolveNodeType(String containerName, int pageTemplateID, int pageID, 
+            ProcessingContext processingContext) throws NoSuchNodeTypeException {
+        String n = null;
+        try {
+            if (pageTemplateID > 0) {
+                n = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(pageTemplateID))
+                        .getNodeType().getName();
+            } else if (pageID > 0) {
+                n = JahiaPageDefinition.getContentDefinitionInstance(
+                        new PageDefinitionKey(ContentPage.getPage(pageID).getPageTemplateID(
+                                processingContext.getEntryLoadRequest()))).getNodeType().getName();
+            }  
+            n = NodeTypeRegistry.getInstance().getNodeType(n).getNodeDefinition(containerName)
+                    .getRequiredPrimaryTypes()[0].getChildNodeDefinitionsAsMap().get("*").getRequiredPrimaryTypes()[0]
+                    .getName();
+        } catch (Exception e) {
+            logger.warn("Error retrieving page definitions", e);
+        }
+        return n;
+    }
+    
+    public static String resolveContainerName(String containerName, int pageTemplateID, int pageID, 
+            ProcessingContext processingContext) {
+        String n = null;
+        try {
+            if (pageTemplateID > 0) {
+                n = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(pageTemplateID))
+                        .getNodeType().getName();
+            } else if (pageID > 0) {
+                int defID = ContentPage.getPage(pageID).getPageTemplateID(processingContext.getEntryLoadRequest());
+                if (defID == -1) {
+                    return null;
+                }
+                n = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(defID)).getNodeType().getName();
+            }
+            n = n.replace(':', '_') + "_";
+            if (!containerName.startsWith(n)) {
+                containerName = n + containerName;
+            }
+        } catch (Exception e) {
+            logger.warn("Error retrieving page definitions", e);
+        }
+
+        return containerName;
+    }
 
     //-------------------------------------------------------------------------
     /***
@@ -438,28 +470,7 @@ public class JahiaContainerSet implements Map<String, JahiaContainerList> {
      */
     public JahiaContainerList getContainerList(String containerName, String listViewId)
             throws JahiaException {
-        String n = null;
-        try {
-            n = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(page.getPageTemplateID())).getNodeType().getName();
-        } catch (Exception e) {
-            // fsd
-        }
-        n = n.replace(':','_')+"_";
-        if (!containerName.startsWith(n)) {
-            containerName = n + containerName;
-        }
-
-//        try {
-//            ExtendedNodeType type = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(page.getPageTemplateID())).getNodeType();
-//            n = type.getChildNodeDefinitionsAsMap().get(containerName).getDeclaringNodeType().getName();
-////            n = .getName();
-//            n = n.replace(':','_')+"_";
-//            if (!containerName.startsWith(n)) {
-//                containerName = n + containerName;
-//            }
-//        } catch (Exception e) {
-//            // fsd
-//        }
+        containerName = resolveContainerName(containerName, page.getPageTemplateID(), 0, processingContext);
 
         if (checkDeclared(containerName)) {
             JahiaContainerList theContainerList = (JahiaContainerList)
@@ -638,30 +649,7 @@ public class JahiaContainerSet implements Map<String, JahiaContainerList> {
                     JahiaException.ERROR_SEVERITY);
 
         }
-
-        String n = null;
-        try {
-            n = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(ContentPage.getPage(pageID).getPageTemplateID(processingContext.getEntryLoadRequest()))).getNodeType().getName();
-        } catch (Exception e) {
-            // fsd
-        }
-        n = n.replace(':','_')+"_";
-        if (!containerName.startsWith(n)) {
-            containerName = n + containerName;
-        }
-
-//        try {
-//            ExtendedNodeType type = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(ContentPage.getPage(pageID).getPageTemplateID(processingContext.getEntryLoadRequest()))).getNodeType();
-//            n = type.getChildNodeDefinitionsAsMap().get(containerName).getDeclaringNodeType().getName();
-////            n = type.getName();
-//            n = n.replace(':','_')+"_";
-//            if (!containerName.startsWith(n)) {
-//                containerName = n + containerName;
-//            }
-//        } catch (Exception e) {
-//            // fsd
-//        }
-
+        containerName = resolveContainerName(containerName, 0, pageID, processingContext);
 
         // now let's check if we are accessing a top level container list or
         // not using only the definitions (as the container lists might not

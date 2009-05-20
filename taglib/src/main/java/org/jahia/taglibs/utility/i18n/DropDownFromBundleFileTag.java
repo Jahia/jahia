@@ -1,39 +1,24 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
 package org.jahia.taglibs.utility.i18n;
 
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
+import org.jahia.data.beans.RequestBean;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -50,8 +35,10 @@ import java.io.IOException;
  * Time: 17:46:51
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class DropDownFromBundleFileTag extends AbstractJahiaTag {
     private String bundleName;
+    private String var;
 
     /**
      * Default processing of the start tag returning EVAL_BODY_BUFFERED.
@@ -70,15 +57,20 @@ public class DropDownFromBundleFileTag extends AbstractJahiaTag {
                 String key = keys.nextElement();
                 values.add(bundle.getString(key));
             }
-            final JspWriter writer = pageContext.getOut();
-            try {
-                writer.println("<select>");
-                for (String value : values) {
-                    writer.println("<option value=\""+value+"\">"+value+"</option>");
+            if (var == null || "".equals(var)) {
+                final JspWriter writer = pageContext.getOut();
+                try {
+                    writer.println("<select>");
+                    for (String value : values) {
+                        writer.println("<option value=\""+value+"\">"+value+"</option>");
+                    }
+                    writer.println("</select>");
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
-                writer.println("</select>");
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            else {
+                pageContext.setAttribute(var,values);
             }
         }
         return SKIP_BODY;
@@ -90,5 +82,13 @@ public class DropDownFromBundleFileTag extends AbstractJahiaTag {
 
     public void setBundleName(String bundleName) {
         this.bundleName = bundleName;
+    }
+
+    public String getVar() {
+        return var;
+    }
+
+    public void setVar(String var) {
+        this.var = var;
     }
 }

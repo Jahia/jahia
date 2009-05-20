@@ -1,40 +1,26 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget.layoutmanager;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
@@ -44,9 +30,11 @@ import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
 import org.jahia.ajax.gwt.client.service.layoutmanager.LayoutmanagerService;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
@@ -76,6 +64,7 @@ public class JahiaPortalManager extends ContentPanel {
     private JahiaPortalConfig portalConfig;
     private TextToolItem portletPickerButton;
     private TextToolItem saveAsDefaultButton;
+    private TextToolItem restoreDefaultButton;
     private TextToolItem configPortalButton;
     private static JahiaPortletFactory portletFactory = new JahiaPortletFactory();
     private GWTJahiaLayoutManagerConfig gwtPortalConfig;
@@ -124,9 +113,6 @@ public class JahiaPortalManager extends ContentPanel {
             portal.setColumnWidth(i, columnWidth);
         }
 
-        // add on drop listener
-        portal.addListener(Events.Drop, new OnPortletMovedListener(portal));
-
 
         portletPickerButton = new TextToolItem(Messages.getNotEmptyResource("p_add_mashups", "Add mashups"));
         portletPickerButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
@@ -140,15 +126,65 @@ public class JahiaPortalManager extends ContentPanel {
         saveAsDefaultButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
             @Override
             public void componentSelected(ComponentEvent ce) {
-                LayoutmanagerService.App.getInstance().saveAsDefault(JahiaPageEntryPoint.getJahiaGWTPage(), new AsyncCallback() {
-                    public void onSuccess(Object o) {
-                        Log.debug("Current config saved as default config.");
-                    }
+                final MessageBox box = new MessageBox();
+                final Listener confirmBoxListener = new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent ce) {
+                        Dialog dialog = (Dialog) ce.component;
+                        Button btn = dialog.getButtonPressed();
+                        if (btn.getText().equalsIgnoreCase(MessageBox.OK)) {
+                            LayoutmanagerService.App.getInstance().saveAsDefault(JahiaPageEntryPoint.getJahiaGWTPage(), new AsyncCallback() {
+                                public void onSuccess(Object o) {
+                                   Log.debug("Save as defaut");
+                                }
 
-                    public void onFailure(Throwable throwable) {
-                        Log.error("Unable to save current config as default config.", throwable);
+                                public void onFailure(Throwable throwable) {
+                                    Log.error("Unable to restore default.", throwable);
+                                }
+                            });
+                        }
                     }
-                });
+                };
+
+
+                box.setButtons(MessageBox.OKCANCEL);
+                box.setIcon(MessageBox.QUESTION);
+                box.setTitle(Messages.getNotEmptyResource("p_save_default","Save as default"));
+                box.addCallback(confirmBoxListener);
+                box.setMessage(Messages.getNotEmptyResource("p_confirm_save_default","Do you really want to save as default?"));
+                box.show();
+            }
+        });
+
+        restoreDefaultButton = new TextToolItem(Messages.getNotEmptyResource("p_restore_default", "Restore default"));
+        restoreDefaultButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+            @Override
+            public void componentSelected(ComponentEvent ce) {
+                final MessageBox box = new MessageBox();
+                final Listener confirmBoxListener = new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent ce) {
+                        Dialog dialog = (Dialog) ce.component;
+                        Button btn = dialog.getButtonPressed();
+                        if (btn.getText().equalsIgnoreCase(MessageBox.OK)) {
+                            LayoutmanagerService.App.getInstance().restoreDefault(JahiaPageEntryPoint.getJahiaGWTPage(), new AsyncCallback() {
+                                public void onSuccess(Object o) {
+                                    refreshPortal();
+                                }
+
+                                public void onFailure(Throwable throwable) {
+                                    Log.error("Unable to restore default.", throwable);
+                                }
+                            });
+                        }
+                    }
+                };
+
+
+                box.setButtons(MessageBox.OKCANCEL);
+                box.setIcon(MessageBox.QUESTION);
+                box.setTitle(Messages.getNotEmptyResource("p_restore_default", "Restore default"));
+                box.addCallback(confirmBoxListener);
+                box.setMessage(Messages.getNotEmptyResource("p_restore_confirm", "Do you really want to restore default?"));
+                box.show();
             }
         });
 
@@ -181,7 +217,11 @@ public class JahiaPortalManager extends ContentPanel {
         bar.add(new FillToolItem());
         bar.add(portletPickerButton);
         bar.add(new SeparatorToolItem());
-        bar.add(saveAsDefaultButton);
+        if (JahiaGWTParameters.hasWriteAccess()) {
+            bar.add(saveAsDefaultButton);
+            bar.add(new SeparatorToolItem());
+        }
+        bar.add(restoreDefaultButton);
         bar.add(new SeparatorToolItem());
         bar.add(configPortalButton);
         setTopComponent(bar);
@@ -320,7 +360,7 @@ public class JahiaPortalManager extends ContentPanel {
                         Log.error("error when loading widget instance with id[" + gwtLayoutItem.getPortlet() + "]", e);
 
                     }
-                }else{
+                } else {
                     Log.error("Found a null layout item.");
                 }
             }
@@ -364,7 +404,7 @@ public class JahiaPortalManager extends ContentPanel {
     private void insertJahiaPortlet(JahiaPortlet portlet, int row, int column) {
         final LayoutContainer columnContainer = portal.getItem(column);
         final int currentColumnNbPortlets = columnContainer.getItemCount();
-        if (row < currentColumnNbPortlets - 1) {
+        if (row < currentColumnNbPortlets) {
             portal.insert(portlet, row, column);
         } else {
             portal.add(portlet, column);

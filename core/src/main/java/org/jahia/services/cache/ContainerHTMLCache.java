@@ -1,57 +1,40 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.cache;
 
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.params.ProcessingContext;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.ajax.usersession.userSettings;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.content.ObjectKey;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.settings.SettingsBean;
 
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * The implementation of the container HTML cache service. 
  * User: Serge Huber
  * Date: 26 mars 2007
  * Time: 12:09:55
  * To change this template use File | Settings | File Templates.
  */
-public class ContainerHTMLCache extends Cache {
+public class ContainerHTMLCache<K, V> extends Cache<GroupCacheKey, ContainerHTMLCacheEntry>  {
 
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger (ContainerHTMLCache.class);
@@ -65,7 +48,7 @@ public class ContainerHTMLCache extends Cache {
      * <p>Creates a new <code>ContainerHTMLCache</code> instance.</p>
      *
      */
-    protected ContainerHTMLCache(CacheImplementation cacheImplementation) {
+    protected ContainerHTMLCache(CacheImplementation<GroupCacheKey, CacheEntry<ContainerHTMLCacheEntry>> cacheImplementation) {
         super(CONTAINER_HTML_CACHE, cacheImplementation);
         cacheKeyGeneratorService = ServicesRegistry.getInstance().getCacheKeyGeneratorService();
     }
@@ -123,7 +106,7 @@ public class ContainerHTMLCache extends Cache {
         // Get the language code
         String curLanguageCode = processingContext.getLocale().toString();
         GroupCacheKey containerKey = cacheKeyGeneratorService.computeContainerEntryKeyWithGroups(jahiaContainer, cacheKey, processingContext.getUser(), curLanguageCode, mode, processingContext.getScheme(), dependencies);
-        put(containerKey, entry);
+        this.put(containerKey, entry);
         if(expiration >= 0) {
             try {
                 getCacheEntry(containerKey).setExpirationDate(new Date(System.currentTimeMillis()+(expiration*1000)));
@@ -199,7 +182,7 @@ public class ContainerHTMLCache extends Cache {
      * @param aclGroupFinalKey @return
      * @throws JahiaInitializationException
      */
-    public CacheEntry getCacheEntryFromContainerCache(JahiaContainer jahiaContainer, ProcessingContext processingContext,
+    public CacheEntry<ContainerHTMLCacheEntry> getCacheEntryFromContainerCache(JahiaContainer jahiaContainer, ProcessingContext processingContext,
                                                          String cacheKey, boolean esi, int requestedFragment, String currentURL, String aclGroupFinalKey) throws JahiaInitializationException {
         String mode = processingContext.getOperationMode();
         if (processingContext.getEntryLoadRequest() != null && processingContext.getEntryLoadRequest().isVersioned()){
@@ -213,7 +196,7 @@ public class ContainerHTMLCache extends Cache {
                 curLanguageCode,
                 mode,
                 processingContext.getScheme());
-        return (CacheEntry) getCacheEntry(containerKey);
+        return getCacheEntry(containerKey);
     }
 
     /**
@@ -225,61 +208,25 @@ public class ContainerHTMLCache extends Cache {
      */
     public static String appendAESMode(ProcessingContext jParams, String cacheKey) {
         short mode = 0 ;
-        String wfVisuParam = (String) jParams.getSessionState().getAttribute(userSettings.WF_VISU_ENABLED) ;
-        boolean wfVisu = wfVisuParam != null && wfVisuParam.equals("true") ;
-        boolean wfVisuAes = wfVisuParam != null ;
-
-        String aclVisuParam = (String) jParams.getSessionState().getAttribute(userSettings.ACL_VISU_ENABLED) ;
-        boolean aclVisu = aclVisuParam != null && aclVisuParam.equals("true") ;
-        boolean aclVisuAes = aclVisuParam != null ;
-
-        String tbpVisuParam = (String) jParams.getSessionState().getAttribute(userSettings.TBP_VISU_ENABLED) ;
-        boolean tbpVisu = tbpVisuParam != null && tbpVisuParam.equals("true") ;
-        boolean tbpVisuAes = tbpVisuParam != null ;
-
-        String chatVisuParam = (String) jParams.getSessionState().getAttribute(userSettings.CHAT_VISU_ENABLED) ;
-        boolean chatVisu = chatVisuParam != null && chatVisuParam.equals("true") ;
-        boolean chatVisuAes = chatVisuParam != null ;
-
-        String pdispVisuParam = (String) jParams.getSessionState().getAttribute(userSettings.MONITOR_VISU_ENABLED) ;
-        boolean pdispVisu = pdispVisuParam != null && pdispVisuParam.equals("true") ;
-        boolean pdispVisuAes = pdispVisuParam != null ;
-
-        short settingsMode = 0 ;
-        if (org.jahia.settings.SettingsBean.getInstance().isWflowDisp()) {
-            settingsMode += 1 ;
+        if (ProcessingContext.EDIT.equals(jParams.getOperationMode())) {
+            SettingsBean settings = SettingsBean.getInstance();
+            
+            if (settings.isWflowDisp() != UserPreferencesHelper.isDisplayWorkflowState(jParams.getUser())) {
+                mode += 1;
+            }
+            if (settings.isAclDisp() != UserPreferencesHelper.isDisplayAclDiffState(jParams.getUser())) {
+                mode += 2;
+            }
+            if (settings.isTbpDisp() != UserPreferencesHelper.isDisplayTbpState(jParams.getUser())) {
+                mode += 4;
+            }
+            if (settings.isInlineEditingActivated() != UserPreferencesHelper.isEnableInlineEditing(jParams.getUser())) {
+                mode += 8;
+            }
         }
-        if (org.jahia.settings.SettingsBean.getInstance().isAclDisp()) {
-            settingsMode += 2 ;
-        }
-        if (org.jahia.settings.SettingsBean.getInstance().isTbpDisp()) {
-            settingsMode += 4 ;
-        }
-        if (org.jahia.settings.SettingsBean.getInstance().isChatDisp()) {
-            settingsMode += 8 ;
-        }
-        if (org.jahia.settings.SettingsBean.getInstance().isPdispDisp()) {
-            settingsMode += 16 ;
-        }
-
-        if ((wfVisuAes && wfVisu) || (!wfVisuAes && org.jahia.settings.SettingsBean.getInstance().isWflowDisp())) {
-            mode += 1 ;
-        }
-        if ((aclVisuAes && aclVisu) || (!aclVisuAes && org.jahia.settings.SettingsBean.getInstance().isAclDisp())) {
-            mode += 2 ;
-        }
-        if ((tbpVisuAes && tbpVisu) || (!tbpVisuAes && org.jahia.settings.SettingsBean.getInstance().isTbpDisp())) {
-            mode += 4 ;
-        }
-        if ((chatVisuAes && chatVisu) || (!chatVisuAes && org.jahia.settings.SettingsBean.getInstance().isChatDisp())) {
-            mode += 8 ;
-        }
-        if ((pdispVisuAes && pdispVisu) || (!pdispVisuAes && org.jahia.settings.SettingsBean.getInstance().isPdispDisp())) {
-            mode += 16 ;
-        }
-
-        if (settingsMode == mode) { // don't append anything if mode corresponds to settings
-            return new StringBuilder(cacheKey != null ? cacheKey : "").toString() ;
+        
+        if (mode == 0) { // don't append anything if mode corresponds to settings
+            return cacheKey != null ? cacheKey : "" ;
         } else {
             return new StringBuilder(cacheKey != null ? cacheKey : "").append("_").append(mode).toString() ;
         }
@@ -298,7 +245,7 @@ public class ContainerHTMLCache extends Cache {
                 curLanguageCode,
                 mode,
                 processingContext.getScheme());
-        CacheEntry cacheEntry = getCacheEntry(containerKey);
+        CacheEntry<ContainerHTMLCacheEntry> cacheEntry = getCacheEntry(containerKey);
         if(cacheEntry!= null) return cacheEntry.getExpirationDate();
         return null;
     }

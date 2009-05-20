@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.pages;
 
 
@@ -72,6 +55,8 @@ import org.jahia.services.version.*;
 import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.xml.XMLSerializationOptions;
+import org.jahia.utils.xml.XmlWriter;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -1697,7 +1682,7 @@ public class ContentPage extends ContentObject implements
         String outURL = "";
         switch (getPageType(jParams.getEntryLoadRequest())) {
             case (TYPE_DIRECT):
-                outURL = jParams.composePageUrl(getID(), languageCode);
+                outURL = jParams.composePageUrl(this, languageCode);
                 break;
             case (TYPE_LINK):
                 int linkPageID = -1;
@@ -2783,7 +2768,7 @@ public class ContentPage extends ContentObject implements
             throws JahiaException {
 
         boolean stateModified = false;
-        if (willBeCompletelyDeleted(null, languageCodes)) {
+        if (isMarkedForDelete()) {
             stateModified = true;
             stateModifContext.pushAllLanguages(true);
             this.removeProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
@@ -2795,6 +2780,11 @@ public class ContentPage extends ContentObject implements
         }
 
         ActivationTestResults activationResults = new ActivationTestResults();
+
+        activateLanguageCodes.retainAll(getStagingPageInfos().keySet());
+        if (activateLanguageCodes.isEmpty()) {
+            return activationResults;
+        }
 
         activationResults.merge(
                 isValidForActivation(activateLanguageCodes,
@@ -2831,37 +2821,6 @@ public class ContentPage extends ContentObject implements
                 logger.debug("Activating link page object (id=" +
                         curPageInfo.getID() + ") to page ID : " +
                         curPageInfo.getPageLinkID());
-            } else if (pageType == JahiaPage.TYPE_DIRECT) {
-//                if (!stateModifContext.isDescendingInSubPages () &&
-//                        !stateModifContext.getStartObject ().equals (pageKey)) {
-//                    // found a recursive call, let's abort now !
-//                    logger.debug ("Activation stopped here " + pageKey.toString () +
-//                            " because recursive activation is not activated ! ");
-//                    activationResults.setStatus (ActivationTestResults.FAILED_OPERATION_STATUS);
-//                    activationResults.appendError (
-//                            "Activation stopped here " + pageKey.toString () +
-//                            " because recursive activation is not activated ! ");
-//                    if (stateModified) {
-//                        stateModifContext.popAllLanguages ();
-//                    }
-//                    return activationResults;
-//                }
-//                stateModifContext.pushObjectID (new ContentPageKey (getID ()));
-//                stacked = true;
-//                logger.debug ("Current stateModifContext :" + stateModifContext.toString ());
-//                int siteID = getJahiaID ();
-//                ServicesRegistry sr = ServicesRegistry.getInstance ();
-//                activationResults.merge (
-//                        sr.getJahiaFieldService ().activateStagedFields (languageCodes,
-//                                getID (), user, saveVersion, jParams, stateModifContext));
-//                activationResults.merge (
-//                        sr.getJahiaContainersService ().activateStagedContainers (
-//                                languageCodes, getID (), user, saveVersion, jParams,
-//                                stateModifContext));
-//                activationResults.merge (
-//                        sr.getJahiaContainersService ().activateStagedContainerLists (
-//                                languageCodes, getID (), user, saveVersion, stateModifContext));
-
             }
         }
 
@@ -2906,7 +2865,7 @@ public class ContentPage extends ContentObject implements
         // todo : create a singleton for all pageInfo !!
         this.commitChanges(true, false, user);
 
-        fireContentActivationEvent(languageCodes,
+        fireContentActivationEvent(activateLanguageCodes,
                 versioningActive,
                 saveVersion,
                 jParams,
@@ -4211,6 +4170,81 @@ public class ContentPage extends ContentObject implements
     }
 
     /**
+     * Writes an XML serialization version of this content page, according to
+     * the seriliazation options specified. This is very useful for exporting
+     * Jahia content to external systems.
+     *
+     * @param xmlWriter               the XML writer object in which to output the XML
+     *                                exported data
+     * @param xmlSerializationOptions the options that activate/deactivate
+     *                                parts of the XML exported data.
+     * @param processingContext       specifies context of serialization, such as current
+     *                                user, current request parameters, entry load request, URL generation
+     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
+     *                                generation is an important part of XML serialization and this is why
+     *                                we pass this parameter down, as well as user rights checking.
+     * @throws IOException upon error writing to the XMLWriter
+     *                     todo FIXME : only container lists output for the moment. Still to be
+     *                     done are page fields.
+     *                     todo getPageType actually passed a null EntryLoadRequest !!
+     */
+    public synchronized void serializeToXML(XmlWriter xmlWriter,
+                                            XMLSerializationOptions
+                                                    xmlSerializationOptions,
+                                            ProcessingContext processingContext)
+            throws IOException {
+        xmlWriter.writeEntity("contentPage");
+        String pageType;
+        switch (getPageType(null)) {
+            case JahiaPage.TYPE_DIRECT:
+                pageType = "direct";
+                break;
+            case JahiaPage.TYPE_LINK:
+                pageType = "link";
+                break;
+            case JahiaPage.TYPE_URL:
+                pageType = "url";
+                break;
+            default:
+                pageType = "unknown";
+                break;
+        }
+        xmlWriter.writeAttribute("type", pageType);
+
+        xmlWriter.writeEntity("titles");
+
+        for (Map.Entry<String, String> entry : getTitles(ContentPage.ACTIVATED_PAGE_TITLES).entrySet()) {
+            xmlWriter.writeEntity("title").
+                    writeAttribute("language", entry.getKey());
+            xmlWriter.writeText(entry.getValue());
+            xmlWriter.endEntity();
+        }
+        xmlWriter.endEntity();
+
+        switch (getPageType(null)) {
+            case JahiaPage.TYPE_DIRECT:
+                xmlWriter.writeEntity("direct");
+                if (xmlSerializationOptions.isIncludingSubPages()) {
+                    ServicesRegistry sr = ServicesRegistry.getInstance();
+                    sr.getJahiaFieldService().serializeNonContainerFieldsToXML(xmlWriter,
+                            xmlSerializationOptions, getID(), processingContext);
+                    sr.getJahiaContainersService().serializePageContainerListsToXML(
+                            xmlWriter, xmlSerializationOptions, getID(), processingContext);
+                }
+                xmlWriter.endEntity();
+                break;
+            case JahiaPage.TYPE_LINK:
+                xmlWriter.writeEntityWithText("link",
+                        Integer.toString(getPageLinkID(EntryLoadRequest.CURRENT)));
+                break;
+            case JahiaPage.TYPE_URL:
+                xmlWriter.writeEntityWithText("url", getRemoteURL(EntryLoadRequest.CURRENT));
+                break;
+        }
+        xmlWriter.endEntity();
+    }
+
+    /**
      * Returns an iterator on a sorted Set of entry states that correspond to
      * the all the entry states for the page object. To get page content object
      * entry states use the getChilds method.
@@ -5163,5 +5197,9 @@ public class ContentPage extends ContentObject implements
                     .getJahiaVersionService();
         }
         return versionService;
+    }
+    
+    public String getURLKey() throws JahiaException {
+        return getProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
     }
 }

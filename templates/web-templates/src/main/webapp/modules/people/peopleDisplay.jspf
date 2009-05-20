@@ -1,4 +1,22 @@
 <%@ include file="../../common/declarations.jspf" %>
+<%--
+
+    Jahia Enterprise Edition v6
+
+    Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+
+    Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+    with Document Management and Portal features.
+
+    The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+    IMPLIED.
+
+    Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+    you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+
+    If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
+
+--%>
 <template:container id="peopleContainer" displayActionMenu="false"  emptyContainerDivCssClassName="mockup-people">
     <ui:actionMenu contentObjectName="peopleContainer" namePostFix="people" labelKey="people.update">
 	<div class="peopleListItem">
@@ -12,10 +30,11 @@
             <p class="peopleBusinessUnit"><template:field name="peopleBusinessUnit"/></p>
 
                 <template:field name="peopleEmail" display="false" var="email"/>
-				<p class="peopleEmail"><a href='mailto:${email}'><template:field name="peopleEmail"/></a></p>
+				<p class="peopleEmail"><a href='mailto:${email}'><template:field name="peopleEmail" inlineEditingActivated="false"/></a></p>
 
 				<div class="peopleAction">
-<a class="peopleDownload" href="${peoplePicture.file.downloadUrl}" rel="facebox">View full size</a>
+<a class="peopleDownload" href="${peoplePicture.file.downloadUrl}" rel="facebox" alt="<template:field name='peopleLastname' inlineEditingActivated='false'/>"><fmt:message
+                            key='web_templates_peopleContainer.peopleViewFullSize'/></a>
 <a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer(${peopleContainer.ID});"><fmt:message
                             key='web_templates_peopleContainer.peopleBiography'/></a>
 				</div>
@@ -25,10 +44,11 @@
 					<div class="clear"> </div></div><!--stop peopleBody -->
 				<div class="clear"> </div></div><!--stop peopleListItem -->
     </ui:actionMenu>
-</template:container>
+
 
 
 <!-- unused fields <template:field name="peopleTelephone"/> <template:field name="peopleCellular"/> <template:field name="peopleFax"/> -->
+    </template:container>
 <script type='text/javascript'>
 jQuery(document).ready(function($) {
   $('a[rel*=facebox]').facebox({

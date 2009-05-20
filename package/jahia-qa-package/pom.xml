@@ -3,90 +3,54 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-package</artifactId>
-        <version>6.1-SNAPSHOT</version>
+        <version>6.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-qa-package</artifactId>
     <name>Jahia QA Package</name>
     <packaging>pom</packaging>
-    <modules>
-        <module>qa-1</module>
-        <module>qa-2</module>
-        <module>qa-4</module>
-
-    </modules>
-
+    <repositories>
+        <repository>
+            <id>jahia</id>
+            <name>Jahia Repository</name>
+            <layout>default</layout>
+            <url>http://maven.jahia.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
     <profiles>
         <profile>
-            <id>deploy-and-test</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <configuration>
-                                    <tasks>
-                                        <exec executable="/home/bamboo/bin/runall.sh" dir="/home/bamboo/bin" >
-                                            <arg value="${jahia.package.version}"/>
-                                        </exec>
-                                    </tasks>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.jahia.server</groupId>
-                        <artifactId>maven-jahia-plugin</artifactId>
-                        <version>1.0-SNAPSHOT</version>
-                        <executions>
-                            <execution>
-                                <phase>integration-test</phase>
-                                <configuration>
-                                    <startupWait>true</startupWait>
-                                </configuration>
-                                <goals>
-                                    <goal>test</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-report-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>integration-test</phase>
-                                <goals>
-                                    <goal>report-only</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>                
-            </build>
+            <id>qa-1</id>
+            <modules>
+                <module>qa-1</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>qa-2</id>
+            <modules>
+                <module>qa-2</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>qa-3</id>
+            <modules>
+                <module>qa-3</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>qa-4</id>
+            <modules>
+                <module>qa-4</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>qa-5</id>
+            <modules>
+                <module>qa-5</module>
+            </modules>
         </profile>
     </profiles>
-
-    <build>
-    </build>
-
-    <!--<reporting>-->
-        <!--<plugins>-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-surefire-report-plugin</artifactId>-->
-            <!--</plugin>-->
-        <!--</plugins>-->
-    <!--</reporting>-->
-
 
 </project>

@@ -1,38 +1,21 @@
 <%--
 
-    
-    This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
-    
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-    
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU General Public License for more details.
-    
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-    
-    As a special exception to the terms and conditions of version 2.0 of
-    the GPL (or any later version), you may redistribute this Program in connection
-    with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
-    describing the FLOSS exception, and it is also available here:
-    http://www.jahia.com/license
-    
-    Commercial and Supported Versions of the program
-    Alternatively, commercial and supported versions of the program may be used
-    in accordance with the terms contained in a separate written agreement
-    between you and Jahia Limited. If you are unsure which license is appropriate
-    for your use, please contact the sales department at sales@jahia.com.
+    Jahia Enterprise Edition v6
+
+    Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+
+    Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+    with Document Management and Portal features.
+
+    The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+    IMPLIED.
+
+    Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+    you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+
+    If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-
 <%@include file="/admin/include/header.inc" %>
 <%@page import = "java.util.*" %>
 <%@page import = "org.jahia.security.license.*" %>
@@ -46,17 +29,6 @@ ProcessingContext jParams = null;
 if (jData != null) {
 jParams = jData.params();
 }
-String  nbCurrentSites     = (String) request.getAttribute("nbCurrentSites");
-String  nbMaxSites         = (String) request.getAttribute("nbMaxSites");
-String  nbCurrentUsers     = (String) request.getAttribute("nbCurrentUsers");
-String  nbMaxUsers         = (String) request.getAttribute("nbMaxUsers");
-String  nbCurrentTemplates = (String) request.getAttribute("nbCurrentTemplates");
-String  nbMaxTemplates     = (String) request.getAttribute("nbMaxTemplates");
-String  nbCurrentPages     = (String) request.getAttribute("nbCurrentPages");
-String  nbMaxPages         = (String) request.getAttribute("nbMaxPages");
-String  release            = (String) request.getAttribute("release");
-String  build              = (String) request.getAttribute("build");
-String  jahiaEdition       = (String) request.getAttribute("jahiaEdition");
 List licenses         = (List) request.getAttribute("licenses");
 Date expirationDate = null;
 SimpleDateFormat dateFormatter = new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT);
@@ -65,7 +37,7 @@ if (request.getAttribute("expirationDate") != null) {
 expirationDate = (Date) request.getAttribute("expirationDate");
 maxDays = ((Integer) request.getAttribute("allowedDays")).intValue();
 }
-String jahiaEditionTitle = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.info.LicenceInfo.jahiaEdition." + jahiaEdition + ".label", jData.getProcessingContext().getLocale());
+pageContext.setAttribute("jahiaEditionTitle", JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.info.LicenceInfo.jahiaEdition." + request.getAttribute("jahiaEdition") + ".label", jData.getProcessingContext().getLocale()));
 stretcherToOpen   = 0; %>
 <div id="topTitle">
   <h1>Jahia</h1>
@@ -89,7 +61,7 @@ stretcherToOpen   = 0; %>
             <div id="content" class="fit">
               <div class="head">
                 <div class="object-title">
-                  <fmt:message key="org.jahia.admin.info.LicenceInfo.jahiaRelease.label"/><%=release %>, <%= jahiaEditionTitle %>, <fmt:message key="org.jahia.admin.build.label"/><%=build %>
+                  <fmt:message key="org.jahia.admin.info.LicenceInfo.jahiaRelease.label"/>&nbsp;${release},&nbsp;${jahiaEditionTitle},&nbsp;<fmt:message key="org.jahia.admin.build.label"/>&nbsp;${build}
                 </div>
               </div>
               <div class="content-body">
@@ -116,10 +88,10 @@ stretcherToOpen   = 0; %>
                         <fmt:message key="org.jahia.admin.info.LicenceInfo.numberOfSites.label"/>
                       </td>
                       <td width="25%">
-                        <b><%=nbCurrentSites %></b>
+                        <b>${nbCurrentSites}</b>
                       </td>
                       <td width="25%" class="lastCol">
-                        <b><%=nbMaxSites %></b>
+                        <b>${nbMaxSites}</b>
                       </td>
                     </tr>
                     <tr class="oddLine">
@@ -127,10 +99,10 @@ stretcherToOpen   = 0; %>
                         <fmt:message key="org.jahia.admin.info.LicenceInfo.numberOfUsers.label"/>
                       </td>
                       <td width="25%">
-                        <b><%=nbCurrentUsers %></b>
+                        <b>${nbCurrentUsers}</b>
                       </td>
                       <td width="25%" class="lastCol">
-                        <b><%=nbMaxUsers %></b>
+                        <b>${nbMaxUsers}</b>
                       </td>
                     </tr>
                     <tr class="evenLine">
@@ -138,10 +110,10 @@ stretcherToOpen   = 0; %>
                         <fmt:message key="org.jahia.admin.info.LicenceInfo.numberOfTemplates.label"/>
                       </td>
                       <td width="25%">
-                        <b><%=nbCurrentTemplates %></b>
+                        <b>${nbCurrentTemplates}</b>
                       </td>
                       <td width="25%" class="lastCol">
-                        <b><%=nbMaxTemplates %></b>
+                        <b>${nbMaxTemplates}</b>
                       </td>
                     </tr>
                     <tr class="oddLine">
@@ -149,10 +121,10 @@ stretcherToOpen   = 0; %>
                         <fmt:message key="org.jahia.admin.info.LicenceInfo.numberOfPages.label"/>
                       </td>
                       <td width="25%">
-                        <b><%=nbCurrentPages %></b>
+                        <b>${nbCurrentPages}</b>
                       </td>
                       <td width="25%" class="lastCol">
-                        <b><%=nbMaxPages %></b>
+                        <b>${nbMaxPages}</b>
                       </td>
                     </tr>
                     <% if (expirationDate != null) { %>

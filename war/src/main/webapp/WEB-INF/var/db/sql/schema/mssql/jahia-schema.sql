@@ -96,10 +96,10 @@
         drop constraint FK1DDC17667EED26D3;
 
     alter table jahia_sites_grps 
-        drop constraint FK7B24559790F996AC;
+        drop constraint FK7B245597F46755FE;
 
     alter table jahia_sites_grps 
-        drop constraint FK7B245597F46755FE;
+        drop constraint FK7B24559790F996AC;
 
     alter table jahia_sites_users 
         drop constraint FKEA2BF1BF6CF683C0;
@@ -485,6 +485,7 @@
         name_jahia_grps nvarchar(195) null,
         key_jahia_grps nvarchar(200) null unique,
         siteid_jahia_grps int null,
+        hidden_jahia_grps tinyint null,
         primary key (id_jahia_grps)
     );
 
@@ -1048,14 +1049,14 @@
         references jahia_sites;
 
     alter table jahia_sites_grps 
-        add constraint FK7B24559790F996AC 
-        foreign key (grpid_sites_grps) 
-        references jahia_grps (key_jahia_grps);
-
-    alter table jahia_sites_grps 
         add constraint FK7B245597F46755FE 
         foreign key (siteid_sites_grps) 
         references jahia_sites;
+
+    alter table jahia_sites_grps 
+        add constraint FK7B24559790F996AC 
+        foreign key (grpid_sites_grps) 
+        references jahia_grps (key_jahia_grps);
 
     alter table jahia_sites_users 
         add constraint FKEA2BF1BF6CF683C0 

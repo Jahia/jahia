@@ -1,27 +1,24 @@
-/*
- * Copyright 2002-2008 Jahia Ltd
+/**
+ * Jahia Enterprise Edition v6
  *
- * Licensed under the JAHIA COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (JCDDL), 
- * Version 1.0 (the "License"), or (at your option) any later version; you may 
- * not use this file except in compliance with the License. You should have 
- * received a copy of the License along with this program; if not, you may obtain 
- * a copy of the License at 
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- *  http://www.jahia.org/license/
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
- * limitations under the License.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
  package org.jahia.services.search.lucene;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -31,6 +28,7 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.index.IndexDeletionPolicy;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -72,13 +70,6 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
     private static Logger logger =
             Logger.getLogger (AbstractLuceneSearchIndexer.class);
 
-    /** The Lucene analyzer * */
-    private Analyzer defaultAnalyzer;
-    final private static String DEFAULT_ANALYZER = "default"; 
-    private Map<String, Analyzer> analyzers = new HashMap<String, Analyzer>();
-    
-    private ResourceMapping resourceMapping;    
-
     private byte[] lock = new byte[0];
 
     private byte[] synchronizedlock = new byte[0];
@@ -115,43 +106,8 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
     }
 
     public AbstractLuceneSearchIndexer( boolean localIndexing,
-                                        Analyzer analyzer,
                                         Properties config) throws JahiaException {
         this.localIndexing = localIndexing;
-        this.defaultAnalyzer = analyzer;
-        if (this.defaultAnalyzer == null) {
-            Compass compass = ServicesRegistry.getInstance()
-                    .getJahiaSearchService().getCompass();
-            if (compass != null && compass instanceof InternalCompass) {
-                InternalCompass internalCompass = (InternalCompass) compass;
-                SearchEngineFactory searchEngineFactory = internalCompass
-                        .getSearchEngineFactory();
-                if (searchEngineFactory != null
-                        && searchEngineFactory instanceof LuceneSearchEngineFactory) {
-                    LuceneSearchEngineFactory luceneSearchEngineFactory = (LuceneSearchEngineFactory) searchEngineFactory;
-                    LuceneAnalyzerManager analyzerMgr = luceneSearchEngineFactory.getAnalyzerManager();
-                    this.defaultAnalyzer = analyzerMgr.getAnalyzerByAliasMustExists("jahiaIndexer");
-                    for (ResourceMapping compassMapping : luceneSearchEngineFactory
-                            .getMapping().getRootMappings()) {
-                        if (compassMapping.getAlias()
-                                .startsWith("jahiaIndexer")) {
-                            String key = DEFAULT_ANALYZER;
-                            int index = compassMapping.getAlias().indexOf('_');
-                            if (index != -1) {
-                                key = compassMapping.getAlias().substring(
-                                        index + 1);
-                            }
-                            analyzers.put(key, analyzerMgr
-                                    .getAnalyzerByAlias(compassMapping
-                                            .getAlias()));
-                        }
-
-                    }
-                    
-                    this.resourceMapping = luceneSearchEngineFactory.getMapping().getRootMappingByAlias("jahiaIndexer");                    
-                }
-            }
-        }
         if ( config != null ){
             this.setConfig((Properties)config.clone());
         }
@@ -160,11 +116,58 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                 "12h"),"12h").longValue();
         initLuceneSettings();
     }
+    
+    private ResourceMapping getResourceMapping() {
+        ResourceMapping resourceMapping = null;
+        Compass compass = ServicesRegistry.getInstance().getJahiaSearchService().getCompass();
+        if (compass != null && compass instanceof InternalCompass) {
+            InternalCompass internalCompass = (InternalCompass) compass;
+            SearchEngineFactory searchEngineFactory = internalCompass.getSearchEngineFactory();
+            if (searchEngineFactory != null && searchEngineFactory instanceof LuceneSearchEngineFactory) {
+                LuceneSearchEngineFactory luceneSearchEngineFactory = (LuceneSearchEngineFactory) searchEngineFactory;
+                resourceMapping = luceneSearchEngineFactory.getMapping().getRootMappingByAlias("jahiaIndexer");
+            }
+        }
+        return resourceMapping;
+    }
+    
+    private Analyzer getDefaultAnalyzer() {
+        Analyzer defaultAnalyzer = null;
+        Compass compass = ServicesRegistry.getInstance().getJahiaSearchService().getCompass();
+        if (compass != null && compass instanceof InternalCompass) {
+            InternalCompass internalCompass = (InternalCompass) compass;
+            SearchEngineFactory searchEngineFactory = internalCompass.getSearchEngineFactory();
+            if (searchEngineFactory != null && searchEngineFactory instanceof LuceneSearchEngineFactory) {
+                LuceneSearchEngineFactory luceneSearchEngineFactory = (LuceneSearchEngineFactory) searchEngineFactory;
+                LuceneAnalyzerManager analyzerMgr = luceneSearchEngineFactory.getAnalyzerManager();                
+                defaultAnalyzer = analyzerMgr.getAnalyzerByAliasMustExists("jahiaIndexer");
+            }
+        }
+        return defaultAnalyzer;
+    }
+    
+    private Analyzer getAnalyzer(String languageCode) {
+        Analyzer analyzer = null;
+        Compass compass = ServicesRegistry.getInstance().getJahiaSearchService().getCompass();
+        if (compass != null && compass instanceof InternalCompass) {
+            InternalCompass internalCompass = (InternalCompass) compass;
+            SearchEngineFactory searchEngineFactory = internalCompass.getSearchEngineFactory();
+            if (searchEngineFactory != null && searchEngineFactory instanceof LuceneSearchEngineFactory) {
+                LuceneSearchEngineFactory luceneSearchEngineFactory = (LuceneSearchEngineFactory) searchEngineFactory;
+                LuceneAnalyzerManager analyzerMgr = luceneSearchEngineFactory.getAnalyzerManager();                
+                ResourceMapping compassMapping = luceneSearchEngineFactory.getMapping().getRootMappingByAlias("jahiaIndexer_" + languageCode);
+                if (compassMapping != null) {
+                    analyzer = analyzerMgr.getAnalyzerByAlias(compassMapping.getAlias());
+                }
+            }
+        }
+        return analyzer;
+    }
 
     public void start() throws Exception {
 
         if ( !IndexReader.indexExists(this.getIndexDirectory()) ){
-            getIndexWriter (this.defaultAnalyzer, true);
+            getIndexWriter (getDefaultAnalyzer(), true);
         }
 
         // now let's remove any stale lock files if there were some.
@@ -200,13 +203,6 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
         this.indexDirectory = indexDirectory;
     }
 
-    public Analyzer getAnalyzer() {
-        return defaultAnalyzer;
-    }
-
-    public void setAnalyzer(Analyzer analyzer) {
-        this.defaultAnalyzer = analyzer;
-    }
     public Properties getConfig() {
         return config;
     }
@@ -275,6 +271,8 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
         synchronized(synchronizedlock){
             long indexingStartTime = System.currentTimeMillis();
             int indexOrderCount = docs.size ();
+            ResourceMapping resourceMapping = getResourceMapping();
+            Analyzer defaultAnalyzer = getDefaultAnalyzer();
             for (ListIterator<IndexableDocument> it = docs.listIterator(); it.hasNext();) {
                 IndexableDocument doc = it.next();
                 it.remove();
@@ -286,7 +284,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                         if (doc instanceof RemovableDocument){
                             logger.info("syncrhonized indexation of content " + doc.getKey());
                         }*/
-                        indexer.addDocument(doc);
+                        indexer.addDocument(doc, defaultAnalyzer, resourceMapping);
                     } catch ( Exception t ){
                         logger.debug("Error addind document to Indexer=", t);
                     }
@@ -294,7 +292,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
             }
 
             try {
-                indexer.storeInPersistance();
+                indexer.storeInPersistance(defaultAnalyzer, resourceMapping);
             } catch (Exception t) {
                 logger.debug(
                     "Error calling storeInPersistance on indexer",
@@ -303,7 +301,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
 
             if (indexOrderCount > 0) {
                 SearchHandler searchHandler = getSearchHandler();
-                searchHandler.notifyIndexUpdate();
+                searchHandler.notifyIndexUpdate(true);
                 if (logger.isInfoEnabled()) {    
                     long indexingElapsedTime = System.currentTimeMillis() - indexingStartTime;
                     logger.info("Finished synchronized processing " + indexOrderCount
@@ -343,7 +341,8 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                 indexer.optimizeIndex();
              }
         }
-
+        ResourceMapping resourceMapping = getResourceMapping();
+        Analyzer defaultAnalyzer = getDefaultAnalyzer();
         while (!Thread.currentThread().isInterrupted() && indexingThreadActivated) {
             List<IndexableDocument> validDocs = null;
             IndexableDocument doc = null;
@@ -360,7 +359,8 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
 
                 long indexingStartTime = System.currentTimeMillis();
                 int indexOrderCount = validDocs.size ();
-
+                resourceMapping = indexOrderCount > 0 ? getResourceMapping() : resourceMapping;
+                defaultAnalyzer = indexOrderCount > 0 ? getDefaultAnalyzer() : defaultAnalyzer;
                 for (ListIterator<IndexableDocument> it = validDocs.listIterator(); it.hasNext();) {
                     doc = it.next();
                     it.remove();                    
@@ -368,7 +368,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                     // okay now we have the next added/removed field, we process it!
                     if (doc != null) {
                         try {
-                            indexer.addDocument(doc);
+                            indexer.addDocument(doc, defaultAnalyzer, resourceMapping);
                         } catch ( Exception t ){
                             logger.debug("Error addind document to Indexer=", t);
                         }
@@ -376,7 +376,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                 }
 
                 try {
-                    indexer.storeInPersistance();
+                    indexer.storeInPersistance(defaultAnalyzer, resourceMapping);
                 } catch (Exception t) {
                     logger.info(
                         "Error calling storeInPersistance on indexer",
@@ -385,7 +385,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
 
                 if ( (this.localIndexing && indexer.optimizeIndex(this.optimizationInterval)) || indexOrderCount > 0) {
                     SearchHandler searchHandler = getSearchHandler();
-                    searchHandler.notifyIndexUpdate();
+                    searchHandler.notifyIndexUpdate(false);
                     if (logger.isInfoEnabled()) {
                         long indexingElapsedTime = System.currentTimeMillis() - indexingStartTime;
                         logger.info("Finished processing " + indexOrderCount
@@ -570,7 +570,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
         logger.info("...indexer shutdown done");
     }
 
-    public Document getLuceneDocument(IndexableDocument indObj) {
+    public Document getLuceneDocument(IndexableDocument indObj, ResourceMapping resourceMapping) {
         if (indObj == null)
             return null;
 
@@ -599,55 +599,46 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                         }
                     }
                     if (docField.isKeyword() || docField.isText()) {
-                        Field field = new Field(name, paddedValue, docField.isUnstored() && (index == null || !index.equals(Index.NO)) ? Field.Store.NO : 
-                                store == null ? Field.Store.YES : LuceneUtils
-                                        .getFieldStore(store),
-                                index == null ? docField.isText() ? Field.Index.TOKENIZED : Field.Index.UN_TOKENIZED
-                                        : LuceneUtils.getFieldIndex(index));
-                        field.setBoost(boost);
-                        doc.add(field);
+                        Store fieldStore = docField.isUnstored() && (index == null || !index.equals(Index.NO)) ? Field.Store.NO : 
+                            store == null ? Field.Store.YES : LuceneUtils.getFieldStore(store);
+                        Field.Index fieldIndex = index == null ? docField.isText() ? Field.Index.TOKENIZED : Field.Index.UN_TOKENIZED
+                                : LuceneUtils
+                                .getFieldIndex(index);
+                        if (!(fieldIndex.equals(Field.Index.NO) && fieldStore
+                                .equals(Store.NO))) {
+                            Field field = new Field(name, paddedValue,
+                                    fieldStore, fieldIndex);
+                            field.setBoost(boost);
+                            doc.add(field);
 
-                        if (docField.isText() && paddedValue != originalValue
-                                && (index == null || !index.equals(Index.NO))) {
-                            field = new Field(
-                                    name
-                                            + JahiaSearchConstant.NO_PADDED_FIELD_POSTFIX,
-                                    originalValue, Field.Store.NO,
-                                    index == null ? Field.Index.TOKENIZED
-                                            : LuceneUtils.getFieldIndex(index));
+                            if (docField.isText() && !docField.isUnstored()
+                                    && paddedValue != originalValue
+                                    && (index == null || !index
+                                            .equals(Index.NO))) {
+                                field = new Field(
+                                        name + JahiaSearchConstant.NO_PADDED_FIELD_POSTFIX,
+                                        originalValue, Field.Store.NO,
+                                        index == null ? Field.Index.TOKENIZED
+                                                : LuceneUtils
+                                                        .getFieldIndex(index));
+                                field.setBoost(boost);
+                                doc.add(field);
+                            }
+                        }
+                    } else if (docField.isUnindexed()) {
+                        Store fieldStore = docField.isUnstored() && (index == null || !index.equals(Index.NO)) ? Field.Store.NO : 
+                            store == null ? Field.Store.YES : LuceneUtils
+                                    .getFieldStore(store);
+                        if (!fieldStore.equals(Store.NO)) {
+                            Field field = new Field(name, paddedValue,
+                                    fieldStore, Field.Index.NO);
                             field.setBoost(boost);
                             doc.add(field);
                         }
-                    } else if (docField.isUnindexed()) {
-                        Field field = new Field(name, paddedValue, docField.isUnstored() && (index == null || !index.equals(Index.NO)) ? Field.Store.NO : 
-                                store == null ? Field.Store.YES : LuceneUtils
-                                        .getFieldStore(store), Field.Index.NO);
-                        field.setBoost(boost);
-                        doc.add(field);
                     }
                 }
             }
         }
-        String name = indObj.getKeyFieldName().toLowerCase();
-        Index index = null;
-        float boost = 1;
-        Property.Store store = null;
-        if (resourceMapping != null) {
-            ResourcePropertyMapping propertyMapping = resourceMapping
-                    .getResourcePropertyMapping(name);
-            if (propertyMapping != null) {
-                index = propertyMapping.getIndex();
-                boost = propertyMapping.getBoost();
-                store = propertyMapping.getStore();
-            }
-        }
-        Field field = new Field(name, NumberPadding.pad(indObj.getKey()),
-                store == null ? Field.Store.YES : LuceneUtils
-                        .getFieldStore(store),
-                index == null ? Field.Index.UN_TOKENIZED : LuceneUtils
-                        .getFieldIndex(index));
-        field.setBoost(boost);
-        doc.add(field);
         return doc;
     }
 
@@ -843,7 +834,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
             this.docs = new ArrayList<IndexableDocument>();
         }
 
-        public synchronized void addDocument(IndexableDocument doc)
+        public synchronized void addDocument(IndexableDocument doc, Analyzer defaultAnalyzer, ResourceMapping resourceMapping)
                 throws IOException, JahiaException {
             if (doc == null) {
                 return;
@@ -853,7 +844,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                 this.setLastOperation(requestOp);
                 docs.add(doc);
             } else if (this.getLastOperation() != requestOp) {
-                storeInPersistance();
+                storeInPersistance(defaultAnalyzer, resourceMapping);
                 this.setLastOperation(requestOp);
                 docs.add(doc);
             } else {
@@ -861,11 +852,11 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
             }
 
             if (docs.size() > maxDocs) {
-                storeInPersistance();
+                storeInPersistance(defaultAnalyzer, resourceMapping);
             }
         }
 
-        public synchronized void storeInPersistance()
+        public synchronized void storeInPersistance(Analyzer defaultAnalyzer, ResourceMapping resourceMapping)
                 throws IOException, JahiaException {
 
             if (docs.isEmpty()) {
@@ -876,7 +867,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
             List<Document> luceneDocs = new ArrayList<Document>();
 
             for (IndexableDocument doc : docs) {
-                Document luceneDoc = getLuceneDocument(doc);
+                Document luceneDoc = getLuceneDocument(doc, resourceMapping);
                 if (luceneDoc != null) {
                     luceneDocs.add(luceneDoc);
                 }
@@ -905,11 +896,13 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                                     if (index != -1) {
                                         languageCode = languageCode.substring(0, index); 
                                     }
-                                    languageAnalyzer = analyzers.get(languageCode);
-                                    if (getAnalyzer().equals(languageAnalyzer)){
+                                    languageAnalyzer = getAnalyzer(languageCode);
+                                    if (getDefaultAnalyzer().equals(languageAnalyzer)){
                                         languageAnalyzer = null;
                                     }
-                                    
+                                }
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("Indexing " + luceneDoc.getField("jahia.comp_id").stringValue());
                                 }
                                 if (languageAnalyzer == null) {
                                     fsWriter.addDocument(luceneDoc);
@@ -997,7 +990,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
            }
 
            try {
-               fsWriter = getIndexWriter(defaultAnalyzer, false);
+               fsWriter = getIndexWriter(getDefaultAnalyzer(), false);
                if (fsWriter==null){
                    return false;
                }
@@ -1019,7 +1012,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
        public void optimizeIndex(){
            IndexWriter fsWriter = null;
            try {
-               fsWriter = getIndexWriter(defaultAnalyzer, false);
+               fsWriter = getIndexWriter(getDefaultAnalyzer(), false);
                if (fsWriter==null){
                    return;
                }
@@ -1027,7 +1020,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                   fsWriter.setUseCompoundFile(true);
                   fsWriter.optimize();
               } catch ( Throwable t ){
-                  logger.debug(t);
+                  logger.debug(t.getMessage(), t);
               }
            } catch (Throwable t) {
                logger.debug("Error on optimizing the index", t);

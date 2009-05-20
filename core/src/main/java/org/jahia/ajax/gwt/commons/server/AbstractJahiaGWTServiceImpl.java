@@ -1,36 +1,19 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.commons.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -45,6 +28,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.preferences.JahiaPreferencesService;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.engines.EngineMessage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -137,8 +121,11 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
         }
     }
 
-    protected String createExtraParam(String mode, int pid) {
+    protected String createExtraParam(String mode, int pid, String siteKey) {
         String urlParams = "?params=/" + ProcessingContext.OPERATION_MODE_PARAMETER + "/" + mode + "/" + ProcessingContext.PAGE_ID_PARAMETER + "/" + pid;
+        if (siteKey != null) {
+            urlParams += "/" + ProcessingContext.SITE_KEY_PARAMETER + "/" + siteKey;
+        }
         return urlParams;
     }
 
@@ -214,10 +201,21 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
      * @return
      */
     private JahiaData buildJahiaData(int pid, String mode) {
+        return buildJahiaData(pid, mode, false);
+    }
+
+    /**
+     * build JahiaData
+     *
+     * @param pid
+     * @param mode
+     * @return
+     */
+    private JahiaData buildJahiaData(int pid, String mode, boolean doBuildData) {
         ProcessingContext jParams = retrieveParamBean(pid, mode);
         JahiaData jData = null;
         try {
-            jData = new JahiaData(jParams, true);
+            jData = new JahiaData(jParams, doBuildData);
         } catch (JahiaException e) {
             logger.error(e, e);
         }
@@ -300,7 +298,8 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
             final ProcessingContextFactory pcf = (ProcessingContextFactory) bf.getBean(ProcessingContextFactory.class.getName());
             try {
                 // build jParam
-                jParams = pcf.getContext(request, response, context, createExtraParam(mode != null ? mode : ProcessingContext.NORMAL, pid));
+                JahiaSite site = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
+                jParams = pcf.getContext(request, response, context, createExtraParam(mode != null ? mode : ProcessingContext.NORMAL, pid, site != null ? site.getSiteKey() : null));
                 request.setAttribute(ORG_JAHIA_PARAMS_PARAM_BEAN, jParams);
                 return jParams;
             } catch (org.jahia.exceptions.JahiaSiteNotFoundException e) {
@@ -473,7 +472,7 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
         return message.getValues() == null ? JahiaResourceBundle
                 .getMessageResource(message.getKey(), getLocale())
                 : MessageFormat.format(JahiaResourceBundle.getMessageResource(message.getKey(),
-                        getLocale()),message.getValues());
+                getLocale()), message.getValues());
     }
 
 

@@ -1,10 +1,28 @@
 <%@ include file="../../common/declarations.jspf" %>
+<%--
+
+    Jahia Enterprise Edition v6
+
+    Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+
+    Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+    with Document Management and Portal features.
+
+    The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+    IMPLIED.
+
+    Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+    you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+
+    If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
+
+--%>
 
 <template:container id="pressReleaseContainer" cacheKey="resume" displayActionMenu="true"  emptyContainerDivCssClassName="mockup-pressreleases" displayContainerAnchor="false">
     <li class="pressRealeseItem">
             <template:field name='date' display="false" var="datePress"/>
             <span class="pressRealeseDate"><fmt:formatDate value="${datePress.date}" pattern="dd/MM/yyyy"/></span>
-            <template:getContentObjectCategories valueID="pressReleaseContainerCatKeys" objectKey="contentContainer_${pageScope.pressReleaseContainer.ID}"/>
+            <template:getContentObjectCategories var="pressReleaseContainerCatKeys" objectKey="contentContainer_${pageScope.pressReleaseContainer.ID}"/>
         <c:if test="${!empty pressReleaseContainerCatKeys }">
             <span class="pressRealeseCategory">
                 <fmt:message key='category'/> : <ui:displayCategoryTitle categoryKeys="${pressReleaseContainerCatKeys}"/>

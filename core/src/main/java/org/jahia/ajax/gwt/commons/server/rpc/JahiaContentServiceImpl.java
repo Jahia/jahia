@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.commons.server.rpc;
 
 import org.apache.commons.lang.StringUtils;
@@ -39,8 +22,12 @@ import org.jahia.ajax.gwt.client.service.JahiaContentService;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.*;
+import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
+import org.jahia.ajax.gwt.utils.JahiaGWTUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
+import org.jahia.data.search.JahiaSearchResult;
+import org.jahia.data.search.JahiaSearchHit;
 import org.jahia.data.beans.ContainerBean;
 import org.jahia.data.beans.ContainerListBean;
 import org.jahia.data.containers.JahiaContainer;
@@ -49,6 +36,7 @@ import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.LoadFlags;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
+import org.jahia.engines.search.PagesSearchViewHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.BasicURLGeneratorImpl;
 import org.jahia.params.ProcessingContext;
@@ -64,7 +52,12 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.UserProperties;
 import org.jahia.services.usermanager.UserProperty;
 import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.search.SearchHandler;
+import org.jahia.services.search.PageSearcher;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.content.ObjectKey;
+import org.jahia.content.ContentPageKey;
+import org.jahia.content.ContentObject;
 
 import java.util.*;
 
@@ -198,7 +191,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
         logger.debug("add " + jahiaContainer.getNbFields() + " fields.");
         while (fields.hasNext()) {
             // get current field
-            final JahiaField curJahiaField = (JahiaField) fields.next();
+            final JahiaField curJahiaField = fields.next();
             final String name = curJahiaField.getDefinition().getName();
             // load it's value;
             curJahiaField.load(LoadFlags.ALL, getParamBeanRequestAttr());
@@ -214,7 +207,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
         logger.debug("Sub Container List size:");
         while (containerLists.hasNext()) {
             // load gwtContainer list
-            JahiaContainerList containerList = (JahiaContainerList) containerLists.next();
+            JahiaContainerList containerList = containerLists.next();
             int containerListId = containerList.getID();
             String containerListName = containerList.getDefinition().getName();
             logger.debug("Container List Name: " + containerListName);
@@ -280,7 +273,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
             final Iterator<String> propertyNameIterator = all.propertyNameIterator();
             while (propertyNameIterator.hasNext()) {
                 // property name
-                final String name = (String) propertyNameIterator.next();
+                final String name = propertyNameIterator.next();
                 final UserProperty property = all.getUserProperty(name);
                 // create the corresponding gwt bean
                 final GWTJahiaUserProperty gwtJahiaUserProperty = new GWTJahiaUserProperty();
@@ -374,7 +367,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
                             if (!evalResult.isSuccess()) {
                                 // password not validated by the pwdPolicyService
                                 EngineMessages policyMsgs = evalResult.getEngineMessages();
-                                for (EngineMessage errorMessage : (List<EngineMessage>)policyMsgs.getMessages()) {
+                                for (EngineMessage errorMessage : policyMsgs.getMessages()) {
                                     gwtAjaxActionResult.addError(getLocaleMessageResource(errorMessage));
                                 }
                             } else {
@@ -447,7 +440,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
     public String getPagePropertyValue(GWTJahiaPageContext page, String propertyName) {
         try {
             Map<String, PageProperty> pageProperties = getJahiaPageService().getPageProperties(page.getPid());
-            PageProperty pp = (PageProperty) pageProperties.get(propertyName);
+            PageProperty pp = pageProperties.get(propertyName);
             if (pp != null) {
                 logger.debug("Property with name " + propertyName + " found. ");
                 return pp.getValue();
@@ -728,5 +721,32 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
             result.add(new GWTJahiaBasicDataBean(locale.toString(), locale.getDisplayName(locale)));
         }
         return result;
+    }
+
+    public List<GWTJahiaPageWrapper> searchInPages(final String queryString) {
+        List<GWTJahiaPageWrapper> result = new ArrayList<GWTJahiaPageWrapper>() ;
+        ProcessingContext ctx = retrieveParamBean();
+
+        List<String> languageCodes = new ArrayList<String>(1);
+        languageCodes.add(ctx.getLocale().toString());
+
+        PageSearcher searcher = new PageSearcher(new String[] { ServicesRegistry.getInstance().getJahiaSearchService().getSearchHandler(ctx.getSiteID()).getName() }, languageCodes);
+        try {
+            JahiaSearchResult results = searcher.search(new StringBuilder("jahia.title:").append(queryString).toString(), ctx);
+            for (JahiaSearchHit hit: results.results()) {
+                ObjectKey key = hit.getSearchHitObjectKey();
+                if (key != null && key.getType().equals(ContentPageKey.PAGE_TYPE)) {
+                    ContentPage page = (ContentPage) JahiaObjectCreator.getContentObjectFromKey(hit.getSearchHitObjectKey());
+                    if (page != null && page.getPageType(ctx.getEntryLoadRequest()) == PageInfoInterface.TYPE_DIRECT) {
+                        result.add(getJahiaPageWrapper(ctx, page.getPage(ctx))) ;
+                    }
+                }
+            }
+        } catch (JahiaException e) {
+            logger.error(e.toString(), e);
+        } catch (ClassNotFoundException e) {
+            logger.error(e.toString(), e);
+        }
+        return result ;
     }
 }

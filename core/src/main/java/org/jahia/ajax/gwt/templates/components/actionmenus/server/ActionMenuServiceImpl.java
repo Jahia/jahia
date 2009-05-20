@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.templates.components.actionmenus.server;
 
 import org.jahia.ajax.gwt.client.service.actionmenu.ActionMenuService;
@@ -46,16 +29,14 @@ import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.*;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.preferences.JahiaPreferencesService;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
- * Implementaiton of GWT servoce for action menus and extras such as ACL, workflow and timebased publishing.
+ * Implementation of GWT service for action menus and extras such as ACL, workflow and time-based publishing.
  *
  * @author rfelden
  * @version 22 janv. 2008 - 12:00:25
@@ -63,7 +44,6 @@ import java.util.*;
 public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implements ActionMenuService {
 
     private final static Logger logger = Logger.getLogger(ActionMenuServiceImpl.class) ;
-    private static final JahiaPreferencesService JAHIA_PREFERENCES_SERVICE = ServicesRegistry.getInstance().getJahiaPreferencesService();
 
     public GWTJahiaGlobalState getGlobalStateForObject(GWTJahiaPageContext page, String objectKey, String wfKey, String languageCode) {
         final ProcessingContext jParams = retrieveParamBean(page) ;
@@ -72,17 +52,17 @@ public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implement
             wf = getWorkflowStateForObject(page, objectKey, wfKey,  languageCode) ;
         }
         GWTJahiaAclDiffState acl = null ;
-        boolean aclDiff = JAHIA_PREFERENCES_SERVICE.getGenericPreferenceBooleanValue("acldiff.activated", false, jParams) ;
+        boolean aclDiff = UserPreferencesHelper.isDisplayAclDiffState(jParams.getUser()) ;
         if (aclDiff) {
             acl = getAclDiffState(page, objectKey) ;
         }
         GWTJahiaTimebasedPublishingState tbp = null ;
-        boolean timebasepublishing = JAHIA_PREFERENCES_SERVICE.getGenericPreferenceBooleanValue("timebasepublishing.activated", false, jParams) ;
+        boolean timebasepublishing = UserPreferencesHelper.isDisplayTbpState(jParams.getUser()) ;
         if (timebasepublishing) {
             tbp = getTimebasedPublishingState(page, objectKey) ;
         }
         GWTJahiaIntegrityState integrityState = null ;
-        boolean integrity = JAHIA_PREFERENCES_SERVICE.getGenericPreferenceBooleanValue("integrity.activated", false, jParams) ;
+        boolean integrity = UserPreferencesHelper.isDisplayIntegrityState(jParams.getUser()) ;
         if (integrity) {
             integrityState = getIntegrityState(page, objectKey) ;
         }
@@ -112,11 +92,7 @@ public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implement
     }
 
     public GWTJahiaTimebasedPublishingState getTimebasedPublishingState(GWTJahiaPageContext page, String objectKey) {
-        // parameters for submethod calls
-        final boolean isDevMode = true ;//org.jahia.settings.SettingsBean.getInstance().isDevelopmentMode();
-        final HttpServletRequest request = getThreadLocalRequest() ;
-        final ProcessingContext jParams = retrieveParamBean(page) ;
-        return TimebasedPublishingHelper.getTimebasePublishingState(request, jParams, isDevMode, objectKey) ;
+        return TimebasedPublishingHelper.getTimebasePublishingState(getThreadLocalRequest(), retrieveParamBean(page), objectKey) ;
     }
 
     public GWTJahiaTimebasedPublishingDetails getTimebasedPublishingDetails(GWTJahiaPageContext page, GWTJahiaTimebasedPublishingState state) {
@@ -124,24 +100,23 @@ public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implement
     }
 
     public GWTJahiaAclDiffState getAclDiffState(GWTJahiaPageContext page, String objectKey) {
-        final boolean isDevMode = true ;//org.jahia.settings.SettingsBean.getInstance().isDevelopmentMode();
-        final HttpServletRequest request = getThreadLocalRequest() ;
-        final ProcessingContext jParams = retrieveParamBean(page) ;
+        GWTJahiaAclDiffState state = null;
         try {
-            return AclDiffHelper.getAclDiffState(request, jParams, isDevMode, objectKey) ;
+            state = AclDiffHelper.getAclDiffState(getThreadLocalRequest(), retrieveParamBean(page), objectKey) ;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return null ;
         }
+        return state ;
     }
 
     public GWTJahiaAclDiffDetails getAclDiffDetails(GWTJahiaPageContext page, String objectKey) {
+        GWTJahiaAclDiffDetails details = null;
         try {
-            return AclDiffHelper.getAclDiffDetails(retrieveParamBean(page), objectKey) ;
+            details = AclDiffHelper.getAclDiffDetails(retrieveParamBean(page), objectKey) ;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return null ;
         }
+        return details ;
     }
 
     public String isActionMenuAvailable(GWTJahiaPageContext page, String objectKey, String bundleName, String labelKey) {
@@ -169,7 +144,13 @@ public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implement
     public Boolean clipboardPaste(GWTJahiaPageContext page, String destObjectKey) {
         final HttpSession session = getThreadLocalRequest().getSession() ;
         final ProcessingContext processingContext  = retrieveParamBean(page) ;
-        return ClipboardHelper.clipboardPaste(session, processingContext,  destObjectKey) ;
+        return ClipboardHelper.clipboardPaste(session, processingContext,  destObjectKey, false) ;
+    }
+
+    public Boolean clipboardPasteReference(GWTJahiaPageContext page, String destObjectKey) {
+        final HttpSession session = getThreadLocalRequest().getSession() ;
+        final ProcessingContext processingContext  = retrieveParamBean(page) ;
+        return ClipboardHelper.clipboardPaste(session, processingContext,  destObjectKey, true) ;
     }
 
     public void hack(GWTJahiaAction action) {

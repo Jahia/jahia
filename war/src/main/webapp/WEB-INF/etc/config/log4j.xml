@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <!--
   This is the default log4j development file. For use in production server,
@@ -43,7 +44,7 @@
 
     <appender name="Console" class="org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d: %-5p [%c] - %m%n"></param>
+            <param name="ConversionPattern" value="%d: %-5p [%c{1}] - %m%n"></param>
             <!-- another useful pattern to see date time,class, lines
             BUT cpu intensive
             -->
@@ -162,6 +163,10 @@ think twice before changing it! -->
     <category name="org.quartz">
         <priority value="info"/>
     </category>
+    
+    <category name="org.jahia.services.search.lucene.fs.LuceneSearchHandlerImpl">
+        <priority value="info"/>
+    </category>    
 
     <category name="org.jahia.spring.aop.interceptor">
         <!-- Set this to debug to activate JAMon monitoring -->

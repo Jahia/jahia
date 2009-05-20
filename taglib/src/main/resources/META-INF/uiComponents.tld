@@ -550,155 +550,24 @@
         </attribute>
     </tag>
     <tag>
-        <description>Displays the skeleton of a login form</description>
-        <name>loginArea</name>
-        <tag-class>org.jahia.taglibs.uicomponents.loginform.LogAreaTag</tag-class>
+        <description>Checks if there is a login error and evaluates body if true</description>
+        <name>isLoginError</name>
+        <tag-class>org.jahia.taglibs.uicomponents.loginform.IsLoginErrorTag</tag-class>
         <body-content>JSP</body-content>
-    </tag>
-    <tag>
-        <description>Display a username field for the logArea</description>
-        <name>loginUsername</name>
-        <tag-class>org.jahia.taglibs.uicomponents.loginform.LogUserNameInputTag</tag-class>
-        <body-content>empty</body-content>
         <attribute>
-            <name>labelKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>cssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>labelCssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>displayLabel</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <name>tabIndex</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-        <attribute>
-            <name>size</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-    </tag>
-    <tag>
-        <description>Display a passwordfield for the logArea</description>
-        <name>loginPassword</name>
-        <tag-class>org.jahia.taglibs.uicomponents.loginform.LogPasswordInputTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>labelKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>cssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>labelCssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>displayLabel</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <name>tabIndex</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-        <attribute>
-            <name>size</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-    </tag>
-    <tag>
-        <description>Display a passwordfield for the logArea</description>
-        <name>loginRememberMe</name>
-        <tag-class>org.jahia.taglibs.uicomponents.loginform.LogRememberMeTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>labelKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>cssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>labelCssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>tabIndex</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-    </tag>
-    <tag>
-        <description>Display a login Button for the logArea</description>
-        <name>loginButton</name>
-        <tag-class>org.jahia.taglibs.uicomponents.loginform.LogButtonTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>labelKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>cssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>tabIndex</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-    </tag>
-    <tag>
-        <description>Display a login Button for the logArea</description>
-        <name>loginErrorMessage</name>
-        <tag-class>org.jahia.taglibs.uicomponents.loginform.LogErrorMessageTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>cssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>invalidUsernamePasswordKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
+            <description>
+                Name of the variable under which the errorcode will be set in page context.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Name of the variable under which the errorcode will be set in page context.
+            </description>
+            <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -767,12 +636,36 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                Name of the page scope variable to expose the value.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                Name of the page scope variable to expose the value.
+            </description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Name of the page scope variable to expose the URL value.
+                @deprecated this attribute is deprecated in favour of the urlVar attribute
+            </description>
             <name>urlValueID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Name of the page scope variable to expose the URL value.
+            </description>
+            <name>urlVar</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -1025,7 +918,19 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                Name of the page scope variable to expose the value.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Name of the page scope variable to expose the value.
+            </description>
+            <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -1078,4 +983,24 @@
         <name>userGroupSelector</name>
         <path>/META-INF/tags/userGroupSelector.tag</path>
     </tag-file>
+    <tag-file>
+        <name>loginArea</name>
+        <path>/META-INF/tags/login/loginArea.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>loginUsername</name>
+        <path>/META-INF/tags/login/loginUsername.tag</path>
+    </tag-file>    
+    <tag-file>
+        <name>loginPassword</name>
+        <path>/META-INF/tags/login/loginPassword.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>loginRememberMe</name>
+        <path>/META-INF/tags/login/loginRememberMe.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>loginRedirectChoice</name>
+        <path>/META-INF/tags/login/loginRedirectChoice.tag</path>
+    </tag-file>    
 </taglib>

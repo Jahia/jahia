@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.taglibs.template.cache;
 
 import org.apache.log4j.Category;
@@ -46,6 +29,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.ContainerHTMLCache;
 import org.jahia.services.cache.ContainerHTMLCacheEntry;
+import org.jahia.services.cache.GroupCacheKey;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.AbstractJahiaTag;
 
@@ -63,6 +47,7 @@ import java.util.Set;
  * Created by IntelliJ IDEA. User: rincevent Date: 12 juin 2008 Time: 09:01:00 To change this template use File |
  * Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class CacheTag extends AbstractJahiaTag {
     private static transient Category logger = Logger.getLogger(CacheTag.class);
     private String cacheKey;
@@ -87,13 +72,13 @@ public class CacheTag extends AbstractJahiaTag {
             if(cacheKey== null || "".equals(cacheKey.trim())) throw new JspException("None of cacheKey or cacheKeyName, cacheKeyProperty, cacheKeyScope is filled");
             ServletRequest request = pageContext.getRequest();
             jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            final ContainerHTMLCache cacheInstance2 =
+            final ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cacheInstance2 =
                     ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
             final ProcessingContext context2 = jData.getProcessingContext();
             // Let's build the cache key
             String cacheKey2 = buildCacheKey(context2);
             // Try to find the entry in cache
-            final CacheEntry htmlCacheEntry2 =
+            final CacheEntry<ContainerHTMLCacheEntry> htmlCacheEntry2 =
                     cacheInstance2.getCacheEntryFromContainerCache(null, context2, cacheKey2, false, 0, null, null);
             // This will containes the html to output in the skeleton (HTML Page)
             String htmlOutput2;
@@ -152,7 +137,7 @@ public class CacheTag extends AbstractJahiaTag {
         try {
             ServletRequest request = pageContext.getRequest();
             jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            final ContainerHTMLCache cacheInstance2 =
+            final ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cacheInstance2 =
                     ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
             final ProcessingContext context2 = jData.getProcessingContext();
             // Let's build the cache key

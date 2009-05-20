@@ -1,36 +1,19 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget.layoutmanager.portlet;
 
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
@@ -38,6 +21,7 @@ import org.jahia.ajax.gwt.client.widget.layoutmanager.listener.OnPortletRemoved;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.listener.OnPortletStatusChanged;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.JahiaPortalManager;
 import org.jahia.ajax.gwt.client.util.layoutmanager.JahiaPropertyHelper;
+import org.jahia.ajax.gwt.client.util.URL;
 
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -47,6 +31,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.custom.Portlet;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.Window;
 
 
 /**
@@ -61,18 +46,21 @@ public class JahiaPortlet extends Portlet {
     protected Widget editContainer = null;
     protected Widget helpContainer = null;
 
-    protected static int MODE_VIEW = 0;
-    protected static int MODE_EDIT = 1;
-    protected static int MODE_HELP = 2;
-    private int mode = 0;
-    private ToolButton viewEditButton = new ToolButton("x-tool-gear");
-    private ToolButton helpButton = new ToolButton("x-tool-plus");
-    private ToolButton maxButton = new ToolButton("x-tool-maximize");
-    private ToolButton minButton = new ToolButton("x-tool-minimize");
-    private ToolButton removeButton = new ToolButton("x-tool-close");
+    private ToolButton viewButton = new ToolButton("x-tool-portlet-view");
+    private ToolButton editButton = new ToolButton("x-tool-portlet-edit");
+    private ToolButton helpButton = new ToolButton("x-tool-portlet-help");
+    private ToolButton maxButton = new ToolButton("x-tool-portlet-maximize");
+    private ToolButton minButton = new ToolButton("x-tool-portlet-minimize");
+    private ToolButton removeButton = new ToolButton("x-tool-portlet-close");
 
     public JahiaPortlet() {
         configPanel();
+    }
+
+    @Override
+    protected void afterRender() {
+        super.afterRender();
+        getCollapseBtn().changeStyle("x-tool-portlet-toggle");
     }
 
     public JahiaPortlet(GWTJahiaLayoutItem porletConfig) {
@@ -101,41 +89,34 @@ public class JahiaPortlet extends Portlet {
         }
     }
 
-    public boolean isInstanciable() {
-        return true;
-    }
-
     public void doView() {
-        mode = MODE_VIEW;
-        // to implement
-        removeAll();
-        layout();
+        if (porletConfig.hasViewMode()) {
+            Window.Location.replace(porletConfig.getViewModeLink());
+        }
     }
 
     public void doEdit() {
-        mode = MODE_EDIT;
-        // to implement
-        removeAll();
-        layout();
+        if (porletConfig.hasEditMode()) {
+            Window.Location.replace(porletConfig.getEditModeLink());
+        }
     }
 
     public void doHelp() {
-        mode = MODE_HELP;
-        // to implement
-        removeAll();
-        layout();
+        if (porletConfig.hasHelpMode()) {
+            Window.Location.replace(porletConfig.getHelpModeLink());
+        }
     }
 
     protected boolean isViewMode() {
-        return mode == MODE_VIEW;
+        return porletConfig.isViewMode();
     }
 
     protected boolean isEditMode() {
-        return mode == MODE_EDIT;
+        return porletConfig.isEditMode();
     }
 
     protected boolean isHelpMode() {
-        return mode == MODE_HELP;
+        return porletConfig.isHelpMode();
     }
 
 
@@ -147,34 +128,41 @@ public class JahiaPortlet extends Portlet {
         setCollapsible(true);
         setAnimCollapse(false);
 
-
-        // change mode
-        viewEditButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            @Override
-            public void componentSelected(ComponentEvent ce) {
-                if (isViewMode()) {
-                    doEdit();
-                } else if (isEditMode()) {
-                    doView();
-                } else {
+        if (porletConfig.hasViewMode()) {
+            viewButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                @Override
+                public void componentSelected(ComponentEvent ce) {
                     doView();
                 }
-            }
 
-        });
-        /*getHeader().addTool(viewEditButton);*/
+            });
+            getHeader().addTool(viewButton);
+        }
 
-        // help mpde
+        // change mode
+        if (porletConfig.hasEditMode()) {
+            editButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                @Override
+                public void componentSelected(ComponentEvent ce) {
+                    doEdit();
+                }
 
-        helpButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            @Override
-            public void componentSelected(ComponentEvent ce) {
-                doHelp();
-            }
+            });
+            getHeader().addTool(editButton);
+        }
 
-        });
+        // help mode
+        if (porletConfig.hasHelpMode()) {
+            helpButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                @Override
+                public void componentSelected(ComponentEvent ce) {
+                    doHelp();
+                }
 
-        // help mpde
+            });
+            getHeader().addTool(helpButton);
+        }
+
 
         maxButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
             @Override
@@ -199,6 +187,7 @@ public class JahiaPortlet extends Portlet {
         // close portlet
         removeButton.addSelectionListener(new OnPortletRemoved(this));
         getHeader().addTool(removeButton);
+
 
         if (JahiaPropertyHelper.isStatusFullScreen(getStatus())) {
             maxButton.setVisible(false);

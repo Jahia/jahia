@@ -1,45 +1,25 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget.node;
 
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.ListViewEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionEvent;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.util.Util;
@@ -51,10 +31,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -79,6 +56,7 @@ public class ThumbView extends TopRightComponent {
     private ListStore<GWTJahiaNode> store;
     private MyListView<GWTJahiaNode> view;
     private SimpleComboBox<String> sort;
+    private ToggleToolItem sortOrder ;
 
     private ManagerConfiguration configuration;
 
@@ -120,8 +98,12 @@ public class ThumbView extends TopRightComponent {
         // please keep same order as in sort() method
         List<String> sorts = new ArrayList<String>();
         sorts.add(Messages.getResource("fm_thumbSortName"));
-        sorts.add(Messages.getResource("fm_thumbSortSize"));
-        sorts.add(Messages.getResource("fm_thumbSortLastModif"));
+        if (config.isDisplaySize()) {
+            sorts.add(Messages.getResource("fm_thumbSortSize"));
+        }
+        if (config.isDisplayDate()) {
+            sorts.add(Messages.getResource("fm_thumbSortLastModif"));
+        }
 
         sort = new SimpleComboBox<String>();
         sort.setTriggerAction(ComboBox.TriggerAction.ALL);
@@ -130,13 +112,20 @@ public class ThumbView extends TopRightComponent {
         sort.setWidth(250);
         sort.add(sorts);
         sort.setSimpleValue(sorts.get(0));
-        sort.addListener(Events.Change, new Listener<FieldEvent>() {
-            public void handleEvent(FieldEvent be) {
+        sort.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent>() {
+            public void handleEvent(SelectionChangedEvent be) {
+                sort();
+            }
+        });
+        sortOrder = new ToggleToolItem(Messages.getResource("fm_invertSort"));
+        sortOrder.addListener(Events.Select, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent componentEvent) {
                 sort();
             }
         });
 
         bar.add(new AdapterToolItem(sort));
+        bar.add(sortOrder);
 
         m_component.setTopComponent(bar);
 
@@ -157,9 +146,13 @@ public class ThumbView extends TopRightComponent {
         view.setStore(store);
         view.setItemSelector("div.thumb-wrap");
         view.setOverStyle("x-view-over");
-        view.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionEvent<GWTJahiaNode>>() {
-            public void handleEvent(SelectionEvent<GWTJahiaNode> be) {
+        view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
                 getLinker().onTableItemSelected();
+                TopRightComponent topRight = getLinker().getTopRightObject() ;
+                if (topRight instanceof FilePickerContainer) {
+                    ((FilePickerContainer) topRight).handleNewSelection();
+                }
             }
         });
         view.addListener(Event.ONDBLCLICK, new Listener<ListViewEvent>() {
@@ -177,7 +170,6 @@ public class ThumbView extends TopRightComponent {
                         }
                     } else {
                         getLinker().onTableItemDoubleClicked(selected);
-
                     }
                 }
             }
@@ -193,11 +185,11 @@ public class ThumbView extends TopRightComponent {
     private void sort() {
         int index = sort.getSelectedIndex();
         if (index == 0) {
-            store.sort("name", Style.SortDir.ASC);
+            store.sort("name", sortOrder.isPressed() ? Style.SortDir.DESC : Style.SortDir.ASC);
         } else if (index == 1) {
-            store.sort("size", Style.SortDir.ASC);
+            store.sort("size", sortOrder.isPressed() ? Style.SortDir.DESC : Style.SortDir.ASC);
         } else if (index == 2) {
-            store.sort("date", Style.SortDir.ASC);
+            store.sort("date", sortOrder.isPressed() ? Style.SortDir.DESC : Style.SortDir.ASC);
         }
     }
 
@@ -223,6 +215,7 @@ public class ThumbView extends TopRightComponent {
                 public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                     if (gwtJahiaNodes != null) {
                         store.add(gwtJahiaNodes);
+                        sort();
                     } else {
                         Window.alert("null list");
                     }
@@ -241,6 +234,7 @@ public class ThumbView extends TopRightComponent {
             List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) content;
             store.add(gwtJahiaNodes);
             getLinker().onTableItemSelected();
+            sort();
         }
     }
 

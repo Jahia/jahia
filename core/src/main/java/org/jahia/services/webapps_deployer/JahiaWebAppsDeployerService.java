@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //
 //
 //  JahiaWebAppsDeployerService
@@ -47,9 +30,6 @@ import org.apache.log4j.Logger;
 import org.apache.pluto.core.PortletContextManager;
 import org.apache.pluto.spi.optional.PortletRegistryEvent;
 import org.apache.pluto.spi.optional.PortletRegistryListener;
-import org.apache.pluto.PortletContainerException;
-import org.apache.pluto.descriptors.portlet.PortletDD;
-import org.apache.pluto.internal.impl.PortletContextImpl;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.webapps.*;
 import org.jahia.exceptions.JahiaException;
@@ -57,8 +37,6 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.model.JahiaAclEntry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.acl.ACLNotFoundException;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.usermanager.JahiaUser;
@@ -67,12 +45,13 @@ import org.jahia.utils.JahiaTools;
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.xml.sax.EntityResolver;
 
-import javax.portlet.PortletContext;
-import javax.portlet.PortletConfig;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 
@@ -195,21 +174,21 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
         }
     } // end init
 
-    public void initPortletListener() {
-        PortletContextManager.getManager().addPortletRegistryListener(new PortletRegistryListener() {
-            public void portletApplicationRegistered(PortletRegistryEvent portletRegistryEvent) {
-                try {
-                    registerWebApps(portletRegistryEvent.getApplicationId());
-                } catch (JahiaException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-            }
-
-            public void portletApplicationRemoved(PortletRegistryEvent portletRegistryEvent) {
-            }
-        }) ;
-        PortletContextManager.getManager().getRegisteredPortletApplications();
-    }
+//    public void initPortletListener() {
+//        PortletContextManager.getManager().addPortletRegistryListener(new PortletRegistryListener() {
+//            public void portletApplicationRegistered(PortletRegistryEvent portletRegistryEvent) {
+//                try {
+//                    registerWebApps(portletRegistryEvent.getApplicationId());
+//                } catch (JahiaException e) {
+//                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//                }
+//            }
+//
+//            public void portletApplicationRemoved(PortletRegistryEvent portletRegistryEvent) {
+//            }
+//        }) ;
+//        PortletContextManager.getManager().getRegisteredPortletApplications();
+//    }
 
     /************************************************************************
      * Abstract Methods , need different implementations depending of the
@@ -301,83 +280,41 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
         if (!context.startsWith("/"))
             context = "/" + context;
 
-        ApplicationBean theWebApp = ServicesRegistry.getInstance().
-                getApplicationsManagerService().
-                getApplication(context);
+        //System.out.println("registerWebApps app context " + appContext + " not used");
+        int parentAclID = 0;
 
-        if (theWebApp == null) {
-
-            //System.out.println("registerWebApps app context " + appContext + " not used");
-            int parentAclID = 0;
-
-            // Create a new ACL.
-            JahiaBaseACL acl = new JahiaBaseACL();
-            try {
-                acl.create(parentAclID);
-                JahiaUser guest = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerProvider.GUEST_USERNAME);
-                acl.setUserEntry(guest, new JahiaAclEntry(1,0));
-            } catch (ACLNotFoundException ex) {
-                throw new JahiaException("Could not create the page def.",
-                        "The parent ACL ID [" + parentAclID + "] could not be found," +
-                                " while trying to create a new page def.",
-                        JahiaException.TEMPLATE_ERROR, JahiaException.ERROR_SEVERITY, ex);
-            }
-
-            // save definition in db
-            theWebApp = new ApplicationBean(
-                    0, // id
-                    context.substring(1),
-                    context,
-                    m_VisibleStatus,
-                    false, // not shared
-                    acl.getID(),
-                    "",
-                    "",
-                    "portlet"
-            );
-
-            ServicesRegistry.getInstance().getApplicationsManagerService()
-                    .addDefinition(theWebApp);
-
-            //System.out.println("registerWebApps()" + webAppDef.getName() );
-
+        // Create a new ACL.
+        JahiaBaseACL acl = new JahiaBaseACL();
+        try {
+            acl.create(parentAclID);
+            JahiaUser guest = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerProvider.GUEST_USERNAME);
+            acl.setUserEntry(guest, new JahiaAclEntry(1,0));
+        } catch (ACLNotFoundException ex) {
+            throw new JahiaException("Could not create the page def.",
+                    "The parent ACL ID [" + parentAclID + "] could not be found," +
+                            " while trying to create a new page def.",
+                    JahiaException.TEMPLATE_ERROR, JahiaException.ERROR_SEVERITY, ex);
         }
+
+        // save definition in db
+        ApplicationBean theWebApp = new ApplicationBean(
+                0, // id
+                context.substring(1),
+                context,
+                m_VisibleStatus,
+                false, // not shared
+                acl.getID(),
+                "",
+                "",
+                "portlet"
+        );
+
+        ServicesRegistry.getInstance().getApplicationsManagerService()
+                .addDefinition(theWebApp);
+
+        //System.out.println("registerWebApps()" + webAppDef.getName() );
     }
 
-//    private void addDefinitionsFiles(String context) {
-//        try {
-//            PortletContextManager mgr = PortletContextManager.getManager();
-//            PortletContext ctx = mgr.getPortletContext(context);
-//            List l = ((PortletContextImpl)ctx).getPortletApplicationDefinition().getPortlets();
-//            Set<File> files = new HashSet<File>();
-//            for (Iterator iterator = l.iterator(); iterator.hasNext();) {
-//                PortletDD portletDD = (PortletDD) iterator.next();
-//                PortletConfig config = PortletContextManager.getManager().getPortletConfig(context,  portletDD.getPortletName());
-//
-//                String rootPath = config.getInitParameter("rootPath");
-//                if (rootPath == null) {
-//                    rootPath = "/WEB-INF";
-//                }
-//                String realPath = ctx.getRealPath(rootPath + "/definitions.cnd" );
-//                File file = new File(realPath);
-//                if (file.exists()) {
-//                    files.add(file);
-//                }
-//            }
-//            for (File file : files) {
-//                try {
-//                    NodeTypeRegistry.getInstance().addDefinitionsFile(file, context, true);
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        } catch (Exception e) {
-//            logger.error("Cannot get context manager",e);
-//        }
-//    }
-//
 
     /**
      * Register Web Apps Definition in Jahia

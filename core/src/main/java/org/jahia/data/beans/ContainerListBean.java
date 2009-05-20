@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.data.beans;
 
 import org.jahia.content.ContentObject;
@@ -85,9 +68,9 @@ public class ContainerListBean extends ContentBean {
 
     private JahiaContainerList jahiaContainerList;
     private ContentContainerList contentContainerList;
-    private List containers;
+    private List<ContainerBean> containers;
     private ContainerBean parentContainerBean;
-    private Map actionURIs;
+    private Map<String, ActionURIBean> actionURIs;
     private boolean completelyLocked = false;
     private boolean independantWorkflow = false;
     private int groupWorkflowState = 0;
@@ -131,7 +114,7 @@ public class ContainerListBean extends ContentBean {
             final Map<String, Integer> languagesStates = workflowService.getLanguagesStates(theList);
             Integer languageState = languagesStates.get(
                     processingContext.getLocale().toString());
-            final Integer sharedLanguageState = (Integer) languagesStates.
+            final Integer sharedLanguageState = languagesStates.
                     get(ContentObject.SHARED_LANGUAGE);
             if (languageState != null && languageState.intValue() != -1) {
                 if (sharedLanguageState != null &&
@@ -161,7 +144,7 @@ public class ContainerListBean extends ContentBean {
     public List<Integer> getContainerIdsInList(final EntryLoadRequest loadRequest) {
         final int id = getID();
         if (id == 0) {
-            return new ArrayList(0);
+            return new ArrayList<Integer>(0);
         }
         try {
             return jahiaContainersService.getctnidsInList(id, loadRequest);
@@ -190,12 +173,12 @@ public class ContainerListBean extends ContentBean {
         return jahiaContainerList.size();
     }
 
-    public List getContainerBeans() {
+    public List<ContainerBean> getContainerBeans() {
         if (containers != null) {
             return containers;
         }
-        final Iterator containerEnum = jahiaContainerList.getContainers();
-        containers = new ArrayList();
+        final Iterator<JahiaContainer> containerEnum = jahiaContainerList.getContainers();
+        containers = new ArrayList<ContainerBean>();
         while (containerEnum.hasNext()) {
             final JahiaContainer jahiaContainer = (JahiaContainer) containerEnum.next();
             final ContainerBean containerBean = new ContainerBean(jahiaContainer, processingContext);
@@ -204,14 +187,14 @@ public class ContainerListBean extends ContentBean {
         return containers;
     }
 
-    public List getContainers() {
+    public List<ContainerBean> getContainers() {
         return getContainerBeans();
     }
 
     public ContainerBean getContainerByID(final int containerID) {
-        final Iterator containerIter = getContainers().iterator();
+        final Iterator<ContainerBean> containerIter = getContainers().iterator();
         while (containerIter.hasNext()) {
-            final ContainerBean curContainerBean = (ContainerBean) containerIter.next();
+            final ContainerBean curContainerBean = containerIter.next();
             if (curContainerBean.getID() == containerID) {
                 return curContainerBean;
             }
@@ -226,9 +209,9 @@ public class ContainerListBean extends ContentBean {
 //        if (containerUUID.indexOf('/')>0) {
 //            containerUUID = containerUUID.substring(0, containerUUID.indexOf('/'));
 //        }
-        final Iterator containerIter = getContainers().iterator();
+        final Iterator<ContainerBean> containerIter = getContainers().iterator();
         while (containerIter.hasNext()) {
-            final ContainerBean curContainerBean = (ContainerBean) containerIter.next();
+            final ContainerBean curContainerBean = containerIter.next();
             try {
                 ContentContainer contentContainer = curContainerBean.getJahiaContainer().getContentContainer();
                 if (containerUUID.equals(contentContainer.getProperty("uuid"))) {
@@ -359,7 +342,7 @@ public class ContainerListBean extends ContentBean {
         return jahiaContainerList.getctndefid();
     }
 
-    public Map getActionURIBeans() {
+    public Map<String, ActionURIBean> getActionURIBeans() {
         if (actionURIs == null) {
             buildActionURIs();
         }
@@ -378,11 +361,9 @@ public class ContainerListBean extends ContentBean {
             buildActionURIs();
         }
         if (!completelyLocked) {
-            final Iterator actionURIIter = actionURIs.entrySet().iterator();
             boolean partiallyLocked = false;
-            while (actionURIIter.hasNext()) {
-                final Map.Entry curActionURIEntry = (Map.Entry) actionURIIter.next();
-                final ActionURIBean curActionURIBean = (ActionURIBean) curActionURIEntry.getValue();
+            for (final Map.Entry<String, ActionURIBean> curActionURIEntry : actionURIs.entrySet()) {
+                final ActionURIBean curActionURIBean = curActionURIEntry.getValue();
                 if (curActionURIBean.isLocked()) {
                     partiallyLocked = true;
                 }
@@ -412,7 +393,7 @@ public class ContainerListBean extends ContentBean {
     }
 
     private void buildActionURIs() {
-        actionURIs = new InsertionSortedMap();
+        actionURIs = new InsertionSortedMap<String, ActionURIBean>();
         final GuiBean guiBean = new GuiBean(processingContext);
         final HTMLToolBox htmlToolBox = new HTMLToolBox(guiBean, processingContext);
         completelyLocked = true;

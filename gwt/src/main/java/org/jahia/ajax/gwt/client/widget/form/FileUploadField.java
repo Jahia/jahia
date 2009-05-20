@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget.form;
 
 import java.util.ArrayList;
@@ -63,11 +46,20 @@ public class FileUploadField extends AdapterField {
         setName(name);
         ((Uploader)getWidget()).addListener( new Listener() {
             public void onChange(Event event) {
-                setValue(((Uploader)getWidget()).getKey());
+                setUploadedValue(((Uploader)getWidget()).getKey());
 //                setRawValue();
                 // set the value ...
             }
         });
+    }
+
+    @Override
+    public void setValue(Object o) {
+        ((Uploader)getWidget()).setValue((String)o,(String)o);
+    }
+
+    public void setUploadedValue(String o) {
+        super.setValue(o);
     }
 
     public String getRawValue() {
@@ -92,7 +84,7 @@ public class FileUploadField extends AdapterField {
             super();
 
             status = new Text();
-
+            status.setStyleName("x-form-field");
             target = new NamedFrame("target"+defname) {
                 public void onBrowserEvent(Event event) {
                     Log.debug("LOADED");
@@ -101,13 +93,7 @@ public class FileUploadField extends AdapterField {
                     Log.error(document.getClass().toString());
                     Element elem = document.getElementById("uploaded");
                     if (elem != null) {
-                        name = (elem.getAttribute("name"));
-                        key = (elem.getAttribute("key"));
-                        status.setText(name);
-                        clear.setText("Clear");
-                        for (Listener listener : listeners) {
-                            listener.onChange(event);
-                        }
+                        setValue(elem.getAttribute("name"), elem.getAttribute("key"));
                     }
                     super.onBrowserEvent(event);    //To change body of overridden methods use File | Settings | File Templates.
                 }
@@ -125,17 +111,40 @@ public class FileUploadField extends AdapterField {
 
             clear = new Button("Stop", new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
-                    init();
+                    setValue(null,"clear");
                 }
 
             });
 
-            init();
+            name = null;
+            key = null;
+
+            initForm();
+            status.setText("");
+            clear.setVisible(false);
 
             add(status);
             add(form);
             add(clear);
             add(target);
+        }
+
+        public void setValue(String name, String key) {
+            this.name = name;
+            this.key = key;
+            if (name == null) {
+                initForm();
+                status.setText("");
+                clear.setVisible(false);
+            } else {
+                status.setText(name);
+                clear.setText("Clear");
+                clear.setVisible(true);
+                form.setVisible(false);
+            }
+            for (Listener listener : listeners) {
+                listener.onChange(null);
+            }
         }
 
         public void addListener(Listener list) {
@@ -150,12 +159,9 @@ public class FileUploadField extends AdapterField {
             return key;
         }
 
-        private void init() {
-            name = null;
-            key = null;
 
+        private void initForm() {
             final FileUpload upload = new FileUpload() {
-
                 public final void onBrowserEvent(Event event) {
                     status.setText("Uploading ...");
                     form.submit();
@@ -170,10 +176,7 @@ public class FileUploadField extends AdapterField {
             form.clear();
             form.add(upload);
             form.setVisible(true);
-            status.setText("");
-            clear.setVisible(false);
         }
-
 
     }
 

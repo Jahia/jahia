@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.htmlparser;
 
 import java.io.StringReader;
@@ -52,6 +35,7 @@ import org.apache.html.dom.HTMLLabelElementImpl;
 import org.apache.html.dom.HTMLTableElementImpl;
 import org.apache.html.dom.HTMLTableRowElementImpl;
 import org.apache.html.dom.HTMLTableSectionElementImpl;
+import org.apache.log4j.Logger;
 import org.apache.xerces.dom.TextImpl;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -83,8 +67,7 @@ import org.xml.sax.InputSource;
  */
 public class WAIValidator {
 
-    private static final org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(WAIValidator.class);
+    private static final Logger logger = Logger.getLogger(WAIValidator.class);
 
     protected final DOMFragmentParser parser = new DOMFragmentParser();
 
@@ -94,12 +77,12 @@ public class WAIValidator {
     protected final Map linkToDest = new HashMap();
 
     private static final WAIValidator instance = new WAIValidator();
-    private String inputHTML;
 
     /**
      * Private constructor: use getInstance() instead
      */
     private WAIValidator() {
+        super();
     }
 
     /**
@@ -122,7 +105,6 @@ public class WAIValidator {
         if (logger.isDebugEnabled()) {
             logger.debug("Validate: " + inputHTML);
         }
-        this.inputHTML = inputHTML;
         final EngineValidationHelper evh = new EngineValidationHelper();
         final HTMLDocument document = new HTMLDocumentImpl();
         final DocumentFragment fragment = document.createDocumentFragment();
@@ -157,20 +139,6 @@ public class WAIValidator {
         final List errors = validateHtml(node);
         for (int i = 0; i < errors.size(); i++) {
             evh.addError((ValidationError) errors.get(i));
-        }
-
-        try {
-            final StringWriter stringOut = new StringWriter();
-            final XMLSerializer serial = new XMLSerializer(stringOut, new OutputFormat("", null, true));
-            serial.serialize(fragment);
-
-            final String res = stringOut.toString();
-            this.inputHTML = res.substring(res.indexOf("?>\n") + 3);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Serialized form: " + this.inputHTML);
-            }
-        } catch (Exception e) {
-            logger.error(e, e);
         }
 
         // Criteria 2.3
@@ -327,13 +295,6 @@ public class WAIValidator {
             return null;
         }
 
-        boolean putMissingAttributes;
-        try {
-            putMissingAttributes = org.jahia.settings.SettingsBean.getInstance().isWaiAutoAddMissingAttributes();
-        } catch (Exception e) {
-            putMissingAttributes = true;
-        }
-
         // Criteria 6.1
         String linkValue = node.getTextContent();
         if (StringUtils.isBlank(linkValue) && node.hasChildNodes()) {
@@ -354,16 +315,10 @@ public class WAIValidator {
         // Criteria 6.3
         final Node title = node.getAttributes().getNamedItem("title");
         if (title == null) {
-            if (putMissingAttributes) {
-                logger.info(("Auto adding missing attribute 'title' for href link"));
-                node.setAttribute("title", linkValue);
-
-            } else {
                 return new ValidationError(this,
                         "Missing 'title' attribute for 'hyperlink' element",
                         "org.jahia.services.htmlparser.WAIValidator.6.3",
                         new String[]{getNearText(node, linkValue)});
-            }
         }
 
         // Criteria 6.3 bis
@@ -782,7 +737,7 @@ public class WAIValidator {
         if (fors.size() > 0) {
             for (int i = 0; i < fors.size(); i++) {
                 final ValidationError ve = new ValidationError(this,
-                        "They are no 'id' attribute in any 'input' element for attribute 'for' (" +
+                        "There is no 'id' attribute in any 'input' element for attribute 'for' (" +
                                 fors.get(i) + "). Check all your 'label' elements in the 'form'");
                 errors.add(ve);
             }
@@ -953,10 +908,6 @@ public class WAIValidator {
 
     public String toString() {
         return getClass().getName();
-    }
-
-    public String getModifiedInputHTML() {
-        return inputHTML;
     }
 
     protected String getNearText(final Node node, final String boldText) {

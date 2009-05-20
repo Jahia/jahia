@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //
 //  ManageSearch
 //
@@ -306,7 +289,7 @@ public class ManageSearch extends AbstractAdministrationModule {
         //            + (request.getServerPort()!=80?":" + request.getServerPort():"");
         String refreshURL = JahiaAdministration.composeActionURL(request,response,"search","&sub=display");
 
-        response.setHeader("Refresh", "20;" + refreshURL);
+        response.setHeader("Refresh", "20; URL=" + refreshURL);
 
                 // set the default action
         request.setAttribute ("subAction", "chooseoperation");
@@ -327,12 +310,18 @@ public class ManageSearch extends AbstractAdministrationModule {
 
         // check if the index exists yet for the current site.
         SearchHandler searchHandler = searchServ.getSearchHandler(site.getID ());
+        JahiaSearchService searchService = ServicesRegistry.getInstance()
+        .getJahiaSearchService();
+        
         boolean indexExists = (searchHandler != null);
 
         values.put ("operation", operation);
 
         request.setAttribute ("operation", operation);
         request.setAttribute ("indexExists", Boolean.valueOf(indexExists));
+        request.setAttribute("indexingDisabled", Boolean.valueOf(searchService
+            .isDisabled()));
+        request.setAttribute("localIndexing", Boolean.valueOf(searchService.isLocalIndexing()));
         doRedirect (request, response, JSP + "operations");
     }
 
@@ -563,78 +552,76 @@ public class ManageSearch extends AbstractAdministrationModule {
     public static List<JobDetail> getJobsDetails(int siteId, boolean activeOnly)
             throws JahiaException {
         JahiaSitesService siteServ = ServicesRegistry.getInstance()
-                .getJahiaSitesService();
+            .getJahiaSitesService();
         JahiaSite site = siteServ.getSite(siteId);
         List<JobDetail> jobDetails = new LinkedList<JobDetail>();
         Properties settings = site.getSettings();
-        for (Iterator<?> it = settings.keySet().iterator(); it.hasNext();) {
-            String key = (String) it.next();
-            int pos = key.indexOf(JahiaSiteIndexingJob.SITE_INDEXATION_JOBNAME);
-            if (pos != -1) {
-                String serverId = key.substring(0, pos);
-                JobDetail jobDetail = new JobDetail(settings.getProperty(key, ""),
-                        JahiaSiteIndexingJob.JOB_GROUP_NAME,
-                        JahiaSiteIndexingJob.class);
-                JobDataMap data = jobDetail.getJobDataMap();
-                // data.setMutable(true); commented for quartz 1.6.0
-                // compatibility
-                String value = settings.getProperty(serverId
-                        + BackgroundJob.JOB_STATUS, "");
-                if (activeOnly
-                        && !(BackgroundJob.STATUS_POOLED.equals(value)
-                                || BackgroundJob.STATUS_RUNNING.equals(value)
-                                || BackgroundJob.STATUS_WAITING.equals(value) || BackgroundJob.STATUS_INTERRUPTED
-                                .equals(value))) {
-                    continue;
-                }
-                TreeOperationResult result = new TreeOperationResult();
-                if (BackgroundJob.STATUS_FAILED.equals(value)
-                        || BackgroundJob.STATUS_ABORTED.equals(value)
-                        || BackgroundJob.STATUS_INTERRUPTED.equals(value)) {
-                    String jobResult = settings.getProperty(serverId
-                            + BackgroundJob.RESULT, "");
-                    String localeCode = Locale.getDefault().toString();
-                    if (Jahia.getThreadParamBean() != null) {
-                        localeCode = Jahia.getThreadParamBean().getLocale()
-                                .getDisplayName();
-                    }
-                    NodeOperationResult nodeOperationResult = new NodeOperationResult(
-                            null, localeCode, jobResult);
-                    result.appendError(nodeOperationResult);
-                    data.put(BackgroundJob.RESULT, result);
-                } else if (BackgroundJob.STATUS_SUCCESSFUL.equals(value)) {
-                    data.put(BackgroundJob.RESULT, result);
-                }
-                data.put(BackgroundJob.JOB_SERVER, serverId.substring(0,
-                        serverId.length() - 1));
-                data.put(BackgroundJob.JOB_STATUS, value);
-                value = settings.getProperty(
-                        serverId + BackgroundJob.JOB_BEGIN, "");
-                data.put(BackgroundJob.JOB_BEGIN, value);
-                value = settings.getProperty(serverId
-                        + BackgroundJob.JOB_CREATED, "");
-                data.put(BackgroundJob.JOB_CREATED, value);
-                value = settings.getProperty(serverId
-                        + BackgroundJob.JOB_DURATION, "");
-                data.put(BackgroundJob.JOB_DURATION, value);
-                value = settings.getProperty(serverId + BackgroundJob.JOB_END,
-                        "");
-                data.put(BackgroundJob.JOB_END, value);
-                data.put(BackgroundJob.JOB_SITEKEY, site.getSiteKey());
-                value = settings.getProperty(serverId
-                        + BackgroundJob.JOB_SCHEDULED, "");
-                data.put(BackgroundJob.JOB_SCHEDULED, value);
-                value = settings.getProperty(serverId
-                        + BackgroundJob.JOB_USERKEY, "");
-                data.put(BackgroundJob.JOB_USERKEY, value);
-                data.put(BackgroundJob.JOB_TYPE,
-                        JahiaSiteIndexingJob.SITE_INDEXATION_JOB_TYPE);
-                data.put(JahiaSiteIndexingJob.INTERRUPT_STATUS,
-                        site.getSettings().getProperty(
-                        serverId + JahiaSiteIndexingJob.INTERRUPT_STATUS, ""));
-                jobDetails.add(jobDetail);
+        String serverId = ServicesRegistry.getInstance()
+            .getJahiaSearchService().getServerId() + "_";
+        String jobName = (String) settings.get(serverId
+                + JahiaSiteIndexingJob.SITE_INDEXATION_JOBNAME);
+        if (jobName != null) {
+            JobDetail jobDetail = new JobDetail(jobName,
+                JahiaSiteIndexingJob.JOB_GROUP_NAME, JahiaSiteIndexingJob.class);
+            JobDataMap data = jobDetail.getJobDataMap();
+            // data.setMutable(true); commented for quartz 1.6.0
+            // compatibility
+            String value = settings.getProperty(serverId
+                    + BackgroundJob.JOB_STATUS, "");
+            if (activeOnly
+                    && !(BackgroundJob.STATUS_POOLED.equals(value)
+                            || BackgroundJob.STATUS_RUNNING.equals(value)
+                            || BackgroundJob.STATUS_WAITING.equals(value) || BackgroundJob.STATUS_INTERRUPTED
+                        .equals(value))) {
+                return jobDetails;
             }
+            TreeOperationResult result = new TreeOperationResult();
+            if (BackgroundJob.STATUS_FAILED.equals(value)
+                    || BackgroundJob.STATUS_ABORTED.equals(value)
+                    || BackgroundJob.STATUS_INTERRUPTED.equals(value)) {
+                String jobResult = settings.getProperty(serverId
+                        + BackgroundJob.RESULT, "");
+                String localeCode = Locale.getDefault().toString();
+                if (Jahia.getThreadParamBean() != null) {
+                    localeCode = Jahia.getThreadParamBean().getLocale()
+                        .getDisplayName();
+                }
+                NodeOperationResult nodeOperationResult = new NodeOperationResult(
+                    null, localeCode, jobResult);
+                result.appendError(nodeOperationResult);
+                data.put(BackgroundJob.RESULT, result);
+            } else if (BackgroundJob.STATUS_SUCCESSFUL.equals(value)) {
+                data.put(BackgroundJob.RESULT, result);
+            }
+            data.put(BackgroundJob.JOB_SERVER, serverId.substring(0, serverId
+                .length() - 1));
+            data.put(BackgroundJob.JOB_STATUS, value);
+            value = settings
+                .getProperty(serverId + BackgroundJob.JOB_BEGIN, "");
+            data.put(BackgroundJob.JOB_BEGIN, value);
+            value = settings.getProperty(serverId + BackgroundJob.JOB_CREATED,
+                "");
+            data.put(BackgroundJob.JOB_CREATED, value);
+            value = settings.getProperty(serverId + BackgroundJob.JOB_DURATION,
+                "");
+            data.put(BackgroundJob.JOB_DURATION, value);
+            value = settings.getProperty(serverId + BackgroundJob.JOB_END, "");
+            data.put(BackgroundJob.JOB_END, value);
+            data.put(BackgroundJob.JOB_SITEKEY, site.getSiteKey());
+            value = settings.getProperty(
+                serverId + BackgroundJob.JOB_SCHEDULED, "");
+            data.put(BackgroundJob.JOB_SCHEDULED, value);
+            value = settings.getProperty(serverId + BackgroundJob.JOB_USERKEY,
+                "");
+            data.put(BackgroundJob.JOB_USERKEY, value);
+            data.put(BackgroundJob.JOB_TYPE,
+                JahiaSiteIndexingJob.SITE_INDEXATION_JOB_TYPE);
+            data.put(JahiaSiteIndexingJob.INTERRUPT_STATUS, site.getSettings()
+                .getProperty(serverId + JahiaSiteIndexingJob.INTERRUPT_STATUS,
+                    ""));
+            jobDetails.add(jobDetail);
         }
+
         return jobDetails;
     }
 

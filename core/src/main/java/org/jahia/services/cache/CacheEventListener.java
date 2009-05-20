@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.cache;
 
 import org.apache.log4j.Category;
@@ -178,7 +161,7 @@ public class CacheEventListener extends JahiaEventListener {
             } catch (ClassNotFoundException e) {
                 logger.error(e);
             } catch (JahiaException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -245,7 +228,7 @@ public class CacheEventListener extends JahiaEventListener {
     }
 
     public void contentObjectUpdated(JahiaEvent je) {
-        //for time base publishnig event this is very dirty we need a specific event for that I think
+        //for time base publishing event this is very dirty we need a specific event for that I think
         if (je.getSource() instanceof JahiaObjectManager) {
             ContentObject container = (ContentObject) je.getObject();
             Set<String> languageCodes = getLanguageCodes(je.getProcessingContext().getLocale().toString(), container);
@@ -347,20 +330,16 @@ public class CacheEventListener extends JahiaEventListener {
                         ContentObject parent = object.getParent(EntryLoadRequest.STAGED);
                         for (Locale languageSetting : languageSettings) {
                             final String s = languageSetting.toString();
-                            chtmlCache.invalidateContainerEntriesInAllModes((new ContentContainerKey(parent.getID())).toString(),
-                                                                            s);
-                            skeletonCache
-                                    .invalidateSkeletonEntriesInAllModes((new ContentPageKey(pageID)).toString(),
-                                                                         s);
+                            getChtmlCache().invalidateContainerEntriesInAllModes((new ContentContainerKey(parent.getID())).toString(), s);
+                            getSkeletonCache().invalidateSkeletonEntriesInAllModes((new ContentPageKey(pageID)).toString(), s);
                         }
                         Set<ContentObject> pickerObjects = parent.getPickerObjects();
                         if (pickerObjects != null && pickerObjects.size() > 0) {
                             for (ContentObject pickerObject : pickerObjects) {
                                 for (Locale languageSetting : languageSettings) {
                                     final String s = languageSetting.toString();
-                                    chtmlCache.invalidateContainerEntriesInAllModes((new ContentContainerKey(
-                                            pickerObject.getID())).toString(), s);
-                                    skeletonCache.invalidateSkeletonEntriesInAllModes((new ContentPageKey(pickerObject.getPageID())).toString(), s);
+                                    getChtmlCache().invalidateContainerEntriesInAllModes((new ContentContainerKey(pickerObject.getID())).toString(), s);
+                                    getSkeletonCache().invalidateSkeletonEntriesInAllModes((new ContentPageKey(pickerObject.getPageID())).toString(), s);
                                 }
                             }
                         }
@@ -380,13 +359,8 @@ public class CacheEventListener extends JahiaEventListener {
                                                                       parentContainerListID);
                             for (Locale languageSetting : languageSettings) {
                                 final String s = languageSetting.toString();
-                                chtmlCache
-                                        .invalidateContainerEntriesInAllModes((new ContentContainerListKey(
-                                                parentContainerListID)).toString(), s);
-
-                                skeletonCache
-                                        .invalidateSkeletonEntriesInAllModes((new ContentPageKey(pageID)).toString(),
-                                                                             s);
+                                getChtmlCache().invalidateContainerEntriesInAllModes((new ContentContainerListKey(parentContainerListID)).toString(), s);
+                                getSkeletonCache().invalidateSkeletonEntriesInAllModes((new ContentPageKey(pageID)).toString(), s);
                             }
                         }
                         Set<ContentObject> pickerObjects = jahiaContainer.getContentContainer().getPickerObjects();
@@ -394,9 +368,8 @@ public class CacheEventListener extends JahiaEventListener {
                             for (ContentObject pickerObject : pickerObjects) {
                                 for (Locale languageSetting : languageSettings) {
                                     final String s = languageSetting.toString();
-                                    chtmlCache.invalidateContainerEntriesInAllModes((new ContentContainerKey(pickerObject.getID())).toString(),
-                                                                                    s);
-                                    skeletonCache.invalidateSkeletonEntriesInAllModes((new ContentPageKey(pickerObject.getPageID())).toString(), s);
+                                    getChtmlCache().invalidateContainerEntriesInAllModes((new ContentContainerKey(pickerObject.getID())).toString(), s);
+                                    getSkeletonCache().invalidateSkeletonEntriesInAllModes((new ContentPageKey(pickerObject.getPageID())).toString(), s);
                                 }
                             }
                         }
@@ -413,23 +386,17 @@ public class CacheEventListener extends JahiaEventListener {
                             int pageID = ctnList.getPageID();
                             for (Locale languageSetting : languageSettings) {
                                 final String s = languageSetting.toString();
-                                chtmlCache.invalidateContainerEntriesInAllModes(contentContainer.getObjectKey().toString(),
-                                                                                s);
-                                chtmlCache.invalidateContainerEntriesInAllModes(ctnList.getObjectKey().toString(),
-                                                                                s);
-                                skeletonCache
-                                        .invalidateSkeletonEntriesInAllModes((new ContentPageKey(pageID)).toString(),
-                                                                             s);
+                                getChtmlCache().invalidateContainerEntriesInAllModes(contentContainer.getObjectKey().toString(), s);
+                                getChtmlCache().invalidateContainerEntriesInAllModes(ctnList.getObjectKey().toString(), s);
+                                getSkeletonCache().invalidateSkeletonEntriesInAllModes((new ContentPageKey(pageID)).toString(), s);
                             }
                             Set<ContentObject> pickerObjects = contentContainer.getPickerObjects();
                             if (pickerObjects != null && pickerObjects.size() > 0) {
                                 for (ContentObject pickerObject : pickerObjects) {
                                     for (Locale languageSetting : languageSettings) {
                                         final String s = languageSetting.toString();
-                                        chtmlCache
-                                                .invalidateContainerEntriesInAllModes((new ContentContainerKey(
-                                                        pickerObject.getID())).toString(), s);
-                                        skeletonCache.invalidateSkeletonEntriesInAllModes((new ContentPageKey(pickerObject.getPageID())).toString(), s);
+                                        getChtmlCache().invalidateContainerEntriesInAllModes((new ContentContainerKey(pickerObject.getID())).toString(), s);
+                                        getSkeletonCache().invalidateSkeletonEntriesInAllModes((new ContentPageKey(pickerObject.getPageID())).toString(), s);
                                     }
                                 }
                             }
@@ -438,9 +405,9 @@ public class CacheEventListener extends JahiaEventListener {
             }
             informCluster(ClusterCacheMessage.KEYGENERATOR_ACLUPDATE_EVENT);
         } catch (JahiaInitializationException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         } catch (JahiaException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -449,7 +416,7 @@ public class CacheEventListener extends JahiaEventListener {
             ServicesRegistry.getInstance().getCacheKeyGeneratorService().rightsUpdated();
             informCluster(ClusterCacheMessage.KEYGENERATOR_ACLUPDATE_EVENT);
         } catch (JahiaInitializationException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -458,7 +425,7 @@ public class CacheEventListener extends JahiaEventListener {
             ServicesRegistry.getInstance().getCacheKeyGeneratorService().rightsUpdated();
             informCluster(ClusterCacheMessage.KEYGENERATOR_ACLUPDATE_EVENT);
         } catch (JahiaInitializationException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -635,12 +602,16 @@ public class CacheEventListener extends JahiaEventListener {
     }
 
     private void invalidate(ContentObjectKey object, String mode, String locale) {
-        logger.debug("Invalide container " + object + " in mode " + mode + " for language " + locale);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Invalide container " + object + " in mode " + mode + " for language " + locale);
+        }
         getChtmlCache().invalidateContainerEntries(object != null ? object.toString() : null, mode, locale);
     }
 
     private void invalidateSkeleton(ContentObjectKey object, String mode, String locale) {
-        logger.debug("Invalide skeleton " + object + " in mode " + mode + " for language " + locale);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Invalide skeleton " + object + " in mode " + mode + " for language " + locale);
+        }
         getSkeletonCache().invalidateSkeletonEntries(object != null ? object.toString() : null, mode, locale);
     }
 }

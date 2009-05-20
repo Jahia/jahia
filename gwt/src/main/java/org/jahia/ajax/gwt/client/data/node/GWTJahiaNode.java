@@ -1,36 +1,19 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.data.node;
 
 import java.io.Serializable;
@@ -40,6 +23,9 @@ import java.util.List;
 import java.util.HashMap;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
+import com.extjs.gxt.ui.client.data.ListLoadConfig;
+import com.extjs.gxt.ui.client.data.SortInfo;
+import com.extjs.gxt.ui.client.Style;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,7 +33,7 @@ import com.extjs.gxt.ui.client.data.BaseTreeModel;
  * @author rfelden
  * @version 19 juin 2008 - 15:57:38
  */
-public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Serializable, Comparable<GWTJahiaNode> {
+public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Serializable, Comparable<GWTJahiaNode>, ListLoadConfig {
 
     private boolean displayable = false;
     private String url;
@@ -56,13 +42,14 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
     private String normalizedName = null;
     private int width = 0 ;
     private int height = 0 ;
+    private SortInfo sortInfo = new SortInfo("name", Style.SortDir.ASC);
 
     public GWTJahiaNode() {
         super();
         setFile(Boolean.FALSE);
     }
 
-    public GWTJahiaNode(String uuid, String name,String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, boolean writeable, boolean lockable, boolean locked, String lockOwner) {
+    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, boolean writeable, boolean lockable, boolean locked, String lockOwner) {
         super();
         setUUID(uuid);
         setName(name);
@@ -73,22 +60,22 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
         setDate(date);
         setNodeTypes(nodetypes);
         setInheritedNodeTypes(inheritedTypes);
+        setAclContext(aclContext);
         setFile(Boolean.FALSE);
         setWriteable(writeable);
         setLockable(lockable);
         setExt("icon-dir");
         setLocked(locked);
         setLockOwner(lockOwner);
-        setPreview("../images/types/gwt/large/folder.png");
         setThumbnailsMap(new HashMap<String, String>());
     }
 
-    public GWTJahiaNode(String uuid, String name,String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, Long size, String ext, boolean writeable, boolean lockable, boolean locked, String lockOwner) {
-        this(uuid, name,description, path, url, date, nodetypes, inheritedTypes, writeable, lockable, locked, lockOwner);
+    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, Long size, String ext, boolean writeable, boolean lockable, boolean locked, String lockOwner) {
+        this(uuid, name,description, path, url, date, nodetypes, inheritedTypes, aclContext, writeable, lockable, locked, lockOwner);
         setSize(size);
         setFile(Boolean.TRUE);
         setExt(ext);
-        setPreview("../images/types/gwt/large/file.png");
+        //setPreview("../images/types/gwt/large/icon-file.png");
     }
 
     public void setHasChildren(boolean hasChildren) {
@@ -223,6 +210,14 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
         set("inheritedNodeTypes", nodeTypes);
     }
 
+    public String getAclContext() {
+        return get("aclContext");
+    }
+
+    public void setAclContext(String aclContext) {
+        set("aclContext", aclContext);
+    }
+
     public List<String> getInheritedNodeTypes() {
         return get("inheritedNodeTypes");
     }
@@ -322,4 +317,11 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
         set("lockOwner", lockOwner);
     }
 
+    public SortInfo getSortInfo() {
+        return sortInfo;
+    }
+
+    public void setSortInfo(SortInfo sortInfo) {
+        this.sortInfo = sortInfo ;
+    }
 }

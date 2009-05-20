@@ -1,50 +1,30 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.containers;
 
 import org.jahia.params.ProcessingContext;
+import org.jahia.query.qom.JahiaQueryObjectModelConstants;
 import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.BitSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,6 +39,9 @@ public class ContainerQueryContext {
     private List<String> containerDefinitionNames;
     private List<Integer> siteIDs;
     private boolean siteLevelQuery;
+    
+    private String facetFilterQueryParamName;
+    private BitSet facetedFilterResult;
     
     private List<String> containerDefinitionNamesIncludingType;
     
@@ -77,12 +60,14 @@ public class ContainerQueryContext {
     public static ContainerQueryContext getQueryContext(QueryObjectModelImpl queryModel,
                                                         int containerListID,
                                                         Properties parameters, ProcessingContext context) {
-
-        return new ContainerQueryContext(containerListID,
-                null,null,false);
+        ContainerQueryContext newContext = new ContainerQueryContext(containerListID,
+                null,null,false);        
+        newContext.setFacetFilterQueryParamName((String) queryModel.getProperties().get(
+                JahiaQueryObjectModelConstants.FACET_FILTER_QUERY_PARAM_NAME));
+        return newContext;
     }
 
-    public ContainerQueryContext(int containerListID,
+    protected ContainerQueryContext(int containerListID,
                                  List<String> containerDefinitionNames,
                                  List<Integer> siteIDs,
                                  boolean siteLevelQuery) {
@@ -154,11 +139,7 @@ public class ContainerQueryContext {
         }
 
         if (containerDefinitionType != null) {
-            Set<String> nodeTypeNames = new HashSet<String>();
-            nodeTypeNames.add(containerDefinitionType);
-            nodeTypeNames.addAll(getAllSubTypeNames(containerDefinitionType));
-            
-            List<String> definitionNamesFromType = ServicesRegistry.getInstance().getJahiaContainersService().getContainerDefinitionNamesWithType(nodeTypeNames);
+            List<String> definitionNamesFromType = ServicesRegistry.getInstance().getJahiaContainersService().getContainerDefinitionNamesWithType(containerDefinitionType);
             if (definitionNamesFromType != null){
                 for (String definitionName : definitionNamesFromType) {
                     if (!definitionNames.contains(definitionName)){
@@ -178,18 +159,20 @@ public class ContainerQueryContext {
         
         return containerDefinitionNamesIncludingType;
     }
-    
-    private Set<String> getAllSubTypeNames(String typeName) {
-        Set<String> subTypeNames = new HashSet<String>();
-        try {
-            for (ExtendedNodeType nodeType : NodeTypeRegistry.getInstance()
-                    .getNodeType(typeName).getSubtypes()) {
-                subTypeNames.add(nodeType.getName());
-                subTypeNames.addAll(getAllSubTypeNames(nodeType.getName()));
-            }
-        } catch (NoSuchNodeTypeException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        return subTypeNames;
+
+    public void setFacetFilterQueryParamName(String facetFilterQueryParamName) {
+        this.facetFilterQueryParamName = facetFilterQueryParamName;
     }
+
+    public String getFacetFilterQueryParamName() {
+        return facetFilterQueryParamName;
+    }
+
+    public void setFacetedFilterResult(BitSet facetedFilterResult) {
+        this.facetedFilterResult = facetedFilterResult;
+    }
+
+    public BitSet getFacetedFilterResult() {
+        return facetedFilterResult;
+    }   
 }

@@ -1,40 +1,24 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.preferences;
 
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.preferences.exception.*;
+import org.jahia.services.content.JCRNodeWrapper;
 
 import java.security.Principal;
 import java.util.Date;
@@ -46,7 +30,7 @@ import java.util.Map;
  * Date: 19 mars 2008
  * Time: 11:44:07
  */
-public interface JahiaPreferencesProvider {
+public interface JahiaPreferencesProvider<T extends JCRNodeWrapper> {
 
     /**
      * Get the type of the provider. Each provider has a unique type.
@@ -63,7 +47,7 @@ public interface JahiaPreferencesProvider {
      * @param processingContext
      * @return
      */
-    abstract public JahiaPreference getNewJahiaPreferenceNode(ProcessingContext processingContext);
+    abstract public JahiaPreference<T> createJahiaPreferenceNode(ProcessingContext processingContext);
 
 
     /**
@@ -72,7 +56,7 @@ public interface JahiaPreferencesProvider {
      * @param principal
      * @return
      */
-    abstract public JahiaPreference createJahiaPreferenceNode(Principal principal);
+    abstract public JahiaPreference<T> createJahiaPreferenceNode(Principal principal);
 
 
     /**
@@ -81,7 +65,7 @@ public interface JahiaPreferencesProvider {
      * @throws JahiaPreferencesNotValidException
      *
      */
-    abstract public boolean validate(JahiaPreference jahiaPreference) throws JahiaPreferencesNotValidException;
+    abstract public boolean validate(JahiaPreference<T> jahiaPreference) throws JahiaPreferencesNotValidException;
 
 
     /**
@@ -92,7 +76,7 @@ public interface JahiaPreferencesProvider {
      * @throws JahiaPreferenceNotDefinedAttributeException
      *          if the jahia preference key attributes map contains a un-valid attributes.
      */
-    abstract public JahiaPreference getJahiaPreference(Principal principal, String xpathKey);
+    abstract public JahiaPreference<T> getJahiaPreference(Principal principal, String xpathKey);
 
 
     /**
@@ -102,7 +86,7 @@ public interface JahiaPreferencesProvider {
      * @param notNull
      * @return
      */
-    abstract public JahiaPreference getJahiaPreference(Principal principal, String xpathKey, boolean notNull);
+    abstract public JahiaPreference<T> getJahiaPreference(Principal principal, String xpathKey, boolean notNull);
 
 
     /**
@@ -112,7 +96,7 @@ public interface JahiaPreferencesProvider {
      * @param principal
      * @return
      */
-    abstract public List<JahiaPreference> getJahiaAllPreferences(Principal principal);
+    abstract public List<JahiaPreference<T>> getJahiaAllPreferences(Principal principal);
 
 
     /**
@@ -125,7 +109,7 @@ public interface JahiaPreferencesProvider {
      * @param xpath
      * @return
      */
-    abstract public List<JahiaPreference> findJahiaPreferences(Principal principal, String xpath);
+    abstract public List<JahiaPreference<T>> findJahiaPreferences(Principal principal, String xpath);
 
 
     /**
@@ -135,7 +119,7 @@ public interface JahiaPreferencesProvider {
      * @return list <preference> that contains all preferences of the principal.
      */
 
-    abstract public List<JahiaPreference> getAllJahiaPreferences(ProcessingContext processingContext);
+    abstract public List<JahiaPreference<T>> getAllJahiaPreferences(ProcessingContext processingContext);
 
     /**
      * Delete a jahia preference that has a key created from jahiaPreferenceKeyAttributes.
@@ -153,7 +137,7 @@ public interface JahiaPreferencesProvider {
      *
      * @param jahiaPreference
      */
-    abstract public void deleteJahiaPreference(JahiaPreference jahiaPreference);
+    abstract public void deleteJahiaPreference(JahiaPreference<T> jahiaPreference);
 
 
     /**
@@ -163,7 +147,7 @@ public interface JahiaPreferencesProvider {
      * @throws JahiaPreferencesNotValidException
      *
      */
-    abstract public void setJahiaPreference(JahiaPreference jahiaPreference);
+    abstract public void setJahiaPreference(JahiaPreference<T> jahiaPreference);
 
     /**
      * Set a jahia preference value. The jahia preference key object is created dynamically from the corresponding map.

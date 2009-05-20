@@ -1,38 +1,21 @@
 <%--
 
-    
-    This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
-    
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-    
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU General Public License for more details.
-    
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-    
-    As a special exception to the terms and conditions of version 2.0 of
-    the GPL (or any later version), you may redistribute this Program in connection
-    with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have received a copy of the text
-    describing the FLOSS exception, and it is also available here:
-    http://www.jahia.com/license
-    
-    Commercial and Supported Versions of the program
-    Alternatively, commercial and supported versions of the program may be used
-    in accordance with the terms contained in a separate written agreement
-    between you and Jahia Limited. If you are unsure which license is appropriate
-    for your use, please contact the sales department at sales@jahia.com.
+    Jahia Enterprise Edition v6
+
+    Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+
+    Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+    with Document Management and Portal features.
+
+    The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+    IMPLIED.
+
+    Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+    you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+
+    If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ page import="org.jahia.content.ContentObject" %>
 <%@ page import="org.jahia.data.JahiaData" %>
@@ -218,7 +201,7 @@ final boolean canChangeType = pageBean.getID() != jParams.getPageID() ||
 */
 
     boolean canDisplayTemplateSelection = true;
-    if (!isNewPage && !Page_Field.UPDATE_PAGE.equals(pageBean.getOperation())) {
+    if (!isNewPage) {
         canDisplayTemplateSelection = false;
     }
 
@@ -252,6 +235,7 @@ final boolean canChangeType = pageBean.getID() != jParams.getPageID() ||
     function disableUrlKey(doDisable) {
         if (typeof document.mainForm.pageURLKey != 'undefined') {
         	document.mainForm.pageURLKey.disabled = doDisable;
+        	document.getElementById('pageURLKeyRow').style.display = doDisable ? 'none' : ''; 
         }
     }
 
@@ -286,6 +270,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
         if (document.getElementById('noValueRadio')) {
             if (document.getElementById('noValueRadio').checked) {
                 document.mainForm.operation[0].checked = true;
+                disableUrlKey(false);
             }
         }
     }
@@ -302,20 +287,22 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     function check() {
 
         // Test if checked
-        checked = false;
-        if (document.mainForm.operation.length > 1) {
-            for (var i = 0; i < document.mainForm.operation.length; i++) {
-                if (document.mainForm.operation[i].checked) {
-                    checked = true;
-                }
-            }
-        } else {
-            // if operation == 1 then we have to test differently.
-            if (document.mainForm.operation.checked) {
-                checked = true;
-            }
-        }
-        if (!checked) return false;
+        if (document.mainForm.operation != null) {
+	        checked = false;
+	        if (document.mainForm.operation.length > 1) {
+	            for (var i = 0; i < document.mainForm.operation.length; i++) {
+	                if (document.mainForm.operation[i].checked) {
+	                    checked = true;
+	                }
+	            }
+	        } else {
+	            // if operation == 1 then we have to test differently.
+	            if (document.mainForm.operation.checked) {
+	                checked = true;
+	            }
+	        }
+	        if (!checked) return false;
+	      }
 
         // now here we will test if the move page or the link page
         // target page IDs are valid or not.
@@ -490,7 +477,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     }
 
     if (displayURLKeyInput && isDirectPage) { %>
-<tr>
+<tr id="pageURLKeyRow" <% if (Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation()) || Page_Field.LINK_URL.equals(pageBean.getOperation())) { %>style="display:none" <% } %>>
     <th>
         <%if (localeList.size() > 1) { %>
         <fmt:message key="org.jahia.engines.pages.PageProperties_Engine.pageURLKeyShared.label"/><br/>
@@ -500,7 +487,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     </th>
     <td>
         <input type="text" size="80" name="pageURLKey" value="<%=pageURLKey%>"
-               <% if (!canDisplayTemplateSelection || Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation())) { %>disabled="disabled" <% } %>/>
+               <% if (Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation()) || Page_Field.LINK_URL.equals(pageBean.getOperation())) { %>disabled="disabled" <% } %>/>
     </td>
 </tr>
 <% } %>
@@ -515,6 +502,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     </td>
 </tr>
 <% } %>
+<% if (canChangeType || canDisplayTemplateSelection) { %>
 <tr>
 <th valign="top">
     <fmt:message key="org.jahia.engines.shared.Page_Field.pageType.label"/>
@@ -574,11 +562,11 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
         <!-- Create a new page -->
         <input id="directPageRadio" type="radio" name="operation"
                value="<%=Page_Field.CREATE_PAGE%>"<% if (Page_Field.CREATE_PAGE.equals(pageBean.getOperation())) { %>
-               checked="checked"<% } %> onfocus="disableUrlKey(false);">&nbsp;
+               checked="checked"<% } %> onchange="disableUrlKey(false);">&nbsp;
         <% } else { %>
         <input id="directPageRadio" type="radio" name="operation"
                value="<%=Page_Field.UPDATE_PAGE%>"<% if (Page_Field.UPDATE_PAGE.equals(pageBean.getOperation())) { %>
-               checked="checked"<% } %> onfocus="disableUrlKey(false);">&nbsp;
+               checked="checked"<% } %> onchange="disableUrlKey(false);">&nbsp;
         <% } %>
     </td>
     <td>
@@ -590,7 +578,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
             <% } %>
         </label>
         <br/>
-        <select name="template_id" onfocus="if (operation[0]) operation[0].checked = true;">
+        <select name="template_id" onfocus="if (operation[0]) operation[0].checked = true; disableUrlKey(false);">
             <% while (templateList.hasNext()) {
                 JahiaPageDefinition theTemplate = (JahiaPageDefinition) templateList.next();
                 pageContext.setAttribute("pageTemplate", theTemplate);
@@ -684,7 +672,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     <td valign="top">
         <input id="remoteURLRadio" type="radio" name="operation"
                value="<%=Page_Field.LINK_URL%>" <% if (Page_Field.LINK_URL.equals(pageBean.getOperation())) { %>
-               checked="checked"<% } %> <% if (!isNewPage) { %> onfocus="setPageURL();" <% } %>
+               checked="checked"<% } %> <% if (!isNewPage) { %> onchange="setPageURL();" <% } %>
                onclick="disableUrlKey(true);">&nbsp;
     </td>
     <td>
@@ -692,7 +680,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
         <br/>
         <!-- option 1 if linkonly page, 3 if page does not exist. -->
         <input <% if (isNewPage) { %>
-                onfocus="operation[<%= !isDirectPage ? 1 : 3 %>].checked = true;"<% } %> type="text"
+                onfocus="operation[<%= !isDirectPage ? 1 : 3 %>].checked = true; disableUrlKey(true);"<% } %> type="text"
                 name="remote_url" size="50" value="<%=remoteURL%>" maxlength="250">
         <!-- Reset the link -->
     </td>
@@ -702,7 +690,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 <tr>
     <td valign="top">
         <input id="noValueRadio" type="radio" name="operation"
-               onfocus="document.mainForm.page_title.value = '';disableUrlKey(true);"
+               onchange="document.mainForm.page_title.value = '';disableUrlKey(true);"
                value="<%=Page_Field.RESET_LINK%>"<%if (Page_Field.RESET_LINK.equals(pageBean.getOperation())) {%>
                checked="checked"<% } %>>
     </td>
@@ -727,6 +715,15 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 </table>
 </td>
 </tr>
+<% } else { %>
+<input id="directPageRadio" type="hidden" name="operation"
+       value="<%=Page_Field.UPDATE_PAGE%>" checked="checked">
+<input  type="hidden" name="template_id"
+       value="<%=pageBean.getPageTemplateID()%>" checked="checked">
+<script type="text/javascript">
+	disableUrlKey(false);
+</script>
+<% } %>
 </table>
 
 <script type="text/javascript">

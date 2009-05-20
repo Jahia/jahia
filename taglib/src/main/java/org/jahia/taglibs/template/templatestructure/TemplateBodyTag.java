@@ -1,36 +1,19 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
@@ -130,6 +113,7 @@ import java.util.Iterator;
  * &nbsp;&nbsp;&nbsp;&nbsp; &lt;/template:template&gt;
  * </attriInfo>
  */
+@SuppressWarnings("serial")
 public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttributes {
 
     private final static transient Logger logger = Logger.getLogger(TemplateBodyTag.class);
@@ -186,6 +170,16 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                 if (isLiveMode()) {
                     buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".live.Live").toString())).append("\n");
                 } else {
+
+                    if (checkGAprofilePresent(jData)) {
+                        String gviz =
+                                "<script type='text/javascript' src='http://www.google.com/jsapi'></script>" +
+                                        "<script type='text/javascript'>" +
+                                        "google.load('visualization', '1', {packages:['annotatedtimeline','piechart','geomap']});" +
+                                        "</script>";
+                        buf.append(gviz);
+                    }
+
                     buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".edit.Edit").toString())).append("\n");
                 }
 
@@ -207,9 +201,53 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     private void addToolbarMessageResources() {
         // add messages required by the subscriptions toolbar
         addGwtDictionaryMessage("subscriptions.toolbar.page.windowTitle", getMessage("subscriptions.toolbar.page.windowTitle"));
-        addGwtDictionaryMessage("subscriptions.toolbar.page.event.contentPublished", getMessage("subscriptions.toolbar.page.event.contentPublished"));
+        addGwtDictionaryMessage("subscriptoolbar.analytics.timeOnSitetions.toolbar.page.event.contentPublished", getMessage("subscriptions.toolbar.page.event.contentPublished"));
         addGwtDictionaryMessage("subscriptions.toolbar.page.event.commentAdded", getMessage("subscriptions.toolbar.page.event.commentAdded"));
         addGwtDictionaryMessage("subscriptions.toolbar.page.includeChildren", getMessage("subscriptions.toolbar.page.includeChildren"));
+
+        //google analytics resource messages
+        addGwtDictionaryMessage("siteStatistics", getMessage("toolbar.analytics.siteStatistics"));
+        addGwtDictionaryMessage("pageStatistics", getMessage("toolbar.analytics.pageStatistics"));
+        addGwtDictionaryMessage("analyticsProfile", getMessage("toolbar.analytics.analyticsProfile"));
+        addGwtDictionaryMessage("userAccount", getMessage("toolbar.analytics.userAccount"));
+        addGwtDictionaryMessage("profile", getMessage("toolbar.analytics.profile"));
+        addGwtDictionaryMessage("login", getMessage("toolbar.analytics.login"));
+        addGwtDictionaryMessage("trackedurl", getMessage("toolbar.analytics.trackedurl"));
+        addGwtDictionaryMessage("state", getMessage("toolbar.analytics.state"));
+        addGwtDictionaryMessage("languageSelection", getMessage("toolbar.analytics.languageSelection"));
+        addGwtDictionaryMessage("selectAll", getMessage("toolbar.analytics.selectAll"));
+        addGwtDictionaryMessage("selecLanguage", getMessage("toolbar.analytics.selecLanguage"));
+        addGwtDictionaryMessage("selectBeginDate", getMessage("toolbar.analytics.selectBeginDate"));
+        addGwtDictionaryMessage("selectEndDate", getMessage("toolbar.analytics.selectEndDate"));
+        addGwtDictionaryMessage("showData", getMessage("toolbar.analytics.showData"));
+        addGwtDictionaryMessage("downloadingData", getMessage("toolbar.analytics.downloadingData"));
+        addGwtDictionaryMessage("bounceRate", getMessage("toolbar.analytics.bounceRate"));
+        addGwtDictionaryMessage("browser", getMessage("toolbar.analytics.browser"));
+        addGwtDictionaryMessage("connectionSpeed", getMessage("toolbar.analytics.connectionSpeed"));
+        addGwtDictionaryMessage("direct", getMessage("toolbar.analytics.direct"));
+        addGwtDictionaryMessage("newVisits", getMessage("toolbar.analytics.newVisits"));
+        addGwtDictionaryMessage("pagesPerVisit", getMessage("toolbar.analytics.pagesPerVisit"));
+        addGwtDictionaryMessage("averageTime", getMessage("toolbar.analytics.averageTime"));
+        addGwtDictionaryMessage("percentage", getMessage("toolbar.analytics.percentage"));
+        addGwtDictionaryMessage("search", getMessage("toolbar.analytics.search"));
+        addGwtDictionaryMessage("bounces", getMessage("toolbar.analytics.bounces"));
+        addGwtDictionaryMessage("timeOnSite", getMessage("toolbar.analytics.timeOnSite"));
+        addGwtDictionaryMessage("keyword", getMessage("toolbar.analytics.keyword"));
+        addGwtDictionaryMessage("visitors", getMessage("toolbar.analytics.visitors"));
+        addGwtDictionaryMessage("pageStatistics", getMessage("toolbar.analytics.pageStatistics"));
+        addGwtDictionaryMessage("error", getMessage("toolbar.analytics.errorMessage"));
+        addGwtDictionaryMessage("visits", getMessage("toolbar.analytics.visits"));
+        addGwtDictionaryMessage("source", getMessage("toolbar.analytics.source"));
+        addGwtDictionaryMessage("referral", getMessage("toolbar.analytics.referral"));
+        addGwtDictionaryMessage("percentageNewVisits", getMessage("toolbar.analytics.percentageNewVisits"));
+        addGwtDictionaryMessage("index", getMessage("toolbar.analytics.index"));
+        addGwtDictionaryMessage("exit", getMessage("toolbar.analytics.exit"));
+        addGwtDictionaryMessage("pageViews", getMessage("toolbar.analytics.pageViews"));
+        addGwtDictionaryMessage("timeOnPage", getMessage("toolbar.analytics.timeOnPage"));
+        addGwtDictionaryMessage("uniquePageviews", getMessage("toolbar.analytics.uniquePageviews"));
+        addGwtDictionaryMessage("geographicMap", getMessage("toolbar.analytics.geographicMap"));
+        addGwtDictionaryMessage("annotatedTimelime", getMessage("toolbar.analytics.annotatedTimelime"));
+                                      
     }
 
     /**
@@ -238,7 +276,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                 buf.append(gaTrackingCode(((JahiaData) request.getAttribute("org.jahia.data.JahiaData"))));
             }
             // Generate jahia_gwt_dictionnary
-            Map dictionaryMap = getJahiaGwtDictionary();
+            Map<String, String> dictionaryMap = getJahiaGwtDictionary();
             if (dictionaryMap != null) {
                 buf.append("<script type='text/javascript'>\n");
                 buf.append(generateJahiaGwtDictionary());
@@ -280,7 +318,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         JahiaSite currentSite = jData.getProcessingContext().getSite();
         // get enabled profiles
         //Map<String, String> enabledProfiles = new HashMap<String, String>();
-        Iterator it = ((currentSite.getSettings()).keySet()).iterator();
+        Iterator<?> it = ((currentSite.getSettings()).keySet()).iterator();
         // check if at list one profile is enabled
         while (it.hasNext()) {
             String key = (String) it.next();
@@ -316,7 +354,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         boolean atLeast1TPon = false;
         JahiaSite currentSite = jData.getProcessingContext().getSite();
         // google analytics
-        Iterator it = ((currentSite.getSettings()).keySet()).iterator();
+        Iterator<?> it = ((currentSite.getSettings()).keySet()).iterator();
         // check if at list one profile is enabled
         while (it.hasNext()) {
             String key = (String) it.next();
@@ -330,5 +368,21 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         return atLeast1TPon;
     }
 
-  
+    // check if there is at least one profile is configured
+    private boolean checkGAprofilePresent(JahiaData jData) {
+        boolean atLeast1TPconf = false;
+        JahiaSite currentSite = jData.getProcessingContext().getSite();
+        // google analytics
+        Iterator<?> it = ((currentSite.getSettings()).keySet()).iterator();
+        // check if at list one profile is enabled
+        while (it.hasNext()) {
+            String key = (String) it.next();
+            if (key.startsWith("jahiaGAprofile")) {
+                logger.info("AT least one profile in the db !!!!");
+                atLeast1TPconf = true;
+                break;
+            }
+        }
+        return atLeast1TPconf;
+    }
 }

@@ -1,38 +1,21 @@
 <%--
 
-    
-    This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
-    
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-    
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU General Public License for more details.
-    
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-    
-    As a special exception to the terms and conditions of version 2.0 of
-    the GPL (or any later version), you may redistribute this Program in connection
-    with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
-    describing the FLOSS exception, and it is also available here:
-    http://www.jahia.com/license
-    
-    Commercial and Supported Versions of the program
-    Alternatively, commercial and supported versions of the program may be used
-    in accordance with the terms contained in a separate written agreement
-    between you and Jahia Limited. If you are unsure which license is appropriate
-    for your use, please contact the sales department at sales@jahia.com.
+    Jahia Enterprise Edition v6
+
+    Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+
+    Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+    with Document Management and Portal features.
+
+    The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+    IMPLIED.
+
+    Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+    you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+
+    If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 
 <%@ page language="java" %>
@@ -45,14 +28,17 @@
 <%@ page import="java.util.*" %>
 <%@page import="org.jahia.data.fields.ExpressionMarker"%>
 <%@page import="org.jahia.utils.i18n.ResourceBundleMarker"%>
+<%@page import="org.apache.commons.lang.time.FastDateFormat"%>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
     final JahiaField theField = (JahiaField) engineMap.get(engineMap.get("fieldsEditCallingEngineName") + ".theField");
     final JahiaFieldDefinition def = theField.getDefinition();
 
-    final String format = JahiaDateFieldUtil.getDateFormat(def.getDefaultValue(
-    ), jParams.getLocale()).getPattern();
+    FastDateFormat formatter = JahiaDateFieldUtil.getDateFormat(def.getDefaultValue(
+    ), jParams.getLocale());
+    
+    String format = formatter.getPattern();
 
     final EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
     if (elh != null) {
@@ -65,7 +51,7 @@
     } else if (theField.getRawValue().startsWith("<jahia-resource")) {
         val = ResourceBundleMarker.getValue(theField.getRawValue(), jParams.getLocale());
     } else {
-        val = theField.getValue();
+        val = theField.getObject() != null && !"".equals(theField.getObject()) ? formatter.format(new Long((String)theField.getObject()).longValue()) : "";
     }    
 %>
 

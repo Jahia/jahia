@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
  package org.jahia.services.importexport;
 
 import org.quartz.JobExecutionContext;
@@ -66,7 +49,7 @@ public class ChangeContentPickerJob extends BackgroundJob {
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(ChangeContentPickerJob.class);
 
-    private static ThreadLocal isInContentPickJob = new ThreadLocal();
+    private static ThreadLocal<Boolean> isInContentPickJob = new ThreadLocal<Boolean>();
 
     public synchronized void executeJahiaJob(JobExecutionContext jobExecutionContext, ProcessingContext context) throws Exception {
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
@@ -86,10 +69,10 @@ public class ChangeContentPickerJob extends BackgroundJob {
                 return;
             }
 
-            Set pickers = source.getPickerObjects("");
+            Set<ContentObject> pickers = source.getPickerObjects("");
 
             if (!pickers.isEmpty()) {
-                for (Iterator iterator = pickers.iterator(); iterator.hasNext();) {
+                for (Iterator<ContentObject> iterator = pickers.iterator(); iterator.hasNext();) {
                     ContentObject picker = (ContentObject) iterator.next();
 
                     Map<String,String> pathMapping = new HashMap<String,String>();
@@ -100,7 +83,6 @@ public class ChangeContentPickerJob extends BackgroundJob {
                         isInContentPickJob.set(Boolean.TRUE);
                         try {
                             if (source instanceof ContentFileField) {
-                                JahiaSite sourceSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(source.getSiteID());
                                 String path = ((ContentFileField)source).getValue(context, EntryLoadRequest.STAGED);
                                 JCRNodeWrapper sourceFile = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(path, context.getUser());
                                 if (sourceFile.isValid()) {
@@ -127,10 +109,10 @@ public class ChangeContentPickerJob extends BackgroundJob {
                                 ImportHandler handler = new ImportHandler(picker,context, language, destSite, actions, result);
                                 handler.setUpdateOnly(true);
                                 handler.setPathMapping(pathMapping);
-                                Set included = new HashSet();
+                                Set<ContentObject> included = new HashSet<ContentObject>();
                                 included.add(source);
 
-                                Map params = new HashMap();
+                                Map<String, Object> params = new HashMap<String, Object>();
                                 params.put(ImportExportService.LINK, StructuralRelationship.CHANGE_PICKER_LINK);
                                 params.put(ImportExportService.TO, EntryLoadRequest.STAGED);
                                 params.put(ImportExportService.INCLUDED, included);
@@ -148,9 +130,9 @@ public class ChangeContentPickerJob extends BackgroundJob {
             } else if (!source.isMarkedForDelete()) {
                 ContentObject parent = source.getParent(null,null,null);
                 if (parent != null) {
-                    Set parentPicks = parent.getPickerObjects("");
+                    Set<ContentObject> parentPicks = parent.getPickerObjects("");
                     if (!parentPicks.isEmpty()) {
-                        for (Iterator iterator = parentPicks.iterator(); iterator.hasNext();) {
+                        for (Iterator<ContentObject> iterator = parentPicks.iterator(); iterator.hasNext();) {
                             ContentObject picker = (ContentObject) iterator.next();
                             Map<String,String> pathMapping = new HashMap<String,String>();
                             if (picker != null) {
@@ -162,7 +144,7 @@ public class ChangeContentPickerJob extends BackgroundJob {
                                     ImportHandler handler = new ImportHandler(picker,context, language, destSite, actions, result);
                                     handler.setCopyUuid(true);
 
-                                    Map params = new HashMap();
+                                    Map<String, Object> params = new HashMap<String, Object>();
                                     params.put(ImportExportService.LINK, StructuralRelationship.CHANGE_PICKER_LINK);
                                     params.put(ImportExportService.TO, EntryLoadRequest.STAGED);
 
@@ -234,8 +216,8 @@ public class ChangeContentPickerJob extends BackgroundJob {
                 ie.ensureFile(sourceFile.getPath(), inputStream, type, context, destSite, pathMapping);
             }
         }
-        List childs = source.getChilds(null,context.getEntryLoadRequest());
-        for (Iterator iterator1 = childs.iterator(); iterator1.hasNext();) {
+        List<? extends ContentObject> childs = source.getChilds(null,context.getEntryLoadRequest());
+        for (Iterator<? extends ContentObject> iterator1 = childs.iterator(); iterator1.hasNext();) {
             ContentObject child = (ContentObject) iterator1.next();
             checkFilesInChildren(child, context, ie, destSite,pathMapping);
         }

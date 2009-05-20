@@ -1,35 +1,3 @@
-#
-# This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-# Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
-# 
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-# 
-# As a special exception to the terms and conditions of version 2.0 of
-# the GPL (or any later version), you may redistribute this Program in connection
-# with Free/Libre and Open Source Software ("FLOSS") applications as described
-# in Jahia's FLOSS exception. You should have received a copy of the text
-# describing the FLOSS exception, and it is also available here:
-# http://www.jahia.com/license
-# 
-# Commercial and Supported Versions of the program
-# Alternatively, commercial and supported versions of the program may be used
-# in accordance with the terms contained in a separate written agreement
-# between you and Jahia Limited. If you are unsure which license is appropriate
-# for your use, please contact the sales department at sales@jahia.com.
-
-
 # +---------------------------------------------------------------------------+
 # | Jahia main configuration file.                                            |
 # +---------------------------------------------------------------------------+
@@ -51,7 +19,7 @@ release                                                =
 server                                                 =
 # The server home disk path is application server specific, and is used
 # to deploy and configure new portlets, as well as other specific
-# adjusments such as Tomcat's in-memory realm automatic updating
+# adjustments such as Tomcat's in-memory realm automatic updating
 # (tomcat-users.xml files).
 serverHomeDiskPath                                     =
 
@@ -61,7 +29,7 @@ serverHomeDiskPath                                     =
 ######################################################################
 # The following disk paths configure where Jahia will store data on disk,
 # such as temporary files or content files, or even in some cases where
-# it will retrieve additionnal configuration from.
+# it will retrieve additional configuration from.
 
 jahiaJspDiskPath                                       =   /
 jahiaEnginesDiskPath                                   =   /engines/
@@ -73,21 +41,15 @@ jahiaFilesDiskPath                                     =   $context/WEB-INF
 jahiaEtcDiskPath                                       =
 jahiaVarDiskPath                                       =
 jahiaFilesBigTextDiskPath                              =
-slideContentDiskPath                                   =   $context/WEB-INF/var/content/slide/
 tmpContentDiskPath                                     =   $context/WEB-INF/var/content/tmp/
-jahiaFilesTemplatesDiskPath                            =
 
-jahiaNewTemplatesDiskPath                              =
-jahiaNewWebAppsDiskPath                                =
 jahiaSharedTemplatesDiskPath                           =
 jahiaImportsDiskPath                                   =
+jahiaWebAppsDiskPath                                   =
 
 jahiaCasDiskPath                                       =   $context/WEB-INF/etc/cas/
 
-jahiaOutputCacheConfigDiskPath                         =   $context/WEB-INF/etc/outputcache/
-
 classDiskPath                                          =   /WEB-INF/classes/
-componentsDiskPath                                     =   /WEB-INF/classes/components/
 
 
 ######################################################################
@@ -99,7 +61,7 @@ jahiaTemplatesHttpPath                                 =
 jahiaEnginesHttpPath                                   =
 jahiaJavaScriptHttpPath                                =
 
-jahiaWebAppsDeployerBaseURL                            =
+jahiaWebAppsDeployerBaseURL                            = http://127.0.0.1:8080/manager/html/
 
 # This parameter will force the generation of the /site/ URL parameter
 # every time, even when sites are used with hostname resolution. This
@@ -169,8 +131,8 @@ defaultURIEncoding                                     =   UTF-8
 # WEB-INF/etc/spring/applicationcontext-hibernate.xml configuration
 # file.
 #
-# The entry allow you to specify the amount of free memory you wnat to keep in your jvm
-# If we reach this limit jahia will remove entries of his cahce until if get under this limit
+# The entry allow you to specify the amount of free memory you want to keep in your jvm
+# If we reach this limit jahia will remove entries of his cache until if get under this limit
 # this limit must be express in MB size
 freeMemoryLimit = 64MB
 
@@ -187,7 +149,7 @@ cacheClusterUnderlyingImplementation = jahiaReferenceCache
 # groups are limited in numbers of 20000, with an LRU (least recently used)
 # algorithm for removing a group. When a group is removed, so are all the
 # cache entries. If you see a lot of messages warning that groups were being
-# flushed and that you Jahia installation has sufficient runtime memory,
+# flushed and that your Jahia installation has sufficient runtime memory,
 # you should set this value higher. In installations with little memory
 # available, you should keep this value as low as possible.
 cacheMaxGroups = 20000
@@ -202,7 +164,7 @@ maxAggregatedEvents                                    =   5000
 ######################################################################
 ### HTML Container Output cache  #####################################
 ######################################################################
-# The HTML container cache is an embedded fragment cache, that caches
+# The HTML container cache is an embedded fragment cache, those caches
 # automatically (or specifically using the <container-cache> tag)
 # the output of <container> tags. This cache is very efficient for
 # highly dynamic sites with lots of content, users and personalization
@@ -266,8 +228,6 @@ templates.boxes.onError                             	= full
 ### Filemanager  #####################################################
 ######################################################################
 # Configuration of the file manager that uses Slide as a back-end.
-jahiaFileRepositoryDiskPath                             =
-useFlatFileManager									    =  false
 jahiaFileUploadMaxSize                                  =  104857600
 
 ######################################################################
@@ -281,15 +241,8 @@ jahiaFileUploadMaxSize                                  =  104857600
 templates.observer.interval                            =   60000
 
 ######################################################################
-### WebApps Observer  ################################################
+### WebApps Deployment  ##############################################
 ######################################################################
-# The following section configured the service that checks for new
-# web applications (portlets) to deploy.
-jahiaWebAppsAutoDeploy                                 =   1
-# Time in milliseconds between checks in the new_webapps directory for new
-# webapps to deploy. Set to -1 to deactivate file watching completely.
-webapps.observer.interval                              =   60000
-webapps.observer.checkmode                             =   ALL
 # This setting is configured by the configuration wizard to use the
 # appropriate web applications deployer according to the application
 # server platform which Jahia is running on. We recommend you do not
@@ -298,11 +251,11 @@ webapps.observer.checkmode                             =   ALL
 JahiaWebAppsDeployerService                            =
 
 ######################################################################
-### WebApps Dispatcher  ##############################################
+### WebApps Preparing war  ##############################################
 ######################################################################
-# If you set this to true then the portlet applications will be able
-# to access session attributes set by the templates.
-webapps.dispatcher.inheritJahiaSessionAttributes       =   false
+# In 'manager portlet' view, when you click on 'prepare war', it's saved in the filemanager
+# The following value specifies where it's saved.
+prepare.portlet.jcr.path       =   /content/shared/files
 
 ######################################################################
 ### Audit log  #######################################################
@@ -322,6 +275,20 @@ jahiaMaxLogs                                           =   500
 # - the browser's settings
 # - the site's language list
 org.jahia.multilang.default_language_code              =   en
+# Resource bundle lookup mechanism type.
+# If set to true, the default ResourceBundle resolution scheme
+# is used, i.e. the Locale.getDefault() is considered before
+# using bundle with the base name (no locale):
+# 1) the requested locale is used
+# 2) the current default locale as returned by Locale.getDefault()
+# 3) the root resource bundle (basename) is used
+# See http://java.sun.com/j2se/1.5.0/docs/api/java/util/ResourceBundle.html#getBundle(java.lang.String,%20java.util.Locale,%20java.lang.ClassLoader)
+# for details.
+# If the value is false the JSTL-like lookup is used:
+# 1) the requested locale is used
+# 2) the root resource bundle (basename) is used
+# In this case the step with default locale is omitted.
+considerDefaultJVMLocal                                =   false
 # Should we switch to the user's preferred language after login?
 # Language switch takes place only if the current site has entries
 # in the user's preferred language  
@@ -342,13 +309,6 @@ preloadDBGroupMembersActivated                         = true
 checkAclInPagePath                                     = true
 
 ######################################################################
-### Page properties ##################################################
-######################################################################
-# Specifies the number of page IDs to pre-load upon Jahia's page
-# service startup
-org.jahia.pages.properties.preload_count               =   2000
-
-######################################################################
 ### Tidy Configuration file ##########################################
 ######################################################################
 # Tidy is an HTML parser that is one of the multiple ones that is
@@ -357,76 +317,11 @@ org.jahia.pages.properties.preload_count               =   2000
 tidyConfig                                             =   tidy.properties
 
 ######################################################################
-### WebDAV processing options ########################################
-######################################################################
-# Specifies whether we should transform file names because of compatibility
-# problems with Windows WebDAV implementation.
-transformFilenames                                     =   false
-# Same option for directories, set to true by default because there are
-# serious bugs in Windows' WebDAV implementation when using non ISO-8859-1
-# characters.
-transformDirnames                                      =   true
-
-# preload folders when displaying tree
-preloadFolders                                         =   false
-
-######################################################################
-### Content Object titles ############################################
-######################################################################
-# Specifies the size of the titles we should display in site maps
-siteMapTitlesLength                                    =   20
-# Specifies the size of the titles we should display in the workflow
-workflowTitlesLength                                   =   20
-
-######################################################################
 ### Marked for deletion Content Object ###############################
 ######################################################################
 # Set to true if you want marked for deleted content objects to be
 # loaded as well as staging content
 displayMarkedForDeletedContentObjects                  =   true
-
-######################################################################
-### Jetspeed Portal   ################################################
-######################################################################
-# Configuration for the integrated Jetspeed JSR-168 compatible
-# portal server.
-jetspeedConfig                                         =   WEB-INF/etc/jetspeed/conf/jetspeed.properties
-jetspeedDeploymentDirectory                            =   $context/WEB-INF/etc/jetspeed/deploy
-
-######################################################################
-### Authentification pipeline ########################################
-######################################################################
-#
-# Jahia now uses a pipeline mechanism to process user authentification, which
-# allows developers to extend the system for custom authentification back-ends.
-#
-# You might want to modify the pipeline if you want to extend Jahia's
-# authentification system, for example by adding a JAASAuthValve or something
-# else.
-#
-# Name of the file containing the valve configuration for the authentification
-# pipeline
-authPipelineFileName                                   =   /WEB-INF/etc/config/auth-pipeline.xml
-# Class name for the pipeline implementation to use when creating the
-# authorization pipeline.
-authPipelineClassName                                  =   org.jahia.pipelines.impl.GenericPipeline
-
-######################################################################
-### Process pipeline #################################################
-######################################################################
-#
-# Jahia now uses a pipeline mechanism to process requests, which
-# allows developers to extend the system for custom processing.
-#
-# You might want to modify the pipeline if you want to extend Jahia's
-# processing system
-#
-# Name of the file containing the valve configuration for the processing
-# pipeline
-processPipelineFileName                                   =   /WEB-INF/etc/config/process-pipeline.xml
-# Class name for the pipeline implementation to use when creating the
-# request processing pipeline.
-processPipelineClassName                                  =   org.jahia.pipelines.impl.GenericPipeline
 
 ######################################################################
 ### Concurrent processing options ####################################
@@ -453,14 +348,14 @@ pageGenerationWaitTimeOnStartup                        = 10000
 suggestedRetryTimeAfterTimeoutOnStartup                = 15
 
 ######################################################################
-### Cookie authentification valve config #############################
+### Cookie authentication valve config #############################
 ######################################################################
 #
-# The cookie authentification valve is a system that uses cookies to store
+# The cookie authentication valve is a system that uses cookies to store
 # an identifier corresponding to a specific Jahia user, when he selects the
 # "remember me" option in the login engine.
 #
-# Should we use cookie authentification for login ?
+# Should we use cookie authentication for login ?
 cookieAuthActivated                                    =   true
 #
 # length of cookie identifier key for user. This is the actual value
@@ -511,13 +406,6 @@ doRedirectOnLogout                                     = true
 # background jobs such as the XML imports, workflow activation, etc.
 schedulerConfigFile                                    =   $context/WEB-INF/etc/config/quartz.properties
 ramSchedulerConfigFile                                 =   $context/WEB-INF/etc/config/quartz-ram.properties
-
-######################################################################
-### Default site #####################################################
-######################################################################
-# This setting is configured by Jahia, to know which is the default
-# site to display.
-defautSite                                             =
 
 ######################################################################
 ### Site serverName testing config ###################################
@@ -614,26 +502,22 @@ processingServer                                       =   true
 # address ranges that are properly routed by the network hardware. The
 # default values comply with the IANA address space
 # (http://www.iana.org/assignments/multicast-addresses).
-# Check out the assignement ranges to see if they may conflict with
+# Check out the assignment ranges to see if they may conflict with
 # something that might be present on your network.
 
 # Here a default configuration for UDP Clustering
-
-cluster.service.multicast.ip_address                   = 231.12.21.130
-cluster.service.multicast.port                         = 45000
-cluster.idgenerator.multicast.ip_address               = 231.12.21.150
-cluster.idgenerator.multicast.port                     = 45020
-cluster.esicontentids.multicast.ip_address             = 231.12.21.133
-cluster.esicontentids.multicast.port                   = 45021
-cluster.hibernate.multicast.ip_address                 = 231.12.21.134
-cluster.hibernate.multicast.port                       = 45050
-
-# Here a default configuration for TCP Clustering
-# You will have to comment the UDP configuration and uncomment the tcp ones int the
+# You will have to comment the TCP configuration and uncomment the UDP settings in the
 # following files :
 #../spring/applicationcontext-dao.xml, ../spring/applicationcontext-hibernate.xml,
 # ../spring/applicationcontext-services.xml
 
+
+cluster.service.multicast.ip_address                   = 231.12.21.130
+cluster.service.multicast.port                         = 45000
+cluster.hibernate.multicast.ip_address                 = 231.12.21.134
+cluster.hibernate.multicast.port                       = 45050
+
+# Here a default configuration for TCP Clustering
 # The example below uses two-nodes cluster: 192.168.1.100 and 192.168.1.200
 # Current node is 192.168.1.100
 #
@@ -641,15 +525,16 @@ cluster.hibernate.multicast.port                       = 45050
 #
 ## Here your local ip address
 cluster.tcp.start.ip_address                           =   192.168.1.100
-# Here the numbers of all members in the group
+# Here the minimum numbers of members in the group to be contacted for initial membership
+#(if your cluster is higher than two nodes then upgrade this to at least 3)
 cluster.tcp.num_initial_members                        =   2
 # Here the list of all members ip and port, and local port for each channel
 cluster.tcp.service.nodes.ip_address                   =   192.168.1.100[7840],192.168.1.200[7840]
 cluster.tcp.service.port                               =   7840
-cluster.tcp.esicontentids.nodes.ip_address             =   192.168.1.100[7860],192.168.1.200[7860]
-cluster.tcp.esicontentids.port                         =   7860
-cluster.tcp.hibernate.nodes.ip_address                 =   192.168.1.100[7870],192.168.1.200[7870]
-cluster.tcp.hibernate.port                             =   7870
+cluster.tcp.ehcache.hibernate.nodes.ip_address         =   192.168.1.100[7860],192.168.1.200[7860]
+cluster.tcp.ehcache.hibernate.port                     =   7860
+cluster.tcp.ehcache.jahia.nodes.ip_address             =   192.168.1.100[7870],192.168.1.200[7870]
+cluster.tcp.ehcache.jahia.port                         =   7870
 
 # For clustered caches, we use batching to avoid sending individual
 # messages for each invalidation. Normally the messages are batched
@@ -658,31 +543,27 @@ cluster.tcp.hibernate.port                             =   7870
 # memory as well as sending huge messages through the network.
 clusterCacheMaxBatchSize                               = 100000
 
+######################################################################
+### EhCache settings  ###############################################
+######################################################################
+ehcache.hibernate.file = ehcache-hibernate.xml
+# For clustering comment above line and uncomment next line
+#ehcache.hibernate.file = ehcache-hibernate_cluster.xml
+ehcache.jahia.file = ehcache-jahia.xml
+# For clustering comment above line and uncomment next line
+#ehcache.jahia.file = ehcache-jahia_cluster.xml
 
 ######################################################################
 ### Workflow settings  ###############################################
 ######################################################################
-# Do we use external (n-step) workflow by default?
-workflowUseExternalByDefault							= true
-# The following setting sets the maximum number of
-# notification emails to send when a workflow occurs. This
-# will limit spamming. Of course this means only a subset of
-# the users will actually be notified. As this might be a problem,
-# the second setting (workflowNotifyAdminOnMaxNotificationReached)
-# specifies whether the Jahia administrator should be notified
-# when this limit is reached.
-workflowMaxNotificationEmails                           = 20
-workflowNotifyAdminOnMaxNotificationReached             = true
-# The following setting configures the template used to build
-# the mail sent to the Jahia administrator if the maximum limit
-# of mails has been reached and if the maximum reached
-# notification setting is activated
-workflowMaxNotificationReachedTemplate                  = workflow_maxnotif.groovy
+# What is the default workflow type?
+# Possible values are: inactive, two_validation_step_workflow, three_validation_step_workflow, four_validation_step_workflow
+workflowDefaultType										= two_validation_step_workflow
 # If set to 'true' the workflow status icons will also be displayed for pages with linked
 # workflow type.
-# This option does not apply to oter content objects (containers and container lists).
+# This option does not apply to other content objects (containers and container lists).
 # Workflow state icon for containers and container lists will only be shown in case they
-# have an independent worklfow type.    
+# have an independent workflow type.    
 workflowDisplayStatusForLinkedPages                     = true
 
 ######################################################################
@@ -720,30 +601,27 @@ readOnlyMode                                            = false
 ######################################################################
 ### AES (Advanced Edition Settings) ##################################
 ######################################################################
-# These settings control Javascript controls that are displayed on
-# pages. Each one of these will add additional features that will
-# slow-down page generation but show more information about the
-# current status of the page or the status of the server. The
-# default settings are a good balance between features and
-# performance.
-timebased_display                                       = false
-workflow_display                                        = true
-chat_display                                            = true
-process_display                                         = true
+# Enable/disable the information icons about current state of the
+# content object.
+# These are the default values, which can be changed by each user
+# in the "Advanced edit mode" menu of the toolbar.   
+# Do we show icon, if the rights of the object differ from its parent?
 aclDiff_display											= false
-
 # The following setting controls an inline edition feature that
 # allows users in edit mode to modify content directly in the HTML.
 # This is only available for smalltext and bigtext fields.
-inlineEditingActivated                                  = true
+inlineEditingActivated                                  = false
+# Show integrity violation indicator?
+integrityChecks_display                                 = false
+# Show time-based publishing state?
+timebased_display                                       = false
+# Show workflow state information?
+workflow_display                                        = true
 ######################################################################
-### Deprecated settings ##############################################
+### Locking ##########################################################
 ######################################################################
-# The following settings are deprecated, and will be removed in a future
-# version of Jahia. We recommend you do not modify them, as it will either
-# have no effect or will have adverse effects.
+# Use locking during editing/workflow operations?
 locksActivated                                          =  true
-### End of deprecated settings #######################################
 
 ######################################################################
 ### Wizard-inserted properties  ######################################
@@ -779,22 +657,11 @@ batchLoadingSize		                                  = 20
 ######################################################################
 ### container list pagination settings    ############################
 ######################################################################
-#
-#
 preloadedItemsForPagination                               = 100
 
 # Below you can change the default window size for the automatic pagination
 # of lists displayed in templates using the *containerList tags
 paginationWindowSize                                      = 100
-
-######################################################################
-### select page engine view    #######################################
-######################################################################
-# Enable or disable the flat view of the Select page engine. If there
-# is a lot (>10'000) pages, the flat view should be disabled for
-# performance reasons. Use the AJAXed tree view instead.
-#
-enableSelectPageFlatView                                = true
 
 ######################################################################
 ### Session settings #################################################
@@ -832,20 +699,6 @@ userManagementUserNamePattern                           = [0-9a-z_A-Z\\-\\{\\}\\
 userManagementGroupNamePattern                          = [0-9a-z_A-Z\\-\\{\\}]+
 
 ######################################################################
-### Pdisplay #########################################################
-######################################################################
-# "Pdisplay" is a part of the top bar . It allows users with write ACL
-# on the page monitoring jobs. The folowing property allows to set the
-# refresh time value in in milliseconds. -1 means that pdisplay is
-# refreshed only "on mouseover".
-pdisplay.timer.refresh = 5000
-
-######################################################################
-### Nb Max Content Alias Name alloweded    ###########################
-######################################################################
-nbMaxContentAliasName = 10
-
-######################################################################
 ### Portlets #########################################################
 ######################################################################
 # the following parameter activates AJAX rendering of portlets. This
@@ -863,9 +716,6 @@ portletAJAXRenderingActivated = true
 # if this control is not necessary, but we introduced it in order to
 # control this behavior at deployment time.
 wrapperBufferFlushingActivated = true
-# Controls whether the above behavior applies only to Jahia internally
-# or also for wrappers used around portlets.
-wrapperBufferFlushingAlsoForPortlets = true
 
 ######################################################################
 ### Google analytics settings ########################################
@@ -875,7 +725,7 @@ wrapperBufferFlushingAlsoForPortlets = true
 # ded for this purpose.
 # To get data from the google analytics server, the site should have
 # a preregistered properties such as the gmail account and password
-# used when the google analyitcs account has been created.
+# used when the google analytics account has been created.
 # The following setting controls whether the gmail password will be
 # exported when a site export is triggered.
 # By default, it is set to true, if turned to false then the password

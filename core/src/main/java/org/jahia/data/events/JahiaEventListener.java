@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //
 //  JahiaEventListener
 //  EV      12.01.2001
@@ -40,24 +23,24 @@ package org.jahia.data.events;
 import java.util.Set;
 
 import org.jahia.services.workflow.WorkflowEvent;
+import org.jahia.services.notification.NotificationEvent;
 import org.jahia.services.timebasedpublishing.RetentionRuleEvent;
 import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.content.events.ContentUndoStagingEvent;
 import org.jahia.content.events.ContentObjectDeleteEvent;
 import org.jahia.content.events.ContentObjectRestoreVersionEvent;
 import org.jahia.registries.ServicesRegistry;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 public class JahiaEventListener implements JahiaEventListenerInterface {
-    private static transient Category logger = Logger
+    private static transient Logger logger = Logger
             .getLogger(JahiaEventListener.class);
 
     protected Set<String> skipEvents;
     
     protected Set<String> handleEvents;
     
-    private static void log(String eventType, JahiaEvent evt) {
+    protected void log(String eventType, JahiaEvent evt) {
         if (logger.isDebugEnabled()) {
             logger.debug("Received event '" + eventType + "'. Details: " + evt);
         }
@@ -90,6 +73,9 @@ public class JahiaEventListener implements JahiaEventListenerInterface {
 
     public void aggregatedContentActivation(JahiaEvent je) {
         log("aggregatedContentActivation", je);
+    }
+    public void aggregatedContentWorkflowStatusChanged(JahiaEvent je) {
+        log("aggregatedContentWorkflowStatusChanged", je);
     }
 
     public void aggregatedContentObjectCreated(JahiaEvent je) {
@@ -175,6 +161,10 @@ public class JahiaEventListener implements JahiaEventListenerInterface {
 
     public void contentActivation(ContentActivationEvent je) {
         log("contentActivation", je);
+    }
+
+    public void contentWorkflowStatusChanged(ContentActivationEvent je) {
+        log("contentWorkflowStatusChanged", je);
     }
 
     public void contentObjectCreated(JahiaEvent je) {
@@ -369,5 +359,21 @@ public class JahiaEventListener implements JahiaEventListenerInterface {
 
     public void setHandleEvents(Set<String> handleEvents) {
         this.handleEvents = handleEvents;
+    }
+
+    public void aggregatedNotification(JahiaEvent evt) {
+        log("aggregatedNotification", evt);
+    }
+
+    public void notification(NotificationEvent evt) {
+        log("notification", evt);
+    }
+
+    public void beforeContentCopy(JahiaEvent theEvent) {
+        log("beforeContentCopy", theEvent);
+    }
+
+    public void beforeFormHandling(JahiaEvent theEvent) {
+        log("beforeFormHandling", theEvent);
     }
 }

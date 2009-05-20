@@ -1,6 +1,6 @@
 # Jahia Oracle Database configuration file
 
-jahia.database.name     =  Oracle 8.1.x / Oracle 9.x / Oracle 10.2.1.0 / Oracle 11.x
+jahia.database.name     =  Oracle 9.x / Oracle 10.2.1.0 / Oracle 11.x
 jahia.database.driver   =  oracle.jdbc.OracleDriver
 jahia.database.url      =  jdbc:oracle:thin:@localhost:1521:jahia
 jahia.database.user     =  jahia

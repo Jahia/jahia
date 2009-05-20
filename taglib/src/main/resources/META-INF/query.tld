@@ -90,7 +90,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Trully create a ContainerQueryBean instance</description>
+        <description>Truly create a ContainerQueryBean instance</description>
         <name>createContainerQueryBean</name>
         <tag-class>org.jahia.taglibs.query.CreateContainerQueryBeanTag</tag-class>
         <body-content>JSP</body-content>
@@ -253,9 +253,20 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
-        <description>Used to define a ChildNode Constraint</description>
+        <description>Used to define a ChildNode Constraint. You can set one or less childNode constraint by query.
+        If you search in a page, It does the search only in the page you define in path.
+        </description>
         <name>childNode</name>
         <tag-class>org.jahia.taglibs.query.ChildNodeTag</tag-class>
         <body-content>JSP</body-content>
@@ -271,21 +282,21 @@
         <attribute>
             <description><![CDATA[
                 <p>The path of the parent node.</p>
-                <p>Jahia Content Objects can be used as Parent Node are : Jahia Page, Jahia ContainerList
+                <p>Jahia Content Objects can be used as Parent Node are : Jahia Page, Jahia ContainerList, Jahia Site
                 With jahia container query tags, path value should be generated using one of the
                 following ways:
                 <ul>
                 <li>1. "/" means returns containers from all virtual sites.</li>
-                <li>2. In the context of a JSP page, Jahia provides a currentPage bean in request scope so you
-                can directly refer to all containers from the page to generate their paths :
+                <li>2. In the context of a JSP page, Jahia provides a currentPage bean and a currentSite bean in request scope so you
+                can directly refer to all pages or site to generate their paths :
                 <code>&lt;query:childNode path="${currentPage.JCRPath}"/&gt;</code>
-                Any instance object of <code>PageBean</code>, <code>ContainerListBean</code> classes have the method <code>getJCRPath():String</code>
+                Any instance object of <code>SiteBean</code>, <code>PageBean</code>, <code>ContainerListBean</code> classes have the method <code>getJCRPath():String</code>
                 for that purpose.</li>
                 <li>3. This path can be obtained through the method : getJCRPath(ProcessingContext context):String on the
-                followin classes : JahiaPage; ContentPage, JahiaContainerList or ContentContainerList. This method is not
+                followin classes : JahiaSite, JahiaPage; ContentPage, JahiaContainerList or ContentContainerList. This method is not
                 recommanded as it supposes to have some scriplet in your JSPs.</li>
                 </ul>
-                Note that if the Parent Node is a Jahia Page, the JahiaDBFilterCreator will create a search filter 
+                Note that if the Parent Node is a Jahia Page, the JahiaDBFilterCreator will create a search filter
                 instead of a DB filter.</p>]]>
             </description>
             <name>path</name>
@@ -295,7 +306,8 @@
         </attribute>
     </tag>
     <tag>
-        <description>Used to define a DescendantNode Constraint</description>
+        <description>Used to define a DescendantNode Constraint. You can set one or less descendantNode constraint by query.
+            If you search in a page,it does the search in page ans sub-pages from the page you define in path.</description>
         <name>descendantNode</name>
         <tag-class>org.jahia.taglibs.query.DescendantNodeTag</tag-class>
         <body-content>JSP</body-content>
@@ -317,7 +329,7 @@
                 <ul>
                 <li>1. "/" means returns containers from all virtual sites.</li>
                 <li>2. In the context of a JSP page, Jahia provides a currentPage bean and currentSite bean in request
-                scope so you can directly refer to all containers from the page to generate their paths :<br>
+                scope so you can directly refer to all pages or site to generate their paths :<br>
                 <code>&lt;query:descendantNode path="${currentPage.JCRPath}"/&gt;</code><br>
                 <code>&lt;query:descendantNode path="${currentSite.JCRPath}"/&gt;</code><br>
                 Any instance object of PageBean or SiteBean classes have the method getJCRPath():String
@@ -433,27 +445,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-
-                <p>The comparison operator.</p>
-
-                <p>Can be one of these values :
-                <ul>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO</code>(default)</li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LIKE</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_NOT_EQUAL_TO</code></li>
-                </ul></p>]]>
-            </description>
-            <name>operator</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -481,6 +472,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
@@ -580,27 +580,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-
-                <p>The comparison operator.</p>
-
-                <p>Can be one of these values :
-                <ul>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO</code>(default)</li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LIKE</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_NOT_EQUAL_TO</code></li>
-                </ul></p>]]>
-            </description>
-            <name>operator</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -628,6 +607,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
@@ -727,27 +715,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-
-                <p>The comparison operator.</p>
-
-                <p>Can be one of these values :
-                <ul>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO</code>(default)</li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LIKE</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_NOT_EQUAL_TO</code></li>
-                </ul></p>]]>
-            </description>
-            <name>operator</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -775,6 +742,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
@@ -874,27 +850,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-
-                <p>The comparison operator.</p>
-
-                <p>Can be one of these values :
-                <ul>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO</code>(default)</li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LIKE</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_NOT_EQUAL_TO</code></li>
-                </ul></p>]]>
-            </description>
-            <name>operator</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -922,6 +877,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
@@ -1021,27 +985,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-
-                <p>The comparison operator.</p>
-
-                <p>Can be one of these values :
-                <ul>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO</code>(default)</li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LIKE</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_NOT_EQUAL_TO</code></li>
-                </ul></p>]]>
-            </description>
-            <name>operator</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -1069,6 +1012,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
@@ -1168,27 +1120,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-
-                <p>The comparison operator.</p>
-
-                <p>Can be one of these values :
-                <ul>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO</code>(default)</li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LIKE</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_NOT_EQUAL_TO</code></li>
-                </ul></p>]]>
-            </description>
-            <name>operator</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -1216,6 +1147,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
@@ -1315,27 +1255,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-
-                <p>The comparison operator.</p>
-
-                <p>Can be one of these values :
-                <ul>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO</code>(default)</li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_LIKE</code></li>
-                <li><code>JahiaQueryObjectModelConstants.OPERATOR_NOT_EQUAL_TO</code></li>
-                </ul></p>]]>
-            </description>
-            <name>operator</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -1364,6 +1283,17 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+
+
     </tag>
     <tag>
         <description>Used to define a full text search Constraint</description>
@@ -1378,6 +1308,7 @@
                     <p>"AND" has higher precedence that "OR"</p>
                     <p>Within a term, each double quote ("),  minus sign (-), and backslah (\) must be preceded by a backslash (\)</p>
                     <p>This parameter is required</p>
+                    <p>look at <a href="http://lucene.apache.org/java/2_3_2/queryparsersyntax.html">http://lucene.apache.org/java/2_3_2/queryparsersyntax.html</a> for more information</p>
                     ]]>
             </description>
             <name>searchExpression</name>
@@ -1410,7 +1341,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Used to define an ordering</description>
+        <description>Used to define an ordering. You can set multiple sortBy tag in the same query. </description>
         <name>sortBy</name>
         <tag-class>org.jahia.taglibs.query.SortByTag</tag-class>
         <body-content>JSP</body-content>
@@ -1506,6 +1437,15 @@
         </attribute>
         <attribute>
             <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
                     <p>false by default.</p>
                     <p>Set to true if you want locale case sensitive ordering</p>
                     ]]>
@@ -1566,7 +1506,7 @@
         <body-content>JSP</body-content>
     </tag>
     <tag>
-        <description>Used to set, append or remove Query property value</description>
+        <description>Used to set, append or remove Query property value. Look at QUERY CORE PROPERTIES chapter in Container Query tags Document.</description>
         <name>setProperty</name>
         <tag-class>org.jahia.taglibs.query.SetPropertyTag</tag-class>
         <body-content>JSP</body-content>
@@ -1601,14 +1541,14 @@
         </attribute>
     </tag>
     <tag>
-        <description>Used inside a QueryParameterTag to set, append or remove Query Parameter value</description>
+        <description>Used inside a tag, which implements the ParamParent interface (e.g. SetPropertyTag, CreateFacetFilterTag) to add parameter values or do whatever the operation of the parent tag is.</description>
         <name>propertyValue</name>
         <tag-class>org.jahia.taglibs.query.PropertyValueTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <description>The parameter value, if null the parameter won't be set</description>
             <name>value</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
@@ -1874,4 +1814,187 @@
             <type>boolean</type>
         </attribute>
     </tag>
+    <tag>
+        <description>Creates facet filters to be held in cache</description>
+        <name>createFacetFilter</name>
+        <tag-class>org.jahia.taglibs.query.CreateFacetFilterTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>id</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The facet name to identify the facet group</description>
+            <name>facetName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The property name for checking the facets.</description>
+            <name>propertyName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The value title which is required if propertyName is not set and the facet value is the result of a query.</description>
+            <name>valueTitle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the FacetBean will be set</description>
+            <name>facetBeanId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the FacetBeanValue will be set</description>
+            <name>facetValueBeanId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>queryObjectModelBeanName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>targetContainerListName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>targetContainerListID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>queryBeanID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Returns the number of hits for a search/query per facet</description>
+        <name>getHitsPerFacetValue</name>
+        <tag-class>org.jahia.taglibs.query.GetHitsPerFacetValueTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The name of the request scope parameter, where the FacetBean is set</description>
+            <name>facetBeanId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the List of FacetValueBeans to process is set</description>
+            <name>facetValueBeanId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The ID of a query bean to compare its results with the results of the facet.</description>
+            <name>mainQueryBeanId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The query parameter name for the filter to be created in the URL for drilldown.</description>
+            <name>filterQueryParamName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set true if the tag should create HTML directly</description>
+            <name>display</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the returned list of HitsPerFacetValueBean objects will be set</description>
+            <name>hitsPerFacetBeanId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Returns the applied facet filters</description>
+        <name>getAppliedFacetFilters</name>
+        <tag-class>org.jahia.taglibs.query.GetAppliedFacetFiltersTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The query parameter name for the filter created in the URL for drilldown.</description>
+            <name>filterQueryParamName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the List of AppliedFacetFilters beans will be set</description>
+            <name>appliedFacetsId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Should the tag create HTML or just return the result in a list of beans.</description>
+            <name>display</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>The resource (text/image) which will be backed for the link if display is true</description>
+            <name>removeDisplayResource</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <function>
+        <description>Check whether a facet is currently applied to the query</description>
+        <name>isFacetApplied</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>boolean isFacetApplied(org.jahia.services.search.facets.FacetBean, java.util.List)
+        </function-signature>
+        <example>
+            &lt;query:getAppliedFacetFilters filterQueryParamName="filter" appliedFacetsId="appliedFacets"/"&gt;
+            &lt;c:if test="${query:isFacetApplied(eventDateFacet, appliedFacets}"&gt;
+        </example>
+    </function>
+
+    <function>
+        <description>Create the drill down URL for a facet value</description>
+        <name>getFacetDrillDownUrl</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>String getFacetDrillDownUrl(org.jahia.services.search.facets.FacetBean, org.jahia.services.search.facets.FacetValueBean, java.lang.String)
+        </function-signature>
+        <example>
+            &lt;query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventDateFacet" facetValueBeanId="eventDateFacetValue" filterQueryParamName="filter" hitsPerFacetBeanId="hitsPerEventFacetValues" display="false"/"&gt;
+            &lt;c:forEach var="hitsPerEventFacetValue" items="${hitsPerEventFacetValues}"&gt;
+              &lt;a href="${query:getDeleteFacetUrl(eventDateFacet, hitsPerEventFacetValue.facetValue, 'filter')}"&gt;hitsPerEventFacetValue.facetValue.title&lt;/a&gt; (hitsPerEventFacetValue.numberOfHits)
+            &lt;/c:forEach"&gt;
+        </example>
+    </function>
+
+    <function>
+        <description>Create the URL to remove the facet from value the filter</description>
+        <name>getDeleteFacetUrl</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>String getDeleteFacetUrl(org.jahia.services.search.facets.FacetBean, org.jahia.services.search.facets.FacetValueBean, java.lang.String)
+        </function-signature>
+        <example>
+            &lt;query:getAppliedFacetFilters filterQueryParamName="filter" appliedFacetsId="appliedFacets" display="false"/"&gt;
+            &lt;c:forEach var="appliedFacetFilter" items="${appliedFacets}"&gt;
+              &lt;c:forEach var="facetValue" items="${appliedFacetsFilter.facetValueBeans}"&gt;
+                &lt;a href="${query:getDeleteFacetUrl(appliedFacetFilter.facetBean, facetValue, 'filter')}"&gt;remove&lt;/a&gt;
+              &lt;/c:forEach"&gt;
+            &lt;/c:forEach"&gt;
+        </example>
+    </function>
 </taglib>

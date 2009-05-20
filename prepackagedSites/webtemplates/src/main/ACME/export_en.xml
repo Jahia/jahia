@@ -1,0 +1,932 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jahia:page xmlns:jahia="http://www.jahia.org/" xmlns:jcr="http://www.jcp.org/jcr/1.0" jahia:template="Home" jcr:primaryType="web_templates:home" jahia:title="ACME Home" jcr:uuid="4fb51693-7b3c-4f4e-b658-fad19fca8799" jahia:originalUuid="a2ceb4d9-0414-4e3d-aa69-41c15f586901" jcr:lastModified="2009-05-19T17:27:53" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root" jahia:acl="u:author:rw-|u:publisher:rw-|g:guest:r--" jahia:workflow="external" jahia:workflowName="N-Step" jahia:workflowProcess="two_validation_step_workflow" jahia:workflowRolepublish="u:publisher" jahia:pid="67">
+    <logoFooterList jcr:primaryType="web_templates:logoContainerList" jcr:uuid="e7f0605a-6ee8-4b3f-bddf-66894ea1c009" jahia:originalUuid="500c6304-744c-4eb0-8cdd-c578058b9174" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+        <logoFooter jcr:primaryType="web_templates:logoContainer" jcr:uuid="4ccae698-f378-4bc3-8fda-fed6bf6cee61" jahia:originalUuid="23c4f2cb-78aa-4748-b45a-79c1fce09481" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+            <logo jahia:value="/content/sites/ACME/files/Pictures/Logo/logoACME_small.jpg" jcr:uuid="a551f8a5-2aea-477f-8705-1d05bcc6e0f2" jahia:originalUuid="599543a2-39a0-43cc-afc9-e1d19362a16f"></logo>
+        </logoFooter>
+    </logoFooterList>
+    <promoLargeList jcr:primaryType="web_templates:promoAdvancedContainerList" jcr:uuid="9ce26ac6-35fd-4fa5-98c6-ce668e4305bf" jahia:originalUuid="bba9d6a6-61ee-48e8-a81b-ae1731495f0e" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></promoLargeList>
+    <basicLinkHeaderList jcr:primaryType="web_templates:basicLinkContainerList" jcr:uuid="535c163b-667b-447f-8273-ebe9a19976e9" jahia:originalUuid="65193e36-8e22-4d58-b95b-44e74ee903b4" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></basicLinkHeaderList>
+    <bannerList jcr:primaryType="web_templates:bannerContainerList" jcr:uuid="1d8b2ff4-e18e-4e47-aebc-8618ca4c1d1a" jahia:originalUuid="79b58c3d-6352-482d-b0e8-7ff5b0d0b1e0" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+        <banner jcr:primaryType="web_templates:bannerContainer" jcr:uuid="1099dd8d-77cb-4c54-8853-ea876fd2fed1" jahia:originalUuid="67877763-9e42-451f-b622-9de3875be34a" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+            <title jahia:value="A World Wide Construction Leader" jcr:uuid="2df0fe16-8e2f-4102-bde7-6a16580f1fd5" jahia:originalUuid="62f81c40-2abc-4da2-9bb2-60687a447229"></title>
+            <positionTop jahia:value="80" jcr:uuid="8c9f30dd-8f95-4d15-a615-3884cb3018ae" jahia:originalUuid="6d2e197e-eb0c-443c-8481-d81d5665a725"></positionTop>
+            <background jahia:value="/content/sites/ACME/files/Pictures/BannerTeaser/img-home-us.jpg" jcr:uuid="9a9dc671-1dd5-4ecc-bfba-e7e10a7d9287" jahia:originalUuid="89bf39c4-efbd-427b-966b-b272c1d93a35"></background>
+            <cast jahia:value="ACME International is the largest construction group, with more than 40’000 employees around the world, deploying its expertise across the full spectrum of building and infrastructure construction." jcr:uuid="3f3fa65f-65d5-4b9c-a73d-38adc71f5a3e" jahia:originalUuid="e513a0ff-6e52-48b7-9b86-3dc539239ceb"></cast>
+            <positionLeft jahia:value="30" jcr:uuid="437d2e87-baf0-42b9-a3e5-8aebd6c9a0bb" jahia:originalUuid="e050e9a1-ab34-475b-a85f-057f54f7b247"></positionLeft>
+        </banner>
+    </bannerList>
+    <columnA_boxList jcr:primaryType="jnt:boxList" jcr:uuid="90abbb80-a299-442d-a220-72c8697d9950" jahia:originalUuid="0781278b-b477-43b8-8db7-19ccb9f8ff6b" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+        <columnA_box jcr:primaryType="web_templates:lastNewsBox" jcr:uuid="405f8c4a-16fb-4d14-8c60-e01cb14b3280" jahia:originalUuid="e9558dde-8b1d-4b8d-8e86-51957f5555f6" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+            <jcr_primaryType jahia:value="web_templates:lastNewsBox" jcr:uuid="49c58e92-e3bd-4ae0-b823-fe57d673a8b6" jahia:originalUuid="da3eda60-df9d-4021-a506-28682a9567be"></jcr_primaryType>
+            <boxTitle jahia:value="Last Project News" jcr:uuid="228d51bc-13b2-4598-a77c-b112c22e23da" jahia:originalUuid="182ad9cd-5cfa-480a-807c-6ecbf05f242e"></boxTitle>
+            <skin jahia:value="&lt;jahia-resource id=&quot;jahiatemplates.Sandbox_web_templates&quot; key=&quot;skins.box2&quot; default-value=&quot;box2&quot;/&gt;" jcr:uuid="3b4daa98-bcd5-41ae-81ff-d20f4e1dc923" jahia:originalUuid="ff5ca63a-73c7-4365-888f-9492c30b9334"></skin>
+            <lastNewsContainerList jcr:primaryType="web_templates:lastNewsContainerList" jcr:uuid="63d09d50-9820-4bcd-956b-fbfdf78f27eb" jahia:originalUuid="818e322f-3859-46fa-99b0-e3e5d839577c" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+                <lastNewsContainer jcr:primaryType="web_templates:lastNewsContainer" jcr:uuid="6955b5fc-d4f4-4fbf-9d2b-770bd0159a7a" jahia:originalUuid="37a639b7-4984-47c7-aa1d-6074d0e12821" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+                    <display jahia:value="large" jcr:uuid="06a57580-2849-40c7-8736-7916ba862796" jahia:originalUuid="26de4648-64d7-4c95-b648-cd1369e19687"></display>
+                    <maxNews jahia:value="3" jcr:uuid="fa21970d-27e0-4cf4-b018-3b0dd3fce863" jahia:originalUuid="75499053-cf42-4450-943e-46103abf6b62"></maxNews>
+                    <filter jahia:value="project" jcr:uuid="7437ec2a-d820-4297-b222-50782c7162dd" jahia:originalUuid="2f69d72d-6927-4faf-9d79-3e77f15867b4"></filter>
+                </lastNewsContainer>
+            </lastNewsContainerList>
+        </columnA_box>
+    </columnA_boxList>
+    <footerContainerListList jcr:primaryType="web_templates:footerContentContainerList" jcr:uuid="14901541-fa4b-4ca2-9ce1-c160715cfcab" jahia:originalUuid="3c94983d-8d88-4e16-8646-b0a09efb206f" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+        <footerContainerList jcr:primaryType="web_templates:footerContentContainer" jcr:uuid="1066cf9d-7d57-4421-acfb-2fd294a3a760" jahia:originalUuid="59578371-53b4-45b9-b369-fdfa528c4bf7" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+            <footer jahia:value="&lt;BODY&gt;
+	&lt;P&gt;       © Copyright 2002-2009 - ACME International Corp.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="1fca1aef-eaa2-474f-9b72-08789ac34685" jahia:originalUuid="e0395253-8bc1-41eb-9b78-45d3de665764"></footer>
+        </footerContainerList>
+    </footerContainerListList>
+    <logoList jcr:primaryType="web_templates:logoContainerList" jcr:uuid="6b08b31f-84e6-4940-892c-b0a7dbfea79e" jahia:originalUuid="9b44c2e5-8e5b-491d-b0dd-3fcd11d236f7" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+        <logo jcr:primaryType="web_templates:logoContainer" jcr:uuid="ec8b287e-7b7f-4a45-aa7b-b2bd1dcbd1c7" jahia:originalUuid="5ab77c7c-7749-485c-8d54-ed8882d7a2bf" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+            <logo jahia:value="/content/sites/ACME/files/Pictures/Logo/logoACME.jpg" jcr:uuid="ae913d6e-8847-48cb-b194-b7f9e8bc5987" jahia:originalUuid="e61b2494-4cc1-46a5-b5c2-c0647eee0a4d"></logo>
+        </logo>
+    </logoList>
+    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="df02ba63-7399-41a9-9a24-bf3d21feb06d" jahia:originalUuid="826149f6-a523-43c2-adc8-227f378b0f11" jcr:lastModified="2009-05-19T17:18:30" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="19fa710d-3543-4797-b3fc-7d4d6a98531f" jahia:originalUuid="ba15ec29-0d39-4911-baa9-7504cfc54b64" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+            <navLink jcr:uuid="fa797a1a-4890-4f10-a5b9-a0f9d7c8b20b" jahia:originalUuid="a40a606d-dfb8-4cb6-8875-a873728b51ce">
+                <jahia:link jahia:reference="4fb51693-7b3c-4f4e-b658-fad19fca8799" jahia:title="Home" jcr:uuid="e859001e-ee11-46c1-a439-f32be53a0986" jahia:originalUuid="4d632051-5157-47d9-a439-b606c030a948" jahia:pid="68"></jahia:link>
+            </navLink>
+        </navLink>
+        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="185e6385-b97a-4967-be8e-bc1ce2702faa" jahia:originalUuid="91d6d276-4727-42fe-afb1-e6b5ffaf91a8" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+            <navLink jcr:uuid="348e7874-64da-414b-9fe7-d60ee7954058" jahia:originalUuid="afaaf0ad-5e4b-4333-afbd-8b19d3bc0498">
+                <jahia:page jahia:template="simple" jcr:primaryType="web_templates:simple" jahia:title="Activities" jcr:uuid="37d24824-df42-4e36-90d6-7ec305fb6596" jahia:originalUuid="d77dd240-f91b-4caa-84e3-9c2e1fdccbed" jcr:lastModified="2009-05-19T17:38:19" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root" jahia:pid="69">
+                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="3b2f8379-3636-468e-a0cc-8d9ec5912a5d" jahia:originalUuid="fb06fc4e-c367-468a-9942-ad77d5518bef" jcr:lastModified="2009-05-19T17:38:19" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+                        <maincontent jcr:primaryType="jnt:mainContentContainer" jcr:uuid="4aa4a4eb-52b7-4056-b0c6-b6c2a870667e" jahia:originalUuid="9c1381dd-4c99-4604-a18b-01d2fbf9b4b4" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+                            <mainContentBody jahia:value="" jcr:uuid="2d61af77-1b17-4d16-a0d0-e4b9a5da665d" jahia:originalUuid="4f71a9de-23f2-4459-832f-182b2b6467ce"></mainContentBody>
+                            <mainContentAlign jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.left&quot; default-value=&quot;left&quot;/&gt;" jcr:uuid="1346c3eb-32c7-4b67-a239-1a5ffc324a6c" jahia:originalUuid="61904fc2-d196-4302-bc25-a095c74391ba"></mainContentAlign>
+                            <mainContentTitle jahia:value="" jcr:uuid="01149c05-ef71-4f40-8ae8-68e0665d27d4" jahia:originalUuid="6dfd2e76-95a4-4989-aafb-a3ee1457dd84"></mainContentTitle>
+                            <mainContentImage jahia:value="/content/sites/ACME/files/Pictures/BannerTeaser/ACME_banner1.jpg" jcr:uuid="f9fb5141-bc44-4435-8d77-040f8e82323c" jahia:originalUuid="86aa907b-86b9-47c7-a735-5d8f64cba41e"></mainContentImage>
+                        </maincontent>
+                        <maincontent jcr:primaryType="jnt:mainContentContainer" jcr:uuid="587c715f-a00b-41c7-8aeb-31a3c0270558" jahia:originalUuid="e9c69109-bbc2-415f-a922-86608246963e" jcr:lastModified="2009-05-19T17:38:19" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+                            <mainContentTitle jahia:value="ACME activities in Brief" jcr:uuid="7f30e9b0-1af2-450c-8e45-6ed8df8d23da" jahia:originalUuid="a95177ba-1b3b-4e2c-9069-1f794376fb9d"></mainContentTitle>
+                            <mainContentImage jahia:value="" jcr:uuid="b676124e-30fd-4584-9374-f5db9c8b04cb" jahia:originalUuid="fb2216f0-24a1-460a-a860-5470821bad37"></mainContentImage>
+                            <mainContentBody jahia:value="&lt;p&gt;The ACME’s civil engineering activities cover all Civil engineering and Building specialities.&lt;/p&gt;
+&lt;p&gt;In order to continue in that direction ACME committed itself to a strategy of diversification in our activity by investing in strategic businesses which bring added value to the company and which provide the client with a more complete solution.&lt;/p&gt;
+&lt;p&gt;As a result, the company has expanded its activities with a high focus in Research and Development.&lt;/p&gt;
+" jcr:uuid="4c100473-c692-457e-8a6f-6742e45680e7" jahia:originalUuid="54930d9f-fefb-4157-bbf1-fd269380802d"></mainContentBody>
+                            <mainContentAlign jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.left&quot; default-value=&quot;left&quot;/&gt;" jcr:uuid="0220ac8c-33a2-4943-9a6f-e1209af1dd8e" jahia:originalUuid="000fc86e-012a-4d57-86fe-36d217e147e3"></mainContentAlign>
+                        </maincontent>
+                    </maincontentList>
+                    <mainColumn_boxList jcr:primaryType="jnt:boxList" jcr:uuid="efe8c22b-e6bf-453c-a14c-d269c4b669f2" jahia:originalUuid="b7d9cae4-091e-4d46-ae00-c2bcc51e7537" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></mainColumn_boxList>
+                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="9bf921dd-ab2a-4ffd-80a5-16b3bdb3c043" jahia:originalUuid="f883a779-0e6b-4d30-bd7b-b8b999e46095" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:27" jahia:lastPublisher="root">
+                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="b6908ed9-6820-4447-87c4-a228b505ec7a" jahia:originalUuid="dc97681d-81d2-44ac-baac-f98c10c01d0a" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                            <navLink jcr:uuid="61282b7a-aba3-487b-a791-9006a99f0a63" jahia:originalUuid="7ebcc9cd-0f19-4fa0-b2a3-f1d7a91e040f">
+                                <jahia:page jahia:template="simple" jcr:primaryType="web_templates:simple" jahia:title="Construction and Civil engineering" jcr:uuid="daf39568-1537-452e-9406-a9fc9fcbfbd6" jahia:originalUuid="23feff72-e34a-4433-bba2-26481945d93d" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:pid="70">
+                                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="9453352c-4622-4053-8910-c958cb3f3798" jahia:originalUuid="bb773cae-414a-4abf-ae64-eaf0146b86dc" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                        <maincontent jcr:primaryType="jnt:mainContentContainer" jcr:uuid="977ebec2-fb1e-4e1a-ac55-63c23c635ec5" jahia:originalUuid="992f3a87-0fe7-424b-97b6-62ae7944f5cf" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <mainContentBody jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Acme is active in major infrastructure schemes, as well as local projects across the world.&lt;/P&gt;
+	&lt;P&gt;The Group's power, combined with the complementary expertise of its companies, leads to the creation of high-quality structures in foundations, earthworks, civil engineering, buildings, underground projects, sewerage and road networks.&lt;/P&gt;
+	&lt;P&gt;Mindful of the living environment and natural resources, Acme employees work in harmony to provide personalised and innovative solutions.&lt;/P&gt;
+	&lt;P&gt;Acme designs, builds, renovates and restores all types of buildings required for human activity: houses and apartment blocks, industrial and commercial premises, public amenities, hospitals, offices, hotels and museums, etc.&lt;BR/&gt;      &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="a6502675-32cd-49a4-a7e5-003fe7e6c944" jahia:originalUuid="a27df054-2821-49cf-a459-d49f2e4860fe"></mainContentBody>
+                                            <mainContentAlign jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.left&quot; default-value=&quot;left&quot;/&gt;" jcr:uuid="ba879a0f-fb6f-43ac-aff5-1d50926a234f" jahia:originalUuid="3ad3dbbc-e465-475a-8e9c-bcd616e4c944"></mainContentAlign>
+                                            <mainContentTitle jahia:value="Design and management of large-scale projects" jcr:uuid="55f4f4cf-10cb-46a8-8893-db26efef6a10" jahia:originalUuid="e485d424-e366-4abe-b14d-c4c3ed149d4e"></mainContentTitle>
+                                            <mainContentImage jahia:value="" jcr:uuid="a2732fb2-27fc-4860-8ea5-d6a40c46e2da" jahia:originalUuid="3b95992d-6348-4df8-a7e0-bf326b9129e8"></mainContentImage>
+                                        </maincontent>
+                                    </maincontentList>
+                                    <mainColumn_boxList jcr:primaryType="jnt:boxList" jcr:uuid="4b8eb4d3-3c85-4169-ac56-f1c120f68faf" jahia:originalUuid="b69a9176-d659-49a4-ad5d-d1e0335a61bb" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></mainColumn_boxList>
+                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="ebe01ff4-a0ff-4632-b607-25d55e10750a" jahia:originalUuid="bd3a9e37-6f94-4360-ae5b-fb9d9e81a6a8" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></navLinkList>
+                                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="43c4e0ef-9a68-4305-947a-8c0786e2228c" jahia:originalUuid="a307bc96-2dc1-41be-81d7-9ad627aaad9a" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                                </jahia:page>
+                            </navLink>
+                        </navLink>
+                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="dae71a48-8815-4adb-b1b2-677110387f49" jahia:originalUuid="41dc7bc8-78a7-4314-a060-34b98600fbd7" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                            <navLink jcr:uuid="e8d2e21f-de4d-4d09-80ba-27772473c59b" jahia:originalUuid="a0bff740-aeb9-4447-87b4-32760db26fe1">
+                                <jahia:page jahia:template="simple" jcr:primaryType="web_templates:simple" jahia:title="Research and Innovation" jcr:uuid="4f775d39-51d9-43bf-ab95-96c8ae57849d" jahia:originalUuid="60c9c70e-35ec-4418-95c5-323b37fac958" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:pid="71">
+                                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="f32b962b-24a6-4f3d-8a16-9410ee258bda" jahia:originalUuid="aee1e458-93ec-471a-8b60-7a63e0ad0db5" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                        <maincontent jcr:primaryType="jnt:mainContentContainer" jcr:uuid="1443fbf5-eb17-4a11-b47f-b25098a689b0" jahia:originalUuid="1038082a-5ca7-4762-8e07-08aff4aa924d" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <mainContentBody jahia:value="&lt;BODY&gt;
+	&lt;P&gt;A leader always strives to provide its customers with products that are innovative and offer high added value. In 2008, Acme intends to achieve 5% of its sales revenue from innovative products that were developed in the last 5 years. Research occupies a central position in the Group's strategy.&lt;BR/&gt;   &lt;BR/&gt;   At the core of Acme strategy, research and innovation contribute to the competitiveness of the projects proposed by the Group’s various entities. The entities innovate as part of their construction projects, at the commercial stage, in both design and construction. They conduct research aimed at improving safety, construction quality and the performance of materials and equipment. They also work to optimise lead-times, to make jobs less difficult, and to reduce the impact of projects on the environment.&lt;BR/&gt;      &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="4da4b748-85da-480d-958c-ff8dd903d7c4" jahia:originalUuid="3d42ebff-d34e-41dd-8df8-26b6e0432837"></mainContentBody>
+                                            <mainContentAlign jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.left&quot; default-value=&quot;left&quot;/&gt;" jcr:uuid="2b046d3c-993f-486e-ad54-490068bfa04f" jahia:originalUuid="4715cff5-9841-4120-ba0f-68b09f34f67b"></mainContentAlign>
+                                            <mainContentTitle jahia:value="One of the most important focus in ACME strategy" jcr:uuid="f11f6de1-e60b-4f67-be9d-40c0d48c9453" jahia:originalUuid="82288dfd-aecd-485a-b987-289d006cfe22"></mainContentTitle>
+                                            <mainContentImage jahia:value="" jcr:uuid="beea0805-9b07-4314-8ace-350afdcbd214" jahia:originalUuid="0a64f7a2-269c-47ce-8316-0bb04a661334"></mainContentImage>
+                                        </maincontent>
+                                    </maincontentList>
+                                    <mainColumn_boxList jcr:primaryType="jnt:boxList" jcr:uuid="368a617a-b944-4508-832f-a28ddf54f1b2" jahia:originalUuid="7a1897a6-33de-4779-82d4-f7ac962b25d3" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></mainColumn_boxList>
+                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="4ba3c22f-d3bf-4334-82b4-835dc429049c" jahia:originalUuid="d7b71a40-0755-4390-8a3d-3365a4d8f05e" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></navLinkList>
+                                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="2d50900d-8eb3-46ff-9274-bd1bceb60b85" jahia:originalUuid="14afe6b6-2de1-4f86-9451-19ed5dbd42d0" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                                </jahia:page>
+                            </navLink>
+                        </navLink>
+                    </navLinkList>
+                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="c15dc10f-cb4d-4305-9a9d-357a06366914" jahia:originalUuid="fdab254a-1e24-499e-b774-3753462913ac" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                </jahia:page>
+            </navLink>
+        </navLink>
+        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="a82a21f2-1142-4895-a7a0-bdc6862dfee7" jahia:originalUuid="fb5be452-bbf1-4093-8ab6-c794adf4b452" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:27">
+            <navLink jcr:uuid="08fe6f9a-54d7-44a5-97b7-8b3f8c7b9e69" jahia:originalUuid="c394a8bc-3d70-4eaa-962c-df79b598ab35">
+                <jahia:page jahia:template="events" jcr:primaryType="web_templates:events" jahia:title="Event" jcr:uuid="03a22643-9d19-4fd8-9145-f94c20fa9c7a" jahia:originalUuid="400a181d-a4d0-4a60-bc8d-4d7373a40b5c" jcr:lastModified="2009-05-19T18:05:58" jahia:lastPublishingDate="2009-05-19T18:04:47" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:pid="72">
+                    <introductionList jcr:primaryType="web_templates:introductionContainerList" jcr:uuid="6feceb66-e327-4167-b681-629d04586e2c" jahia:originalUuid="b93765c7-2683-4769-80bd-d28a055f1051" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:27">
+                        <introduction jcr:primaryType="web_templates:introductionContainer" jcr:uuid="eb5e2910-f990-493c-ac52-7b459b9f6b84" jahia:originalUuid="933ee358-b1c3-4067-9f17-974010c94a55" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:27">
+                            <introduction jahia:value="&lt;div&gt;Acme participates in a large number of national and international events. The objective: to contribute to discussions on urbanism, architecture and sustainable construction.&lt;/div&gt;
+" jcr:uuid="21240b9e-afb6-4df2-8a30-001ff67f35a2" jahia:originalUuid="cca8bb30-8cfd-42de-8d0a-00fc53961107"></introduction>
+                        </introduction>
+                    </introductionList>
+                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="0ce14a75-5598-41f5-ac85-0b7a2e939c74" jahia:originalUuid="7e6899ab-8403-4740-959e-272accfcd45e" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="fab73abd-d088-4d24-87bf-8806f976cabf" jahia:originalUuid="2c0bd653-1ce7-4e12-a283-0ae3c8aba9a8" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></navLinkList>
+                    <eventsList jcr:primaryType="web_templates:eventContainerList" jahia:sortHandler="web_templates_events_events_startDate;desc;true;false" jcr:uuid="53465f17-b4e6-4eaa-8b5e-af53e131b522" jahia:originalUuid="61939b04-e8a8-4233-a4ee-3950ac77348a" jcr:lastModified="2009-05-19T18:05:58" jahia:lastPublishingDate="2009-05-19T18:04:47" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublisher="root">
+                        <events jcr:primaryType="web_templates:eventContainer" jcr:uuid="f4e75b5a-9ee1-40e2-8401-c3dfaf022aad" jahia:originalUuid="3091089f-feb2-4be4-b610-0c5d9df24e52" jcr:lastModified="2009-05-19T18:04:47" jahia:lastPublishingDate="2009-05-19T18:04:47" jcr:created="2009-05-19T17:13:00" jahia:createdBy="root" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:defaultCategory="project">
+                            <startDate jahia:value="2009-11-16T00:00:00" jcr:uuid="8e6c7e78-fc1b-4b80-adcf-919d6ecd27b0" jahia:originalUuid="1d7d590c-666a-4790-ae4b-33a62d16152f"></startDate>
+                            <location jahia:value="Shanghai" jcr:uuid="e5cbb9a3-a77c-4446-9f92-4eda5b53675e" jahia:originalUuid="d0f1a994-0c86-4183-ad81-ce6eac6bed4e"></location>
+                            <title jahia:value="Architectural Symposium - Phase 2" jcr:uuid="5d739425-5d2c-4c66-9f7f-97b198275fe9" jahia:originalUuid="9fd94cb0-0e7d-4a0f-b0a3-ae676110c456"></title>
+                            <endDate jahia:value="2009-11-19T00:00:00" jcr:uuid="9859f817-8f4a-4776-9aad-12a91c22d353" jahia:originalUuid="573cb4d5-5083-4925-b566-982d4fa7275d"></endDate>
+                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Three key words - urbanity, infrastructure and landscape - mobilized some 60 architects, urban designers and European and Chinese government representatives around the issues of large-scale urban development.&lt;BR/&gt;   In late 2005, the theme of the Shanghai Symposium was &quot;How to harmonize infrastructure and landscape in the gigantic urban complexes which are the cities of the 21st century?&quot;&lt;BR/&gt;   &lt;BR/&gt;   The agenda included 3 days of debates organized by Acme  &lt;/P&gt;
+	&lt;P&gt;International experts presented 4 major urbanism projects.&lt;BR/&gt;      &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="63287e7e-799b-4414-b22e-6505ea8df3d6" jahia:originalUuid="12637083-ab1b-4deb-8044-def965df4338"></body>
+                            <eventsType jahia:value="&lt;jahia-resource id=&quot;resources.eventsType&quot; key=&quot;events.type.conference&quot; default-value=&quot;events.type.conference&quot;/&gt;" jcr:uuid="d2a02608-7383-447a-b988-a65a85868448" jahia:originalUuid="ba382a67-25c8-4cb7-8134-5768cbc0f4f7"></eventsType>
+                        </events>
+                        <events jcr:primaryType="web_templates:eventContainer" jcr:uuid="a89d03ab-87e3-4487-bb95-4a34a238197b" jahia:originalUuid="04c0eaf3-c0a5-47c8-86da-8fc3afc7febc" jcr:lastModified="2009-05-19T18:04:47" jahia:lastPublishingDate="2009-05-19T18:04:47" jcr:created="2009-05-19T17:13:00" jahia:createdBy="root" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:defaultCategory="project$$$business">
+                            <startDate jahia:value="2009-04-21T00:00:00" jcr:uuid="fd578497-42ab-4562-8119-98e71ffaf569" jahia:originalUuid="ccaec4d0-6109-49f6-b6ad-80977efb3081"></startDate>
+                            <location jahia:value="New York" jcr:uuid="1ad22eb6-cf33-44d2-947a-62c8336de793" jahia:originalUuid="5e2aa929-5861-4797-8e82-99c41e0bb2a0"></location>
+                            <title jahia:value="“Solid States: Changing Time for Concrete” conference - Phase 2" jcr:uuid="a78cca2a-41b8-48b2-bf7c-21dee7228c12" jahia:originalUuid="623dffd5-494d-4fc2-8f84-39220644da61"></title>
+                            <endDate jahia:value="2009-04-24T00:00:00" jcr:uuid="07ea9ec1-2f7f-42d6-99e5-e9b7c5707151" jahia:originalUuid="2c30d04a-ee6a-4872-b818-c4b19d1d46be"></endDate>
+                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;For the 2nd year running, Columbia's Graduate School of Architecture organized a series of conferences on materials. The &quot;Solid States: Changing Time for Concrete&quot; conference focused on concrete.&lt;/P&gt;
+	&lt;P&gt;In exclusive partnership with Acme, leading architects, engineers and academics came together around the theme of concrete and turned the spotlight on its future developments and potential uses at a time of intense urbanization.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="03e4a9e8-8589-44fa-8269-7634ce6d3b51" jahia:originalUuid="311f1bb5-f03c-4912-a90d-528deb4d7703"></body>
+                            <eventsType jahia:value="&lt;jahia-resource id=&quot;resources.eventsType&quot; key=&quot;events.type.conference&quot; default-value=&quot;events.type.conference&quot;/&gt;" jcr:uuid="a5f7d9fd-99da-4d4c-ac54-a0a0b04a1bda" jahia:originalUuid="11b1e6c2-9b42-4948-8371-91226f8add9b"></eventsType>
+                        </events>
+                        <events jcr:primaryType="web_templates:eventContainer" jcr:uuid="666ba086-7cad-455c-9db5-9bd638795615" jahia:originalUuid="aeac2794-1165-4a2f-837c-991236d88da1" jcr:lastModified="2009-05-19T18:04:47" jcr:created="2009-05-19T17:13:00" jahia:lastPublishingDate="2009-05-19T18:04:47" jahia:createdBy="root" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:defaultCategory="project$$$cat1$$$Produit$$$Information System$$$Marketing">
+                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;For the 2nd year running, Columbia's Graduate School of Architecture organized a series of conferences on materials. The &quot;Solid States: Changing Time for Concrete&quot; conference focused on concrete.&lt;/P&gt;
+	&lt;P&gt;In exclusive partnership with Acme, leading architects, engineers and academics came together around the theme of concrete and turned the spotlight on its future developments and potential uses at a time of intense urbanization.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="8b53dff2-922b-45be-b211-43730557d49a" jahia:originalUuid="d6a8a9b4-d556-4023-8b35-e0152e026a58"></body>
+                            <endDate jahia:value="2009-07-02T00:00:00" jcr:uuid="cbf8881f-6578-4dae-a6e9-fa707e4fcfec" jahia:originalUuid="7ed83313-4c8a-48dd-93ca-d0b90fe51755"></endDate>
+                            <title jahia:value="“Solid States: Changing Time for Concrete” conference - Phase 1" jcr:uuid="35857c0a-b526-4209-9487-75b105a921ac" jahia:originalUuid="b637d540-eeec-46c0-9b27-9678668ca51e"></title>
+                            <location jahia:value="New York" jcr:uuid="501b865b-d36a-4d41-bae6-232d6c717502" jahia:originalUuid="e82219a4-9efa-4224-b4c2-c61cce185faf"></location>
+                            <startDate jahia:value="2009-06-30T00:00:00" jcr:uuid="83bb263c-2e9e-4406-bfb0-a898a73d2208" jahia:originalUuid="770648ab-249f-4b41-a67b-bc5b3b999415"></startDate>
+                            <eventsType jahia:value="&lt;jahia-resource id=&quot;resources.eventsType&quot; key=&quot;events.type.conference&quot; default-value=&quot;events.type.conference&quot;/&gt;" jcr:uuid="b79b2ac3-2ee8-4829-b698-6e92c3b0fa70" jahia:originalUuid="49fa4132-6405-44d0-938c-d1474e0f635d"></eventsType>
+                        </events>
+                        <events jcr:primaryType="web_templates:eventContainer" jcr:uuid="3ad55a30-4020-49b2-a494-d39416fef6e8" jahia:originalUuid="2545724d-e065-4c3f-9a1b-be71ee308955" jcr:lastModified="2009-05-19T18:04:47" jahia:lastPublishingDate="2009-05-19T18:04:47" jcr:created="2009-05-19T17:13:00" jahia:createdBy="root" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:defaultCategory="project$$$business$$$Management">
+                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Three key words - urbanity, infrastructure and landscape - mobilized some 60 architects, urban designers and European and Chinese government representatives around the issues of large-scale urban development.&lt;BR/&gt;   In late 2005, the theme of the Shanghai Symposium was &quot;How to harmonize infrastructure and landscape in the gigantic urban complexes which are the cities of the 21st century?&quot;&lt;BR/&gt;   &lt;BR/&gt;   The agenda included 2 days of debates organized by Acme&lt;BR/&gt;  &lt;/P&gt;
+	&lt;P&gt;International experts presented 4 major urbanism projects.&lt;BR/&gt;      &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="e68c01b2-313d-47ed-bfbd-6e80b8dac80e" jahia:originalUuid="8511697c-d2a5-4177-9be8-18b2ebe4187a"></body>
+                            <endDate jahia:value="2009-01-27T00:00:00" jcr:uuid="82f9c52f-bfe5-4415-b8d4-0e1e3192386a" jahia:originalUuid="9d627a92-2548-4896-82ad-32f408a7f30e"></endDate>
+                            <title jahia:value="Architectural Symposium - Phase 1" jcr:uuid="67ecd7fe-6df6-4f53-bcb8-6b457332f28d" jahia:originalUuid="8e0ba144-4aec-4727-908e-c3f1c7197ed4"></title>
+                            <location jahia:value="Shanghai" jcr:uuid="66c0b8b8-9710-41af-b546-65b40a036573" jahia:originalUuid="66b6feb3-9bce-4b95-b850-2058c7f9b2fc"></location>
+                            <startDate jahia:value="2009-01-26T00:00:00" jcr:uuid="e8d2691a-c586-4bb8-9675-4e2791bbc62a" jahia:originalUuid="06629940-50fb-48b9-bcd1-2c98b7fe7905"></startDate>
+                            <eventsType jahia:value="&lt;jahia-resource id=&quot;resources.eventsType&quot; key=&quot;events.type.conference&quot; default-value=&quot;events.type.conference&quot;/&gt;" jcr:uuid="57eba6a3-433a-4fd7-98a3-6b05682d6f04" jahia:originalUuid="29735631-3525-4e1c-8f24-80cc2bf35954"></eventsType>
+                        </events>
+                        <events jcr:primaryType="web_templates:eventContainer" jcr:uuid="a25c732d-ce31-44ef-981f-1c8b33e06c8c" jahia:originalUuid="666ba086-7cad-455c-9db5-9bd638795615" jcr:lastModified="2009-05-19T18:05:58" jahia:createdBy="root" jcr:created="2009-05-19T18:05:14" jahia:defaultCategory="project$$$cat1$$$Produit$$$Information System$$$Marketing" jahia:lastModifiedBy="root">
+                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;For the 2nd year running, Columbia's Graduate School of Architecture organized a series of conferences on materials. The &quot;Solid States: Changing Time for Concrete&quot; conference focused on concrete.&lt;/P&gt;
+	&lt;P&gt;In exclusive partnership with Acme, leading architects, engineers and academics came together around the theme of concrete and turned the spotlight on its future developments and potential uses at a time of intense urbanization.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="39ae7b6b-d100-4a96-bcea-d3a5a3f08def" jahia:originalUuid="8b53dff2-922b-45be-b211-43730557d49a"></body>
+                            <endDate jahia:value="2009-07-02T00:00:00" jcr:uuid="4868dd21-2e33-4dd6-a622-cefc7133e7b6" jahia:originalUuid="cbf8881f-6578-4dae-a6e9-fa707e4fcfec"></endDate>
+                            <title jahia:value="“Solid States: Changing Time for Concrete” conference - Phase 3" jcr:uuid="18a97138-5774-422d-ba81-8c8a02044dac" jahia:originalUuid="35857c0a-b526-4209-9487-75b105a921ac"></title>
+                            <location jahia:value="New York" jcr:uuid="0c513792-6faa-48e9-a165-7a044893280a" jahia:originalUuid="501b865b-d36a-4d41-bae6-232d6c717502"></location>
+                            <startDate jahia:value="2009-06-30T00:00:00" jcr:uuid="03e2f912-d8eb-4924-8b57-98c67c6964cb" jahia:originalUuid="83bb263c-2e9e-4406-bfb0-a898a73d2208"></startDate>
+                            <eventsType jahia:value="&lt;jahia-resource id=&quot;resources.eventsType&quot; key=&quot;events.type.conference&quot; default-value=&quot;events.type.conference&quot;/&gt;" jcr:uuid="00717ccd-0aba-4dfc-b790-095e09cf32b5" jahia:originalUuid="b79b2ac3-2ee8-4829-b698-6e92c3b0fa70"></eventsType>
+                        </events>
+                    </eventsList>
+                </jahia:page>
+            </navLink>
+        </navLink>
+        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="1c07d753-3536-468a-a32f-da3f16b719cf" jahia:originalUuid="2e5180e5-cc42-415a-a687-e7d8c0c1f90a" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+            <navLink jcr:uuid="7c5178f4-c46a-42e9-ab32-c9a562ed000d" jahia:originalUuid="05aa9a06-2ecf-41a1-a273-83ee5951da0a">
+                <jahia:page jahia:template="publication" jcr:primaryType="web_templates:publication" jahia:title="Publications" jcr:uuid="c8ac2569-4153-43ab-9e40-9b67be38c790" jahia:originalUuid="6db54612-e8c4-4f5a-ba42-9b75936cdb0e" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:pid="73">
+                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="99701882-8d6b-4e95-8baa-b7c6843a31b7" jahia:originalUuid="84dbdf3c-8aec-46e4-9f76-e0ddfa79c382" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                    <introductionList jcr:primaryType="web_templates:introductionContainerList" jcr:uuid="87abe316-8fd7-409b-9f5d-e41807970639" jahia:originalUuid="ceda3d70-df60-4431-8b05-66dc05d3bfd6" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                        <introduction jcr:primaryType="web_templates:introductionContainer" jcr:uuid="5bd53de8-c3fd-4d9c-9d42-df43af4f0526" jahia:originalUuid="4ce101bd-9501-47fc-af98-97ec71e51f20" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                            <introduction jahia:value="&lt;p&gt;ACME provides instant access to the latest documentation, White Papers, Customer cases studies and much more. Search and select the document you would like to read and just download it.&lt;/p&gt;
+" jcr:uuid="dbacfed1-d05c-485e-97ee-314a6ad111c6" jahia:originalUuid="7b7720fb-958f-4982-a50a-02d23832a546"></introduction>
+                        </introduction>
+                    </introductionList>
+                    <publicationList jcr:primaryType="web_templates:publicationContainerList" jcr:uuid="f660af87-b3a7-4252-9a81-3bf163decc61" jahia:originalUuid="7bb17ea9-67fe-4482-8c4c-8a43517b0906" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="37450ebe-95bc-45ef-b625-6dbfd7b2b61b" jahia:originalUuid="5d2e5abd-0c0e-4dbf-a3c6-5a0f1a13bc34" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                            <author jahia:value="Marketing Department" jcr:uuid="255939b5-6122-4042-857b-8566c44ed14d" jahia:originalUuid="f84091c5-4e37-4415-8ce5-71b9bbbdbcf2"></author>
+                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_BuildingFirstClassHotelUS.pdf" jcr:uuid="ed61efee-964b-47e0-ab8d-c4fce026b151" jahia:originalUuid="42a59873-9b2f-4ed0-9dcb-0df47b2e6414"></file>
+                            <date jahia:value="02/01/2009" jcr:uuid="3e7a9615-5eb2-4987-9eb7-bb45cc7033d1" jahia:originalUuid="5d5044a9-17b4-4a00-88f3-12c18b30ff0b"></date>
+                            <title jahia:value="How ACME is building First Class Hotel US" jcr:uuid="743c417a-de21-4e7b-a856-91b3897ed00d" jahia:originalUuid="7581915a-8dec-4fc0-ad96-01d1b183fd3f"></title>
+                            <source jahia:value="ACME" jcr:uuid="f8ead957-cec0-4ddd-ab47-c8182bddf3d0" jahia:originalUuid="db45537f-04be-4822-a9ba-30ba81d54c5b"></source>
+                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="e53a2dba-4cb1-4bbe-a666-1725cb2a2b08" jahia:originalUuid="bf5258d3-319b-48b8-b72e-56bcefc87d58"></preview>
+                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;This white paper explains how ACME delivered several first class Hotel in the US. Even if the document shows a lot of technical references, non technical people will be able to discover the value of technical innovation and ideas developed by ACME engineers. (document en anglais)&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="efa404e7-ed59-46d4-b5a6-dd2dc1d797b7" jahia:originalUuid="3f376e2e-2c68-4782-9230-4a8b25637916"></body>
+                        </publication>
+                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="80601a00-15ac-4b5c-9e7d-83a013471fab" jahia:originalUuid="cae8fca2-e842-40e8-b69e-c6deff9465e8" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                            <body jahia:value="&lt;p&gt;This white paper explains how ACME delivered several major Hospital infrastructure in Europe. Even if the document shows a lot of technical references, non technical people will be able to discover the value of technical innovation and ideas developed by ACME engineers.&lt;/p&gt;
+" jcr:uuid="236daf34-88fb-4a63-8aa3-e20a27029896" jahia:originalUuid="a02ad700-6665-4be1-9db6-e71e97f15fcc"></body>
+                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="254e2ed3-403b-44b5-906f-d95fc0f3e98d" jahia:originalUuid="dafa575e-da55-4228-8766-940853bd274a"></preview>
+                            <source jahia:value="ACME" jcr:uuid="795ccb54-80b3-4d0b-b95b-bf0427de0283" jahia:originalUuid="59df5740-8354-4aa4-aab1-09aa9d1f2306"></source>
+                            <title jahia:value="How ACME is building major Hospital infrastructure in Europe" jcr:uuid="dcd2bdb0-2985-4624-8062-c40ba880dfd7" jahia:originalUuid="0234e40e-0d0d-4e29-b4ae-aa7ebacbfa19"></title>
+                            <date jahia:value="02/01/2009" jcr:uuid="39f8bae0-4b8e-4da7-994c-9d8f4020fdd1" jahia:originalUuid="7360061d-cf4b-4f5b-88a2-48ff0c62222d"></date>
+                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_BuildingHospitalEurope.pdf" jcr:uuid="4d0c0f27-fe83-49ba-b426-7b7a93678e91" jahia:originalUuid="8f6ffa26-f718-46a0-a648-f2295fa09adc"></file>
+                            <author jahia:value="Marketing Department" jcr:uuid="8eda45de-7355-4807-826a-6cad23d20905" jahia:originalUuid="391bb95c-06d3-4970-884e-887281c33509"></author>
+                        </publication>
+                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="49170f0d-452c-49f1-b799-2ad2bf165788" jahia:originalUuid="ebe49de7-cb7f-40b6-9822-3d71d4c775ec" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;This white paper explains how ACME delivered extraordinary briges around the world. Even if the document shows a lot of technical references, non technical people will be able to discover the value of technical innovation and ideas developed by ACME engineers.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="09eb28b5-149e-4523-9251-3f7838454489" jahia:originalUuid="5e503071-7ffc-4cc5-8fa4-938717eec7fb"></body>
+                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="3f50dd8b-54e3-4349-9a1b-98135a8b42b0" jahia:originalUuid="396fb122-dab0-4b77-9f7e-807faea8f6fa"></preview>
+                            <source jahia:value="ACME" jcr:uuid="1f274514-6227-4590-a97e-50261ad5f5e7" jahia:originalUuid="d1cbccdb-bff4-47dd-8632-2b6710cff78d"></source>
+                            <title jahia:value="How ACME is building extraordinary bridges around the world" jcr:uuid="c7234ea9-d845-4001-ad12-ee350bbc21df" jahia:originalUuid="c6324649-7055-4eb5-a358-dae9d87ec19b"></title>
+                            <date jahia:value="02/01/2009" jcr:uuid="a6faae05-2189-4a67-ad9e-c20d177a31aa" jahia:originalUuid="4d7646fa-868b-4058-85c3-93a648db3114"></date>
+                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_BuildingBridges.pdf" jcr:uuid="1b6fc704-4f3e-4575-8a81-e4686ad33f53" jahia:originalUuid="7947aa7f-df14-4b20-924b-70655abace21"></file>
+                            <author jahia:value="Marketing Department" jcr:uuid="5c282057-2b32-4070-87eb-6d1eb12b5ffc" jahia:originalUuid="bbdf8eb6-d6f9-454f-a978-6c8b148f2aa4"></author>
+                        </publication>
+                    </publicationList>
+                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="cd4fd147-1e30-4d1f-9242-628a88f7667d" jahia:originalUuid="04e2db18-d3a5-439e-933b-d22274a3ff81" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="2888572a-d1de-4329-96b8-ef36c3234c11" jahia:originalUuid="76ff07a3-fd87-4920-ac48-2a7dd1077152" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                            <navLink jcr:uuid="2c2d7b33-ec9c-4059-bbb9-5c87501eb0c5" jahia:originalUuid="e913014a-467e-495c-a880-1a789f9f06b3">
+                                <jahia:page jahia:template="publication" jcr:primaryType="web_templates:publication" jahia:title="2008 Publications" jcr:uuid="08dd7b4d-6b68-481f-9573-8c4e5f790a8d" jahia:originalUuid="503c2f0c-e4f0-4836-ab93-2edb7d5a7d6a" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:pid="74">
+                                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="f46f2d23-e200-491c-861d-c3e181447940" jahia:originalUuid="c6e4b776-96f5-4fcd-ba3b-d2a505f436a0" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                                    <introductionList jcr:primaryType="web_templates:introductionContainerList" jcr:uuid="dd0e5298-6550-4cf8-abb1-1fcdc3298c80" jahia:originalUuid="f9acbca5-9ddf-49ba-8a28-f2d970e71fd4" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></introductionList>
+                                    <publicationList jcr:primaryType="web_templates:publicationContainerList" jcr:uuid="38754b4c-7177-43a5-8ac5-1a56987d3b07" jahia:originalUuid="e0d695b1-fd86-45e5-a1e5-13cc1ee110a9" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="3b71a8a8-6b8e-4724-ab98-5962957e2e90" jahia:originalUuid="191f78c5-8f2e-4a94-aa35-75f053637e6c" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <author jahia:value="Marketing Department" jcr:uuid="3117f2b7-1ff2-43e0-b604-362601b0b5cf" jahia:originalUuid="31dc6e5d-5cd2-41d5-97c2-7077554d5eb8"></author>
+                                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_LoremIpsum.pdf" jcr:uuid="5ca8944e-fdc7-4219-acc8-d0b36d55e0c0" jahia:originalUuid="e6cc3999-ab27-47f3-96eb-9bc191df00cc"></file>
+                                            <date jahia:value="2008" jcr:uuid="d147230c-2fdb-45ba-afa3-674ae0e7c1c5" jahia:originalUuid="9429e08b-3969-49fe-89b0-a285e9861f49"></date>
+                                            <title jahia:value="Lorem ipsum dolor sit amet" jcr:uuid="a09927a4-eeb6-47d2-8802-354d572a7de3" jahia:originalUuid="4f5b237e-90e6-42e1-b67d-a5d74aceb3b3"></title>
+                                            <source jahia:value="ACME" jcr:uuid="37b029d6-1192-43d8-a444-76a36c91874b" jahia:originalUuid="fad8528b-b350-4ae7-aa61-2a7e07e3f185"></source>
+                                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="07ec7e20-e6df-4717-a0dc-815154f28efb" jahia:originalUuid="c6cf2692-5012-438b-9d54-e14735ca0eed"></preview>
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="67b13411-459a-4061-86d8-a6590ead9615" jahia:originalUuid="f94f7eaa-3177-4eb4-943c-e45d3517a416"></body>
+                                        </publication>
+                                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="b91856fe-e198-43ba-9683-2367d8c580f9" jahia:originalUuid="ca3bac85-834a-4fe8-bd91-154c91fa7f44" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="cafc1921-e189-4a4b-8836-1976e5a18a23" jahia:originalUuid="f0014d57-f856-43de-8655-c8b891f77f82"></body>
+                                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="7e0b7970-ae5f-4bd5-9193-3fe54d5b8c57" jahia:originalUuid="66a74006-0b37-494c-82da-0c3c0ca8493a"></preview>
+                                            <source jahia:value="ACME" jcr:uuid="acbc81ed-0e48-49f2-a5b0-79f145e044da" jahia:originalUuid="f6ec66c8-cc17-4f3b-8f20-cd4df3a64ff6"></source>
+                                            <title jahia:value="Lorem ipsum dolor sit amet" jcr:uuid="4753ba48-7280-45d0-bdf8-931c8f51ec07" jahia:originalUuid="de4fa07c-0d61-45f8-9479-5ab6b93756c6"></title>
+                                            <date jahia:value="2008" jcr:uuid="bd4c3f2a-8b9b-48ac-99c2-99073354e9cc" jahia:originalUuid="051c35de-c3a1-4598-ba8d-c47ec20b9253"></date>
+                                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_LoremIpsum.pdf" jcr:uuid="a3e24ee8-220c-4297-88e6-9db26f4a1daa" jahia:originalUuid="3fc6ad4b-f916-4a2f-8f07-9d9c7e2464d7"></file>
+                                            <author jahia:value="Marketing Department" jcr:uuid="9182d8ef-2909-4522-a7d0-c13feba7067d" jahia:originalUuid="ce266064-062e-4234-adbf-add6ba42295e"></author>
+                                        </publication>
+                                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="4a60b18a-0c1f-47ee-a6da-fa6930d5372c" jahia:originalUuid="7986cb91-3f3f-4745-9751-f14f7c033aa9" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="20867d65-4c02-46eb-92ef-cd015b56943d" jahia:originalUuid="2b583752-0276-40d1-9bbd-26303277c05f"></body>
+                                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="96076f3e-4f77-4f6a-8eb3-355f0d29add4" jahia:originalUuid="073e5441-75b4-41fa-b2c4-3bb06aa89175"></preview>
+                                            <source jahia:value="ACME" jcr:uuid="463af363-7163-4fdd-a4c5-67c0a58db06f" jahia:originalUuid="8cf880f4-5111-4497-8342-7fd1bd211669"></source>
+                                            <title jahia:value="Lorem ipsum dolor sit amet" jcr:uuid="05198029-5e5b-45b2-bccf-71b5b1aff02f" jahia:originalUuid="e7c751e4-228e-4089-b8c5-c2b0b67f72bb"></title>
+                                            <date jahia:value="2008" jcr:uuid="443532a7-a242-4416-aa73-efb8a1e14783" jahia:originalUuid="0a2472fb-833c-48f8-b867-23059e8dd26f"></date>
+                                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_LoremIpsum.pdf" jcr:uuid="b9da0d09-81d0-4347-ad4a-a6eabd5fd884" jahia:originalUuid="ae0c45e5-d3e7-4913-90c6-6a7455e82c74"></file>
+                                            <author jahia:value="Marketing Department" jcr:uuid="3d49bc5a-030e-456e-b594-e50958ce1081" jahia:originalUuid="97d5eb60-2926-4ccc-8f71-534e657a1db8"></author>
+                                        </publication>
+                                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="f728c836-5321-48d8-a539-5b8f45e7bd41" jahia:originalUuid="5618818a-040d-4faa-8730-33a0719a4760" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="ba9cea8a-49fa-4270-9a46-e8688a0a8566" jahia:originalUuid="1bf33602-8404-4357-b0f7-c9985325e364"></body>
+                                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="ac962ce0-45b4-4dad-ac04-1bea53a6aa4b" jahia:originalUuid="e48a38e0-46c2-4797-beec-317d382c7edd"></preview>
+                                            <source jahia:value="ACME" jcr:uuid="2753b64b-3ec1-427f-b34b-951129aac247" jahia:originalUuid="f4cc688e-e34f-4c69-b495-48159133b227"></source>
+                                            <title jahia:value="Lorem ipsum dolor sit amet" jcr:uuid="e31d6186-1a32-4e47-8cc6-092363791838" jahia:originalUuid="e958c84d-d584-4bc1-a319-b5b352ea8727"></title>
+                                            <date jahia:value="2008" jcr:uuid="54c5bd33-3fb0-48fa-9d30-e39edc107ffe" jahia:originalUuid="82336d17-d340-42a0-985b-f09a40b0170c"></date>
+                                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_LoremIpsum.pdf" jcr:uuid="5060844f-69fc-4f8e-95c9-54f0e6531141" jahia:originalUuid="6110ab2d-41ec-4c0b-bde4-2c9380cd275f"></file>
+                                            <author jahia:value="Marketing Department" jcr:uuid="f4498820-be06-488f-b88f-c3607db47528" jahia:originalUuid="12f4cf7c-e90b-4889-bf80-89876a0fbe1e"></author>
+                                        </publication>
+                                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="c877952c-1ff4-4c71-9a01-6c60bfaab732" jahia:originalUuid="984e35a7-607b-40f6-9af7-e697cfb39276" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="218e4a17-c0a4-4fe6-aa59-20689baffc5a" jahia:originalUuid="4b727abc-ebdb-4930-b16e-5fbaa2de6df9"></body>
+                                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="c6565559-fa8f-4bcb-b2a8-374bc8ae81a8" jahia:originalUuid="750c1ff7-f225-46c3-af4b-27d269222961"></preview>
+                                            <source jahia:value="ACME" jcr:uuid="d67dad7b-5f09-4e02-9c30-86f3f923a9bc" jahia:originalUuid="6a74a6a2-a8c6-4ce4-8622-7efa3085eb6d"></source>
+                                            <title jahia:value="Lorem ipsum dolor sit amet" jcr:uuid="e8b8c345-0e43-44c5-b7df-bb274e57b1af" jahia:originalUuid="80b76693-6b96-4685-9330-86396eeefc0e"></title>
+                                            <date jahia:value="2008" jcr:uuid="74bc59c4-49a1-4685-bbd9-0d1f0d6d2da9" jahia:originalUuid="c69555d6-40a9-4b73-a961-756fb2450178"></date>
+                                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_LoremIpsum.pdf" jcr:uuid="70a3198b-4433-4da6-8a64-dc7f913cd34b" jahia:originalUuid="8d897278-071a-49e8-b883-dde6fbd2d80b"></file>
+                                            <author jahia:value="Marketing Department" jcr:uuid="3ead494b-3f65-42ea-b8b3-56ba8222db9e" jahia:originalUuid="2a434bc4-f0d4-4bd2-aaba-58f647d0b5d3"></author>
+                                        </publication>
+                                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="c5756328-d63f-4648-8d54-320046424e69" jahia:originalUuid="23a74244-6bc0-42dd-b757-da3a03a5beb6" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="dc0b24d6-97c8-458f-8948-a4efb6ea7278" jahia:originalUuid="f99c65e3-2d15-492d-90b8-06aa6900013a"></body>
+                                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="ef891ce5-d557-4fd5-a704-262e14124e81" jahia:originalUuid="a34b86b4-e989-4436-bdb2-ed521f5ff0bf"></preview>
+                                            <source jahia:value="ACME" jcr:uuid="dc1421f9-bbf7-450e-a6e7-70f73d1d2ce1" jahia:originalUuid="a4ce7b29-7856-4fe1-b232-1cee633e5087"></source>
+                                            <title jahia:value="Lorem ipsum dolor sit amet" jcr:uuid="1e656e62-a320-43a0-84e0-be221a669291" jahia:originalUuid="07658983-cf61-4a47-bb1c-97b301653031"></title>
+                                            <date jahia:value="2008" jcr:uuid="2c3e3c85-a866-47e0-8c50-076c5c351e04" jahia:originalUuid="740a0635-35a9-4944-97a5-f18769022cf3"></date>
+                                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_LoremIpsum.pdf" jcr:uuid="2378f515-79ec-4f24-9363-db446823ed11" jahia:originalUuid="6cc07f35-3a8a-4d87-9e01-2329c68b1c29"></file>
+                                            <author jahia:value="Marketing Department" jcr:uuid="a27fb4c8-70af-4ff6-bd72-f5f08e1476b3" jahia:originalUuid="d2a7f3e3-e837-423e-9f06-088a4fd674ad"></author>
+                                        </publication>
+                                    </publicationList>
+                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="2968f050-4c91-4748-8220-742522769f8b" jahia:originalUuid="9304d083-fdb4-4fea-a92c-6ec2775e4429" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></navLinkList>
+                                </jahia:page>
+                            </navLink>
+                        </navLink>
+                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="742b1d87-b8c0-4408-bf38-6aca031521a7" jahia:originalUuid="3bbf1f0b-0fe4-45f1-9570-690595f467e8" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                            <navLink jcr:uuid="2d16e7ca-3e2d-4ad7-95c2-44afdf93d474" jahia:originalUuid="acaeaf9c-38cf-44db-881a-3d16dc028318">
+                                <jahia:page jahia:template="publication" jcr:primaryType="web_templates:publication" jahia:title="2007 Publications" jcr:uuid="c0568134-3a5c-43ee-9964-d0b01cecd7fd" jahia:originalUuid="2f60d087-d12b-4837-a764-4f04367ac9a1" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:pid="75">
+                                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="e58b3f22-12d6-40d7-90f3-7d12e18834fd" jahia:originalUuid="95420ea8-e45c-4e56-88ad-e73f799afa7d" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                                    <introductionList jcr:primaryType="web_templates:introductionContainerList" jcr:uuid="05d25b2d-45e5-4652-997b-38a5f15cb3de" jahia:originalUuid="0a6b68e3-70ae-4d75-bb70-9c1c7af7e03d" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></introductionList>
+                                    <publicationList jcr:primaryType="web_templates:publicationContainerList" jcr:uuid="6f562216-7173-4438-b852-4de51106fc14" jahia:originalUuid="776b846b-2a05-4c55-a084-71872dfb6aca" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="a8b1655b-387f-4c3e-90c4-63cbcbbab4f4" jahia:originalUuid="7a9e9ac8-e7f6-433c-bd9f-84b6ca12616c" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="60d701d6-ab87-48d4-8d06-757f19bc48f0" jahia:originalUuid="2bd67a66-c7be-40fd-8a0d-df5bbb0eadb3"></body>
+                                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="71667df5-0a7c-4b0e-9352-8256aa3bec80" jahia:originalUuid="e854ed48-c975-4ff0-bcd8-8790c41da58a"></preview>
+                                            <source jahia:value="ACME" jcr:uuid="8885ed2b-9e05-42f2-83ce-2807d1eb0c96" jahia:originalUuid="7019b23c-3d8e-4fa2-8043-c66caad1cffe"></source>
+                                            <title jahia:value="Lorem ipsum dolor sit amet" jcr:uuid="0b6628cf-c51a-4d18-bc22-f665bf1a27eb" jahia:originalUuid="0271ff39-62e6-47e0-a4fd-9d2b9342e899"></title>
+                                            <date jahia:value="2007" jcr:uuid="3691e246-4e2f-4af7-a487-f0b1f5ccf4a8" jahia:originalUuid="96d62cba-695d-4e73-8aa4-8ffceb6c9269"></date>
+                                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_LoremIpsum.pdf" jcr:uuid="876371fa-0696-4d56-a847-ad47f38a4f0c" jahia:originalUuid="212e285b-6b27-419f-8ac3-7eac752846d7"></file>
+                                            <author jahia:value="Marketing Department" jcr:uuid="5c5aaff7-93e7-4840-8001-7d6d35d6744d" jahia:originalUuid="17f0ec06-9cec-4c9c-96ce-c59ea2fc09f4"></author>
+                                        </publication>
+                                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="d9172555-7f82-40fa-b726-e5f55f79e8e8" jahia:originalUuid="85256543-2216-46f6-a722-5dda7e5939ea" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <author jahia:value="Marketing Department" jcr:uuid="0f416496-9778-4064-aa81-1293b6272f67" jahia:originalUuid="310944a2-c127-49a1-9e95-26b22666165f"></author>
+                                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_LoremIpsum.pdf" jcr:uuid="5a9aaff8-767d-4286-8fc3-68ced21f4f35" jahia:originalUuid="70723b6d-df77-4704-b6c4-474fc761efee"></file>
+                                            <date jahia:value="2007" jcr:uuid="0a06de49-5caa-4bfa-b95a-0fd791c5ab64" jahia:originalUuid="60c530c9-34d9-49b5-b65a-567677500bcf"></date>
+                                            <title jahia:value="Lorem ipsum dolor sit amet" jcr:uuid="44491c6a-432b-427a-991f-9c714f67acc8" jahia:originalUuid="a1503a64-6bf9-4e84-a13d-6c29a588fbe5"></title>
+                                            <source jahia:value="ACME" jcr:uuid="2abb0ba5-3429-4813-888e-00b653a2ede2" jahia:originalUuid="a3706efc-0a1b-432d-8949-cb67cf287cb2"></source>
+                                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="3942fad5-d685-4a2e-82a1-e66f8b1ac016" jahia:originalUuid="b030412f-2e3c-47a6-b184-0e155bff15d6"></preview>
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="f343d29f-473c-4715-b581-f69c7c79ae59" jahia:originalUuid="2f782c86-7a74-4756-b455-6985a79b56c3"></body>
+                                        </publication>
+                                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="bd6a279a-2e7b-48c0-bc96-4eec73e8efe3" jahia:originalUuid="147ab4dc-c6f9-4b43-b52a-a6eb468680d4" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <author jahia:value="Marketing Department" jcr:uuid="0966af0b-10cc-4e15-a5c2-0b4f007a4b90" jahia:originalUuid="2648571a-4dbe-4428-a4ea-26075edc4f59"></author>
+                                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_LoremIpsum.pdf" jcr:uuid="b708c4dd-e3db-4535-babb-57a3a43644aa" jahia:originalUuid="00cd3471-329f-45c4-b525-1a100d8f510f"></file>
+                                            <date jahia:value="2007" jcr:uuid="b8697ec6-e0b8-441a-bfdc-4f96c9c0acd2" jahia:originalUuid="90485c54-9c63-44a7-9cc4-d0c5f5f4e4f7"></date>
+                                            <title jahia:value="Lorem ipsum dolor sit amet" jcr:uuid="f4ead0fd-9d99-4327-b7dc-76d5f2c33c91" jahia:originalUuid="5518675b-d2e1-4807-b39a-625f22413baa"></title>
+                                            <source jahia:value="ACME" jcr:uuid="6e4a0018-5a81-4efb-ad3e-882232a3b1bc" jahia:originalUuid="ff5bb227-28f8-4642-9f00-e079bc63bdba"></source>
+                                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="a4213a23-9a55-4d63-b07c-ac6ce21aa76d" jahia:originalUuid="3100b633-6f3a-4a3c-b3eb-f0629cb67c17"></preview>
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="3b7709d9-f538-4fa4-9e2a-79948dc9ebf9" jahia:originalUuid="88317bda-ae82-4a74-973f-68ba225f2971"></body>
+                                        </publication>
+                                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="db46506d-2c3f-40c6-a599-18552fd4e0f9" jahia:originalUuid="15802b04-28fc-4028-96fc-0f384f72e1a0" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <author jahia:value="Marketing Department" jcr:uuid="5823773d-7ece-4dab-87c0-a8189f19b386" jahia:originalUuid="dc7bd86b-1159-4c74-a44b-a5a145792cfe"></author>
+                                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_LoremIpsum.pdf" jcr:uuid="1157f2b9-3942-4faa-9c70-996848a92f5a" jahia:originalUuid="c519bacf-2167-4b15-928d-d728ea5fd1d8"></file>
+                                            <date jahia:value="2007" jcr:uuid="9d264e5c-93a2-4dfd-9d0d-cea01f71dcd6" jahia:originalUuid="6138213a-356a-4ce5-9524-d7547aa64a0c"></date>
+                                            <title jahia:value="Lorem ipsum dolor sit amet" jcr:uuid="a319ea3a-b985-4ed6-9e5f-c77dd056190c" jahia:originalUuid="5333ed9a-2859-475c-839a-8626ae9714fc"></title>
+                                            <source jahia:value="ACME" jcr:uuid="086ea5db-286e-4363-9c32-5ebf3a309dc5" jahia:originalUuid="0e0d2ee4-4bb1-41bc-b9db-d894ac4d0027"></source>
+                                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="50193db6-3c3a-40bc-b9d0-df221d4fe592" jahia:originalUuid="52a7ef97-9d1e-4c92-bf90-e0a657b74fa8"></preview>
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="3dfc3d78-0679-404a-8399-e96412946559" jahia:originalUuid="f67f61af-39f3-45d7-aa2f-fc69e21efc26"></body>
+                                        </publication>
+                                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="bc2c7485-62b8-4c3e-bc36-714dbb3cb28e" jahia:originalUuid="0c462a35-f063-4b27-a84a-a347672595f7" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <author jahia:value="Marketing Department" jcr:uuid="017aea7a-4720-4efd-9639-3b433ae1bb35" jahia:originalUuid="e8f53641-0f22-4c5e-8273-84a3a605c6d2"></author>
+                                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_LoremIpsum.pdf" jcr:uuid="f08e1b26-60ef-4fe6-be19-dacfe654c96e" jahia:originalUuid="725a5800-d6b0-40b6-a31b-99fb36694669"></file>
+                                            <date jahia:value="2007" jcr:uuid="be562890-dcac-43fd-9be9-6b663c5e620c" jahia:originalUuid="be52bdee-41d5-42eb-a80e-0242afc52620"></date>
+                                            <title jahia:value="Lorem ipsum dolor sit amet" jcr:uuid="d887fd73-8123-46b5-9731-edb5137a199b" jahia:originalUuid="9b4dcd66-7031-4fb0-8552-d9045369266e"></title>
+                                            <source jahia:value="ACME" jcr:uuid="03798ce0-077a-40c4-9dc7-5ba8131e527e" jahia:originalUuid="81112be0-a9e3-4273-b475-144d59ede887"></source>
+                                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="c4a4d973-a3fc-412d-a496-4cc2672e04c4" jahia:originalUuid="d2a69ccf-475d-43fd-9348-4a2dfee7f298"></preview>
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="017fe5ba-e16b-4470-acab-43ffb19a54a4" jahia:originalUuid="62221175-f134-4887-8c19-7c3ddf2bf739"></body>
+                                        </publication>
+                                        <publication jcr:primaryType="web_templates:publicationContainer" jcr:uuid="e8809aeb-b6e4-4542-88fa-4d263e56e602" jahia:originalUuid="5abe1ea6-d06a-4c31-83a8-cd1501759f37" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <author jahia:value="Marketing Department" jcr:uuid="0f8f359b-d5b5-4064-9bac-504c7a1f46e6" jahia:originalUuid="3914dada-0f68-4314-b6c8-77e18a28e8e4"></author>
+                                            <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_LoremIpsum.pdf" jcr:uuid="db1d4ce3-41b6-4a2e-a6f4-7936a6ca0699" jahia:originalUuid="979e463e-7abf-4701-ba62-dab051406682"></file>
+                                            <date jahia:value="2007" jcr:uuid="26b8e5db-23f1-4ad7-81b2-7b3bc7034bdf" jahia:originalUuid="38792a60-724b-4499-b91f-11ce62275d0c"></date>
+                                            <title jahia:value="Lorem ipsum dolor sit amet" jcr:uuid="1ccc5490-ddba-4d11-a862-f84de1bbd465" jahia:originalUuid="d864bb23-d42a-47a1-ade8-30d714a02f64"></title>
+                                            <source jahia:value="ACME" jcr:uuid="65e2d4e8-5e83-4cb8-b921-0ffa65b581cc" jahia:originalUuid="f8d2d37f-8c11-4997-8dd3-5a2e8328f230"></source>
+                                            <preview jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_WP_Cover.jpg" jcr:uuid="88a3b21a-b7f9-4f38-bbce-7b4be7e39fa0" jahia:originalUuid="e2c55132-4842-4648-b62a-e6115e6d2a09"></preview>
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="8e4f245e-ee54-48f8-a285-8c051393fb6a" jahia:originalUuid="eb2c353b-6def-408e-87eb-eeb4fe95928c"></body>
+                                        </publication>
+                                    </publicationList>
+                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="8ac169f2-40b1-4786-bb53-d2b66f36e629" jahia:originalUuid="1694d86c-a03a-4d73-9aa4-b279a7e4794b" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></navLinkList>
+                                </jahia:page>
+                            </navLink>
+                        </navLink>
+                    </navLinkList>
+                </jahia:page>
+            </navLink>
+        </navLink>
+        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="60428eea-eeb6-4bb2-a493-4c001f13e111" jahia:originalUuid="b3a018c6-3a6d-44aa-ab39-a264b00c925b" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+            <navLink jcr:uuid="42482fb0-3bd7-4628-8fc2-9ebb5873893b" jahia:originalUuid="ac3e416d-b531-4018-8b84-72122025fd15">
+                <jahia:page jahia:template="news" jcr:primaryType="web_templates:news" jahia:title="News" jcr:uuid="b7b2e778-eb6f-4d0d-b63d-5885cd8d3c64" jahia:originalUuid="92f3a78f-8534-437b-91a4-87ea83105942" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:pid="76">
+                    <newsList jcr:primaryType="web_templates:newsContainerList" jahia:sortHandler="created;desc;false;true" jcr:uuid="570fb041-aaf9-4f3b-91fb-f2ceecf1045e" jahia:originalUuid="bddbdd2c-ae11-496b-bd7f-e4fc430adafd" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                        <news jcr:primaryType="web_templates:newsContainer" jcr:uuid="fded4898-e2fe-42aa-ab3e-5f9b7e4db7ee" jahia:originalUuid="bea6b891-1f4d-46fd-b480-7f4c0eec67ed" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:defaultCategory="business" jahia:lastModifiedBy="root">
+                            <newsDesc jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Booming economy, the Middle East develops its infrastructure networks. Well positioned in this market since several years, Acme opened an agency in Dubai dedicated to marketing power coating and road machinery.&lt;BR/&gt;   Through one of its subsidiaries, Acme has had very good results, with the sale of several power plants, including one for the construction of a new airport. This subsidiary enables the Group to improve its customer relationship and facilitate the interventions of its after-sales service.&lt;BR/&gt;      &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="58de9165-ff5d-45e3-a7b1-b5fedb72d1f8" jahia:originalUuid="18a2ef11-0cb6-408e-8b62-063f3605e073"></newsDesc>
+                            <newsImage jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/illustration10.jpg" jcr:uuid="70d6eb99-361f-4978-a80a-9da92748e27c" jahia:originalUuid="2443148f-2334-446b-a1c3-d572113d972e"></newsImage>
+                            <newsTitle jahia:value="Acme strengthens its presence in the Emirates" jcr:uuid="684a6b67-6691-4b7c-99c1-1f01147533aa" jahia:originalUuid="898b71fa-be6e-4e84-8058-0f9f192b6dca"></newsTitle>
+                            <newsDate jahia:value="2009-01-13T16:52:00" jcr:uuid="dfcb1e99-b4ff-4ac3-a955-5dc29aa4a8b3" jahia:originalUuid="069aa907-f91d-44a9-9cad-8e95e4df2d74"></newsDate>
+                            <isCommentable jahia:value="false" jcr:uuid="98bb1575-57ac-4927-9790-b9e7e7ade4c2" jahia:originalUuid="78c438f4-296c-456f-9f2a-ef91d696a5d8"></isCommentable>
+                        </news>
+                        <news jcr:primaryType="web_templates:newsContainer" jcr:uuid="5cf1edfe-b024-4597-af4d-05c393d8e35d" jahia:originalUuid="5d1cb1c7-17ce-44b6-bc6b-0039043bf1ed" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:defaultCategory="project" jahia:lastModifiedBy="root">
+                            <newsDesc jahia:value="&lt;BODY&gt;
+	&lt;P&gt;ACME and the Civil Engineering Department of the Nice Polytechnic officialised their future cooperation with the signing of a partnership agreement in October 2008. The aim is to foster mutual knowledge and to establish a long-lasting relationship within the framework of many different actions.&lt;/P&gt;
+	&lt;P&gt;For the next three years, the Polytechnic undertakes to develop contacts between ACME and the students, lecturers and researchers. The agreement also encompasses conferences to be given by experts, visits to worksites, study trips and placements offers for students at various levels of training.&lt;/P&gt;
+	&lt;P&gt;Acme will promote the Civil Engineering Department of the Polytechnic by informing its personnel of the educational programme and research projects. It will circularise offers for placements and study and/or research subjects. The company will provide the Department with information on actions for technical assistance, consultancy, surveys, etc. It will support the requests of the Polytechnic for contributions under the apprenticeship tax scheme.&lt;/P&gt;
+	&lt;P&gt;This cooperation will be focused on two fields of teaching in particular, proposed by the Polytechnic, that are in fact the core businesses of ACME, namely Steelworks, Building and Public Works.&lt;BR/&gt;      &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="1e7eb9cb-9d42-46f5-937e-d0fd17b0794a" jahia:originalUuid="a201d956-5416-484e-9421-f4a4b38d8cb8"></newsDesc>
+                            <newsImage jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/illustration6.jpg" jcr:uuid="60ec7b71-0d6f-4f26-be80-cdad7f1a149f" jahia:originalUuid="30ab0b13-e39f-4e65-8888-1d8b7541a019"></newsImage>
+                            <newsTitle jahia:value="ACME signs a partnership with POLYTECH’Nice" jcr:uuid="d6a290f6-d7f9-43a9-86f9-29535fa60cd8" jahia:originalUuid="f8dbeed8-968d-427b-ae4a-5a9a5f2453e7"></newsTitle>
+                            <newsDate jahia:value="2009-01-15T09:22:00" jcr:uuid="484d4266-c79a-4c47-a0bf-415a0344ec3f" jahia:originalUuid="83ee13a0-b7db-4220-8352-73c65121796a"></newsDate>
+                            <isCommentable jahia:value="false" jcr:uuid="bc6ff5e1-fa6f-4a87-a9a3-544de9dd94fe" jahia:originalUuid="ccdf6083-9223-47c8-b2bb-d8775e80e8de"></isCommentable>
+                        </news>
+                        <news jcr:primaryType="web_templates:newsContainer" jcr:uuid="d387c697-6b0d-4b3b-a304-30fe738487aa" jahia:originalUuid="8f79ab03-deb1-47c1-b225-738edd64837e" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:defaultCategory="business" jahia:lastModifiedBy="root">
+                            <newsDesc jahia:value="&lt;BODY&gt;
+	&lt;P&gt;We are pleased to announce the expansion of our company to the city of Hong Kong since the 1st of January.&lt;/P&gt;
+	&lt;P&gt;Our new office is now open and located at the following address: No 20A/98, Thai Ha street North Point Hong Kong.&lt;/P&gt;
+	&lt;P&gt;This new subsidiary allows us to address this growing market with a local team of expert.&lt;/P&gt;
+	&lt;P&gt;Our commitment to excellence, combined with our mission to deliver outstanding project, has earned our company the excellent reputation it enjoys today.&lt;/P&gt;
+	&lt;P&gt;2009 will be the year of expansion and new challenge for our company.&lt;BR/&gt;      &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="73609e0a-cd71-45cd-bd88-498fd820b527" jahia:originalUuid="479a5e14-2324-4b40-b9b5-2cb79b006c2d"></newsDesc>
+                            <newsImage jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/illustration7.jpg" jcr:uuid="a67bc502-9af4-406f-9673-d8e75be3b213" jahia:originalUuid="246df2b1-11a2-4d23-8b1f-7e87393bdc18"></newsImage>
+                            <newsTitle jahia:value="New Office announcement in Hong Kong for ACME" jcr:uuid="c1b6296b-6b81-4471-8360-4f0bc0e00a87" jahia:originalUuid="d433a139-dbd2-4893-b8df-dedbd6a303fc"></newsTitle>
+                            <newsDate jahia:value="2009-01-19T11:34:00" jcr:uuid="c88c17cd-8ab4-4d4c-9064-704afa92f4d1" jahia:originalUuid="cbf15edf-50c7-4930-8a6e-20710fba511c"></newsDate>
+                            <isCommentable jahia:value="false" jcr:uuid="109b5a2c-c5ac-440f-85e1-51df28314847" jahia:originalUuid="88e6d56e-4489-4faa-b23a-43ac594097f8"></isCommentable>
+                        </news>
+                        <news jcr:primaryType="web_templates:newsContainer" jcr:uuid="264ccfbe-84a6-4aaf-a981-4a4ec2123b8e" jahia:originalUuid="9c82814f-46e4-4f8e-9cce-0840f9c0144c" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:defaultCategory="project" jahia:lastModifiedBy="root">
+                            <newsDesc jahia:value="&lt;BODY&gt;
+	&lt;P&gt;From the concept to completion, it took 6 years for this building of 180-metres high with 47 storeys and four basement levels.&lt;/P&gt;
+	&lt;P&gt;The building is located along the southern side of Statue Square at the location of the old City Hall, Hong Kong.&lt;/P&gt;
+	&lt;P&gt;The main characteristics of the new Hotel are its absence of internal supporting structure and the way the light is thinking.&lt;/P&gt;
+	&lt;P&gt;Natural light is the major source of lighting inside the hotel that is made it totally spectacular and uncommon.&lt;BR/&gt;      &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="efcca986-1eb4-4ea5-8b2c-1fb00f92a231" jahia:originalUuid="d25d3c4e-80e0-4109-a4b5-cb07118c4e54"></newsDesc>
+                            <newsImage jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/illustration8.jpg" jcr:uuid="10b054c4-6727-45d4-bff3-35aeda215ecd" jahia:originalUuid="43c0806e-faf2-4a37-be45-fa4fd04290dc"></newsImage>
+                            <newsTitle jahia:value="New 5 stars hotel in Hong Kong build by ACME Contruction" jcr:uuid="8fe30bb6-8d80-43f4-a739-3d94648a60d7" jahia:originalUuid="0aa807cb-4534-4e47-af70-110e04190685"></newsTitle>
+                            <newsDate jahia:value="2009-01-19T11:35:00" jcr:uuid="badc7e46-24f6-4bdd-b39c-e60b9c81db4c" jahia:originalUuid="ebfdaf1c-4a58-4a95-96ec-a7cfbc653256"></newsDate>
+                            <isCommentable jahia:value="false" jcr:uuid="471e0f5b-7eea-40d9-aa60-49438d1290b4" jahia:originalUuid="8a628d1c-383d-4bb4-a972-ba16c29f7ca4"></isCommentable>
+                        </news>
+                    </newsList>
+                    <introductionList jcr:primaryType="web_templates:introductionContainerList" jcr:uuid="5599b24b-7c48-4f44-b45d-6f6e1aede8d7" jahia:originalUuid="99f9871c-3ddd-452e-aac1-225a312decb5" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></introductionList>
+                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="3e08ced3-53fc-433b-b9b9-b4ac5cc381ee" jahia:originalUuid="75a68c69-7229-4bd6-a1ca-798bc9c33160" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="c85339cf-3868-45a1-b18e-ea65d7ff702c" jahia:originalUuid="3900737d-db2a-40cf-af4f-466a4f36e42f" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                            <navLink jcr:uuid="5655a1a0-a61d-4b3c-b10b-85f4f8addab0" jahia:originalUuid="0900bdd8-675a-4866-b646-3cc09b01d40b">
+                                <jahia:page jahia:template="news" jcr:primaryType="web_templates:news" jahia:title="News Archives (2008)" jcr:uuid="e098be94-ff9b-47f8-8eca-f24e927666e0" jahia:originalUuid="4afb3bc1-5917-4feb-ac2f-de25663a2aa0" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:pid="77">
+                                    <newsList jcr:primaryType="web_templates:newsContainerList" jahia:sortHandler="created;desc;false;true" jcr:uuid="37baaf21-5c7e-435b-b8de-4e706025c988" jahia:originalUuid="e2b804b9-28c9-439c-be02-041afb5f886b" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                        <news jcr:primaryType="web_templates:newsContainer" jcr:uuid="cabb55ac-0403-4330-a83d-f3e367748ec5" jahia:originalUuid="ba00773e-e495-4f34-9f62-47b5b6a4e2b5" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <newsDesc jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+	&lt;P&gt; &lt;/P&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+	&lt;P&gt; &lt;/P&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="497d62f7-0395-460b-ab71-2613419d30ef" jahia:originalUuid="fd0d3418-71b7-4c13-92fa-710f2d7d2742"></newsDesc>
+                                            <newsTitle jahia:value="Lorem ipsum dolor sit amet 2008" jcr:uuid="27c91466-7976-4c82-ab70-674baa7a5543" jahia:originalUuid="a6b3e88b-23ac-4759-9101-551559ebde28"></newsTitle>
+                                            <newsImage jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/defaultAcmePic.gif" jcr:uuid="0755b129-6b33-4ad9-af9f-aa1de52a1b7b" jahia:originalUuid="d2d33711-0a25-4d03-9001-94e115631f00"></newsImage>
+                                            <isCommentable jahia:value="false" jcr:uuid="a31a8cdc-d652-4417-9d2d-28f8ef78aa5d" jahia:originalUuid="0848494f-a8a4-409b-8303-d8479dfce5c3"></isCommentable>
+                                            <newsDate jahia:value="2008-06-18T00:00:00" jcr:uuid="f0dad388-0785-47e0-8148-7460f824ea11" jahia:originalUuid="cfabb872-66e7-4253-9279-70798398a73a"></newsDate>
+                                        </news>
+                                        <news jcr:primaryType="web_templates:newsContainer" jcr:uuid="7f2ff0e7-29e3-45b2-8c26-42730ec03973" jahia:originalUuid="c979d6e6-950a-489b-bd00-be156d5a9669" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <newsDate jahia:value="2008-03-20T00:00:00" jcr:uuid="26ce64f9-1f14-40e9-9e28-bf551b0f5278" jahia:originalUuid="2a18e9d2-c952-41f7-bd55-7e3b0a843dbc"></newsDate>
+                                            <isCommentable jahia:value="false" jcr:uuid="dfe2323a-946a-4b5c-87a6-83bf1129d4ba" jahia:originalUuid="6193da95-e4a3-4073-8583-5c29b58e0783"></isCommentable>
+                                            <newsImage jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/defaultAcmePic.gif" jcr:uuid="efa3dbe1-4f50-4375-8b15-ebf763c4eff0" jahia:originalUuid="06398017-0d91-4f98-8e79-06461a65a136"></newsImage>
+                                            <newsTitle jahia:value="Lorem ipsum dolor sit amet 2008" jcr:uuid="4a84b516-cb92-452f-a59e-7dd6b6671cf4" jahia:originalUuid="365e027c-d352-4534-80c7-23f8fb441297"></newsTitle>
+                                            <newsDesc jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+	&lt;P&gt; &lt;/P&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+	&lt;P&gt; &lt;/P&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="35a8772a-0665-4ee8-8e58-3118d87168f7" jahia:originalUuid="1f3648c9-2f48-4bbc-afb0-6965965e3bce"></newsDesc>
+                                        </news>
+                                        <news jcr:primaryType="web_templates:newsContainer" jcr:uuid="2d80f5a7-992a-4249-bebe-e9baf12c9c40" jahia:originalUuid="cf60422e-4e50-4647-8a86-f6ed8855aafd" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <newsDate jahia:value="2008-02-14T00:00:00" jcr:uuid="07ae3e76-0860-4058-b20e-00e2f7609ef0" jahia:originalUuid="c3bad84f-f829-4094-bb52-72593b77ba94"></newsDate>
+                                            <isCommentable jahia:value="false" jcr:uuid="5898f521-5b34-4c12-b0a7-07e267196bbc" jahia:originalUuid="fbddda35-9c81-4610-b8e3-3a7c1fa1bb7c"></isCommentable>
+                                            <newsImage jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/defaultAcmePic.gif" jcr:uuid="1650f1ad-eda7-4c9f-88a1-ad933192c46f" jahia:originalUuid="bd46f90c-0c57-4756-90fd-707b701c8ee1"></newsImage>
+                                            <newsTitle jahia:value="Lorem ipsum dolor sit amet 2008" jcr:uuid="7fac6536-8344-4f43-9b23-c395f37fd168" jahia:originalUuid="a11e6e6d-f849-4de9-a80f-d1f9a9b57d0b"></newsTitle>
+                                            <newsDesc jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+	&lt;P&gt; &lt;/P&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+	&lt;P&gt; &lt;/P&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="39c11670-a0c2-45e1-a146-76196a275b1f" jahia:originalUuid="a0b3bf51-3c8a-4b4d-8161-56072635b37d"></newsDesc>
+                                        </news>
+                                        <news jcr:primaryType="web_templates:newsContainer" jcr:uuid="ba12cb3d-1630-4840-a673-b59924f8901e" jahia:originalUuid="96d8ea4e-a404-4303-841f-ac5989372683" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <newsDate jahia:value="2008-01-01T00:00:00" jcr:uuid="e92c827b-e06b-4ab3-9499-f5237a9e5e74" jahia:originalUuid="1ff2fe17-9963-479e-a046-1fa6fbb3f364"></newsDate>
+                                            <newsImage jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/defaultAcmePic.gif" jcr:uuid="05802bdf-2f0b-4d66-b8ab-53cdbdc0bc88" jahia:originalUuid="2bfbe49a-a750-425d-b166-ee6800ea3f13"></newsImage>
+                                            <isCommentable jahia:value="false" jcr:uuid="c6a7f3b3-c2fb-4e61-be3b-8e87afdb3311" jahia:originalUuid="065b3d47-0ac9-4daf-a841-5ca330c9d10a"></isCommentable>
+                                            <newsDesc jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+	&lt;P&gt; &lt;/P&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+	&lt;P&gt; &lt;/P&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="c180fced-7a77-46bc-bf21-dcbd35f24b9c" jahia:originalUuid="e2a3deac-e43e-411a-a955-5a6f33fa0794"></newsDesc>
+                                            <newsTitle jahia:value="Lorem ipsum dolor sit amet 2008" jcr:uuid="10b0b6f2-2d1d-4da1-bd8b-712e49041b25" jahia:originalUuid="ec704b16-8aff-4dfa-aa80-db19380eb44a"></newsTitle>
+                                        </news>
+                                    </newsList>
+                                    <introductionList jcr:primaryType="web_templates:introductionContainerList" jcr:uuid="af469e36-fd86-4910-8b7d-9221041b9e11" jahia:originalUuid="1d2e5442-3b1b-44cf-aac6-f8bdcb043317" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></introductionList>
+                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="79975ad5-56ec-4ab0-a1a6-ae1f093f8206" jahia:originalUuid="2d3918be-00d7-480f-8060-188b1330eb99" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></navLinkList>
+                                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="318159ac-b942-448f-ace5-d41a3581cf9b" jahia:originalUuid="a6ffb2ba-143d-4cba-afe8-d16cefa37be1" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                                </jahia:page>
+                            </navLink>
+                        </navLink>
+                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="2e3e606f-5cd4-4324-b468-39abfd283324" jahia:originalUuid="a3e5af2a-c523-4694-b3ab-d19b8fdec9fd" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                            <navLink jcr:uuid="fe65c29d-4355-47fa-b551-2dc81c11f679" jahia:originalUuid="8b1532bb-79eb-4348-9588-8b5f087a39a1">
+                                <jahia:page jahia:template="news" jcr:primaryType="web_templates:news" jahia:title="New Archives (2007)" jcr:uuid="2b650e2f-60d5-410f-8b06-468673c058eb" jahia:originalUuid="493910b3-7764-4fb7-88bb-52eb7fa6063b" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:pid="78">
+                                    <newsList jcr:primaryType="web_templates:newsContainerList" jahia:sortHandler="created;desc;false;true" jcr:uuid="434c31f5-6e3d-474a-81b5-d718a1c9c2f6" jahia:originalUuid="ddd362c8-825f-473e-a655-6d06963df7db" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                        <news jcr:primaryType="web_templates:newsContainer" jcr:uuid="1b02f7cf-472b-4338-876e-ed400dafb3b6" jahia:originalUuid="ee976447-aee8-4840-b671-2d4a8c704dfe" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <newsDate jahia:value="2007-06-18T00:00:00" jcr:uuid="7ead40d7-1f2b-4723-839f-57e0fe684616" jahia:originalUuid="e97ca138-8a39-45c9-b2f8-b96c58ae3888"></newsDate>
+                                            <isCommentable jahia:value="false" jcr:uuid="d7a7d5d7-edc1-4761-8ea3-d51bc69fa676" jahia:originalUuid="b2fd2df2-65b9-46b7-859c-3a5f5ee16249"></isCommentable>
+                                            <newsImage jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/defaultAcmePic.gif" jcr:uuid="9fd3479d-399d-4bb1-9c9d-ebecc64bf04e" jahia:originalUuid="1a26a9b1-3349-4d6c-b459-4048a65dc818"></newsImage>
+                                            <newsTitle jahia:value="Lorem ipsum dolor sit amet 2007" jcr:uuid="0277abf5-ee02-43c6-ba8a-55246bdbfa2e" jahia:originalUuid="25c4bb63-9772-40ab-ad3b-5d75256abce2"></newsTitle>
+                                            <newsDesc jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="c19c1ffb-74ea-4525-96e5-3f8c5b44dc43" jahia:originalUuid="22aee1ce-de62-4512-86d8-1c558e1f87ba"></newsDesc>
+                                        </news>
+                                        <news jcr:primaryType="web_templates:newsContainer" jcr:uuid="591f0135-fe12-42a3-84a4-2602ea73efe8" jahia:originalUuid="fe9c0028-472c-4839-824f-4d2e443075a0" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <newsDesc jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="65c2a063-20ab-43da-bf8b-03f7d2d2ecec" jahia:originalUuid="770f3bfc-74b2-447f-a577-5c3be4becee8"></newsDesc>
+                                            <newsTitle jahia:value="Lorem ipsum dolor sit amet 2007" jcr:uuid="40fef673-a35d-486c-ad15-811723d05a90" jahia:originalUuid="a43d9f26-99af-40a2-a195-d6dd4f5d27a5"></newsTitle>
+                                            <newsImage jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/defaultAcmePic.gif" jcr:uuid="ee6156a3-9cd7-456f-a688-77ed78a7877c" jahia:originalUuid="81599910-5520-4935-a9b2-8dc033f9d0cd"></newsImage>
+                                            <isCommentable jahia:value="false" jcr:uuid="3cafc7df-bb1b-4a5c-b7e4-4ddc6bd69c17" jahia:originalUuid="ca40b7cd-a9af-44bb-a488-1c3e7f4c9990"></isCommentable>
+                                            <newsDate jahia:value="2007-03-20T00:00:00" jcr:uuid="2515c9ee-e036-4dec-a2c0-30b34af56f6e" jahia:originalUuid="dd93174b-067a-4787-9912-b00f42f057a1"></newsDate>
+                                        </news>
+                                        <news jcr:primaryType="web_templates:newsContainer" jcr:uuid="762cdc7b-f329-41fc-a950-ad3e0ae7bb26" jahia:originalUuid="d1a4c164-90fe-466a-a594-08d4d41a1f3c" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <newsDesc jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="b59ae468-f41c-46a9-8b20-5f577b94a877" jahia:originalUuid="c1d3ab2e-026d-4156-9102-d28583a5d0d2"></newsDesc>
+                                            <newsTitle jahia:value="Lorem ipsum dolor sit amet 2007" jcr:uuid="3f7f133e-502f-4654-8e3a-4339bda63662" jahia:originalUuid="6adc6f38-496e-463d-bb8f-703c51d73047"></newsTitle>
+                                            <newsImage jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/defaultAcmePic.gif" jcr:uuid="af0e3a74-7779-4d76-bfcd-2bcff2f48762" jahia:originalUuid="3a3f28ed-d17d-4d45-8ebf-fa5318aa1ae3"></newsImage>
+                                            <isCommentable jahia:value="false" jcr:uuid="8600203d-aa13-48e0-b790-fbab3499549d" jahia:originalUuid="cb414d7b-5147-43dd-b48a-36dd362c81ba"></isCommentable>
+                                            <newsDate jahia:value="2007-02-14T00:00:00" jcr:uuid="08b320f8-1936-495a-9f5d-00c8c9e0675d" jahia:originalUuid="eb84e008-f3d6-4f64-a686-e88fcd7bbe26"></newsDate>
+                                        </news>
+                                        <news jcr:primaryType="web_templates:newsContainer" jcr:uuid="64291c68-2cc6-4ba7-b5da-38a8958bff3a" jahia:originalUuid="5cb6dff6-e36b-4786-b578-5f50861db0c5" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <newsDesc jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="1748f720-20e5-4db7-8f25-c93fcf0e9be5" jahia:originalUuid="e79747b8-4865-464d-93f4-ba5bdaf58582"></newsDesc>
+                                            <newsTitle jahia:value="Lorem ipsum dolor sit amet 2007" jcr:uuid="91f3b840-d653-4e21-a0cc-9ecdf7ce6f97" jahia:originalUuid="0cfc2503-7b6e-416a-8659-4c5186c2e1e7"></newsTitle>
+                                            <newsImage jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/defaultAcmePic.gif" jcr:uuid="17f50709-e7bf-4b4d-b996-84e107859243" jahia:originalUuid="6a5cd5a0-c988-4c6e-8706-2c95bc528c0f"></newsImage>
+                                            <isCommentable jahia:value="false" jcr:uuid="ebc9a71b-fb4d-4389-92e6-ea08e8423594" jahia:originalUuid="dbfdc222-30ae-402e-8034-0dfafba2ebbc"></isCommentable>
+                                            <newsDate jahia:value="2007-01-01T00:00:00" jcr:uuid="abc0d025-5bf5-4cf4-8baa-b1dc27cb5c80" jahia:originalUuid="43abe51f-66ed-4edb-a38e-dfd86c57fd2f"></newsDate>
+                                        </news>
+                                    </newsList>
+                                    <introductionList jcr:primaryType="web_templates:introductionContainerList" jcr:uuid="3483cb92-9c2a-4479-acd4-51b4c8f168c2" jahia:originalUuid="45a48dbc-7d1b-47a9-bccd-c06831ac2285" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></introductionList>
+                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="b4b4e49c-80f0-4a40-92a6-54d97e96c758" jahia:originalUuid="e0cbe778-02bb-4804-ba21-1d28fd12707d" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></navLinkList>
+                                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="f608227d-c380-4973-ad31-8d02e82f6747" jahia:originalUuid="d9ae8630-2553-47a4-94ac-8fb111aeaa41" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                                </jahia:page>
+                            </navLink>
+                        </navLink>
+                    </navLinkList>
+                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="bc7cee03-40e2-491e-a966-78cd178879d0" jahia:originalUuid="3078b306-c251-423f-b54d-7853b0c8a23f" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                </jahia:page>
+            </navLink>
+        </navLink>
+        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="11c5b226-31d0-48ec-aceb-132be1ce2fda" jahia:originalUuid="6ead108f-d84a-46c6-b7af-29ec58f23f9e" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+            <navLink jcr:uuid="93a92a7d-55ca-4774-8c9e-5fc68e82b949" jahia:originalUuid="e96709d3-b800-4c6c-987e-0b7cee17e025">
+                <jahia:page jahia:template="simple" jcr:primaryType="web_templates:simple" jahia:title="About Us" jcr:uuid="0a199a38-3a7c-441c-88be-e93f2e1a556d" jahia:originalUuid="1a2de457-100f-4815-a247-afab23318fd2" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:pid="79">
+                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="d34fb32b-328b-4f5b-ab79-647629b6696e" jahia:originalUuid="5996163c-a06a-40bc-9136-1959e6f828a0" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                        <maincontent jcr:primaryType="jnt:mainContentContainer" jcr:uuid="8808dced-6fb1-4061-9e9d-a387bec3464d" jahia:originalUuid="5c1128b8-21ad-469c-b4df-32466afac677" jcr:lastModified="2009-05-19T17:13:43" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root">
+                            <mainContentBody jahia:value="&lt;empty&gt;
+" jcr:uuid="7c40c924-1ee8-43bd-a9c1-7aba2c889162" jahia:originalUuid="39a4122c-8220-437b-a378-e7acbc0e892e"></mainContentBody>
+                            <mainContentAlign jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.left&quot; default-value=&quot;left&quot;/&gt;" jcr:uuid="f221786f-c3c9-4c9a-954e-8402c6efccc6" jahia:originalUuid="37e98447-794e-4870-8e76-a6eb1c5b89b2"></mainContentAlign>
+                            <mainContentTitle jahia:value="" jcr:uuid="a936815d-1e07-45ef-b2c8-27a92394a195" jahia:originalUuid="1a3fd3e6-ffdb-4da7-b776-04ba17a10d17"></mainContentTitle>
+                            <mainContentImage jahia:value="/content/sites/ACME/files/Pictures/BannerTeaser/ACME_banner2.jpg" jcr:uuid="8439b1fa-0902-47ba-9f32-f8741085d3e5" jahia:originalUuid="4d9fdc35-c6ca-44be-805e-4d7dcf157c8e"></mainContentImage>
+                        </maincontent>
+                        <maincontent jcr:primaryType="jnt:mainContentContainer" jcr:uuid="6cde2a0e-83c1-4637-88ee-dd25c72c176c" jahia:originalUuid="30797e6d-b1f5-47f9-89fc-818042ddb1f2" jcr:lastModified="2009-05-19T17:13:43" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root">
+                            <mainContentBody jahia:value="&lt;BODY&gt;
+	&lt;P&gt;ACME construction, Europe's leading and largest construction group, with more than 40’000 employees around the world&lt;/P&gt;
+	&lt;P&gt;Acme is the main player in Europe and USA, deploying its expertise across the full spectrum of building and infrastructure construction and operating businesses, including property development and road construction.&lt;/P&gt;
+	&lt;P&gt;Founded in 1950, ACME  bases its growth on its international successes, the personal development of its collaborator and the acquisition of companies exercising similar activities with strong recurring profits.&lt;/P&gt;
+	&lt;P&gt;Acme brings together an impressive array of capabilities in building services&lt;BR/&gt;      &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="75b4022c-0b93-4d1d-b0ea-5be260c3d3b0" jahia:originalUuid="7f2a1b5a-c6bf-431d-abfe-10937b851370"></mainContentBody>
+                            <mainContentAlign jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.left&quot; default-value=&quot;left&quot;/&gt;" jcr:uuid="3f86b453-32ed-4d22-b010-f8408705d58e" jahia:originalUuid="ef6c15b6-2c2c-4654-81c2-c2d07ea7ec7d"></mainContentAlign>
+                            <mainContentTitle jahia:value="Acme in Brief" jcr:uuid="9edce311-6b67-4af4-be45-cbf26e22d5a2" jahia:originalUuid="e922e9c3-9291-4080-b56c-d113b51fb4c8"></mainContentTitle>
+                            <mainContentImage jahia:value="" jcr:uuid="7d87cfde-25db-4328-b271-bda90515e334" jahia:originalUuid="8f411f3a-7155-487a-8959-76be10c1f21b"></mainContentImage>
+                        </maincontent>
+                    </maincontentList>
+                    <mainColumn_boxList jcr:primaryType="jnt:boxList" jcr:uuid="7c829c8d-1be5-483a-bc49-b410911952ff" jahia:originalUuid="a08ad80c-2581-4d53-b9d9-0e03c8a505f2" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></mainColumn_boxList>
+                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="1e6442f3-90ea-4fd7-8760-5826f6e743b5" jahia:originalUuid="ee9ee2e9-1ebe-4c2a-b26b-1cdf2b96c50b" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="f6d47c29-ff5b-4ea1-9d06-bed934e018b0" jahia:originalUuid="c0a0386d-133c-40f3-8e52-e66cecd06269" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                            <navLink jcr:uuid="219df46e-357b-4c36-8d18-27297c5bb8a5" jahia:originalUuid="2f5f206c-65b4-486d-b15d-9d15b9841b4c">
+                                <jahia:page jahia:template="people" jcr:primaryType="web_templates:people" jahia:title="Management Team" jcr:uuid="b93df755-3d06-4c06-8e04-26b427485558" jahia:originalUuid="b31971c5-93e6-4bae-be55-4d6390ea3168" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:pid="80">
+                                    <peopleList jcr:primaryType="web_templates:peopleContainerList" jcr:uuid="1620820f-20a2-427c-8fe6-8b4f8d95dc0c" jahia:originalUuid="51f1e854-000a-4202-8e08-659c1a0e9d22" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                        <people jcr:primaryType="web_templates:peopleContainer" jcr:uuid="152f6888-b63a-4fc4-a67e-a564ed721e56" jahia:originalUuid="eefe7c28-c97a-487b-92da-7f47f22882a4" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <peopleFirstname jahia:value="John" jcr:uuid="8427f72c-cf87-4a0c-828e-2fd7f1f56c1f" jahia:originalUuid="abbe7659-7b65-4284-862b-f558103315b0"></peopleFirstname>
+                                            <peopleCellular jahia:value="-" jcr:uuid="ad680031-8c5b-4e46-a796-10cded0bc48c" jahia:originalUuid="176450eb-cd6b-4ffb-8caa-9b2a6af01052"></peopleCellular>
+                                            <peopleBiography jahia:value="&lt;BODY&gt;
+	&lt;P&gt;He was born in 1956, holds a diploma from the Institute for Political Studies in Berlin and a degree in law. He joined Acme in 1981 as Sales executive and later switched to Administration, Management and Finance. After a few years away from the group, he returned in 1992 as Director of Financial and Stock Exchange Operations.&lt;/P&gt;
+	&lt;P&gt;In 1994, he was appointed Senior Vice President of the strategic &quot;Olympic Project” won by the company.&lt;/P&gt;
+	&lt;P&gt;Since February 2003, he has been nominated as Chairman and CEO&lt;BR/&gt;      &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="6229d856-b5e9-4ffc-abba-9c33244d233a" jahia:originalUuid="2037433a-fc33-4dd9-8514-3b741c029266"></peopleBiography>
+                                            <peopleBusinessUnit jahia:value="&lt;jahia-resource id=&quot;WEB_TEMPLATES&quot; key=&quot;web_templates_peopleContainer.peopleBusinessUnit.sales&quot; default-value=&quot;sales&quot;/&gt;" jcr:uuid="1ec25098-11b1-4a96-b993-0cfd36f86493" jahia:originalUuid="25f01241-e5f8-4793-a145-07afebbd945a"></peopleBusinessUnit>
+                                            <peopleLastname jahia:value="Builder" jcr:uuid="6af51d1a-f725-40a5-91cc-894ad6b0c494" jahia:originalUuid="3f07bc68-5b20-404f-a1ef-0f33e2977080"></peopleLastname>
+                                            <peopleFunction jahia:value="CEO" jcr:uuid="82da791a-25f2-4e31-92be-7d0cbff58607" jahia:originalUuid="810f90d4-162f-4cdf-beb0-f29366b96c5a"></peopleFunction>
+                                            <peopleEmail jahia:value="john@acmeinternational.com" jcr:uuid="384e5b8d-cfdd-4dec-bbaf-cedae881cd5f" jahia:originalUuid="8002a641-ea87-41dc-8833-5dca87751ef6"></peopleEmail>
+                                            <peopleFax jahia:value="-" jcr:uuid="170e2813-fbb5-4383-af58-7c96f60cb428" jahia:originalUuid="154005e0-3b6a-4d84-91c0-2dae982e4a15"></peopleFax>
+                                            <peoplePicture jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_MGT_Thumbnail.jpg" jcr:uuid="cae1cad8-0bc4-46cd-b8c4-d405f11e94dd" jahia:originalUuid="61461ac5-b0e3-4a6a-8bdd-02490181749b"></peoplePicture>
+                                            <peopleTelephone jahia:value="-" jcr:uuid="bf76b84b-9baa-4383-8dd4-86883aeb0592" jahia:originalUuid="11667052-26a9-4938-afe4-f0a252c7da9b"></peopleTelephone>
+                                        </people>
+                                        <people jcr:primaryType="web_templates:peopleContainer" jcr:uuid="07d2f3d7-8cbb-44dc-97da-6739bc661f79" jahia:originalUuid="5e345246-ab88-4bd3-a865-9eee2973c01e" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <peopleFirstname jahia:value="Steven" jcr:uuid="7f7ccdbb-611b-405f-b11b-161d620dd246" jahia:originalUuid="e2f69b89-e70a-45ae-a0bb-1ed59c4b677f"></peopleFirstname>
+                                            <peopleCellular jahia:value="-" jcr:uuid="34cd265b-c945-441d-af3d-fa1ec80a5b4f" jahia:originalUuid="67d0f4ea-1b78-4954-90fd-78c6fcb9a6ae"></peopleCellular>
+                                            <peopleBiography jahia:value="&lt;p&gt;He was born in 1958 and graduated from the Ecole Polytechnique and the Ecole Nationale des Ponts et Chauss&amp;eacute;es. He began his career with a five-year stint at the Ministry of Defence, in the department of Maritime Affairs, based first in Rotterdam (Netherlands), then in Cap Town (South Africa). He joined Acme in 1988 as head of the commercial department. After being involved in a number of construction projects, he took charge of the Russian subsidiary in 1997.&lt;br/&gt;  He was made Senior Vice President, Constructions of Acme in 2002. &lt;/p&gt;
+" jcr:uuid="03f6b404-7cc7-4fc2-a2dd-c5a534bac0e7" jahia:originalUuid="090b7950-7d45-4acb-a252-bdff77a8096e"></peopleBiography>
+                                            <peopleBusinessUnit jahia:value="&lt;jahia-resource id=&quot;WEB_TEMPLATES&quot; key=&quot;web_templates_peopleContainer.peopleBusinessUnit.sales&quot; default-value=&quot;sales&quot;/&gt;" jcr:uuid="80b65555-4a41-4aa3-99d4-ad05c7b193ca" jahia:originalUuid="4f4d2ca5-52ab-40b1-91c7-15640d4816b4"></peopleBusinessUnit>
+                                            <peopleLastname jahia:value="Cochrane" jcr:uuid="19d941fa-7008-425d-a9f9-825defccd884" jahia:originalUuid="6029c853-972e-48e6-8f4d-965c0893db8e"></peopleLastname>
+                                            <peopleFunction jahia:value="VP Constrcution" jcr:uuid="7ade0791-2df8-421f-b14c-b4d41fea6443" jahia:originalUuid="c54ed681-79e9-4b19-b1d0-6c95948c38a1"></peopleFunction>
+                                            <peopleEmail jahia:value="steven.cochrane@acmeinternational.com" jcr:uuid="317bfb7d-9448-402d-98f0-7157c24f4ac8" jahia:originalUuid="7294955e-0a67-4bd5-8979-b6dd94659f9e"></peopleEmail>
+                                            <peopleFax jahia:value="-" jcr:uuid="95cb6c5d-a37e-443f-9853-d8f36cec8215" jahia:originalUuid="061f97f3-3106-45c8-9404-f304b29a25ce"></peopleFax>
+                                            <peoplePicture jahia:value="/content/sites/ACME/files/Pictures/GenericPictures/ACME_MGT_Thumbnail.jpg" jcr:uuid="e461c4eb-95c9-47ca-806a-7fc352e60125" jahia:originalUuid="51271180-e117-4f7a-965c-39cdb85f2f31"></peoplePicture>
+                                            <peopleTelephone jahia:value="-" jcr:uuid="ab92cf02-7461-4e85-b5e8-41c0fc2d0a3a" jahia:originalUuid="1725b9bb-8c2c-482f-83c3-deb51eec1530"></peopleTelephone>
+                                        </people>
+                                    </peopleList>
+                                    <introductionList jcr:primaryType="web_templates:introductionContainerList" jcr:uuid="dfc21ba0-8491-4256-83dd-5833312f7eaf" jahia:originalUuid="e1b01f90-82e5-4487-b846-40a96a4fa830" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></introductionList>
+                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="c5cda044-179f-4b60-9207-3ccafd7e8b36" jahia:originalUuid="1ddd3ce0-de13-48c3-b6e6-a0b095560080" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></navLinkList>
+                                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="6aa35a59-f1ba-45c3-b9ca-cc2d38084f4b" jahia:originalUuid="5cdf9448-e5e7-4bb6-9b9c-386e2d8f71a8" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                                </jahia:page>
+                            </navLink>
+                        </navLink>
+                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="77bfecb3-77a4-4085-afb3-c71351c33e44" jahia:originalUuid="6fd7618a-bf77-4d2e-b3da-bffafee1ac4d" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                            <navLink jcr:uuid="22d753f4-7da0-4fb3-9ed3-6a12810b2765" jahia:originalUuid="1362cfb2-da44-4af8-a152-74a1e37c0dbd">
+                                <jahia:page jahia:template="press" jcr:primaryType="web_templates:pressRelease" jahia:title="Press Release" jcr:uuid="19cdec1f-1b11-442f-b576-5f1da392e590" jahia:originalUuid="657f6cb5-b2d7-4d7e-82b4-4141be44c0a2" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:pid="81">
+                                    <introductionList jcr:primaryType="web_templates:introductionContainerList" jcr:uuid="0e9676dc-e008-4213-8e5d-141b2cffce82" jahia:originalUuid="ddc03268-f179-4029-803f-febc23e87d98" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></introductionList>
+                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="4e57b16d-baf9-45c7-9d9e-5e48334689ee" jcr:lastModified="2009-05-19T17:13:44" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:createdBy="root"></navLinkList>
+                                    <pressList jcr:primaryType="web_templates:pressContainerList" jahia:sortHandler="web_templates_pressRelease_press_date;desc;true;false" jcr:uuid="962e05bf-e2d4-4df4-b687-7f495b56a193" jahia:originalUuid="b614b223-5084-42f9-b2b7-b96ae23b1549" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                                        <press jcr:primaryType="web_templates:pressContainer" jcr:uuid="548b93f2-1594-4f8d-ad16-dba0af55f62f" jahia:originalUuid="66150571-afec-4cd8-90b3-177f8fac083f" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Created in 1953, Array Company has become one of the leading construction firms in the Chinese area over the past 55 years. Although mainly a building firm, the group has diversified into civil works and renovation and has nearly 400 clients in its books. With a current headcount of 1100 employees, it reported over 80 million Euros in sales in 2007.&lt;BR/&gt;   In June 2000, Array Company was placed in court-supervised rehabilitation as a going concern. Following better-than-expected operating results, allowed the rehabilitation plan one year early.  &lt;/P&gt;
+	&lt;P&gt;By consolidating its presence on the Asia area, especially in China, Acme is reinforcing its already strong growth. Array Company's roots in the region and its first-class knowledge of the local market, together with a substantial portfolio of clients, will enable Acme to accelerate its expansion by completing the company's geographical coverage of a region with great potential, especially in view of forthcoming major urban and infrastructure projects. By bringing additional financial and human resources as well as new technical skills, Acme will give Array Company the opportunity for long-term development while also preserving jobs.&lt;BR/&gt;      &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="56e70172-e06f-48e4-a95d-8341996ffd70" jahia:originalUuid="3e3922cf-96d9-43c3-aa89-1432a01f89dc"></body>
+                                            <pdfVersion jahia:value="/content/sites/ACME/files/PDF/PressRelease/Acme2009_PR1_US.pdf" jcr:uuid="be144036-ed49-4a84-a05c-f897735f8c60" jahia:originalUuid="50866f21-e8ee-446b-b63e-3552d99aa7ef"></pdfVersion>
+                                            <title jahia:value="Acme acquires Array Company to strengthen its operations in Chinese territories" jcr:uuid="a4b33913-40f3-4b1d-872c-6519b088107f" jahia:originalUuid="8609efef-c9a6-4da8-9928-d04c9607160a"></title>
+                                            <date jahia:value="2009-01-29T00:00:00" jcr:uuid="3b731477-8b40-4122-951e-34e05395dac3" jahia:originalUuid="a6c338ca-b206-4fd3-89cb-f64731f089ee"></date>
+                                        </press>
+                                        <press jcr:primaryType="web_templates:pressContainer" jcr:uuid="32c1ae25-bf8f-4fd7-8c93-5e9ba507e1d9" jahia:originalUuid="1e438bac-73c4-46f7-a72a-cd12915aaa61" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Acme has adopted an innovative recruitment technique – the job bus – to find 400 new workers in Spain north-eastern coast.&lt;BR/&gt;   &lt;BR/&gt;   Acme ran this local recruitment campaign in partnership with the Spanish national employment labour agencies, the Spanish electricity utility and the Spanish council. From March to April 2008, the job bus stopped in 19 towns and reached a large number of local jobseekers.&lt;BR/&gt;   &lt;BR/&gt;   Recruitment teams and site managers from Acme received more than 1,800 applicants. The group will thus have no difficulty in finding the 400 additional workers it needs to carry out the project, which will employ a total of 800 staff in peak periods. Customized training will be given to the new recruits prior to the start of the civil engineering works in early 2009.&lt;BR/&gt;   &lt;BR/&gt;   Acme is enjoying strong business in 2007 both in Spain and other countries. It aims to attract new talent to keep pace with its development and successfully carry out its projects.  &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="5c8b4f50-e692-4c0f-b9d1-931021b3ad13" jahia:originalUuid="408e6604-96e4-45d3-848f-0cff7208befc"></body>
+                                            <pdfVersion jahia:value="/content/sites/ACME/files/PDF/PressRelease/ACME2009_PR2_US.pdf" jcr:uuid="92f75de5-2f74-4e65-b957-4241b350f5f3" jahia:originalUuid="35748023-132f-43b3-b03b-2c78d8d2f9b6"></pdfVersion>
+                                            <title jahia:value="Acme inaugurates job bus to recruit 400 new workers in Spain" jcr:uuid="d83502a0-4aa7-4155-bf76-433921a29724" jahia:originalUuid="7d8e37d8-e304-44c0-8325-ecc039c7dd6c"></title>
+                                            <date jahia:value="2009-01-28T00:00:00" jcr:uuid="bed0fe99-f6fb-4964-9531-a1d3c9d8b9ee" jahia:originalUuid="2469eb0a-984f-4f1d-a4ca-06c48dceb2c2"></date>
+                                        </press>
+                                        <press jcr:primaryType="web_templates:pressContainer" jcr:uuid="082024ed-d7c5-4986-a0ab-eac28c339453" jahia:originalUuid="fcf7548c-d271-4958-89a6-bbf905f6a07a" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <pdfVersion jahia:value="/content/sites/ACME/files/PDF/PressRelease/ACME_PR_IPSUM_US.pdf" jcr:uuid="90c1b533-8c2d-4314-a7a6-0bd70a08a791" jahia:originalUuid="953432e1-88d5-45d5-92ae-a32905281501"></pdfVersion>
+                                            <date jahia:value="2009-01-13T00:00:00" jcr:uuid="6b3c347a-01ff-448c-95d3-df860fab9a6c" jahia:originalUuid="1a47dcb9-05f7-4c35-859e-5639620bc075"></date>
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="4b327be7-0089-4585-befc-02e84cec50ea" jahia:originalUuid="a2b2efd4-d18a-4b5d-92c7-a98d859cc064"></body>
+                                            <title jahia:value="ACME Lorem ipsum dolor sit amet, consectetur adipisicing elit" jcr:uuid="23c34614-0e62-43dc-9f4a-eb774919e64c" jahia:originalUuid="c5f2a0b1-d08d-4397-9343-69674104ac9e"></title>
+                                        </press>
+                                        <press jcr:primaryType="web_templates:pressContainer" jcr:uuid="100739b7-7426-4df2-a92d-6be69abbcafa" jahia:originalUuid="4bdd7f29-bbe5-430e-8a02-8437d6162231" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <pdfVersion jahia:value="/content/sites/ACME/files/PDF/PressRelease/ACME_PR_IPSUM_US.pdf" jcr:uuid="77c2a208-9b83-4eca-80a7-8cb75086fe52" jahia:originalUuid="05f71959-ff99-4a6c-86ed-2cc978c2dd5d"></pdfVersion>
+                                            <date jahia:value="2009-01-01T00:00:00" jcr:uuid="6ab8e08f-9d24-42f8-bffc-8f59b226085f" jahia:originalUuid="570d3192-a458-4ead-b5c2-0794658d807f"></date>
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="4f3f510d-1754-4d24-bf14-f4bf2deccc25" jahia:originalUuid="e17045dc-c763-41fd-9713-126335527506"></body>
+                                            <title jahia:value="ACME Lorem ipsum dolor sit amet, consectetur adipisicing elit" jcr:uuid="c3fbfbed-4467-43fb-990b-0fc6887b267d" jahia:originalUuid="03818f96-e04a-40d0-b63f-f63edd2a516b"></title>
+                                        </press>
+                                        <press jcr:primaryType="web_templates:pressContainer" jcr:uuid="bbe53f53-4746-4cc4-a8b1-215f5b01447b" jahia:originalUuid="be9fccf6-ff2d-4897-be91-dd85a60e9374" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <pdfVersion jahia:value="/content/sites/ACME/files/PDF/PressRelease/ACME_PR_IPSUM_US.pdf" jcr:uuid="ecfb79c7-c7a5-4a25-930a-39c7c197c7a7" jahia:originalUuid="9be48eb1-d1ae-4568-91d0-fdba275de4f6"></pdfVersion>
+                                            <date jahia:value="2009-01-20T00:00:00" jcr:uuid="6d49d96a-c1c5-4327-8a05-dd9b4cd3674e" jahia:originalUuid="851d2102-16a9-4fee-8327-970c0cb74901"></date>
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="9921bbcf-98c9-43cf-8ff4-bb9d39abe894" jahia:originalUuid="60506fdd-3af2-479e-a412-2a0349dc9ebf"></body>
+                                            <title jahia:value="ACME Lorem ipsum dolor sit amet, consectetur adipisicing elit" jcr:uuid="39b6341e-70fd-4681-b78a-7641e430be63" jahia:originalUuid="97448a22-8c7b-4381-aef5-93e22c597b73"></title>
+                                        </press>
+                                        <press jcr:primaryType="web_templates:pressContainer" jcr:uuid="e36b1d09-bd9c-4122-b15c-a88d7ecadeae" jahia:originalUuid="b4d5bda4-4498-44ff-a13a-c143e2c655a1" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <pdfVersion jahia:value="/content/sites/ACME/files/PDF/PressRelease/ACME_PR_IPSUM_US.pdf" jcr:uuid="9c903fe6-16ee-44c0-873a-85bbfce47112" jahia:originalUuid="9fe0779e-1270-45a7-a36a-0a5dae8e458a"></pdfVersion>
+                                            <date jahia:value="2009-01-20T00:00:00" jcr:uuid="c4588bfd-4fc8-49ef-a4c8-23d652516310" jahia:originalUuid="7da6e5a9-bed0-4cee-ae7e-adbbc6cbe114"></date>
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="3346822a-c5d4-4558-9539-121fe0c0b207" jahia:originalUuid="8bf4e7a0-df1f-4380-88e4-008efb27291b"></body>
+                                            <title jahia:value="ACME Lorem ipsum dolor sit amet, consectetur adipisicing elit" jcr:uuid="9e5dcfe5-fb22-4279-931c-5a452c15da6f" jahia:originalUuid="7a0e660d-dacf-45b5-9dd5-157a3bf35a9f"></title>
+                                        </press>
+                                        <press jcr:primaryType="web_templates:pressContainer" jcr:uuid="3fce620d-65e1-4e74-8086-e4bad2761c21" jahia:originalUuid="e148316d-23ea-48a6-99f8-fdad73f99f7e" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <pdfVersion jahia:value="/content/sites/ACME/files/PDF/PressRelease/ACME_PR_IPSUM_US.pdf" jcr:uuid="b5efad7d-844f-4901-b11c-806bb8673bd9" jahia:originalUuid="9a324ff8-1969-4bf1-ae6d-a567ebce94b5"></pdfVersion>
+                                            <date jahia:value="2009-01-04T00:00:00" jcr:uuid="28ba0621-323d-4649-acc2-de4c85442e8a" jahia:originalUuid="583fb544-429b-4069-b8b9-f5c93fc48a3f"></date>
+                                            <body jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+	&lt;P&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="b01c0841-3eab-447d-b2f2-f83753e94bd9" jahia:originalUuid="08adad6e-acad-48c2-96cf-612dcaeb7996"></body>
+                                            <title jahia:value="ACME Lorem ipsum dolor sit amet, consectetur adipisicing elit" jcr:uuid="f7d53603-3b61-41ee-bf01-a106a26d1d00" jahia:originalUuid="e5dfa1be-0e03-4029-a399-fff7587ae579"></title>
+                                        </press>
+                                    </pressList>
+                                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="1cb38854-958c-4d8b-8fcf-f05b902b0ca8" jahia:originalUuid="941cb4c9-3dd5-428c-884f-c9360044337f" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                                </jahia:page>
+                            </navLink>
+                        </navLink>
+                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="da58e688-e4bc-470f-a4b3-e0df46868c7e" jahia:originalUuid="7ecdc3b4-fb60-4767-a7ee-66964481e6ff" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                            <navLink jcr:uuid="e9fa9d6a-84d1-4767-8696-fe25b5238af3" jahia:originalUuid="5516c474-79a4-467f-a338-64f7fb4657d2">
+                                <jahia:page jahia:template="job" jcr:primaryType="web_templates:job" jahia:title="Jobs" jcr:uuid="a3a53fd4-65ac-433f-8b95-2851828df19e" jahia:originalUuid="5c03020c-837c-4379-9cb5-6dad0229b6cb" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:pid="82">
+                                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="8aff384e-903f-4324-b4d5-c60224318852" jahia:originalUuid="bf3721bf-0941-4fa9-932a-a41480568a0d" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                                    <jobList jcr:primaryType="web_templates:jobContainerList" jcr:uuid="5a6053c7-092b-4d73-8a62-98f5595c5f71" jahia:originalUuid="2835e2b9-a068-4197-9fce-345f928d79f0" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44">
+                                        <job jcr:primaryType="web_templates:jobContainer" jcr:uuid="6775f01f-ef4e-4e2d-af92-4ec1c7c9527f" jahia:originalUuid="bd85c8ee-3f90-474e-b7c7-11c510ec3c70" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root">
+                                            <reference jahia:value="none" jcr:uuid="52c98078-fe03-4ab5-a496-a1b069e0d34b" jahia:originalUuid="7077ee9f-8707-4419-a31f-327a631e5a69"></reference>
+                                            <town jahia:value="Barcelona" jcr:uuid="b83cd97e-0b65-497b-9d28-85e435620a27" jahia:originalUuid="c3058603-d483-4449-9e50-2a5173777564"></town>
+                                            <skills jahia:value="&lt;BODY&gt;
+	&lt;P&gt;Masters degree in Telecommunications / IT, you have a successful experience of 2 years in the sale of network services, telecommunications or computer companies and communities ideally with a manufacturer.&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="54db08f9-4b16-4abf-b5de-cf238436b00f" jahia:originalUuid="507a5369-ad2b-4470-a156-2ccb105d57ad"></skills>
+                                            <contract jahia:value="&lt;jahia-resource id=&quot;WEB-TEMPLATES&quot; key=&quot;web_templates_jobContainer.contract.contract1&quot; default-value=&quot;contract1&quot;/&gt;" jcr:uuid="a1c7ee17-26f2-48de-b23c-6d430595e227" jahia:originalUuid="d94be00a-07fc-4117-b2e8-26183ba1d226"></contract>
+                                            <title jahia:value="Sale Engineer" jcr:uuid="c3bcd051-512f-4a14-8ce1-abb4f56be6e3" jahia:originalUuid="5d6606f2-b397-41cf-ae57-b52261ad249a"></title>
+                                            <businessUnit jahia:value="Sales" jcr:uuid="a74abd0f-1b54-4539-b097-61568c7510c4" jahia:originalUuid="e256459e-ce01-4171-b12a-44edf183573b"></businessUnit>
+                                            <description jahia:value="&lt;BODY&gt;
+	&lt;P&gt;   &lt;STRONG&gt;Mission and objectives:&lt;/STRONG&gt;   &lt;BR/&gt;   - Working with public institutions and large corporations;&lt;BR/&gt;   - Monitoring commercial and operational with our customers local service partners;&lt;BR/&gt;   - Helping clients in defining their service offerings to end customers and their sales approach to business;&lt;BR/&gt;   - Promotion among local actors of the ICT sector. &lt;STRONG&gt;   &lt;BR/&gt;   &lt;/STRONG&gt;    &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="683093b7-068b-4cae-8154-f710bab01469" jahia:originalUuid="75ef573c-7d0b-4be3-b98b-59882fc7c9e3"></description>
+                                            <country jahia:value="Spain" jcr:uuid="f4783916-982c-4ca1-9e5b-0ba6133108d6" jahia:originalUuid="6fa7b1eb-da68-460a-8d6a-446247d92f28"></country>
+                                            <educationLevel jahia:value="Masters degree" jcr:uuid="ef3d2a68-7392-48bc-aa17-7802067a9ba8" jahia:originalUuid="f93b3b0a-29a1-4cf2-9b7b-3fb7a569fe08"></educationLevel>
+                                        </job>
+                                        <job jcr:primaryType="web_templates:jobContainer" jcr:uuid="d7342ce4-a387-4d3f-8866-72a155d9c255" jahia:originalUuid="ab01990b-a389-4c04-b5ca-54b8061f1622" jcr:lastModified="2009-05-19T17:13:43" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root">
+                                            <reference jahia:value="-" jcr:uuid="686a35cb-37ea-43f5-a65e-5a81c0746522" jahia:originalUuid="d1541a2e-4e4e-4365-a076-436a8303608a"></reference>
+                                            <town jahia:value="New York" jcr:uuid="41d0334b-1252-47b6-bdcb-056b03ff02a4" jahia:originalUuid="4d31c83f-835f-455c-8c31-964cc371dc38"></town>
+                                            <skills jahia:value="&lt;BODY&gt;
+	&lt;P&gt;   &lt;STRONG&gt;The requirements for this position include, but are not limited to the following:&lt;/STRONG&gt;   &lt;BR/&gt;   • 5-7 years of Enterprise, technology marketing experience&lt;BR/&gt;   • Proven track record of success at leading small to large size companies&lt;BR/&gt;   • Ability to work in a start-up environment, wear many hats, and have a positive &quot;can-do&quot;&lt;BR/&gt;   attitude&lt;BR/&gt;   • Detailed knowledge of the messaging process for enterprise software including multi-level&lt;BR/&gt;   message development, supporting scenarios, customer proof points and elevator pitches and&lt;BR/&gt;   adapt it to the New Professional Open Source industry.&lt;BR/&gt;   • Ability to develop a collateral hierarchy with solution overview, industry, product specific levels,&lt;BR/&gt;   • A strong understanding of global enterprise marketing - especially marketing communications,&lt;BR/&gt;   strategic planning, marketing execution, partnership marketing&lt;BR/&gt;   • Proven ability to adapt Enterprise skills to the Professional Open Source offering&lt;BR/&gt;   • Proven ability to work in a cross functional team environment&lt;BR/&gt;   • Past experience working in the Content Management space for a software company is an&lt;BR/&gt;   asset.&lt;BR/&gt;      &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="c6801e8f-02d1-4e16-96f1-fbfa0348cb4f" jahia:originalUuid="a0a17738-4553-4173-a587-da7afe0bf2ca"></skills>
+                                            <contract jahia:value="&lt;jahia-resource id=&quot;WEB-TEMPLATES&quot; key=&quot;web_templates_jobContainer.contract.contract1&quot; default-value=&quot;contract1&quot;/&gt;" jcr:uuid="48dd7cdf-1120-49a2-8f51-8edd431ca2ae" jahia:originalUuid="5bd00a12-8f9c-4c22-aa28-3fc4dc404e4b"></contract>
+                                            <title jahia:value="Marketing Communication Manager" jcr:uuid="63eabed9-1bce-4db9-9e76-32eb9c273d95" jahia:originalUuid="37a0ddea-4aa7-4b37-bcb3-a839a5f153b4"></title>
+                                            <businessUnit jahia:value="Marketing and Sales" jcr:uuid="a78e9444-a043-4a4e-960d-3d762dcf3098" jahia:originalUuid="11a2b1b8-0330-4144-b9cc-95d9187373a9"></businessUnit>
+                                            <description jahia:value="&lt;BODY&gt;
+	&lt;P&gt;   &lt;STRONG&gt;Mission and objectives:&lt;/STRONG&gt;   &lt;BR/&gt;   • Develop and manage a marketing plan for our product suite end-to-end,&lt;BR/&gt;   • Further develop all aspects of the marketing plan, including internet, offline, research,&lt;BR/&gt;   promotion, pricing, positioning and partner programs,&lt;BR/&gt;   • Should be familiar with the steps necessary to develop messaging, competitive positioning,&lt;BR/&gt;   collateral, website and events strategies,&lt;BR/&gt;   • Develop segmented marketing messages to key industry verticals to drive customer&lt;BR/&gt;   acquisition,&lt;BR/&gt;   • Work with key analysts, press and industry influencers,&lt;BR/&gt;   • Manage PR, Mar Comm and Partner marketing relations / agency relationships,&lt;BR/&gt;   • Candidate should be willing to travel regularly and be on short/medium term assignments on&lt;BR/&gt;   the respective continent and to some extent, intercontinental,&lt;BR/&gt;   • Develop and publish customer case studies: Work with sales teams to implement customer&lt;BR/&gt;   referencing process including customer interviews, approvals and publishing of case studies.&lt;BR/&gt;   Where possible, include quantified benefits.&lt;BR/&gt;      &lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="7a97278a-dbaf-4a4c-a9cf-5ed68f369c67" jahia:originalUuid="35e754df-dee2-4e75-aaf9-41887b47c11e"></description>
+                                            <country jahia:value="USA" jcr:uuid="3ca8f630-1333-4c6f-ad01-48854de473cc" jahia:originalUuid="de336dd9-ca75-4c0a-9e8b-76fcf3e575b0"></country>
+                                            <educationLevel jahia:value="Master degree" jcr:uuid="ac774df7-30da-4649-a386-df6a93b96d5d" jahia:originalUuid="fd5565e0-f5b1-4903-96d7-c63e1523d22b"></educationLevel>
+                                        </job>
+                                    </jobList>
+                                    <introductionList jcr:primaryType="web_templates:introductionContainerList" jcr:uuid="4a9b586a-48bf-4b69-a7b7-f275dad7b4a3" jahia:originalUuid="c6c1e6c8-fb48-4cdd-98cf-ee2506ec13a0" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></introductionList>
+                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="ebfdc18b-1fbe-4bf3-9898-9eaa3e6d7e27" jahia:originalUuid="ac41926c-d56f-415d-9787-758f756cdad2" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></navLinkList>
+                                </jahia:page>
+                            </navLink>
+                        </navLink>
+                    </navLinkList>
+                    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="358cf635-949b-4f0a-8c9a-c1a9a73eb7bc" jahia:originalUuid="ae2e3f06-c181-4f3c-b090-33ce130b3136" jcr:lastModified="2009-05-19T17:13:44" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root"></columnB_boxList>
+                </jahia:page>
+            </navLink>
+        </navLink>
+        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="ff50fac6-1b02-40f8-8667-365a68dc3834" jahia:originalUuid="7865614a-ce73-43ef-b89a-ed84e2c277ce" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root" jahia:acl="g:guest:---|g:users:r--">
+            <navLink jcr:uuid="e63e09bf-ea25-4ba6-9d9c-54259947580f" jahia:originalUuid="dc47b1ca-d3d7-4025-b1e1-8d7764e5fe3c">
+                <jahia:page jahia:template="layout" jcr:primaryType="web_templates:layoutManager" jahia:title="My Portal" jcr:uuid="3806fa68-e3b4-4c38-86fc-460a6e487c6c" jahia:originalUuid="b999c353-9050-4d79-810e-eafc7098c11d" jcr:lastModified="2009-05-19T18:11:23" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:pid="83">
+                    <columnA_boxList jcr:primaryType="jnt:boxList" jcr:uuid="049f2cc9-d73c-40e5-8ceb-76a042b7cea9" jahia:originalUuid="bd237031-d7a4-4f43-91cc-c4ec48717419" jcr:lastModified="2009-05-19T17:13:43" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root"></columnA_boxList>
+                    <introductionList jcr:primaryType="web_templates:introductionContainerList" jcr:uuid="11d7549e-df26-4efc-817d-07131505fcf6" jahia:originalUuid="f6f41c36-9078-4383-af97-7918e4a5f180" jcr:lastModified="2009-05-19T18:11:23" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+                        <introduction jcr:primaryType="web_templates:introductionContainer" jcr:uuid="3017f07b-03b3-4ca7-b3f6-f991de724d6d" jahia:originalUuid="f2c49760-dec3-4e92-8c5b-5e7060a8799a" jcr:lastModified="2009-05-19T18:11:23" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+                            <introduction jahia:value="Welcome on your personal ACME Portal. You will be able to build your personal portal in this page. Click on &quot;Add Mashup&quot; and select an RSS feed or a Google (c) Gadget in the Mashup navigation tree on the left side of the page. By clicking on &quot;My Portal&quot;, you will be able to see the result. You also will be able to modify the number of column available and drag &amp;amp; drop the different applications boxes from one column to another.
+" jcr:uuid="f2a41b3f-fe2a-4fe3-be82-7ee2e5f201ac" jahia:originalUuid="d9f9c0d2-a3cf-4ad9-bd14-37187baba312"></introduction>
+                        </introduction>
+                    </introductionList>
+                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="1f95da7d-22d0-4f30-8165-7773cc01d824" jahia:originalUuid="44277ded-0c65-4b85-861b-f54146cbb3c2" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:43"></navLinkList>
+                </jahia:page>
+            </navLink>
+        </navLink>
+    </navLinkList>
+    <promoList jcr:primaryType="web_templates:promoAdvancedContainerList" jcr:uuid="edab94d3-607d-4116-a89b-975924188d6c" jahia:originalUuid="f6ced940-bd59-4a2b-b3e8-5cc7c28277bb" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+        <promo jcr:primaryType="web_templates:promoAdvancedContainer" jcr:uuid="ec88627a-a78f-4a3a-9981-2be8e7f5e487" jahia:originalUuid="0e88bf0f-52a2-4426-9d32-3242b0ff24a0" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+            <link jcr:uuid="7bc32c59-3b49-4fdd-8e31-d8aa166ebff5" jahia:originalUuid="d0132a86-6953-40b7-8144-ddae5c5c8054">
+                <jahia:link jahia:reference="37d24824-df42-4e36-90d6-7ec305fb6596" jahia:title="Read more..." jcr:uuid="bf62670d-ba49-4cfc-96a3-919f1ca0fd9a" jahia:originalUuid="fe94a4c5-9ea2-45ef-bbc5-7256217bdc52" jahia:pid="84"></jahia:link>
+            </link>
+            <abstract jahia:value="Acme is the main player in Europe and USA, deploying its construction expertise across countries." jcr:uuid="73aeaf70-8714-45df-bf03-9519c7cb11fa" jahia:originalUuid="f5768f4f-6673-4749-a35e-71f80b3a5f8c"></abstract>
+            <image jahia:value="/content/sites/ACME/files/Pictures/BannerTeaser/teaser1.jpg" jcr:uuid="c67d397f-dd7f-4fd5-94f3-d26e86a89637" jahia:originalUuid="fcc5e3ff-3ad7-4af8-9e6d-7ba06ef5ce99"></image>
+            <title jahia:value="ACME Activities" jcr:uuid="831088c0-2681-4e4b-a602-bce1d37ba8ba" jahia:originalUuid="dfeb8cdb-6182-4683-91d8-daab22e951e1"></title>
+        </promo>
+        <promo jcr:primaryType="web_templates:promoAdvancedContainer" jcr:uuid="72d678e2-8dea-4c02-8f5d-f6b9eea214aa" jahia:originalUuid="8aa68e30-5c07-49e7-aedc-3cbe3a260b36" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+            <abstract jahia:value="ACME manage a lot of worldwide event all around the world that demonstrate the Group capabilities, technologies and success." jcr:uuid="fec828c6-d2ed-4d78-b3fb-6f71cb838b37" jahia:originalUuid="f59bbddc-a6e1-461f-82ff-0d3b511f543f"></abstract>
+            <image jahia:value="/content/sites/ACME/files/Pictures/BannerTeaser/teaser2.jpg" jcr:uuid="173ba31b-5c78-429d-89ca-b0a84c194cfc" jahia:originalUuid="5ffbd874-4a57-4190-bfe8-7b7f92f8dc29"></image>
+            <title jahia:value="ACME Event" jcr:uuid="5943d34e-94bc-4fb0-999f-84e1b28e7f0e" jahia:originalUuid="8d898f3a-3cd3-4910-bec8-e44737a12c76"></title>
+            <link jcr:uuid="6d241fd4-707c-446d-86ef-4c72519eee0e" jahia:originalUuid="068dc386-873a-4d9c-8547-d2dfe2072b1d">
+                <jahia:link jahia:reference="03a22643-9d19-4fd8-9145-f94c20fa9c7a" jahia:title="Read more..." jcr:uuid="af57a757-4de9-4fd7-8f96-c6aa83a72153" jahia:originalUuid="6708c171-0b52-465a-8c23-9dcc5e29b7a1" jahia:pid="85"></jahia:link>
+            </link>
+        </promo>
+        <promo jcr:primaryType="web_templates:promoAdvancedContainer" jcr:uuid="111e9955-012d-468d-9129-102ddeaf97cb" jahia:originalUuid="4b06e16f-292b-48ad-be03-55744c5d96c1" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+            <abstract jahia:value="ACME published important and complete white papers regarding all aspect of the Group activities." jcr:uuid="3ebb9ebe-30f0-4b5e-90a4-813fa9c3cf17" jahia:originalUuid="ac7b9160-6f20-4a30-a020-d453abc57edd"></abstract>
+            <image jahia:value="/content/sites/ACME/files/Pictures/BannerTeaser/teaser3.jpg" jcr:uuid="02bf756f-de71-439b-b668-ae8d8b69a3d5" jahia:originalUuid="aef5f34f-55fb-4325-895f-2a4d5ad2f312"></image>
+            <title jahia:value="Acme Publications" jcr:uuid="e8005600-4604-4b1f-9bdd-f6ec851d2806" jahia:originalUuid="ec39063c-cfb3-484b-af83-d13b1b3e76e6"></title>
+            <link jcr:uuid="24325a3e-e902-462c-862d-9f43210739fb" jahia:originalUuid="8dfe3361-1296-4bf6-b948-865a94d91dd3">
+                <jahia:link jahia:reference="03a22643-9d19-4fd8-9145-f94c20fa9c7a" jahia:title="Read more..." jcr:uuid="b329c518-e995-4617-b3e9-b46ceb5e29b5" jahia:originalUuid="a586cdd8-6930-47e9-b671-dc607379f969" jahia:pid="86"></jahia:link>
+            </link>
+        </promo>
+        <promo jcr:primaryType="web_templates:promoAdvancedContainer" jcr:uuid="c04e0dec-96d6-4f50-9695-65a7203733ab" jahia:originalUuid="7b80ec35-5e58-4afb-a6c0-40ad5d47ea6f" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+            <link jcr:uuid="49c5497f-4929-4dbe-9f5b-04daa59b3d62" jahia:originalUuid="b71cf701-6c15-4793-8032-c1a9c6a5551a">
+                <jahia:link jahia:reference="0a199a38-3a7c-441c-88be-e93f2e1a556d" jahia:title="Read more ..." jcr:uuid="02413344-70e0-44da-bf78-1d403a3dd0df" jahia:originalUuid="7a31b7c2-710d-4fc7-9e73-f9c8896aeee7" jahia:pid="87"></jahia:link>
+            </link>
+            <abstract jahia:value="ACME history shows a lot of innovative solutions for major construction project all around the world. Discover why." jcr:uuid="79a2a420-ea7c-4922-ab12-da53ef1bba51" jahia:originalUuid="e022017d-416b-4fb1-aa9d-d3e9801d15a6"></abstract>
+            <image jahia:value="/content/sites/ACME/files/Pictures/BannerTeaser/teaser4.jpg" jcr:uuid="7ac2a548-951f-4edb-a093-df3dd6e45341" jahia:originalUuid="53eff664-0e78-4dd1-b3c4-9aca472d0c76"></image>
+            <title jahia:value="Discover ACME" jcr:uuid="b40fcd2b-2400-485e-a6b1-0170f9f69d62" jahia:originalUuid="41597c08-a42a-421c-a463-d338a74d6820"></title>
+        </promo>
+    </promoList>
+    <bottomLinksList jcr:primaryType="web_templates:bottomLinksContainerList" jcr:uuid="5c91766d-3f91-4238-b35a-24b5f3def60e" jahia:originalUuid="b83a0686-0cf6-4ea0-ac5a-d56822fa8921" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+        <bottomLinks jcr:primaryType="web_templates:bottomLinksContainer" jcr:uuid="735ced7b-d828-4e03-82f9-b1f747400126" jahia:originalUuid="100eaa43-6da1-4504-8df3-b85a7a312b38" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+            <link jcr:uuid="a899427b-6927-4454-865d-f2c6508121a6" jahia:originalUuid="f7ae1adf-1df5-4f47-89af-4e5e2a31c62a">
+                <jahia:link jahia:reference="37d24824-df42-4e36-90d6-7ec305fb6596" jahia:title="Activities" jcr:uuid="d39c6c2d-c6a6-48b4-bbf3-69d00608102d" jahia:originalUuid="f0c8ad76-9095-42e3-82dc-6c8ea74d3120" jahia:pid="88"></jahia:link>
+            </link>
+        </bottomLinks>
+        <bottomLinks jcr:primaryType="web_templates:bottomLinksContainer" jcr:uuid="9332ea96-f9b0-4ca5-8747-263eb8d44d00" jahia:originalUuid="eb97ff12-d000-4b51-bfba-3cc0375a392d" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+            <link jcr:uuid="29423d99-5506-4887-834e-dde24288b3d0" jahia:originalUuid="f95d603e-079f-4619-8a30-563bbbd6abc9">
+                <jahia:link jahia:reference="c8ac2569-4153-43ab-9e40-9b67be38c790" jahia:title="Publications" jcr:uuid="a3295386-cbb0-404d-b9a1-d4a07e192e07" jahia:originalUuid="0941b978-8515-4c68-936c-ae795a147bb0" jahia:pid="89"></jahia:link>
+            </link>
+        </bottomLinks>
+        <bottomLinks jcr:primaryType="web_templates:bottomLinksContainer" jcr:uuid="3c38d436-7bf8-47ed-af8f-c2e0faed8c00" jahia:originalUuid="7f974389-f7ed-454a-9f12-c9242688bf3a" jcr:lastModified="2009-05-19T17:18:28" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+            <link jcr:uuid="02eb0589-8e8d-49c9-a46d-7780eb494c6c" jahia:originalUuid="6275d46a-5075-44dd-afef-44298a4269a4">
+                <jahia:link jahia:reference="0a199a38-3a7c-441c-88be-e93f2e1a556d" jahia:title="About Us" jcr:uuid="b9cf816a-42fb-4206-9987-3d59624b8261" jahia:originalUuid="d102cc84-e72b-4a1e-b771-de097eb50f0f" jahia:pid="90"></jahia:link>
+            </link>
+        </bottomLinks>
+        <bottomLinks jcr:primaryType="web_templates:bottomLinksContainer" jcr:uuid="ff31bd56-45b8-4623-928d-c2afbde4c30c" jahia:originalUuid="80efa4a2-5eee-44e3-a18e-6d1edcd74400" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+            <link jcr:uuid="b0f67b95-4768-4fbd-9d7a-45e35f8a3a2d" jahia:originalUuid="334a230f-322c-420b-afd4-078fe3aa967e">
+                <jahia:link jahia:reference="b7b2e778-eb6f-4d0d-b63d-5885cd8d3c64" jahia:title="News" jcr:uuid="8b490b31-ca22-4d65-9332-f023a3877af5" jahia:originalUuid="3b9ef465-fb11-46ba-a776-4107785c9011" jahia:pid="91"></jahia:link>
+            </link>
+        </bottomLinks>
+        <bottomLinks jcr:primaryType="web_templates:bottomLinksContainer" jcr:uuid="1501c72a-3bd3-4fa7-9d62-f4f80d2f3589" jahia:originalUuid="d33c8350-9809-4da9-b929-26f43505149a" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+            <link jcr:uuid="bddc369f-4606-4f2e-ba66-77d2c259e1ea" jahia:originalUuid="73245930-9d88-4848-a39e-e495e427dae9">
+                <jahia:link jahia:reference="03a22643-9d19-4fd8-9145-f94c20fa9c7a" jahia:title="Event" jcr:uuid="40013f70-66b8-4030-be36-d1b13aea271f" jahia:originalUuid="80427f23-fae8-4cbf-befe-1ae1c3dfc7bf" jahia:pid="92"></jahia:link>
+            </link>
+        </bottomLinks>
+    </bottomLinksList>
+    <basicLinkFooterList jcr:primaryType="web_templates:basicLinkContainerList" jcr:uuid="bce26f5d-d2ef-4761-9f58-61c6c73e2120" jahia:originalUuid="6ba61f73-d6d5-4ea5-9749-f0bb717f24a3" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jcr:lastModified="2009-05-19T17:13:44"></basicLinkFooterList>
+    <columnB_boxList jcr:primaryType="jnt:boxList" jcr:uuid="b6c9d521-8464-4f88-a004-4e79beef7bd3" jahia:originalUuid="afdf6986-6e0a-4ec9-9089-bbafbabd5827" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:44" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+        <columnB_box jcr:primaryType="jnt:textsBox" jcr:uuid="f88cfb10-d1cd-448f-8f58-4d919d964506" jahia:originalUuid="f335b056-9c21-4e2d-8ac5-90801b09a18e" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+            <jcr_primaryType jahia:value="jnt:textsBox" jcr:uuid="8d66f87d-0ffd-4e10-99e0-e8d96dd49f7d" jahia:originalUuid="32db0054-ed1d-49e0-a5e7-ce6bc620ee76"></jcr_primaryType>
+            <boxTitle jahia:value="How to use this demonstration ?" jcr:uuid="443c0968-d135-49f6-9d84-8a98159a8483" jahia:originalUuid="7d46a0c7-4f9b-4275-b678-4e6cbb2da5a0"></boxTitle>
+            <skin jahia:value="&lt;jahia-resource id=&quot;jahiatemplates.Web-templates&quot; key=&quot;skins.box2&quot; default-value=&quot;box2&quot;/&gt;" jcr:uuid="10d6ce85-bfc9-4369-8941-4113b37345a3" jahia:originalUuid="f3e4969d-37b1-4782-bb47-3a7c36b3ab72"></skin>
+            <textContainerList jcr:primaryType="jnt:textContainerList" jcr:uuid="ebb51956-abdc-45d7-9b9f-4bb0cfbcdd5d" jahia:originalUuid="e84a11aa-10a8-4614-a989-98b1f233af7e" jcr:lastModified="2009-05-19T17:21:27" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+                <textContainer jcr:primaryType="jnt:textContainer" jcr:uuid="f609c1f9-e1d5-4e44-a469-36d2d263b7c9" jahia:originalUuid="86ef5e7a-dd11-4419-9c95-fa77c55919b8" jcr:lastModified="2009-05-19T17:21:27" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+                    <text jahia:value="&lt;p&gt;You can discover &lt;strong&gt;Jahia Enterprise Edition v6&lt;/strong&gt; using the following users (login /&amp;nbsp;password):&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;
+		&lt;strong&gt;visitor /&amp;nbsp;password :&lt;/strong&gt; an authenticated visitor how will see a personnal portal access link in the main navigation bar.
+	&lt;/li&gt;
+	&lt;li&gt;
+		&lt;strong&gt;author /&amp;nbsp;password :&lt;/strong&gt; an author with write and update rights on the entire website content
+	&lt;/li&gt;
+	&lt;li&gt;
+		&lt;strong&gt;publisher /&amp;nbsp;password :&lt;/strong&gt; a publisher who will be in charge of content validation (2 steps workflow)
+	&lt;/li&gt;
+	&lt;li&gt;
+		&lt;strong&gt;siteadmin /&amp;nbsp;password :&lt;/strong&gt; the website administrator with read, write and administrator rights on the entire website
+	&lt;/li&gt;
+&lt;/ul&gt;
+" jcr:uuid="e41cf4c8-c212-4d5f-8eb0-27bab8f033b7" jahia:originalUuid="5e656a15-ade1-4d72-a272-2cadcfdd3b46"></text>
+                </textContainer>
+            </textContainerList>
+        </columnB_box>
+        <columnB_box jcr:primaryType="web_templates:filesBox" jcr:uuid="99e88743-93ae-44e8-a157-ea6c04c332ca" jahia:originalUuid="7b6e4201-9261-400e-84bb-813c2c219d88" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+            <jcr_primaryType jahia:value="web_templates:filesBox" jcr:uuid="0dafb83f-9273-4a33-81b1-ce15f4bae80e" jahia:originalUuid="b5699918-10fa-4e88-bc90-f2ce6b29bc66"></jcr_primaryType>
+            <boxTitle jahia:value="White Papers" jcr:uuid="76bdf11f-4a49-44a8-baf0-b860f6c1ec24" jahia:originalUuid="a125c359-4c29-4250-a6dd-7e0489844713"></boxTitle>
+            <skin jahia:value="&lt;jahia-resource id=&quot;jahiatemplates.Sandbox_web_templates&quot; key=&quot;skins.box2&quot; default-value=&quot;box2&quot;/&gt;" jcr:uuid="a6bdabcc-28b4-419e-8075-fe7a5ae69f21" jahia:originalUuid="3de1cbb4-4bc5-43e6-ae81-7d79dbd4433c"></skin>
+            <fileContainerList jcr:primaryType="web_templates:fileContainerList" jcr:uuid="b1399445-4d3a-4441-b030-3fd548fe4eaa" jahia:originalUuid="e0b949e9-a071-445a-b8d9-3a583ae3bebb" jcr:lastModified="2009-05-19T17:27:53" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+                <fileContainer jcr:primaryType="web_templates:fileContainer" jcr:uuid="d23537cb-a4c1-4846-9caa-78dff305d799" jahia:originalUuid="4b41c217-7166-4866-a030-da2fadb2737f" jcr:lastModified="2009-05-19T17:27:33" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+                    <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_BuildingFirstClassHotelUS.pdf" jcr:uuid="8e048e02-373b-4027-866f-64100ead745c" jahia:originalUuid="1d6480b3-ab73-4f5b-aea0-091d18b1038b"></file>
+                    <fileDisplayDetails jahia:value="true" jcr:uuid="1ab96484-be2f-4783-aae2-0be27fc7fa49" jahia:originalUuid="928cd641-b2a9-47ef-bd0c-949f1064e963"></fileDisplayDetails>
+                    <title jahia:value="How ACME is building First Class Hotel US" jcr:uuid="f9dbb92d-7901-4116-81b9-9793529532e2" jahia:originalUuid="2b97093a-7eb7-4081-88c2-c7a6008d4edc"></title>
+                    <fileDesc jahia:value="&lt;BODY&gt;
+	&lt;P&gt;This white paper explains how ACME delivered several first class Hotel in the US&lt;/P&gt;
+&lt;/BODY&gt;
+" jcr:uuid="e9455242-3ff7-44c5-84b1-0184ef15e453" jahia:originalUuid="7ddab4d7-80d2-44a9-bb93-564827f1d49d"></fileDesc>
+                </fileContainer>
+                <fileContainer jcr:primaryType="web_templates:fileContainer" jcr:uuid="ff44f531-d564-481d-ae2d-b3ae8fda3304" jahia:originalUuid="4dd59de9-27c8-4bef-bbe2-31e423784aa6" jcr:lastModified="2009-05-19T17:27:53" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+                    <file jahia:value="/content/sites/ACME/files/PDF/Publications/ACME_WP_BuildingHospitalEurope.pdf" jcr:uuid="10706321-8384-42f9-86d7-8312ec0be774" jahia:originalUuid="27fbf7a9-2bd3-49c4-a5a6-5a169952facd"></file>
+                    <fileDisplayDetails jahia:value="true" jcr:uuid="53cc5c6c-e4d5-4b53-9c75-37b13797f573" jahia:originalUuid="10dcdbe3-e799-4854-9aab-9ff3526012c4"></fileDisplayDetails>
+                    <title jahia:value="How ACME is building major Hospital infrastructure in Europe" jcr:uuid="44293144-fe15-44e8-9282-ca014fb6dda8" jahia:originalUuid="f2cedf0f-4c4f-4181-9be4-f03d8d13676e"></title>
+                    <fileDesc jahia:value="&lt;p&gt;This white paper explains how ACME delivered several major Hospital infrastructure in Europe.&lt;/p&gt;
+" jcr:uuid="cad69f90-9124-4714-9d4b-d1862f47ab8b" jahia:originalUuid="1cc90a14-8cf3-46e3-b479-b7be560e7122"></fileDesc>
+                </fileContainer>
+            </fileContainerList>
+        </columnB_box>
+        <columnB_box jcr:primaryType="web_templates:lastNewsBox" jcr:uuid="9b197aed-b36a-4acb-8d95-2524a7a6d879" jahia:originalUuid="5ce51201-91e4-4f59-ab18-89c934528a5e" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublishingDate="2009-05-19T17:18:28" jahia:lastPublisher="root">
+            <jcr_primaryType jahia:value="web_templates:lastNewsBox" jcr:uuid="df01ce48-9c96-4184-8a0b-5b784e0256cd" jahia:originalUuid="73a05407-2ff1-4fa7-a5a2-06015ecf1e69"></jcr_primaryType>
+            <boxTitle jahia:value="Last Business News" jcr:uuid="13889569-bec0-4241-9f05-3317b6555f9d" jahia:originalUuid="b994f7c3-06a7-40a0-849a-e9cd0ecf3a70"></boxTitle>
+            <skin jahia:value="&lt;jahia-resource id=&quot;jahiatemplates.Sandbox_web_templates&quot; key=&quot;skins.box2&quot; default-value=&quot;box2&quot;/&gt;" jcr:uuid="301440d0-194e-4f84-bc59-ccfee18698a6" jahia:originalUuid="11a97a14-591d-40bd-a186-a16eded96dc2"></skin>
+            <lastNewsContainerList jcr:primaryType="web_templates:lastNewsContainerList" jcr:uuid="0bd32a9f-cc23-48da-b74b-d4f9f4556af3" jahia:originalUuid="327ac6bc-c0b3-406a-8aa7-6b4bb8615028" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+                <lastNewsContainer jcr:primaryType="web_templates:lastNewsContainer" jcr:uuid="ff7d7edb-eeff-48fc-94d6-c9112a141266" jahia:originalUuid="efed1ba6-e4e8-4779-9f38-78928094c2d3" jcr:lastModified="2009-05-19T17:18:29" jahia:createdBy="root" jcr:created="2009-05-19T17:13:43" jahia:lastModifiedBy="root" jahia:lastPublisher="root" jahia:lastPublishingDate="2009-05-19T17:18:28">
+                    <display jahia:value="medium" jcr:uuid="c8782f95-9e0b-4037-85d8-b47d0b568196" jahia:originalUuid="c2914947-625a-4688-aa98-bf1ee63b5cf1"></display>
+                    <maxNews jahia:value="3" jcr:uuid="b16947b9-58fa-4392-b3e1-c61fdc144a5e" jahia:originalUuid="3b3ab756-ff09-477a-9139-ea9fb49131fe"></maxNews>
+                    <filter jahia:value="business" jcr:uuid="f2af6d3a-8a4a-4c80-bea9-732f59f3a66f" jahia:originalUuid="56279465-a26c-42b1-abf7-e1dc6052d89d"></filter>
+                </lastNewsContainer>
+            </lastNewsContainerList>
+        </columnB_box>
+    </columnB_boxList>
+</jahia:page>
+

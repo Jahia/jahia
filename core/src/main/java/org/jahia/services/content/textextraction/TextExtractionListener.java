@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.content.textextraction;
 
 import org.apache.log4j.Logger;
@@ -41,6 +24,7 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
@@ -48,6 +32,7 @@ import javax.jcr.*;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import java.util.Locale;
+import java.util.Calendar;
 
 /**
  * Created by IntelliJ IDEA.
@@ -92,10 +77,21 @@ public class TextExtractionListener extends DefaultEventListener {
                     }
                     Node n = p.getParent();
                     if (n.hasProperty(Constants.JCR_MIMETYPE) && TextExtractorJob.getContentTypes().contains(n.getProperty(Constants.JCR_MIMETYPE).getString())) {
-
+                        if (n.hasProperty(Constants.EXTRACTION_DATE)) {
+                            Calendar lastModified = n.getProperty(Constants.JCR_LASTMODIFIED).getDate();
+                            Calendar extractionDate = n.getProperty(Constants.EXTRACTION_DATE).getDate();
+                            if (extractionDate.after(lastModified) || extractionDate.equals(lastModified)) {
+                                continue;
+                            }
+                        }
                         JahiaUser member = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(event.getUserID());
-                        ProcessingContext jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(), System.currentTimeMillis(), null, member, null);
-                        jParams.setCurrentLocale(Locale.getDefault());
+
+                        ProcessingContext jParams = Jahia.getThreadParamBean();
+                        if (jParams == null) {
+                            jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(), System.currentTimeMillis(), null, member, null);
+                            jParams.setCurrentLocale(Locale.getDefault());
+                        }
+
                         JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for "+p.getParent().getName(), TextExtractorJob.class, jParams);
 
                         SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();

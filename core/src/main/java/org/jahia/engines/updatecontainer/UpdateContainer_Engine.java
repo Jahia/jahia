@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //
 //  EV  10.01.20001
 //  NK  06.02.2002 Added Multiple fields edit at once support
@@ -98,8 +81,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
     /**
      * logging
      */
-    private static final org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(UpdateContainer_Engine.class);
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(UpdateContainer_Engine.class);
 
     public static final String TEMPLATE_JSP = "update_container";
     public static final String ENGINE_NAME = "updatecontainer";
@@ -122,8 +104,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
     /**
      * renderLink
      */
-    public String renderLink(final ProcessingContext jParams, final Object theObj)
-            throws JahiaException {
+    public String renderLink(final ProcessingContext jParams, final Object theObj) throws JahiaException {
         final ContentContainer contentContainer = (ContentContainer) theObj;
         final String params = "?mode=display&cid=" + contentContainer.getID();
         String useOriginPage = jParams.getParameter("use_container_origin_page");
@@ -149,18 +130,13 @@ public class UpdateContainer_Engine implements JahiaEngine {
      * @param jParams a ProcessingContext object
      * @param jData   a JahiaData object (not mandatory)
      */
-    public EngineValidationHelper handleActions(final ProcessingContext jParams, final JahiaData jData)
-            throws JahiaException,
+    public EngineValidationHelper handleActions(final ProcessingContext jParams, final JahiaData jData) throws JahiaException,
             JahiaForbiddenAccessException {
         jParams.getSessionState().setAttribute("showNavigationInLockEngine", "true");
         return handleActions(jParams, jData, null, null);
     }
 
-    protected EngineValidationHelper handleActions(final ProcessingContext jParams,
-                                                   final JahiaData jData,
-                                                   final String cid,
-                                                   final String screen)
-            throws JahiaException, JahiaForbiddenAccessException {
+    protected EngineValidationHelper handleActions(final ProcessingContext jParams, final JahiaData jData, final String cid, final String screen) throws JahiaException {
         // initalizes the hashmap
         jParams.getSessionState().removeAttribute("FireContainerUpdated");
         final Map engineMap = initEngineMap(jParams, cid, screen);
@@ -178,10 +154,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
         final JahiaUser user = jParams.getUser();
 
         // does the current user have permission for the current engine ?
-        if (ServicesRegistry.getInstance().getJahiaACLManagerService().
-                getSiteActionPermission("engines.actions.update",
-                        jParams.getUser(), JahiaBaseACL.READ_RIGHTS,
-                        jParams.getSiteID()) <= 0) {
+        if (ServicesRegistry.getInstance().getJahiaACLManagerService().getSiteActionPermission("engines.actions.update", jParams.getUser(), JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) <= 0) {
             throw new JahiaForbiddenAccessException();
         }
 
@@ -225,9 +198,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
             if (jParams.settings().areLocksActivated()) {
                 final LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_CONTAINER_TYPE, theContainer.getID());
                 EngineValidationHelper evh = null;
-                if (lockRegistry.acquire(lockKey, user, user.getUserKey(),
-                        jParams.getSessionState().getMaxInactiveInterval())) {
-
+                if (lockRegistry.acquire(lockKey, user, user.getUserKey(), jParams.getSessionState().getMaxInactiveInterval())) {
                     engineMap.put("lock", lockKey);
 
                     // fire event
@@ -275,8 +246,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
                                     throw new IllegalArgumentException("Validation param is unknow: " + navigation);
                                 }
                                 String newEngineURL = jParams.composeEngineUrl(ENGINE_NAME, "?cid=" + newCID);
-                                newEngineURL += "&contextualContainerListId="
-                                        + String.valueOf(contextualContainerListId);
+                                newEngineURL += "&contextualContainerListId=" + String.valueOf(contextualContainerListId);
                                 engineMap.put(ENGINE_URL_PARAM, newEngineURL);
 
                                 final SessionState theSession = jParams.getSessionState();
@@ -289,7 +259,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
                         }
                     }
 
-                    if (! "new".equals(navigation)) {
+                    if (!"new".equals(navigation)) {
                         processCurrentScreen(jParams, engineMap);
                     }
                 }
@@ -316,8 +286,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
                     if (ServicesRegistry.getInstance().getJahiaVersionService().isStagingEnabled(theContainer.getJahiaID())) {
                         loadVersion = EntryLoadRequest.STAGED;
                     }
-                    final JahiaContainerList theList = ServicesRegistry.getInstance().getJahiaContainersService().
-                            loadContainerListInfo(theContainer.getListID(), loadVersion);
+                    final JahiaContainerList theList = ServicesRegistry.getInstance().getJahiaContainersService().loadContainerListInfo(theContainer.getListID(), loadVersion);
                     final String link = theEngine.renderLink(jParams, theList);
                     final String params = link.substring(link.indexOf("?") + 1);
                     final StringTokenizer tokenizer = new StringTokenizer(params, "&");
@@ -334,24 +303,20 @@ public class UpdateContainer_Engine implements JahiaEngine {
                     final EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
                     final StringBuffer buff = new StringBuffer();
                     if ("first".equals(navigation)) {
-                        buff.append("?cid=").append(jParams.getParameter("first")).append("&" +
-                                EngineLanguageHelper.ENGINE_LANG_PARAM + "=").append(elh.getCurrentLanguageCode())
-                                .append("&contextualContainerListId=").append(String.valueOf(contextualContainerListId));
+                        buff.append("?cid=").append(jParams.getParameter("first")).append("&" + EngineLanguageHelper.ENGINE_LANG_PARAM + "=")
+                                .append(elh.getCurrentLanguageCode()).append("&contextualContainerListId=").append(String.valueOf(contextualContainerListId));
                         newEngineURL = jParams.composeEngineUrl(ENGINE_NAME, buff.toString());
                     } else if ("previous".equals(navigation)) {
-                        buff.append("?cid=").append(jParams.getParameter("previous")).append("&" +
-                                EngineLanguageHelper.ENGINE_LANG_PARAM + "=").append(elh.getCurrentLanguageCode())
-                                .append("&contextualContainerListId=").append(String.valueOf(contextualContainerListId));
+                        buff.append("?cid=").append(jParams.getParameter("previous")).append("&" + EngineLanguageHelper.ENGINE_LANG_PARAM + "=")
+                                .append(elh.getCurrentLanguageCode()).append("&contextualContainerListId=").append(String.valueOf(contextualContainerListId));
                         newEngineURL = jParams.composeEngineUrl(ENGINE_NAME, buff.toString());
                     } else if ("next".equals(navigation)) {
-                        buff.append("?cid=").append(jParams.getParameter("next")).append("&" +
-                                EngineLanguageHelper.ENGINE_LANG_PARAM + "=").append(elh.getCurrentLanguageCode())
-                                .append("&contextualContainerListId=").append(String.valueOf(contextualContainerListId));
+                        buff.append("?cid=").append(jParams.getParameter("next")).append("&" + EngineLanguageHelper.ENGINE_LANG_PARAM + "=")
+                                .append(elh.getCurrentLanguageCode()).append("&contextualContainerListId=").append(String.valueOf(contextualContainerListId));
                         newEngineURL = jParams.composeEngineUrl(ENGINE_NAME, buff.toString());
                     } else if ("last".equals(navigation)) {
-                        buff.append("?cid=").append(jParams.getParameter("last")).append("&" +
-                                EngineLanguageHelper.ENGINE_LANG_PARAM + "=").append(elh.getCurrentLanguageCode())
-                                .append("&contextualContainerListId=").append(String.valueOf(contextualContainerListId));
+                        buff.append("?cid=").append(jParams.getParameter("last")).append("&" + EngineLanguageHelper.ENGINE_LANG_PARAM + "=")
+                                .append(elh.getCurrentLanguageCode()).append("&contextualContainerListId=").append(String.valueOf(contextualContainerListId));
                         newEngineURL = jParams.composeEngineUrl(ENGINE_NAME, buff.toString());
                     } else {
                         throw new IllegalArgumentException("Validation param is unknow: " + navigation);
@@ -379,8 +344,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
      *
      * @param jParams a ProcessingContext object
      */
-    public EngineValidationHelper processLastScreen(final ProcessingContext jParams, Map engineMap)
-            throws JahiaException, JahiaForbiddenAccessException {
+    public EngineValidationHelper processLastScreen(final ProcessingContext jParams, Map engineMap) throws JahiaException {
 
         // gets the last screen
         // lastscreen   = edit, rights, logs
@@ -394,8 +358,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
         // indicates to sub engines that we are processing last screen
         final int mode = JahiaEngine.UPDATE_MODE;
 
-        final JahiaContentContainerFacade jahiaContentContainerFacade = (JahiaContentContainerFacade)
-                engineMap.get("UpdateContainer_Engine.JahiaContentContainerFacade");
+        final JahiaContentContainerFacade jahiaContentContainerFacade = (JahiaContentContainerFacade) engineMap.get("UpdateContainer_Engine.JahiaContentContainerFacade");
         final EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
         engineMap.put(JahiaEngine.PROCESSING_LOCALE, elh.getPreviousLocale());
 
@@ -404,26 +367,21 @@ public class UpdateContainer_Engine implements JahiaEngine {
         JahiaContainer theContainer = jahiaContentContainerFacade.getContainer(elh.getPreviousEntryLoadRequest(), true);
         engineMap.put("theContainer", theContainer);
 
-        Set allProcessedScreen = (Set) engineMap.get("allProcessedScreen");
+        Set<String> allProcessedScreen = (Set<String>) engineMap.get("allProcessedScreen");
         if (allProcessedScreen == null) {
-            allProcessedScreen = new HashSet();
+            allProcessedScreen = new HashSet<String>();
             engineMap.put("allProcessedScreen", allProcessedScreen);
         }
         allProcessedScreen.add(lastScreen);
         
         if (lastScreen.equals("edit")) {
-
-            final FieldsEditHelper feh = (FieldsEditHelper) engineMap.get(
-                    AddContainer_Engine.ENGINE_NAME + "." + FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
-
+            final FieldsEditHelper feh = (FieldsEditHelper) engineMap.get(AddContainer_Engine.ENGINE_NAME + "." + FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
             if (feh.getLastFieldId() == 0) {
                 // stop processing because of undefined field
                 return null;
             }
             try {
-                if (!feh.processLastFields(AddContainer_Engine.ENGINE_NAME,
-                        jahiaContentContainerFacade,
-                        elh, jParams, engineMap, mode)) {
+                if (!feh.processLastFields(AddContainer_Engine.ENGINE_NAME, jahiaContentContainerFacade, elh, jParams, engineMap, mode)) {
                     // if there was an error, come back to last screen
                     engineMap.put("screen", lastScreen);
                     engineMap.put("jspSource", TEMPLATE_JSP);
@@ -433,14 +391,13 @@ public class UpdateContainer_Engine implements JahiaEngine {
                 logger.debug(e, e);
             }
         } else if (lastScreen.equals("versioning")) {
-            engineMap.put(RENDER_TYPE_PARAM,
-                    new Integer(JahiaEngine.RENDERTYPE_FORWARD));
+            engineMap.put(RENDER_TYPE_PARAM, Integer.valueOf(JahiaEngine.RENDERTYPE_FORWARD));
             // reset engine map to default value
             engineMap.remove(ENGINE_OUTPUT_FILE_PARAM);
         } else if (lastScreen.equals("rightsMgmt")) {
             if (engineMap.get("adminAccess") != null) {
-                evh = ManageRights.getInstance().
-                        handleActions(jParams, mode, engineMap, theContainer.getAclID(), null, null, theContainer.getContentContainer().isAclSameAsParent(),theContainer.getContentContainer().getObjectKey().toString());
+                evh = ManageRights.getInstance().handleActions(jParams, mode, engineMap, theContainer.getAclID(), null, null,
+                        theContainer.getContentContainer().isAclSameAsParent(), theContainer.getContentContainer().getObjectKey().toString());
 
                 if (evh != null && evh.hasErrors()) {
                     // if there was an error, come back to last screen
@@ -481,10 +438,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
 
         } else if (lastScreen.equals("categories")) {
             theContainer = (JahiaContainer) engineMap.get("theContainer");
-            ManageCategories.getInstance().handleActions(jParams, mode,
-                    engineMap,
-                    new ContentContainerKey(jahiaContentContainerFacade.getContainerID()),
-                    theContainer.getDefinition(), false);
+            ManageCategories.getInstance().handleActions(jParams, mode, engineMap, new ContentContainerKey(jahiaContentContainerFacade.getContainerID()), theContainer.getDefinition(), false);
         } else if (lastScreen.equals("workflow")) {
             if (engineMap.get("adminAccess") != null) {
                 theContainer = (JahiaContainer) engineMap.get("theContainer");
@@ -493,7 +447,6 @@ public class UpdateContainer_Engine implements JahiaEngine {
                 throw new JahiaForbiddenAccessException();
             }
         }
-
         return evh;
 
     } // end processLastScreen
@@ -503,12 +456,9 @@ public class UpdateContainer_Engine implements JahiaEngine {
      *
      * @param jParams a ProcessingContext object
      */
-    public EngineValidationHelper processCurrentScreen(final ProcessingContext jParams, Map engineMap)
-            throws JahiaException,
-            JahiaForbiddenAccessException {
+    public EngineValidationHelper processCurrentScreen(final ProcessingContext jParams, Map engineMap) throws JahiaException {
 
-        final JahiaContentContainerFacade jahiaContentContainerFacade = (JahiaContentContainerFacade)
-                engineMap.get("UpdateContainer_Engine.JahiaContentContainerFacade");
+        final JahiaContentContainerFacade jahiaContentContainerFacade = (JahiaContentContainerFacade) engineMap.get("UpdateContainer_Engine.JahiaContentContainerFacade");
         final EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
 
         JahiaContainer theContainer = jahiaContentContainerFacade.getContainer(elh.getCurrentEntryLoadRequest(), true);
@@ -529,41 +479,34 @@ public class UpdateContainer_Engine implements JahiaEngine {
 
         final JahiaUser user = jParams.getUser();
         if (theScreen.equals("edit")) {
-            FieldsEditHelper feh = (FieldsEditHelper) engineMap.get(
-                    AddContainer_Engine.ENGINE_NAME + "." + FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
-
+            FieldsEditHelper feh = (FieldsEditHelper) engineMap.get(AddContainer_Engine.ENGINE_NAME + "." + FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
             if (feh.getStayOnSameField()) {
                 feh.setSelectedFieldId(feh.getLastFieldId());
             }
             try {
-                feh.processCurrentFields(AddContainer_Engine.ENGINE_NAME, jahiaContentContainerFacade, elh,
-                        jParams, engineMap, mode);
+                feh.processCurrentFields(AddContainer_Engine.ENGINE_NAME, jahiaContentContainerFacade, elh, jParams, engineMap, mode);
             } catch (Exception e) {
                 logger.debug(e, e);
             }
 
         } else if (theScreen.equals("logs")) {
-            EngineToolBox.getInstance().loadLogData(jParams,
-                    LoggingEventListener.CONTAINER_TYPE, engineMap);
+            EngineToolBox.getInstance().loadLogData(jParams, LoggingEventListener.CONTAINER_TYPE, engineMap);
 
         } else {
             boolean sameAcl = theContainer.getContentContainer().isAclSameAsParent();
             if (theScreen.equals("rightsMgmt")) {
                 if (engineMap.get("adminAccess") != null) {
-                    ManageRights.getInstance().handleActions(jParams, mode,
-                            engineMap, theContainer.getAclID(), null, null, sameAcl,theContainer.getContentContainer().getObjectKey().toString());
+                    ManageRights.getInstance().handleActions(jParams, mode, engineMap, theContainer.getAclID(), null, null, sameAcl,theContainer.getContentContainer().getObjectKey().toString());
                 } else {
                     throw new JahiaForbiddenAccessException();
                 }
             } else if (theScreen.equals("timeBasedPublishing")) {
-                if (engineMap.get("writeAccess") != null
-                        || engineMap.get("adminAccess") != null) {
+                if (engineMap.get("writeAccess") != null || engineMap.get("adminAccess") != null) {
                     ObjectKey objectKey;
                     theContainer = (JahiaContainer) engineMap.get("theContainer");
                     ContentContainer contentContainer = ContentContainer.getContainer(theContainer.getID());
                     objectKey = contentContainer.getObjectKey();
-                    TimeBasedPublishingEngine.getInstance().
-                            handleActions(jParams, mode, engineMap, objectKey);
+                    TimeBasedPublishingEngine.getInstance().handleActions(jParams, mode, engineMap, objectKey);
                 } else {
                     throw new JahiaForbiddenAccessException();
                 }
@@ -589,49 +532,38 @@ public class UpdateContainer_Engine implements JahiaEngine {
                 final Properties params = new Properties();
                 params.put("method", goTo);
                 params.put("objectKey", new ContentContainerKey(theContainer.getID()).toString());
-                final String versioningURL = jParams.composeStrutsUrl(
-                        "ContainerVersioning", params, null);
-                engineMap.put(RENDER_TYPE_PARAM,
-                        new Integer(JahiaEngine.RENDERTYPE_FORWARD));
+                final String versioningURL = jParams.composeStrutsUrl("ContainerVersioning", params, null);
+                engineMap.put(RENDER_TYPE_PARAM, Integer.valueOf(JahiaEngine.RENDERTYPE_FORWARD));
                 engineMap.put(JahiaEngine.ENGINE_REDIRECT_URL, versioningURL);
                 engineMap.put(ENGINE_OUTPUT_FILE_PARAM, JahiaEngine.REDIRECT_JSP);
             } else if (theScreen.equals("categories")) {
-                ManageCategories.getInstance().handleActions(jParams, mode,
-                        engineMap,
-                        new ContentContainerKey(jahiaContentContainerFacade.getContainerID()),
-                        theContainer.getDefinition(), false);
+                ManageCategories.getInstance().handleActions(jParams, mode, engineMap, new ContentContainerKey(jahiaContentContainerFacade.getContainerID()), theContainer.getDefinition(), false);
             } else if (theScreen.equals("workflow")) {
-                final boolean isReadOnly = LockPrerequisites.getInstance().
-                        getLockPrerequisitesResult((LockKey) engineMap.get("LockKey")) != null;
+                final boolean isReadOnly = LockPrerequisites.getInstance().getLockPrerequisitesResult((LockKey) engineMap.get("LockKey")) != null;
                 if (engineMap.get("adminAccess") != null || isReadOnly) {
-                    ManageWorkflow.getInstance().handleActions(jParams, mode,
-                            engineMap, theContainer.getContentContainer());
+                    ManageWorkflow.getInstance().handleActions(jParams, mode, engineMap, theContainer.getContentContainer());
                 } else {
                     throw new JahiaForbiddenAccessException();
                 }
             } else if (theScreen.equals("import") || theScreen.equals("export")) {
-                ManageImportExport.getInstance().handleActions(jParams, mode,
-                        engineMap, theContainer.getContentContainer());
+                ManageImportExport.getInstance().handleActions(jParams, mode, engineMap, theContainer.getContentContainer());
             } else if (theScreen.equals("save") || theScreen.equals("apply")) {
                 Set allProcessedScreen = (Set) engineMap.get("allProcessedScreen");
                 final String navigation = jParams.getParameter("navigation");
                 final boolean isNavigation = navigation != null && navigation.length() > 0;
                 final String lastScreen = jParams.getParameter("lastscreen");
                 final LockKey futureStolenkey = (LockKey) engineMap.get("LockKey");
-                if ((!isNavigation) &&
-                        LockPrerequisites.getInstance().getLockPrerequisitesResult(futureStolenkey) != null) {
+                if ((!isNavigation) && LockPrerequisites.getInstance().getLockPrerequisitesResult(futureStolenkey) != null) {
                     final String param = jParams.getParameter("whichKeyToSteal");
                     if (param != null && param.length() > 0) {
-                        if (lockRegistry.isAlreadyAcquired(futureStolenkey) &&
-                                !lockRegistry.isAlreadyAcquiredInContext(lockKey, user, user.getUserKey())) {
+                        if (lockRegistry.isAlreadyAcquired(futureStolenkey) && !lockRegistry.isAlreadyAcquiredInContext(lockKey, user, user.getUserKey())) {
                             logger.debug("steal: " + user.getUsername());
                             lockRegistry.steal(futureStolenkey, user, user.getUserKey());
                         } else {
                             logger.debug("nuke: " + user.getUsername());
                             lockRegistry.nuke(futureStolenkey, user, user.getUserKey());
                         }
-                        if (lockRegistry.acquire(lockKey, user, user.getUserKey(),
-                                jParams.getSessionState().getMaxInactiveInterval())) {
+                        if (lockRegistry.acquire(lockKey, user, user.getUserKey(), jParams.getSessionState().getMaxInactiveInterval())) {
                             engineMap.remove("LockKey");
                             jParams.getSessionState().setAttribute("jahia_session_engineMap", engineMap);
                             logger.debug("We were able to acquire the lock after stealing");
@@ -648,8 +580,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
 
                 // #ifdef LOCK
                 // Did somebody steal the lock ? Panpan cucul !
-                if (jParams.settings().areLocksActivated() &&
-                        lockRegistry.isStealedInContext(lockKey, user, user.getUserKey())) {
+                if (jParams.settings().areLocksActivated() && lockRegistry.isStealedInContext(lockKey, user, user.getUserKey())) {
                     engineMap.put("screen", lastScreen);
                     engineMap.put("jspSource", "apply");
                     return null;
@@ -657,34 +588,28 @@ public class UpdateContainer_Engine implements JahiaEngine {
                 // #endif
 
                 if (allProcessedScreen.contains("import") && ProcessingContext.isMultipartRequest(((ParamBean) jParams).getRequest())) {
-                    if (ManageImportExport.getInstance().handleActions(jParams, JahiaEngine.SAVE_MODE,
-                            engineMap, theContainer.getContentContainer())) {
+                    if (ManageImportExport.getInstance().handleActions(jParams, JahiaEngine.SAVE_MODE, engineMap, theContainer.getContentContainer())) {
                         if (theScreen.equals("apply")) {
-                            ManageImportExport.getInstance().handleActions(jParams, JahiaEngine.LOAD_MODE,
-                                    engineMap, theContainer.getContentContainer());
+                            ManageImportExport.getInstance().handleActions(jParams, JahiaEngine.LOAD_MODE, engineMap, theContainer.getContentContainer());
                         }
                     }
                 }
 
-                final FieldsEditHelper feh = (FieldsEditHelper) engineMap.get(AddContainer_Engine.ENGINE_NAME + "."
-                        + FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
+                final FieldsEditHelper feh = (FieldsEditHelper) engineMap.get(AddContainer_Engine.ENGINE_NAME + "." + FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
 
                 // try to save but there are some error when processing previous field
                 if (feh.getStayOnSameField()) {
                     feh.setSelectedFieldId(feh.getLastFieldId());
-                    feh.processCurrentFields(AddContainer_Engine.ENGINE_NAME,
-                            jahiaContentContainerFacade, elh,
-                            jParams, engineMap, JahiaEngine.LOAD_MODE);
+                    feh.processCurrentFields(AddContainer_Engine.ENGINE_NAME, jahiaContentContainerFacade, elh,jParams, engineMap, JahiaEngine.LOAD_MODE);
                     return null;
                 }
 
                 mode = JahiaEngine.VALIDATE_MODE;
 
-                EngineValidationHelper evh = null;
+                EngineValidationHelper evh ;
 
                 if (allProcessedScreen.contains("rightsMgmt")) {
-                    evh = ManageRights.getInstance().handleActions(jParams, mode, engineMap,
-                            theContainer.getAclID(), null, null, sameAcl,theContainer.getContentContainer().getObjectKey().toString());
+                    evh = ManageRights.getInstance().handleActions(jParams, mode, engineMap, theContainer.getAclID(), null, null, sameAcl,theContainer.getContentContainer().getObjectKey().toString());
 
                     if (evh != null && evh.hasErrors()) {
                         engineMap.put(JahiaEngine.ENGINE_VALIDATION_HELPER, evh);
@@ -694,30 +619,20 @@ public class UpdateContainer_Engine implements JahiaEngine {
                     }
                 }
 
-                evh = AddContainer_Engine.validate(
-                        jahiaContentContainerFacade,
-                        jParams,
-                        engineMap, feh, elh);
+                evh = AddContainer_Engine.validate(jahiaContentContainerFacade, jParams, engineMap, feh, elh);
 
                 engineMap.put(JahiaEngine.ENGINE_VALIDATION_HELPER, evh);
                 //JahiaEvent validationEvent = new JahiaEvent (this, jParams, theContainer);
                 //ServicesRegistry.getInstance ().getJahiaEventService ().fireContainerValidation(validationEvent);
 
                 if (evh != null && evh.hasErrors()) {
-
-                    final ContainerEditViewFieldGroup currentFieldGroup =
-                            AddContainer_Engine.getFieldGroup(
-                                    feh.getSelectedFieldId(),
-                                    theContainer,
-                                    feh.getContainerEditView());
+                    final ContainerEditViewFieldGroup currentFieldGroup = AddContainer_Engine.getFieldGroup(feh.getSelectedFieldId(), theContainer, feh.getContainerEditView());
 
                     Collections.sort(evh.getErrors(), new ValidationErrorSorter(currentFieldGroup));
                     if (!feh.getStayOnSameField()) {
                         feh.setSelectedFieldId(((JahiaField) (evh.getFirstError()).getSource()).getID());
                     }
-                    feh.processCurrentFields(AddContainer_Engine.ENGINE_NAME,
-                            jahiaContentContainerFacade, elh, jParams, engineMap,
-                            JahiaEngine.LOAD_MODE);
+                    feh.processCurrentFields(AddContainer_Engine.ENGINE_NAME, jahiaContentContainerFacade, elh, jParams, engineMap, JahiaEngine.LOAD_MODE);
 
                     // prepare view
                     engineMap.put(JahiaEngine.ENGINE_VALIDATION_HELPER, evh);
@@ -751,8 +666,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
 
                 // fire event
                 final JahiaEvent[] theEvent = new JahiaEvent[]{new JahiaEvent(this, jParams, theContainer)};
-                ServicesRegistry.getInstance().getJahiaEventService().
-                        fireUpdateContainerEngineBeforeSave(theEvent[0]);
+                ServicesRegistry.getInstance().getJahiaEventService().fireUpdateContainerEngineBeforeSave(theEvent[0]);
                 // end fire event
 
                 // save the container info
@@ -768,21 +682,17 @@ public class UpdateContainer_Engine implements JahiaEngine {
     //                    protected void doInTransactionWithoutResult(TransactionStatus status) {
     //                        try {
                     final EntryLoadRequest loadVersion;
-                    if (ServicesRegistry.getInstance().getJahiaVersionService().
-                            isStagingEnabled(theContainer.getJahiaID())) {
+                    if (ServicesRegistry.getInstance().getJahiaVersionService().isStagingEnabled(theContainer.getJahiaID())) {
                         loadVersion = EntryLoadRequest.STAGED;
-
                     } else {
                         loadVersion = EntryLoadRequest.CURRENT;
                     }
 
-                    final JahiaContainerList theList = ServicesRegistry.getInstance().getJahiaContainersService().
-                            loadContainerListInfo(theContainer.getListID(), loadVersion);
+                    final JahiaContainerList theList = ServicesRegistry.getInstance().getJahiaContainersService().loadContainerListInfo(theContainer.getListID(), loadVersion);
 
                     if (allProcessedScreen.contains("workflow")) {
                         // save workflow
-                        if (!ManageWorkflow.getInstance().handleActions(jParams, mode,
-                                engineMap, theContainer.getContentContainer())) {
+                        if (!ManageWorkflow.getInstance().handleActions(jParams, mode, engineMap, theContainer.getContentContainer())) {
                             engineMap.put("screen", "workflow");
                             engineMap.put("jspSource", TEMPLATE_JSP);
                             return null;
@@ -792,8 +702,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
                     // 0 for parentAclID in saveContainerInfo, because container already exists
                     //  -> container already has an aclID
                     //  -> no need to create a new one
-                    ServicesRegistry.getInstance().getJahiaContainersService().saveContainerInfo(theContainer,
-                            theList.getParentEntryID(), 0, jParams);
+                    ServicesRegistry.getInstance().getJahiaContainersService().saveContainerInfo(theContainer, theList.getParentEntryID(), 0, jParams);
 
                     saveFields(theContainer, jahiaContentContainerFacade, feh, jParams, mode, engineMap);
 
@@ -802,8 +711,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
                         engineMap.put("logObjectType", Integer.toString(LoggingEventListener.CONTAINER_TYPE));
                         engineMap.put("logObject", theContainer);
                         //ViewRights.getInstance().handleActions( jParams, mode, engineMap, theContainer.getAclID() );
-                        ManageRights.getInstance().handleActions(jParams, mode,
-                                engineMap, theContainer.getAclID(), null, null, sameAcl,theContainer.getContentContainer().getObjectKey().toString());
+                        ManageRights.getInstance().handleActions(jParams, mode, engineMap, theContainer.getAclID(), null, null, sameAcl,theContainer.getContentContainer().getObjectKey().toString());
                         if (sameAcl) {
                             JahiaBaseACL acl = (JahiaBaseACL) engineMap.get(ManageRights.NEW_ACL+"_"+theContainer.getContentContainer().getObjectKey());
                             if (acl != null) {
@@ -829,7 +737,6 @@ public class UpdateContainer_Engine implements JahiaEngine {
                             ContentContainer contentContainer = ContentContainer.getContainer(theContainer.getID());
                             objectKey[0] = contentContainer.getObjectKey();
                             TimeBasedPublishingEngine.getInstance().handleActions(jParams, mode, engineMap, objectKey[0]);
-
                             if (Boolean.TRUE.equals(engineMap.get("tbpUpdated"))) {
                                 theContainer.getContentContainer().setUnversionedChanged();
                             }
@@ -840,9 +747,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
 
                     if (allProcessedScreen.contains("categories")) {
                         // save categories
-                        ManageCategories.getInstance().handleActions(jParams, mode, engineMap,
-                                new ContentContainerKey(jahiaContentContainerFacade.getContainerID()),
-                                theContainer.getDefinition(), false);
+                        ManageCategories.getInstance().handleActions(jParams, mode, engineMap, new ContentContainerKey(jahiaContentContainerFacade.getContainerID()), theContainer.getDefinition(), false);
                     }
 
                     // save metadata
@@ -874,8 +779,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
                 } catch (Exception e) {
                     logger.error("Error during update operation of an element we must flush all caches to ensure integrity between database and viewing");
                     ServicesRegistry.getInstance().getCacheService().flushAllCaches();
-                    throw new JahiaException(e.getMessage(), e.getMessage(),
-                            JahiaException.DATABASE_ERROR, JahiaException.CRITICAL_SEVERITY, e);
+                    throw new JahiaException(e.getMessage(), e.getMessage(), JahiaException.DATABASE_ERROR, JahiaException.CRITICAL_SEVERITY, e);
                 } finally {
                     if (theScreen.equals("apply")) {
                         engineMap.put("prevScreenIsApply", Boolean.TRUE);
@@ -890,7 +794,6 @@ public class UpdateContainer_Engine implements JahiaEngine {
                     // #endif
                 }
             } else if (theScreen.equals("cancel")) {
-
                 mode = JahiaEngine.CANCEL_MODE;
                 ManageRights.getInstance().handleActions(jParams, mode, engineMap, theContainer.getAclID(), null, null, sameAcl,theContainer.getContentContainer().getObjectKey().toString());
                 ManageWorkflow.getInstance().handleActions(jParams, mode, engineMap, theContainer.getContentContainer());
@@ -915,10 +818,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
      * @param jParams a ProcessingContext object (with request and response)
      * @return a Map object containing all the basic values needed by an engine
      */
-    private Map initEngineMap(final ProcessingContext jParams, final String forcedCid, final String screen)
-            throws JahiaException,
-            JahiaSessionExpirationException {
-
+    private Map initEngineMap(final ProcessingContext jParams, final String forcedCid, final String screen) throws JahiaException {
         logger.debug("Start initEngineMap");
         EngineLanguageHelper elh;
         Locale previousLocale = null;
@@ -948,10 +848,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
         try {
             ctnid = Integer.parseInt(ctnidStr);
         } catch (NumberFormatException nfe) {
-            throw new JahiaException("Error in parameters", "Error in parameters : cid (" + ctnidStr +
-                    ") cannot be converted in int",
-                    JahiaException.DATA_ERROR,
-                    JahiaException.CRITICAL_SEVERITY, nfe);
+            throw new JahiaException("Error in parameters", "Error in parameters : cid (" + ctnidStr + ") cannot be converted in int", JahiaException.DATA_ERROR, JahiaException.CRITICAL_SEVERITY, nfe);
         }
 
         // gets session values
@@ -962,13 +859,11 @@ public class UpdateContainer_Engine implements JahiaEngine {
             Boolean prevScreenIsApplyBool = (Boolean) engineMap.get("prevScreenIsApply");
             prevScreenIsApply = (prevScreenIsApplyBool != null && prevScreenIsApplyBool.booleanValue());
             if (prevScreenIsApply || isNavigation) {
-                elh = (EngineLanguageHelper) engineMap
-                        .get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
+                elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
                 if (elh != null) {
                     previousLocale = elh.getPreviousLocale();
                 }
-                feh = (ContainerFieldsEditHelper) engineMap.get(AddContainer_Engine.ENGINE_NAME + "."
-                        + FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
+                feh = (ContainerFieldsEditHelper) engineMap.get(AddContainer_Engine.ENGINE_NAME + "." + FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
                 if (feh != null) {
                     lastFieldId = feh.getSelectedFieldId();
                 }
@@ -979,7 +874,6 @@ public class UpdateContainer_Engine implements JahiaEngine {
         JahiaContentContainerFacade jahiaContentContainerFacade;
         final ContentContainer container = ContentContainer.getContainer(ctnid);
         if (theScreen != null && !isNavigation) {
-
             logger.debug("The Screen is not null, load it from session: " + theScreen);
 
             // if no, load the container value from the session
@@ -996,24 +890,17 @@ public class UpdateContainer_Engine implements JahiaEngine {
                 throw new JahiaSessionExpirationException();
             }
 
-            jahiaContentContainerFacade = (JahiaContentContainerFacade)
-                    engineMap.get("UpdateContainer_Engine.JahiaContentContainerFacade");
+            jahiaContentContainerFacade = (JahiaContentContainerFacade) engineMap.get("UpdateContainer_Engine.JahiaContentContainerFacade");
 
-            feh = (ContainerFieldsEditHelper) engineMap.get(AddContainer_Engine.
-                    ENGINE_NAME + "." + FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
+            feh = (ContainerFieldsEditHelper) engineMap.get(AddContainer_Engine.ENGINE_NAME + "." + FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
 
             if (prevScreenIsApply && theScreen.equals("edit")) {
                 // reinit jahiaContentContainerFacade
-                List<Locale> localeList = jParams.getSite(). getLanguageSettingsAsLocales(false);
+                List<Locale> localeList = jParams.getSite().getLanguageSettingsAsLocales(false);
 
-                jahiaContentContainerFacade = new JahiaContentContainerFacade(ctnid,
-                        LoadFlags.ALL,
-                        jParams,
-                        localeList,
-                        true);
+                jahiaContentContainerFacade = new JahiaContentContainerFacade(ctnid, LoadFlags.ALL, jParams, localeList, true);
 
-                engineMap.put("UpdateContainer_Engine.JahiaContentContainerFacade",
-                        jahiaContentContainerFacade);
+                engineMap.put("UpdateContainer_Engine.JahiaContentContainerFacade", jahiaContentContainerFacade);
 
                 // reset session
                 engineMap.remove(AddContainer_Engine.ENGINE_NAME + "." + "updated.fields");
@@ -1036,13 +923,8 @@ public class UpdateContainer_Engine implements JahiaEngine {
             // init the JahiaContentFieldFacade
             final List<Locale> localeList = jParams.getSite().getLanguageSettingsAsLocales(false);
 
-            jahiaContentContainerFacade = new JahiaContentContainerFacade(container.getJahiaContainer(jParams,
-                    jParams.getEntryLoadRequest()),
-                    jParams.getPage(),
-                    LoadFlags.ALL,
-                    jParams,
-                    localeList,
-                    true, true, false);
+            jahiaContentContainerFacade = new JahiaContentContainerFacade(container.getJahiaContainer(jParams, jParams.getEntryLoadRequest()), jParams.getPage(),
+                                                                                                      LoadFlags.ALL, jParams, localeList, true, true, false);
 
             engineMap.put("UpdateContainer_Engine.JahiaContentContainerFacade", jahiaContentContainerFacade);
             theSession.removeAttribute("Navigation");
@@ -1086,8 +968,8 @@ public class UpdateContainer_Engine implements JahiaEngine {
         if (feh == null) {
             feh = new ContainerFieldsEditHelper(theContainer);
             // create the edit view
-            final Map ctnListFieldAcls = JahiaEngineTools.getCtnListFieldAclMap(theContainer, jParams);
-            Set visibleFields = JahiaEngineTools.getCtnListVisibleFields(theContainer, jParams.getUser(), ctnListFieldAcls);
+            final Map<Integer, Integer> ctnListFieldAcls = JahiaEngineTools.getCtnListFieldAclMap(theContainer, jParams);
+            Set<Integer> visibleFields = JahiaEngineTools.getCtnListVisibleFields(theContainer, jParams.getUser(), ctnListFieldAcls);
             final ContainerEditView editView = ContainerEditView.getInstance(theContainer, jParams, visibleFields);
             feh.setContainerEditView(editView);
             feh.setCtnListFieldAcls(ctnListFieldAcls);
@@ -1106,7 +988,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
             engineMap.put(AddContainer_Engine.ENGINE_NAME + "." + FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID, feh);
         }
         // Update FieldsEditHelper
-        feh.setFieldForms(new HashMap());
+        feh.setFieldForms(new HashMap<Integer, String>());
         feh.setStayOnSameField(false);
         if (theScreen.equals(engineMap.get("screen"))) {
             feh.processRequest(jParams, lastFieldId);
@@ -1160,35 +1042,24 @@ public class UpdateContainer_Engine implements JahiaEngine {
          */
         Integer contextualContainerListId = (Integer)engineMap.get("contextualContainerListId");
         if (contextualContainerListId != null && contextualContainerListId.intValue() != 0){
-            theSession.setAttribute("ContextualContainerList_" + String.valueOf(contextualContainerListId), 
-                    new Integer(ctnid));
+            theSession.setAttribute("ContextualContainerList_" + String.valueOf(contextualContainerListId), Integer.valueOf(ctnid));
         }
 
         // sets engineMap for JSPs
         engineMap.put(AddContainer_Engine.ENGINE_NAME + "." + "fieldForms", new HashMap());
-        jParams.setAttribute("engineTitle", JahiaResourceBundle
-                .getJahiaInternalResource(
-                        "org.jahia.engines.updatecontainer.UpdateContainer_Engine.updateContainer.label",
-                        elh.getCurrentLocale()));
-        jParams.setAttribute("org.jahia.engines.EngineHashMap",
-                engineMap);
+        jParams.setAttribute("engineTitle", JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.updatecontainer.UpdateContainer_Engine.updateContainer.label", elh.getCurrentLocale()));
+        jParams.setAttribute("org.jahia.engines.EngineHashMap", engineMap);
 
         return engineMap;
     }
 
 
-    private boolean saveFields(
-            final JahiaContainer theContainer,
-            final JahiaContentContainerFacade jahiaContainerFacade,
-            final FieldsEditHelper feh,
-            final ProcessingContext jParams,
-            final int mode,
-            final Map engineMap) throws JahiaException {
+    private boolean saveFields(final JahiaContainer theContainer, final JahiaContentContainerFacade jahiaContainerFacade, final FieldsEditHelper feh, final ProcessingContext jParams, final int mode, final Map engineMap) throws JahiaException {
         final Iterator contentFieldFacadeEnum = jahiaContainerFacade.getFields();
         boolean changed = false;
-        Set editedLanguages = new HashSet();
-        for (Iterator iterator = feh.getUpdatedFields().values().iterator(); iterator.hasNext();) {
-            List list = (List) iterator.next();
+        Set<String> editedLanguages = new HashSet<String>();
+        for (Iterator<List<String>> iterator = feh.getUpdatedFields().values().iterator(); iterator.hasNext();) {
+            List<String> list = iterator.next();
             editedLanguages.addAll(list);
         }
         while (contentFieldFacadeEnum.hasNext()) {
@@ -1210,48 +1081,32 @@ public class UpdateContainer_Engine implements JahiaEngine {
 
                     // save the active entry only if the staging doesn't exists.
                     boolean processField = true;
-                    processingEntryLoadRequest =
-                            new EntryLoadRequest(field.getWorkflowState(),
-                                    field.getVersionID(),
-                                    new ArrayList());
-                    processingEntryLoadRequest.getLocales().
-                            add(LanguageCodeConverters.languageCodeToLocale(field.getLanguageCode()));
+                    processingEntryLoadRequest = new EntryLoadRequest(field.getWorkflowState(), field.getVersionID(), new ArrayList<Locale>());
+                    processingEntryLoadRequest.getLocales().add(LanguageCodeConverters.languageCodeToLocale(field.getLanguageCode()));
 
-                    if (field.getWorkflowState() ==
-                            EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
-                        final List entryLocales = new ArrayList();
-                        entryLocales.add(LanguageCodeConverters.languageCodeToLocale(field.
-                                getLanguageCode()));
-                        final EntryLoadRequest stagingLoadRequest =
-                                new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, entryLocales);
+                    if (field.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
+                        final List<Locale> entryLocales = new ArrayList<Locale>();
+                        entryLocales.add(LanguageCodeConverters.languageCodeToLocale(field.getLanguageCode()));
+                        final EntryLoadRequest stagingLoadRequest = new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, entryLocales);
 
-                        processField = (contentFieldFacade.getField(
-                                stagingLoadRequest, false) == null);
+                        processField = (contentFieldFacade.getField(stagingLoadRequest, false) == null);
                         if (processField) {
                             processingEntryLoadRequest = stagingLoadRequest;
                         }
                     }
                     if (processField) {
                         if (field.getID() == 0) {
-                            JahiaSaveVersion saveVersion = ServicesRegistry.getInstance().
-                                    getJahiaVersionService().getSiteSaveVersion(jParams.getJahiaID());
-                            field = ServicesRegistry.getInstance().
-                                    getJahiaFieldService().
-                                    createJahiaField(0, field.getJahiaID(), field.getPageID(),
-                                            field.getctnid(), field.getFieldDefID(),
-                                            field.getType(), field.getConnectType(),
-                                            field.getValue(), field.getRank(), field.getAclID(),
-                                            saveVersion.getVersionID(),
-                                            saveVersion.getWorkflowState(),
-                                            field.getLanguageCode());
+                            JahiaSaveVersion saveVersion = ServicesRegistry.getInstance().getJahiaVersionService().getSiteSaveVersion(jParams.getJahiaID());
+                            field = ServicesRegistry.getInstance().getJahiaFieldService().createJahiaField(0, field.getJahiaID(), field.getPageID(), field.getctnid(),
+                                                                                                           field.getFieldDefID(),field.getType(), field.getConnectType(),
+                                                                                                           field.getValue(), field.getRank(), field.getAclID(),
+                                                                                                           saveVersion.getVersionID(), saveVersion.getWorkflowState(),
+                                                                                                           field.getLanguageCode());
                         }
                         engineMap.put("theField", field);
-                        EntryLoadRequest savedEntryLoadRequest =
-                            jParams.getSubstituteEntryLoadRequest();
-                        jParams.setSubstituteEntryLoadRequest(
-                                processingEntryLoadRequest);
-                        EngineToolBox.getInstance().processFieldTypes(field,
-                                theContainer, AddContainer_Engine.ENGINE_NAME, jParams, mode, engineMap);
+                        EntryLoadRequest savedEntryLoadRequest = jParams.getSubstituteEntryLoadRequest();
+                        jParams.setSubstituteEntryLoadRequest(processingEntryLoadRequest);
+                        EngineToolBox.getInstance().processFieldTypes(field, theContainer, AddContainer_Engine.ENGINE_NAME, jParams, mode, engineMap);
                         jParams.setSubstituteEntryLoadRequest(savedEntryLoadRequest);
                     }
                     if (newFieldID == 0 && field.getID() > 0) {

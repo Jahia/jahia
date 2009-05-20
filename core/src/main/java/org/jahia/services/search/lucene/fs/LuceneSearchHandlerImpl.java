@@ -1,19 +1,18 @@
-/*
- * Copyright 2002-2008 Jahia Ltd
+/**
+ * Jahia Enterprise Edition v6
  *
- * Licensed under the JAHIA COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (JCDDL), 
- * Version 1.0 (the "License"), or (at your option) any later version; you may 
- * not use this file except in compliance with the License. You should have 
- * received a copy of the License along with this program; if not, you may obtain 
- * a copy of the License at 
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- *  http://www.jahia.org/license/
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
- * limitations under the License.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
 package org.jahia.services.search.lucene.fs;
 
@@ -37,12 +36,16 @@ import org.compass.core.lucene.util.ChainedFilter;
 import org.compass.core.lucene.util.ChainedFilter.ChainedFilterType;
 import org.compass.core.mapping.ResourceMapping;
 import org.compass.core.spi.InternalCompass;
+import org.jahia.content.ContentObject;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cluster.ClusterService;
 import org.jahia.services.search.*;
 import org.jahia.services.search.lucene.*;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -58,16 +61,6 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
             org.apache.log4j.Logger.getLogger(LuceneSearchHandlerImpl.class);
 
     private LuceneCoreSearcher coreSearcher;
-
-    /**
-     * The Lucene analyzer , used for search *
-     */
-    /** The Lucene analyzer * */
-    private Analyzer defaultAnalyzer;
-    final private static String DEFAULT_ANALYZER = "default"; 
-    private Map<String, Analyzer> analyzers = new HashMap<String, Analyzer>();
-    
-    private ResourceMapping resourceMapping;    
 
     private FieldSelector fieldSelector;
 
@@ -96,41 +89,55 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
             List<String> allowedFields = searchService.getFieldsToCopyToSearchHit();
             this.setFieldSelector(new SetNonLazyFieldSelector(allowedFields));
         }
-        
-        if (this.defaultAnalyzer == null) {
-            Compass compass = ServicesRegistry.getInstance()
-                    .getJahiaSearchService().getCompass();
-            if (compass != null && compass instanceof InternalCompass) {
-                InternalCompass internalCompass = (InternalCompass) compass;
-                SearchEngineFactory searchEngineFactory = internalCompass
-                        .getSearchEngineFactory();
-                if (searchEngineFactory != null
-                        && searchEngineFactory instanceof LuceneSearchEngineFactory) {
-                    LuceneSearchEngineFactory luceneSearchEngineFactory = (LuceneSearchEngineFactory) searchEngineFactory;
-                    LuceneAnalyzerManager analyzerMgr = luceneSearchEngineFactory.getAnalyzerManager();
-                    this.defaultAnalyzer = analyzerMgr.getAnalyzerByAliasMustExists("jahiaSearcher");
-                    for (ResourceMapping compassMapping : luceneSearchEngineFactory
-                            .getMapping().getRootMappings()) {
-                        if (compassMapping.getAlias()
-                                .startsWith("jahiaSearcher")) {
-                            String key = DEFAULT_ANALYZER;
-                            int index = compassMapping.getAlias().indexOf('_');
-                            if (index != -1) {
-                                key = compassMapping.getAlias().substring(
-                                        index + 1);
-                            }
-                            analyzers.put(key, analyzerMgr
-                                    .getAnalyzerByAlias(compassMapping
-                                            .getAlias()));
-                        }
-
-                    }
-                    this.resourceMapping = luceneSearchEngineFactory.getMapping().getRootMappingByAlias("jahiaIndexer");                    
-                }
-            }
-        }        
 
         this.coreSearcher = new LuceneCoreSearcher(this, getConfig());
+    }
+    
+    private ResourceMapping getResourceMapping() {
+        ResourceMapping resourceMapping = null;
+        Compass compass = ServicesRegistry.getInstance().getJahiaSearchService().getCompass();
+        if (compass != null && compass instanceof InternalCompass) {
+            InternalCompass internalCompass = (InternalCompass) compass;
+            SearchEngineFactory searchEngineFactory = internalCompass.getSearchEngineFactory();
+            if (searchEngineFactory != null && searchEngineFactory instanceof LuceneSearchEngineFactory) {
+                LuceneSearchEngineFactory luceneSearchEngineFactory = (LuceneSearchEngineFactory) searchEngineFactory;
+                resourceMapping = luceneSearchEngineFactory.getMapping().getRootMappingByAlias("jahiaSearcher");
+            }
+        }
+        return resourceMapping;
+    }
+    
+    private Analyzer getDefaultAnalyzer() {
+        Analyzer defaultAnalyzer = null;
+        Compass compass = ServicesRegistry.getInstance().getJahiaSearchService().getCompass();
+        if (compass != null && compass instanceof InternalCompass) {
+            InternalCompass internalCompass = (InternalCompass) compass;
+            SearchEngineFactory searchEngineFactory = internalCompass.getSearchEngineFactory();
+            if (searchEngineFactory != null && searchEngineFactory instanceof LuceneSearchEngineFactory) {
+                LuceneSearchEngineFactory luceneSearchEngineFactory = (LuceneSearchEngineFactory) searchEngineFactory;
+                LuceneAnalyzerManager analyzerMgr = luceneSearchEngineFactory.getAnalyzerManager();                
+                defaultAnalyzer = analyzerMgr.getAnalyzerByAliasMustExists("jahiaSearcher");
+            }
+        }
+        return defaultAnalyzer;
+    }
+    
+    private Analyzer getAnalyzer(String languageCode) {
+        Analyzer analyzer = null;
+        Compass compass = ServicesRegistry.getInstance().getJahiaSearchService().getCompass();
+        if (compass != null && compass instanceof InternalCompass) {
+            InternalCompass internalCompass = (InternalCompass) compass;
+            SearchEngineFactory searchEngineFactory = internalCompass.getSearchEngineFactory();
+            if (searchEngineFactory != null && searchEngineFactory instanceof LuceneSearchEngineFactory) {
+                LuceneSearchEngineFactory luceneSearchEngineFactory = (LuceneSearchEngineFactory) searchEngineFactory;
+                LuceneAnalyzerManager analyzerMgr = luceneSearchEngineFactory.getAnalyzerManager();                
+                ResourceMapping compassMapping = luceneSearchEngineFactory.getMapping().getRootMappingByAlias("jahiaSearcher_" + languageCode);
+                if (compassMapping != null) {
+                    analyzer = analyzerMgr.getAnalyzerByAlias(compassMapping.getAlias());
+                }
+            }
+        }
+        return analyzer;
     }
 
     public SearchResult search(String query) {
@@ -183,6 +190,10 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
     public void search(String query, List<String> languageCodes, SearchResult collector,
             String[] filterQueries, Filter filter, Sort sort, IndexReader reader,
             JahiaAbstractHitCollector hitCollector) {
+        
+        languageCodes = new ArrayList<String>(languageCodes);
+        languageCodes.remove(ContentObject.SHARED_LANGUAGE);
+        
         if (logger.isDebugEnabled()) {
             logger.debug("Query: " + query);
             if (filterQueries != null && filterQueries.length > 0) {
@@ -190,6 +201,15 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
                 for (int i = 0; i < filterQueries.length; i++ ) {
                    logger.debug("filterQuery " + i + ":" + filterQueries[i]);
                 }   
+            }
+            if (sort != null) {
+                SortField[] sortFields = sort.getSort();
+                if (sortFields != null && sortFields.length > 0) {
+                    logger.debug("Sort: ");
+                    for (SortField sortField : sortFields) {
+                        logger.debug(sortField.toString());
+                    }
+                }
             }
         }    
         
@@ -206,13 +226,14 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
             */
             // we should use the field boost score of the site from which wthe searhc is launched even thought
             // is is a multiple index reader ( multi site )
-            Analyzer analyzer = defaultAnalyzer;
-            if (languageCodes.size() == 1 && analyzers.size() > 1) {
+            Analyzer analyzer = getDefaultAnalyzer();
+            if (languageCodes.size() == 1) {
                 Analyzer languageAnalyzer = getAnalyzerForLanguage(languageCodes.get(0));
-                if (!analyzer.equals(languageAnalyzer)) {
+                if (languageAnalyzer != null && !analyzer.equals(languageAnalyzer)) {
                     analyzer = languageAnalyzer;
                 }
             }
+            ResourceMapping resourceMapping = getResourceMapping();
             QueryParser queryParser = new JahiaLuceneQueryParser(
                     getAllSearchFieldName(), ServicesRegistry.getInstance().
                     getJahiaSearchService().getFieldsGrouping(), this.getSiteId(),
@@ -260,19 +281,21 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
             
             Query q = null;
             if (query != null && query.length() > 0) {
-                if (languageCodes.size() > 1 && analyzers.size() > 1) {
+                if (languageCodes.size() > 1) {
                     Map<Analyzer, Set<String>> analyzersToUse = new HashMap<Analyzer, Set<String>>();
                     for (String languageCode : languageCodes) {
-                        Analyzer languageAnalyzer = getAnalyzerForLanguage(languageCode);
-                        if (languageAnalyzer != null) {
-                            Set<String> languages = analyzersToUse
-                                    .get(languageAnalyzer);
-                            if (languages == null) {
-                                languages = new HashSet<String>();
-                            }
-                            languages.add(languageCode);
-                            analyzersToUse.put(languageAnalyzer, languages);
+                        Analyzer languageAnalyzer = ContentObject.SHARED_LANGUAGE.equals(languageCode) ? null : getAnalyzerForLanguage(languageCode);
+                        if (languageAnalyzer == null) {
+                            languageAnalyzer = analyzer;
                         }
+
+                        Set<String> languages = analyzersToUse
+                                .get(languageAnalyzer);
+                        if (languages == null) {
+                            languages = new HashSet<String>();
+                        }
+                        languages.add(languageCode);
+                        analyzersToUse.put(languageAnalyzer, languages);
                     }
                     if (analyzersToUse.size() == 1 && analyzersToUse.keySet().iterator().next().equals(analyzer)) {
                         q = queryParser.parse(query);
@@ -334,6 +357,16 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
             }
         } catch (Exception t) {
             logger.warn("Exception occured when performing search", t);
+            // If there is a network outage, we should close the searcher and get
+            // a new one instead of caching the reader as Lucene seems to not recover
+            // from network outage
+            if (t instanceof IOException) {
+                try {
+                    coreSearcher.getSearcher(true, false, null);
+                } catch (Exception e) {
+                    logger.warn("Failed to reopen index searcher/reader", e);
+                }                
+            }              
         } finally {
             // Removed as releasing references to opened lucene query request will be done
             // in finally clause of Jahia.service() method
@@ -362,12 +395,19 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
         if (index != -1) {
             languageCode = languageCode.substring(0, index);
         }
-        return analyzers.get(languageCode);
+        return getAnalyzer(languageCode);
     }
 
-    public void notifyIndexUpdate() {
+    public void notifyIndexUpdate(boolean synchronizedIndexing) {
         try {
-            coreSearcher.getSearcher(true, false, null);
+            Future<Object>[] waitSearcher = null;
+            if (synchronizedIndexing) {
+                waitSearcher = new Future[]{null};
+            }
+            coreSearcher.getSearcher(true, false, waitSearcher);
+            if (waitSearcher != null && waitSearcher[0] != null) {
+                waitSearcher[0].get(3, TimeUnit.SECONDS);
+            }
         } catch (Exception e) {
             logger.warn("Failed to reopen index searcher/reader", e);
         }
@@ -411,11 +451,11 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
         if (hits == null || hits.length() == 0) {
             return;
         }
-
+        
         SearchResult searchResult = searchEngine != null ? new LuceneSearchResult(
                 reader, query, searchEngine)
-                : new SearchResultImpl(false);        
-        
+                : new SearchResultImpl(false);    
+
         Set<String> distinctObjectKeys = new HashSet<String>();
         String objectKey = null;
         for (int i = 0, size = hits.length(); i < size; i++) {

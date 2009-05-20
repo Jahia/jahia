@@ -1,36 +1,19 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResult;
@@ -64,10 +47,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.content.JCRJahiaContentNode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User: jahia
@@ -98,11 +78,14 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
             if (input.equalsIgnoreCase(HISTORY)) {
                 int historyPathLength = 5;
                 return populateWithHistoryItems(gwtToolbarItemsList, jahiaData, historyPathLength);
-            } else if (input.equalsIgnoreCase(BOOKMARKS)) {
+            }
+            else if (input.equalsIgnoreCase(BOOKMARKS)) {
                 return populateWithBookmarksItems(gwtToolbarItemsList, jahiaData);
-            } else if (input.equalsIgnoreCase(SITES)) {
+            }
+            else if (input.equalsIgnoreCase(SITES)) {
                 return populateWithChangeSiteItems(gwtToolbarItemsList, jahiaData);
-            } else if (input.equalsIgnoreCase(QUICK_WORKFLOW)) {
+            }
+            else if (input.equalsIgnoreCase(QUICK_WORKFLOW)) {
                 return populateWithQuickWorkflowItems(gwtToolbarItemsList, jahiaData);
             }
         }
@@ -146,7 +129,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
         return gwtToolbarItemsList;
     }
 
-    /**
+     /**
      * populate with bookmark items
      */
     public List<GWTJahiaToolbarItem> populateWithBookmarksItems(List<GWTJahiaToolbarItem> gwtToolbarItemsList, JahiaData jahiaData) {
@@ -156,7 +139,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
         if (jahiaPreferenceList != null) {
             for (JahiaPreference pref : jahiaPreferenceList) {
                 // current bookmark
-                BookmarksJahiaPreference bPref = (BookmarksJahiaPreference) pref;
+                BookmarksJahiaPreference bPref = (BookmarksJahiaPreference) pref.getNode();
                 try {
                     String pageUUID = bPref.getPageUUID();
                     ContentPage contentPage = getContentPage(pageUUID, jahiaData.getProcessingContext().getUser());
@@ -178,7 +161,6 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
         }
         return gwtToolbarItemsList;
     }
-
     /**
      * Get Bookmark jahia preference provider
      *
@@ -209,18 +191,20 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
             List<JahiaSite> sitesList = jahiaGroupManagerService.getAdminGrantedSites(jahiaData.getProcessingContext().getUser());
             if (sitesList != null && sitesList.size() > 1) {
                 for (JahiaSite site : sitesList) {
-                    GWTJahiaToolbarItem gwtToolbarItem = createRedirectItem(jahiaData, site.getTitle(), site.getHomePage());
-                    // add to itemsgroup
-                    if (gwtToolbarItem != null) {
-                        String minIconStyle = "gwt-toolbar-ItemsGroup-icons-site-min";
-                        String maxIconStyle = "gwt-toolbar-ItemsGroup-icons-site-min";
-                        gwtToolbarItem.setMediumIconStyle(maxIconStyle);
-                        gwtToolbarItem.setMinIconStyle(minIconStyle);
-                        if (jahiaData.getProcessingContext().getSiteID() == site.getID()) {
-                            gwtToolbarItem.setSelected(true);
+                    if (site.getHomePageID() > -1) {
+                        GWTJahiaToolbarItem gwtToolbarItem = createRedirectItem(jahiaData, site.getTitle(), site.getHomePage());
+                        // add to itemsgroup
+                        if (gwtToolbarItem != null) {
+                            String minIconStyle = "gwt-toolbar-ItemsGroup-icons-site-min";
+                            String maxIconStyle = "gwt-toolbar-ItemsGroup-icons-site-min";
+                            gwtToolbarItem.setMediumIconStyle(maxIconStyle);
+                            gwtToolbarItem.setMinIconStyle(minIconStyle);
+                            if (jahiaData.getProcessingContext().getSiteID() == site.getID()) {
+                                gwtToolbarItem.setSelected(true);
+                            }
+                            // add to group lis
+                            gwtToolbarItemsList.add(gwtToolbarItem);
                         }
-                        // add to group lis
-                        gwtToolbarItemsList.add(gwtToolbarItem);
                     }
                 }
             }
@@ -252,33 +236,35 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                 int warns = 0;
                 int errors = 0;
                 List<GWTJahiaNodeOperationResultItem> vals = new ArrayList<GWTJahiaNodeOperationResultItem>();
+                Set<String> msgs = new HashSet<String>();
                 GWTJahiaNodeOperationResult validation = val.get(processingContext.getCurrentLocale().toString());
-                if (validation != null) {
+                if (validation != null)  {
                     vals.addAll(validation.getErrorsAndWarnings());
                     for (GWTJahiaNodeOperationResultItem resultItem : vals) {
-                        if (resultItem.getLevel() == GWTJahiaNodeOperationResultItem.WARNING) {
+                        if (resultItem.getLevel() == GWTJahiaNodeOperationResultItem.WARNING && !msgs.contains(resultItem.getMessage())) {
                             warns++;
-                        } else if (resultItem.getLevel() == GWTJahiaNodeOperationResultItem.ERROR) {
+                        } else if (resultItem.getLevel() == GWTJahiaNodeOperationResultItem.ERROR && !msgs.contains(resultItem.getMessage())) {
                             errors++;
                         }
+                        msgs.add(resultItem.getMessage());
                     }
                 }
-                if (warns > 0) {
+                if (warns>0) {
                     GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
-                    gwtToolbarItem.setTitle(vals.size() + " warnings");
+                    gwtToolbarItem.setTitle(warns+" warnings");
                     gwtToolbarItem.setDisplayTitle(true);
                     gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
-
+                    
                     gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_OPEN_WINDOW);
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.WIDTH, "1020"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.HEIGHT, "730"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
-
+                    
                     gwtToolbarItemsList.add(gwtToolbarItem);
                 }
-                if (errors > 0) {
+                if (errors>0) {
                     GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
-                    gwtToolbarItem.setTitle(vals.size() + " errors");
+                    gwtToolbarItem.setTitle(errors+" errors");
                     gwtToolbarItem.setDisplayTitle(true);
                     gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
 
@@ -286,7 +272,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.WIDTH, "1020"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.HEIGHT, "730"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
-
+                    
                     gwtToolbarItemsList.add(gwtToolbarItem);
                 }
             }
@@ -346,11 +332,11 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     JahiaBaseACL.READ_RIGHTS, processingContext.getSiteID()) > 0) {
                 Set<String> m = ServicesRegistry.getInstance().getWorkflowService().getAllStagingAndWaitingObject(jahiaData.getProcessingContext().getSiteID()).keySet();
                 if (!m.isEmpty()) {
-                    String publishAllLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.publishAll",
-                            processingContext.getLocale());
+                    String publishAllLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.publishAll",                            
+                            processingContext.getLocale() );
                     GWTJahiaToolbarItem gwtToolbarItem = createPublishAllItem(publishAllLabel);
                     // add to itemsgroup
-
+                
                     if (gwtToolbarItem != null) {
                         String minIconStyle = "gwt-toolbar-ItemsGroup-icons-action-publish-min";
                         String maxIconStyle = "gwt-toolbar-ItemsGroup-icons-action-publish-min";

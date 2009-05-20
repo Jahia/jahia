@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
-    "http://www.springframework.org/dtd/spring-beans.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
 
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
     <!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
         <property name="url" value="jdbc:mysql://localhost:3306/jahia" />
@@ -19,7 +19,7 @@
         <property name="jndiName" value="java:comp/env/jdbc/jahia" />
     </bean>
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" depends-on="settingsBean">
         <property name="dataSource">
             <ref bean="dataSource"/>
         </property>
@@ -116,17 +116,18 @@
                 <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JTATransactionFactory</prop>
                 <prop key="hibernate.transaction.manager_lookup_class">	org.hibernate.transaction.JOTMTransactionManagerLookup</prop>                
                 -->
-
-                <prop key="activated">${cluster.activated}</prop>
+<!-- Uncomment to use other provider than net.sf.ehcache.hibernate.EhCacheProvider -->
+                <!--<prop key="activated">${cluster.activated}</prop>
                 <prop key="serverId">${cluster.node.serverId}</prop>
                 <prop key="channelGroupName">JahiaHibernateCluster</prop>
-                <!--<prop key="channelProperties">UDP(mcast_addr=${cluster.hibernate.multicast.ip_address};mcast_port=${cluster.hibernate.multicast.port};ip_ttl=32;ip_mcast=true;mcast_send_buf_size=1000000;mcast_recv_buf_size=1000000):PING(timeout=2000;num_initial_members=2):MERGE2(min_interval=5000;max_interval=10000):FD_SOCK:VERIFY_SUSPECT(timeout=1500):pbcast.NAKACK(gc_lag=50;retransmit_timeout=300,600,1200,2400,4800):pbcast.STABLE(desired_avg_gossip=20000):UNICAST(timeout=5000):FRAG(frag_size=8096;down_thread=false;up_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=true;print_local_addr=true)</prop>-->
+                --><!--<prop key="channelProperties">UDP(mcast_addr=${cluster.hibernate.multicast.ip_address};mcast_port=${cluster.hibernate.multicast.port};ip_ttl=32;ip_mcast=true;mcast_send_buf_size=1000000;mcast_recv_buf_size=1000000):PING(timeout=2000;num_initial_members=2):MERGE2(min_interval=5000;max_interval=10000):FD_SOCK:VERIFY_SUSPECT(timeout=1500):pbcast.NAKACK(gc_lag=50;retransmit_timeout=300,600,1200,2400,4800):pbcast.STABLE(desired_avg_gossip=20000):UNICAST(timeout=5000):FRAG(frag_size=8096;down_thread=false;up_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=true;print_local_addr=true)</prop>--><!--
                 <prop key="channelProperties">TCP(start_port=${cluster.tcp.hibernate.port};bind_addr=${cluster.tcp.start.ip_address}):TCPPING(initial_hosts=${cluster.tcp.hibernate.nodes.ip_address};port_range=1;timeout=3000;num_initial_members=${cluster.tcp.num_initial_members};up_thread=true;down_thread=true):FD(shun=true;up_thread=true;down_thread=true;timeout=2500;max_tries=5):VERIFY_SUSPECT(timeout=1500;up_thread=false;down_thread=false):pbcast.NAKACK(gc_lag=100;retransmit_timeout=3000;up_thread=true;down_thread=true):pbcast.STABLE(desired_avg_gossip=20000;up_thread=false;down_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=false;print_local_addr=false;down_thread=true;up_thread=true):pbcast.STATE_TRANSFER(up_thread=true;down_thread=true)</prop>
 
                 <prop key="freeMemoryLimit">${freeMemoryLimit}</prop>
                 <prop key="cacheClusterUnderlyingImplementation">${cacheClusterUnderlyingImplementation}</prop>
-                <prop key="cacheMaxGroups">${cacheMaxGroups}</prop>
-                <prop key="net.sf.ehcache.configurationResourceName">/ehcache-hibernate.xml</prop>                
+                <prop key="cacheMaxGroups">${cacheMaxGroups}</prop>-->
+                <!-- Configure WEB-INF/classes/ehcache-hibernate.xml to activate cluster-->
+                <prop key="net.sf.ehcache.configurationResourceName">/${ehcache.hibernate.file}</prop>                
             </props>
         </property>
         <property name="eventListeners">

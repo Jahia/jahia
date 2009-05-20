@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.taglibs.uicomponents.navigation;
 
 import org.apache.log4j.Category;
@@ -41,6 +24,7 @@ import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentContainerListKey;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.data.JahiaData;
+import org.jahia.data.fields.JahiaField;
 import org.jahia.data.beans.ContainerBean;
 import org.jahia.data.beans.ContainerListBean;
 import org.jahia.data.beans.RequestBean;
@@ -56,6 +40,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.ContainerHTMLCache;
 import org.jahia.services.cache.ContainerHTMLCacheEntry;
+import org.jahia.services.cache.GroupCacheKey;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageProperty;
 import org.jahia.taglibs.AbstractJahiaTag;
@@ -72,6 +57,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@SuppressWarnings("serial")
 public class NavigationMenuTag extends AbstractJahiaTag {
 
     private static transient final Category logger = Logger.getLogger(NavigationMenuTag.class);
@@ -80,6 +66,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
     private String kind = null;
     private String containerListName = null;
     private String pageFieldName = null;
+    private String separatorName = null;
     private int startLevel = -1;
     private int startPid = -1;
     private int maxDepth = -1;
@@ -237,7 +224,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
          }**/
 
         try {
-            final ContainerHTMLCache cacheInstance =
+            final ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cacheInstance =
                     ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
             final ProcessingContext context = jData.getProcessingContext();
             String cacheKey = "siteId_" + context.getSiteID() + ((usePageIdForCacheKey) ? "_pageId_" + context.getPageID() : "") + "_ctnListName_"
@@ -250,7 +237,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
             boolean debug = "debug".equals(context.getParameter(ProcessingContext.CONTAINERCACHE_MODE_PARAMETER));
             if (debug && !(cacheKey.indexOf("___debug___") > 0)) cacheKey = cacheKey + "___debug___";
             boolean currentCache = true;
-            final CacheEntry htmlCacheEntry = cacheInstance.getCacheEntryFromContainerCache(null, context, cacheKey, false, 0, null, null);
+            final CacheEntry<ContainerHTMLCacheEntry> htmlCacheEntry = cacheInstance.getCacheEntryFromContainerCache(null, context, cacheKey, false, 0, null, null);
             String htmlOutput;
             Date expireDate = new Date();
             boolean cacheParam2 = (!ProcessingContext.NORMAL.equals(context.getOperationMode()) && Jahia.getSettings().isContainerCacheLiveModeOnly())
@@ -281,13 +268,13 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                 } else if (themeMenu) {
                     drawThemeMenu();
                 }
-                if (startPid > 0) {
-                    emptyMenu = !getPageSubTree(startPid, startLevel, navMenuUItemsBean, dependencies, 0);
-                } else {
-                    emptyMenu = !getPageSubTree(jData.gui().getLevelID(startLevel), startLevel, navMenuUItemsBean, dependencies, 0);
-                }
-                pageContext.setAttribute(INTERNAL_CACHE_DEPENDENCIES,dependencies);
                 if (!display) {
+                    if (startPid > 0) {
+                        emptyMenu = !generateMenuAsFlatList(startPid, startLevel, navMenuUItemsBean, dependencies, 0, null);
+                    } else {
+                        emptyMenu = !generateMenuAsFlatList(jData.gui().getLevelID(startLevel), startLevel, navMenuUItemsBean, dependencies, 0, null);
+                    }
+                    pageContext.setAttribute(INTERNAL_CACHE_DEPENDENCIES,dependencies);
                     pageContext.setAttribute(var, navMenuUItemsBean);
                     return EVAL_BODY_BUFFERED;
                 } else {
@@ -295,10 +282,13 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                         cssToUse.append(" ").append(mockupClass) ;
                     }
                     out.append("<div class=\"").append(cssToUse).append("\">\n");
-                    displayMenu(out, navMenuUItemsBean);
+                    generateDefaultMenu(jData.gui().getLevelID(startLevel), startLevel, out, dependencies, 0);
+                    pageContext.setAttribute(INTERNAL_CACHE_DEPENDENCIES,dependencies);
                     out.append("</div>\n");
                     bodyContent = pageContext.pushBody();
-                    bodyContent.write(out.toString());
+                    final String generatedFragment = out.toString();
+                    bodyContent.write(generatedFragment);
+                    logger.debug("Generated fragment:\n" + generatedFragment);
                 }
             }
         } catch (JahiaException e) {
@@ -325,13 +315,14 @@ public class NavigationMenuTag extends AbstractJahiaTag {
             pageFieldLabelKey = "navmenu.containername";
         }
 
-        if (containerListName == null && pageFieldName == null) {
+        if (containerListName == null && pageFieldName == null && separatorName == null) {
             // use default names
             containerListName = "navLink";
             pageFieldName = "navLink";
+            separatorName = "separator";
 
-        } else if (containerListName != null ^ pageFieldName != null) {
-            throw new JahiaException("You must either declare both container list and page field or none",
+        } else if (containerListName != null ^ pageFieldName != null ^ separatorName !=null) {
+            throw new JahiaException("You must either declare container list, page field and separator field or none",
                     "Unable to create the navmenu container list", JahiaException.TEMPLATE_SERVICE_ERROR,
                     JahiaException.ERROR_SEVERITY);
         }
@@ -426,91 +417,20 @@ public class NavigationMenuTag extends AbstractJahiaTag {
     }
 
     /**
-     * Method to display a standard menu.
-     *
-     * @param navMenuItemsBean Set of navMenuItemBean
-     * @param out display Stringbuffer
-     * @throws IOException            JSP writer exception
-     */
-
-    private void displayMenu(StringBuilder out, Set<NavMenuItemBean> navMenuItemsBean) {
-
-        for (NavMenuItemBean navMenuItemBean : navMenuItemsBean) {
-            // Generate CSS arguments
-            String liCssString = "";
-            String aCssString = "";
-            if (navMenuItemBean.isFirstInLevel()) {
-                out.append("<ul class=\"level_").append(navMenuItemBean.getLevel()).append("\">");
-                if (editMode  & !editMenuAtEnd) {
-                    out.append("<li>"+navMenuItemBean.getActionMenuList()+"</li>");
-                }
-                liCssString += " first";
-            }
-            if (!navMenuItemBean.isFirstInLevel()) {
-                out.append("</li>\n");
-
-            }
-            if (navMenuItemBean.isLastInLevel()) {
-                liCssString += " last";
-            }
-            if (navMenuItemBean.isInPath()) {
-                aCssString += " inpath";
-            }
-            if (navMenuItemBean.isSelected()) {
-                aCssString += " selected";
-            }
-            if (navMenuItemBean.isMarkedForDelete()) {
-                aCssString += "markedForDelete";
-            }
-
-            out.append("<li class=\"item_").append(navMenuItemBean.getItemCount());
-            if (cssClassName != null) {
-                out.append(" ").append(cssClassName);
-            }
-            out.append(" ").append(liCssString).append("\">");
-            if (!navMenuItemBean.isActionMenuOnly()) {
-                            if (displayActionMenuBeforeLink && editMode) {
-                    out.append(navMenuItemBean.getActionMenu());
-                }
-                            out.append("<a class=\"").append(aCssString).append("\" href=\"").append(navMenuItemBean.getUrl()).append("\"><span>");
-                out.append(navMenuItemBean.getDisplayLink());
-                out.append("</span></a>");
-                if (!displayActionMenuBeforeLink && editMode) {
-                    out.append(navMenuItemBean.getActionMenu());
-                }
-            }
-            if (navMenuItemBean.isLastInLevel()) {
-                out.append("</li>\n");
-                if (editMode  & editMenuAtEnd) {
-                    out.append("<li>"+navMenuItemBean.getActionMenuList()+"</li>");
-                }
-                out.append("</ul>\n");
-            }
-        }
-    }
-    /**
-     * Draw a navigation menu displaying the current sibling pages (if any) and the subpages of the current page.
-     */
-    private void drawThemeMenu() {
-        // TODO
-    }
-
-    /**
-     * Recursive method to go through pages hierarchy using a specific container list (attribute containerListName)
-     * to fill a set (attribute navMenuItemsBean) containing all entries of the menu.
+     * Recursive method to generate a default menu using a specific container list (attribute containerListName).
      *
      * @param pageId       the page id where to get the container list
      * @param level        the current depth level
-     * @param navMenuItemsBean  Set of navMenuItemBean containing informations of current menu item.
+     * @param out          the stringbuilder to write output into
      * @param dependencies dependencies for the cache entry
      * @param loopIt       index of current iteration
      * @throws JahiaException         exception retrieving cache or containers
      * @throws IOException            JSP writer exception
      * @throws ClassNotFoundException exception building clist bean
+     * @return true if the menu is not empty, false otherwise
      */
-    private boolean getPageSubTree(int pageId, int level, Set<NavMenuItemBean> navMenuItemsBean, Set<ContentObjectKey> dependencies, int loopIt) throws JahiaException, IOException, ClassNotFoundException {
 
-        String mainActionMenu = "";
+    private boolean generateDefaultMenu(int pageId, int level, StringBuilder out, Set<ContentObjectKey> dependencies, int loopIt) throws JahiaException, IOException, ClassNotFoundException {
         if (pageId < 1) {
             logger.error("Incorrect page ID: " + pageId);
             // throw new IllegalArgumentException("attribute pageID cannot be < 1 (is " + pageId + ")");
@@ -538,6 +458,272 @@ public class NavigationMenuTag extends AbstractJahiaTag {
             out.append("<div class=\"subContainerList\">");
         }*/
 
+        if (!editMenuAtEnd) {
+            if (editMode && !hideActionMenus && ((level == reqLevel -1 || level == reqLevel) || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
+                String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerListBean(linkContainerList, jParams), containerListName, linkContainerList.getContentContainerList().getObjectKey().toString(), getResourceBundle(), containerListNamePostFix, labelKey, actionMenuIconStyle).getOutput(false);
+                if (actionMenuDisplay != null) {
+                    if (begin) {
+                        if (cssClassName == null) {
+                            out.append("<ul class=\"level_").append(level).append("\">");
+                        } else {
+                            out.append("<ul class=\"level_").append(level).append(" ").append(cssClassName).append("\">");
+                        }
+
+                    }
+                    out.append("<li class=\"item_action standard");
+                    // first
+                    if (begin) {
+                        out.append(" first");
+                        begin = false;
+                    }
+                    // last
+                    if (!linkContainerEnum.hasNext()) {
+                        out.append(" last");
+                    }
+                    out.append("\">");
+                    out.append(actionMenuDisplay);
+                    out.append("</li>\n");
+                }
+            }
+        }
+
+        boolean isEmpty = true ;
+
+        if (maxDepth == -1 || level <= startLevel + maxDepth) {
+            int itemCount = 0;
+            while (linkContainerEnum.hasNext()) {
+                itemCount++;
+                logger.debug("level = " + level);
+                JahiaContainer linkContainer = (JahiaContainer) linkContainerEnum.next();
+                JahiaPage link = (JahiaPage) linkContainer.getFieldObject(pageFieldName);
+                dependencies.add(new ContentContainerKey(linkContainer.getID()));
+                if ((jParams.getOperationMode().equals(ProcessingContext.NORMAL) ||
+                        jParams.getOperationMode().equals(ProcessingContext.PREVIEW)) && link != null) {
+                    final PageProperty hideFromMenuProp = link.getPageLocalProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU);
+                    if (hideFromMenuProp != null && Boolean.valueOf(hideFromMenuProp.getValue())) {
+                        continue;
+                    }
+                }
+                if (requiredTitle) {
+                    if (!ContainerTag.hasContainerAllRequiredFields(linkContainer, pageFieldName, jParams)) {
+                        continue;
+                    }
+                }
+                if (link != null) {
+                    String title = link.getTitle();
+                    // don't display the link if undisplayable and in non edit mode
+                    if (!editMode && (title == null || title.equals(""))) {
+                        continue;
+                    }
+                    int linkID = link.getID();
+
+                    boolean isInPath = Utils.isContainedInArray(pagePath, linkID);
+
+                    if (!hide) {
+                        if (begin) {
+                            if (cssClassName == null) {
+                                out.append("<ul class=\"level_").append(level).append("\">");
+                            } else {
+                                out.append("<ul class=\"level_").append(level).append(" ").append(cssClassName).append("\">");
+                            }
+                        }
+
+                        // set class = "selected" on the link
+                        final StringBuilder selected = new StringBuilder();
+                        out.append("<li class=\"item_").append(itemCount);
+                        if (isInPath) {
+                            if (level == reqLevel - 1) {
+                                out.append(" selected");
+                                selected.append("selected");
+                            } else {
+                                out.append(" inpath");
+                                selected.append("inpath");
+                            }
+                        } else {
+                            out.append(" standard");
+                        }
+                        // Class on last and first item
+                        // First container
+                        if (begin) {
+                            out.append(" first");
+                            begin = false;
+                        }
+                        // Last container
+                        if (!linkContainerEnum.hasNext()) {
+                            out.append(" last");
+                        }
+                        if (linkContainer.getContentContainer().isMarkedForDelete()) {
+                            selected.append(" markedForDelete");
+                        }
+                        out.append("\"");
+                        out.append(">\n");
+
+                        if (!hideActionMenus && displayActionMenuBeforeLink) {
+                            String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerBean(linkContainer, jParams), containerListName, linkContainer.getContentContainer().getObjectKey().toString(), ActionMenuIcon.CONTAINER_EDIT, getResourceBundle(), "navlink", "navlink", actionMenuIconStyle).getOutput(false);
+                            if (actionMenuDisplay != null) {
+                                out.append(actionMenuDisplay);
+                            }
+                        }
+
+                        String dispLink = link.getHighLightDiffTitle(jParams);
+
+                        if (dispLink != null && titleLength > 0) {
+                            int nbCharToDisp = titleLength - (loopIt * titleIndent);
+                            if (nbCharToDisp > 0 && nbCharToDisp < dispLink.length()) {
+                                dispLink = new StringBuilder(dispLink.substring(0, nbCharToDisp)).append("...").toString();
+                            }
+                        }
+
+                        if (dispLink == null) {
+                            dispLink = getMessage("noPageTitle", "n/d");
+                        }
+                        if (title == null) {
+                            title = getMessage("noPageTitle", "n/d");
+                        }
+
+                        out.append("<a href=\"").append(link.getURL(jParams)).append("\"").append(" class=\"");
+                        out.append(selected);
+                        out.append("\"");
+                        out.append(" title=\"").append(title).append("\">");
+                        out.append(dispLink).append("</a>");
+
+                        if (!hideActionMenus && !displayActionMenuBeforeLink) {
+                            String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerBean(linkContainer, jParams), containerListName, linkContainer.getContentContainer().getObjectKey().toString(), ActionMenuIcon.CONTAINER_EDIT, getResourceBundle(), "navlink", "navlink", actionMenuIconStyle).getOutput(false);
+                            if (actionMenuDisplay != null) {
+                                out.append(actionMenuDisplay);
+                            }
+                        }
+
+                        out.append("\n");
+                    }
+
+                    // displays sub links
+                    if (!onlyTop && (!expandOnlyPageInPath || isInPath)) {
+                        generateDefaultMenu(linkID, level + 1, out, dependencies, loopIt + 1);
+                    }
+                    if (!hide) out.append("</li>\n");
+
+                } else {
+                    // no navlink
+                    if (editMode && !hideActionMenus) {
+                        String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerBean(linkContainer, jParams), containerListName, linkContainer.getContentContainer().getObjectKey().toString(), ActionMenuIcon.CONTAINER_EDIT, getResourceBundle(), "navlink", "navlink", actionMenuIconStyle).getOutput(false);
+                        if (actionMenuDisplay != null) {
+                            if (begin) {
+                                if (cssClassName == null) {
+                                    out.append("<ul class=\"level_").append(level).append("\">");
+                                } else {
+                                    out.append("<ul class=\"level_").append(level).append(" ").append(cssClassName).append("\">");
+                                }
+                                begin = false;
+                            }
+
+                            out.append("<li>\n");
+                            if (displayActionMenuBeforeLink) {
+                                out.append(actionMenuDisplay);
+                                out.append("<a><span>n.d.</span></a>");
+                            } else {
+                                out.append("<a><span>n.d.</span></a>");
+                                out.append(actionMenuDisplay);
+                            }
+                            out.append("</li>\n");
+                        }
+                    }
+                }
+            }
+            if (itemCount > 0) {
+                isEmpty = false ;
+            }
+        }
+
+        if (editMenuAtEnd) {
+            if (editMode && !hideActionMenus && ((level == reqLevel -1 || level == reqLevel) || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
+                String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerListBean(linkContainerList, jParams), containerListName, linkContainerList.getContentContainerList().getObjectKey().toString(), getResourceBundle(), containerListNamePostFix, labelKey, actionMenuIconStyle).getOutput(false);
+                if (actionMenuDisplay != null) {
+                    if (begin) {
+                        if (cssClassName == null) {
+                            out.append("<ul class=\"level_").append(level).append("\">");
+                        } else {
+                            out.append("<ul class=\"level_").append(level).append(" ").append(cssClassName).append("\">");
+                        }
+
+                    }
+                    out.append("<li class=\"item_action standard");
+                    // first
+                    if (begin) {
+                        out.append(" first");
+                        begin = false;
+                    }
+                    // last
+                    if (!linkContainerEnum.hasNext()) {
+                        out.append(" last");
+                    }
+                    out.append("\">");
+                    out.append(actionMenuDisplay);
+                    out.append("</li>\n");
+                }
+            }
+        }
+
+        if (!begin && !hide) {
+            out.append("</ul>\n");
+        }
+
+        /*if (editMode && !hideActionMenus && (level >= reqLevel - 1 || onlyTop)) {
+            out.append("</div>\n");
+        }*/
+        return !isEmpty ;
+    }
+    /**
+     * Draw a navigation menu displaying the current sibling pages (if any) and the subpages of the current page.
+     */
+    private void drawThemeMenu() {
+        // TODO
+    }
+
+    /**
+     * Recursive method to go through pages hierarchy using a specific container list (attribute containerListName)
+     * to fill a set (attribute navMenuItemsBean) containing all entries of the menu.
+     *
+     * @param pageId       the page id where to get the container list
+     * @param level        the current depth level
+     * @param navMenuItemsBean  Set of navMenuItemBean containing informations of current menu item.
+     * @param dependencies dependencies for the cache entry
+     * @param loopIt       index of current iteration
+     * @param parentItem   parent item in subtree
+     * @throws JahiaException         exception retrieving cache or containers
+     * @throws IOException            JSP writer exception
+     * @throws ClassNotFoundException exception building clist bean
+     */
+    private boolean generateMenuAsFlatList(int pageId, int level, Set<NavMenuItemBean> navMenuItemsBean, Set<ContentObjectKey> dependencies, int loopIt, NavMenuItemBean parentItem) throws JahiaException, IOException, ClassNotFoundException {
+
+        String mainActionMenu = "";
+        if (pageId < 1) {
+            logger.error("Incorrect page ID: " + pageId);
+            // throw new IllegalArgumentException("attribute pageID cannot be < 1 (is " + pageId + ")");
+            return false;
+        }
+
+        ProcessingContext jParams = jData.getProcessingContext();
+        JahiaContainerList linkContainerList = jData.containers().getAbsoluteContainerList(containerListName, pageId);
+        if (linkContainerList == null) {
+            logger.warn("Linkcontainer list is null");
+            return false;
+        }
+        dependencies.add(new ContentContainerListKey(linkContainerList.getID()));
+        // store ContentBean in page context
+        ContainerListBean containerListBean = new ContainerListBean(linkContainerList, jParams);
+        pageContext.setAttribute(containerListName, containerListBean);
+
+        Iterator<JahiaContainer> linkContainerEnum = linkContainerList.getContainers();
+        boolean begin = true;
+
+        // don't display the links if they are supposed to be hidden (live mode)
+        boolean hide = (dispNumber != -1 && level != startLevel && level != reqLevel && level + dispNumber < reqLevel && !editMode);
+
+        /*if (editMode && (level >= reqLevel - 1 || onlyTop)) {
+            out.append("<div class=\"subContainerList\">");
+        }*/
+
 
         if (editMode && !hideActionMenus && ((level == reqLevel -1 || level == reqLevel) || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
             String mainActionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerListBean(linkContainerList, jParams), containerListName, linkContainerList.getContentContainerList().getObjectKey().toString(), getResourceBundle(), containerListNamePostFix, labelKey, actionMenuIconStyle).getOutput(false);
@@ -551,6 +737,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                 navMenuItemBean.setLastInLevel(true);
                 navMenuItemBean.setFirstInLevel(true);
                 navMenuItemBean.setActionMenuOnly(true);
+                navMenuItemBean.setParentItem(parentItem);
                 navMenuItemsBean.add(navMenuItemBean);
             }
         }
@@ -563,12 +750,14 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                 NavMenuItemBean navMenuItemBean = new NavMenuItemBean();
                 navMenuItemBean.setActionMenuOnly(false);
                 navMenuItemBean.setActionMenuList(mainActionMenu);
+                navMenuItemBean.setParentItem(parentItem);
                 itemCount++;
                 isEmpty = false;
                 navMenuItemBean.setItemCount(itemCount);
                 logger.debug("level = " + level);
                 JahiaContainer linkContainer = (JahiaContainer) linkContainerEnum.next();
                 JahiaPage link = (JahiaPage) linkContainer.getFieldObject(pageFieldName);
+                JahiaField separator = (JahiaField) linkContainer.getField(separatorName);
                 dependencies.add(new ContentContainerKey(linkContainer.getID()));
                 if ((jParams.getOperationMode().equals(ProcessingContext.NORMAL) ||
                         jParams.getOperationMode().equals(ProcessingContext.PREVIEW)) && link != null) {
@@ -610,6 +799,9 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                         String title = link.getTitle();
                         // don't display the link if undisplayable and in non edit mode
                         if (!editMode && (title == null || title.equals(""))) {
+                            if (navMenuItemBean.isFirstInLevel()) {
+                                begin = true;
+                            }
                             continue;
                         }
                         int linkID = link.getID();
@@ -633,10 +825,10 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                             }
                         }
 
-                        if (dispLink == null) {
+                        if (dispLink == null || dispLink.length() == 0) {
                             dispLink = getMessage("noPageTitle", "n/d");
                         }
-                        if (title == null) {
+                        if (title == null || title.length() == 0) {
                             title = getMessage("noPageTitle", "n/d");
                         }
                         navMenuItemBean.setUrl(link.getURL(jParams));
@@ -647,14 +839,31 @@ public class NavigationMenuTag extends AbstractJahiaTag {
 
                         //
                         if (!onlyTop && (!expandOnlyPageInPath || isInPath)) {
-                            getPageSubTree(linkID, level + 1, navMenuItemsBean, dependencies, loopIt + 1);
+                            generateMenuAsFlatList(linkID, level + 1, navMenuItemsBean, dependencies, loopIt + 1, navMenuItemBean);
                         }
                     }
                     else {
+                        if (separator != null && separator.getValue().length() > 0) {
+                            navMenuItemBean.setTitle(separator.getValue());
+                            navMenuItemBean.setDisplayLink(separator.getValue());
+                            navMenuItemsBean.add(navMenuItemBean);
+                        }
+                        else {
                         // add an empty navItemBean to show the action menu if needed
-                        navMenuItemBean.setTitle(getMessage("noPageTitle", "n/d"));
-                        navMenuItemBean.setDisplayLink(getMessage("noPageTitle", "n/d"));
-                        navMenuItemsBean.add(navMenuItemBean);
+                            navMenuItemBean.setTitle(getMessage("noPageSet", "n/d"));
+                            navMenuItemBean.setDisplayLink(getMessage("noPageSet", "n/d"));
+                            navMenuItemBean.setNoPageSet(true);
+                            if (editMode && linkContainer.checkWriteAccess(jData.getProcessingContext().getUser())) {
+                                 navMenuItemsBean.add(navMenuItemBean);
+                            }
+                            else {
+                                if (navMenuItemBean.isFirstInLevel()) {
+                                    begin = true;
+                                }
+                                
+                            }
+                        }
+
                     }
                 }
             }
@@ -666,7 +875,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         boolean debug = "debug".equals(jData.getProcessingContext().getParameter(ProcessingContext.CONTAINERCACHE_MODE_PARAMETER));
         final ProcessingContext context = jData.getProcessingContext();
         final JspWriter writer = getPreviousOut();
-        final ContainerHTMLCache cacheInstance;
+        final ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cacheInstance;
         try {
             String htmlOutput="";
             if (bodyContent != null && bodyContent.getString().length()>0) {
@@ -680,7 +889,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                 advPreviewMode.append(AdvPreviewSettings.getThreadLocaleInstance());
             }
             cacheKey += advPreviewMode.toString();
-            final CacheEntry htmlCacheEntry = cacheInstance.getCacheEntryFromContainerCache(null, context, cacheKey, false, 0, null, null);
+            final CacheEntry<ContainerHTMLCacheEntry> htmlCacheEntry = cacheInstance.getCacheEntryFromContainerCache(null, context, cacheKey, false, 0, null, null);
             final boolean outputContainerCacheActivated = org.jahia.settings.SettingsBean.getInstance().isOutputContainerCacheActivated();
             boolean currentCache = true;
             Date expireDate = new Date();
@@ -728,6 +937,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         jData = null;
         containerListName = null;
         pageFieldName = null;
+        separatorName = null;
         containerListLabelKey = null;
         pageFieldLabelKey = null;
         containerListNamePostFix = null;
@@ -754,9 +964,10 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         return EVAL_PAGE;
     }
 
-    public class NavMenuItemBean implements Comparable {
+    public class NavMenuItemBean implements Comparable<NavMenuItemBean> {
         private String title="";
         private String url="";
+        private String separator="";
         private String actionMenu="";
         private int level=0;
         private boolean firstInLevel=false;
@@ -768,6 +979,23 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         private String displayLink = "";
         private int itemCount=0;
         private boolean actionMenuOnly = false;
+        private boolean noPageSet = false;
+        private NavMenuItemBean parentItem = null;
+        public String getSeparator() {
+            return separator;
+        }
+
+        public boolean isNoPageSet() {
+            return noPageSet;
+        }
+
+        public void setNoPageSet(boolean noPageSet) {
+            this.noPageSet = noPageSet;
+        }
+
+        public void setSeparator(String separator) {
+            this.separator = separator;
+        }
 
         public boolean isActionMenuOnly() {
             return actionMenuOnly;
@@ -873,6 +1101,14 @@ public class NavigationMenuTag extends AbstractJahiaTag {
             this.url = url;
         }
 
+        public NavMenuItemBean getParentItem() {
+            return parentItem;
+        }
+
+        public void setParentItem(NavMenuItemBean parentItem) {
+            this.parentItem = parentItem;
+        }
+
         public NavMenuItemBean() {
         }
 
@@ -889,33 +1125,33 @@ public class NavigationMenuTag extends AbstractJahiaTag {
             if (level != that.level) return false;
             if (markedForDelete != that.markedForDelete) return false;
             if (selected != that.selected) return false;
-            if (!actionMenu.equals(that.actionMenu)) return false;
-            if (!actionMenuList.equals(that.actionMenuList)) return false;
-            if (!displayLink.equals(that.displayLink)) return false;
+            if (actionMenu != null ? !actionMenu.equals(that.actionMenu) : that.actionMenu != null) return false;
+            if (actionMenuList != null ? !actionMenuList.equals(that.actionMenuList) : that.actionMenuList != null)
+                return false;
+            if (displayLink != null ? !displayLink.equals(that.displayLink) : that.displayLink != null) return false;
             if (!title.equals(that.title)) return false;
-            if (!url.equals(that.url)) return false;
+            if (url != null ? !url.equals(that.url) : that.url != null) return false;
 
             return true;
         }
 
         @Override
         public int hashCode() {
-            int result = title.hashCode();
-            result = 31 * result + url.hashCode();
-            result = 31 * result + actionMenu.hashCode();
+            int result = title != null ? title.hashCode() : 0;
+            result = 31 * result + (url != null ? url.hashCode() : 0);
+            result = 31 * result + (actionMenu != null ? actionMenu.hashCode() : 0);
             result = 31 * result + level;
             result = 31 * result + (firstInLevel ? 1 : 0);
             result = 31 * result + (lastInLevel ? 1 : 0);
-            result = 31 * result + actionMenuList.hashCode();
+            result = 31 * result + (actionMenuList != null ? actionMenuList.hashCode() : 0);
             result = 31 * result + (inPath ? 1 : 0);
             result = 31 * result + (selected ? 1 : 0);
             result = 31 * result + (markedForDelete ? 1 : 0);
-            result = 31 * result + displayLink.hashCode();
+            result = 31 * result + (displayLink != null ? displayLink.hashCode() : 0);
             return result;
         }
 
-        public int compareTo(Object t) throws ClassCastException {
-           NavMenuItemBean navMenuB = (NavMenuItemBean) t;
+        public int compareTo(NavMenuItemBean navMenuB) throws ClassCastException {
            return getTitle().compareTo(navMenuB.getTitle());
         };
     }

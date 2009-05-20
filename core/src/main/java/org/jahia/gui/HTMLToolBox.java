@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //
 //  HTMLToolBox
 //  EV      15.12.2000
@@ -45,7 +28,6 @@ package org.jahia.gui;
 
 import org.apache.log4j.Logger;
 import org.apache.commons.codec.binary.Base64;
-import org.jahia.ajax.usersession.userSettings;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentPageKey;
@@ -81,13 +63,13 @@ import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.PageInfoInterface;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.settings.SettingsBean;
 import org.jahia.hibernate.manager.JahiaObjectDelegate;
 import org.jahia.hibernate.manager.JahiaObjectManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -1516,19 +1498,6 @@ public class HTMLToolBox {
         return !(parentContentObject != null && parentContentObject.isPicker());
     }
 
-    protected Boolean getUserInitialSettingForDevMode(HttpServletRequest therequest,
-                                                      String settingName) {
-        final boolean isDevMode = org.jahia.settings.SettingsBean.getInstance().isDevelopmentMode();
-        String settingValue = (String) therequest.getSession().getAttribute(settingName);
-        Boolean result = Boolean.valueOf(isDevMode);
-        if (settingValue != null) {
-            result = Boolean.valueOf(settingValue);
-        } else if (isDevMode) {
-            therequest.getSession().setAttribute(settingName, result.toString());
-        }
-        return result;
-    }
-
     /**
      * Generates the HTML for the start of the action menu.
      *
@@ -1600,39 +1569,13 @@ public class HTMLToolBox {
         final int parentID = (parent == null) ? 0 : parent.getID();
         final int definitionID = contentObject.getDefinitionID();
         final int pageID = jParams.getPageID();
-        final HttpServletRequest therequest = ((ParamBean) jParams).getRequest();
-        final String contextPath = Jahia.getContextPath();
 
-        // to get flags to enable workflow and tbpublishing visu and checks
-        // if dev mode is actived so all modules and semaphores are actived
-        final boolean isDevMode = org.jahia.settings.SettingsBean.getInstance().isDevelopmentMode();
-        Boolean displayWorkflowStates = getUserInitialSettingForDevMode(therequest, userSettings.WF_VISU_ENABLED);
-        Boolean displayTimeBasedPublishing = getUserInitialSettingForDevMode(therequest, userSettings.TBP_VISU_ENABLED);
-        Boolean aclDifferenceParam = getUserInitialSettingForDevMode(therequest, userSettings.ACL_VISU_ENABLED);
-        if (!isDevMode) {
-            try {
-                String value = (String) therequest.getSession().getAttribute(userSettings.WF_VISU_ENABLED);
-                displayWorkflowStates = value != null ? Boolean.valueOf(value) : null;
-                if (displayWorkflowStates == null) {
-                    displayWorkflowStates = Boolean.valueOf(org.jahia.settings.SettingsBean.getInstance().isWflowDisp());
-                }
-                value = (String) therequest.getSession().getAttribute(userSettings.TBP_VISU_ENABLED);
-                displayTimeBasedPublishing = value != null ? Boolean.valueOf(value) : null;
-                if (displayTimeBasedPublishing == null) {
-                    displayTimeBasedPublishing = Boolean.valueOf(org.jahia.settings.SettingsBean.getInstance().isTbpDisp());
-                }
-                value = (String) therequest.getSession().getAttribute(userSettings.ACL_VISU_ENABLED);
-                aclDifferenceParam = value != null ? Boolean.valueOf(value) : null;
-                if (aclDifferenceParam == null) {
-                    aclDifferenceParam = Boolean.valueOf(org.jahia.settings.SettingsBean.getInstance().isAclDisp());
-                }
-            } catch (final IllegalStateException e) {
-                logger.error(e, e);
-            }
-        }
-        //logger.debug("flagWorkFlowVisibitlity:"+flagWorkFlowVisibitlity+" flagTBPVisibitlity:"+flagTBPVisibitlity);
+        // to get flags to enable workflow and tbpublishing and checks
+        Boolean displayWorkflowStates = UserPreferencesHelper.isDisplayWorkflowState(jParams.getUser());
+        Boolean displayTimeBasedPublishing = UserPreferencesHelper.isDisplayTbpState(jParams.getUser());
+        Boolean aclDifferenceParam = UserPreferencesHelper.isDisplayAclDiffState(jParams.getUser());
 
-        final StringBuffer buff = new StringBuffer(100);
+        final StringBuilder buff = new StringBuilder(100);
 
         final String picto = actionIcon == null ?
                 buff.append(getURLImageContext()).append("/action.gif").toString() :
@@ -1650,7 +1593,7 @@ public class HTMLToolBox {
         boolean showWorkflow = false;
 
         if (displayWorkflowStates.booleanValue()) {
-            boolean workflowDisplayStatusForLinkedPages = org.jahia.settings.SettingsBean.getInstance().isWorkflowDisplayStatusForLinkedPages();
+            boolean workflowDisplayStatusForLinkedPages = SettingsBean.getInstance().isWorkflowDisplayStatusForLinkedPages();
 
             // if linked workflow status display is enabled -> always display for pages
             // and in any case for objects with standalone workflow
@@ -1714,7 +1657,7 @@ public class HTMLToolBox {
                     out.append("tbpState_");
                     out.append(realObjectKey);
                     out.append("\" border=\"0\" src=\"");
-                    out.append(contextPath);
+                    out.append(jParams.getContextPath());
                     out.append("/ajaxaction/GetWorkflowState?params=/op/edit/pid/");
                     out.append(jParams.getPageID());
                     out.append("&key=");
@@ -1796,7 +1739,7 @@ public class HTMLToolBox {
             //logger.debug("displaying TBP state");
 
             //todo port the code in ajax action here
-            final String actionURL = contextPath + "/ajaxaction/GetTimeBasedPublishingState?params=/op/edit/pid/" +
+            final String actionURL = jParams.getContextPath() + "/ajaxaction/GetTimeBasedPublishingState?params=/op/edit/pid/" +
                     jParams.getPageID() + "&key=" + tbpObjectKey;
 
             String serverURL = actionURL + "&displayDialog=true";

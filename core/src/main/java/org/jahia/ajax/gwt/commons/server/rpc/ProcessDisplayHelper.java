@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.commons.server.rpc;
 
 import java.text.MessageFormat;
@@ -42,6 +25,8 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJobAction;
 import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResultItem;
 import org.jahia.ajax.gwt.client.data.*;
+import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
+import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
 import org.jahia.content.ContentObject;
 import org.jahia.content.NodeOperationResult;
 import org.jahia.content.ObjectKey;
@@ -54,6 +39,7 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.ProcessAction;
 import org.jahia.services.search.JahiaSiteIndexingJob;
 import org.jahia.services.workflow.AbstractActivationJob;
+import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.registries.ServicesRegistry;
 import org.quartz.JobDataMap;
@@ -122,10 +108,11 @@ public class ProcessDisplayHelper {
         TreeOperationResult treeOperationResult = (TreeOperationResult) currentJobDataMap.get(BackgroundJob.RESULT);
 
         // job: status
-        if (treeOperationResult != null) {
+        if (treeOperationResult != null && !"pooled".equals(currentJobStatus)) {
             switch (treeOperationResult.getStatus()) {
                 case TreeOperationResult.FAILED_OPERATION_STATUS:
                     currentJobStatus = "failed";
+                    break;
                 case TreeOperationResult.PARTIAL_OPERATION_STATUS:
                     currentJobStatus = "partial";
             }
@@ -175,12 +162,24 @@ public class ProcessDisplayHelper {
         List<ProcessAction> actions = (List<ProcessAction>) currentJobDataMap.get(BackgroundJob.ACTIONS);
         if (actions != null) {
             for (ProcessAction action : actions) {
-                GWTJahiaProcessJobAction gwtAction = new GWTJahiaProcessJobAction(action.getKey().toString(), new HashSet(action.getLangs()), action.getAction());
+                ObjectKey objectKey = action.getKey();
+                Map<String, String> wfStates = null ;
+                try {
+                    ContentObject obj = JahiaObjectCreator.getContentObjectFromKey(objectKey) ;
+                    if (WorkflowService.getInstance().getWorkflowMode(obj) != WorkflowService.LINKED) {
+                        wfStates = WorkflowServiceHelper.getWorkflowStates(JahiaObjectCreator.getContentObjectFromKey(objectKey)) ;
+                    }
+                } catch (ClassNotFoundException e) {
+                    logger.error(e.toString(), e) ;
+                } catch (JahiaException e) {
+                    logger.error(e.toString(), e);
+                }
+                GWTJahiaProcessJobAction gwtAction = new GWTJahiaProcessJobAction(action.getKey().toString(), new HashSet<String>(action.getLangs()), action.getAction(), wfStates);
                 if (!batchContent.containsKey(action.getAction())) {
                     batchContent.put(action.getAction(), new ArrayList<GWTJahiaProcessJobAction>());
                 }
                 batchContent.get(action.getAction()).add(gwtAction);
-                ObjectKey objectKey = action.getKey();
+
 //                if (!batchContent.get(action.getAction()).containsKey(objectKey.getKey())) {
 //                    batchContent.get(action.getAction()).put(objectKey.getKey(), new HashSet<String>());
 //                }
@@ -191,9 +190,7 @@ public class ProcessDisplayHelper {
                     String title = null;
                     try {
                         title = ContentObject.getInstance(objectKey).getDisplayName(jParams);
-                    } catch (Exception e) {
-
-                    }
+                    } catch (Exception e) {}
                     if (title == null || title.length() == 0) {
                         title = objectKey.getKey();
                     }
@@ -234,8 +231,8 @@ public class ProcessDisplayHelper {
             for (Object o : errList) {
                 try {
                     NodeOperationResult nodeOperationResult = (NodeOperationResult) o;
-                    if (nodeOperationResult.getNodeKey() != null) {
-                        String k = nodeOperationResult.getNodeKey().toString();
+//                    if (nodeOperationResult.getNodeKey() != null) {
+                        String k = nodeOperationResult.getNodeKey() != null ? nodeOperationResult.getNodeKey().toString() : null;
                         if (!logs.containsKey(k)) {
                             logs.put(k, new HashMap<String, GWTJahiaNodeOperationResult>());
                         }
@@ -247,7 +244,7 @@ public class ProcessDisplayHelper {
                         }
                         GWTJahiaNodeOperationResult logsForObjectAndLang = logsForObject.get(lang);
                         EngineMessage currentEngineMessage = nodeOperationResult.getMsg();
-                        String localeKeyValue = getLocaleJahiaEnginesResource(jParams.getLocale(), currentEngineMessage.getKey());
+                        String localeKeyValue = currentEngineMessage.isResource() ? getLocaleJahiaEnginesResource(jParams.getLocale(), currentEngineMessage.getKey()) : currentEngineMessage.getKey();
                         String message = null;
                         if (localeKeyValue != null) {
                             if (currentEngineMessage.getValues() != null) {
@@ -261,7 +258,7 @@ public class ProcessDisplayHelper {
                         if (message != null) {
                             logsForObjectAndLang.addErrorOrWarning(new GWTJahiaNodeOperationResultItem(type, message));
                         }
-                    }
+//                    }
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }

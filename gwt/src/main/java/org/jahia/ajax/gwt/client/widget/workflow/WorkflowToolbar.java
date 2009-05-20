@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget.workflow;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -48,7 +31,6 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLabel;
@@ -57,7 +39,6 @@ import org.jahia.ajax.gwt.client.service.JahiaServiceAsync;
 import org.jahia.ajax.gwt.client.service.workflow.WorkflowServiceAsync;
 import org.jahia.ajax.gwt.client.widget.ReportGrid;
 import org.jahia.ajax.gwt.client.widget.WorkflowBatchViewer;
-import org.jahia.ajax.gwt.client.widget.workflow.WorkflowManager;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 import org.jahia.ajax.gwt.client.widget.language.LanguageSelectedListener;
 import org.jahia.ajax.gwt.client.widget.language.LanguageSwitcher;
@@ -88,7 +69,6 @@ public class WorkflowToolbar extends TopBar {
     private boolean actionsInitialized = false ;
 
     private String action = "";
-    private LanguageSwitcher languageSwitcher;
 
     public WorkflowToolbar() {
         m_component = new ToolBar() ;
@@ -119,40 +99,42 @@ public class WorkflowToolbar extends TopBar {
             }
         });
         m_component.add(addToBatch) ;
-        languageSwitcher = new LanguageSwitcher(true, true, false,false, JahiaGWTParameters.getLanguage(), false, new LanguageSelectedListener() {
+        LanguageSwitcher languageSwitcher = new LanguageSwitcher(true, true, false, false, JahiaGWTParameters.getLanguage(), false, new LanguageSelectedListener() {
             private final JahiaServiceAsync jahiaServiceAsync = JahiaService.App.getInstance();
-            public void onLanguageSelected (String languageSelected) {                
-                jahiaServiceAsync.changeLocaleForAllPagesAndEngines(languageSelected,new AsyncCallback() {
-                    public void onFailure (Throwable throwable) {
-                        //To change body of implemented methods use File | Settings | File Templates.
+
+            public void onLanguageSelected(String languageSelected) {
+                jahiaServiceAsync.changeLocaleForAllPagesAndEngines(languageSelected, new AsyncCallback() {
+                    public void onFailure(Throwable throwable) {
                     }
 
-                    public void onSuccess (Object o) { // TODO chained rpc calls are ugly
+                    public void onSuccess(Object o) { // TODO chained rpc calls are ugly... well, not so bad after all
                         service.saveWorkflowManagerState(new GWTJahiaWorkflowManagerState(((WorkflowTable) getLinker().getTopRightObject()).getChecked(),
-                                                                                          ((WorkflowTable) getLinker().getTopRightObject()).getDisabledChecks(),
-                                                                                          ((WorkflowTable) getLinker().getTopRightObject()).getTitleForObjectKey(),
-                                                                                          batch),
-                                                         new AsyncCallback() {
-                                                             public void onFailure(Throwable throwable) {
-                                                                 Log.error(throwable.toString()) ;
-                                                             }
-                                                             public void onSuccess(Object o) {
-                                                                 GWTJahiaWorkflowElement selectedPage = (GWTJahiaWorkflowElement) getLinker().getTreeSelection() ;
-                                                                 if (selectedPage == null) {
-                                                                     Window.Location.reload();
-                                                                 } else {
-                                                                     String rawUrl = Window.Location.getHref().replace(Window.Location.getQueryString(), "") ;
-                                                                     Window.Location.replace(rawUrl + "?startpage=" + selectedPage.getObjectKey());
-                                                                 }
-                                                             }
-                                                         });
+                                ((WorkflowTable) getLinker().getTopRightObject()).getDisabledChecks(),
+                                ((WorkflowTable) getLinker().getTopRightObject()).getTitleForObjectKey(),
+                                batch),
+                                new AsyncCallback() {
+                                    public void onFailure(Throwable throwable) {
+                                        Log.error(throwable.toString());
+                                    }
+
+                                    public void onSuccess(Object o) {
+                                        GWTJahiaWorkflowElement selectedPage = (GWTJahiaWorkflowElement) getLinker().getTreeSelection();
+                                        if (selectedPage == null) {
+                                            Window.Location.reload();
+                                        } else {
+                                            String rawUrl = Window.Location.getHref().replace(Window.Location.getQueryString(), "");
+                                            Window.Location.replace(rawUrl + "?startpage=" + selectedPage.getObjectKey());
+                                        }
+                                    }
+                                });
                     }
                 });
             }
-
-            public void onWorkflowSelected (String text) {}
         });
-        m_component.add(new AdapterToolItem(languageSwitcher));
+        TextToolItem item = new TextToolItem("loading...") ;
+        item.setEnabled(false);
+        languageSwitcher.init(item);
+        m_component.add(item);
     }
 
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelection) {
@@ -168,7 +150,7 @@ public class WorkflowToolbar extends TopBar {
     }
 
     public void showBatchReport() {
-        new WorkflowBatchViewer(batch, ((WorkflowTable) getLinker().getTopRightObject()).getTitleForObjectKey(), false){
+        new WorkflowBatchViewer(batch, ((WorkflowTable) getLinker().getTopRightObject()).getTitleForObjectKey(), null, false){
             public void buildContextMenu(final Grid<ReportGrid.GWTReportElement> grid) {
                 Menu contextMenu = new Menu() ;
                 final MenuItem removeAction = new MenuItem(WorkflowManager.getResource("wf_removeAction"), new SelectionListener<ComponentEvent>() {
@@ -308,7 +290,7 @@ public class WorkflowToolbar extends TopBar {
         for (String availableAction : availableActions) {
             s.add(actionsLabel.get(availableAction));
         }
-        CheckMenuItem enabledItem = null;
+        boolean selectionDone = false ;
         for (Item item : l) {
             if (item instanceof CheckMenuItem) {
                 if (!s.contains(((CheckMenuItem)item).getText())) {
@@ -317,14 +299,15 @@ public class WorkflowToolbar extends TopBar {
                 } else {
                     Log.debug("enable " + ((CheckMenuItem)item).getText()) ;
                     item.setEnabled(true) ;
-                    enabledItem = (CheckMenuItem) item;
+                    if (!selectionDone) {
+                        ((CheckMenuItem) item).setChecked(true);
+                        item.fireEvent(Events.Select) ;
+                        selectionDone = true ;
+                    }
                 }
             }
         }
-        if (enabledItem != null) {
-            enabledItem.setChecked(true);
-            enabledItem.fireEvent(Events.Select) ;
-        } else {
+        if (!selectionDone) {
             chooseAction.setText(WorkflowManager.getResource("wf_chooseAction"));
             chooseAction.setIconStyle("wf-action");
         }

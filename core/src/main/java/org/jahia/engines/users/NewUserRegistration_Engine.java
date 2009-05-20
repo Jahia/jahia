@@ -1,39 +1,24 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
  package org.jahia.engines.users;
 
+import org.apache.struts.Globals;
 import org.jahia.data.JahiaData;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.engines.EngineToolBox;
@@ -47,12 +32,15 @@ import org.jahia.params.SessionState;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaDBUser;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import java.text.MessageFormat;
 import java.util.*;
 
 public class NewUserRegistration_Engine implements JahiaEngine {
@@ -119,7 +107,7 @@ public class NewUserRegistration_Engine implements JahiaEngine {
             throws JahiaException,
             JahiaSessionExpirationException {
         // initalizes the hashmap
-        Map engineMap = initEngineMap (jParams);
+        Map<String, Object> engineMap = initEngineMap (jParams);
 
         processLastScreen (jParams, engineMap);
         processCurrentScreen (jParams, engineMap);
@@ -147,7 +135,7 @@ public class NewUserRegistration_Engine implements JahiaEngine {
      *
      * @throws JahiaException if there is an error processing input parameters
      */
-    public void processLastScreen (ProcessingContext jParams, Map engineMap)
+    public void processLastScreen (ProcessingContext jParams, Map<String, Object> engineMap)
             throws JahiaException {
         // gets engineMap values
         String theScreen = (String) engineMap.get ("screen");
@@ -167,7 +155,7 @@ public class NewUserRegistration_Engine implements JahiaEngine {
             String password2 = jParams.getParameter("newUser_password2");
             String[] groupList = jParams.getParameterValues("newUser_groupList");
             Properties userProperties = new Properties();
-            Iterator paramNames = jParams.getParameterNames();
+            Iterator<?> paramNames = jParams.getParameterNames();
             while (paramNames.hasNext()) {
                 String curParamName = (String) paramNames.next();
                 String[] curParamValues = jParams.getParameterValues(curParamName);
@@ -270,10 +258,10 @@ public class NewUserRegistration_Engine implements JahiaEngine {
                 if (!evalResult.isSuccess()) {
                     allValuesValid = false;
                     EngineMessages policyMsgs = evalResult.getEngineMessages();
-                    for (Iterator iterator = policyMsgs.getMessages()
+                    for (Iterator<EngineMessage> iterator = policyMsgs.getMessages()
                             .iterator(); iterator.hasNext();) {
                         resultMessages.add("newUserRegistration",
-                                (EngineMessage) iterator.next());
+                                iterator.next());
                     }
                 }
             }
@@ -308,6 +296,24 @@ public class NewUserRegistration_Engine implements JahiaEngine {
                 // let's stay on the edit screen.
                 engineMap.put("screen", "edit");
                 resultMessages.saveMessages(((ParamBean)jParams).getRequest());
+                // store Struts action messages
+                ((ParamBean) jParams).getRequest().setAttribute(Globals.ERROR_KEY, resultMessages.toActionMessages());
+                // store localized messages
+                List<String> localizedMessages = new LinkedList<String>();
+                {
+                    for (EngineMessage engineMessage : (List<EngineMessage>) resultMessages
+                            .getMessages()) {
+                        localizedMessages.add(MessageFormat.format(
+                                JahiaResourceBundle
+                                        .getMessageResource(engineMessage.getKey(),
+                                                jParams.getLocale()), engineMessage
+                                        .getValues()));
+                    }
+                }
+                ((ParamBean) jParams).getRequest().setAttribute("passwordPolicyMessages", localizedMessages);
+                
+                jParams.getSessionState().removeAttribute(
+                        EngineMessages.CONTEXT_KEY);                
             }
         }
     }
@@ -320,34 +326,48 @@ public class NewUserRegistration_Engine implements JahiaEngine {
      *
      * @throws JahiaException if there is an error processing input parameters
      */
-    public void processCurrentScreen (ProcessingContext jParams, Map engineMap)
+    public void processCurrentScreen (ProcessingContext jParams, Map<String, Object> engineMap)
             throws JahiaException {
         String theScreen = (String) engineMap.get ("screen");
 
         // let's prepare the group list
 
-        Map groupMap = ServicesRegistry.getInstance().getJahiaSiteGroupManagerService().getGroups(jParams.getSiteID());
+        Map<String, String> groupMap = ServicesRegistry.getInstance().getJahiaSiteGroupManagerService().getGroups(jParams.getSiteID());
         groupMap.remove(JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
         groupMap.remove(JahiaGroupManagerService.GUEST_GROUPNAME);
         groupMap.remove(JahiaGroupManagerService.USERS_GROUPNAME);
-        Set groupNameSet = groupMap.keySet();
+        Set<String> groupNameSet = groupMap.keySet();
         engineMap.put("groupList", groupNameSet);
 
-        String targetJSP = EDIT_JSP;
-        if ("save".equals(theScreen)) {
-            targetJSP = SUCCESS_JSP;
-        }
-
-        String jspSiteMapFileName = jParams.getPage ().getPageTemplate ().getSourcePath ();
-        jspSiteMapFileName = jspSiteMapFileName.substring (0,
-                jspSiteMapFileName.lastIndexOf ("/") + 1) +
-                targetJSP;
-        engineMap.put (ENGINE_OUTPUT_FILE_PARAM, jspSiteMapFileName);
+        String targetJSP = getJspPath(jParams, "save".equals(theScreen) ? SUCCESS_JSP : EDIT_JSP);
+        
+        engineMap.put (ENGINE_OUTPUT_FILE_PARAM, targetJSP);
 
         jParams.setAttribute ("jahia_session_engineMap", engineMap);
-
     }
+    
+    private String getJspPath(ProcessingContext ctx, String jspName) {
+        JahiaTemplateManagerService templateMgr = ServicesRegistry
+                .getInstance().getJahiaTemplateManagerService();
 
+        JahiaTemplatesPackage templatePackage = templateMgr
+                .getTemplatePackage(ctx.getSite().getTemplatePackageName());
+
+        String path;
+        if (EDIT_JSP.equals(jspName) && templatePackage.getNewUserRegistrationPageName() != null) {
+            path = templateMgr.resolveResourcePath(templatePackage
+                    .getNewUserRegistrationPageName(), templatePackage.getName());
+        } else if (SUCCESS_JSP.equals(jspName) && templatePackage.getNewUserRegistrationSuccessPageName() != null) {
+            path = templateMgr.resolveResourcePath(templatePackage
+                    .getNewUserRegistrationSuccessPageName(), templatePackage.getName());
+        } else {
+            path = templateMgr.resolveResourcePath(jspName, templatePackage.getName());
+        }
+
+        return path;
+    }
+    
+    
     /**
      * inits the engine map
      *
@@ -359,7 +379,7 @@ public class NewUserRegistration_Engine implements JahiaEngine {
      * @throws JahiaSessionExpirationException
      *                        if the session has expired while processing input actions
      */
-    private Map initEngineMap (ProcessingContext jParams)
+    private Map<String, Object> initEngineMap (ProcessingContext jParams)
             throws JahiaException,
             JahiaSessionExpirationException {
         String theScreen = jParams.getParameter ("screen");
@@ -368,13 +388,13 @@ public class NewUserRegistration_Engine implements JahiaEngine {
         //HttpSession theSession = jParams.getRequest().getSession (true);
         SessionState theSession = jParams.getSessionState ();
 
-        Map engineMap = (Map) theSession.getAttribute (
+        Map<String, Object> engineMap = (Map<String, Object>) theSession.getAttribute (
                 "jahia_session_engineMap");
 
         if (engineMap == null) {
             theScreen = "edit";
             // init engine map
-            engineMap = new HashMap();
+            engineMap = new HashMap<String, Object>();
         }
         engineMap.put (RENDER_TYPE_PARAM, new Integer (JahiaEngine.RENDERTYPE_FORWARD));
         engineMap.put (ENGINE_NAME_PARAM, ENGINE_NAME);

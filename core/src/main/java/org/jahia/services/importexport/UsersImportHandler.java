@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
  package org.jahia.services.importexport;
 
 import org.apache.log4j.Logger;
@@ -44,10 +27,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.security.Principal;
-import java.util.Properties;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -63,7 +43,7 @@ public class UsersImportHandler  extends DefaultHandler {
     private JahiaSiteUserManagerService su;
     private JahiaSiteGroupManagerService sg;
     private JahiaSite site;
-    private List uuidProps = new ArrayList();
+    private List<String[]> uuidProps = new ArrayList<String[]>();
 
     private JahiaGroup currentGroup = null;
     private boolean member = false;
@@ -85,6 +65,10 @@ public class UsersImportHandler  extends DefaultHandler {
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         try {
+            Map<String,String> groups = new HashMap();
+            if (site != null){
+                groups = sg.getGroups(site.getID());
+            }
             if (currentGroup == null) {
                 if (localName.equals("user")) {
                     String name = attributes.getValue(ImportExportBaseService.JAHIA_URI, "name");
@@ -99,7 +83,7 @@ public class UsersImportHandler  extends DefaultHandler {
                         } else if (k.equals("password")) {
                             pass = v;
                         } else if (k.equals("user_homepage")) {
-                            List l = findPage(v);
+                            List<ContentPage> l = findPage(v);
                             if (!l.isEmpty()) {
                                 p.put(k, ""+((ContentPage) l.iterator().next()).getID());
                             } else {
@@ -131,7 +115,7 @@ public class UsersImportHandler  extends DefaultHandler {
                         if (k.equals("name")) {
                             //
                         } else if (k.equals("group_homepage")) {
-                            List l = findPage(v);
+                            List<ContentPage> l = findPage(v);
                             if (!l.isEmpty()) {
                                 p.put(k, ""+((ContentPage) l.iterator().next()).getID());
                             } else {
@@ -144,7 +128,9 @@ public class UsersImportHandler  extends DefaultHandler {
                     if (name != null) {
                         currentGroup = g.lookupGroup(site.getID(), name);
                         if (currentGroup == null) {
-                            currentGroup = g.createGroup(site.getID(), name, p);
+                            currentGroup = g.createGroup(site.getID(), name, p, false);
+                        }
+                        if (site != null && !groups.containsKey(currentGroup.getGroupname())) {
                             sg.addGroup(site.getID(), currentGroup);
                         }
                     }
@@ -176,19 +162,19 @@ public class UsersImportHandler  extends DefaultHandler {
     }
 
 
-    public List getUuidProps() {
+    public List<String[]> getUuidProps() {
         return uuidProps;
     }
 
-    public void setUuidProps(List p) {
+    public void setUuidProps(List<String[]> p) {
         if (p == null) {
             return;
         }
 
-        for (Iterator iterator = p.iterator(); iterator.hasNext();) {
+        for (Iterator<String[]> iterator = p.iterator(); iterator.hasNext();) {
             try {
                 String[] s = (String[]) iterator.next();
-                List l = findPage(s[2]);
+                List<ContentPage> l = findPage(s[2]);
                 if (!l.isEmpty()) {
                     int id = ((ContentPage) l.iterator().next()).getID();
                     if (s[1].equals("user_homepage")) {
@@ -205,8 +191,8 @@ public class UsersImportHandler  extends DefaultHandler {
         }
     }
 
-    private List findPage(String v) throws JahiaException {
-        List l;
+    private List<ContentPage> findPage(String v) throws JahiaException {
+        List<ContentPage> l;
 //        if (v.indexOf('/')>0) {
 //            l = ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("originalUuid", v.substring(0,v.indexOf('/')));
 //            l.addAll(ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("originalUuid", v.substring(0,v.indexOf('/')+1)));

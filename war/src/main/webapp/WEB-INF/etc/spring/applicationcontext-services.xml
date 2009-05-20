@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
-    "http://www.springframework.org/dtd/spring-beans.dtd">
-
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <bean id="proxyTemplate" abstract="true"
           class="org.springframework.aop.framework.ProxyFactoryBean">
@@ -39,7 +38,18 @@
                 <property name="channelGroupName" value="JahiaCluster" />
                 <property name="channelProperties">
                   <!--<value>UDP(mcast_addr=${cluster.service.multicast.ip_address};mcast_port=${cluster.service.multicast.port};ip_ttl=32;ip_mcast=true;mcast_send_buf_size=1000000;mcast_recv_buf_size=1000000):PING(timeout=2000;num_initial_members=2):MERGE2(min_interval=5000;max_interval=10000):FD_SOCK:VERIFY_SUSPECT(timeout=1500):pbcast.NAKACK(gc_lag=50;retransmit_timeout=300,600,1200,2400,4800):pbcast.STABLE(desired_avg_gossip=20000):UNICAST(timeout=5000):FRAG(frag_size=8096;down_thread=false;up_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=true;print_local_addr=true)</value>-->
-                  <value>TCP(start_port=${cluster.tcp.service.port};bind_addr=${cluster.tcp.start.ip_address}):TCPPING(initial_hosts=${cluster.tcp.service.nodes.ip_address};port_range=1;timeout=3000;num_initial_members=${cluster.tcp.num_initial_members};up_thread=true;down_thread=true):FD(shun=true;up_thread=true;down_thread=true;timeout=2500;max_tries=5):VERIFY_SUSPECT(timeout=1500;up_thread=false;down_thread=false):pbcast.NAKACK(gc_lag=100;retransmit_timeout=3000;up_thread=true;down_thread=true):pbcast.STABLE(desired_avg_gossip=20000;up_thread=false;down_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=false;print_local_addr=false;down_thread=true;up_thread=true):pbcast.STATE_TRANSFER(up_thread=true;down_thread=true)</value>
+                  <value>TCP_NIO(start_port=${cluster.tcp.service.port};bind_addr=${cluster.tcp.start.ip_address};loopback=true;recv_buf_size=20000000;send_buf_size=640000;discard_incompatible_packets=true;max_bundle_size=64000;max_bundle_timeout=30;use_incoming_packet_handler=true;enable_bundling=true;use_send_queues=false;sock_conn_timeout=300;skip_suspected_members=true;use_concurrent_stack=true):
+TCPPING(initial_hosts=${cluster.tcp.service.nodes.ip_address};port_range=1;timeout=3000;num_initial_members=${cluster.tcp.num_initial_members}):
+MERGE2(max_interval=100000;min_interval=20000):
+FD_SOCK:
+FD(timeout=10000;max_tries=5;shun=true):
+VERIFY_SUSPECT(timeout=1500):
+pbcast.NAKACK(gc_lag=100;retransmit_timeout=3000;discard_delivered_msgs=true):
+pbcast.STABLE:
+pbcast.GMS(join_timeout=5000;shun=true;print_local_addr=true):
+VIEW_SYNC(avg_send_interval=60000):
+FC(max_credits=2000000;min_threshold=0.10):
+FRAG2(frag_size=60000)</value>
                 </property>
             </bean>
         </property>
@@ -64,6 +74,7 @@
                                 <!-- This property allows to fix a limit for cache entries dependencies management,
                                 if an entry have more than this value of dependencies then
                                 when we flush this entry we will flush the whole cache-->
+                                <!-- Configure WEB-INF/classes/ehcache-hibernate.xml to activate cluster-->
                                 <property name="groupsSizeLimit" value="100"/>
                             </bean>
                         </entry>
@@ -114,6 +125,17 @@
     </bean>
     <bean id="JahiaPreferencesService" class="org.jahia.services.preferences.JahiaPreferencesService" parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="cacheService" ref="JahiaCacheService" />
+        <property name="jcrStoreService" ref="JCRStoreService" />
+        <property name="providerTypes">
+            <map>
+                <entry key="simple" value="jnt:simplePreference" />
+                <entry key="page" value="jnt:pagePreference"  />
+                <entry key="toolbar" value="jnt:toolbarPreference"  />
+                <entry key="portlet" value="jnt:portletPreference"  />
+                <entry key="layoutmanager" value="jnt:layout"  />
+                <entry key="bookmarks" value="jnt:bookmarkPreference"  />
+            </map>
+        </property>
     </bean>
      <bean id="JahiaToolbarService" class="org.jahia.services.toolbar.JahiaToolbarService" parent="jahiaServiceTemplate" factory-method="getInstance"/>
     <bean id="JahiaPageTemplateService" parent="proxyTemplate" depends-on="org.jahia.hibernate.manager.JahiaTemplateManager,org.jahia.hibernate.manager.JahiaLinkManager">
@@ -347,6 +369,8 @@
                                 <!--<value>org.jahia.actions.sites.*.engines.contentdefinition.ContentDefinitionEngine</value>-->
                                 <value>org.jahia.actions.sites.*.engines.workflow.ManageWorkflow</value>
                                 <value>org.jahia.actions.sites.*.engines.audit.ManageLogs_Engine</value>
+                                <value>org.jahia.actions.sites.*.engines.filemanager</value>
+                                <value>org.jahia.actions.sites.*.engines.mashupmanager</value>
                             </list>
                         </entry>
                         <entry key="actions">
@@ -456,6 +480,13 @@
             </bean>
         </property>
     </bean>
+    <bean id="JahiaFacetingService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.search.facets.JahiaFacetingBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="cacheService" ref="JahiaCacheService" />            
+            </bean>
+        </property>
+    </bean>                
     <bean id="JahiaFetcherService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.fetchers.JahiaFetcherBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -512,7 +543,6 @@
                 <property name="cacheService" ref="JahiaCacheService" />
                 <property name="siteManager" ref="org.jahia.hibernate.manager.JahiaSiteManager" />
                 <property name="sitePropertyManager" ref="org.jahia.hibernate.manager.JahiaSitePropertyManager" />
-                <property name="webAppsDeployerService" ref="JahiaWebAppsDeployerService" />
                 <property name="fileWatcherService" ref="JahiaFileWatcherService" />
                 <property name="jahiaAclService" ref="JahiaACLManagerService" />
             </bean>
@@ -675,16 +705,22 @@
         <property name="rmibind" value="jackrabbit"/>
 
         <property name="listeners">
-            <list>
-                <bean class="org.jahia.services.content.FieldReferenceListener"/>
-                <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
-                    <property name="ruleFiles" value="/repository/rules/files-rules.drl" />
-                    <property name="serverId" value="${cluster.node.serverId}"/>
-                </bean>
-                <bean class="org.jahia.services.content.textextraction.TextExtractionListener"/>
-                <bean class="org.jahia.services.content.DefaultValueListener"/>
-                <bean class="org.jahia.services.content.CacheListener"/>
-            </list>
+            <map>
+                <entry key="default">
+                    <list>
+                        <bean class="org.jahia.services.content.FieldReferenceListener">
+                            <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
+                        </bean>
+                        <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
+                            <property name="ruleFiles" value="/repository/rules/files-rules.drl" />
+                            <property name="serverId" value="${cluster.node.serverId}"/>
+                        </bean>
+                        <bean class="org.jahia.services.content.textextraction.TextExtractionListener"/>
+                        <bean class="org.jahia.services.content.DefaultValueListener"/>
+                        <bean class="org.jahia.services.content.CacheListener"/>
+                    </list>
+                </entry>
+            </map>
         </property>
     </bean>
 
@@ -706,16 +742,43 @@
         <property name="key" value="jahia"/>
         <property name="rmibind" value="jahia"/>
         <property name="processingContextFactory" ref="org.jahia.params.ProcessingContextFactory"/>
+        <property name="workspace" value="default"/>
         <property name="listeners">
-            <list>
-                <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
-                    <property name="ruleFiles" value="/repository/rules/jahia-rules.drl" />
-                    <property name="serverId" value="${cluster.node.serverId}" />
-                </bean>
-            </list>
+            <map>
+                <entry key="default">
+                    <list>
+                        <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
+                            <property name="ruleFiles" value="/repository/rules/jahia-rules.drl" />
+                            <property name="serverId" value="${cluster.node.serverId}" />
+                        </bean>
+                    </list>
+                </entry>
+                <entry key="live">
+                    <list>
+                        <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
+                            <property name="ruleFiles" value="/repository/rules/jahialive-rules.drl" />
+                            <property name="serverId" value="${cluster.node.serverId}" />
+                        </bean>
+                    </list>
+                </entry>
+            </map>
         </property>
         <property name="mountPoint" value="/content/jahia"/>
     </bean>
+
+    <!--
+    <bean id="EntropyProvider" class="org.jahia.services.content.impl.entropy.EntropyStoreProvider" parent="AbstractJCRStoreProvider">
+        <property name="key" value="entropy"/>
+        <property name="repository">
+            <bean class="org.jahia.services.content.impl.entropy.EntropyRepository" init-method="start" destroy-method="stop">
+                <property name="serverName" value="localhost"/>
+                <property name="repositoryName" value="alfresco"/>
+            </bean>
+        </property>
+        <property name="mountPoint" value="/content/shared/files/entropy"/>
+        <property name="rmibind" value="entropy"/>
+    </bean>
+    -->
 
     <!--
     <bean id="AlfrescoStoreProvider" class="org.jahia.services.content.impl.alfresco.AlfrescoStoreProvider"  parent="JCRStoreProvider" >
@@ -744,6 +807,23 @@
             <bean class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate" factory-method="getInstance">
                 <property name="userService" ref="JahiaUserManagerService"/>
                 <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
+                <property name="decorators">
+                    <map>
+                        <entry key="nt:file" value="org.jahia.services.content.JCRFileNode"/>
+                        <entry key="nt:folder" value="org.jahia.services.content.JCRFileNode"/>
+                        <entry key="jnt:portlet" value="org.jahia.services.content.JCRPortletNode"/>
+                        <entry key="nt:query" value="org.jahia.services.content.JCRQueryNode"/>
+                        <entry key="jnt:mountPoint" value="org.jahia.services.content.JCRMountPointNode"/>
+                        <entry key="jnt:jahiacontent" value="org.jahia.services.content.JCRJahiaContentNode"/>
+                        <entry key="jnt:layout" value="org.jahia.services.content.JCRLayoutNode"/>
+
+                        <entry key="jnt:simplePreference" value="org.jahia.services.preferences.generic.GenericJahiaPreference"/>
+                        <entry key="jnt:pagePreference" value="org.jahia.services.preferences.page.PageJahiaPreference"/>
+                        <entry key="jnt:toolbarPreference" value="org.jahia.services.preferences.toolbar.ToolbarJahiaPreference"/>                        
+                        <entry key="jnt:bookmarkPreference" value="org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference"/>
+                        <entry key="jnt:portletPreference" value="org.jahia.services.applications.pluto.JahiaPortletPreference"/>
+                    </map>
+                </property>
                 <property name="servletContextAttributeName" value="jcrStoreService"/>
             </bean>
         </property>
@@ -822,7 +902,7 @@
 
             <bean id="JahiaTemplateManagerService" class="org.jahia.services.templates.JahiaTemplateManagerService" parent="jahiaServiceTemplate">
                 <property name="templatePackageDeployer">
-                    <bean class="org.jahia.services.templates.TemplatePackageDeployer">
+                    <bean class="org.jahia.services.templates.TemplatePackageDeployer" depends-on="FileListSync">
                       <property name="settingsBean" ref="settingsBean" />
                       <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
                       <property name="fileListSync" ref="FileListSync" />
@@ -1032,50 +1112,5 @@
             </map>
         </property>
     </bean>
-    
-    <bean id="AnalyticsService" class="org.jahia.services.analytics.JAMonAnalyticsService">
-           <property name="prop">
-               <value>...</value>
-           </property>
-           <property name="jdbcTemplate" ref="jdbcTemplate"/>
-       </bean>
-       <bean id="jarepDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-           <property name="jndiName" value="java:comp/env/jdbc/perfmon"/>
-       </bean>
-
-       <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-           <property name="dataSource" ref="jarepDataSource"/>
-       </bean>
-
-    <!--<bean id="abdera" class="org.apache.abdera.protocol.server.impl.DefaultProvider">-->
-        <!--<constructor-arg index="0"><value>/atom/</value></constructor-arg>-->
-        <!--<property name="workspaceManager">-->
-            <!--<bean class="org.apache.abdera.protocol.server.impl.DefaultWorkspaceManager">-->
-                <!--<property name="workspaces">-->
-                    <!--<set>-->
-                        <!--<bean class="org.apache.abdera.protocol.server.impl.SimpleWorkspaceInfo">-->
-                            <!--<property name="title" value="test"/>-->
-                            <!--<property name="collections">-->
-                                <!--<set>-->
-                                    <!--<bean class="org.apache.abdera.protocol.server.adapters.jcr.JcrCollectionAdapter" init-method="initialize">-->
-                                        <!--<property name="repository" ref="jackrabbit" />-->
-                                        <!--<property name="credentials">-->
-                                            <!--<bean class="javax.jcr.SimpleCredentials">-->
-                                                <!--<constructor-arg index="0" value="root"/>-->
-                                                <!--<constructor-arg index="1" value="root1234"/>-->
-                                            <!--</bean>-->
-                                        <!--</property>-->
-                                        <!--<property name="collectionNodePath" value="content" />-->
-                                    <!--</bean>-->
-                                <!--</set>-->
-                            <!--</property>-->
-                        <!--</bean>-->
-                    <!--</set>-->
-                <!--</property>-->
-            <!--</bean>-->
-
-        <!--</property>-->
-
-    <!--</bean>-->
 
 </beans>

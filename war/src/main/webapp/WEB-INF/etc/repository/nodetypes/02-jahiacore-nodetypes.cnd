@@ -14,7 +14,7 @@
 
 [jmix:categorized] mixin
  - j:keywords (string)
- - j:defaultCategory (string, category) multiple
+ - j:defaultCategory (string, category[autoSelectParent=false]) multiple
 
 [jmix:lastPublished] mixin
  - j:lastPublishingDate (date) protected
@@ -28,10 +28,11 @@
 
 [jnt:acl] > nt:base
  orderable
- + j:ace (jnt:ace) = jnt:ace multiple
  + * (jnt:ace) = jnt:ace
  - j:inherit (boolean)
 
 [jmix:lockable] > mix:lockable mixin
  - j:locktoken (string) protected indexed=no
 
+[jnt:workflowState] > nt:base
+ - * (string) 

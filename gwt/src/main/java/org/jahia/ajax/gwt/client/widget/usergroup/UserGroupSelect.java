@@ -1,50 +1,26 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.widget.usergroup;
 
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.data.BasePagingLoader;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.GridEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
@@ -52,6 +28,7 @@ import com.extjs.gxt.ui.client.widget.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.button.SplitButton;
@@ -62,7 +39,9 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.UserManagerServiceAsync;
 import org.jahia.ajax.gwt.client.widget.SearchField;
@@ -88,19 +67,19 @@ public class UserGroupSelect extends Window {
     private JahiaServiceAsync service = JahiaService.App.getInstance();
     private SearchField userSearchField;
     private SearchField groupSearchField;
-    private Menu siteMenu;
+    private ListStore<GWTJahiaSite> sites;
+    private String selectedSite;
     private Grid<GWTJahiaUser> userGrid;
     private Grid<GWTJahiaGroup> groupGrid;
-    private final boolean showSiteSelector;
-    private BasePagingLoader loader;
+    private final String aclContext;
     private boolean singleSelectionMode;
 
-    public UserGroupSelect (final UserGroupAdder target, int viewMode, boolean showSiteSelector) {
-        this(target, viewMode, showSiteSelector, false);
+    public UserGroupSelect (final UserGroupAdder target, int viewMode, String aclContext) {
+        this(target, viewMode, aclContext, false);
     }
     
-    public UserGroupSelect (final UserGroupAdder target, int viewMode, boolean showSiteSelector, boolean singleSelectionMode) {
-        this.showSiteSelector = showSiteSelector;
+    public UserGroupSelect (final UserGroupAdder target, int viewMode, String aclContext, boolean singleSelectionMode) {
+        this.aclContext = aclContext;
         this.singleSelectionMode = singleSelectionMode;
         setModal(true);
         setSize(500, 500);
@@ -164,25 +143,20 @@ public class UserGroupSelect extends Window {
             @Override
             protected void load(PagingLoadConfig pageLoaderConfig,
                                 AsyncCallback<PagingLoadResult<GWTJahiaUser>> callback) {
-                List<Integer> siteIds = null;
-                    if (showSiteSelector && siteMenu!=null) {
-                        siteIds = new ArrayList<Integer>();
-                        final List<Item> list = siteMenu.getItems();
-                        for (Item item : list) {
-                            final CheckMenuItem menuItem = (CheckMenuItem) item;
-                            if (menuItem.isChecked()) {
-                                siteIds.add((Integer) menuItem.getData("siteId"));
-                            }
-                        }
+                String context = aclContext;
+                if ("siteSelector".equals(aclContext)) {
+                    context = "site:"+selectedSite;
+                }
+                if (context != null) {
+                    if (userSearchField.getText().length()==0)  {
+                        service.searchUsersInContext("*",pageLoaderConfig.getOffset(), pageLoaderConfig.getLimit(),context, callback);
+                    } else {
+                        service.searchUsersInContext("*"+userSearchField.getText()+"*",pageLoaderConfig.getOffset(), pageLoaderConfig.getLimit(), context, callback);
                     }
-                if (userSearchField.getText().length()==0)  {
-                    service.searchUsers("*",pageLoaderConfig.getOffset(), pageLoaderConfig.getLimit(),siteIds, callback);
-                } else {
-                    service.searchUsers("*"+userSearchField.getText()+"*",pageLoaderConfig.getOffset(), pageLoaderConfig.getLimit(), siteIds, callback);
                 }
             }
         };
-        loader = new BasePagingLoader<PagingLoadConfig,
+        final BasePagingLoader loader = new BasePagingLoader<PagingLoadConfig,
                 PagingLoadResult<GWTJahiaUser>>(proxy);
         userSearchField = new SearchField("Search: ", false) {
             public void onFieldValidation(String value) {
@@ -198,20 +172,18 @@ public class UserGroupSelect extends Window {
         loader.load();
         HorizontalPanel panel = new HorizontalPanel();
         panel.add(userSearchField);
-        if(showSiteSelector){
-            SplitButton siteButton = new SplitButton("Choose a site");
-            siteMenu = new Menu();
-            siteButton.setMenu(siteMenu);
-            panel.add(siteButton);
+        if("siteSelector".equals(aclContext) ){
+            ComboBox<GWTJahiaSite> siteMenu = createMenu(loader);
+            panel.add(siteMenu);
         }
 
         ListStore<GWTJahiaUser> store = new ListStore<GWTJahiaUser>(loader);
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
         columns.add(new ColumnConfig("userName", "User name", 120));
-        columns.add(new ColumnConfig("lastname", "Last name", 100));
-        columns.add(new ColumnConfig("firstname", "First name", 100));
-        columns.add(new ColumnConfig("siteName", "Site name", 80));
+        columns.add(new ColumnConfig("lastname", "Last name", 140));
+        columns.add(new ColumnConfig("firstname", "First name", 140));
+//        columns.add(new ColumnConfig("siteName", "Site name", 80));
         columns.add(new ColumnConfig("provider", "Provider", 80));
 //        columns.add(new ColumnConfig("email", "Email", 100));
 
@@ -254,10 +226,14 @@ public class UserGroupSelect extends Window {
             @Override
             protected void load(PagingLoadConfig pageLoaderConfig,
                                 AsyncCallback<PagingLoadResult<GWTJahiaGroup>> callback) {
-                service.searchGroups("*"+groupSearchField.getText()+"*",pageLoaderConfig.getOffset(), pageLoaderConfig.getLimit(), callback);
+                String context = aclContext;
+                if ("siteSelector".equals(aclContext)) {
+                    context = "site:"+selectedSite;
+                }
+                service.searchGroupsInContext("*"+groupSearchField.getText()+"*",pageLoaderConfig.getOffset(), pageLoaderConfig.getLimit(), context, callback);
             }
         };
-        loader = new BasePagingLoader<PagingLoadConfig,
+        final BasePagingLoader loader = new BasePagingLoader<PagingLoadConfig,
                 PagingLoadResult<GWTJahiaGroup>>(proxy);
 
         groupSearchField = new SearchField("Search: ", false) {
@@ -275,17 +251,17 @@ public class UserGroupSelect extends Window {
         loader.load();
         HorizontalPanel panel = new HorizontalPanel();
         panel.add(groupSearchField);
-        if(showSiteSelector){
-            SplitButton siteButton = new SplitButton("Choose a site");
-            siteMenu = new Menu();
-            siteButton.setMenu(siteMenu);
-            panel.add(siteButton);
+        if("siteSelector".equals(aclContext) ){
+            ComboBox<GWTJahiaSite> siteMenu = createMenu(loader);
+            panel.add(siteMenu);
         }
         ListStore<GWTJahiaGroup> store = new ListStore<GWTJahiaGroup>(loader);
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("groupname", "Group name", 180));
-        columns.add(new ColumnConfig("displaymembers", "Members", 300));
+        columns.add(new ColumnConfig("groupname", "Group name", 120));
+        columns.add(new ColumnConfig("displaymembers", "Members", 200));
+        columns.add(new ColumnConfig("siteName", "Site name", 80));
+        columns.add(new ColumnConfig("provider", "Provider", 80));
 
         ColumnModel cm = new ColumnModel(columns);
 
@@ -319,28 +295,37 @@ public class UserGroupSelect extends Window {
         return groupsPanel;
     }
 
-    @Override
-    protected void beforeRender () {
-        if (showSiteSelector) {
+    protected ComboBox<GWTJahiaSite> createMenu (final BasePagingLoader loader) {
+        if ("siteSelector".equals(aclContext)) {
+
+            sites = new ListStore<GWTJahiaSite>();
+
+            final ComboBox<GWTJahiaSite> siteMenu = new ComboBox<GWTJahiaSite>();
+            siteMenu.setEmptyText("Select a site...");
+            siteMenu.setDisplayField("siteKey");
+            siteMenu.setStore(sites);
+            siteMenu.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaSite>() {
+            	public void selectionChanged(SelectionChangedEvent<GWTJahiaSite> se) {
+				    selectedSite = se.getSelectedItem().getSiteKey();
+                    loader.load();
+                }
+            });
+            
             service.getAvailableSites(new AsyncCallback<List<GWTJahiaSite>>() {
                 public void onFailure (Throwable throwable) {
-                    //To change body of implemented methods use File | Settings | File Templates.
+                    Log.error("Err",throwable);
                 }
     
                 public void onSuccess (List<GWTJahiaSite> gwtJahiaSites) {
-                    for (GWTJahiaSite gwtJahiaSite : gwtJahiaSites) {
-                        CheckMenuItem menuItem = new CheckMenuItem(gwtJahiaSite.getSiteName());                    
-                        menuItem.setData("siteId",gwtJahiaSite.getSiteId());
-                        menuItem.addListener(Events.CheckChange,new Listener() {
-                            public void handleEvent (BaseEvent be) {
-                                loader.load();
-                            }
-                        });
-                        siteMenu.add(menuItem);                    
+                    sites.add(gwtJahiaSites);
+                    if (gwtJahiaSites.size() > 0) {
+                        siteMenu.setValue(gwtJahiaSites.get(0));
                     }
+
                 }
             });
+            return siteMenu;
         }
-        super.beforeRender();
+        return null;
     }
 }

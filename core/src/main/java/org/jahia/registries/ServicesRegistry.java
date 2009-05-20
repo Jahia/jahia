@@ -1,43 +1,25 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.registries;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.query.QueryService;
 import org.jahia.services.JahiaService;
-import org.jahia.services.analytics.AnalyticsService;
 import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.opensearch.JahiaOpenSearchService;
 import org.jahia.services.acl.JahiaACLManagerService;
@@ -68,13 +50,13 @@ import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.search.JahiaSearchService;
+import org.jahia.services.search.facets.JahiaFacetingService;
 import org.jahia.services.search.indexingscheduler.JahiaSearchIndexationService;
 import org.jahia.services.shares.AppsShareService;
 import org.jahia.services.sitemap.JahiaSiteMapService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sso.CasService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.templates_deployer.JahiaTemplatesDeployerService;
 import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
 import org.jahia.services.toolbar.JahiaToolbarService;
 import org.jahia.services.urlrewriting.URLRewritingService;
@@ -100,10 +82,6 @@ import java.util.*;
  * @author Fulco Houkes
  */
 public class ServicesRegistry {
-
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(ServicesRegistry.class);
-
     /**
      * It's a Singleton *
      */
@@ -156,16 +134,15 @@ public class ServicesRegistry {
 
     // Jahia SearchManager
     private static final String JAHIA_SEARCH_SERVICE = "JahiaSearchService";
+    
+    // Jahia SearchManager
+    private static final String JAHIA_FACETING_SERVICE = "JahiaFacetingService";    
 
     // Jahia SearchIndexation Service
     private static final String JAHIA_SEARCH_INDEXATION_SERVICE = "JahiaSearchIndexationService";
 
     // Jahia Fetcher Service
     private static final String JAHIA_FETCHER_SERVICE = "JahiaFetcherService";
-
-    // Jahia Templates Deployer Service
-    private static final String JAHIA_TEMPLATES_DEPLOYER_SERVICE =
-            "JahiaTemplatesDeployerService";
 
     // Jahia WebApps Deployer Service
     private static final String JAHIA_WEBAPPS_DEPLOYER_SERVICE =
@@ -195,10 +172,6 @@ public class ServicesRegistry {
 
     // Jahia Html Editors Service
     private static final String JAHIA_HTMLEDITORS_SERVICE = "JahiaHtmlEditorsService";
-
-    // Jahia ResourceBundles Service
-    private static final String JAHIA_RESOURCEBUNDLE_SERVICE =
-            "JahiaResourceBundleService";
 
     // Jahia Cache factory for every cache except the HTML one
     private static final String JAHIA_CACHE_SERVICE = "JahiaCacheService";
@@ -239,8 +212,6 @@ public class ServicesRegistry {
     private static final String JAHIA_TOOLBAR_SERVICE = "JahiaToolbarService";
 
     private static final String JAHIA_OPENSEARCH_SERVICE = "JahiaOpenSearchService";
-
-    private static final String ANALYTICS_SERVICE = "AnalyticsService";
 
     // This map is an optimization to avoid synchronization issues.
     private Map<String, JahiaService> servicesCache = new HashMap<String, JahiaService>();
@@ -378,6 +349,13 @@ public class ServicesRegistry {
     public JahiaSearchService getJahiaSearchService() {
         return (JahiaSearchService) getService(JAHIA_SEARCH_SERVICE);
     }
+    
+    /**
+     * DJ 03.01.2001
+     */
+    public JahiaFacetingService getJahiaFacetingService() {
+        return (JahiaFacetingService) getService(JAHIA_FACETING_SERVICE);
+    }    
 
     /**
      * DJ 03.01.2001
@@ -391,13 +369,6 @@ public class ServicesRegistry {
      */
     public JahiaFetcherService getJahiaFetcherService() {
         return (JahiaFetcherService) getService(JAHIA_FETCHER_SERVICE);
-    }
-
-    /**
-     * NK 20.01.2001
-     */
-    public JahiaTemplatesDeployerService getJahiaTemplatesDeployerService() {
-        return (JahiaTemplatesDeployerService) getService(JAHIA_TEMPLATES_DEPLOYER_SERVICE);
     }
 
     /**
@@ -578,14 +549,10 @@ public class ServicesRegistry {
         return (SubscriptionService) getService("SubscriptionService");
     }
 
-    public AnalyticsService getAnalyticsService() {
-        return (AnalyticsService) getService(ANALYTICS_SERVICE);
-    }
     /**
      * Default constructor, creates a new <code>ServiceRegistry</code> instance.
      */
     private ServicesRegistry() {
     }
-
 
 }

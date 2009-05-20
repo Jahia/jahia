@@ -1,39 +1,23 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.taglibs.utility.session;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -41,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.JahiaTools;
 
@@ -329,6 +312,7 @@ import org.jahia.utils.JahiaTools;
  * </attriInfo>"
  */
 
+@SuppressWarnings("serial")
 public class SessionViewerTag extends AbstractJahiaTag {
 
     private static org.apache.log4j.Logger logger =
@@ -345,8 +329,8 @@ public class SessionViewerTag extends AbstractJahiaTag {
                                          getRequest();
             HttpSession session = request.getSession();
             out.println("<div class=\"session\">");
-            Iterator attrNameEnum = new EnumerationIterator(session.getAttributeNames());
-            if (attrNameEnum.hasNext()) {
+            Enumeration<?> attrNameEnum = session.getAttributeNames();
+            if (attrNameEnum.hasMoreElements()) {
                 out.print(getPadding(2));
                 out.println("<ol class=\"attribute\">");
                 out.print(getPadding(4));
@@ -357,8 +341,8 @@ public class SessionViewerTag extends AbstractJahiaTag {
                 out.println("<li>Value</li>");
                 out.print(getPadding(2));
                 out.println("</ol>");
-            } while (attrNameEnum.hasNext()) {
-                String curAttrName = (String) attrNameEnum.next();
+            } while (attrNameEnum.hasMoreElements()) {
+                String curAttrName = (String) attrNameEnum.nextElement();
                 Object curAttrObject = session.getAttribute(curAttrName);
                 handleAttrDisplay(out, curAttrName, curAttrObject);
             }
@@ -387,7 +371,7 @@ public class SessionViewerTag extends AbstractJahiaTag {
         out.println("</li>");
         out.print("  <li class=\"value\">");
         if (curAttrObject instanceof Map) {
-            handleMapDisplay(out, (Map) curAttrObject, 4);
+            handleMapDisplay(out, (Map<Object, Object>) curAttrObject, 4);
         } else {
             out.print(curAttrObject.toString());
         }
@@ -395,9 +379,9 @@ public class SessionViewerTag extends AbstractJahiaTag {
         out.println("</ol>");
     }
 
-    private void handleMapDisplay (JspWriter out, Map map, int indent)
+    private void handleMapDisplay (JspWriter out, Map<Object, Object> map, int indent)
         throws IOException {
-        Iterator entryIter = map.entrySet().iterator();
+        Iterator<Map.Entry<Object, Object>> entryIter = map.entrySet().iterator();
         out.print(getPadding(indent));
         out.println("<div class=\"map\">");
         if (entryIter.hasNext()) {
@@ -422,7 +406,7 @@ public class SessionViewerTag extends AbstractJahiaTag {
             out.print(getPadding(indent + 2));
             out.println("</ol>");
         } while (entryIter.hasNext()) {
-            Map.Entry curEntry = (Map.Entry) entryIter.next();
+            Map.Entry<Object, Object> curEntry = entryIter.next();
             Object key = curEntry.getKey();
             Object value = curEntry.getValue();
             out.print(getPadding(indent + 2));
@@ -442,7 +426,7 @@ public class SessionViewerTag extends AbstractJahiaTag {
             out.print(getPadding(indent + 4));
             out.print("<li class=\"value\">");
             if (value instanceof Map) {
-                handleMapDisplay(out, (Map) value, indent + 4);
+                handleMapDisplay(out, (Map<Object, Object>) value, indent + 4);
             } else {
                 out.print(JahiaTools.text2XMLEntityRef(value.toString(), 0));
             }

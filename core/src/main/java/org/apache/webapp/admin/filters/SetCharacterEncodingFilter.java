@@ -1,5 +1,3 @@
-
-
 /*
  * Copyright 1999-2001,2004 The Apache Software Foundation.
  * 

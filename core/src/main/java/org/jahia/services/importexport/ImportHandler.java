@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
  package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
@@ -117,6 +100,7 @@ public class ImportHandler extends DefaultHandler {
     protected ProcessingContext jParams;
     protected Stack<ContentObject> objects;
     protected Map<String,ContentObject> objectMap;
+    protected Map<String,String> uuidMapping;
     protected Map<ACLResourceInterface, List<String>> links;
     protected List<Object[]> jahiaLinks;
     protected String language;
@@ -154,6 +138,7 @@ public class ImportHandler extends DefaultHandler {
         this.objects = new Stack<ContentObject>();
         this.currentObject = root;
         objectMap = new HashMap<String,ContentObject>();
+        uuidMapping = new HashMap<String,String>();
         links = new HashMap<ACLResourceInterface, List<String>>();
         jahiaLinks = new ArrayList<Object[]>();
         containerIndex = new HashMap<ContentObject, Integer>();
@@ -626,7 +611,7 @@ public class ImportHandler extends DefaultHandler {
                         currentObject = getOrCreateContainerListOrField(localName, namespaceURI, qName, atts, parent, pageID, containerID, false);
                     } else if (parent instanceof ContentContainerList) {
                         // Container inside a list
-                        List<? extends ContentObject> l = parent.getChilds(jParams.getUser(), elr);
+                        List<ContentObject> l = new ArrayList<ContentObject>(parent.getChilds(jParams.getUser(), elr));
 
                         Integer iIndex = containerIndex.get(parent);
                         if (iIndex == null) {
@@ -639,7 +624,9 @@ public class ImportHandler extends DefaultHandler {
                         //System.out.println("------------------ordered------>" +l);
 
                         if (uuid != null) {
-                            for (Iterator<? extends ContentObject> iterator = l.iterator(); iterator.hasNext();) {
+                            List rl = new ArrayList(l);
+                            Collections.reverse(rl);
+                            for (Iterator<ContentObject> iterator = rl.iterator(); iterator.hasNext();) {
                                 ContentContainer contentContainer = (ContentContainer) iterator.next();
                                 Map<Object, Object> p = contentContainer.getProperties();
 //                                if (uuid.equals(p.get("originalUuid"))
@@ -651,20 +638,26 @@ public class ImportHandler extends DefaultHandler {
                             }
                         } else {
                             try {
-                                currentObject = (ContentContainer) l.get(iIndex.intValue());
+                                currentObject = l.get(iIndex.intValue());
                             } catch (Exception e) {
                                 currentObject = null;
                             }
                         }
                         if (updateOnly && currentObject == null && op != VersioningDifferenceStatus.TO_BE_REMOVED) {
                             currentObject = createObject(parent, namespaceURI, localName, qName, atts);
+                            l.add(iIndex, currentObject);
                         }
 
-                        if (currentObject != null) {
-                            JahiaContainer jc = ((ContentContainer)currentObject).getJahiaContainer(jParams, elr);
-                            if (jc != null) {
-                                jc.setRank(-l.size()+iIndex);
-                                ServicesRegistry.getInstance ().getJahiaContainersService().saveContainerInfo (jc,-1,-1, jParams);
+                        if (op != VersioningDifferenceStatus.UNCHANGED && currentObject != null) {
+                            l.remove(currentObject);
+                            l.add(iIndex, currentObject);
+                            for (int i = 0 ; i < l.size() ; i++) {
+                                ContentContainer c = (ContentContainer) l.get(i);
+                                JahiaContainer jc = c.getJahiaContainer(jParams, elr);
+                                if (jc != null && jc.getRank() != -l.size()+i) {
+                                    jc.setRank(-l.size()+i);
+                                    ServicesRegistry.getInstance ().getJahiaContainersService().saveContainerInfo (jc,-1,-1, jParams);
+                                }
                             }
                         }
 
@@ -711,6 +704,7 @@ public class ImportHandler extends DefaultHandler {
             }
             if (currentObject != null) {
                 objectMap.put(uuid, currentObject);
+                uuidMapping.put(uuid, currentObject.getUUID());
             } else {
 //                ObjectKey parentKey = null;
 //                if (!objects.isEmpty() && objects.peek() != null) {
@@ -896,7 +890,21 @@ public class ImportHandler extends DefaultHandler {
                 if (importedPt != null) {
                     localName = getMappedProperty(importedMappings.get(parent.getParent(null).getObjectKey().toString()), localName);
 
-                    ExtendedNodeType importedListNodeType = NodeTypeRegistry.getInstance().getNodeType(importedPt);
+                    ExtendedNodeType importedListNodeType = null;
+                    try {
+                        importedListNodeType = NodeTypeRegistry.getInstance().getNodeType(importedPt);
+                    } catch (NoSuchNodeTypeException e) {
+                        if (localName.endsWith("List")) {
+                            ExtendedNodeType listNt = jcd.getContainerListNodeDefinition().getRequiredPrimaryTypes()[0];
+                            ExtendedNodeType ctnNt = listNt.getChildNodeDefinitionsAsMap().get("*").getRequiredPrimaryTypes()[0];
+                            ExtendedNodeType importedNt = NodeTypeRegistry.getInstance().getNodeType(importedPt.substring(0, importedPt.length()-4));
+                            if (ctnNt.isNodeType(importedNt.getName()) || importedNt.isNodeType(ctnNt.getName())) {
+                                return parent;
+                            }
+                        } else {
+                            throw e;
+                        }
+                    }
 
                     if (!ImportExportBaseService.getInstance().isCompatible(jcd, importedListNodeType, jParams)) {
                         if (importedListNodeType.isNodeType("jnt:containerList")) {
@@ -1705,10 +1713,8 @@ public class ImportHandler extends DefaultHandler {
                     service.setWorkflowMode(object, wfInfo.getMode(), wfInfo
                             .getWorkflowName(), wfInfo.getProcessId(), jParams);
                 } else {
-                    service
-                            .setWorkflowMode(object,
-                                    WorkflowService.JAHIA_INTERNAL, null, null,
-                                    jParams);
+                    service.setWorkflowMode(object, wfInfo.getMode(), null,
+                            null, jParams);
                 }
             } else if ("external".equals(wf)) {
                 String name = atts.getValue(ImportExportService.JAHIA_URI, "workflowName");
@@ -1999,6 +2005,12 @@ public class ImportHandler extends DefaultHandler {
 
     public void setPathMapping(Map<String, String> pathMapping) {
         this.pathMapping = pathMapping;
+    }
+
+    public void setUuidMapping(Map<String, String> uuidMapping) {
+        if (uuidMapping != null) {
+            this.uuidMapping = uuidMapping;
+        }
     }
 
     public void setTypeMappings(Map<String, Map<String, String>> typeMappings) {

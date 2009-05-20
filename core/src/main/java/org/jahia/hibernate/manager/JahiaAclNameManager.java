@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.hibernate.manager;
 
 import org.apache.commons.logging.Log;
@@ -66,9 +49,9 @@ public class JahiaAclNameManager {
     private JahiaAclDAO aclDao = null;
     private JahiaAclNamesDAO aclNamesDao = null;
 
-    private Map aclNamesDefaultEntries;
+    private Map<String, Map<String, String>> aclNamesDefaultEntries;
 
-    private Cache cache;
+    private Cache<String, JahiaAclName> cache;
 
     private void checkCache() {
         if (cache == null) cache = ServicesRegistry.getInstance().getCacheService().getCache(JAHIA_ACL_NAMES);
@@ -87,7 +70,7 @@ public class JahiaAclNameManager {
         this.aclNamesDao = aclNamesDao;
     }
 
-    public void setAclNamesDefaultEntries(Map aclNamesDefaultEntries) {
+    public void setAclNamesDefaultEntries(Map<String, Map<String, String>> aclNamesDefaultEntries) {
         this.aclNamesDefaultEntries = aclNamesDefaultEntries;
     }
 
@@ -110,7 +93,7 @@ public class JahiaAclNameManager {
                 if (!"".equals(aclName)) {
                     checkCache();
 
-                    JahiaAclName aclNameResult = (JahiaAclName) cache.get(aclName);
+                    JahiaAclName aclNameResult = cache.get(aclName);
                     if (aclNameResult != null) {
                         return aclNameResult;
                     }
@@ -174,12 +157,12 @@ public class JahiaAclNameManager {
                     acl.setParent(null);
                     acl.setInheritance(new Integer(ACLInfo.INHERITANCE));
                     // todo : we still have to insert default entries here.
-                    Map defaultEntries = (Map) aclNamesDefaultEntries.get(curAclName);
-                    Map userAclEntries = new HashMap();
-                    Map groupAclEntries = new HashMap();
-                    Iterator entryIterator = defaultEntries.entrySet().iterator();
+                    Map<String, String> defaultEntries = aclNamesDefaultEntries.get(curAclName);
+                    Map<String, JahiaAclEntry> userAclEntries = new HashMap<String, JahiaAclEntry>();
+                    Map<String, JahiaAclEntry> groupAclEntries = new HashMap<String, JahiaAclEntry>();
+                    Iterator<Map.Entry<String, String>> entryIterator = defaultEntries.entrySet().iterator();
                     while (entryIterator.hasNext()) {
-                        Map.Entry curEntry = (Map.Entry) entryIterator.next();
+                        Map.Entry<String, String> curEntry = (Map.Entry<String, String>) entryIterator.next();
                         String key = (String) curEntry.getKey();
                         Integer userType = null;
                         String principalName = null;
@@ -243,7 +226,7 @@ public class JahiaAclNameManager {
                 if (!"".equals(aclName)) {
                     checkCache();
 
-                    JahiaAclName aclNameResult = (JahiaAclName) cache.get(aclName);
+                    JahiaAclName aclNameResult = cache.get(aclName);
                     if (aclNameResult != null) {
                         return aclNameResult;
                     }
@@ -261,7 +244,7 @@ public class JahiaAclNameManager {
         throw new ObjectRetrievalFailureException(JahiaAcl.class, aclName);
     }
 
-    public List findJahiaAclNamesStartingWith(String aclName) {
+    public List<JahiaAclName> findJahiaAclNamesStartingWith(String aclName) {
         if (aclName != null) {
             try {
                 if (!"".equals(aclName)) {

@@ -1,39 +1,21 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.services.content.automation;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
@@ -42,9 +24,9 @@ import org.jahia.content.ContentObjectKey;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
-import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapperImpl;
-import org.jahia.services.content.impl.jahia.JahiaContainerNodeImpl;
 import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
 import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.importexport.ProductionJob;
@@ -56,34 +38,38 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.ExternalWorkflow;
+import org.jahia.services.workflow.ExternalWorkflowHistoryEntry;
+import org.jahia.services.workflow.ExternalWorkflowInstanceCurrentInfos;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.model.JahiaAclEntry;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.security.Principal;
 
 /**
- * Created by IntelliJ IDEA.
+ * Helper class for accessing Jahia service in rules.
  * User: toto
  * Date: 8 janv. 2008
  * Time: 12:04:29
- * To change this template use File | Settings | File Templates.
  */
 public class Service {
     private static Logger logger = Logger.getLogger(Service.class);
     private static Service instance;
 
     private Service() {
+        super();
     }
 
     public static synchronized Service getInstance() {
@@ -193,6 +179,7 @@ public class Service {
                 jobDataMap.put(ImportJob.URI, uri);
                 jobDataMap.put(ImportJob.CONTENT_TYPE,"application/zip");
                 jobDataMap.put(BackgroundJob.JOB_TYPE, ProductionJob.PRODUCTION_TYPE);
+//                jobDataMap.put(ProductionJob.JOB_TITLE, fr);
 
                 jobDataMap.put(ImportJob.PUBLISH_ALL_AT_END, new Boolean(uri.indexOf("AndPublish")>-1));
                 schedulerServ.scheduleJobNow(jobDetail);
@@ -332,46 +319,258 @@ public class Service {
     
     public void notify(NodeWrapper node, String eventType,
             KnowledgeHelper drools) {
-        User user = (User) drools.getWorkingMemory().getGlobal("user");
+        notify(node, eventType, (User) drools.getWorkingMemory().getGlobal(
+                "user"), null);
+    }
+
+    public void notify(NodeWrapper node, String eventType,
+            Principal subscriber, KnowledgeHelper drools) {
+        if (subscriber != null) {
+            Set<Principal> subscribers = new HashSet(1);
+            subscribers.add(subscriber);
+            notify(node, eventType, subscribers, drools);
+        }
+    }
+
+    public void notifyUser(NodeWrapper node, String eventType, String user,
+            KnowledgeHelper drools) {
+        JahiaUser jahiaUser = lookupUser(user);
+        if (jahiaUser != null) {
+            notify(node, eventType, jahiaUser, drools);
+        } else {
+            logger.warn("Unable to lookup user '" + user
+                    + "'. Ignore notification event.");
+        }
+    }
+
+    public void notifyGroup(NodeWrapper node, String eventType, String group,
+            KnowledgeHelper drools) {
         Node jcrNode = node.getNode();
-        NotificationEvent event = new NotificationEvent();
-        event.setAuthor(user.getName());
-        event.setEventType(eventType);
-        event.setTimestamp(System.currentTimeMillis());
+        int siteId = jcrNode instanceof JahiaContentNodeImpl ? ((JahiaContentNodeImpl) jcrNode)
+                .getContentObject().getSiteID()
+                : ServicesRegistry.getInstance().getJahiaSitesService()
+                        .getDefaultSite().getID();
+        JahiaGroup jahiaGroup = lookupGroup(group, siteId);
+        if (jahiaGroup != null) {
+            notify(node, eventType, jahiaGroup, drools);
+        } else {
+            logger.warn("Unable to lookup group '" + group
+                    + "' for the site with ID '" + siteId
+                    + "'. Ignore notification event.");
+        }
+    }
+
+    public void notify(NodeWrapper node, String eventType,
+            Set<Principal> subscribers, KnowledgeHelper drools) {
+        if (subscribers != null && !subscribers.isEmpty()) {
+            notify(node, eventType, (User) drools.getWorkingMemory().getGlobal(
+                    "user"), subscribers);
+        }
+    }
+
+    private void notify(NodeWrapper node, String eventType,
+            User eventInitiator, Set<Principal> subscribers) {
+        Node jcrNode = node.getNode();
         try {
-            event.setObjectPath(jcrNode.getPath());
+            NotificationEvent event = new NotificationEvent(JCRContentUtils
+                    .getContentNodeName(jcrNode), eventType);
+            event.setAuthor(eventInitiator.getName());
+            event.setObjectPath(JCRContentUtils.getContentObjectPath(jcrNode));
             if (jcrNode instanceof JahiaContentNodeImpl) {
                 JahiaContentNodeImpl contentNode = (JahiaContentNodeImpl) jcrNode;
                 event.setSiteId(contentNode.getContentObject().getSiteID());
                 event.setPageId(contentNode.getContentObject().getPageID());
-                event.setObjectKey(contentNode.getContentObject()
-                        .getObjectKey().getKey());
-                if (jcrNode instanceof JahiaContainerNodeImpl) {
-                    // fix path
-                    JahiaContainerNodeImpl containerNode = (JahiaContainerNodeImpl) jcrNode;
-                    event.setObjectPath(StringUtils.substringBeforeLast(jcrNode
-                            .getPath(), "/")
-                            + "/ContentContainerList_"
-                            + ((ContentContainer) containerNode
-                                    .getContentObject())
-                                    .getParentContainerListID()
-                            + "/"
-                            + event.getObjectKey());
-                }
-            } else {
-                event.setObjectKey(StringUtils.substringAfterLast(jcrNode
-                        .getPath(), "/"));
             }
+            if (subscribers != null && !subscribers.isEmpty()) {
+                event.getSubscribers().addAll(subscribers);
+            }
+            if (logger.isDebugEnabled()) {
+                logger.debug(event);
+            }
+            ServicesRegistry.getInstance().getJahiaEventService()
+                    .fireNotification(event);
         } catch (RepositoryException e) {
             logger.warn(e.getMessage(), e);
         }
-        if (logger.isDebugEnabled()) {
-        	logger.debug(event);
+    }
+    
+    /**
+     * Returns all users, having explicitly assigned permissions to perform next
+     * step operation. Either assigned directly on the object or inherited from
+     * parent.
+     * 
+     * @param node
+     *            the current content node
+     * @param languageCode
+     *            current language code
+     * @return the set of all users, having explicitly assigned permissions to
+     *         perform next step operation. Either assigned directly on the
+     *         object or inherited from parent.
+     */
+    public Set<Principal> getWorkflowNextStepPrincipals(NodeWrapper node, String languageCode) {
+        WorkflowService workflowService = WorkflowService.getInstance();
+        try {
+            ContentObject obj = ((JahiaContentNodeImpl)node.getNode()).getContentObject();
+            ContentObject mainObj = workflowService.getMainLinkObject(obj);
+
+            //Map<String, Set<String>> actions = new HashMap<String, Set<String>>();
+            int mode = workflowService.getInheritedMode(obj);
+            if (mode == WorkflowService.EXTERNAL) {
+                String wn = workflowService.getInheritedExternalWorkflowName(obj);
+                ExternalWorkflow ext = workflowService.getExternalWorkflow(wn);
+                ExternalWorkflowInstanceCurrentInfos info = ext.getCurrentInfo(mainObj.getObjectKey().toString(), languageCode);
+                if (info != null) {
+                    return workflowService.getRole(mainObj, info.getNextRole(), false).getAllMembers();
+                }
+            }
+        } catch (JahiaException e) {
+            logger.error(e.getMessage(), e);
         }
-        AggregatedNotificationEvent aggregatedEvent = (AggregatedNotificationEvent) drools
-                .getWorkingMemory().getGlobal("aggregatedNotificationEvent");
-        if (aggregatedEvent != null) {
-            aggregatedEvent.add(event);
+        return null;
+    }
+
+    /**
+     * Returns all users, having {@link JahiaBaseACL#ADMIN_RIGHTS} on the
+     * object.
+     * 
+     * @param node
+     *            the current content node
+     * @return the set of all users, having {@link JahiaBaseACL#ADMIN_RIGHTS} on
+     *         the object
+     */
+    public Set<Principal> getWorkflowAdminPrincipals(NodeWrapper node) {
+        Set<Principal> s = new HashSet<Principal>();
+        ContentObject obj = ((JahiaContentNodeImpl) node.getNode())
+                .getContentObject();
+
+        Map m = obj.getACL().getACL().getRecursedGroupEntries();
+        for (Object key : m.keySet()) {
+            JahiaAclEntry e = (JahiaAclEntry) m.get(key);
+            if (e.getPermission(JahiaBaseACL.ADMIN_RIGHTS) == JahiaAclEntry.ACL_YES) {
+                if (!key.equals("administrators:0")) {
+                    s.add(ServicesRegistry.getInstance()
+                            .getJahiaGroupManagerService().lookupGroup(
+                                    (String) key));
+                }
+            }
         }
+        m = obj.getACL().getACL().getRecursedUserEntries();
+        for (Object key : m.keySet()) {
+            JahiaAclEntry e = (JahiaAclEntry) m.get(key);
+            if (e.getPermission(JahiaBaseACL.ADMIN_RIGHTS) == JahiaAclEntry.ACL_YES) {
+                s.add(ServicesRegistry.getInstance()
+                        .getJahiaUserManagerService().lookupUserByKey(
+                                (String) key));
+            }
+        }
+
+        return s;
+    }
+
+    public Set<Principal> getWorkflowPreviousStepPrincipals(NodeWrapper node, String languageCode) {
+        WorkflowService workflowService = WorkflowService.getInstance();
+        try {
+            ContentObject obj = ((JahiaContentNodeImpl)node.getNode()).getContentObject();
+            ContentObject mainObj = workflowService.getMainLinkObject(obj);
+
+            //Map<String, Set<String>> actions = new HashMap<String, Set<String>>();
+            int mode = workflowService.getInheritedMode(obj);
+            if (mode == WorkflowService.EXTERNAL && workflowService.getWorkflowMode(obj) != WorkflowService.LINKED) {
+                String wn = workflowService.getInheritedExternalWorkflowName(obj);
+                ExternalWorkflow ext = workflowService.getExternalWorkflow(wn);
+                ExternalWorkflowInstanceCurrentInfos info = ext.getCurrentInfo(mainObj.getObjectKey().toString(), languageCode);
+                if (info != null) {
+                    return workflowService.getRole(mainObj, info.getCurrentRole(), false).getAllMembers();
+                }
+            }
+        } catch (JahiaException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    public Principal getFirstUserForAction(NodeWrapper node, String languageCode, String action) {
+        List<ExternalWorkflowHistoryEntry> history = getWorkflowHistory(node);
+        if (history != null) {
+            for (ExternalWorkflowHistoryEntry externalWorkflowHistoryEntry : history) {
+                if (languageCode.equals(externalWorkflowHistoryEntry.getLanguage()) && action.equals(externalWorkflowHistoryEntry.getAction())) {
+                    return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(externalWorkflowHistoryEntry.getUser());
+                }
+            }
+        }
+        return null;
+    }
+
+    public Principal getFirstUser(NodeWrapper node, String languageCode) {
+        List<ExternalWorkflowHistoryEntry> history = getWorkflowHistory(node);
+        if (history != null) {
+            for (ExternalWorkflowHistoryEntry externalWorkflowHistoryEntry : history) {
+                if (languageCode.equals(externalWorkflowHistoryEntry.getLanguage())) {
+                    return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(externalWorkflowHistoryEntry.getUser());
+                }
+            }
+        }
+        return null;
+    }
+
+    public Principal getLastUserForAction(NodeWrapper node, String languageCode, String action) {
+        List<ExternalWorkflowHistoryEntry> history = getWorkflowHistory(node);
+        if (history != null) {
+            Collections.reverse(history);
+            for (ExternalWorkflowHistoryEntry externalWorkflowHistoryEntry : history) {
+                if (languageCode.equals(externalWorkflowHistoryEntry.getLanguage()) && action.equals(externalWorkflowHistoryEntry.getAction())) {
+                    return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(externalWorkflowHistoryEntry.getUser());
+                }
+                if (languageCode.equals(externalWorkflowHistoryEntry.getLanguage()) && "start process".equals(externalWorkflowHistoryEntry.getAction())) {
+                    break;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Principal getLastUser(NodeWrapper node, String languageCode) {
+        List<ExternalWorkflowHistoryEntry> history = getWorkflowHistory(node);
+        if (history != null) {
+            Collections.reverse(history);
+            for (ExternalWorkflowHistoryEntry externalWorkflowHistoryEntry : history) {
+                if (languageCode.equals(externalWorkflowHistoryEntry.getLanguage())) {
+                    return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(externalWorkflowHistoryEntry.getUser());
+                }
+                if (languageCode.equals(externalWorkflowHistoryEntry.getLanguage()) && "start process".equals(externalWorkflowHistoryEntry.getAction())) {
+                    break;
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<ExternalWorkflowHistoryEntry> getWorkflowHistory(NodeWrapper node) {
+        WorkflowService workflowService = WorkflowService.getInstance();
+        try {
+            ContentObject obj = ((JahiaContentNodeImpl)node.getNode()).getContentObject();
+            ContentObject mainObj = workflowService.getMainLinkObject(obj);
+
+            //Map<String, Set<String>> actions = new HashMap<String, Set<String>>();
+            int mode = workflowService.getInheritedMode(obj);
+            if (mode == WorkflowService.EXTERNAL) {
+                String wn = workflowService.getInheritedExternalWorkflowName(obj);
+                ExternalWorkflow ext = workflowService.getExternalWorkflow(wn);
+                List<ExternalWorkflowHistoryEntry> history = ext.getWorkflowHistoryByObject(mainObj.getObjectKey().toString());
+                return history;
+            }
+        } catch (JahiaException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+
+    private static JahiaUser lookupUser(String username) {
+        return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);        
+    }
+
+    private static JahiaGroup lookupGroup(String group, int siteId) {
+        return ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(siteId, group);        
     }
 }

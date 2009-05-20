@@ -102,6 +102,67 @@
     </tag>
 
     <tag>
+        <description>Utility date tag in order to add/subtract days, hours, etc. to an existing date
+        </description>
+        <name>dateCalc</name>
+        <tag-class>org.jahia.taglibs.utility.DateCalcTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Date</type>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>days</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>months</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>years</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>hours</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>minutes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>seconds</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>milliseconds</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>        
+    </tag>
+
+    <tag>
         <description>Utility date tag in order to convert dates and add days, hours, etc. to an existing date
         </description>
         <name>dateUtil</name>
@@ -118,8 +179,20 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                Name of the page scope variable to expose the value.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
-            <required>true</required>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Name of the page scope variable to expose the value.
+            </description>
+            <name>var</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
@@ -182,6 +255,11 @@
         <tag-class>org.jahia.taglibs.utility.i18n.DropDownFromBundleFileTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <name>bundleName</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
@@ -208,18 +286,27 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+
+    <tag>
+        <description>Resolves the Web path to the specified resource considering template set inheritance (the same way,
+            the ${jahia.includes.webPath[]} works).
+        </description>
+        <name>resolvePath</name>
+        <tag-class>org.jahia.taglibs.utility.ResolvePathTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The resource path to be resolved.</description>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
     <tag-file>
         <description>add declaration of GWT common application resource bundles</description>
         <name>applicationResources</name>
         <path>/META-INF/tags/ajax/applicationresources.tag</path>
     </tag-file>
 
-    <tag-file>
-        <description>Resolves the Web path to the specified resource considering template set inheritance (the same way,
-            the ${jahia.includes.webPath[]} works).
-        </description>
-        <name>resolvePath</name>
-        <path>/META-INF/tags/resolvePath.tag</path>
-    </tag-file>
 
 </taglib>

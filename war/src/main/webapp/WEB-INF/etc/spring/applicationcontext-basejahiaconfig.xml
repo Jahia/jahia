@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <!--
   Application context definition.
     -->
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
 	<!-- ========================= BUSINESS OBJECT DEFINITIONS ========================= -->
 
@@ -130,7 +131,7 @@
                 <value>jahia.acl_id</value>
                 <value>jahia.parent_id</value>
                 <value>jahia.file_realname</value>
-                <value>jahia.definition_property_jcr:primarytype</value>
+                <value>jahia.definition_primarytype</value>
             </list>
         </property>
     </bean>

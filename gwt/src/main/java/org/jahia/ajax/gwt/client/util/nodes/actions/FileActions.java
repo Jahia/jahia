@@ -1,36 +1,19 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.util.nodes.actions;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -38,6 +21,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
+import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
 import org.jahia.ajax.gwt.client.util.nodes.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.widget.node.*;
 import org.jahia.ajax.gwt.client.widget.node.portlet.PortletWizardWindow;
@@ -70,10 +54,10 @@ public class FileActions {
     public static void copy(final BrowserLinker linker) {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
-            linker.loading("copying...");
+            linker.loading(Messages.getResource("fm_copying"));
             service.copy(selectedItems, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
-                    Window.alert("Copy failed :\n" + throwable.getLocalizedMessage());
+                    Window.alert(Messages.getResource("fm_failCopy") + "\n" + throwable.getLocalizedMessage());
                     linker.loaded();
                 }
 
@@ -99,17 +83,17 @@ public class FileActions {
                 }
             }
             if (!lockedFiles.isEmpty()) {
-                StringBuilder s = new StringBuilder("The following files are locked and won't be moved:");
+                StringBuilder s = new StringBuilder(Messages.getResource("fm_warningLock"));
                 for (GWTJahiaNode node : lockedFiles) {
                     s.append("\n").append(node.getName());
                 }
                 Window.alert(s.toString());
             }
             if (!actualSelection.isEmpty()) {
-                linker.loading("cutting...");
+                linker.loading(Messages.getResource("fm_cutting"));
                 service.cut(actualSelection, new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
-                        Window.alert("Cut failed :\n" + throwable.getLocalizedMessage());
+                        Window.alert(Messages.getResource("fm_failCut") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();
                     }
 
@@ -133,11 +117,11 @@ public class FileActions {
             }
         }
         if (m != null && !m.isFile()) {
-            linker.loading("pasting...");
+            linker.loading(Messages.getResource("fm_pasting"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
             service.paste(copyPasteEngine.getCopiedPaths(), m.getPath(), copyPasteEngine.isCut(), new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
-                    Window.alert("Paste failed :\n" + throwable.getLocalizedMessage());
+                    Window.alert(Messages.getResource("fm_failPaste") + "\n" + throwable.getLocalizedMessage());
                     linker.loaded();
                 }
 
@@ -161,33 +145,6 @@ public class FileActions {
         }
     }
 
-
-    public static void move(final BrowserLinker linker, final List<GWTJahiaNode> sources, GWTJahiaNode target) {
-        service.paste(sources, target.getPath(), true, new AsyncCallback() {
-            public void onFailure(Throwable throwable) {
-                Window.alert("Paste failed :\n" + throwable.getLocalizedMessage());
-                linker.loaded();
-            }
-
-            public void onSuccess(Object o) {
-                boolean refreshAll = false;
-                for (GWTJahiaNode n : sources) {
-                    if (!n.isFile()) {
-                        refreshAll = true;
-                        break;
-                    }
-                }
-
-                linker.loaded();
-                if (refreshAll) {
-                    linker.refreshAll();
-                } else {
-                    linker.refreshTable();
-                }
-            }
-        });
-    }
-
     public static void upload(final BrowserLinker linker) {
         GWTJahiaNode m = (GWTJahiaNode) linker.getTreeSelection();
         if (m == null) {
@@ -205,27 +162,34 @@ public class FileActions {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selection = selectedItems.get(0);
-            download(linker, selection, selection.getUrl());
+            if (selection != null && selection.isFile().booleanValue()) {
+                linker.loading(Messages.getResource("fm_downloading"));
+                String url = selection.getUrl();
+                if (url != null) {
+                    HTML link = new HTML(Messages.getResource("fm_downloadMessage") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + selection.getName() + "</a>");
+                    final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
+                    dl.setModal(true);
+                    dl.setHeading(Messages.getResource("fm_download"));
+                    dl.setLayout(new FlowLayout());
+                    dl.setScrollMode(Style.Scroll.AUTO);
+                    dl.add(link);
+                    dl.setHeight(120);
+                    dl.show();
+                } else {
+                    Window.alert(Messages.getResource("fm_failDownload"));
+                }
+                linker.loaded();
+            }
         }
     }
 
-    public static void download(BrowserLinker linker, GWTJahiaNode selection, String url) {
-        if (selection != null && selection.isFile().booleanValue()) {
-            linker.loading("generating download link...");
-            if (url != null) {
-                HTML link = new HTML("Your file is ready to be downloaded, please click the following link to proceed :<br /><br /><a href=\"" + url + "\" target=\"_new\">" + selection.getName() + "</a>");
-                final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
-                dl.setModal(true);
-                dl.setHeading("File download");
-                dl.setLayout(new FlowLayout());
-                dl.setScrollMode(Style.Scroll.AUTO);
-                dl.add(link);
-                dl.setHeight(120);
-                dl.show();
-            } else {
-                Window.alert("The url does not exist");
+    public static void preview(final BrowserLinker linker) {
+        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+        if (selectedItems != null && selectedItems.size() == 1) {
+            final GWTJahiaNode selection = selectedItems.get(0);
+            if (selection != null && selection.isFile().booleanValue()) {
+                ImagePopup.popImage(selection);
             }
-            linker.loaded();
         }
     }
 
@@ -238,19 +202,19 @@ public class FileActions {
             selection = selectedItems.get(0);
         }
         if (selection != null && !selection.isFile().booleanValue()) {
-            linker.loading("generating webfolder link...");
+            linker.loading(Messages.getResource("fm_webfoldering"));
             service.getAbsolutePath(selection.getPath(), new AsyncCallback<String>() {
                 public void onFailure(Throwable t) {
-                    Window.alert("Unable to open webfolder\n\n" + t.getLocalizedMessage());
+                    Window.alert(Messages.getResource("fm_failWebfolder") + "\n" + t.getLocalizedMessage());
                     linker.loaded();
                 }
 
                 public void onSuccess(String url) {
                     if (url != null) {
-                        HTML link = new HTML("Click the link below to open an web folder :<br /><br /><a target=\"_new\" folder=\"" + url + "\" style=\"behavior:url(#default#AnchorClick)\">" + selection.getName() + "</a>");
+                        HTML link = new HTML(Messages.getResource("fm_webfolderMessage") + "<br /><br /><a target=\"_new\" folder=\"" + url + "\" style=\"behavior:url(#default#AnchorClick)\">" + selection.getName() + "</a>");
                         final Dialog dl = new Dialog();
                         dl.setModal(true);
-                        dl.setHeading("Open web folder");
+                        dl.setHeading(Messages.getResource("fm_webfolder"));
                         dl.setHideOnButtonClick(true);
                         dl.setLayout(new FlowLayout());
                         dl.setScrollMode(Style.Scroll.AUTO);
@@ -261,7 +225,6 @@ public class FileActions {
                     }
                 }
             });
-
         }
     }
 
@@ -274,12 +237,12 @@ public class FileActions {
             }
         }
         if (parent != null && !parent.isFile()) {
-            String newFolder = Window.prompt("New folder name", "untitled");
+            String newFolder = Window.prompt(Messages.getResource("fm_newdirname"), "untitled");
             if (newFolder != null && newFolder.length() > 0) {
-                linker.loading("creating folder...");
+                linker.loading(Messages.getResource("fm_newfoldering"));
                 service.createFolder(parent.getPath(), newFolder, new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
-                        Window.alert("Folder creation failed :\n" + throwable.getLocalizedMessage());
+                        Window.alert(Messages.getResource("fm_failNewdir") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();
                     }
 
@@ -288,7 +251,6 @@ public class FileActions {
                         linker.refreshAll();
                     }
                 });
-
             }
         }
     }
@@ -323,7 +285,11 @@ public class FileActions {
             w.setBodyBorder(false);
             w.setLayout(new FillLayout());
             w.setWidth(350);
-            w.add(new FormQuickRSS(parent.getPath()));
+            w.add(new FormQuickRSS(parent.getPath()){
+                public void onMashupCreated() {
+                    linker.refreshTable();
+                }
+            });
             w.setScrollMode(Style.Scroll.AUTO);
             w.layout();
             w.show();
@@ -346,7 +312,12 @@ public class FileActions {
             w.setBodyBorder(false);
             w.setLayout(new FillLayout());
             w.setWidth(350);
-            w.add(new FormQuickGoogleGadget(parent.getPath()));
+            w.add(new FormQuickGoogleGadget(parent.getPath()) {
+                @Override
+                public void onMashupCreated() {
+                    linker.refreshTable();
+                }
+            });
             w.setScrollMode(Style.Scroll.AUTO);
             w.layout();
             w.show();
@@ -371,15 +342,14 @@ public class FileActions {
         if (selectedItems != null && selectedItems.size() == 1) {
             GWTJahiaNode selection = selectedItems.get(0);
             if (selection.isLocked()) {
-                Window.alert("The mount point " + selection.getName() + " is locked by " + selection.getLockOwner());
-            }
-            if (Window.confirm("Do you really want to unmount " + selection.getName() + " ?")) {
-                linker.loading("unmounting...");
+                Window.alert(Messages.getResource("fm_failUnmountLock1") + " " + selection.getName() + Messages.getResource("fm_failUnmountLock2") + " " + selection.getLockOwner());
+            } else if (Window.confirm(Messages.getResource("fm_confUnmount") + " " + selection.getName() + " ?")) {
+                linker.loading(Messages.getResource("fm_unmounting"));
                 List<String> selectedPaths = new ArrayList<String>(1);
                 selectedPaths.add(selection.getPath());
                 service.deletePaths(selectedPaths, new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
-                        Window.alert("Unmount failed\n\n" + throwable.getLocalizedMessage());
+                        Window.alert(Messages.getResource("fm_failUnmount") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();
                     }
 
@@ -413,9 +383,9 @@ public class FileActions {
             if (selectedItems.size() == 1) {
                 GWTJahiaNode selection = selectedItems.get(0);
                 containFolder = !selection.isFile();
-                rem = Window.confirm("Do you really want to remove the " + (selection.isFile().booleanValue() ? "file " : "folder ") + selection.getName() + " ?");
+                rem = Window.confirm(Messages.getResource("fm_confRemove") + " " + selection.getName() + " ?");
             } else {
-                rem = Window.confirm("Do you really want to remove the current selection ? (" + selectedItems.size() + " items)");
+                rem = Window.confirm(Messages.getResource("fm_confMultiRemove"));
             }
             final boolean refreshTree = containFolder;
             if (rem) {
@@ -429,21 +399,21 @@ public class FileActions {
                     }
                 }
                 if (!lockedFiles.isEmpty()) {
-                    StringBuilder s = new StringBuilder("The following files are locked and won't be removed:");
+                    StringBuilder s = new StringBuilder(Messages.getResource("fm_warningLock"));
                     for (GWTJahiaNode node : lockedFiles) {
                         s.append("\n").append(node.getName());
                     }
                     Window.alert(s.toString());
                 }
                 if (!actualSelection.isEmpty()) {
-                    linker.loading("removing...");
+                    linker.loading(Messages.getResource("fm_removing"));
                     List<String> selectedPaths = new ArrayList<String>(actualSelection.size());
                     for (GWTJahiaNode node : actualSelection) {
                         selectedPaths.add(node.getPath());
                     }
                     service.deletePaths(selectedPaths, new AsyncCallback() {
                         public void onFailure(Throwable throwable) {
-                            Window.alert("Deletion failed\n\n" + throwable.getLocalizedMessage());
+                            Window.alert(Messages.getResource("fm_failDelete") + "\n" + throwable.getLocalizedMessage());
                             linker.loaded();
                         }
 
@@ -470,13 +440,13 @@ public class FileActions {
                     Window.alert(selection.getName() + " is locked");
                     return;
                 }
-                linker.loading("renaming...");
-                String newName = Window.prompt("Enter the new name for " + (selection.isFile().booleanValue() ? "file " : "folder ") + selection.getName(), selection.getName());
+                linker.loading(Messages.getResource("fm_renaming"));
+                String newName = Window.prompt(Messages.getResource("fm_confNewName") + " " + selection.getName(), selection.getName());
                 if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
                     final boolean folder = !selection.isFile();
                     service.rename(selection.getPath(), newName, new AsyncCallback() {
                         public void onFailure(Throwable throwable) {
-                            Window.alert("Rename failed\n\n" + throwable.getLocalizedMessage());
+                            Window.alert(Messages.getResource("fm_failRename") + "\n" + throwable.getLocalizedMessage());
                             linker.loaded();
                         }
 
@@ -498,31 +468,32 @@ public class FileActions {
 
     public static void zip(final BrowserLinker linker) {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
-        if (selectedItems != null && selectedItems.size() > 0) {
+        final GWTJahiaNode parentItem = (GWTJahiaNode) linker.getTreeSelection();
+        if (parentItem != null && selectedItems != null && selectedItems.size() > 0) {
             final GWTJahiaNode selection = selectedItems.get(0);
             if (selection != null) {
-                linker.loading("zipping...");
+                linker.loading(Messages.getResource("fm_zipping"));
                 String defaultArchName;
                 if (selectedItems.size() == 1) {
                     defaultArchName = selection.getName() + ".zip";
                 } else {
                     defaultArchName = "archive.zip";
                 }
-                String archName = Window.prompt("Enter an archive name...", defaultArchName);
+                final String archName = Window.prompt(Messages.getResource("fm_confArchiveName"), defaultArchName);
                 if (archName != null && archName.length() > 0) {
-                    List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
-                    for (GWTJahiaNode node : selectedItems) {
-                        selectedPaths.add(node.getPath());
-                    }
-                    service.zip(selectedPaths, archName, new AsyncCallback() {
+                    service.checkExistence(parentItem.getPath() + "/" + archName, new AsyncCallback<Boolean>() {
                         public void onFailure(Throwable throwable) {
-                            Window.alert("Zip failed\n\n" + throwable.getLocalizedMessage());
-                            linker.loaded();
+                            if (throwable instanceof ExistingFileException) {
+                                if (com.google.gwt.user.client.Window.confirm(Messages.getResource("fm_alreadyExists") + "\n" + Messages.getResource("fm_confOverwrite"))) {
+                                     forceZip(selectedItems, archName, linker);
+                                 }
+                            } else {
+                                Window.alert(Messages.getResource("fm_failZip") + "\n" + throwable.getLocalizedMessage());
+                                linker.loaded();
+                            }
                         }
-
-                        public void onSuccess(Object o) {
-                            linker.loaded();
-                            linker.refreshAll();
+                        public void onSuccess(Boolean aBoolean) {
+                            forceZip(selectedItems, archName, linker);
                         }
                     });
                 }
@@ -530,10 +501,28 @@ public class FileActions {
         }
     }
 
+    private static void forceZip(final List<GWTJahiaNode> selectedItems, final String archName, final BrowserLinker linker) {
+        List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
+        for (GWTJahiaNode node : selectedItems) {
+            selectedPaths.add(node.getPath());
+        }
+        service.zip(selectedPaths, archName, new AsyncCallback() {
+            public void onFailure(Throwable throwable) {
+                Window.alert(Messages.getResource("fm_failZip") + "\n" + throwable.getLocalizedMessage());
+                linker.loaded();
+            }
+
+            public void onSuccess(Object o) {
+                linker.loaded();
+                linker.refreshTable();
+            }
+        });
+    }
+
     public static void unzip(final BrowserLinker linker) {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
-            linker.loading("unzipping...");
+            linker.loading(Messages.getResource("fm_unzipping"));
             List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
             for (GWTJahiaNode node : selectedItems) {
                 if (node.getName().endsWith(".zip") || node.getName().endsWith(".ZIP")) {
@@ -542,7 +531,7 @@ public class FileActions {
             }
             service.unzip(selectedPaths, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
-                    Window.alert("Unzip failed\n\n" + throwable.getLocalizedMessage());
+                    Window.alert(Messages.getResource("fm_failUnzip") + "\n" + throwable.getLocalizedMessage());
                     linker.loaded();
                 }
 
@@ -584,17 +573,15 @@ public class FileActions {
                 }
                 if (userAllowedToUnlockFiles) {
                     continueOperation = Window
-                            .confirm("Following files are locked by the system (used in published content):\n"
+                            .confirm(Messages.getResource("fm_warningSystemLock") + "\n"
                                     + lockedFiles.toString()
-                                    + "\n\nDo you want to proceed with unlock operaion anyway?");
+                                    + "\n\n" + Messages.getResource("fm_confUnlock"));
                 } else {
-                    MessageBox.alert("Warning",
-                            "Following files are locked by the system (used in published content)"
-                                    + " and cannot be unlocked:\n" + lockedFiles.toString(), null);
+                    MessageBox.alert("Warning", Messages.getResource("fm_failLock") + "\n" + lockedFiles.toString(), null);
                 }
             }
             if (continueOperation && !selectedPaths.isEmpty()) {
-                linker.loading((lock ? "" : "un") + "locking...");
+                linker.loading(lock ? Messages.getResource("fm_locking") : Messages.getResource("fm_unlocking"));
                 service.setLock(selectedPaths, lock, new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
                         MessageBox.alert("Error", throwable.getLocalizedMessage(), null);

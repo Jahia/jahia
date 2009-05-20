@@ -1,4 +1,22 @@
 <%@ include file="../../common/declarations.jspf" %>
+<%--
+
+    Jahia Enterprise Edition v6
+
+    Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+
+    Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+    with Document Management and Portal features.
+
+    The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+    IMPLIED.
+
+    Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+    you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+
+    If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
+
+--%>
 
 
 <c:set var="loop" value="0"/>
@@ -12,12 +30,12 @@
 	<template:field name='date' var="date" display="false"/>
 
 	<div class="publicationListItem"><!--start publicationListItem -->
-	<ui:actionMenu contentObjectName="publicationContainer" namePostFix="publication" labelKey="publication.update">
+	<ui:actionMenu contentObjectName="publicationContainer" namePostFix="publication" labelKey="publication.update"  iconStyle="editContainer">
 		<div class="publicationListSpace"><!--start publicationListSpace -->
 			<div class="publicationPhoto">
                 <a href="${file.file.downloadUrl}" >
                     <c:if test="${!empty preview}"><template:image file="preview"/></c:if>
-                    <c:if test="${!preview.file.image}"><img src="<utility:resolvePath value='theme/${requestScope.currentTheme}/img/film.png'/>" alt=""/></c:if>
+                    <c:if test="${!preview.file.image}"><img src="<utility:resolvePath value='theme/${requestScope.currentTheme}/img/no_preview.png'/>" alt="no preview"/></c:if>
                 </a>
             </div>
 
@@ -30,7 +48,7 @@
 					    <div class="publicationAction">
 					        <c:if test="${file.file.size > 0}">
                                 <fmt:formatNumber var="num" pattern="### ### ###.##" type="number" value="${(file.file.size/1024)}"/>
-                                <a class="publicationDownload" href="${file.file.downloadUrl}" ><fmt:message key="web_templates_publicationContainer.download"/></a><span class="publicationDocSize">(${num} Ko)</c:if>
+                                <a class="publicationDownload" href="${file.file.downloadUrl}" ><fmt:message key="web_templates_publicationContainer.download"/></a><span class="publicationDocSize">(${num} KB)</c:if>
                         </span>
 					</div>
 					<div class="clear"> </div>

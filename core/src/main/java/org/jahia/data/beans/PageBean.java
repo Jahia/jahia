@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
  package org.jahia.data.beans;
 
 import org.jahia.content.ContentObject;
@@ -83,8 +66,8 @@ public class PageBean extends ContentBean {
     public static final String TYPE = "ContentPage";
 
     private PageBean parent;
-    private Map containerLists;
-    private Map actionURIs;
+    private Map<String, ContainerListBean> containerLists;
+    private Map<String, ActionURIBean> actionURIs;
     private boolean completelyLocked = false;
     private boolean independantWorkflowInitialized = false;
     private boolean independantWorkflow = false;
@@ -177,7 +160,7 @@ public class PageBean extends ContentBean {
         return jahiaPage.getPageTemplateID();
     }
 
-    public Map getContainerLists() {
+    public Map<String, ContainerListBean> getContainerLists() {
         /** todo FIXME how to integrate filters and searching with this ?? */
         if (getPageType() != JahiaPage.TYPE_DIRECT) {
             return null;
@@ -186,11 +169,11 @@ public class PageBean extends ContentBean {
             return containerLists;
         }
         try {
-            containerLists = new HashMap();
-            final Set containerListIDs = jahiaContainersService.
+            containerLists = new HashMap<String, ContainerListBean>();
+            final Set<Integer> containerListIDs = jahiaContainersService.
                     getAllPageTopLevelContainerListIDs(
                             getID(), processingContext.getEntryLoadRequest());
-            final Iterator containerListIDIter = containerListIDs.iterator();
+            final Iterator<Integer> containerListIDIter = containerListIDs.iterator();
             while (containerListIDIter.hasNext()) {
                 final Integer curContainerListID = (Integer) containerListIDIter.next();
                 final JahiaContainerList curContainerList = jahiaContainersService.
@@ -272,19 +255,19 @@ public class PageBean extends ContentBean {
         }
     }
 
-    public Map getLanguageStates() {
+    public Map<String, Integer> getLanguageStates() {
         return jahiaPage.getLanguagesStates(false);
     }
 
-    public Map getLanguageStatesWithContent() {
+    public Map<String, Integer> getLanguageStatesWithContent() {
         return jahiaPage.getLanguagesStates(true);
     }
 
-    public List getPath() {
+    public List<PageBean> getPath() {
         try {
-            final Iterator pathEnum = jahiaPage.getContentPagePath(processingContext.
+            final Iterator<ContentPage> pathEnum = jahiaPage.getContentPagePath(processingContext.
                     getOperationMode(), processingContext.getUser());
-            final List pathList = new ArrayList();
+            final List<PageBean> pathList = new ArrayList<PageBean>();
             while (pathEnum.hasNext()) {
                 final ContentPage curJahiaPage = (ContentPage) pathEnum.next();
                 final PageBean curPageBean = new PageBean(curJahiaPage.getPage(processingContext), processingContext);
@@ -298,14 +281,14 @@ public class PageBean extends ContentBean {
         }
     }
 
-    public List getPathWithLevels(final int levels) {
+    public List<PageBean> getPathWithLevels(final int levels) {
         try {
-            final Iterator pathEnum = jahiaPage.getContentPagePath(levels, processingContext.
+            final Iterator<ContentPage> pathEnum = jahiaPage.getContentPagePath(levels, processingContext.
                     getOperationMode(), processingContext.getUser());
-            final List pathList = new ArrayList();
+            final List<PageBean> pathList = new ArrayList<PageBean>();
             while (pathEnum.hasNext()) {
-                final JahiaPage curJahiaPage = (JahiaPage) pathEnum.next();
-                final PageBean curPageBean = new PageBean(curJahiaPage, processingContext);
+                final ContentPage curJahiaPage = (ContentPage) pathEnum.next();
+                final PageBean curPageBean = new PageBean(curJahiaPage.getPage(processingContext), processingContext);
                 pathList.add(curPageBean);
             }
             return pathList;
@@ -344,7 +327,7 @@ public class PageBean extends ContentBean {
 
     public boolean isInCurrentPagePath() {
         try {
-            final Iterator thePath = processingContext.getPage().getContentPagePath(processingContext.
+            final Iterator<ContentPage> thePath = processingContext.getPage().getContentPagePath(processingContext.
                     getOperationMode(), processingContext.getUser());
             while (thePath.hasNext()) {
                 final ContentPage curContentPage = (ContentPage) thePath.next();
@@ -375,7 +358,7 @@ public class PageBean extends ContentBean {
         return getPath().size();
     }
 
-    public Map getActionURIBeans() {
+    public Map<String, ActionURIBean> getActionURIBeans() {
         if (actionURIs == null) {
             buildActionURIs();
         }
@@ -394,11 +377,9 @@ public class PageBean extends ContentBean {
             buildActionURIs();
         }
         if (!completelyLocked) {
-            final Iterator actionURIIter = actionURIs.entrySet().iterator();
             boolean partiallyLocked = false;
-            while (actionURIIter.hasNext()) {
-                final Map.Entry curActionURIEntry = (Map.Entry) actionURIIter.next();
-                final ActionURIBean curActionURIBean = (ActionURIBean) curActionURIEntry.getValue();
+            for (final Map.Entry<String, ActionURIBean> curActionURIEntry : actionURIs.entrySet()) {
+                final ActionURIBean curActionURIBean = curActionURIEntry.getValue();
                 if (curActionURIBean.isLocked()) {
                     partiallyLocked = true;
                 }
@@ -428,9 +409,9 @@ public class PageBean extends ContentBean {
             try {
                 final ContentPage thePage = jahiaPage.getContentPage();
                 final Map<String, Integer> languagesStates = workflowService.getLanguagesStates(thePage);
-                Integer languageState = (Integer) languagesStates.get(
+                Integer languageState = languagesStates.get(
                         processingContext.getLocale().toString());
-                final Integer sharedLanguageState = (Integer) languagesStates.
+                final Integer sharedLanguageState = languagesStates.
                         get(ContentObject.SHARED_LANGUAGE);
                 if (languageState != null && languageState.intValue() != -1) {
                     if (sharedLanguageState != null &&
@@ -485,7 +466,7 @@ public class PageBean extends ContentBean {
     }
 
     private void buildActionURIs() {
-        actionURIs = new InsertionSortedMap();
+        actionURIs = new InsertionSortedMap<String, ActionURIBean>();
         final GuiBean guiBean = new GuiBean(processingContext);
         final HTMLToolBox htmlToolBox = new HTMLToolBox(guiBean, processingContext);
         completelyLocked = true;
@@ -533,6 +514,6 @@ public class PageBean extends ContentBean {
     }
 
     public String getUrlKey() throws JahiaException {
-        return jahiaPage.getProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
+        return jahiaPage.getURLKey();
     }
 }

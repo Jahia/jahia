@@ -1,39 +1,22 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
  package org.jahia.operations.valves;
 
-import java.util.Iterator;
+import java.util.Enumeration;
 
 import javax.portlet.MimeResponse;
 import javax.portlet.PortletException;
@@ -41,7 +24,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.pluto.PortletContainer;
 import org.apache.pluto.PortletContainerException;
 import org.apache.pluto.PortletWindow;
@@ -129,7 +111,6 @@ public class PlutoProcessActionValve implements Valve {
                     } else {
                         logger.warn("Couldn't find related entryPointInstance, roles might not work properly !");
                     }
-
                     copyAttribute("org.jahia.data.JahiaData", jParams, request, portletWindow);
                     copyAttribute("currentRequest", jParams, request, portletWindow);
                     copyAttribute("currentSite", jParams, request, portletWindow);
@@ -137,7 +118,7 @@ public class PlutoProcessActionValve implements Valve {
                     copyAttribute("currentUser", jParams, request, portletWindow);
                     copyAttribute("currentJahia", jParams, request, portletWindow);
                     try {
-                        container.doAction(portletWindow, request, response);
+                        container.doAction(portletWindow, request, jParams.getResponse());
                     } catch (PortletContainerException ex) {
                         throw new ServletException(ex);
                     } catch (PortletException ex) {
@@ -163,7 +144,7 @@ public class PlutoProcessActionValve implements Valve {
                                        + portletWindow.getId().getStringId());
                     }
                     try {
-                        container.doServeResource(portletWindow, request, response);
+                        container.doServeResource(portletWindow, request, jParams.getRealResponse());
                     } catch (PortletContainerException ex) {
                         throw new ServletException(ex);
                     } catch (PortletException ex) {
@@ -212,10 +193,10 @@ public class PlutoProcessActionValve implements Valve {
 		String portletName = PortletWindowConfig.parsePortletName(portletID);
 		PortletDD portletDD = container.getOptionalContainerServices().getPortletRegistryService()
 								.getPortletDescriptor(applicationId, portletName);
-		Iterator<String> parameterNames = new EnumerationIterator(request.getParameterNames());
+		Enumeration<?> parameterNames = request.getParameterNames();
 		if (parameterNames != null){
-			while(parameterNames.hasNext()){
-				String parameterName = parameterNames.next();
+			while(parameterNames.hasMoreElements()){
+				String parameterName = (String)parameterNames.nextElement();
 				if (portletDD.getPublicRenderParameter() != null){
 					if (portletDD.getPublicRenderParameter().contains(parameterName)){
 						String value = request.getParameter(parameterName);

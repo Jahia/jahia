@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>6.1-SNAPSHOT</version>
+        <version>6.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-test</artifactId>
@@ -17,6 +17,197 @@
             <artifactId>jahia-impl</artifactId>
             <version>${jahia.package.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-war</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+        </dependency>
+        <!--<dependency>
+            <groupId>jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>3.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.6.0</version>
+        </dependency>-->
     </dependencies>
+    <profiles>
+        <profile>
+            <id>testJahia</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                    </resource>
+                    <resource>
+                        <directory>target/jasper</directory>
+                    </resource>
+                </resources>
+
+                <plugins>
+                    <plugin>
+                        <groupId>org.jahia.server</groupId>
+                        <artifactId>maven-jahia-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>run-test</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>configure</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>configure</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.3</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.ant</groupId>
+                                <artifactId>ant-jsch</artifactId>
+                                <version>1.7.1</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.jcraft</groupId>
+                                <artifactId>jsch</artifactId>
+                                <version>0.1.38</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <id>start-tomcat</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <tasks>
+                                        <echo message="Starting tomcat"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/lib"/>
+                                        <delete>
+                                            <fileset dir="${jahia.deploy.targetServerDirectory}/logs" includes="**/*"/>
+                                        </delete>
+                                        <exec executable="${jahia.deploy.targetServerDirectory}/bin/catalina.sh"
+                                              dir="${jahia.deploy.targetServerDirectory}/bin">
+                                            <arg value="start"/>
+                                        </exec>
+                                        <echo message="Sleeping while tomcat is starting..."/>
+                                        <sleep seconds="45"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop-tomcat</id>
+                                <phase>post-integration-test</phase>
+                                <configuration>
+                                    <tasks>
+                                        <echo message="Stopping tomcat"/>
+                                        <exec executable="${jahia.deploy.targetServerDirectory}/bin/catalina.sh"
+                                              dir="${jahia.deploy.targetServerDirectory}/bin">
+                                            <arg value="stop"/>
+                                            <arg value="-force"/>
+                                        </exec>
+                                        <echo message="Undeploying jahia"/>
+                                        <delete dir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}"/>
+                                        <mkdir dir="${project.build.directory}/tomcatLogs"/>
+                                        <copy file="${jahia.deploy.targetServerDirectory}/logs/catalina.out" toDir="${project.build.directory}/tomcatLogs"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <!--execution>
+                                <id>start-jmeter-test</id>
+                                <phase>integration-test</phase>
+                                <configuration>
+                                    <tasks>
+                                        <echo message="Starting jmeter"/>
+                                        <exec executable="${jahia.test.jmeter.path}/bin/runTestPlan.sh"
+                                              dir="${jahia.test.jmeter.path}/bin"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution-->
+                        </executions>
+                    </plugin>
+                    <!--<plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>jasperreports-maven-plugin</artifactId>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/jasper</outputDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>compile-reports</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>jasperreports</groupId>
+                                <artifactId>jasperreports</artifactId>
+                                <version>3.1.2</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.groovy.maven</groupId>
+                        <artifactId>gmaven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>mysql</groupId>
+                                <artifactId>mysql-connector-java</artifactId>
+                                <version>5.1.6</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>jasperreports</groupId>
+                                <artifactId>jasperreports</artifactId>
+                                <version>3.1.2</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <source>${pom.basedir}/src/main/scripts/generateJasperReports.groovy</source>
+                                </configuration>
+                            </execution>
+                        </executions>
+
+                    </plugin>-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-report-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>report-only</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //
 //  EV      25.11.2000
 //
@@ -45,7 +28,6 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.fields.JahiaFieldService;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class JahiaFieldDefinitionsRegistry implements CacheListener {
@@ -60,8 +42,8 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
     public static final String FIELD_DEFINITION_BY_ID_CACHE = "FieldDefinitionsByID";
     public static final String FIELD_DEFINITION_BY_SITE_AND_NAME_CACHE =
             "FieldDefinitionsBySiteAndName";
-    private Cache fieldDefTable;
-    private Cache fieldDefSiteAndNameTable;
+    private Cache<Integer, JahiaFieldDefinition> fieldDefTable;
+    private Cache<String, JahiaFieldDefinition> fieldDefSiteAndNameTable;
     private CacheService cacheService;
     private JahiaFieldService fieldService;
 
@@ -107,10 +89,8 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
 
     private void loadAllDefinitions ()
         throws JahiaException {
-        List ids = fieldService.getAllFieldDefinitionIDs();
-        Iterator fieldDefIDEnum = ids.iterator();
-        while (fieldDefIDEnum.hasNext()) {
-            Integer currentID = ( (Integer) fieldDefIDEnum.next());
+        List<Integer> ids = fieldService.getAllFieldDefinitionIDs();
+        for (Integer currentID : ids) {
             JahiaFieldDefinition curDefinition = fieldService.loadFieldDefinition(currentID.
                 intValue());
             if (curDefinition != null) {            
@@ -145,7 +125,7 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
     
     public JahiaFieldDefinition getDefinition (int defID)
         throws JahiaException {
-        JahiaFieldDefinition result = (JahiaFieldDefinition) fieldDefTable.get(new
+        JahiaFieldDefinition result = fieldDefTable.get(new
             Integer(defID));
         if (result == null) {
             result = loadDefinitionByID(defID);
@@ -161,13 +141,13 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
                                  JahiaException.CRITICAL_SEVERITY);
     } // end getDefinition
 
-    public List getAllDefinitions () throws JahiaException {
+    public List<JahiaFieldDefinition> getAllDefinitions () throws JahiaException {
         /** @todo FIXME this will not work if the cache is limited */
-        List ids = fieldService.getAllFieldDefinitionIDs();
-        List definitions = new ArrayList();
+        List<Integer> ids = fieldService.getAllFieldDefinitionIDs();
+        List<JahiaFieldDefinition> definitions = new ArrayList<JahiaFieldDefinition>();
         JahiaFieldDefinition fieldDef = null;
         for ( int i=0 ; i<ids.size() ; i++ ){
-            fieldDef = (JahiaFieldDefinition)this.fieldDefTable.get(ids.get(i));
+            fieldDef = this.fieldDefTable.get(ids.get(i));
             definitions.add(fieldDef);
         }
         return definitions;
@@ -187,9 +167,8 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
             siteID = 0;
         }
 
-        JahiaFieldDefinition result = (JahiaFieldDefinition)
-                                      fieldDefSiteAndNameTable.get(
-            buildCacheKey(fieldName, siteID));
+        JahiaFieldDefinition result = fieldDefSiteAndNameTable.get(
+         buildCacheKey(fieldName, siteID));
         if (result == null) {
             result = loadDefinitionBySiteIDAndName(siteID, fieldName);
         }

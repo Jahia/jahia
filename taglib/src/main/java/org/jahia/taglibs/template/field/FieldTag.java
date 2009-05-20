@@ -1,42 +1,28 @@
 /**
+ * Jahia Enterprise Edition v6
  *
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.taglibs.template.field;
 
 import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.TextExtractor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.util.EngineOpener;
+import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuLabelProvider;
+import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuURIFormatter;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.data.beans.FieldBean;
@@ -49,14 +35,16 @@ import org.jahia.data.files.JahiaFileField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.taglibs.template.container.ContainerCache;
+import org.jahia.taglibs.template.container.ContainerTag;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.categories.Category;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageInfoInterface;
-import org.jahia.taglibs.template.container.ContainerCache;
-import org.jahia.taglibs.template.container.ContainerTag;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.JahiaTools;
+import org.jahia.content.ContentObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -98,6 +86,7 @@ public class FieldTag extends AbstractFieldTag {
     private int maxWord = -1;
     private String continueString = "...";
     private String namePostFix;
+    private boolean displayUpdateFieldUrl = false;
     private boolean removeHtmlTags = false;
     private String var;
 
@@ -129,28 +118,37 @@ public class FieldTag extends AbstractFieldTag {
         this.name = name;
     }
 
+    /**
+     * @deprecated use {@link #setVar(String)} instead
+     */
     public void setValueBeanID(String valueBeanID) {
         if (logger.isDebugEnabled()) {
-            logger
-                    .warn(
-                            "The valueBeanID attribute is deprecated. Please, use var attribute instead.",
-                            new JspException());
+            logger.debug("The valueBeanID attribute is deprecated for tag "
+                    + StringUtils.substringAfterLast(this.getClass().getName(),
+                            ".") + ". Please, use var attribute instead.",
+                    new JspException());
         } else {
-            logger
-                    .warn("The valueBeanID attribute is deprecated. Please, use var attribute instead.");
+            logger.info("The valueBeanID attribute is deprecated for tag "
+                    + StringUtils.substringAfterLast(this.getClass().getName(),
+                            ".") + ". Please, use var attribute instead.");
         }
-        this.valueBeanID = valueBeanID == null || valueBeanID.length() == 0 ? null : valueBeanID;
+        this.valueBeanID = valueBeanID == null || valueBeanID.length() == 0 ? null
+                : valueBeanID;
     }
 
+    /**
+     * @deprecated use {@link #setVar(String)} instead
+     */
     public void setBeanID(String beanID) {
         if (logger.isDebugEnabled()) {
-            logger
-                    .warn(
-                            "The beanID attribute is deprecated. Please, use var attribute instead.",
-                            new JspException());
+            logger.debug("The beanID attribute is deprecated for tag "
+                    + StringUtils.substringAfterLast(this.getClass().getName(),
+                            ".") + ". Please, use var attribute instead.",
+                    new JspException());
         } else {
-            logger
-                    .warn("The beanID attribute is deprecated. Please, use var attribute instead.");
+            logger.info("The beanID attribute is deprecated for tag "
+                    + StringUtils.substringAfterLast(this.getClass().getName(),
+                            ".") + ". Please, use var attribute instead.");
         }
         this.beanID = beanID == null || beanID.length() == 0 ? null : beanID;
     }
@@ -194,6 +192,16 @@ public class FieldTag extends AbstractFieldTag {
             if (display) {
                 final JspWriter out = pageContext.getOut();
                 out.print(readValue(jData, theField));
+                if (displayUpdateFieldUrl) {
+                    final String updateFieldUrl = ActionMenuURIFormatter.drawFieldUpdateUrl(theField.getContentField(),
+                            jData.getProcessingContext());
+                    final StringBuilder updateFieldLink = new StringBuilder("<div class=\"directAction\"><a onClick=\"window.open('").
+                            append(updateFieldUrl).append("', '").append(EngineOpener.ENGINE_FRAME_NAME).append("', '").
+                            append(EngineOpener.ENGINE_WINDOW_PARAMS).append("');\"><span class=\"updateField\">").
+                            append(ActionMenuLabelProvider.getLocalizedActionLabel(
+                                    getResourceBundle(), jData.getProcessingContext(), "update", namePostFix, ActionMenuLabelProvider.FIELD)).append("</span></a></div>");
+                    out.print(updateFieldLink);
+                }
             }
 
             // in the case of the application field, we must expire the container cache entry immediately, even if this
@@ -254,6 +262,7 @@ public class FieldTag extends AbstractFieldTag {
         defaultValue = null;
         name = null;
         namePostFix = null;
+        displayUpdateFieldUrl = false;
         removeHtmlTags = false;
         var = null;
         super.resetState();
@@ -416,7 +425,7 @@ public class FieldTag extends AbstractFieldTag {
                     break;
             }
 
-            FieldValueBean valueBean = new FieldValueBean(fieldBean, fieldValue, rawValue);
+            FieldValueBean<?> valueBean = new FieldValueBean(fieldBean, fieldValue, rawValue);
             if (valueBeanID != null) {
                 pageContext.setAttribute(valueBeanID, valueBean);
             }
@@ -668,14 +677,20 @@ public class FieldTag extends AbstractFieldTag {
             logger.warn("ProcessingContext is null, ignoring contentEditable feature. ");
             return resultingValue;
         }
-        if (!resultingValue.startsWith("<jahia-")) {
-            if (theField.getType() == FieldTypes.BIGTEXT ||
-                    theField.getType() == FieldTypes.SMALLTEXT ||
-                    theField.getType() == FieldTypes.SMALLTEXT_SHARED_LANG) {
-                if (processingContext.settings().isInlineEditingActivated() &&
-                        ParamBean.EDIT.equals(processingContext.getOperationMode()) &&
-                        inlineEditingActivated &&
-                        theField.checkWriteAccess(processingContext.getUser())) {
+        try {
+            ContentObject picked = theField.getContentField().getPickedObject() ;
+            if (picked != null) {
+                return resultingValue;
+            }
+        } catch (JahiaException e) {
+            logger.error(e.toString(), e);
+        }
+        if (inlineEditingActivated && (theField.getType() == FieldTypes.BIGTEXT ||
+                theField.getType() == FieldTypes.SMALLTEXT ||
+                theField.getType() == FieldTypes.SMALLTEXT_SHARED_LANG) && !resultingValue.startsWith("<jahia-")) {
+                if (ParamBean.EDIT.equals(processingContext.getOperationMode()) &&
+                        UserPreferencesHelper.isEnableInlineEditing(processingContext.getUser())
+                        && theField.checkWriteAccess(processingContext.getUser())) {
                     resultingValue = "<div class=\"editableContent\" onclick=\"onClickEditableContent(this, '" +
                             theField.getctnid() + "', '" + theField.getID() +
                             "')\" onblur=\"onBlurEditableContent(this, '" + theField.getctnid() + "', '" + theField.getID() + "')\">" +
@@ -686,7 +701,6 @@ public class FieldTag extends AbstractFieldTag {
                             JahiaType.JAHIA_TYPE + "=\"" + JahiaType.INLINE_EDITING + "\">" + resultingValue + "</div>";
                     */
                 }
-            }
         }
         return resultingValue;
     }

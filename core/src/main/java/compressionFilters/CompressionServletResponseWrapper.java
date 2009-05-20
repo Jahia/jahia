@@ -1,4 +1,3 @@
-
 /*
  * CompressionServletResponseWrapper.java
  * $Header$

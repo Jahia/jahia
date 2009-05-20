@@ -1,36 +1,19 @@
 /**
- * 
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
- * 
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
+ * Jahia Enterprise Edition v6
+ *
+ * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
+ *
+ * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+ * with Document Management and Portal features.
+ *
+ * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED.
+ *
+ * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+ * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+ *
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 //  JahiaBigTextField
 //  YG      17.07.2001
 
@@ -43,6 +26,7 @@ import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.SourceFormatter;
 import au.id.jericho.lib.html.StartTag;
 import au.id.jericho.lib.html.Tag;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.extractor.HTMLTextExtractor;
 import org.apache.log4j.Logger;
@@ -50,7 +34,6 @@ import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 import org.jahia.bin.Jahia;
 import org.jahia.data.FormDataManager;
-import org.jahia.data.constants.JahiaConstants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.hibernate.manager.JahiaFieldXRefManager;
@@ -168,7 +151,7 @@ public class JahiaBigTextField extends JahiaField implements
         }
 
         // populate variables internalLinks and wrongURLKeys
-        cleanUpHardCodedLinks(getRawValue(), jParams, LanguageCodeConverters
+        cleanUpHardCodedLinks(getValue(), jParams, LanguageCodeConverters
                 .languageCodeToLocale(getLanguageCode()), null);
         
         if (logger.isDebugEnabled()) {
@@ -207,7 +190,7 @@ public class JahiaBigTextField extends JahiaField implements
             logger.debug("InvalidateEsiInvalidateEsiInvalidateEsiInvalidateEsiInvalidateEsiInvalidateEsi");
 
         String value = getValue();
-        if (value != null && !value.equals(JahiaConstants.NULL_STRING_MARKER)) {
+        if (value != null && !value.equals(JahiaField.NULL_STRING_MARKER)) {
             value = cleanUpHardCodedLinks(value, jParams, jParams.getLocale(), sessionAttribute);
         }
         setRawValue(value);
@@ -375,7 +358,7 @@ public class JahiaBigTextField extends JahiaField implements
      * @return an Array of String. Position[0] contains the RawValue and position[1] the
      *         value that should be used when displaying the data
      */
-    public String cleanUpHardCodedLinks(
+    private String cleanUpHardCodedLinks(
             final String content,
             final ProcessingContext processingContext,
             final Locale code,
@@ -565,7 +548,7 @@ public class JahiaBigTextField extends JahiaField implements
                 append(getRawValue()).toString();
     }
 
-    private String cleanHtml (String bodyContent) {
+    private static String cleanHtml (String bodyContent) {
         // Try to remove all cache/(o|b).*/ and also jessionid
         String cleanBodyContent = bodyContent.replaceAll("cache/(o|b)[a-z]*/", "");
         cleanBodyContent = cleanBodyContent.replaceAll(SkeletonParseAndStoreValve.SESSION_ID_REGEXP, "$1");
@@ -573,7 +556,8 @@ public class JahiaBigTextField extends JahiaField implements
     }
 
     private void cleanURL (ProcessingContext processingContext, Locale code, OutputDocument document, Attribute href) {
-        String hrefValue = href.getValue();
+        String originalHrefValue = href.getValue();
+        String hrefValue = originalHrefValue;
         final String hrefValueLowerCase = hrefValue.toLowerCase();
         if (!hrefValueLowerCase.startsWith("http") && !hrefValueLowerCase.startsWith("javascript")
             && !hrefValueLowerCase.startsWith("mailto") && !hrefValueLowerCase.startsWith("ftp")
@@ -605,7 +589,9 @@ public class JahiaBigTextField extends JahiaField implements
                 logger.warn(e.getMessage(), e);
             }
         }
-        document.replace(href.getValueSegment(), hrefValue);
+        if (hrefValue != null && !originalHrefValue.equals(hrefValue)) {
+            document.replace(href.getValueSegment(), hrefValue);
+        }
     }
 
     private String handleCurrentServerPath (ProcessingContext processingContext, Locale code, String hrefValue, String siteKey) {
@@ -671,7 +657,11 @@ public class JahiaBigTextField extends JahiaField implements
     }
 
     private static void restoreURL (ProcessingContext processingContext, OutputDocument document, Attribute href) throws JahiaException {
-        String hrefValue = href.getValue();
+        if (href == null) {
+            return;
+        }
+        String originalHrefValue = href.getValue();
+        String hrefValue = originalHrefValue;
         if (hrefValue.contains(URL_MARKER)) {
             if (hrefValue.startsWith(URL_MARKER + JahiaFieldXRefManager.PAGE)) {
                 String[] values = hrefValue.split("/");
@@ -724,10 +714,20 @@ public class JahiaBigTextField extends JahiaField implements
                 }
             } else if (hrefValue.startsWith(URL_MARKER + JahiaFieldXRefManager.FILE)) {
                 // This is a file
-                final JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(hrefValue.substring((URL_MARKER + JahiaFieldXRefManager.FILE).length()), processingContext.getUser());
-                hrefValue = node.getUrl();
+                try {
+                    String path = URLDecoder.decode(hrefValue.substring((URL_MARKER + JahiaFieldXRefManager.FILE).length()), "UTF-8");
+                    final JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(path, processingContext.getUser());
+                    if (!node.isValid()) {
+                        logger.warn("Unable to retrieve a node for the path: " + path);
+                    }
+                    hrefValue = node.getUrl();
+                } catch (UnsupportedEncodingException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
-            document.replace(href.getValueSegment(), hrefValue);
+            if (hrefValue != null && !originalHrefValue.equals(hrefValue)) {
+                document.replace(href.getValueSegment(), hrefValue);
+            }
         }
     }
 

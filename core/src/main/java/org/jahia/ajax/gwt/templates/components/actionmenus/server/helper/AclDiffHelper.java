@@ -17,29 +17,28 @@
 package org.jahia.ajax.gwt.templates.components.actionmenus.server.helper;
 
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffDetails;
+import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffState;
+import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
+import org.jahia.content.ContentObject;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
+import org.jahia.services.lock.LockPrerequisites;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
-import org.jahia.services.fields.ContentField;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.lock.LockPrerequisites;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffState;
-import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffDetails;
-import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
-import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
-import org.jahia.params.ProcessingContext;
-import org.jahia.content.ContentObject;
-import org.jahia.registries.ServicesRegistry;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Helper class for rendering ACL difference information.
@@ -182,8 +181,6 @@ public class AclDiffHelper {
                         url = ActionMenuServiceHelper.drawUpdateContainerLauncher(jParams, (ContentContainer) obj, false, 0, "rightsMgmt");
                     } else if (obj instanceof ContentPage) {
                         url = ActionMenuServiceHelper.drawPagePropertiesLauncher(jParams, false, obj.getID(), "rightsMgmt");
-                    } else if (obj instanceof ContentField) {
-                        url = ActionMenuServiceHelper.drawUpdateFieldLauncher(jParams, (ContentField) obj, "rightsMgmt");
                     }
                 }
                 return new GWTJahiaAclDiffDetails(url, rights, inheritedRights) ;

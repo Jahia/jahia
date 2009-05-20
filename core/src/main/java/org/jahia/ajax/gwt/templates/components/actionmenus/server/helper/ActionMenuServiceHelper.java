@@ -16,21 +16,19 @@
  */
 package org.jahia.ajax.gwt.templates.components.actionmenus.server.helper;
 
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.containers.ContentContainerList;
-import org.jahia.services.lock.LockService;
-import org.jahia.services.lock.LockKey;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.engines.containerlistproperties.ContainerListProperties_Engine;
+import org.jahia.engines.pages.PageProperties_Engine;
+import org.jahia.engines.updatecontainer.UpdateContainer_Engine;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.fields.ContentField;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.params.ProcessingContext;
-import org.jahia.engines.containerlistproperties.ContainerListProperties_Engine;
-import org.jahia.engines.updatecontainer.UpdateContainer_Engine;
-import org.jahia.engines.pages.PageProperties_Engine;
-import org.jahia.engines.updatefield.UpdateField_Engine;
+import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.containers.ContentContainerList;
+import org.jahia.services.lock.LockKey;
+import org.jahia.services.lock.LockService;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * Helper class for action menus.
@@ -226,47 +224,6 @@ public class ActionMenuServiceHelper {
         }
         if (oldPageID != pageID) jParams.changePage(oldPageID);
         return result;
-    }
-
-    /**
-     * Returns the URL of the field update window
-     *
-     * @param jParams the processing context
-     * @param contentField the field to update
-     * @param screen the screen to open (can be null)
-     * @return the engine url
-     * @throws JahiaException sthg bad happened
-     */
-    public static String drawUpdateFieldLauncher(final ProcessingContext jParams, final ContentField contentField, final String screen) throws JahiaException {
-        final StringBuffer buffer = new StringBuffer();
-        buffer.append(drawUpdateFieldUrl(jParams, contentField));
-        if (screen != null && screen.length() > 0) {
-            buffer.append("&gotoscreen=");
-            buffer.append(screen);
-        }
-        return buffer.toString() ;
-    }
-
-    /**
-     * @param jParams the processing context
-     * @param contentField the field to update
-     * @return the engine url
-     * @throws JahiaException sthg bad happened
-     */
-    public static String drawUpdateFieldUrl(ProcessingContext jParams, final ContentField contentField)
-            throws JahiaException {
-        final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        if (aclService.getSiteActionPermission("engines.actions.update",
-                jParams.getUser(), JahiaBaseACL.READ_RIGHTS,
-                jParams.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + jParams.getLocale().toString(),
-                        jParams.getUser(),
-                        JahiaBaseACL.READ_RIGHTS,
-                        jParams.getSiteID()) > 0) {
-            return ActionMenuURIFormatter.drawUrlCheckWriteAccess(jParams, UpdateField_Engine.ENGINE_NAME, contentField, false, false);
-        } else {
-            return "";
-        }
     }
 
     /**

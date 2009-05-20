@@ -16,45 +16,44 @@
  */
 package org.jahia.ajax.gwt.templates.components.actionmenus.server.helper;
 
-import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTimebasedPublishingState;
+import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTimebasedPublishingDetails;
+import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTimebasedPublishingState;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
-import org.jahia.params.ProcessingContext;
-import org.jahia.params.ParamBean;
-import org.jahia.data.beans.ContentBean;
-import org.jahia.data.beans.ContainerBean;
-import org.jahia.data.beans.PageBean;
-import org.jahia.data.fields.JahiaField;
-import org.jahia.data.fields.FieldTypes;
-import org.jahia.data.fields.JahiaPageField;
-import org.jahia.data.fields.JahiaDateFieldUtil;
 import org.jahia.content.*;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.containers.ContentContainerList;
-import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.services.preferences.user.UserPreferencesHelper;
-import org.jahia.services.timebasedpublishing.BaseRetentionRule;
-import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
-import org.jahia.services.timebasedpublishing.RetentionRule;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaAdminUser;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.fields.ContentField;
+import org.jahia.data.beans.ContainerBean;
+import org.jahia.data.beans.ContentBean;
+import org.jahia.data.beans.PageBean;
+import org.jahia.data.fields.FieldTypes;
+import org.jahia.data.fields.JahiaDateFieldUtil;
+import org.jahia.data.fields.JahiaField;
+import org.jahia.data.fields.JahiaPageField;
+import org.jahia.engines.calendar.CalendarHandler;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.manager.JahiaObjectDelegate;
 import org.jahia.hibernate.manager.JahiaObjectManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.hibernate.manager.JahiaObjectDelegate;
-import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.containers.ContentContainerList;
+import org.jahia.services.pages.ContentPage;
+import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.timebasedpublishing.BaseRetentionRule;
+import org.jahia.services.timebasedpublishing.RetentionRule;
+import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
+import org.jahia.services.usermanager.JahiaAdminUser;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.engines.calendar.CalendarHandler;
-import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.Format;
 import java.util.Iterator;
 import java.util.Locale;
-import java.text.Format;
 
 /**
  * Time-based publishing state service.
@@ -343,8 +342,6 @@ public class TimebasedPublishingHelper {
                     url = ActionMenuServiceHelper.drawUpdateContainerLauncher(jParams, (ContentContainer) obj, false, 0, "timeBasedPublishing") ;
                 } else if (objectKey.startsWith(ContentPageKey.PAGE_TYPE)) {
                     url = ActionMenuServiceHelper.drawPagePropertiesLauncher(jParams, false, key.getIdInType(), "timeBasedPublishing") ;
-                } else if (objectKey.startsWith((ContentFieldKey.FIELD_TYPE))) {
-                    url = ActionMenuServiceHelper.drawUpdateFieldLauncher(jParams, (ContentField) obj, "timeBasedPublishing") ;
                 } else {
                     url = null ;
                 }

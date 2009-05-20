@@ -16,30 +16,31 @@
  */
 package org.jahia.ajax.gwt.templates.components.actionmenus.server.helper;
 
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.actionmenu.actions.*;
+import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
-import org.jahia.params.ProcessingContext;
-import org.jahia.content.ObjectKey;
 import org.jahia.content.ContentObject;
+import org.jahia.content.ObjectKey;
 import org.jahia.data.beans.*;
-import org.jahia.services.acl.JahiaACLManagerService;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.containers.ContentContainerList;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.fields.ContentField;
-import org.jahia.services.lock.LockKey;
-import org.jahia.services.lock.LockRegistry;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
-import org.jahia.exceptions.JahiaException;
-import org.apache.log4j.Logger;
+import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.acl.JahiaACLManagerService;
+import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.containers.ContentContainerList;
+import org.jahia.services.lock.LockKey;
+import org.jahia.services.lock.LockRegistry;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.version.EntryLoadRequest;
 
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -345,31 +346,6 @@ public class ActionMenuHelper {
 //                        logger.debug("Source action : " + url);
 //                    }
 //                }
-
-            // GWTJahiaAction Menu for a Field
-            } else if (FieldBean.TYPE.equals(objectType)) {
-                ContentField field = (ContentField)contentObject ;
-                // Update
-                String url = ActionMenuURIFormatter.drawFieldUpdateUrl(field, jParams) ;
-                if (url != null) {
-                    GWTJahiaAction updateField = new GWTJahiaEngineAction(GWTJahiaAction.UPDATE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.UPDATE, namePostFix, ActionMenuLabelProvider.FIELD), url) ;
-                    LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_FIELD_TYPE, contentObject.getID());
-                    if (!lockRegistry.isAcquireable(lockKey, currentUser, currentUser.getUserKey())) {
-                        updateField.setLocked(true);
-                    }
-                    actions.add(updateField) ;
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Update action : " + url);
-                    }
-                }
-                // Source
-                url = ActionMenuURIFormatter.drawFieldSourcePageReferenceUrl(field, jParams) ;
-                if (url != null) {
-                    actions.add(new GWTJahiaRedirectAction(GWTJahiaAction.SOURCE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.SOURCE, namePostFix, ActionMenuLabelProvider.FIELD), url)) ;
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Source action : " + url);
-                    }
-                }
 
             // unknown object type
             } else {

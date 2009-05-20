@@ -20,42 +20,31 @@ import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.TextExtractor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.util.EngineOpener;
-import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuLabelProvider;
-import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuURIFormatter;
+import org.jahia.content.ContentObject;
 import org.jahia.data.JahiaData;
-import org.jahia.data.beans.CategoryBean;
-import org.jahia.data.beans.FieldBean;
-import org.jahia.data.beans.FieldValueBean;
-import org.jahia.data.beans.PageBean;
-import org.jahia.data.beans.ResourceBean;
+import org.jahia.data.beans.*;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.taglibs.template.container.ContainerCache;
-import org.jahia.taglibs.template.container.ContainerTag;
-import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.categories.Category;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageInfoInterface;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.taglibs.template.container.ContainerCache;
+import org.jahia.taglibs.template.container.ContainerTag;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.JahiaTools;
-import org.jahia.content.ContentObject;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * The tag is responsible for displaying content field value or exposing it into
@@ -86,7 +75,6 @@ public class FieldTag extends AbstractFieldTag {
     private int maxWord = -1;
     private String continueString = "...";
     private String namePostFix;
-    private boolean displayUpdateFieldUrl = false;
     private boolean removeHtmlTags = false;
     private String var;
 
@@ -192,16 +180,6 @@ public class FieldTag extends AbstractFieldTag {
             if (display) {
                 final JspWriter out = pageContext.getOut();
                 out.print(readValue(jData, theField));
-                if (displayUpdateFieldUrl) {
-                    final String updateFieldUrl = ActionMenuURIFormatter.drawFieldUpdateUrl(theField.getContentField(),
-                            jData.getProcessingContext());
-                    final StringBuilder updateFieldLink = new StringBuilder("<div class=\"directAction\"><a onClick=\"window.open('").
-                            append(updateFieldUrl).append("', '").append(EngineOpener.ENGINE_FRAME_NAME).append("', '").
-                            append(EngineOpener.ENGINE_WINDOW_PARAMS).append("');\"><span class=\"updateField\">").
-                            append(ActionMenuLabelProvider.getLocalizedActionLabel(
-                                    getResourceBundle(), jData.getProcessingContext(), "update", namePostFix, ActionMenuLabelProvider.FIELD)).append("</span></a></div>");
-                    out.print(updateFieldLink);
-                }
             }
 
             // in the case of the application field, we must expire the container cache entry immediately, even if this
@@ -262,7 +240,6 @@ public class FieldTag extends AbstractFieldTag {
         defaultValue = null;
         name = null;
         namePostFix = null;
-        displayUpdateFieldUrl = false;
         removeHtmlTags = false;
         var = null;
         super.resetState();

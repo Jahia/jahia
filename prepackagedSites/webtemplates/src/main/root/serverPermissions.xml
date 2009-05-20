@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <jahia:serverPermissions xmlns:jahia="http://www.jahia.org/">
     <jahia:serverPermission jahia:name="admin.audit.ManageLogs"></jahia:serverPermission>
     <jahia:serverPermission jahia:name="admin.categories.ManageCategories"></jahia:serverPermission>

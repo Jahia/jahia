@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <jahia:sitePermissions xmlns:jahia="http://www.jahia.org/">
-    <jahia:sitePermission jahia:name="admin.JahiaAdministration"></jahia:sitePermission>
-    <jahia:sitePermission jahia:name="admin.analytics.ManageAnalytics"></jahia:sitePermission>
-    <jahia:sitePermission jahia:name="admin.analytics.ManageThemes"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.pages.ManagePages"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.users.ManageUsers"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.users.ManageGroups"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.templates.ManageTemplates"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.search.ManageSearch"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.languages.ManageSiteLanguages"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.production.ManageSiteProduction"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.permissions.ManageSitePermissions"></jahia:sitePermission>
     <jahia:sitePermission jahia:name="admin.htmleditors.HtmlEditorsAdmin"></jahia:sitePermission>
     <jahia:sitePermission jahia:name="admin.integrity.IntegrityChecks"></jahia:sitePermission>
-    <jahia:sitePermission jahia:name="admin.languages.ManageSiteLanguages"></jahia:sitePermission>
-    <jahia:sitePermission jahia:name="admin.pages.ManagePages"></jahia:sitePermission>
-    <jahia:sitePermission jahia:name="admin.permissions.ManageSitePermissions"></jahia:sitePermission>
-    <jahia:sitePermission jahia:name="admin.permissions.ManageThemes"></jahia:sitePermission>
-    <jahia:sitePermission jahia:name="admin.production.ManageSiteProduction"></jahia:sitePermission>
-    <jahia:sitePermission jahia:name="admin.search.ManageSearch"></jahia:sitePermission>
-    <jahia:sitePermission jahia:name="admin.templates.ManageTemplates"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.analytics.ManageAnalytics"></jahia:sitePermission>
     <jahia:sitePermission jahia:name="admin.themes.ManageThemes"></jahia:sitePermission>
-    <jahia:sitePermission jahia:name="admin.users.ManageGroups"></jahia:sitePermission>
-    <jahia:sitePermission jahia:name="admin.users.ManageUsers"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.JahiaAdministration"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.analytics.ManageThemes"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.permissions.ManageThemes"></jahia:sitePermission>
     <jahia:sitePermission jahia:name="engines.actions.add" jahia:acl="g:users"></jahia:sitePermission>
     <jahia:sitePermission jahia:name="engines.actions.delete" jahia:acl="g:users"></jahia:sitePermission>
     <jahia:sitePermission jahia:name="engines.actions.editMode" jahia:acl="g:users"></jahia:sitePermission>
@@ -46,5 +45,7 @@
     <jahia:sitePermission jahia:name="toolbar.switchingmode" jahia:acl="g:users"></jahia:sitePermission>
     <jahia:sitePermission jahia:name="toolbar.worflow" jahia:acl="g:users"></jahia:sitePermission>
     <jahia:sitePermission jahia:name="toolbar.workflow" jahia:acl="g:users"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="engines.filemanager" jahia:acl="g:users"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="engines.mashupmanager" jahia:acl="g:users"></jahia:sitePermission>
 </jahia:sitePermissions>
 

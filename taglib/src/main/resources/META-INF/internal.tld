@@ -199,6 +199,18 @@
         </attribute>
     </tag>
 
+    <tag>
+        <description>Displays a catagories manager</description>
+        <name>categoryManager</name>
+        <tag-class>org.jahia.taglibs.internal.categories.CategoriesManagerTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>startPath</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
     <!-- pdisplay -->
     <tag-file>
         <description>create html struture for pdisplay</description>
@@ -219,11 +231,6 @@
         <description>Displays the workflow manager engine</description>
         <name>workflowManager</name>
         <path>/META-INF/tags/ajax/workflow.tag</path>
-    </tag-file>
-    <tag-file>
-        <description>Displays a catagories manager</description>
-        <name>categoryManager</name>
-        <path>/META-INF/tags/ajax/categoriesmanager.tag</path>
     </tag-file>
     <tag-file>
         <description>Displays a catagories selector</description>

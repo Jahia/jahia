@@ -16,9 +16,12 @@
  */
 package org.jahia.taglibs.internal.gwt;
 
+import org.jahia.ajax.gwt.client.core.JahiaType;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+import java.util.Map;
 
 /**
  * Helper class for generating script element with the GWT module.
@@ -45,6 +48,59 @@ public class GWTIncluder {
                 .append(".nocache.js").toString());
         ret.append("<script id='jahia-gwt' type='text/javascript' src='").append(gwtModulePath).append("'></script>\n");
         return ret.toString();
+    }
+
+     /**
+     * Get place holder for a jahiaModule  .
+     * Example: <div jahiaType="categoriesPiker" start="/root" id="cat_2"/>
+     * @param templateUsage true means that the module is used in a template
+     * @param cssClassName  the css class name
+     * @param jahiaType   the jahiaType
+     * @param id  the id
+     * @param extraParams map of extra parameter. Example {("start","/root"}
+     * @return
+     */
+    public static String generateJahiaModulePlaceHolder(boolean templateUsage, String cssClassName, String jahiaType, String id, Map<String, Object> extraParams) {
+        // css depending on type of module
+        StringBuffer css = new StringBuffer();
+        if (templateUsage) {
+            css.append("jahia-template-gxt");
+        } else {
+            css.append("jahia-admin-gxt");
+        }
+        if (jahiaType != null) {
+            css.append(" ").append(jahiaType).append("-gxt");
+        }
+        if (cssClassName != null) {
+            css.append(" ").append(cssClassName);
+        }
+
+        final StringBuffer outBuf = new StringBuffer("<div class=\"" + css + "\" id=\"").append(id).append("\" ");
+        if (jahiaType != null) {
+            outBuf.append(JahiaType.JAHIA_TYPE);
+            outBuf.append("=\"");
+            outBuf.append(jahiaType);
+            outBuf.append("\"");
+            outBuf.append(" ");
+            outBuf.append(getParam(extraParams));
+            outBuf.append("></div>\n");
+        } else {
+            outBuf.append(extraParams);
+            outBuf.append("></div>\n");
+        }
+        return outBuf.toString();
+    }
+
+    protected static String getParam(Map<String, Object> extraParams) {
+        final StringBuffer outBuf = new StringBuffer();
+        for (String name : extraParams.keySet()) {
+            Object value = extraParams.get(name);
+            if (value == null) {
+                value = "";
+            }
+            outBuf.append(name).append("=\"").append(value).append("\" ");
+        }
+        return outBuf.toString();
     }
 
 

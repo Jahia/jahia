@@ -18,6 +18,7 @@ package org.jahia.taglibs.template.gwt;
 
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.internal.gwt.GWTIncluder;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -76,34 +77,8 @@ public class GWTJahiaModuleTag extends AbstractJahiaTag implements DynamicAttrib
                 return EVAL_PAGE;
             }
 
-            // css depending on type of module          
-            StringBuffer css = new StringBuffer();
-            if (templateUsage) {
-                css.append("jahia-template-gxt");
-            } else {
-                css.append("jahia-admin-gxt");
-            }
-            if (jahiaType != null) {
-                css.append(" ").append(jahiaType).append("-gxt");
-            }
-            if (getCssClassName() != null) {
-                css.append(" ").append(getCssClassName());
-            }
-
-            final StringBuffer outBuf = new StringBuffer("<div class=\"" + css + "\" id=\"").append(id).append("\" ");
-            if (jahiaType != null) {
-                outBuf.append(JahiaType.JAHIA_TYPE);
-                outBuf.append("=\"");
-                outBuf.append(jahiaType);
-                outBuf.append("\"");
-                outBuf.append(" ");
-                outBuf.append(getParam());
-                outBuf.append("></div>\n");
-            } else {
-                outBuf.append(getParam());
-                outBuf.append("></div>\n");
-            }
-            out.print(outBuf.toString());
+            // print the place holder
+            out.print(GWTIncluder.generateJahiaModulePlaceHolder(templateUsage,getCssClassName(),jahiaType,id,attributes));
 
         } catch (final IOException e) {
             logger.error(e, e);
@@ -115,6 +90,8 @@ public class GWTJahiaModuleTag extends AbstractJahiaTag implements DynamicAttrib
         return EVAL_PAGE;
     }
 
+
+
     public void setDynamicAttribute(String uri, String localName, Object value) throws JspException {
         if (attributes == null) {
             attributes = new HashMap<String, Object>();
@@ -122,16 +99,6 @@ public class GWTJahiaModuleTag extends AbstractJahiaTag implements DynamicAttrib
         attributes.put(localName, value);
     }
 
-    protected String getParam() {
-        final StringBuffer outBuf = new StringBuffer();
-        for (String name : attributes.keySet()) {
-            Object value = attributes.get(name);
-            if (value == null) {
-                value = "";
-            }
-            outBuf.append(name).append("=\"").append(value).append("\" ");
-        }
-        return outBuf.toString();
-    }
+
 
 }

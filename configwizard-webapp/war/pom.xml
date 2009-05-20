@@ -16,9 +16,9 @@
         </repository>
     </repositories>
     <scm>
-        <connection>scm:svn:http://10.8.37.111/svn/jahia/branches/JAHIA-6-0-BRANCH/</connection>
-        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/branches/JAHIA-6-0-BRANCH/</developerConnection>
-        <url>http://10.8.37.111/svn/jahia/branches/JAHIA-6-0-BRANCH</url>
+        <connection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</connection>
+        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</developerConnection>
+        <url>http://10.8.37.111/svn/jahia/trunk</url>
     </scm>
     <name>New configuration wizard WAR module</name>
     <dependencies>

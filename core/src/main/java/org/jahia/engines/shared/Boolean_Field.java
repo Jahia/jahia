@@ -23,8 +23,6 @@
 
 package org.jahia.engines.shared;
 
-import java.util.Map;
-
 import org.jahia.data.ConnectionTypes;
 import org.jahia.data.FormDataManager;
 import org.jahia.data.containers.JahiaContainer;
@@ -37,13 +35,14 @@ import org.jahia.engines.JahiaEngineTools;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockPrerequisites;
 import org.jahia.services.lock.LockPrerequisitesResult;
 import org.jahia.utils.JahiaTools;
+
+import java.util.Map;
 
 public class Boolean_Field implements FieldSubEngine
 {
@@ -205,16 +204,6 @@ public class Boolean_Field implements FieldSubEngine
 
             String localSwitchUrl = "ReloadEngine('localswitch" + EngineParams.VALUE_TOKEN + "yes')";
             engineMap.put( "localSwitchUrl", localSwitchUrl );
-
-            String dataSourceConnectUrl = "";
-            JahiaEngine dsEngine = (JahiaEngine) EnginesRegistry.getInstance().getEngine( "selectdatasource" );
-            dataSourceConnectUrl = dsEngine.renderLink( jParams, theField );
-            engineMap.put( "dataSourceConnectUrl", dataSourceConnectUrl );
-
-            String dataSourceIDUrl = "";
-            dsEngine = (JahiaEngine) EnginesRegistry.getInstance().getEngine( "viewdatasourceid" );
-            dataSourceIDUrl = dsEngine.renderLink( jParams, theField );
-            engineMap.put( "dataSourceIDUrl", dataSourceIDUrl );
 
             theField.setValue( FormDataManager.formEncode(theField.getValue()) );
             output = ServicesRegistry.getInstance().getJahiaFetcherService().fetchServlet( (ParamBean) jParams, JSP_FILE );

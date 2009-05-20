@@ -23,14 +23,6 @@
 
 package org.jahia.engines.shared;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.jahia.data.ConnectionTypes;
 import org.jahia.data.FormDataManager;
 import org.jahia.data.containers.JahiaContainer;
@@ -38,11 +30,13 @@ import org.jahia.data.fields.FieldsEditHelper;
 import org.jahia.data.fields.FieldsEditHelperAbstract;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.JahiaFieldDefinitionProperties;
-import org.jahia.engines.*;
+import org.jahia.engines.EngineMessages;
+import org.jahia.engines.EngineParams;
+import org.jahia.engines.JahiaEngine;
+import org.jahia.engines.JahiaEngineTools;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.htmlparser.ExtractLinksDOMVisitor;
@@ -53,6 +47,14 @@ import org.jahia.services.lock.LockPrerequisitesResult;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.I18n;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class SmallText_Field implements FieldSubEngine {
 
@@ -334,14 +336,6 @@ public class SmallText_Field implements FieldSubEngine {
 
             String localSwitchUrl = "ReloadEngine('localswitch" + EngineParams.VALUE_TOKEN + "yes')";
             engineMap.put("localSwitchUrl", localSwitchUrl);
-
-            JahiaEngine dsEngine = (JahiaEngine) EnginesRegistry.getInstance().getEngine("selectdatasource");
-            String dataSourceConnectUrl = dsEngine.renderLink(jParams, theField);
-            engineMap.put("dataSourceConnectUrl", dataSourceConnectUrl);
-
-            dsEngine = (JahiaEngine) EnginesRegistry.getInstance().getEngine("viewdatasourceid");
-            String dataSourceIDUrl = dsEngine.renderLink(jParams, theField);
-            engineMap.put("dataSourceIDUrl", dataSourceIDUrl);
 
             boolean isIE = false;
             String userAgent = jParams.getUserAgent();

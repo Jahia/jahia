@@ -23,34 +23,28 @@
 
 package org.jahia.engines.shared;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.ConnectionTypes;
 import org.jahia.data.FormDataManager;
 import org.jahia.data.containers.JahiaContainer;
-import org.jahia.data.fields.FieldsEditHelper;
-import org.jahia.data.fields.FieldsEditHelperAbstract;
-import org.jahia.data.fields.JahiaDateFieldUtil;
-import org.jahia.data.fields.JahiaField;
-import org.jahia.data.fields.JahiaFieldDefinitionProperties;
-import org.jahia.data.fields.LoadFlags;
+import org.jahia.data.fields.*;
 import org.jahia.engines.EngineParams;
 import org.jahia.engines.JahiaEngine;
 import org.jahia.engines.JahiaEngineTools;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockPrerequisites;
 import org.jahia.services.lock.LockPrerequisitesResult;
 import org.jahia.utils.JahiaTools;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 
 public class Date_Field implements FieldSubEngine
 {
@@ -245,16 +239,6 @@ public class Date_Field implements FieldSubEngine
 
             String localSwitchUrl = "ReloadEngine('localswitch" + EngineParams.VALUE_TOKEN + "yes')";
             engineMap.put( "localSwitchUrl", localSwitchUrl );
-
-            String dataSourceConnectUrl = "";
-            JahiaEngine dsEngine = (JahiaEngine) EnginesRegistry.getInstance().getEngine( "selectdatasource" );
-            dataSourceConnectUrl = dsEngine.renderLink( jParams, theField );
-            engineMap.put( "dataSourceConnectUrl", dataSourceConnectUrl );
-
-            String dataSourceIDUrl = "";
-            dsEngine = (JahiaEngine) EnginesRegistry.getInstance().getEngine( "viewdatasourceid" );
-            dataSourceIDUrl = dsEngine.renderLink( jParams, theField );
-            engineMap.put( "dataSourceIDUrl", dataSourceIDUrl );
 
             theField.setValue( FormDataManager.formEncode(theField.getValue()) );
             output = ServicesRegistry.getInstance().getJahiaFetcherService().fetchServlet( (ParamBean) jParams, forward );

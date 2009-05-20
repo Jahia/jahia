@@ -96,27 +96,6 @@
 
 package org.jahia.params;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.jstl.core.Config;
-
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -126,12 +105,7 @@ import org.apache.log4j.Logger;
 import org.apache.struts.Globals;
 import org.jahia.bin.Jahia;
 import org.jahia.engines.login.Login_Engine;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaForbiddenAccessException;
-import org.jahia.exceptions.JahiaPageNotFoundException;
-import org.jahia.exceptions.JahiaSessionExpirationException;
-import org.jahia.exceptions.JahiaSiteAndPageIDMismatchException;
-import org.jahia.exceptions.JahiaSiteNotFoundException;
+import org.jahia.exceptions.*;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.applications.ServletIncludeRequestWrapper;
@@ -142,6 +116,19 @@ import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.JahiaTools;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.jstl.core.Config;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * This object contains most of the request context, including object such as the request and response objects, sessions, engines, contexts,
@@ -390,10 +377,6 @@ public class ParamBean extends ProcessingContext {
             setUserAgent(resolveUserAgent());
 
             if (getSite() != null) {
-                setFieldIDIfAvailable();
-                setContainerIDIfAvailable();
-                setContainerListIDIfAvailable();
-
                 final int pageID = resolvePageID();
 
 //                if (getContentPage() == null) {

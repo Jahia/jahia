@@ -22,13 +22,6 @@
 
 package org.jahia.services.importexport;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -36,6 +29,13 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.helpers.XMLFilterImpl;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -124,7 +124,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  *
  * <p>You need to invoke one of the <var>characters</var> methods
  * explicitly to add newlines or indentation.  Alternatively, you
- * can use {@link com.megginson.sax.DataWriter DataWriter}, which
+ * can use {@link DataWriter DataWriter}, which
  * is derived from this class -- it is optimized for writing
  * purely data-oriented (or field-oriented) XML, and does automatic
  * linebreaks and indentation (but does not support mixed content
@@ -616,7 +616,7 @@ public class XMLWriter extends XMLFilterImpl
      *
      * @param ch The array of characters to write.
      * @param start The starting position in the array.
-     * @param length The number of characters to write.
+     * @param len The number of characters to write.
      * @exception org.xml.sax.SAXException If there is an error
      *            writing the characters, or if a handler further down
      *            the filter chain raises an exception.
@@ -1116,7 +1116,7 @@ public class XMLWriter extends XMLFilterImpl
      * The names will have prefixes added to them.
      *
      * @param atts The attribute list to write.
-     * @exception org.xml.SAXException If there is an error writing
+     * @exception SAXException If there is an error writing
      *            the attribute list, this method will throw an
      *            IOException wrapped in a SAXException.
      */
@@ -1143,7 +1143,7 @@ public class XMLWriter extends XMLFilterImpl
      * @param start The starting position.
      * @param length The number of characters to use.
      * @param isAttVal true if this is an attribute value literal.
-     * @exception org.xml.SAXException If there is an error writing
+     * @exception SAXException If there is an error writing
      *            the characters, this method will throw an
      *            IOException wrapped in a SAXException.
      */
@@ -1169,18 +1169,37 @@ public class XMLWriter extends XMLFilterImpl
                     write('\"');
                 }
                 break;
-            default:
-//                if (ch[i] > '\u007f') {
-//                    write("&#");
-//                    write(Integer.toString(ch[i]));
-//                    write(';');
-//                } else {
-                    write(ch[i]);
-//                }
-            }
-        }
+                default:
+                    //UNIL modification: because of XML parser compatibility for ISO/IEC 10646
+                    if(ch[i] == '\u0009') {
+                        //ok for tab char or \t
+                        write(ch[i]);
+                    }else if(ch[i] == '\n') {
+                        //ok for LF or u000A
+                        write(ch[i]);
+                    }else if(ch[i] == '\r') {
+                        //ok for CR or u000D
+                        write(ch[i]);
+                    }else if(ch[i] >= '\u0020' && ch[i] <= '\uD7FF') {
+                        //ok
+                        write(ch[i]);
+                    }else if(ch[i] >= '\uE000' && ch[i] <= '\uFFFD') {
+                        //ok
+                        write(ch[i]);
+                    }
+                    /*
+                               //later for UTF-16 maybe
+                             else if(ch[i] >= '\u10000' && ch[i] <= '\u10FFFF') {
+                                 //ok
+                               write(ch[i]);
+                            }*/
+                    else {
+                        //nothing
+                        System.err.println("Avoided char: "+ch[i] +" or as: "+ Integer.toString(ch[i]));
+                    }
+            }//switch
+        }//for
     }
-
 
     /**
      * Write out the list of Namespace declarations.

@@ -329,14 +329,14 @@
                 <ref bean="serverPermissionsAdministrationModule" />
                 <ref bean="passwordPoliciesAdministrationModule" />
                 <ref bean="patchesAdministrationModule" />
-                <!-- 
                 <ref bean="communityJiraAdministrationModule"/>
-                 -->
-                <ref bean="enterpriseJiraAdministrationModule"/>
                 <!-- 
-                <ref bean="jahiaPediaAdministrationModule"/>
+                <ref bean="enterpriseJiraAdministrationModule"/>
                  -->
+                <ref bean="jahiaPediaAdministrationModule"/>
+                <!-- 
                 <ref bean="docsAdministrationModule"/>
+                 -->
                 <ref bean="infoAdministrationModule" />
             </list>
         </property>

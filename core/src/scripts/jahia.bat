@@ -35,7 +35,7 @@ call bin\catalina-jikes.bat start
 :skipjikes
 cd ..\bin
 cd ..\tomcat\webapps\ROOT
-java -classpath "%CLASSPATH%;.\;.\WEB-INF\lib\jahia-impl-6.0-SNAPSHOT.jar;.\WEB-INF\lib\log4j-1.2.15.jar" org.jahia.init.TomcatWait http://localhost:8080/html/startup/startjahia.html
+java -classpath "%CLASSPATH%;.\;.\WEB-INF\lib\jahia-impl-6.1-SNAPSHOT.jar;.\WEB-INF\lib\log4j-1.2.15.jar" org.jahia.init.TomcatWait http://localhost:8080/html/startup/startjahia.html
 cd ..\..\..\bin
 echo Starting browser...
 start http://localhost:8080/html/startup/loadingjahia.html

@@ -53,8 +53,8 @@ fi
 cd ../bin
 #echo Started. Waiting for browser startup...
 #cd ../tomcat/webapps/ROOT
-##java -classpath $CLASSPATH:./:./WEB-INF/lib/jahia-impl-6.0-SNAPSHOT.jar:../../shared/lib/log4j-1.2.15.jar org.jahia.init.TomcatWait http://localhost:8080/html/startup/startjahia.html
-#java -classpath "$CLASSPATH:./:./WEB-INF/lib/jahia-impl-6.0-SNAPSHOT.jar:./WEB-INF/lib/log4j-1.2.15.jar" org.jahia.init.TomcatWait
+##java -classpath $CLASSPATH:./:./WEB-INF/lib/jahia-impl-6.1-SNAPSHOT.jar:../../shared/lib/log4j-1.2.15.jar org.jahia.init.TomcatWait http://localhost:8080/html/startup/startjahia.html
+#java -classpath "$CLASSPATH:./:./WEB-INF/lib/jahia-impl-6.1-SNAPSHOT.jar:./WEB-INF/lib/log4j-1.2.15.jar" org.jahia.init.TomcatWait
 #cd ../../../bin
 #MOZILLAPATH=`which mozilla`
 #if [ -x $MOZILLAPATH ] ; then

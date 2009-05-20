@@ -303,7 +303,7 @@ when You use, distribute or otherwise make available any Covered Software.
 Right of usage of the Software attached to the payment of a subscription, in
 exchange of a Generic Developments and Your copyright assignment to JSG, when
 the related Generic Developments are financed by You, except for the co-
-development cases of join contribution (12.6)).
+development cases of join contribution (12.7)).
 
 12.2. The decision to accept a Generic Development as an Approved Counterpart,
 its value, the form of compensation and the criteria applied are let to the sole
@@ -313,21 +313,21 @@ discretion of JSG.
 compensation which shall be approved by both parties in a separated document
 provided by JSG.
 
-12.3. Modifications considered as Approved Counterpart are, by nature, Generic
+12.4. Modifications considered as Approved Counterpart are, by nature, Generic
 Developments.
 
-12.4. All Specific Elements, not owned by JSG and provided by You to JSG for
+12.5. All Specific Elements, not owned by JSG and provided by You to JSG for
 Services execution, shall remain Your exclusive property when You owns the
 property of specific materials.
 
-12.5. All specific development, requested by You from JSG and listed on
+12.6. All specific development, requested by You from JSG and listed on
 dedicated JSG document shall remain Your exclusive property except for the
 Generic Elements, even if these Generic Elements are developed at the same time
 as the Specific development and/or are needed by the Specific development to
 work, particularly when Generic Elements are integrated in the Original Software
 and therefore are by nature subject to the terms of the licenses used by JSG.
 
-12.6. Join contribution:
+12.7. Join contribution:
 As an exclusive exception to the Generic Developments definition, JSG may agree
 to accept some Modifications done by You in order to complete all - or part of -
 Generic Developments. This particular type of Generic Developments is considered
@@ -353,9 +353,9 @@ case of join contribution.
 
 c) Contributor grants JSG the ability to use the related Modifications he
 provided in any way with a sublicenseable, non-exclusive, irrevocable,
-worldwide, royalty-free, transferable license to use, copy, modify, distribute
-and publicly perform and display the related Modifications on any licensing
-terms (commercial or not).
+worldwide, royalty-free, transferable license to relicense, use, copy, modify,
+distribute and publicly perform and display the related Modifications on any
+licensing terms (commercial or not).
 
 d) Contributor is legally entitled to grant the above assignment and agrees not
 to provide any Contribution that violates any law or breaches any contract.
@@ -372,5 +372,3 @@ indirectly, out of its utilization of rights under this License and You agree to
 work with JSG to distribute such responsibility according to the Modifications
 Contributor provided. Nothing herein is intended or shall be deemed to
 constitute any admission of liability.
-
-

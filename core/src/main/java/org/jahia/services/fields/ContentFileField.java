@@ -18,22 +18,15 @@ package org.jahia.services.fields;
 
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.version.*;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.webdav.JahiaWebdavBaseService;
-import org.jahia.services.webdav.WebDAVCallback;
-import org.jahia.services.webdav.WebDAVTemplate;
-import org.jahia.utils.xml.XMLSerializationOptions;
-import org.jahia.utils.xml.XmlWriter;
 import org.jahia.hibernate.manager.JahiaFieldXRefManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.version.*;
 
-import javax.jcr.RepositoryException;
-import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -208,50 +201,6 @@ public class ContentFileField extends ContentField {
      */
     public boolean isShared () {
         return false;
-    }
-
-    /**
-     * This is called on all content fields to have them serialized only their
-     * specific part. The actual field metadata seriliazing is handled by the
-     * ContentField class. This method is called multiple times per field
-     * according to the workflow state, languages and versioning entries we
-     * want to serialize.
-     *
-     * @param xmlWriter               the XML writer object in which to write the XML output
-     * @param xmlSerializationOptions options used to activate/bypass certain
-     *                                output of elements.
-     * @param entryState              the ContentFieldEntryState for which to generate the
-     *                                XML export.
-     * @param processingContext               specifies context of serialization, such as current
-     *                                user, current request parameters, entry load request, URL generation
-     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
-     *                                generation is an important part of XML serialization and this is why
-     *                                we pass this parameter down, as well as user rights checking.
-     *
-     * @throws IOException in case there was an error writing to the Writer
-     *                     output object.
-     */
-    protected void serializeContentToXML (XmlWriter xmlWriter,
-                                          XMLSerializationOptions xmlSerializationOptions,
-                                          ContentObjectEntryState entryState,
-                                          ProcessingContext processingContext) throws java.io.IOException {
-
-        try {
-            if (xmlSerializationOptions.isEmbeddingBinary ()) {
-            } else {
-                // let's only build a reference to the file's content, using an
-                // URL to download the file's content :
-
-                JahiaFileField jahiaFileField = JahiaWebdavBaseService.getInstance ()
-                        .getJahiaFileField (processingContext, (processingContext!=null)?processingContext.getSite():null, (processingContext!=null)?processingContext.getUser():null, getDBValue (entryState));
-                xmlWriter.writeEntity ("file").
-                        writeAttribute ("url", jahiaFileField != null ? jahiaFileField.getDownloadUrl() : getDBValue (entryState));
-                xmlWriter.endEntity ();
-            }
-
-        } catch (JahiaException je) {
-            logger.debug ("Error while serializing file field to XML :", je);
-        }
     }
 
     protected void purgeContent ()

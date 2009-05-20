@@ -55,8 +55,6 @@ import org.jahia.services.version.*;
 import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.xml.XMLSerializationOptions;
-import org.jahia.utils.xml.XmlWriter;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -4167,81 +4165,6 @@ public class ContentPage extends ContentObject implements
             logger.error("FIXME : Method called with null ProcessingContext, returning false");
             return false;
         }
-    }
-
-    /**
-     * Writes an XML serialization version of this content page, according to
-     * the seriliazation options specified. This is very useful for exporting
-     * Jahia content to external systems.
-     *
-     * @param xmlWriter               the XML writer object in which to output the XML
-     *                                exported data
-     * @param xmlSerializationOptions the options that activate/deactivate
-     *                                parts of the XML exported data.
-     * @param processingContext       specifies context of serialization, such as current
-     *                                user, current request parameters, entry load request, URL generation
-     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
-     *                                generation is an important part of XML serialization and this is why
-     *                                we pass this parameter down, as well as user rights checking.
-     * @throws IOException upon error writing to the XMLWriter
-     *                     todo FIXME : only container lists output for the moment. Still to be
-     *                     done are page fields.
-     *                     todo getPageType actually passed a null EntryLoadRequest !!
-     */
-    public synchronized void serializeToXML(XmlWriter xmlWriter,
-                                            XMLSerializationOptions
-                                                    xmlSerializationOptions,
-                                            ProcessingContext processingContext)
-            throws IOException {
-        xmlWriter.writeEntity("contentPage");
-        String pageType;
-        switch (getPageType(null)) {
-            case JahiaPage.TYPE_DIRECT:
-                pageType = "direct";
-                break;
-            case JahiaPage.TYPE_LINK:
-                pageType = "link";
-                break;
-            case JahiaPage.TYPE_URL:
-                pageType = "url";
-                break;
-            default:
-                pageType = "unknown";
-                break;
-        }
-        xmlWriter.writeAttribute("type", pageType);
-
-        xmlWriter.writeEntity("titles");
-
-        for (Map.Entry<String, String> entry : getTitles(ContentPage.ACTIVATED_PAGE_TITLES).entrySet()) {
-            xmlWriter.writeEntity("title").
-                    writeAttribute("language", entry.getKey());
-            xmlWriter.writeText(entry.getValue());
-            xmlWriter.endEntity();
-        }
-        xmlWriter.endEntity();
-
-        switch (getPageType(null)) {
-            case JahiaPage.TYPE_DIRECT:
-                xmlWriter.writeEntity("direct");
-                if (xmlSerializationOptions.isIncludingSubPages()) {
-                    ServicesRegistry sr = ServicesRegistry.getInstance();
-                    sr.getJahiaFieldService().serializeNonContainerFieldsToXML(xmlWriter,
-                            xmlSerializationOptions, getID(), processingContext);
-                    sr.getJahiaContainersService().serializePageContainerListsToXML(
-                            xmlWriter, xmlSerializationOptions, getID(), processingContext);
-                }
-                xmlWriter.endEntity();
-                break;
-            case JahiaPage.TYPE_LINK:
-                xmlWriter.writeEntityWithText("link",
-                        Integer.toString(getPageLinkID(EntryLoadRequest.CURRENT)));
-                break;
-            case JahiaPage.TYPE_URL:
-                xmlWriter.writeEntityWithText("url", getRemoteURL(EntryLoadRequest.CURRENT));
-                break;
-        }
-        xmlWriter.endEntity();
     }
 
     /**

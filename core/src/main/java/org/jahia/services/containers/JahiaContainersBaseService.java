@@ -16,68 +16,22 @@
  */
 package org.jahia.services.containers;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Literal;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.PropertyValue;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelFactory;
+import org.apache.jackrabbit.spi.commons.query.jsr283.qom.*;
 import org.jahia.bin.Jahia;
-import org.jahia.content.ContentContainerKey;
-import org.jahia.content.ContentContainerListKey;
-import org.jahia.content.ContentFieldKey;
-import org.jahia.content.ContentObject;
-import org.jahia.content.ContentObjectKey;
-import org.jahia.content.ContentPageKey;
-import org.jahia.content.ObjectKey;
+import org.jahia.content.*;
 import org.jahia.content.events.ContentObjectDeleteEvent;
 import org.jahia.data.JahiaDOMObject;
-import org.jahia.data.containers.ContainersChangeEventListener;
-import org.jahia.data.containers.JahiaContainer;
-import org.jahia.data.containers.JahiaContainerDefinition;
-import org.jahia.data.containers.JahiaContainerList;
-import org.jahia.data.containers.JahiaContainerSet;
-import org.jahia.data.containers.JahiaContainerStructure;
+import org.jahia.data.containers.*;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.data.fields.LoadFlags;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.manager.JahiaAclManager;
-import org.jahia.hibernate.manager.JahiaContainerDefinitionManager;
-import org.jahia.hibernate.manager.JahiaContainerListManager;
-import org.jahia.hibernate.manager.JahiaContainerManager;
-import org.jahia.hibernate.manager.JahiaContainerStructureManager;
-import org.jahia.hibernate.manager.JahiaFieldsDataManager;
-import org.jahia.hibernate.manager.JahiaObjectManager;
+import org.jahia.hibernate.manager.*;
 import org.jahia.params.ProcessingContext;
 import org.jahia.query.filtercreator.FilterCreator;
-import org.jahia.query.qom.ChildNodeImpl;
-import org.jahia.query.qom.ConstraintItem;
-import org.jahia.query.qom.ContainerQueryBuilder;
-import org.jahia.query.qom.DescendantNodeImpl;
-import org.jahia.query.qom.JahiaQueryObjectModelConstants;
-import org.jahia.query.qom.LiteralImpl;
-import org.jahia.query.qom.QueryObjectModelImpl;
+import org.jahia.query.qom.*;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 import org.jahia.registries.JahiaListenersRegistry;
 import org.jahia.registries.ServicesRegistry;
@@ -91,15 +45,14 @@ import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.ActivationTestResults;
-import org.jahia.services.version.ContentObjectEntryState;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.version.JahiaSaveVersion;
-import org.jahia.services.version.StateModificationContext;
+import org.jahia.services.version.*;
 import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.utils.JahiaTools;
-import org.jahia.utils.xml.XMLSerializationOptions;
-import org.jahia.utils.xml.XmlWriter;
+
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import java.util.*;
 
 public class JahiaContainersBaseService extends JahiaContainersService {
 
@@ -1098,110 +1051,6 @@ public class JahiaContainersBaseService extends JahiaContainersService {
             activationTestResults.merge(curTestResults);
         }
         return activationTestResults;
-
-    }
-
-    public synchronized void serializePageContainerListsToXML(XmlWriter
-            xmlWriter,
-                                                              XMLSerializationOptions xmlSerializationOptions,
-                                                              int pageID, ProcessingContext processingContext)
-            throws IOException {
-        List<Integer> listIDs = containerListManager.getPageTopLevelContainerListIDs(pageID,
-                EntryLoadRequest.CURRENT);
-        // for each container, we check if the user has write+admin access to it,
-        // if so we can validate it
-        for (int curContainerListID : listIDs) {
-            serializeContainerListToXML(xmlWriter, xmlSerializationOptions,
-                    curContainerListID, processingContext);
-        }
-    }
-
-    public synchronized void serializeContainerListToXML(XmlWriter xmlWriter,
-                                                         XMLSerializationOptions xmlSerializationOptions,
-                                                         int containerListID,
-                                                         ProcessingContext processingContext)
-            throws IOException {
-
-        try {
-
-            JahiaContainerList containerList = loadContainerListInfo(containerListID, EntryLoadRequest.CURRENT);
-            if (containerList == null) {
-                logger.debug("Unable to load container list " + containerListID +
-                        ", ignoring...");
-                return;
-            }
-
-            xmlWriter.writeEntity("contentContainerList").
-                    writeAttribute("name", containerList.getDefinition().getName());
-
-            List<Integer> ctnIDs = new ArrayList<Integer>(containerManager.getContainerIdsInContainerList(containerListID,
-                    EntryLoadRequest.CURRENT,
-                    false));
-            // for each container, we check if the user has write+admin access to it,
-            // if so we can validate it
-            for (int curContainerID : ctnIDs) {
-                serializeContainerToXML(xmlWriter, xmlSerializationOptions,
-                        curContainerID, processingContext);
-
-            }
-
-            xmlWriter.endEntity();
-
-        } catch (JahiaException je) {
-            logger.debug("Error while exporting container list " +
-                    containerListID + " to XML : ", je);
-        }
-
-    }
-
-    public synchronized void serializeContainerToXML(XmlWriter xmlWriter,
-                                                     XMLSerializationOptions xmlSerializationOptions,
-                                                     int containerID, ProcessingContext processingContext)
-            throws IOException {
-
-        /**
-         * todo FIXME : only handles serialization of active container data
-         */
-
-        try {
-
-            // quick & dirty implementation that serializes the active and staging
-            // entries.
-            JahiaContainer theContainer = loadContainerInfo(containerID,
-                    EntryLoadRequest.CURRENT);
-            if (theContainer == null) {
-                logger.debug("Unable to load container " + containerID +
-                        ", ignoring...");
-                return;
-            }
-
-            xmlWriter.writeEntity("contentContainer");
-
-            // we must now check to see if this container has fields that
-            // don't exist in an active version.
-
-            // we might want to cache the next field id retrieval code ?
-            for (int fieldID : getFieldIDsInContainer(containerID,
-                    EntryLoadRequest.CURRENT)) {
-                ContentField currentField = ContentField.getField(fieldID);
-                currentField.serializeToXML(xmlWriter, xmlSerializationOptions, processingContext);
-            }
-
-            // now we must load and display all the sub container lists.
-            List<Integer> subCtnListIDs = containerListManager.getSubContainerListIDs(containerID, EntryLoadRequest.CURRENT);
-
-            for (int i = 0; i < subCtnListIDs.size(); i++) {
-                int curSubContainerListID = ((Integer) subCtnListIDs.get(i)).intValue();
-                serializeContainerListToXML(xmlWriter, xmlSerializationOptions,
-                        curSubContainerListID, processingContext);
-            }
-
-            xmlWriter.endEntity();
-
-        } catch (JahiaException je) {
-            logger.debug("Error while serializing container " + containerID +
-                    " to XML : ", je);
-        }
 
     }
 

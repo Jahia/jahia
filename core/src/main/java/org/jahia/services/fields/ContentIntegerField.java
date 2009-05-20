@@ -23,10 +23,10 @@ import org.jahia.services.version.ActivationTestResults;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntrySaveRequest;
 import org.jahia.services.version.StateModificationContext;
-import org.jahia.utils.xml.XMLSerializationOptions;
-import org.jahia.utils.xml.XmlWriter;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ContentIntegerField extends ContentField implements ContentSimpleField {
     private static org.apache.log4j.Logger logger
@@ -147,40 +147,6 @@ public class ContentIntegerField extends ContentField implements ContentSimpleFi
      */
     public boolean isShared () {
         return true;
-    }
-
-    /**
-     * This is called on all content fields to have them serialized only their
-     * specific part. The actual field metadata seriliazing is handled by the
-     * ContentField class. This method is called multiple times per field
-     * according to the workflow state, languages and versioning entries we
-     * want to serialize.
-     *
-     * @param xmlWriter               the XML writer object in which to write the XML output
-     * @param xmlSerializationOptions options used to activate/bypass certain
-     *                                output of elements.
-     * @param entryState              the ContentFieldEntryState for which to generate the
-     *                                XML export.
-     * @param processingContext               specifies context of serialization, such as current
-     *                                user, current request parameters, entry load request, URL generation
-     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
-     *                                generation is an important part of XML serialization and this is why
-     *                                we pass this parameter down, as well as user rights checking.
-     *
-     * @throws IOException in case there was an error writing to the Writer
-     *                     output object.
-     */
-    protected void serializeContentToXML (XmlWriter xmlWriter,
-                                          XMLSerializationOptions xmlSerializationOptions,
-                                          ContentObjectEntryState entryState,
-                                          ProcessingContext processingContext) throws java.io.IOException {
-        try {
-            //String result = FormDataManager.formDecode(getDBValue(entryState));
-            String result = getDBValue (entryState);
-            xmlWriter.writeText (result);
-        } catch (JahiaException je) {
-            logger.debug ("Error while serializing small text field to XML : ", je);
-        }
     }
 
 }

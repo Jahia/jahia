@@ -16,35 +16,36 @@
  */
 package org.jahia.ajax.gwt.client.widget.node;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Events;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.binder.TreeBinder;
+import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.dnd.DND;
+import com.extjs.gxt.ui.client.dnd.TreeDragSource;
+import com.extjs.gxt.ui.client.dnd.TreeDropTarget;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.tree.TreeItem;
 import com.extjs.gxt.ui.client.widget.tree.Tree;
-import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.binder.TreeBinder;
-import com.extjs.gxt.ui.client.Events;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.tree.TreeItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
+import org.jahia.ajax.gwt.client.util.nodes.actions.FileActions;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeBinder;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
 import org.jahia.ajax.gwt.client.util.tree.PreviousPathsOpener;
 import org.jahia.ajax.gwt.client.util.tree.TreeOpener;
+import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.List;
 
 /**
  * User: rfelden
@@ -155,6 +156,25 @@ public class RepositoryTab extends ContentPanel {
 
     public void init() {
         loader.load() ;
+
+        TreeDragSource source = new TreeDragSource(binder);
+        source.addDNDListener(getLinker().getDndListener());
+
+        TreeDropTarget target = new TreeDropTarget(binder) {
+            @Override
+            protected void handleInsert(DNDEvent event, TreeItem item) {
+                super.handleAppend(event, item);
+            }
+
+            @Override
+            protected void handleAppendDrop(DNDEvent event, TreeItem item) {
+                FileActions.move(getLinker(), (List<GWTJahiaNode>) event.data, (GWTJahiaNode) item.getModel());
+                super.handleAppendDrop(event, item);
+            }
+        };
+        target.setFeedback(DND.Feedback.BOTH);
+        target.setAllowSelfAsSource(true);
+        target.setAutoExpand(true);
     }
 
     public void expandAllPreviousPaths() {

@@ -16,30 +16,30 @@
  */
 package org.jahia.ajax.gwt.client.util.nodes.actions;
 
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
-import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
-import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
-import org.jahia.ajax.gwt.client.util.nodes.CopyPasteEngine;
-import org.jahia.ajax.gwt.client.widget.node.*;
-import org.jahia.ajax.gwt.client.widget.node.portlet.PortletWizardWindow;
-import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
-import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
+import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
+import org.jahia.ajax.gwt.client.util.nodes.CopyPasteEngine;
+import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
+import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
+import org.jahia.ajax.gwt.client.widget.node.*;
+import org.jahia.ajax.gwt.client.widget.node.portlet.PortletWizardWindow;
+import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -143,6 +143,33 @@ public class FileActions {
                 }
             });
         }
+    }
+
+
+    public static void move(final BrowserLinker linker, final List<GWTJahiaNode> sources, GWTJahiaNode target) {
+        service.paste(sources, target.getPath(), true, new AsyncCallback() {
+            public void onFailure(Throwable throwable) {
+                Window.alert("Paste failed :\n" + throwable.getLocalizedMessage());
+                linker.loaded();
+            }
+
+            public void onSuccess(Object o) {
+                boolean refreshAll = false;
+                for (GWTJahiaNode n : sources) {
+                    if (!n.isFile()) {
+                        refreshAll = true;
+                        break;
+                    }
+                }
+
+                linker.loaded();
+                if (refreshAll) {
+                    linker.refreshAll();
+                } else {
+                    linker.refreshTable();
+                }
+            }
+        });
     }
 
     public static void upload(final BrowserLinker linker) {

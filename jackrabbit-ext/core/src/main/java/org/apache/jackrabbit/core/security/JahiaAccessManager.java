@@ -18,7 +18,6 @@ package org.apache.jackrabbit.core.security;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,8 +30,6 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.security.auth.Subject;
 
@@ -348,7 +345,8 @@ public class JahiaAccessManager implements AccessManager {
 
 
     public boolean match(int permission, String privilege) {
-        return (permissions.get(privilege) & permission) != 0; 
+        Integer foundPermission = permissions.get(privilege);
+        return foundPermission != null && (foundPermission & permission) != 0;
     }
 
     public static synchronized Repository getRepository() throws NamingException {

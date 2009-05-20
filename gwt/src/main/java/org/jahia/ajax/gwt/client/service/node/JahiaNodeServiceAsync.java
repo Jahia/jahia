@@ -16,16 +16,15 @@
  */
 package org.jahia.ajax.gwt.client.service.node;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.node.*;
 
 import java.util.List;
 import java.util.Map;
-
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.node.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -100,6 +99,10 @@ public interface JahiaNodeServiceAsync {
     void resizeImage(String path, String target, int width, int height, boolean forceReplace, AsyncCallback async);
 
     void rotateImage(String path, String target, boolean clockwise, boolean forceReplace, AsyncCallback async);
+
+    void activateVersioning(List<String> path, AsyncCallback async);
+
+    void getVersions(String path, AsyncCallback<List<GWTJahiaNodeVersion>> async);
 
     void createPortletInstance(String path, GWTJahiaNewPortletInstance wiz, AsyncCallback<GWTJahiaNode> async);
 

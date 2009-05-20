@@ -189,24 +189,27 @@ public class FileActions {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selection = selectedItems.get(0);
-            if (selection != null && selection.isFile().booleanValue()) {
-                linker.loading(Messages.getResource("fm_downloading"));
-                String url = selection.getUrl();
-                if (url != null) {
-                    HTML link = new HTML(Messages.getResource("fm_downloadMessage") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + selection.getName() + "</a>");
-                    final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
-                    dl.setModal(true);
-                    dl.setHeading(Messages.getResource("fm_download"));
-                    dl.setLayout(new FlowLayout());
-                    dl.setScrollMode(Style.Scroll.AUTO);
-                    dl.add(link);
-                    dl.setHeight(120);
-                    dl.show();
-                } else {
-                    Window.alert(Messages.getResource("fm_failDownload"));
-                }
-                linker.loaded();
+            download(linker, selection, selection.getUrl());
+        }
+    }
+
+    public static void download(BrowserLinker linker, GWTJahiaNode selection, String url) {
+        if (selection != null && selection.isFile().booleanValue()) {
+            linker.loading(Messages.getResource("fm_downloading"));
+            if (url != null) {
+                HTML link = new HTML(Messages.getResource("fm_downloadMessage") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + selection.getName() + "</a>");
+                final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
+                dl.setModal(true);
+                dl.setHeading(Messages.getResource("fm_download"));
+                dl.setLayout(new FlowLayout());
+                dl.setScrollMode(Style.Scroll.AUTO);
+                dl.add(link);
+                dl.setHeight(120);
+                dl.show();
+            } else {
+                Window.alert(Messages.getResource("fm_failDownload"));
             }
+            linker.loaded();
         }
     }
 

@@ -16,26 +16,26 @@
  */
 package org.jahia.services.content;
 
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.webdav.UsageEntry;
-import org.jahia.data.fields.JahiaField;
 import org.jahia.data.containers.JahiaContainer;
+import org.jahia.data.fields.JahiaField;
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.webdav.UsageEntry;
 
 import javax.jcr.*;
-import javax.jcr.lock.LockException;
 import javax.jcr.lock.Lock;
+import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeDefinition;
-import javax.jcr.version.VersionException;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.version.Version;
+import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
-import java.util.*;
 import java.io.InputStream;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -283,8 +283,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getVersions();
     }
 
-    public JCRNodeWrapper getVersion(String name) {
-        return node.getVersion(name);
+    public JCRNodeWrapper getFrozenVersion(String name) {
+        return node.getFrozenVersion(name);
     }
 
     public JCRStoreProvider getJCRProvider() {

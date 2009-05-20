@@ -16,26 +16,25 @@
  */
 package org.jahia.ajax.gwt.filemanagement.server;
 
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
-
-import java.io.*;
-import java.util.List;
-import java.util.Map;
-
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
-import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
+import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
 import org.jahia.ajax.gwt.filemanagement.server.helper.FileManagerWorker;
-import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
+import org.jahia.ajax.gwt.filemanagement.server.helper.JCRVersioningHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
@@ -44,9 +43,13 @@ import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
-import org.apache.log4j.Logger;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+
+import javax.jcr.RepositoryException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -324,6 +327,19 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
         try {
             return FileManagerWorker.searchPortlets(retrieveParamBean());
         } catch (Exception e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+    public void activateVersioning(List<String> path) throws GWTJahiaServiceException {
+        JCRVersioningHelper.activateVersioning(path, retrieveParamBean());
+    }
+
+    public List<GWTJahiaNodeVersion> getVersions(String path) throws GWTJahiaServiceException {
+        try {
+            JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
+            return JCRVersioningHelper.getVersions(jcr.getThreadSession(getUser()).getNode(path), retrieveParamBean());
+        } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }

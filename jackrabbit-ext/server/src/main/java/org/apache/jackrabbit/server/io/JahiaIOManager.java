@@ -58,6 +58,8 @@ public class JahiaIOManager extends IOManagerImpl {
      * </ul>
      */
     protected void init() {
+        addIOHandler(new VersionHandler(this));
+        addIOHandler(new VersionHistoryHandler(this));
         addIOHandler(new DirListingExportHandler(this));
         addIOHandler(new ExtraContentHandler(this));
         addIOHandler(new SymLinkHandler(this));

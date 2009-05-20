@@ -816,6 +816,8 @@ FRAG2(frag_size=60000)</value>
                         <entry key="jnt:mountPoint" value="org.jahia.services.content.JCRMountPointNode"/>
                         <entry key="jnt:jahiacontent" value="org.jahia.services.content.JCRJahiaContentNode"/>
                         <entry key="jnt:layout" value="org.jahia.services.content.JCRLayoutNode"/>
+                        <entry key="nt:version" value="org.jahia.services.content.JCRVersion"/>
+                        <entry key="nt:versionHistory" value="org.jahia.services.content.JCRVersionHistory"/>
 
                         <entry key="jnt:simplePreference" value="org.jahia.services.preferences.generic.GenericJahiaPreference"/>
                         <entry key="jnt:pagePreference" value="org.jahia.services.preferences.page.PageJahiaPreference"/>

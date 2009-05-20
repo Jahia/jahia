@@ -16,21 +16,20 @@
  */
 package org.jahia.ajax.gwt.client.service.node;
 
-import java.util.List;
-import java.util.Map;
-
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.node.*;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.util.URL;
-
+import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.node.*;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.util.URL;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -119,6 +118,10 @@ public interface JahiaNodeService extends RemoteService {
     public void resizeImage(String path, String target, int width, int height, boolean forceReplace) throws GWTJahiaServiceException;
 
     public void rotateImage(String path, String target, boolean clockwise, boolean forceReplace) throws GWTJahiaServiceException;
+
+    public void activateVersioning(List<String> path) throws GWTJahiaServiceException;
+
+    public List<GWTJahiaNodeVersion> getVersions(String path) throws GWTJahiaServiceException;
 
     public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz) throws GWTJahiaServiceException;
 

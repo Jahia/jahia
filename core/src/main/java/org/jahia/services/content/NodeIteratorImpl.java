@@ -16,8 +16,6 @@
  */
 package org.jahia.services.content;
 
-import org.jahia.services.content.RangeIteratorImpl;
-
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import java.util.Iterator;

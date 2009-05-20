@@ -16,23 +16,6 @@
  */
 package org.apache.jackrabbit.core.security;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.jcr.AccessDeniedException;
-import javax.jcr.Item;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.naming.NamingException;
-import javax.security.auth.Subject;
-
 import org.apache.jackrabbit.core.HierarchyManager;
 import org.apache.jackrabbit.core.ItemId;
 import org.apache.jackrabbit.core.PropertyId;
@@ -48,6 +31,16 @@ import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
 import org.jahia.api.Constants;
 import org.jahia.api.user.JahiaUserService;
 import org.jahia.jaas.JahiaPrincipal;
+
+import javax.jcr.*;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionHistory;
+import javax.naming.NamingException;
+import javax.security.auth.Subject;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -194,13 +187,26 @@ public class JahiaAccessManager implements AccessManager {
             }
 
             String site = null;
-            
+
             int depth = 1;
             while (!s.itemExists(jcrPath)) {
                 jcrPath = pr.getJCRPath(absPath.getAncestor(depth++));
             }
 
             Item i = s.getItem(jcrPath);
+
+            if (i instanceof Version) {
+                i = ((Version)i).getContainingHistory();
+            }
+            if (i instanceof VersionHistory) {
+                PropertyIterator pi = ((VersionHistory)i).getReferences();
+                if (pi.hasNext()) {
+                    Property p = pi.nextProperty();
+                    i = p.getParent();
+                    jcrPath = i.getPath();
+                }
+            }
+
             try {
                 while ( !i.isNode() || !((Node)i).isNodeType("jnt:virtualsite") ) {
                     i = i.getParent();

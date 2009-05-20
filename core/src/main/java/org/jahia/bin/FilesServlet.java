@@ -16,30 +16,29 @@
  */
 package org.jahia.bin;
 
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.params.ProcessingContextFactory;
-import org.jahia.params.ProcessingContext;
-import org.jahia.exceptions.JahiaException;
+import org.apache.commons.io.IOUtils;
+import org.apache.jackrabbit.util.Text;
+import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.params.ProcessingContext;
+import org.jahia.params.ProcessingContextFactory;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRFileContent;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheFactory;
+import org.jahia.services.content.JCRFileContent;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaUser;
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
-import org.apache.jackrabbit.util.Text;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletConfig;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ByteArrayInputStream;
 import java.util.Date;
 
 /**
@@ -98,7 +97,18 @@ public class FilesServlet extends HttpServlet {
 
         JCRNodeWrapper n = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(p, jahiaUser);
 
-        if (n.isFile()) {
+        boolean valid = false;
+        String v = req.getParameter("v");
+        if (v != null) {
+            n = n.getFrozenVersion(v);
+            if (n != null) {
+                valid = true;
+            }
+        } else {
+            valid = n.isFile();
+        }
+
+        if (valid) {
             // check presence of the 'If-Modified-Since' header
             long modifiedSince = req.getDateHeader("If-Modified-Since");
             Date lastModified = n.getLastModifiedAsDate();
@@ -121,13 +131,13 @@ public class FilesServlet extends HttpServlet {
             InputStream is = null;
 
             if (contentLength < cacheThreshold) {
-
-                byte[] b = (byte[]) cache.get(p);
+                String cacheKey = p + ":" + (v==null ? "0" : v);
+                byte[] b = (byte[]) cache.get(cacheKey);
                 if (b == null) {
                     is = fileContent.downloadFile();
                     b = new byte[contentLength];
                     is.read(b);
-                    cache.put(p, b);
+                    cache.put(p, cacheKey);
                     IOUtils.closeQuietly(is);
                 }
                 is = new ByteArrayInputStream(b);

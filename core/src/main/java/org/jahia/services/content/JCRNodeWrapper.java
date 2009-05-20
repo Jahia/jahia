@@ -16,6 +16,7 @@
  */
 package org.jahia.services.content;
 
+import org.jahia.api.Constants;
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.files.JahiaFileField;
@@ -23,21 +24,20 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
-import org.jahia.api.Constants;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.jcr.ItemExistsException;
+import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.io.InputStream;
 
 /**
  *
@@ -180,7 +180,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     List<String> getVersions();
 
-    JCRNodeWrapper getVersion(String name);
+    JCRNodeWrapper getFrozenVersion(String name);
 
     JCRStoreProvider getJCRProvider();
 

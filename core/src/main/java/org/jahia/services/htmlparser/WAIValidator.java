@@ -387,18 +387,36 @@ public class WAIValidator {
             srcText = src.getNodeValue();
         }
 
-        final Node width = node.getAttributes().getNamedItem("width");
-        final Node height = node.getAttributes().getNamedItem("height");
+        String width = node.getAttribute("width");
+        String height = node.getAttribute("height");
 
         int widthValue = -1;
         int heightValue = -1;
-
-        if (width != null && height != null) {
+        if (width != null && width.length() > 0 && height != null && height.length() > 0) {
             try {
-                widthValue = Integer.parseInt(width.getNodeValue());
-                heightValue = Integer.parseInt(height.getNodeValue());
+                widthValue = Integer.parseInt(width);
+                heightValue = Integer.parseInt(height);
             } catch (NumberFormatException nfe) {
                 // Ignore
+            }
+        }
+        if (widthValue == -1 || heightValue == -1) {
+            // try out style attribute
+            String style = node.getAttribute("style");
+            if (style != null && style.length() > 0) {
+                style = style.toLowerCase();
+                if (style.contains("height:") && style.contains("width:")) {
+                    height = StringUtils.substringBetween(style, "height:", "px");
+                    width = StringUtils.substringBetween(style, "width:", "px");
+                    if (width != null && width.length() > 0 && height != null && height.length() > 0) {
+                        try {
+                            widthValue = Integer.parseInt(width.trim());
+                            heightValue = Integer.parseInt(height.trim());
+                        } catch (NumberFormatException nfe) {
+                            // Ignore
+                        }
+                    }
+                }
             }
         }
 
@@ -966,13 +984,13 @@ public class WAIValidator {
                 if (!shrinkImage) buff.append("<div class='imageWrapper'>");
                 buff.append("<img border='0' ");
                 if (shrinkImage) {
-                    final int tbWidth;
-                    final int tbHeight;
-                    if (width > height) {
+                    int tbWidth = width;
+                    int tbHeight = height;
+                    if (width > height && width > 100) {
                         tbWidth = 100;
                         tbHeight = (tbWidth * height) / width;
 
-                    } else {
+                    } else if (height > 100) {
                         tbHeight = 100;
                         tbWidth = (tbHeight * width) / height;
                     }

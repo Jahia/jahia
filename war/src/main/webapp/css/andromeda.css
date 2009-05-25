@@ -1645,3 +1645,9 @@ font-weight:bold
 color: #f90;
 font-weight:bold
 }
+
+#content .imageWrapper {
+    height: 100px;
+    width: 100px;
+    overflow: hidden;
+}

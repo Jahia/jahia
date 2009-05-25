@@ -628,14 +628,6 @@
                                 </jahia:page>
                             </navLink>
                         </navLink>
-                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="7876f08c-70e9-4b0c-936d-0ec8ff88bfd8" jahia:originalUuid="8a89d6c0-ac2d-46b9-bd9e-89a38ee96673" jcr:lastModified="2009-01-28T17:19:18" jahia:createdBy="root" jcr:created="2009-01-28T17:19:18" jahia:lastModifiedBy="root">
-                            <navLink jcr:uuid="046f4b8b-bda4-4bdd-8379-fc6ee806aaf0" jahia:originalUuid="9f043671-d83b-4d0c-99e3-dfa277cc552a">
-                                <jahia:page jahia:template="SearchExample" jcr:primaryType="test_templates:generic" jahia:pageKey="search-example" jahia:title="Search example" jcr:uuid="9a7534a4-9515-46a1-ab21-d6eae996722f" jahia:originalUuid="971fc762-9fa2-4164-b68e-e85ae284f854" jcr:lastModified="2009-01-28T17:19:18" jahia:createdBy="root" jcr:created="2009-01-28T17:19:18" jahia:lastModifiedBy="root" jahia:pid="192">
-                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="9fc881a2-1525-4fee-9b7b-e2d2fd5f0a52" jahia:originalUuid="b47eb716-b314-4293-b622-c6ba3d949b81" jcr:lastModified="2009-01-28T17:19:18" jahia:createdBy="root" jcr:created="2009-01-28T17:19:18" jahia:lastModifiedBy="root"></navLinkList>
-                                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="d229d228-81a9-42e4-8aee-df72ab685ab9" jahia:originalUuid="7af19093-0dbf-44d8-86d4-586a7b85e8a3" jcr:lastModified="2009-01-28T17:19:18" jahia:createdBy="root" jcr:created="2009-01-28T17:19:18" jahia:lastModifiedBy="root"></maincontentList>
-                                </jahia:page>
-                            </navLink>
-                        </navLink>
                         <navLink jcr:primaryType="jnt:navLink" jcr:uuid="37c6cd42-2821-4379-869c-3a91521df139" jahia:originalUuid="57f76d78-c1cc-4f5a-8dc7-789ffd580fed" jcr:lastModified="2009-01-28T17:19:18" jahia:createdBy="root" jcr:created="2009-01-28T17:19:18" jahia:lastModifiedBy="root">
                             <navLink jcr:uuid="a136fa60-2400-4000-9080-d774cab78801" jahia:originalUuid="add39fb6-f43d-4ef5-ab53-65e4d1c3af68">
                                 <jahia:page jahia:template="OpenSearch" jcr:primaryType="test_templates:opensearch" jahia:pageKey="opensearch" jahia:title="Open Search" jcr:uuid="45a61efb-1339-4ca1-9214-2c8a64465c8f" jahia:originalUuid="67f61faa-76ae-4ce9-9a56-7dcdd03907d8" jcr:lastModified="2009-01-28T17:19:18" jahia:createdBy="root" jcr:created="2009-01-28T17:19:18" jahia:lastModifiedBy="root" jahia:pid="193">

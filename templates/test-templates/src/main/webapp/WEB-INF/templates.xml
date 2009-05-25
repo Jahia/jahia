@@ -60,9 +60,6 @@
         <template name="SearchAllOptions" display-name="template.name.searchAllOptions"
                   filename="search/searchFormAllOptions.jsp" page-type="test_templates:generic"
                   description="description.template.searchAllOptions"/>
-        <template name="SearchExample" display-name="template.name.searchExample"
-                  filename="search/searchFormExample.jsp" page-type="test_templates:generic"
-                  description="description.template.searchExample"/>
         <template name="MultilingualSearch" display-name="template.name.multilingualSearch"
                   filename="search/multilingual_search.jsp" page-type="test_templates:multilingualSearch"
                   description="description.template.multilingualSearch"/>

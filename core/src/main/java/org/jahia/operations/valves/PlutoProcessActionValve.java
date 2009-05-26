@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.operations.valves;
+package org.jahia.operations.valves;
 
 import java.util.Enumeration;
 
@@ -57,6 +57,7 @@ import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.pluto.JahiaUserRequestWrapper;
+import org.jahia.services.applications.pluto.JahiaPortletUtil;
 import org.jahia.services.cache.CacheKeyGeneratorService;
 import org.jahia.services.cache.CacheService;
 
@@ -94,82 +95,86 @@ public class PlutoProcessActionValve implements Valve {
             final ParamBean jParams = ((ParamBean) processingContext);
             JahiaUserRequestWrapper request = new JahiaUserRequestWrapper(jParams.getUser(), jParams.getRequest());
             HttpServletResponse response = jParams.getResponse();
-                PortalRequestContext portalRequestContext =
-                    new PortalRequestContext(((ParamBean)processingContext).getContext(), request, response);
+            PortalRequestContext portalRequestContext =
+                    new PortalRequestContext(((ParamBean) processingContext).getContext(), request, response);
 
-                PortalURL portalURL = portalRequestContext.getRequestedPortalURL();
-                String actionWindowId = portalURL.getActionWindow();
-                String resourceWindowId = portalURL.getResourceWindow();
+            PortalURL portalURL = portalRequestContext.getRequestedPortalURL();
+            String actionWindowId = portalURL.getActionWindow();
+            String resourceWindowId = portalURL.getResourceWindow();
 
-                PortletWindowConfig actionWindowConfig = null;
-                PortletWindowConfig resourceWindowConfig = null;
+            PortletWindowConfig actionWindowConfig = null;
+            PortletWindowConfig resourceWindowConfig = null;
 
-                if (resourceWindowId != null){
-                    resourceWindowConfig = PortletWindowConfig.fromId(resourceWindowId);
-                } else if(actionWindowId != null){
-                     actionWindowConfig = PortletWindowConfig.fromId(actionWindowId);
+            if (resourceWindowId != null) {
+                resourceWindowConfig = PortletWindowConfig.fromId(resourceWindowId);
+            } else if (actionWindowId != null) {
+                actionWindowConfig = PortletWindowConfig.fromId(actionWindowId);
+            }
+
+            // Action window config will only exist if there is an action request.
+            if (actionWindowConfig != null) {
+                flushPortletCache(processingContext, jParams, actionWindowConfig);
+                PortletWindowImpl portletWindow = new PortletWindowImpl(
+                        actionWindowConfig, portalURL);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Processing action request for window: "
+                            + portletWindow.getId().getStringId());
                 }
 
-                // Action window config will only exist if there is an action request.
-                if (actionWindowConfig != null) {
-                    flushPortletCache(processingContext, jParams, actionWindowConfig);
-                    PortletWindowImpl portletWindow = new PortletWindowImpl(
-                            actionWindowConfig, portalURL);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Processing action request for window: "
-                                + portletWindow.getId().getStringId());
-                    }
+                EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(actionWindowConfig.getMetaInfo());
+                if (entryPointInstance != null) {
+                    request.setEntryPointInstance(entryPointInstance);
+                } else {
+                    logger.warn("Couldn't find related entryPointInstance, roles might not work properly !");
+                }
+                copyAttribute("org.jahia.data.JahiaData", jParams, request, portletWindow);
+                copyAttribute("currentRequest", jParams, request, portletWindow);
+                copyAttribute("currentSite", jParams, request, portletWindow);
+                copyAttribute("currentPage", jParams, request, portletWindow);
+                copyAttribute("currentUser", jParams, request, portletWindow);
+                copyAttribute("currentJahia", jParams, request, portletWindow);
+                JahiaPortletUtil.copySharedMapFromJahiaToPortlet(jParams, request, portletWindow,true);
 
-                    EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(actionWindowConfig.getMetaInfo());
-                    if (entryPointInstance != null) {
-                        request.setEntryPointInstance(entryPointInstance);
-                    } else {
-                        logger.warn("Couldn't find related entryPointInstance, roles might not work properly !");
-                    }
-                    copyAttribute("org.jahia.data.JahiaData", jParams, request, portletWindow);
-                    copyAttribute("currentRequest", jParams, request, portletWindow);
-                    copyAttribute("currentSite", jParams, request, portletWindow);
-                    copyAttribute("currentPage", jParams, request, portletWindow);
-                    copyAttribute("currentUser", jParams, request, portletWindow);
-                    copyAttribute("currentJahia", jParams, request, portletWindow);
-                    try {
-                        container.doAction(portletWindow, request, jParams.getResponse());
-                    } catch (PortletContainerException ex) {
-                        throw new ServletException(ex);
-                    } catch (PortletException ex) {
-                        throw new ServletException(ex);
-                    }
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Action request processed.\n\n");
-                    }
-                    return;
+
+                try {
+                    container.doAction(portletWindow, request, jParams.getResponse());
+                    JahiaPortletUtil.copySharedMapFromPortletToJahia(jParams,request,portletWindow);
+                } catch (PortletContainerException ex) {
+                    throw new ServletException(ex);
+                } catch (PortletException ex) {
+                    throw new ServletException(ex);
                 }
-                //Resource request
-                else if (resourceWindowConfig != null) {
-                    try {
-                        if (request.getParameterNames().hasMoreElements())
-                            setPublicRenderParameter(container, request, portalURL, portalURL.getResourceWindow());
-                    } catch (PortletContainerException e) {
-                        logger.warn(e);
-                    }
-                    PortletWindowImpl portletWindow = new PortletWindowImpl(
-                                       resourceWindowConfig, portalURL);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Processing resource Serving request for window: "
-                                       + portletWindow.getId().getStringId());
-                    }
-                    try {
-                        container.doServeResource(portletWindow, request, jParams.getRealResponse());
-                    } catch (PortletContainerException ex) {
-                        throw new ServletException(ex);
-                    } catch (PortletException ex) {
-                        throw new ServletException(ex);
-                    }
-                    if (logger.isDebugEnabled()) {
-                       logger.debug("Action request processed.\n\n");
-                    }
-                    return;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Action request processed.\n\n");
                 }
+                return;
+            }
+            //Resource request
+            else if (resourceWindowConfig != null) {
+                try {
+                    if (request.getParameterNames().hasMoreElements())
+                        setPublicRenderParameter(container, request, portalURL, portalURL.getResourceWindow());
+                } catch (PortletContainerException e) {
+                    logger.warn(e);
+                }
+                PortletWindowImpl portletWindow = new PortletWindowImpl(
+                        resourceWindowConfig, portalURL);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Processing resource Serving request for window: "
+                            + portletWindow.getId().getStringId());
+                }
+                try {
+                    container.doServeResource(portletWindow, request, jParams.getRealResponse());
+                } catch (PortletContainerException ex) {
+                    throw new ServletException(ex);
+                } catch (PortletException ex) {
+                    throw new ServletException(ex);
+                }
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Action request processed.\n\n");
+                }
+                return;
+            }
         } catch (Exception t) {
             logger.error("Error while processing action", t);
         } finally {
@@ -179,6 +184,14 @@ public class PlutoProcessActionValve implements Valve {
         valveContext.invokeNext(context);
     }
 
+    /**
+     * Flush the portlet Cache
+     *
+     * @param processingContext
+     * @param jParams
+     * @param actionWindowConfig
+     * @throws JahiaException
+     */
     private void flushPortletCache(ProcessingContext processingContext, ParamBean jParams, PortletWindowConfig actionWindowConfig) throws JahiaException {
         String cacheKey = null;
         // Check if cache is available for this portlet
@@ -195,39 +208,96 @@ public class PlutoProcessActionValve implements Valve {
                 processingContext.getScheme()));
     }
 
+    /**
+     * Acces method for the CacheInstance
+     *
+     * @param cacheInstance
+     */
     public void setCacheInstance(CacheService cacheInstance) {
         this.cacheInstance = cacheInstance;
     }
 
+    /**
+     * Acces method for the CacheKeyGeneratorService
+     *
+     * @param cacheKeyGeneratorService
+     */
     public void setCacheKeyGeneratorService(CacheKeyGeneratorService cacheKeyGeneratorService) {
         this.cacheKeyGeneratorService = cacheKeyGeneratorService;
     }
 
-    private void setPublicRenderParameter(PortletContainer container, HttpServletRequest request, PortalURL portalURL, String portletID)throws ServletException, PortletContainerException {
-		String applicationId = PortletWindowConfig.parseContextPath(portletID);
-		String portletName = PortletWindowConfig.parsePortletName(portletID);
-		PortletDD portletDD = container.getOptionalContainerServices().getPortletRegistryService()
-								.getPortletDescriptor(applicationId, portletName);
-		Enumeration<?> parameterNames = request.getParameterNames();
-		if (parameterNames != null){
-			while(parameterNames.hasMoreElements()){
-				String parameterName = (String)parameterNames.nextElement();
-				if (portletDD.getPublicRenderParameter() != null){
-					if (portletDD.getPublicRenderParameter().contains(parameterName)){
-						String value = request.getParameter(parameterName);
-						portalURL.addPublicParameterActionResourceParameter(parameterName, value);
-					}
-				}
-			}
-		}
+    /**
+     * Set public render parameter or the portal URL
+     *
+     * @param container
+     * @param request
+     * @param portalURL
+     * @param portletID
+     * @throws ServletException
+     * @throws PortletContainerException
+     */
+    private void setPublicRenderParameter(PortletContainer container, HttpServletRequest request, PortalURL portalURL, String portletID) throws ServletException, PortletContainerException {
+        String applicationId = PortletWindowConfig.parseContextPath(portletID);
+        String portletName = PortletWindowConfig.parsePortletName(portletID);
+        PortletDD portletDD = container.getOptionalContainerServices().getPortletRegistryService()
+                .getPortletDescriptor(applicationId, portletName);
+        Enumeration<?> parameterNames = request.getParameterNames();
+        if (parameterNames != null) {
+            while (parameterNames.hasMoreElements()) {
+                String parameterName = (String) parameterNames.nextElement();
+                if (portletDD.getPublicRenderParameter() != null) {
+                    if (portletDD.getPublicRenderParameter().contains(parameterName)) {
+                        String value = request.getParameter(parameterName);
+                        portalURL.addPublicParameterActionResourceParameter(parameterName, value);
+                    }
+                }
+            }
+        }
     }
-    
+
+    /**
+     * Copy jahia request attibute in portlet request attribute
+     *
+     * @param attributeName
+     * @param processingContext
+     * @param portalRequest
+     * @param window
+     */
     private void copyAttribute(String attributeName, ProcessingContext processingContext, HttpServletRequest portalRequest, PortletWindow window) {
-        Object objectToCopy = processingContext.getAttribute(attributeName);
-        if (objectToCopy != null) {
-            portalRequest.setAttribute("Pluto_" + window.getId().getStringId() + "_" + attributeName, objectToCopy);
+        copyAttribute(attributeName, processingContext, portalRequest, window, null, false);
+    }
+
+    /**
+     * Copy jahia session or request attribute into the portalRequest.
+     *
+     * @param attributeName
+     * @param processingContext
+     * @param portalRequest
+     * @param window
+     * @param fromSession       true means that the attribute is in  Jahia Session else it's taked from the request
+     */
+    private void copyAttribute(String attributeName, ProcessingContext processingContext, HttpServletRequest portalRequest, PortletWindow window, Object defaultValue, boolean fromSession) {
+        Object objectToCopy;
+        if (fromSession) {
+            // get from session
+            objectToCopy = processingContext.getSessionState().getAttribute(attributeName);
+            if (objectToCopy == null) {
+                objectToCopy = defaultValue;
+                processingContext.getSessionState().setAttribute(attributeName, objectToCopy);
+            }
+        } else {
+            // get from request
+            objectToCopy = processingContext.getAttribute(attributeName);
+            if (objectToCopy == null) {
+                objectToCopy = defaultValue;
+                processingContext.setAttribute(attributeName, objectToCopy);
+            }
         }
 
-    }
+        // add in the request attribute
+        portalRequest.setAttribute("Pluto_" + window.getId().getStringId() + "_" + attributeName, objectToCopy);
 
+    }
 }
+
+

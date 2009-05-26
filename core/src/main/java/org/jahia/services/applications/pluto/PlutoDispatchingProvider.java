@@ -51,9 +51,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.DispatchingProvider;
 import org.jahia.services.cache.ContainerHTMLCacheEntry;
 import org.jahia.services.cache.ContainerHTMLCache;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.bin.Jahia;
-import org.jahia.ajax.gwt.client.core.JahiaType;
 
 import javax.portlet.WindowState;
 import javax.portlet.MimeResponse;
@@ -122,7 +120,7 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
         ServletContext servletContext = jParams.getContext();
 
         final String defName = entryPointInstance.getDefName();
-        PortletWindowConfig windowConfig =  PortletWindowConfig.fromId((defName.startsWith(".") ? "/" : "") + defName + "!" + windowID);
+        PortletWindowConfig windowConfig = PortletWindowConfig.fromId((defName.startsWith(".") ? "/" : "") + defName + "!" + windowID);
         windowConfig.setContextPath(entryPointInstance.getContextName());
         if (logger.isDebugEnabled()) {
             logger.debug("Rendering Portlet Window: " + windowConfig);
@@ -148,7 +146,8 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
 
         // Create portal servlet request and response to wrap the original
         // HTTP servlet request and response.
-        PortalServletRequest portalRequest = new JahiaPortalServletRequest(entryPointInstance,jParams.getUser(), (HttpServletRequest) jParams.getRealRequest(), window);
+        PortalServletRequest portalRequest = new JahiaPortalServletRequest(entryPointInstance, jParams.getUser(), (HttpServletRequest) jParams.getRealRequest(), window);
+
         // todo we should only add these if we are dispatching in the same context as Jahia.
         copyAttribute("org.jahia.data.JahiaData", jParams, portalRequest, window);
         copyAttribute("currentRequest", jParams, portalRequest, window);
@@ -159,6 +158,7 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
         copyAttribute("jahia", jParams, portalRequest, window);
         copyAttribute("fieldId", jParams, portalRequest, window);
         copyNodeProperties(entryPointInstance, jParams, window, portalRequest);
+        JahiaPortletUtil.copySharedMapFromJahiaToPortlet(jParams, portalRequest, window,false);
 
 
         portalRequest.setAttribute("Pluto_" + window.getId().getStringId() + "_EntryPointInstance", entryPointInstance);
@@ -185,6 +185,7 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
 
     /**
      * Copy node properties into request attribute
+     *
      * @param entryPointInstance
      * @param jParams
      * @param window
@@ -218,12 +219,13 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
 
     /**
      * convert Values[] jcr object to Object[]
+     *
      * @param val
      * @return
      * @throws RepositoryException
      */
     private Object convertValues(Value val[]) throws RepositoryException {
-        if(val == null){
+        if (val == null) {
             return null;
         }
         Object[] o = new Object[val.length];
@@ -235,13 +237,14 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
 
     /**
      * Convert Value jcr object to Object
+     *
      * @param val
      * @return
      * @throws RepositoryException
      */
     private Object convertValue(Value val) throws RepositoryException {
         Object theValue;
-        if(val == null){
+        if (val == null) {
             return null;
         }
         switch (val.getType()) {
@@ -281,11 +284,48 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
         return theValue;
     }
 
-    private void copyAttribute(String attributeName, ProcessingContext processingContext, PortalServletRequest portalRequest, PortletWindow window) {
-        Object objectToCopy = processingContext.getAttribute(attributeName);
-        if (objectToCopy != null) {
-            portalRequest.setAttribute("Pluto_" + window.getId().getStringId() + "_" + attributeName, objectToCopy);
+    /**
+     * Copy jahia request attibute in portlet request attribute
+     *
+     * @param attributeName
+     * @param processingContext
+     * @param portalRequest
+     * @param window
+     */
+    private void copyAttribute(String attributeName, ProcessingContext processingContext, HttpServletRequest portalRequest, PortletWindow window) {
+        copyAttribute(attributeName, processingContext, portalRequest, window, null, false);
+    }
+
+    /**
+     * Copy jahia session or request attribute into the portalRequest.
+     *
+     * @param attributeName
+     * @param processingContext
+     * @param portalRequest
+     * @param window
+     * @param fromSession       true means that the attribute is in  Jahia Session else it's taked from the request
+     */
+    private void copyAttribute(String attributeName, ProcessingContext processingContext, HttpServletRequest portalRequest, PortletWindow window, Object defaultValue, boolean fromSession) {
+        Object objectToCopy;
+        if (fromSession) {
+            // get from session
+            objectToCopy = processingContext.getSessionState().getAttribute(attributeName);
+            if (objectToCopy == null) {
+                objectToCopy = defaultValue;
+                processingContext.getSessionState().setAttribute(attributeName, objectToCopy);
+            }
+        } else {
+            // get from request
+            objectToCopy = processingContext.getAttribute(attributeName);
+            if (objectToCopy == null) {
+                objectToCopy = defaultValue;
+                processingContext.setAttribute(attributeName, objectToCopy);
+            }
         }
 
+        // add in the request attribute
+        portalRequest.setAttribute("Pluto_" + window.getId().getStringId() + "_" + attributeName, objectToCopy);
+
     }
+
 }

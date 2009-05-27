@@ -84,16 +84,14 @@ public class PropertyTag extends TagSupport {
             try {
                 NodeType type = NodeTypeRegistry.getInstance().getNodeType(ntname);
                 PropertyDefinition[] pds = type.getDeclaredPropertyDefinitions();
-                for (int i = 0; i < pds.length; i++) {
-                    PropertyDefinition pd = pds[i];
+                for (PropertyDefinition pd : pds) {
                     if (pd.getName().equals(propname)) {
                         pageContext.setAttribute(id, pd);
                         return EVAL_BODY_INCLUDE;
                     }
                 }
                 NodeDefinition[] nds = type.getDeclaredChildNodeDefinitions();
-                for (int i = 0; i < nds.length; i++) {
-                    NodeDefinition nd = nds[i];
+                for (NodeDefinition nd : nds) {
                     if (nd.getName().equals(propname)) {
                         pageContext.setAttribute(id, nd);
                         return EVAL_BODY_INCLUDE;

@@ -101,6 +101,8 @@
                   page-type="test_templates:form" description="description.template.form"/>
         <template name="Subscriptions" display-name="template.name.subscriptions" filename="miscellaneous/subscriptions.jsp"
                   page-type="test_templates:generic" description="description.template.subscriptions"/>
+        <template name="JCR Tags" display-name="template.name.jcr.tags" filename="jcr/tags.jsp"
+                  page-type="test_templates:generic" description="description.template.subscriptions"/>
                           
         <!-- remove inherited -->
         <template name="FAQ" display-name="template.name.faq" filename="faq.jsp" visible="false"

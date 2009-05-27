@@ -592,4 +592,26 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         return login(null, null);
     }
 
+    /**
+     * Check existence of a given path in the repository.
+     *
+     * @param path the path to check
+     * @param user the current user
+     * @return the node if it exists, null otherwise
+     * @throws javax.jcr.RepositoryException an exception occured while retrieving the node
+     */
+    public JCRNodeWrapper checkExistence(String path, JahiaUser user) throws RepositoryException {
+        try {
+            JCRNodeWrapper node = getThreadSession(user).getNode(path);
+            if (node != null && node.isValid()) {
+                return node;
+            }
+        } catch (RepositoryException e) {
+            if (!(e instanceof PathNotFoundException)) {
+                throw e;
+            }
+        }
+        return null;
+    }
+
 }

@@ -703,18 +703,11 @@ public class FileManagerWorker {
 
     public static boolean checkExistence(String path, JahiaUser user) throws GWTJahiaServiceException {
         try {
-            JCRNodeWrapper node = jcr.getThreadSession(user).getNode(path);
-            if (node != null && node.isValid()) {
-                return true;
-            }
+            return jcr.checkExistence(path, user) != null ;
         } catch (RepositoryException e) {
-            if (e instanceof PathNotFoundException) {
-                return false;
-            }
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException("Error:\n" + e.toString());
         }
-        return false;
     }
 
     public static void createFolder(String parentPath, String name, ProcessingContext context) throws GWTJahiaServiceException {

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <parent>
+    <groupId>org.jahia.server</groupId>
+    <artifactId>jahia-root</artifactId>
+    <version>6.1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>portlets</artifactId>
+  <name>Jahia bundled portlets</name>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>shared-map-RW</module>
+    <module>shared-map-ext-R</module>
+  </modules>
+
+  <dependencies>
+  </dependencies>
+
+</project>

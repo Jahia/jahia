@@ -154,6 +154,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <buildNumber>${buildNumber}</buildNumber>
+                    <finalName>Jahia_CE_v${jahia.package.version}</finalName>
                     <descriptors>
                         <descriptor>src/main/assembly/src.xml</descriptor>
                     </descriptors>

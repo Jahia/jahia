@@ -58,11 +58,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Serge Huber
+ * Implementation of the JCR's {@link Node} interface to represent repository hierarchy item.
+ * 
+ * @author Serge Huber
  * Date: 17 d�c. 2007
  * Time: 10:05:27
- * To change this template use File | Settings | File Templates.
  */
 public abstract class NodeImpl extends ItemImpl implements Node {
     protected ExtendedNodeType nodetype;
@@ -96,7 +96,7 @@ public abstract class NodeImpl extends ItemImpl implements Node {
             emptyProperties = new HashMap<String, Property>();
 
             initProperty(new PropertyImpl(session,this,
-                    NodeTypeRegistry.getInstance().getNodeType("nt:base").getPropertyDefinition(Constants.JCR_PRIMARYTYPE),
+                    NodeTypeRegistry.getInstance().getNodeType(Constants.NT_BASE).getPropertyDefinition(Constants.JCR_PRIMARYTYPE),
                     new ValueImpl(nodetype.getName(), PropertyType.NAME)));
         }
     }

@@ -100,6 +100,7 @@ public class Constants {
     public static final String JCR_PATH = "jcr:path";
     public static final String JCR_SCORE = "jcr:score";
     public static final String MIX_LOCKABLE = "mix:lockable";
+    public static final String MIX_MIMETYPE = "mix:mimeType";
     public static final String MIX_REFERENCEABLE = "mix:referenceable";
     public static final String MIX_VERSIONABLE = "mix:versionable";
     public static final String MIX_CREATED = "mix:created";

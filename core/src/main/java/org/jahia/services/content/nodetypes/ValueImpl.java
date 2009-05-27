@@ -46,11 +46,10 @@ import org.apache.jackrabbit.util.ISO8601;
 import org.apache.log4j.Logger;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Mar 20, 2008
- * Time: 10:53:10 AM
- * To change this template use File | Settings | File Templates.
+ * Implementation of the JCR's {@link Value} interface for holding property
+ * values of different types.
+ * 
+ * @author Thomas Draier
  */
 public class ValueImpl implements Value {
     

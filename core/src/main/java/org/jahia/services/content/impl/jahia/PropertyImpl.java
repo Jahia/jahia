@@ -56,25 +56,15 @@ public class PropertyImpl extends ItemImpl implements Property {
     protected String name;
 
     public PropertyImpl(SessionImpl session, Node node, ExtendedPropertyDefinition def, Value value) {
-        super(session);
-        this.node = node;
-        this.values = new Value[] {value};
-        this.def = def;
+        this(session, node, def, new Value[] {value});
     }
 
     public PropertyImpl(SessionImpl session, Node node, String name, ExtendedPropertyDefinition def, Value value) {
-        super(session);
-        this.node = node;
-        this.values = new Value[] {value};
-        this.name = name;
-        this.def = def;
+        this(session, node, name, def, new Value[] {value});
     }
 
     public PropertyImpl(SessionImpl session, Node node, ExtendedPropertyDefinition def, Value[] values) {
-        super(session);
-        this.node = node;
-        this.values = values;
-        this.def = def;
+        this(session, node, null, def, values);
     }
 
     public PropertyImpl(SessionImpl session, Node node, String name, ExtendedPropertyDefinition def, Value[] values) {
@@ -136,39 +126,27 @@ public class PropertyImpl extends ItemImpl implements Property {
     }
 
     public String getString() throws ValueFormatException, RepositoryException {
-        if (values.length != 1)
-            throw new ValueFormatException();
-        return values[0].getString();
+        return getValue().getString();
     }
 
     public InputStream getStream() throws ValueFormatException, RepositoryException {
-        if (values.length != 1)
-            throw new ValueFormatException();
-        return values[0].getStream();
+        return getValue().getStream();
     }
 
     public long getLong() throws ValueFormatException, RepositoryException {
-        if (values.length != 1)
-            throw new ValueFormatException();
-        return values[0].getLong();
+        return getValue().getLong();
     }
 
     public double getDouble() throws ValueFormatException, RepositoryException {
-        if (values.length != 1)
-            throw new ValueFormatException();
-        return values[0].getDouble();
+        return getValue().getDouble();
     }
 
     public Calendar getDate() throws ValueFormatException, RepositoryException {
-        if (values.length != 1)
-            throw new ValueFormatException();
-        return values[0].getDate();
+        return getValue().getDate();
     }
 
     public boolean getBoolean() throws ValueFormatException, RepositoryException {
-        if (values.length != 1)
-            throw new ValueFormatException();
-        return values[0].getBoolean();
+        return getValue().getBoolean();
     }
 
     public Node getNode() throws ValueFormatException, RepositoryException {

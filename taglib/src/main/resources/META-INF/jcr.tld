@@ -339,4 +339,25 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
+    <tag>
+        <name>xpath</name>
+        <tag-class>org.jahia.taglibs.jcr.xpath.JCRXpathTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>xpath</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
 </taglib>

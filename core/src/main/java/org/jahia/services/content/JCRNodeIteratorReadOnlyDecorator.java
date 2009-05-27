@@ -29,55 +29,46 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.applications.pluto;
+package org.jahia.services.content;
 
-import java.security.Principal;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.pluto.PortletWindow;
-import org.apache.pluto.driver.core.PortalServletRequest;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.data.applications.EntryPointInstance;
+import javax.jcr.NodeIterator;
+import java.util.Iterator;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Serge Huber
- * Date: 30 juil. 2008
- * Time: 12:27:46
- * To change this template use File | Settings | File Templates.
+ * Created by Jahia.
+ * User: ktlili
+ * Date: 27 mai 2009
+ * Time: 15:50:50
  */
-public class JahiaPortalServletRequest extends PortalServletRequest {
-    
-    private JahiaUser jahiaUser;
-    private String id;
-    private EntryPointInstance entryPointInstance;
+public class JCRNodeIteratorReadOnlyDecorator implements Iterator {
+    private NodeIterator nodeIterator;
 
-    public JahiaPortalServletRequest(EntryPointInstance entryPointInstance,JahiaUser jahiaUser, HttpServletRequest request, PortletWindow window) {
-        super(request, window);
-        this.jahiaUser = jahiaUser;
-        id = window.getId().getStringId();
-        this.entryPointInstance = entryPointInstance;
+    public JCRNodeIteratorReadOnlyDecorator(NodeIterator nodeIterator) {
+        this.nodeIterator = nodeIterator;
     }
 
-    public String getRemoteUser() {
-        return jahiaUser.getUserKey();
-    }
-
-    public Principal getUserPrincipal() {
-        return jahiaUser;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public boolean isUserInRole(String role) {
-        // This method maps servlet roles on Jahia's groups
-        if (entryPointInstance == null) {
+    public boolean hasNext() {
+        if (nodeIterator == null) {
             return false;
         }
-        return entryPointInstance.isUserInRole(jahiaUser, role);
+        return nodeIterator.hasNext();
+    }
+
+    public JCRNodeReadOnlyDecorator nextNode() {
+        if (nodeIterator == null) {
+            return null;
+        }
+        return new JCRNodeReadOnlyDecorator((JCRNodeWrapper) nodeIterator.nextNode());
+    }
+
+    public Object next() {
+        return nextNode();
+    }
+
+    public void remove() {
+        if (nodeIterator == null) {
+            return;
+        }
+        nodeIterator.remove();
     }
 }

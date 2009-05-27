@@ -127,13 +127,9 @@ public class PlutoProcessActionValve implements Valve {
                 } else {
                     logger.warn("Couldn't find related entryPointInstance, roles might not work properly !");
                 }
-                copyAttribute("org.jahia.data.JahiaData", jParams, request, portletWindow);
-                copyAttribute("currentRequest", jParams, request, portletWindow);
-                copyAttribute("currentSite", jParams, request, portletWindow);
-                copyAttribute("currentPage", jParams, request, portletWindow);
-                copyAttribute("currentUser", jParams, request, portletWindow);
-                copyAttribute("currentJahia", jParams, request, portletWindow);
-                JahiaPortletUtil.copySharedMapFromJahiaToPortlet(jParams, request, portletWindow,true);
+
+                // copy jahia attibutes nested by the portlet
+                JahiaPortletUtil.copyJahiaAttributes(entryPointInstance,jParams, portletWindow, request,true);
 
 
                 try {
@@ -255,49 +251,7 @@ public class PlutoProcessActionValve implements Valve {
         }
     }
 
-    /**
-     * Copy jahia request attibute in portlet request attribute
-     *
-     * @param attributeName
-     * @param processingContext
-     * @param portalRequest
-     * @param window
-     */
-    private void copyAttribute(String attributeName, ProcessingContext processingContext, HttpServletRequest portalRequest, PortletWindow window) {
-        copyAttribute(attributeName, processingContext, portalRequest, window, null, false);
-    }
 
-    /**
-     * Copy jahia session or request attribute into the portalRequest.
-     *
-     * @param attributeName
-     * @param processingContext
-     * @param portalRequest
-     * @param window
-     * @param fromSession       true means that the attribute is in  Jahia Session else it's taked from the request
-     */
-    private void copyAttribute(String attributeName, ProcessingContext processingContext, HttpServletRequest portalRequest, PortletWindow window, Object defaultValue, boolean fromSession) {
-        Object objectToCopy;
-        if (fromSession) {
-            // get from session
-            objectToCopy = processingContext.getSessionState().getAttribute(attributeName);
-            if (objectToCopy == null) {
-                objectToCopy = defaultValue;
-                processingContext.getSessionState().setAttribute(attributeName, objectToCopy);
-            }
-        } else {
-            // get from request
-            objectToCopy = processingContext.getAttribute(attributeName);
-            if (objectToCopy == null) {
-                objectToCopy = defaultValue;
-                processingContext.setAttribute(attributeName, objectToCopy);
-            }
-        }
-
-        // add in the request attribute
-        portalRequest.setAttribute("Pluto_" + window.getId().getStringId() + "_" + attributeName, objectToCopy);
-
-    }
 }
 
 

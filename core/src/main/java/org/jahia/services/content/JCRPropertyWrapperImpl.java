@@ -31,6 +31,7 @@
  */
 package org.jahia.services.content;
 
+import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -155,14 +156,14 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements Proper
     public PropertyDefinition getDefinition() throws RepositoryException {
         PropertyDefinition def = property.getDefinition();
         String name = def.getDeclaringNodeType().getName();
-        if (name.equals("nt:hierarchyNode") && def.getName().equals("jcr:created")) {
-            name = "mix:created";
+        if (name.equals(Constants.NT_HIERARCHYNODE) && def.getName().equals(Constants.JCR_CREATED)) {
+            name = Constants.MIX_CREATED;
         }
-        if (name.equals("nt:resource") && (def.getName().equals("jcr:mimeType") || def.getName().equals("jcr:encoding"))) {
-            name = "mix:mimeType";
+        if (name.equals(Constants.NT_RESOURCE) && (def.getName().equals(Constants.JCR_MIMETYPE) || def.getName().equals(Constants.JCR_ENCODING))) {
+            name = Constants.MIX_MIMETYPE;
         }
-        if (name.equals("nt:resource") && def.getName().equals("jcr:lastModified")) {
-            name = "mix:lastModified";
+        if (name.equals(Constants.NT_RESOURCE) && def.getName().equals(Constants.JCR_LASTMODIFIED)) {
+            name = Constants.MIX_LAST_MODIFIED;
         }
 
         ExtendedNodeType ent = NodeTypeRegistry.getInstance().getNodeType(name);

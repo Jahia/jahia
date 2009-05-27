@@ -41,7 +41,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 
-import org.jahia.api.Constants;
 import org.jahia.content.ContentDefinition;
 import org.jahia.content.ContentObject;
 import org.jahia.data.fields.FieldTypes;
@@ -57,8 +56,6 @@ import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.workflow.WorkflowService;
-import org.jahia.services.containers.ContentContainer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -83,11 +80,6 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
     protected void initProperties() throws RepositoryException {
         if (properties == null) {
             super.initProperties();
-
-            ExtendedNodeType extendedNodeType = NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_JAHIACONTENT);
-
-                // diff todo
-//            initProperty(new PropertyImpl(getSession(),this, extendedNodeType.getPropertyDefinition("j:diff"), value));
 
             // uuid
             ExtendedNodeType ref = NodeTypeRegistry.getInstance().getNodeType("mix:referenceable");

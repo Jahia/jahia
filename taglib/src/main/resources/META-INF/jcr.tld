@@ -262,24 +262,47 @@
         </attribute>
     </tag>
     <tag>
+        <description>Exposes a JCR node as a read only decorator (JCRNodeReadOnlyDecorator)</description>
         <name>node</name>
         <tag-class>org.jahia.taglibs.jcr.node.JCRNodeTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>the name to give to the bean</description>
             <name>name</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>the path to the JCR node</description>
             <name>path</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>the scope of the bean (see PageContext)</description>
             <name>scope</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Displays a link to the given JCR node (surrounding tag behaving like a)</description>
+        <name>link</name>
+        <tag-class>org.jahia.taglibs.jcr.node.JCRNodeLinkTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>the path to the JCR node</description>
+            <name>path</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>true to generate an absolute link</description>
+            <name>absolute</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
         </attribute>
     </tag>
     <tag>

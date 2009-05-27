@@ -60,6 +60,10 @@ public class JCRNodeReadOnlyDecorator {
         return node.getName();
     }
 
+    public String getPath() {
+        return node.getPath();
+    }
+
     public String getUrl() {
         return node.getUrl();
     }

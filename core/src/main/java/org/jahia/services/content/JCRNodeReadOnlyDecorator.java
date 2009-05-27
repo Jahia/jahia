@@ -38,6 +38,7 @@ import javax.jcr.RepositoryException;
 import java.util.List;
 import java.util.Map;
 import java.util.Date;
+import java.util.ArrayList;
 
 /**
  * Simple decorator to allow read methods on a JCR node.
@@ -68,8 +69,13 @@ public class JCRNodeReadOnlyDecorator {
         return node.getUrl();
     }
 
-    public List<JCRNodeWrapper> getChildren() {
-        return node.getChildren();
+    public List<JCRNodeReadOnlyDecorator> getChildren() {
+        List<JCRNodeWrapper> childsWrapperList = node.getChildren();
+        List<JCRNodeReadOnlyDecorator> childsDecoratorList = new ArrayList<JCRNodeReadOnlyDecorator>(childsWrapperList.size());
+        for (JCRNodeWrapper jcrNodeWrapper : childsWrapperList) {
+            childsDecoratorList.add(new JCRNodeReadOnlyDecorator(jcrNodeWrapper));
+        }
+        return childsDecoratorList;
     }
 
     public boolean isVisible() {

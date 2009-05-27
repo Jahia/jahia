@@ -32,5 +32,5 @@
 
 --%>
 <jsp:include page="../generic.jsp" flush="true">
-  <jsp:param name="workAreaJSP" value='tags/tagsWorkArea.jsp'/>
+  <jsp:param name="workAreaJSP" value='jcr/tagsWorkArea.jsp'/>
 </jsp:include>

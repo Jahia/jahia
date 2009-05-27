@@ -35,26 +35,29 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeReadOnlyDecorator;
 import org.jahia.services.content.JCRPropertyReadOnlyDecorator;
+import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Property;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 
 /**
  * This Tag allows access to specific property of a node.
- *
+ * <p/>
  * Last Modified : $Date$.
+ *
  * @author : $Author$.
  */
 public class NodePropertyTag extends TagSupport {
     private transient static Logger logger = Logger.getLogger(NodePropertyTag.class);
-    private JCRNodeReadOnlyDecorator node;
+    private JCRNodeWrapper node;
     private String name;
     private String var;
     private String varDef;
 
-    public void setNode(JCRNodeReadOnlyDecorator node) {
+    public void setNode(JCRNodeWrapper node) {
         this.node = node;
     }
 
@@ -69,22 +72,22 @@ public class NodePropertyTag extends TagSupport {
     public int doStartTag() throws JspException {
         int returnValue = SKIP_BODY;
         try {
-            JCRPropertyReadOnlyDecorator property = node.getProperty(name);
+            Property property = node.getProperty(name);
             if (property != null) {
                 if (var != null) {
-                    if (property.isMultiple()) {
+                    if (property.getDefinition().isMultiple()) {
                         pageContext.setAttribute(var, property.getValues());
                     } else {
                         pageContext.setAttribute(var, property.getValue());
                     }
                     returnValue = EVAL_BODY_INCLUDE;
                 } else {
-                    if (!property.isMultiple()) {
+                    if (!property.getDefinition().isMultiple()) {
                         pageContext.getOut().print(property.getValue().getString());
                     }
                 }
                 if (varDef != null) {
-                    pageContext.setAttribute(varDef, property.getPropertyDefinition());
+                    pageContext.setAttribute(varDef, property.getDefinition());
                 }
             }
         } catch (RepositoryException e) {
@@ -93,6 +96,28 @@ public class NodePropertyTag extends TagSupport {
             throw new JspException(e);
         }
         return returnValue;
+    }
+
+    /**
+     * Default processing of the end tag returning EVAL_PAGE.
+     *
+     * @return EVAL_PAGE
+     * @throws javax.servlet.jsp.JspException if an error occurs while processing this tag
+     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     */
+    @Override
+    public int doEndTag() throws JspException {
+        node = null;
+        name = null;
+        if (var != null) {
+            pageContext.removeAttribute(var);
+            var = null;
+        }
+        if (varDef != null) {
+            pageContext.removeAttribute(varDef);            
+            varDef = null;
+        }
+        return EVAL_PAGE;
     }
 
     /**

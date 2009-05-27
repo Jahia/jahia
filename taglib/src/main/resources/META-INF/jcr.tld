@@ -268,7 +268,7 @@
         <body-content>JSP</body-content>
         <attribute>
             <description>the name to give to the bean</description>
-            <name>name</name>
+            <name>var</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -315,7 +315,7 @@
             <name>node</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>org.jahia.services.content.JCRPropertyReadOnlyDecorator</type>
+            <type>org.jahia.services.content.JCRNodeWrapper</type>
         </attribute>
         <attribute>
             <description>The name of the property you want to find in the node</description>

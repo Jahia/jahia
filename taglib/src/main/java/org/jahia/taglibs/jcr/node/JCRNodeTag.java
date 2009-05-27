@@ -55,14 +55,14 @@ public class JCRNodeTag extends TagSupport {
 
     private final static Logger logger = Logger.getLogger(JCRNodeTag.class);
 
-    private String name;
+    private String var;
     private String path;
     private int scope = PageContext.PAGE_SCOPE;
 
-    private JCRNodeReadOnlyDecorator node;
+    private JCRNodeWrapper node;
 
-    public void setName(String name) {
-        this.name = name;
+    public void setVar(String var) {
+        this.var = var;
     }
 
     public void setPath(String path) {
@@ -73,7 +73,7 @@ public class JCRNodeTag extends TagSupport {
         this.scope = scope;
     }
 
-    public JCRNodeReadOnlyDecorator getFile() {
+    public JCRNodeWrapper getFile() {
         return node;
     }
 
@@ -85,8 +85,8 @@ public class JCRNodeTag extends TagSupport {
             try {
                 JCRNodeWrapper n = JCRStoreService.getInstance().checkExistence(path, user);
                 if (n != null) {
-                    node = new JCRNodeReadOnlyDecorator(JCRStoreService.getInstance().getThreadSession(user).getNode(path));
-                    pageContext.setAttribute(name, node, scope);
+                    node = JCRStoreService.getInstance().getThreadSession(user).getNode(path);
+                    pageContext.setAttribute(var, node, scope);
                 } else {
                     logger.error("The path '" + path + "' does not exist");
                 }

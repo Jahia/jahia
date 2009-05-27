@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<portlet-app
+        xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+        version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd
+                        http://hnsp.inf-bb.uni-jena.de/spec/JSR%202.0%20API/portlet-app_2_0.xsd">
+
+    <portlet>
+        <portlet-name>shared-map-ext-r</portlet-name>
+        <portlet-info>
+            <title>shared-map-ext-r</title>
+        </portlet-info>
+        <portlet-class>org.jahia.portlet.sharedmapextr.SharedMapExtR</portlet-class>
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>view</portlet-mode>
+        </supports>
+    </portlet>
+
+</portlet-app>

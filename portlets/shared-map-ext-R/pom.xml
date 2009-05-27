@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <parent>
+    <groupId>org.jahia.server</groupId>
+    <artifactId>portlets</artifactId>
+    <version>6.1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>shared-map-ext-R</artifactId>
+  <name>Shared Map External Reader Portlet</name>
+  <packaging>war</packaging>
+
+  <dependencies>
+		<dependency>
+			<groupId>javax.portlet</groupId>
+			<artifactId>portlet-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
+		</dependency>
+  </dependencies>
+  
+	<build>
+		<!--finalName>jahia-portlet-exo</finalName-->
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<!-- put your configurations here -->
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<!-- configure maven-war-plugin to use updated web.xml -->
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<webXml>${project.build.directory}/pluto-resources/web.xml</webXml>
+				</configuration>
+			</plugin>
+			<!-- bind 'pluto:assemble' goal to 'generate-resources' lifecycle -->
+			<plugin>
+				<groupId>org.apache.pluto</groupId>
+				<artifactId>maven-pluto-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>assemble</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

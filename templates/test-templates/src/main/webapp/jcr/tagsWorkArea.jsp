@@ -27,3 +27,20 @@
     <li>File: ${child.file}</li>
 </ul>
 </c:forEach>
+<p>Executing an xpath expression [//element(*, nt:query)] for retrieving all saved search:</p>
+<jcr:xpath var="savedSearchIterator" xpath="//element(*, nt:query)"/>
+<c:forEach items="${savedSearchIterator}" var="node">
+    <ul>
+    <li>Node: ${node.name}</li>
+    <li>URL: ${node.url}</li>
+    <li>Date: ${node.lastModifiedAsDate}</li>
+</c:forEach>
+
+<p>Executing an xpath expression [//element(*, jnt:portlet)] for retrieving all mashups:</p>
+<jcr:xpath var="allMashupsIterator" xpath="//element(*, jnt:portlet)"/>
+<c:forEach items="${allMashupsIterator}" var="node">
+    <ul>
+    <li>Node: ${node.name}</li>
+    <li>URL: ${node.url}</li>
+    <li>Date: ${node.lastModifiedAsDate}</li>
+</c:forEach>

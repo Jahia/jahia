@@ -34,7 +34,7 @@ package org.jahia.taglibs.jcr.xpath;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.JCRNodeIteratorReadOnlyDecorator;
+import org.jahia.services.content.JCRNodeWrapperIterator;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
@@ -57,15 +57,15 @@ import java.security.Principal;
 public class JCRXpathTag extends AbstractJahiaTag {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JCRXpathTag.class);
     private String xpath;
-    private String name;
+    private String var;
     private int scope = PageContext.PAGE_SCOPE;
 
-    public String getName() {
-        return name;
+    public String getVar() {
+        return var;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setVar(String var) {
+        this.var = var;
     }
 
     public int getScope() {
@@ -92,7 +92,7 @@ public class JCRXpathTag extends AbstractJahiaTag {
 
                 NodeIterator nodeIterator = findNodeIteratorByXpath(jParams.getUser(), xpath);
                 if (nodeIterator != null) {
-                    pageContext.setAttribute(name, new JCRNodeIteratorReadOnlyDecorator(nodeIterator), scope);
+                    pageContext.setAttribute(var, new JCRNodeWrapperIterator(nodeIterator), scope);
                 } else {
                     logger.error("There is not result for xpath '" + xpath + "'");
                 }
@@ -110,7 +110,7 @@ public class JCRXpathTag extends AbstractJahiaTag {
 
     public int doEndTag() {
         xpath = "";
-        name = "";
+        var = "";
         scope = PageContext.PAGE_SCOPE;
         return EVAL_PAGE;
     }

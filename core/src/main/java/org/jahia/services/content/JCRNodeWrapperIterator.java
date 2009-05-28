@@ -32,7 +32,6 @@
 package org.jahia.services.content;
 
 import javax.jcr.NodeIterator;
-import java.util.Iterator;
 
 /**
  * Created by Jahia.
@@ -40,10 +39,10 @@ import java.util.Iterator;
  * Date: 27 mai 2009
  * Time: 15:50:50
  */
-public class JCRNodeIteratorReadOnlyDecorator implements Iterator {
+public class JCRNodeWrapperIterator implements  NodeIterator {
     private NodeIterator nodeIterator;
 
-    public JCRNodeIteratorReadOnlyDecorator(NodeIterator nodeIterator) {
+    public JCRNodeWrapperIterator(NodeIterator nodeIterator) {
         this.nodeIterator = nodeIterator;
     }
 
@@ -54,11 +53,11 @@ public class JCRNodeIteratorReadOnlyDecorator implements Iterator {
         return nodeIterator.hasNext();
     }
 
-    public JCRNodeReadOnlyDecorator nextNode() {
+    public JCRNodeWrapper nextNode() {
         if (nodeIterator == null) {
             return null;
         }
-        return new JCRNodeReadOnlyDecorator((JCRNodeWrapper) nodeIterator.nextNode());
+        return (JCRNodeWrapper) nodeIterator.nextNode();
     }
 
     public Object next() {
@@ -70,5 +69,26 @@ public class JCRNodeIteratorReadOnlyDecorator implements Iterator {
             return;
         }
         nodeIterator.remove();
+    }
+
+    public long getPosition() {
+        if (nodeIterator == null) {
+            return -1;
+        }
+        return nodeIterator.getPosition();
+    }
+
+    public long getSize() {
+        if (nodeIterator == null) {
+            return 0;
+        }
+        return nodeIterator.getSize();
+    }
+
+    public void skip(long l) {
+        if (nodeIterator == null) {
+            return;
+        }
+        nodeIterator.skip(l);
     }
 }

@@ -31,17 +31,17 @@
  */
 package org.jahia.services.content.nodetypes;
 
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.ResourceBundleMarker;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.api.Constants;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.Value;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeType;
 import java.util.*;
 
 /**
@@ -64,6 +64,7 @@ public class ExtendedNodeType implements NodeType {
     private Map<String, ExtendedPropertyDefinition> properties = new ListOrderedMap();
 
     private Name name;
+    private String alias;
     private boolean isAbstract;
     private boolean isMixin;
     private boolean hasOrderableChildNodes;
@@ -85,12 +86,21 @@ public class ExtendedNodeType implements NodeType {
         return name.toString();
     }
 
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
     public Name getNameObject() {
         return name;
     }
 
     public void setName(Name name) {
         this.name = name;
+        this.alias = name != null ? name.toString() : null;
     }
 
     public boolean isAbstract() {

@@ -38,7 +38,8 @@ import javax.jcr.PropertyType;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.OnParentVersionAction;
-import java.io.*;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.*;
 
 /**
@@ -346,6 +347,7 @@ public class JahiaCndReader {
                 for (ExtendedNodeType ctnType : ctnTypes) {
                     ctnListTypeName += ctnType.getNameObject().getLocalName();                    
                 }
+                String aliasName = ctnListTypeName + "List";
                 if (listNodeDef.isMandatory()) {
                     ctnListTypeName += "Mandatory";
                 }
@@ -374,6 +376,7 @@ public class JahiaCndReader {
                 } catch (NoSuchNodeTypeException e) {
                     ExtendedNodeType listType = new ExtendedNodeType(registry, systemId);
                     listType.setName(parseName(ctnListTypeName));
+                    listType.setAlias(aliasName);
                     listType.setDeclaredSupertypes(new String[] {Constants.JAHIANT_CONTAINERLIST});
                     listType.setHasOrderableChildNodes(true);
                     ExtendedNodeDefinition def = new ExtendedNodeDefinition(registry);

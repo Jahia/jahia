@@ -31,39 +31,36 @@
  */
 package org.jahia.services.content;
 
-import java.util.*;
-import java.io.IOException;
-
-import javax.jcr.*;
-import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
-
-import javax.security.auth.Subject;
-import javax.security.auth.callback.*;
-import javax.servlet.ServletContext;
-
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.JahiaFieldXRefManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaFieldXRef;
+import org.jahia.jaas.JahiaLoginModule;
+import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.fields.ContentField;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.webdav.UsageEntry;
-import org.jahia.jaas.JahiaLoginModule;
-import org.jahia.jaas.JahiaPrincipal;
 import org.springframework.web.context.ServletContextAware;
 import org.xml.sax.ContentHandler;
+
+import javax.jcr.*;
+import javax.jcr.query.InvalidQueryException;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
+import javax.security.auth.Subject;
+import javax.security.auth.callback.*;
+import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.util.*;
 
 /**
  *
@@ -168,16 +165,20 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     //    private ThreadLocal systemSession = new ThreadLocal();
-    protected ThreadLocal<Map<String,JCRSessionWrapper>> userSession = new ThreadLocal<Map<String,JCRSessionWrapper>>();
+    protected ThreadLocal<Map<String,Map<String,JCRSessionWrapper>>> userSession = new ThreadLocal<Map<String,Map<String,JCRSessionWrapper>>>();
 
 
     public JCRSessionWrapper getThreadSession(JahiaUser user) throws RepositoryException {
+        return getThreadSession(user, null);
+    }
+
+    public JCRSessionWrapper getThreadSession(JahiaUser user, String workspace) throws RepositoryException {
         // thread user session might be inited/closed in an http filter, instead of keeping it
 
+        Map<String,Map<String,JCRSessionWrapper>> smap = userSession.get();
 
-        Map<String,JCRSessionWrapper> smap = userSession.get();
         if (smap == null) {
-            smap = new HashMap<String,JCRSessionWrapper>();
+            smap = new HashMap<String,Map<String,JCRSessionWrapper>>();
         }
         userSession.set(smap);
 
@@ -198,17 +199,27 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 //            logger.error("Exception on session : "+e);
 //            s = null;
 //        }
+        Map<String,JCRSessionWrapper> wsMap = smap.get(username);
+        if (wsMap == null) {
+            wsMap = new HashMap<String,JCRSessionWrapper>();
+            smap.put(username, wsMap);
+        }
 
-        JCRSessionWrapper s = smap.get(username);
+        if (workspace == null) {
+            workspace = "default";
+        }
+
+        JCRSessionWrapper s = wsMap.get(workspace);
+
         if (s == null || !s.isLive()) {
             if (!JahiaLoginModule.GUEST.equals(username)) {
-                s = login(org.jahia.jaas.JahiaLoginModule.getCredentials(username));
+                s = login(org.jahia.jaas.JahiaLoginModule.getCredentials(username), workspace);
                 // should be done somewhere else, call can be quite expensive
                 deployNewUser(username);
             } else {
-                s = login(org.jahia.jaas.JahiaLoginModule.getGuestCredentials());
+                s = login(org.jahia.jaas.JahiaLoginModule.getGuestCredentials(), workspace);
             }
-            smap.put(username, s);
+            wsMap.put(username, s);
         } else {
             s.refresh(true);
         }
@@ -370,10 +381,12 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     public void closeAllSessions() {
-        Map<String, JCRSessionWrapper> smap = userSession.get();
+        Map<String,Map<String,JCRSessionWrapper>> smap = userSession.get();
         if (smap != null) {
-            for (Session s : smap.values()) {
-                s.logout();
+            for (Map<String,JCRSessionWrapper> wsMap : smap.values()) {
+                for (JCRSessionWrapper s : wsMap.values()) {
+                    s.logout();
+                }
             }
             userSession.set(null);
         }

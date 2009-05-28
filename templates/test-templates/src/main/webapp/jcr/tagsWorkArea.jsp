@@ -9,8 +9,6 @@
     <li>Date: ${jcrnode.lastModifiedAsDate}</li>
     <li>File: ${jcrnode.file}</li>
     <li>Collection: ${jcrnode.collection}</li>
-    <li>Download: <jcr:link path="${jcrnode.path}">link</jcr:link> or <jcr:link path="${jcrnode.path}"
-                                                                                absolute="true">absolute link</jcr:link></li>
 </ul>
 
 <p>Access to node definition and node type directly :</p>

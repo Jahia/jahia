@@ -50,14 +50,12 @@
 <c:if test="${display}">
     <select ${h:attributes(attributes)} name="src_documentType">
         <option value=""><fmt:message key="searchForm.any"/></option>
-        <jcr:nodeType ntname="${jcr.nt_file}">
+        <jcr:nodeType ntName="${jcr.nt_file}" var="type"/>
             <option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>
                 <jcr:nodeTypeLabel/></option>
-        </jcr:nodeType>
-        <jcr:nodeType ntname="${jcr.nt_folder}">
+        <jcr:nodeType ntName="${jcr.nt_folder}" var="type"/>
             <option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>
                 <jcr:nodeTypeLabel/></option>
-        </jcr:nodeType>
         <jcr:nodeTypes baseType="${jcr.jahiamix_extension}">
             <option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>
                 <jcr:nodeTypeLabel/></option>

@@ -1,6 +1,8 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<utility:useConstants var="jcr" className="org.jahia.api.Constants" scope="application"/>
 <jcr:node var="jcrnode" path="/content/shared/files"/>
 <p>Access to node attributes directly :</p>
 <ul>
@@ -80,3 +82,7 @@
         <li>Date: ${node.lastModifiedAsDate}</li>
     </ul>
 </c:forEach>
+
+<p>Usage of nodetype : </p>
+<jcr:nodeType ntName="${jcr.nt_file}" var="type"/>
+Node type name : "${type.name}"

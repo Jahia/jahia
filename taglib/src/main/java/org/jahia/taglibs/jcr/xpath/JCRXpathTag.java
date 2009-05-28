@@ -94,7 +94,7 @@ public class JCRXpathTag extends AbstractJahiaTag {
                 if (nodeIterator != null) {
                     pageContext.setAttribute(var, new JCRNodeWrapperIterator(nodeIterator), scope);
                 } else {
-                    logger.error("There is not result for xpath '" + xpath + "'");
+                    logger.debug("There is not result for xpath '" + xpath + "'");
                 }
             } else {
                 logger.error("JahiaData is null");
@@ -126,7 +126,7 @@ public class JCRXpathTag extends AbstractJahiaTag {
     private NodeIterator findNodeIteratorByXpath(Principal p, String path) {
         logger.debug("Find node by xpath[ " + path + " ]");
         if (p instanceof JahiaGroup) {
-            logger.warn("method no implements for JahiaGroup");
+            logger.warn("method not implemented for JahiaGroup");
             return null;
         }
         try {

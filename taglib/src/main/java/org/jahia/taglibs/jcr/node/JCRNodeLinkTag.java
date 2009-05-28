@@ -36,6 +36,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.data.JahiaData;
+import org.jahia.params.ParamBean;
 
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
@@ -78,14 +79,14 @@ public class JCRNodeLinkTag extends TagSupport {
                     if (node.isFile()) {
                         StringBuilder link = new StringBuilder("<a href=\"");
                         if (absolute) {
-                            link.append(node.getAbsoluteUrl(jData.getParamBean()));
+                            link.append(node.getAbsoluteUrl((ParamBean) jData.getProcessingContext()));
                         } else {
                             link.append(node.getUrl());
                         }
                         link.append("\">");
                         pageContext.getOut().print(link.toString());
                     } else {
-                        logger.error("The path '" + path + "' is not a file");
+                        logger.warn("The path '" + path + "' is not a file");
                     }
                 } else {
                     logger.error("The path '" + path + "' does not exist");

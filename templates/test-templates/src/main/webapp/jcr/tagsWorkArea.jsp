@@ -68,6 +68,7 @@
     <li>Node: ${node.name}</li>
     <li>URL: ${node.url}</li>
     <li>Date: ${node.lastModifiedAsDate}</li>
+    </ul>
 </c:forEach>
 
 <p>Executing an xpath expression [//element(*, jnt:portlet)] for retrieving all mashups:</p>
@@ -77,4 +78,5 @@
     <li>Node: ${node.name}</li>
     <li>URL: ${node.url}</li>
     <li>Date: ${node.lastModifiedAsDate}</li>
+    </ul>
 </c:forEach>

@@ -37,10 +37,12 @@
         <li>URL: ${child.url}</li>
         <li>Date: ${child.lastModifiedAsDate}</li>
         <li>File: ${child.file}</li>
-        <li>Download: <jcr:link path="${child.path}">link</jcr:link> or <jcr:link path="${child.path}"
-                                                                                  absolute="true">absolute link</jcr:link></li>
+        <c:if test="${child.file}">
+            <li>Download: <jcr:link path="${child.path}">link</jcr:link> or <jcr:link path="${child.path}"
+                                                                                      absolute="true">absolute link</jcr:link></li>
+        </c:if>
         <jcr:nodeProperty node="${child}" name="j:defaultCategory" var="cat" varDef="catDef">
-            <li>Access to categories as string :
+            <li>Access to categories as multivalued string :
                 <c:if test="${catDef.multiple}">
                     <ul>
                         <c:forEach items="${cat}" var="category">
@@ -63,9 +65,9 @@
 <jcr:xpath var="savedSearchIterator" xpath="//element(*, nt:query)"/>
 <c:forEach items="${savedSearchIterator}" var="node">
     <ul>
-    <li>Node: ${node.name}</li>
-    <li>URL: ${node.url}</li>
-    <li>Date: ${node.lastModifiedAsDate}</li>
+        <li>Node: ${node.name}</li>
+        <li>URL: ${node.url}</li>
+        <li>Date: ${node.lastModifiedAsDate}</li>
     </ul>
 </c:forEach>
 
@@ -73,8 +75,8 @@
 <jcr:xpath var="allMashupsIterator" xpath="//element(*, jnt:portlet)"/>
 <c:forEach items="${allMashupsIterator}" var="node">
     <ul>
-    <li>Node: ${node.name}</li>
-    <li>URL: ${node.url}</li>
-    <li>Date: ${node.lastModifiedAsDate}</li>
+        <li>Node: ${node.name}</li>
+        <li>URL: ${node.url}</li>
+        <li>Date: ${node.lastModifiedAsDate}</li>
     </ul>
 </c:forEach>

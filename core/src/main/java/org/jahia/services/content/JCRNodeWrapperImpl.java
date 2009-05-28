@@ -505,7 +505,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public boolean isVisible() {
         try {
-            return !objectNode.getProperty("j:hidden").getBoolean();
+            Property hidden = objectNode.getProperty("j:hidden");
+            return hidden == null || !hidden.getBoolean();
         } catch (RepositoryException e) {
             return true;
         }

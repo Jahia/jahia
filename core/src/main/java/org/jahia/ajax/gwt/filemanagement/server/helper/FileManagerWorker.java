@@ -1135,6 +1135,22 @@ public class FileManagerWorker {
                     }
 
                 }
+            } catch (PathNotFoundException e) {
+                try {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Property with the name '"
+                                + prop.getName() + "' not found on the node "
+                                + objectNode.getPath() + ". Skipping.", e);
+                    } else {
+                        logger.info("Property with the name '" + prop.getName()
+                                + "' not found on the node "
+                                + objectNode.getPath() + ". Skipping.");
+                    }
+                } catch (RepositoryException re) {
+                    logger.info("Property with the name '" + prop.getName()
+                            + "' not found on the node " + objectNode
+                            + ". Skipping.");
+                }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }

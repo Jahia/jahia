@@ -72,6 +72,7 @@ public class JCRNodeTypeTag extends TagSupport {
             NodeType type = NodeTypeRegistry.getInstance().getNodeType(ntName);
             pageContext.setAttribute(var, type);
         } catch (NoSuchNodeTypeException e) {
+            logger.warn(ntName + " is not a valid node type");
             return SKIP_BODY;
         }
 

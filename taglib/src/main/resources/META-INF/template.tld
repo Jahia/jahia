@@ -1643,39 +1643,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-    <tag>
-        <description>create html struture for a layout manager box.</description>
-        <name>layoutManagerBox</name>
-        <tag-class>org.jahia.taglibs.template.layoutmanager.LayoutManagerBoxTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>id</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>title</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>cssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
-        <description>create mode view for layout manager box.</description>
-        <name>layoutManagerMode</name>
-        <tag-class>org.jahia.taglibs.template.layoutmanager.LayoutManagerModeTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>value</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
+    
     <tag>
         <description>Prints out the URL of the page.</description>
         <name>composePageURL</name>

@@ -10,6 +10,8 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.impl.jahia.JahiaContentStoreProvider;
 
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -68,7 +70,6 @@ public class ContentTest extends TestCase {
      */
     public void testCreateFolder() throws Exception {
         JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
-        final Map<String, JCRStoreProvider> mountPoints = service.getMountPoints();
 
         JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
 
@@ -83,11 +84,11 @@ public class ContentTest extends TestCase {
             assertTrue(providerRoot + " : Created folder is not valid", testCollection.isValid());
             assertTrue(providerRoot + " : Created folder is not a collection", testCollection.isCollection());
 
-//        long creationDate = testCollection.getCreationDateAsDate().getTime();
-//        assertTrue(providerRoot+ " : Creation date invalid", creationDate < System.currentTimeMillis() && creationDate > System.currentTimeMillis()-10000);
+//            long creationDate = testCollection.getCreationDateAsDate().getTime();
+//            assertTrue(providerRoot+ " : Creation date invalid", creationDate < System.currentTimeMillis() && creationDate > System.currentTimeMillis()-10000);
 
-//        long lastModifiedDate = testCollection.getLastModifiedAsDate().getTime();
-//        assertTrue(providerRoot+ " : Modification date invalid", lastModifiedDate < System.currentTimeMillis() && lastModifiedDate > System.currentTimeMillis()-10000);
+//            long lastModifiedDate = testCollection.getLastModifiedAsDate().getTime();
+//            assertTrue(providerRoot+ " : Modification date invalid", lastModifiedDate < System.currentTimeMillis() && lastModifiedDate > System.currentTimeMillis()-10000);
 
             testCollection = session.getNode(providerRoot + "/" + name);
 
@@ -98,7 +99,7 @@ public class ContentTest extends TestCase {
 
             try {
                 session.getNode(providerRoot + "/" + name);
-                assertTrue(providerRoot + " : Folder has not been deleted", true);
+                fail(providerRoot + " : Folder has not been deleted");
 
             } catch (PathNotFoundException e) {
                 // ok
@@ -110,7 +111,6 @@ public class ContentTest extends TestCase {
 
     public void testUpload() throws Exception {
         JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
-        final Map<String, JCRStoreProvider> mountPoints = service.getMountPoints();
 
         JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
 
@@ -131,11 +131,11 @@ public class ContentTest extends TestCase {
             assertEquals(providerRoot + " : Size is not the same", value.length(), testFile.getFileContent().getContentLength());
             assertEquals(providerRoot + " : Mime type is not the same", mimeType, testFile.getFileContent().getContentType());
 
-//        long creationDate = testFile.getCreationDateAsDate().getTime();
-//        assertTrue(providerRoot+ " : Creation date invalid", creationDate < System.currentTimeMillis() && creationDate > System.currentTimeMillis()-10000);
+//            long creationDate = testFile.getCreationDateAsDate().getTime();
+//            assertTrue(providerRoot+ " : Creation date invalid", creationDate < System.currentTimeMillis() && creationDate > System.currentTimeMillis()-10000);
 
-//        long lastModifiedDate = testFile.getLastModifiedAsDate().getTime();
-//        assertTrue(providerRoot+ " : Modification date invalid", lastModifiedDate < System.currentTimeMillis() && lastModifiedDate > System.currentTimeMillis()-10000);
+//            long lastModifiedDate = testFile.getLastModifiedAsDate().getTime();
+//            assertTrue(providerRoot+ " : Modification date invalid", lastModifiedDate < System.currentTimeMillis() && lastModifiedDate > System.currentTimeMillis()-10000);
 
             testFile = session.getNode(providerRoot + "/" + name);
 
@@ -152,7 +152,7 @@ public class ContentTest extends TestCase {
 
             try {
                 session.getNode(providerRoot + "/" + name);
-                assertTrue(providerRoot + " : File has not been deleted", true);
+                fail(providerRoot + " : File has not been deleted");
 
             } catch (PathNotFoundException e) {
                 // ok
@@ -161,5 +161,60 @@ public class ContentTest extends TestCase {
             session.logout();
         }
     }
+
+    public void testSetStringProperty() throws Exception {
+        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
+
+        JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
+
+        try {
+            JCRNodeWrapper rootNode = session.getNode(providerRoot);
+
+            final String name = "test" + System.currentTimeMillis();
+
+            JCRNodeWrapper testCollection = rootNode.createCollection(name);
+            session.save();
+
+            final String value = "Title test";
+
+            testCollection.setProperty("jcr:title", value);
+            testCollection.save();
+
+            testCollection = session.getNode(providerRoot + "/" + name);
+            try {
+                String actual = testCollection.getProperty("jcr:title").getString();
+                assertEquals("getProperty() Property value is not the same",value, actual);
+            } catch (PathNotFoundException e) {
+                fail("getProperty() cannot find property");
+            }
+
+            assertEquals("getPropertyAsString() : Property value is not the same",value, testCollection.getPropertyAsString("jcr:title"));
+            assertEquals("getPropertiesAsString() : Property value is not the same",value, testCollection.getPropertiesAsString().get("jcr:title"));
+
+            PropertyIterator pi = testCollection.getProperties("jcr:title");
+            while (pi.hasNext()) {
+                Property p = pi.nextProperty();
+                if (p.getName().equals("jcr:title")) {
+                    // found
+                }
+            }
+
+            testCollection.remove();
+            session.save();
+
+            try {
+                session.getNode(providerRoot + "/" + name);
+                fail(providerRoot + " : Folder has not been deleted");
+
+            } catch (PathNotFoundException e) {
+                // ok
+            }
+        } finally {
+            session.logout();
+        }
+
+    }
+
+
 
 }

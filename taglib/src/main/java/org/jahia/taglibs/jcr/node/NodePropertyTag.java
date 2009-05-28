@@ -33,12 +33,11 @@
 package org.jahia.taglibs.jcr.node;
 
 import org.apache.log4j.Logger;
-import org.jahia.services.content.JCRNodeReadOnlyDecorator;
-import org.jahia.services.content.JCRPropertyReadOnlyDecorator;
 import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Property;
+import javax.jcr.PathNotFoundException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
@@ -90,6 +89,8 @@ public class NodePropertyTag extends TagSupport {
                     pageContext.setAttribute(varDef, property.getDefinition());
                 }
             }
+        } catch (PathNotFoundException e) {
+            logger.warn("Property : "+name+" not found in node "+node.getPath());
         } catch (RepositoryException e) {
             throw new JspException(e);
         } catch (IOException e) {

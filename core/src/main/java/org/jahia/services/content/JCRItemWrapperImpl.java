@@ -54,7 +54,7 @@ import javax.jcr.version.VersionException;
  * Time: 6:56:00 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JCRItemWrapperImpl implements Item {
+public class JCRItemWrapperImpl implements JCRItemWrapper {
     protected JCRStoreProvider provider;
     protected Item item;
     protected String localPath;

@@ -1,7 +1,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jcr:node var="jcrnode" path="/content/shared"/>
+<jcr:node var="jcrnode" path="/content/shared/files"/>
 <p>Access to node attributes directly :</p>
 <ul>
     <li>Node: ${jcrnode.name}</li>
@@ -9,7 +9,8 @@
     <li>Date: ${jcrnode.lastModifiedAsDate}</li>
     <li>File: ${jcrnode.file}</li>
     <li>Collection: ${jcrnode.collection}</li>
-    <li>Download: <jcr:link path="${jcrnode.path}">link</jcr:link> or <jcr:link path="${jcrnode.path}" absolute="true">absolute link</jcr:link></li>
+    <li>Download: <jcr:link path="${jcrnode.path}">link</jcr:link> or <jcr:link path="${jcrnode.path}"
+                                                                                absolute="true">absolute link</jcr:link></li>
 </ul>
 <p>Access to specific property</p>
 <jcr:nodeProperty node="${jcrnode}" name="jcr:created" var="createdDate" varDef="createdDef">
@@ -18,14 +19,37 @@
         <li>Is Property Multi Valued : ${createdDef.multiple}</li>
     </ul>
 </jcr:nodeProperty>
+<br/>
+<br/>
+
 <p>Access to childs of a node</p>
 <c:forEach items="${jcrnode.children}" var="child">
     <ul>
-    <li>Node: ${child.name}</li>
-    <li>URL: ${child.url}</li>
-    <li>Date: ${child.lastModifiedAsDate}</li>
-    <li>File: ${child.file}</li>
-</ul>
+        <li>Node: ${child.name}</li>
+        <li>URL: ${child.url}</li>
+        <li>Date: ${child.lastModifiedAsDate}</li>
+        <li>File: ${child.file}</li>
+        <li>Download: <jcr:link path="${child.path}">link</jcr:link> or <jcr:link path="${child.path}"
+                                                                                  absolute="true">absolute link</jcr:link></li>
+        <jcr:nodeProperty node="${child}" name="j:defaultCategory" var="cat" varDef="catDef">
+            <li>Access to categories as string :
+                <c:if test="${catDef.multiple}">
+                    <ul>
+                        <c:forEach items="${cat}" var="category">
+                            <li>${category.string}</li>
+                        </c:forEach>
+                    </ul>
+                </c:if>
+            </li>
+            <li>Access to categories as org.jahia.data.beans.CategoryBean :
+                <ul>
+                    <c:forEach items="${cat}" var="category">
+                        <li>${category.category.title}</li>
+                    </c:forEach>
+                </ul>
+            </li>
+        </jcr:nodeProperty>
+    </ul>
 </c:forEach>
 <p>Executing an xpath expression [//element(*, nt:query)] for retrieving all saved search:</p>
 <jcr:xpath var="savedSearchIterator" xpath="//element(*, nt:query)"/>

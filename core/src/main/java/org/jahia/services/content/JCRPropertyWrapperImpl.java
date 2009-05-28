@@ -35,6 +35,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.data.beans.CategoryBean;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -52,7 +53,7 @@ import java.util.Calendar;
  * Time: 4:03:30 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements Property {
+public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPropertyWrapper {
 
     private JCRNodeWrapper node;
     private Property property;
@@ -110,11 +111,17 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements Proper
     }
 
     public Value getValue() throws ValueFormatException, RepositoryException {
-        return property.getValue();
+        return new JCRValueWrapperImpl(property.getValue());
     }
 
     public Value[] getValues() throws ValueFormatException, RepositoryException {
-        return property.getValues();
+        Value[] values = property.getValues();
+        Value[] wrappedValues = new Value[values.length];
+        for (int i = 0; i < values.length; i++) {
+            Value value = values[i];
+            wrappedValues[i] = new JCRValueWrapperImpl(value);
+        }
+        return wrappedValues;
     }
 
     public String getString() throws ValueFormatException, RepositoryException {
@@ -167,12 +174,15 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements Proper
         }
 
         ExtendedNodeType ent = NodeTypeRegistry.getInstance().getNodeType(name);
-        ExtendedPropertyDefinition epd = ent.getPropertyDefinition(def.getName());
-        return epd;
+        return ent.getPropertyDefinition(def.getName());
     }
 
     public int getType() throws RepositoryException {
         return property.getType();
+    }
+
+    public CategoryBean getCategory() throws ValueFormatException, RepositoryException {
+        return ((JCRValueWrapperImpl) getValue()).getCategory();
     }
 
     public String getName() throws RepositoryException {

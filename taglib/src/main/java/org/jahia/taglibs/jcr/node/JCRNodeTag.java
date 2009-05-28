@@ -32,10 +32,10 @@
 package org.jahia.taglibs.jcr.node;
 
 import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRNodeReadOnlyDecorator;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.data.JahiaData;
+import org.jahia.registries.ServicesRegistry;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.tagext.TagSupport;
@@ -83,9 +83,10 @@ public class JCRNodeTag extends TagSupport {
         if (jData != null) {
             JahiaUser user = jData.getProcessingContext().getUser();
             try {
-                JCRNodeWrapper n = JCRStoreService.getInstance().checkExistence(path, user);
+                JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
+                JCRNodeWrapper n = service.checkExistence(path, user);
                 if (n != null) {
-                    node = JCRStoreService.getInstance().getThreadSession(user).getNode(path);
+                    node = service.getThreadSession(user).getNode(path);
                     pageContext.setAttribute(var, node, scope);
                 } else {
                     logger.error("The path '" + path + "' does not exist");

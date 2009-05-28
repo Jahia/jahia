@@ -341,7 +341,7 @@
     </tag>
     <tag>
         <name>xpath</name>
-        <tag-class>org.jahia.taglibs.jcr.xpath.JCRXpathTag</tag-class>
+        <tag-class>org.jahia.taglibs.jcr.xpath.JCRXPathTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>var</name>

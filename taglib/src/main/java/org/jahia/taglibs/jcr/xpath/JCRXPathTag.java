@@ -54,8 +54,8 @@ import java.security.Principal;
  * Date: 27 mai 2009
  * Time: 15:03:18
  */
-public class JCRXpathTag extends AbstractJahiaTag {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JCRXpathTag.class);
+public class JCRXPathTag extends AbstractJahiaTag {
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JCRXPathTag.class);
     private String xpath;
     private String var;
     private int scope = PageContext.PAGE_SCOPE;

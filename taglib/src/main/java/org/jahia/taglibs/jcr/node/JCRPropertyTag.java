@@ -49,8 +49,8 @@ import java.io.IOException;
  *
  * @author : $Author$.
  */
-public class NodePropertyTag extends TagSupport {
-    private transient static Logger logger = Logger.getLogger(NodePropertyTag.class);
+public class JCRPropertyTag extends TagSupport {
+    private transient static Logger logger = Logger.getLogger(JCRPropertyTag.class);
     private JCRNodeWrapper node;
     private String name;
     private String var;

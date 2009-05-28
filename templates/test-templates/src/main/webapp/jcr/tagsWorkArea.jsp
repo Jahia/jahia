@@ -12,6 +12,16 @@
     <li>Download: <jcr:link path="${jcrnode.path}">link</jcr:link> or <jcr:link path="${jcrnode.path}"
                                                                                 absolute="true">absolute link</jcr:link></li>
 </ul>
+
+<p>Access to node definition and node type directly :</p>
+<ul>
+    <li>Definition - name: ${jcrnode.definition.name}</li>
+    <li>Definition - declaring nodeType: ${jcrnode.definition.declaringNodeType.name}</li>
+    <c:forEach items="${jcrnode.definition.requiredPrimaryTypes}" var="child">
+        <li> required primary types: ${child.name}</li>
+    </c:forEach>
+</ul>
+
 <p>Access to specific property</p>
 <jcr:nodeProperty node="${jcrnode}" name="jcr:created" var="createdDate" varDef="createdDef">
     <ul>

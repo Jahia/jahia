@@ -360,4 +360,12 @@
             <type>int</type>
         </attribute>
     </tag>    
+    <function>
+        <description>
+            Get label value depending on the current local
+        </description>
+        <name>label</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>java.lang.String label(java.lang.Object)</function-signature>
+    </function>
 </taglib>

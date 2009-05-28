@@ -368,4 +368,12 @@
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
         <function-signature>java.lang.String label(java.lang.Object)</function-signature>
     </function>
+    <function>
+        <description>
+            Get label value depending on the specified local
+        </description>
+        <name>labelForLocale</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>java.lang.String label(java.lang.Object,java.lang.String)</function-signature>
+    </function>
 </taglib>

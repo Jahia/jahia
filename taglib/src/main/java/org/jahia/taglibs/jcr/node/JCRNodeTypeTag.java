@@ -43,8 +43,8 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 /**
  * Tag for getting node type.
  *
- * @author : $Author$
- *         Last Modified : $Date$
+ * @author : cmailleux
+ * @since : Jahia 6.1
  */
 public class JCRNodeTypeTag extends TagSupport {
     private transient static Logger logger = Logger.getLogger(JCRNodeTypeTag.class);

@@ -64,11 +64,10 @@
     </fieldset>
     <fieldset>
         <legend>Document properties for 'jmix:test'</legend>
-        <jcr:nodeType ntname="jmix:test">
-            <jcr:properties>
-                <jcr:propertyLabel/>:&nbsp;<s:documentProperty documentType="${type.name}" name="${propertyDefinition.name}" /><br/>
-            </jcr:properties>
-        </jcr:nodeType>
+        <jcr:nodeType ntName="jmix:test" var="type"/>
+            <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
+                ${jcr:label(propertyDefinition)}:&nbsp;<s:documentProperty documentType="${type.name}" name="${propertyDefinition.name}" /><br/>
+            </c:forEach>
     </fieldset>
     <input type="submit" name="search" value="Search"/>
 </s:form>

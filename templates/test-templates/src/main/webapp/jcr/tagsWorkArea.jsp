@@ -85,4 +85,14 @@
 
 <p>Usage of nodetype : </p>
 <jcr:nodeType ntName="${jcr.nt_file}" var="type"/>
-Node type name : "${type.name}"
+<ul>
+    <li>Node type name : "${type.name}"</li>
+    <li>Localized Node type name : "${jcr:label(type)}"</li>
+</ul>
+<p>Name of the different fields</p>
+<ul>
+    <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
+        <li> Current Locale Name of field : ${jcr:label(propertyDefinition)}</li>
+        <li> French Locale Name of field  : ${jcr:labelForLocale(propertyDefinition,"fr")}</li>
+    </c:forEach>
+</ul>

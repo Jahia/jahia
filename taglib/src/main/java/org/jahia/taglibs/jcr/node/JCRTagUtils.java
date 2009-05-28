@@ -34,6 +34,7 @@ package org.jahia.taglibs.jcr.node;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.utils.LanguageCodeConverters;
 import org.apache.log4j.Logger;
 
 import javax.jcr.Property;
@@ -84,6 +85,15 @@ public class JCRTagUtils {
                         logger.error("PropertyDefinition doesn't implement 'org.jahia.services.content.nodetypes.ExtendedPropertyDefinition'");
                     }
                 }
+                // case of PropertyDefinition
+                else if (nodeObject instanceof PropertyDefinition) {
+                    if (nodeObject instanceof ExtendedPropertyDefinition) {
+                        ExtendedPropertyDefinition itemDef = (ExtendedPropertyDefinition) nodeObject;
+                        return itemDef.getLabel(local);
+                    } else {
+                        logger.error("PropertyDefinition doesn't implement 'org.jahia.services.content.nodetypes.ExtendedPropertyDefinition'");
+                    }
+                }
                 // case of node type
                 else if (nodeObject instanceof NodeType) {
                     NodeType nodeType = (NodeType) nodeObject;
@@ -101,5 +111,16 @@ public class JCRTagUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Get the label value dependind on the local
+     *
+     * @param nodeObject
+     * @param locale as a string
+     * @return
+     */
+    public static String label(Object nodeObject, String locale) {
+        return label(nodeObject, LanguageCodeConverters.languageCodeToLocale(locale));
     }
 }

@@ -31,12 +31,11 @@
  */
 package org.jahia.admin;
 
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.params.ParamBean;
+import org.jahia.services.usermanager.JahiaUser;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by IntelliJ IDEA.
@@ -75,7 +74,7 @@ public interface AdministrationModule {
 
     public String getUrlParams();
 
-    public void init(ServletContext servletContext);
+    public void init();
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws Exception;
 

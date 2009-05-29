@@ -32,15 +32,13 @@
 package org.jahia.admin;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.bin.JahiaAdministration;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ParamBean;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.bin.JahiaAdministration;
-import org.jahia.params.ParamBean;
-import org.jahia.exceptions.JahiaException;
-
-import javax.servlet.ServletContext;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * Created by IntelliJ IDEA.
@@ -62,6 +60,7 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
     private String urlAction;
     private String urlParams;
     private boolean serverModule;
+    private AdministrationModulesRegistry registry;
 
     private boolean hasServerPermission(String permissionName, JahiaUser user, int siteID) {
         JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
@@ -125,6 +124,14 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
 
     public void setServerModule(boolean serverModule) {
         this.serverModule = serverModule;
+    }
+
+    public AdministrationModulesRegistry getRegistry() {
+        return registry;
+    }
+
+    public void setRegistry(AdministrationModulesRegistry registry) {
+        this.registry = registry;
     }
 
     public boolean isEnabled(JahiaUser user, int siteID) {
@@ -200,6 +207,15 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
         this.urlParams = urlParams;
     }
 
-    public void init(ServletContext servletContext) {
+    public void init() {
+        if (isServerModule()) {
+            if (!registry.getServerModules().contains(this)) {
+                registry.getServerModules().add(this);
+            }
+        } else {
+            if (!registry.getSiteModules().contains(this)) {
+                registry.getSiteModules().add(this);
+            }
+        }
     }
 }

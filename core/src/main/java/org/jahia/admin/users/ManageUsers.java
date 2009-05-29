@@ -36,7 +36,7 @@ package org.jahia.admin.users;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
-
+import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
@@ -48,7 +48,6 @@ import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.License;
 import org.jahia.services.events.JahiaEventGeneratorBaseService;
 import org.jahia.services.pages.ContentPage;
@@ -59,7 +58,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.JahiaTools;
-import org.jahia.admin.AbstractAdministrationModule;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -92,7 +91,7 @@ public class ManageUsers extends AbstractAdministrationModule {
 
     private static final String JSP_PATH = JahiaAdministration.JSP_PATH;
 
-    private static JahiaUserManagerService uMgr;
+    private JahiaUserManagerService userManager;
 
     private JahiaSite jahiaSite;
 
@@ -122,7 +121,7 @@ public class ManageUsers extends AbstractAdministrationModule {
         // get services...
         ServicesRegistry sReg = ServicesRegistry.getInstance();
         if (sReg != null) {
-            uMgr = sReg.getJahiaUserManagerService();
+            userManager = sReg.getJahiaUserManagerService();
         }
 
         // get the current website. get the jahiaserver if it's null...
@@ -146,18 +145,13 @@ public class ManageUsers extends AbstractAdministrationModule {
         userRequestDispatcher( request, response, request.getSession() );
     }
 
-    /**
-     * Default constructor.
-     *
-     * @throws Exception
-     */
-    public ManageUsers()
-    throws Exception
-    {
-        ServicesRegistry sReg =  ServicesRegistry.getInstance();
-        if (sReg != null) {
-            uMgr =  sReg.getJahiaUserManagerService();
-        }
+
+    public JahiaUserManagerService getUserManager() {
+        return userManager;
+    }
+
+    public void setUserManager(JahiaUserManagerService uMgr) {
+        this.userManager = uMgr;
     }
 
     /**
@@ -282,7 +276,7 @@ public class ManageUsers extends AbstractAdministrationModule {
                               HttpSession session)
     throws IOException, ServletException, JahiaException
     {
-        request.setAttribute("providerList", uMgr.getProviderList());
+        request.setAttribute("providerList", userManager.getProviderList());
         Set userSet = PrincipalViewHelper.getSearchResult(request, jahiaSite.getID());
         userSet = PrincipalViewHelper.removeJahiaAdministrators(userSet);
         request.setAttribute("resultList", userSet);
@@ -444,8 +438,8 @@ public class ManageUsers extends AbstractAdministrationModule {
             userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.alreadyExist.label",
                     jParams.getLocale());
             return false;
-        } else if (uMgr.userExists(username)) {
-            JahiaUser user = uMgr.lookupUser(username);
+        } else if (userManager.userExists(username)) {
+            JahiaUser user = userManager.lookupUser(username);
             String url = JahiaAdministration.composeActionURL(request,response,"users","&sub=processRegister&userSelected=" + user.getUserKey());
 
             userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
@@ -509,14 +503,14 @@ public class ManageUsers extends AbstractAdministrationModule {
         }
 
         JahiaUser usr = null;
-        usr = uMgr.createUser(username, passwd, userProps);
+        usr = userManager.createUser(username, passwd, userProps);
         if (usr == null) {
             userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.unableCreateUser.label",
                     jParams.getLocale());
             userMessage += " " + username;
             return false;
         } else {
-            usr = uMgr.lookupUser(username);
+            usr = userManager.lookupUser(username);
             JahiaSiteUserManagerService siteUserManager =
                     ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
             siteUserManager.addMember(jahiaSite.getID(), usr);
@@ -556,7 +550,7 @@ public class ManageUsers extends AbstractAdministrationModule {
         JahiaUser theUser;
         if (isSuperAdminProp) {
             userToEdit = (String)session.getAttribute(JahiaAdministration.CLASS_NAME + "jahiaLoginUsername");
-            theUser = (JahiaUser)uMgr.lookupUser(userToEdit);
+            theUser = (JahiaUser) userManager.lookupUser(userToEdit);
             // Spaces ensure the compatibility format from the user_management.jsp select box
             request.setAttribute("isSuperAdminProp", "");
         } else {
@@ -573,7 +567,7 @@ public class ManageUsers extends AbstractAdministrationModule {
             // Consider actual selected user as the last one and store it in session.
             session.setAttribute("selectedUsers", userToEdit);
             userToEdit = JahiaTools.replacePattern(userToEdit, "&nbsp;", " ");
-            theUser = (JahiaUser)uMgr.lookupUserByKey(userToEdit.substring(1));
+            theUser = (JahiaUser) userManager.lookupUserByKey(userToEdit.substring(1));
         }
         request.setAttribute("theUser", theUser);
 
@@ -675,7 +669,7 @@ public class ManageUsers extends AbstractAdministrationModule {
         String username = request.getParameter("username");
         JahiaUser usr;
         if (isSuperAdminProp) {
-            usr = (JahiaUser)uMgr.lookupUser(username);
+            usr = (JahiaUser) userManager.lookupUser(username);
         } else {
             usr = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMember(jahiaSite.getID(), username);
         }
@@ -941,13 +935,13 @@ public class ManageUsers extends AbstractAdministrationModule {
         if (!userName.equals("guest")) {
             // try to delete the user and memberships...
             try {
-                JahiaUser user = uMgr.lookupUser(userName);
+                JahiaUser user = userManager.lookupUser(userName);
                 JahiaUser currentUser = (JahiaUser)session.getAttribute(ProcessingContext.SESSION_USER);
                 if (!user.getUserKey().equals(currentUser.getUserKey())) {
                     JahiaSiteUserManagerService siteUserManager =
                         ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
                     siteUserManager.removeMember(jParams.getSiteID(),user);
-//                    uMgr.deleteUser(user);
+//                    userManager.deleteUser(user);
                     userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
                         jParams.getLocale());
                     userMessage += " [" + userName + "] ";

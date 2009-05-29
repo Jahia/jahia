@@ -6,7 +6,12 @@
 
     <!-- Server settings administration modules -->
 
-    <bean id="sitesAdministrationModule" class="org.jahia.admin.sites.ManageSites">
+    <bean abstract="true" id="abstractAdministrationModule" class="org.jahia.admin.AbstractAdministrationModule" init-method="init">
+        <property name="registry" ref="administrationModulesRegistry"/>
+    </bean>
+
+
+    <bean id="sitesAdministrationModule" class="org.jahia.admin.sites.ManageSites" parent="abstractAdministrationModule">
         <property name="urlKey" value="sites" />
         <property name="permissionName" value="admin.sites.ManageSites" />
         <property name="name" value="sites" />
@@ -18,7 +23,7 @@
         <property name="urlParams" value="&amp;sub=list" />
     </bean>
 
-    <bean id="categoriesAdministrationModule" class="org.jahia.admin.categories.ManageCategories">
+    <bean id="categoriesAdministrationModule" class="org.jahia.admin.categories.ManageCategories" parent="abstractAdministrationModule">
         <property name="urlKey" value="categories" />
         <property name="permissionName" value="admin.categories.ManageCategories" />
         <property name="name" value="categories" />
@@ -30,7 +35,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="serverAdministrationModule" class="org.jahia.admin.server.ManageServer">
+    <bean id="serverAdministrationModule" class="org.jahia.admin.server.ManageServer" parent="abstractAdministrationModule">
         <property name="urlKey" value="server" />
         <property name="permissionName" value="admin.server.ManageServer" />
         <property name="name" value="server" />
@@ -42,7 +47,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="componentsAdministrationModule" class="org.jahia.admin.components.ManageComponents">
+    <bean id="componentsAdministrationModule" class="org.jahia.admin.components.ManageComponents" parent="abstractAdministrationModule">
         <property name="urlKey" value="sharecomponents" />
         <property name="permissionName" value="admin.components.ManageShareComponents" />
         <property name="name" value="components" />
@@ -54,7 +59,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="logsAdministrationModule" class="org.jahia.admin.audit.ManageLogs">
+    <bean id="logsAdministrationModule" class="org.jahia.admin.audit.ManageLogs" parent="abstractAdministrationModule">
         <property name="urlKey" value="logs" />
         <property name="permissionName" value="admin.audit.ManageLogs" />
         <property name="name" value="logs" />
@@ -66,7 +71,7 @@
         <property name="urlParams" value="&amp;sub=settings" />
     </bean>
 
-    <bean id="rootUserAdministrationModule" class="org.jahia.admin.users.ManageUsers">
+    <bean id="rootUserAdministrationModule" class="org.jahia.admin.users.ManageUsers" parent="abstractAdministrationModule">
         <property name="urlKey" value="profile" />
         <property name="permissionName" value="admin.users.ManageSuperAdminProps" />
         <property name="name" value="profile" />
@@ -76,9 +81,10 @@
         <property name="urlType" value="module" />
         <property name="urlAction" value="users" />
         <property name="urlParams" value="&amp;sub=superAdminProps" />
+        <property name="userManager" ref="JahiaUserManagerService" />
     </bean>
 
-    <bean id="statusAdministrationModule" class="org.jahia.admin.status.ManageStatus">
+    <bean id="statusAdministrationModule" class="org.jahia.admin.status.ManageStatus" parent="abstractAdministrationModule">
         <property name="urlKey" value="status" />
         <property name="permissionName" value="admin.status.ManageStatus" />
         <property name="name" value="status" />
@@ -90,7 +96,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="serverPermissionsAdministrationModule" class="org.jahia.admin.permissions.ManageServerPermissions">
+    <bean id="serverPermissionsAdministrationModule" class="org.jahia.admin.permissions.ManageServerPermissions" parent="abstractAdministrationModule">
         <property name="urlKey" value="serverPermissions" />
         <property name="permissionName" value="admin.permissions.ManageServerPermissions" />
         <property name="name" value="serverPermissions" />
@@ -102,7 +108,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="passwordPoliciesAdministrationModule" class="org.jahia.admin.pwdpolicy.ManagePasswordPolicies">
+    <bean id="passwordPoliciesAdministrationModule" class="org.jahia.admin.pwdpolicy.ManagePasswordPolicies" parent="abstractAdministrationModule">
         <property name="urlKey" value="passwordPolicies" />
         <property name="permissionName" value="admin.pwdpolicy.ManagePasswordPolicies" />
         <property name="name" value="passwordPolicies" />
@@ -114,7 +120,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="patchesAdministrationModule" class="org.jahia.admin.patches.ManagePatches">
+    <bean id="patchesAdministrationModule" class="org.jahia.admin.patches.ManagePatches" parent="abstractAdministrationModule">
         <property name="urlKey" value="patches" />
         <property name="permissionName" value="admin.server.ViewPatches" />
         <property name="name" value="patches" />
@@ -126,7 +132,7 @@
         <property name="urlParams" value="" />
     </bean>
 
-    <bean id="infoAdministrationModule" class="org.jahia.admin.info.LicenseInfo">
+    <bean id="infoAdministrationModule" class="org.jahia.admin.info.LicenseInfo" parent="abstractAdministrationModule">
         <property name="urlKey" value="info" />
         <property name="permissionName" value="admin.info.LicenseInfo" />
         <property name="name" value="info" />
@@ -140,7 +146,7 @@
 
     <!-- Site settings administration modules -->
 
-    <bean id="pagesAdministrationModule" class="org.jahia.admin.pages.ManagePages">
+    <bean id="pagesAdministrationModule" class="org.jahia.admin.pages.ManagePages" parent="abstractAdministrationModule">
         <property name="urlKey" value="pages" />
         <property name="permissionName" value="admin.pages.ManagePages" />
         <property name="name" value="pages" />
@@ -152,7 +158,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="usersAdministrationModule" class="org.jahia.admin.users.ManageUsers">
+    <bean id="usersAdministrationModule" class="org.jahia.admin.users.ManageUsers" parent="abstractAdministrationModule">
         <property name="urlKey" value="users" />
         <property name="permissionName" value="admin.users.ManageUsers" />
         <property name="name" value="users" />
@@ -164,7 +170,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="groupsAdministrationModule" class="org.jahia.admin.users.ManageGroups">
+    <bean id="groupsAdministrationModule" class="org.jahia.admin.users.ManageGroups" parent="abstractAdministrationModule">
         <property name="urlKey" value="groups" />
         <property name="permissionName" value="admin.users.ManageGroups" />
         <property name="name" value="groups" />
@@ -176,7 +182,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="templatesAdministrationModule" class="org.jahia.admin.templates.ManageTemplates">
+    <bean id="templatesAdministrationModule" class="org.jahia.admin.templates.ManageTemplates" parent="abstractAdministrationModule">
         <property name="urlKey" value="templates" />
         <property name="permissionName" value="admin.templates.ManageTemplates" />
         <property name="name" value="templates" />
@@ -188,7 +194,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="searchAdministrationModule" class="org.jahia.admin.search.ManageSearch">
+    <bean id="searchAdministrationModule" class="org.jahia.admin.search.ManageSearch" parent="abstractAdministrationModule">
         <property name="urlKey" value="search" />
         <property name="permissionName" value="admin.search.ManageSearch" />
         <property name="name" value="search" />
@@ -200,7 +206,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="siteLanguagesAdministrationModule" class="org.jahia.admin.languages.ManageSiteLanguages">
+    <bean id="siteLanguagesAdministrationModule" class="org.jahia.admin.languages.ManageSiteLanguages" parent="abstractAdministrationModule">
         <property name="urlKey" value="siteLanguages" />
         <property name="permissionName" value="admin.languages.ManageSiteLanguages" />
         <property name="name" value="languages" />
@@ -212,7 +218,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="productionManagerAdministrationModule" class="org.jahia.admin.production.ManageSiteProduction">
+    <bean id="productionManagerAdministrationModule" class="org.jahia.admin.production.ManageSiteProduction" parent="abstractAdministrationModule">
         <property name="urlKey" value="productionManager" />
         <property name="permissionName" value="admin.production.ManageSiteProduction" />
         <property name="name" value="export" />
@@ -224,7 +230,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="sitePermissionsAdministrationModule" class="org.jahia.admin.permissions.ManageSitePermissions">
+    <bean id="sitePermissionsAdministrationModule" class="org.jahia.admin.permissions.ManageSitePermissions" parent="abstractAdministrationModule">
         <property name="urlKey" value="sitePermissions" />
         <property name="permissionName" value="admin.permissions.ManageSitePermissions" />
         <property name="name" value="sitePermissions" />
@@ -236,7 +242,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="htmlEditorsAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule">
+    <bean id="htmlEditorsAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
         <property name="urlKey" value="htmlsettings" />
         <property name="permissionName" value="admin.htmleditors.HtmlEditorsAdmin" />
         <property name="name" value="htmlsettings" />
@@ -248,7 +254,7 @@
         <property name="urlParams" value="&amp;group=htmlsettings&amp;method=display" />
     </bean>
 
-    <bean id="integrityChecksAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule">
+    <bean id="integrityChecksAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
         <property name="urlKey" value="integrity" />
         <property name="permissionName" value="admin.integrity.IntegrityChecks" />
         <property name="name" value="integrity" />
@@ -260,7 +266,7 @@
         <property name="urlParams" value="&amp;group=integrity&amp;method=display" />
     </bean>
 
-    <bean id="analyticsAdministrationModule" class="org.jahia.admin.analytics.ManageAnalytics">
+    <bean id="analyticsAdministrationModule" class="org.jahia.admin.analytics.ManageAnalytics" parent="abstractAdministrationModule">
         <property name="urlKey" value="analytics" />
         <property name="permissionName" value="admin.analytics.ManageAnalytics" />
         <property name="name" value="analytics" />
@@ -272,7 +278,7 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="themesAdministrationModule" class="org.jahia.admin.themes.ManageThemes">
+    <bean id="themesAdministrationModule" class="org.jahia.admin.themes.ManageThemes" parent="abstractAdministrationModule">
         <property name="urlKey" value="themes" />
         <property name="permissionName" value="admin.themes.ManageThemes" />
         <property name="name" value="themes" />
@@ -284,38 +290,38 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="communityJiraAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule">
+    <bean id="communityJiraAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
         <property name="urlKey" value="community-jira" />
         <property name="name" value="community-jira" />
         <property name="icon" value="debug_view" />
         <property name="label" value="Issue tracking" />
         <property name="urlAction" value="http://jira.jahia.org/" />
     </bean>
-    
-    <bean id="enterpriseJiraAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule">
+    <!--
+    <bean id="enterpriseJiraAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
         <property name="urlKey" value="enterprise-jira" />
         <property name="name" value="enterprise-jira" />
         <property name="icon" value="debug_view" />
         <property name="label" value="Issue tracking" />
         <property name="urlAction" value="http://support.jahia.com/" />
     </bean>
-    
-    <bean id="jahiaPediaAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule">
+    -->
+    <bean id="jahiaPediaAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
         <property name="urlKey" value="pedia" />
         <property name="name" value="pedia" />
         <property name="icon" value="books" />
         <property name="label" value="Jahiapedia" />
         <property name="urlAction" value="http://www.jahia.org/cms/home/jahiapedia" />
     </bean>
-    
-    <bean id="docsAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule">
+    <!--
+    <bean id="docsAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
         <property name="urlKey" value="docs" />
         <property name="name" value="docs" />
         <property name="icon" value="books" />
         <property name="label" value="Documentation" />
         <property name="urlAction" value="http://extranet.jahia.com/jahia/Jahia/documentation" />
     </bean>
-    
+    -->
     <bean id="administrationModulesRegistry" class="org.jahia.admin.AdministrationModulesRegistry">
         <property name="serverModules">
             <list>

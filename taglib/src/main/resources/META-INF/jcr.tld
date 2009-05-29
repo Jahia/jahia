@@ -262,12 +262,12 @@
         </attribute>
     </tag>
     <tag>
-        <description>Exposes a JCR node as a read only decorator (JCRNodeReadOnlyDecorator)</description>
+        <description>Exposes a JCR node as a JCRNodeWrapper object</description>
         <name>node</name>
         <tag-class>org.jahia.taglibs.jcr.node.JCRNodeTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>the name to give to the bean</description>
+            <description>the name of the exposed bean</description>
             <name>var</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
@@ -340,20 +340,24 @@
         </attribute>
     </tag>
     <tag>
+        <description>Allow access to a node using an XPath expression and expose it</description>
         <name>xpath</name>
         <tag-class>org.jahia.taglibs.jcr.xpath.JCRXPathTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>the name of the exposed bean</description>
             <name>var</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>the xpath expression)</description>
             <name>xpath</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>the scope of the bean (see PageContext)</description>
             <name>scope</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

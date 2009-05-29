@@ -32,22 +32,23 @@
 package org.jahia.taglibs.template.include;
 
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
-import org.jahia.services.htmlparser.HtmlDOMVisitor;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.bin.Jahia;
+import org.jahia.engines.filemanager.URLUtil;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.htmlparser.HtmlDOMVisitor;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.ServletRequest;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.util.*;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -73,7 +74,7 @@ public class FileIncludeTag extends ImportSupport {
             ctx = Jahia.getContextPath() + "/files";
         }
 
-        url = r.getScheme()+"://"+ r.getServerName()+":"+ r.getServerPort()+ ctx + path;
+        url = r.getScheme()+"://"+ r.getServerName()+":"+ r.getServerPort() + URLUtil.URLEncode( ctx + path, "UTF-8");
     }
 
     public void setProcessHtml(boolean bool) throws JspTagException {

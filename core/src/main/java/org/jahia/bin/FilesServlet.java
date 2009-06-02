@@ -51,6 +51,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.jcr.RepositoryException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -110,7 +111,14 @@ public class FilesServlet extends HttpServlet {
         }
         p = Text.unescape(p);
 
-        JCRNodeWrapper n = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(p, jahiaUser);
+        JCRNodeWrapper n;
+        try {
+            n = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(jahiaUser).getNode(p);
+        } catch (RepositoryException e) {
+            logger.error("Error accesing path : "+p+" for user "+jahiaUser,e);
+            res.sendError(HttpServletResponse.SC_NOT_FOUND,e.getLocalizedMessage());
+            return;
+        }
 
         boolean valid = false;
         String v = req.getParameter("v");
@@ -150,14 +158,25 @@ public class FilesServlet extends HttpServlet {
                 byte[] b = (byte[]) cache.get(cacheKey);
                 if (b == null) {
                     is = fileContent.downloadFile();
-                    b = new byte[contentLength];
-                    is.read(b);
-                    cache.put(p, cacheKey);
-                    IOUtils.closeQuietly(is);
+                    if(is!=null) {
+                        b = new byte[contentLength];
+                        int i = is.read(b);
+                        if(i>0) {
+                            cache.put(cacheKey,b);
+                        }
+                        IOUtils.closeQuietly(is);
+                    } else {
+                        res.sendError(HttpServletResponse.SC_NOT_FOUND);
+                        return;
+                    }
                 }
                 is = new ByteArrayInputStream(b);
             } else {
                 is = fileContent.downloadFile();
+                if(is== null) {
+                    res.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    return;
+                }
             }
 
             IOUtils.copy(is, os);

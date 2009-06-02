@@ -977,7 +977,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         copy.setProperty(s, (String) props.get(s));
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.warn("Unable to copy property '" + s + "'. Skipping.", e);
                 }
             }
         }

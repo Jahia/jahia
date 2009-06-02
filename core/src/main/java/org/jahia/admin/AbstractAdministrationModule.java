@@ -41,11 +41,11 @@ import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**
- * Created by IntelliJ IDEA.
- * User: loom
+ * Base implementation of the Jahia administration module.
+ * 
+ * @author Serge Huber
  * Date: Feb 2, 2009
  * Time: 10:04:21 AM
- * To change this template use File | Settings | File Templates.
  */
 public abstract class AbstractAdministrationModule implements AdministrationModule {
 
@@ -158,10 +158,17 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
     }
 
     public String getActionURL(ParamBean paramBean) throws JahiaException {
+        if (urlType == null) {
+            return urlAction;
+        }
+        
         if ("module".equals(urlType)) {
             return JahiaAdministration.composeActionURL(paramBean.getRequest(),paramBean.getResponse(),urlAction,urlParams);
         } else if ("struts".equals(urlType)) {
             return paramBean.composeStrutsUrl(urlAction,urlParams);
+        } else if ("link".equals(urlType)) {
+            return paramBean.getResponse().encodeURL(
+                    paramBean.getContextPath() + urlAction);
         } else {
             return urlAction;
         }
@@ -208,14 +215,6 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
     }
 
     public void init() {
-        if (isServerModule()) {
-            if (!registry.getServerModules().contains(this)) {
-                registry.getServerModules().add(this);
-            }
-        } else {
-            if (!registry.getSiteModules().contains(this)) {
-                registry.getSiteModules().add(this);
-            }
-        }
+        registry.add(this);
     }
 }

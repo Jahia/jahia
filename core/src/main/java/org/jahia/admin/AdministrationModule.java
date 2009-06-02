@@ -38,11 +38,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by IntelliJ IDEA.
- * User: loom
+ * Definition of the Jahia Administration module item.
+ * 
+ * @author Serge Huber
  * Date: Feb 2, 2009
  * Time: 9:51:06 AM
- * To change this template use File | Settings | File Templates.
  */
 public interface AdministrationModule {
 

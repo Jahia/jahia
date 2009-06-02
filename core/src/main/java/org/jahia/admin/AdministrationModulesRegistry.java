@@ -31,51 +31,60 @@
  */
 package org.jahia.admin;
 
-import javax.portlet.Portlet;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.list.UnmodifiableList;
+import org.apache.commons.collections.map.UnmodifiableMap;
+
 /**
- * Created by IntelliJ IDEA.
- * User: loom
+ * Jahia Administration modules registry, which holds all items, displayed in
+ * the server and site sections of the menu.
+ * 
+ * @author Serge Huber
  * Date: Feb 2, 2009
  * Time: 9:46:21 AM
- * To change this template use File | Settings | File Templates.
  */
 public class AdministrationModulesRegistry {
 
-    private List<AdministrationModule> serverModules = new ArrayList<AdministrationModule>();
-    private List<AdministrationModule> siteModules = new ArrayList<AdministrationModule>();
-    private Map<String, AdministrationModule> serverModulesByUrlKey = new HashMap<String, AdministrationModule>();
-    private Map<String, AdministrationModule> siteModulesByUrlKey = new HashMap<String, AdministrationModule>();
+    private List<AdministrationModule> serverModules = UnmodifiableList
+            .decorate(new LinkedList<AdministrationModule>());
 
-    public AdministrationModulesRegistry() {
+    private Map<String, AdministrationModule> serverModulesByUrlKey = UnmodifiableMap
+            .decorate(new HashMap<String, AdministrationModule>());
 
-    }
+    private List<AdministrationModule> siteModules = UnmodifiableList
+            .decorate(new LinkedList<AdministrationModule>());
 
-    public List<AdministrationModule> getServerModules() {
-        return serverModules;
-    }
+    private Map<String, AdministrationModule> siteModulesByUrlKey = UnmodifiableMap
+            .decorate(new HashMap<String, AdministrationModule>());
 
-    public void setServerModules(List<AdministrationModule> serverModules) {
-        this.serverModules = serverModules;
-        for (AdministrationModule currentModule : serverModules) {
-            currentModule.setServerModule(true);
-            serverModulesByUrlKey.put(currentModule.getUrlKey(), currentModule);
-        }
-    }
-
-    public List<AdministrationModule> getSiteModules() {
-        return siteModules;
-    }
-
-    public void setSiteModules(List<AdministrationModule> siteModules) {
-        this.siteModules = siteModules;
-        for (AdministrationModule currentModule : siteModules) {
-            currentModule.setServerModule(false);
-            siteModulesByUrlKey.put(currentModule.getUrlKey(), currentModule);
+    /**
+     * Adds the specified module into the registry.
+     * 
+     * @param module
+     *            the module to be added
+     */
+    public void add(AdministrationModule module) {
+        if (module.isServerModule()) {
+            serverModules = new LinkedList<AdministrationModule>(serverModules);
+            serverModules.add(module);
+            serverModules = UnmodifiableList.decorate(serverModules);
+            serverModulesByUrlKey = new HashMap<String, AdministrationModule>(
+                    serverModulesByUrlKey);
+            serverModulesByUrlKey.put(module.getUrlKey(), module);
+            serverModulesByUrlKey = UnmodifiableMap
+                    .decorate(serverModulesByUrlKey);
+        } else {
+            siteModules = new LinkedList<AdministrationModule>(siteModules);
+            siteModules.add(module);
+            siteModules = UnmodifiableList.decorate(siteModules);
+            siteModulesByUrlKey = new HashMap<String, AdministrationModule>(
+                    siteModulesByUrlKey);
+            siteModulesByUrlKey.put(module.getUrlKey(), module);
+            siteModulesByUrlKey = UnmodifiableMap.decorate(siteModulesByUrlKey);
         }
     }
 
@@ -83,8 +92,43 @@ public class AdministrationModulesRegistry {
         return serverModulesByUrlKey.get(moduleKey);
     }
 
+    public List<AdministrationModule> getServerModules() {
+        return serverModules;
+    }
+
     public AdministrationModule getSiteAdministrationModule(String moduleKey) {
         return siteModulesByUrlKey.get(moduleKey);
+    }
+
+    public List<AdministrationModule> getSiteModules() {
+        return siteModules;
+    }
+
+    /**
+     * Removes the specified module from the registry.
+     * 
+     * @param module
+     *            the module to be removed
+     */
+    public void remove(AdministrationModule module) {
+        if (module.isServerModule()) {
+            serverModules = new LinkedList<AdministrationModule>(serverModules);
+            serverModules.remove(module);
+            serverModules = UnmodifiableList.decorate(serverModules);
+            serverModulesByUrlKey = new HashMap<String, AdministrationModule>(
+                    serverModulesByUrlKey);
+            serverModulesByUrlKey.remove(module.getUrlKey());
+            serverModulesByUrlKey = UnmodifiableMap
+                    .decorate(serverModulesByUrlKey);
+        } else {
+            siteModules = new LinkedList<AdministrationModule>(siteModules);
+            siteModules.remove(module);
+            siteModules = UnmodifiableList.decorate(siteModules);
+            siteModulesByUrlKey = new HashMap<String, AdministrationModule>(
+                    siteModulesByUrlKey);
+            siteModulesByUrlKey.remove(module.getUrlKey());
+            siteModulesByUrlKey = UnmodifiableMap.decorate(siteModulesByUrlKey);
+        }
     }
 
 }

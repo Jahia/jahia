@@ -153,15 +153,15 @@
                         <configuration>
                             <targetServerDirectory>${project.build.directory}/apache-tomcat-6.0.18</targetServerDirectory>
                             <siteImportLocation>
-                                <!--param>/home/bamboo/bin/siteImport_testSite.zip</param>
-                                <param>/home/bamboo/bin/siteImport_DemoSite.zip</param-->
+                                <param>/home/bamboo/bin/siteImport_testSite.zip</param>
+                                <param>/home/bamboo/bin/siteImport_DemoSite.zip</param>
                             </siteImportLocation>
                             <cluster_activated>true</cluster_activated>
                             <processingServer>true</processingServer>
                             <databaseUrl>jdbc:mysql://10.8.37.246/qa_cluster?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
                             <databaseUsername>jahia</databaseUsername>
                             <databasePassword>jahia</databasePassword>
-                            <overwritedb>false</overwritedb>
+                            <overwritedb>true</overwritedb>
                             <storeFilesInDB>true</storeFilesInDB>
                             <cluster_node_serverId>qa-j3</cluster_node_serverId>
                             <localIp>10.8.37.243</localIp>

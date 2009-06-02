@@ -219,7 +219,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             } else {
                 s = login(org.jahia.jaas.JahiaLoginModule.getGuestCredentials(), workspace);
             }
-            wsMap.put(username, s);
+            wsMap.put(workspace, s);
         } else {
             s.refresh(true);
         }

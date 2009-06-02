@@ -131,7 +131,7 @@
                         <artifactId>maven-jahia-plugin</artifactId>
                         <configuration>
                             <targetServerDirectory>${project.build.directory}/apache-tomcat-6.0.18</targetServerDirectory>
-                            <cluster_activated>true</cluster_activated>
+                            <cluster_activated>false</cluster_activated>
                             <siteImportLocation>
                                 <!-- As it is not the processing node, we are not going to feed it any imports -->
                             </siteImportLocation>

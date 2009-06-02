@@ -230,7 +230,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             InputStream is = item.getInputStream() ;
             result = locationFolder.uploadFile(filename, is, item.getContentType());
             is.close() ;
-            locationFolder.save();
+            locationFolder.saveSession();
         } catch (RepositoryException e) {
             logger.error("exception ",e) ;
             return false;

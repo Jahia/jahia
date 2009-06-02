@@ -42,5 +42,10 @@
     <jahia:sitePermission jahia:name="toolbar.test.switchingmode" jahia:acl="g:users"></jahia:sitePermission>
     <jahia:sitePermission jahia:name="toolbar.test.user" jahia:acl="g:users"></jahia:sitePermission>
     <jahia:sitePermission jahia:name="toolbar.worflow" jahia:acl="g:users"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.integrity.IntegrityChecks"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="engines.filemanager" jahia:acl="g:users"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="engines.mashupmanager" jahia:acl="g:users"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="toolbar.workflow" jahia:acl="g:users"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="engines.actions.hideFromNavigationMenu" jahia:acl="g:users"></jahia:sitePermission>
 </jahia:sitePermissions>
 

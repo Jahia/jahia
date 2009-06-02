@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
-    <testSite j:filename="testSite" jcr:created="2009-01-28T17:16:39.202+01:00" jcr:lastModified="2009-01-28T17:16:39.733+01:00" j:server="testservername" jcr:createdBy="root" jcr:primaryType="jnt:virtualsite" jcr:mixinTypes="jmix:test" jcr:uuid="76d67a70-9794-433d-8997-ac1364671296" jcr:lastModifiedBy="root" j:fullpath="/content/testSite" j:name="testSite">
-        <j:acl jcr:primaryType="jnt:acl">
-            <j:ace j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read jcr:write" j:aceType="GRANT"></j:ace>
-            <j:ace j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="" j:aceType="DENY"></j:ace>
-            <j:ace j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read jcr:write" j:aceType="GRANT"></j:ace>
-            <j:ace j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="" j:aceType="DENY"></j:ace>
-        </j:acl>
-    </testSite>
+    <sites jcr:primaryType="jnt:systemfolder">
+        <testSite j:filename="testSite" jcr:created="2009-06-02T17:09:10.883+02:00" jcr:lastModified="2009-06-02T17:09:11.015+02:00" j:server="testservername" jcr:createdBy="root" jcr:primaryType="jnt:virtualsite" jcr:uuid="45c75e40-44a6-43a5-82a9-eba02222db10" jcr:lastModifiedBy="root" j:fullpath="/content/sites/testSite" j:name="testSite">
+            <j:acl jcr:primaryType="jnt:acl">
+                <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"></GRANT_jcr_read_g_users>
+                <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"></GRANT_jcr_write_g_users>
+            </j:acl>
+            <files j:filename="files" jcr:created="2009-06-02T17:09:10.884+02:00" jcr:lastModified="2009-06-02T17:12:59.830+02:00" jcr:createdBy="root" jcr:primaryType="jnt:folder" jcr:uuid="ec2eb945-f514-46ac-9e87-2d33dc4c9926" jcr:lastModifiedBy="root" j:fullpath="/content/sites/testSite/files"></files>
+            <mashups j:filename="mashups" jcr:created="2009-06-02T17:09:10.884+02:00" jcr:lastModified="2009-06-02T17:09:11.013+02:00" jcr:createdBy="root" jcr:primaryType="jnt:folder" jcr:uuid="47432c9d-185f-483c-b00b-f857c5a298be" jcr:lastModifiedBy="root" j:fullpath="/content/sites/testSite/mashups"></mashups>
+        </testSite>
+    </sites>
 </content>
 

@@ -156,7 +156,7 @@
                                 <param>/home/bamboo/bin/siteImport_testSite.zip</param>
                                 <param>/home/bamboo/bin/siteImport_DemoSite.zip</param>
                             </siteImportLocation>
-                            <cluster_activated>true</cluster_activated>
+                            <cluster_activated>false</cluster_activated>
                             <processingServer>true</processingServer>
                             <databaseUrl>jdbc:mysql://10.8.37.246/qa_cluster?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
                             <databaseUsername>jahia</databaseUsername>

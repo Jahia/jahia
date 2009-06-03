@@ -340,7 +340,11 @@
         </attribute>
     </tag>
     <tag>
-        <description>Allow access to a node using an XPath expression and expose it</description>
+        <description>
+            Exposes into the template scope the result (as the javax.jcr.NodeItertor instance) of the JCR query 
+            based on the provided XPath expression.
+            If no items match the query an empty iterator is exposed. This condition can be checked using NodeIteraor.getSize() method.
+        </description>
         <name>xpath</name>
         <tag-class>org.jahia.taglibs.jcr.xpath.JCRXPathTag</tag-class>
         <body-content>JSP</body-content>
@@ -351,7 +355,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>the xpath expression)</description>
+            <description>the XPath expression</description>
             <name>xpath</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>

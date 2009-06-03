@@ -31,12 +31,12 @@
  */
 package org.jahia.taglibs.jcr.xpath;
 
+import org.apache.log4j.Logger;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.services.content.NodeIteratorImpl;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.JCRNodeWrapperIterator;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 
 import javax.jcr.NodeIterator;
@@ -47,114 +47,113 @@ import javax.jcr.query.QueryResult;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.security.Principal;
+import java.util.Collections;
 
 /**
- * Created by IntelliJ IDEA.
- * User: jahia
- * Date: 27 mai 2009
- * Time: 15:03:18
+ * Tag implementation for exposing a result of XPath JCR query into the template scope.
  */
 public class JCRXPathTag extends AbstractJahiaTag {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JCRXPathTag.class);
-    private String xpath;
-    private String var;
+    private static final Logger logger = Logger.getLogger(JCRXPathTag.class);
     private int scope = PageContext.PAGE_SCOPE;
+    private String var;
+    private String xpath;
 
-    public String getVar() {
-        return var;
+    public int doEndTag() {
+        resetState();
+        return EVAL_PAGE;
     }
 
-    public void setVar(String var) {
-        this.var = var;
+    public int doStartTag() throws JspException {
+        try {
+            final ProcessingContext ctx = getProcessingContext();
+            if (ctx != null) {
+                pageContext.setAttribute(var, findNodeIteratorByXpath(ctx.getUser(), xpath), scope);
+            } else {
+                logger.error("ProcessingContext instance is null.");
+            }
+            return EVAL_BODY_INCLUDE;
+
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return SKIP_BODY;
+    }
+
+    /**
+     * Find Node iterator by principal and XPath expression.
+     * 
+     * @param p
+     *            the principal
+     * @param path
+     *            an Xpath expression to perform the JCR query
+     * @return the {@link NodeIterator} instance with the results of the query;
+     *         returns empty iterator if nothing is found
+     */
+    private NodeIterator findNodeIteratorByXpath(Principal p, String path) {
+        NodeIterator ni = null;
+        if (logger.isDebugEnabled()) {
+            logger.debug("Find node by xpath[ " + path + " ]");
+        }
+        if (p instanceof JahiaGroup) {
+            logger.warn("method not implemented for JahiaGroup");
+        } else {
+            try {
+                QueryManager queryManager = ServicesRegistry.getInstance().getJCRStoreService().getQueryManager((JahiaUser) p);
+                if (queryManager != null) {
+                    Query q = queryManager.createQuery(path, Query.XPATH);
+                    // execute query
+                    QueryResult queryResult = q.execute();
+    
+                    // get node iterator
+                    ni = queryResult.getNodes();
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Path[" + path + "] --> found [" + ni.getSize() + "] values.");
+                    }
+                }
+            } catch (javax.jcr.PathNotFoundException e) {
+                logger.debug("javax.jcr.PathNotFoundException: Path[" + path + "]");
+            } catch (javax.jcr.ItemNotFoundException e) {
+                logger.debug(e, e);
+            } catch (javax.jcr.query.InvalidQueryException e) {
+                logger.error("InvalidQueryException ---> [" + path + "] is not valid.", e);
+            }
+            catch (RepositoryException e) {
+                logger.error(e, e);
+            }
+        }
+        return ni != null ? ni : new NodeIteratorImpl(Collections.EMPTY_LIST.iterator(), 0);
     }
 
     public int getScope() {
         return scope;
     }
 
-    public void setScope(int scope) {
-        this.scope = scope;
+    public String getVar() {
+        return var;
     }
 
     public String getXpath() {
         return xpath;
     }
 
+    @Override
+    protected void resetState() {
+        super.resetState();
+        scope = PageContext.PAGE_SCOPE;
+        xpath = null;
+        var = null;
+    }
+
+    public void setScope(int scope) {
+        this.scope = scope;
+    }
+
+    public void setVar(String var) {
+        this.var = var;
+    }
+
     public void setXpath(String xpath) {
         this.xpath = xpath;
     }
 
-    public int doStartTag() throws JspException {
-        try {
-            final JahiaData jData = getJahiaData();
-            if (jData != null) {
-                final ProcessingContext jParams = jData.getProcessingContext();
-
-                NodeIterator nodeIterator = findNodeIteratorByXpath(jParams.getUser(), xpath);
-                if (nodeIterator != null) {
-                    pageContext.setAttribute(var, new JCRNodeWrapperIterator(nodeIterator), scope);
-                } else {
-                    logger.debug("There is not result for xpath '" + xpath + "'");
-                }
-            } else {
-                logger.error("JahiaData is null");
-            }
-            return EVAL_BODY_INCLUDE;
-
-        } catch (final Exception e) {
-            logger.error(e, e);
-        }
-        return SKIP_BODY;
-    }
-
-
-    public int doEndTag() {
-        xpath = "";
-        var = "";
-        scope = PageContext.PAGE_SCOPE;
-        return EVAL_PAGE;
-    }
-
-
-    /**
-     * Find Node iterator by principal and xpath
-     *
-     * @param p
-     * @param path
-     * @return
-     */
-    private NodeIterator findNodeIteratorByXpath(Principal p, String path) {
-        logger.debug("Find node by xpath[ " + path + " ]");
-        if (p instanceof JahiaGroup) {
-            logger.warn("method not implemented for JahiaGroup");
-            return null;
-        }
-        try {
-            QueryManager queryManager = ServicesRegistry.getInstance().getJCRStoreService().getQueryManager((JahiaUser) p);
-            if (queryManager != null) {
-                Query q = queryManager.createQuery(path, Query.XPATH);
-                // execute query
-                QueryResult queryResult = q.execute();
-
-                // get node iterator
-                NodeIterator ni = queryResult.getNodes();
-                if (ni.hasNext()) {
-                    logger.debug("Path[" + path + "] --> found [" + ni.getSize() + "] values.");
-                    return ni;
-                } else {
-                    logger.debug("Path[" + path + "] --> empty result.");
-                }
-            }
-        } catch (javax.jcr.PathNotFoundException e) {
-            logger.debug("javax.jcr.PathNotFoundException: Path[" + path + "]");
-        } catch (javax.jcr.ItemNotFoundException e) {
-            logger.debug(e, e);
-        } catch (javax.jcr.query.InvalidQueryException e) {
-            logger.error("InvalidQueryException ---> [" + path + "] is not valid.", e);
-        }
-        catch (RepositoryException e) {
-            logger.error(e, e);
-        }
-        return null;
-    }
 }

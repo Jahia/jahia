@@ -29,8 +29,6 @@
         <li>Is Property Multi Valued : ${createdDef.multiple}</li>
     </ul>
 </jcr:nodeProperty>
-<br/>
-<br/>
 
 <h3>Access to childs of a node</h3>
 <c:forEach items="${jcrnode.children}" var="child">
@@ -65,6 +63,9 @@
 </c:forEach>
 <h3>Executing an XPath expression [//element(*, nt:query)] for retrieving all saved search:</h3>
 <jcr:xpath var="savedSearchIterator" xpath="//element(*, nt:query)"/>
+<c:if test="${savedSearchIterator.size == 0}">
+    No saved searches found
+</c:if>
 <c:forEach items="${savedSearchIterator}" var="node">
     <ul>
         <li>Node: ${node.name}</li>
@@ -75,6 +76,9 @@
 
 <h3>Executing an XPath expression [//element(*, jnt:portlet)] for retrieving all mashups:</h3>
 <jcr:xpath var="allMashupsIterator" xpath="//element(*, jnt:portlet)"/>
+<c:if test="${allMashupsIterator.size == 0}">
+    No mashups found
+</c:if>
 <c:forEach items="${allMashupsIterator}" var="node">
     <ul>
         <li>Node: ${node.name}</li>

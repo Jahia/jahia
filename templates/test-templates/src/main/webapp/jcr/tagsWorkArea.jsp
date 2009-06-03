@@ -96,7 +96,7 @@
 <h3>Name of the different fields</h3>
 <ul>
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
-        <li> Current Locale Name of field : ${jcr:label(propertyDefinition)}</li>
-        <li> French Locale Name of field  : ${jcr:labelForLocale(propertyDefinition,"fr")}</li>
+        <li> Current Locale Name of field "${propertyDefinition.name}": ${jcr:label(propertyDefinition)}</li>
+        <li> French Locale Name of field "${propertyDefinition.name}": ${jcr:labelForLocale(propertyDefinition,"fr")}</li>
     </c:forEach>
 </ul>

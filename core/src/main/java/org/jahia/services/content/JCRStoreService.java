@@ -289,7 +289,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                     if (path.startsWith(mp+"/")) {
                         String localPath = path.substring(mp.length());
                         JCRStoreProvider provider = dynamicMountPoints.get(mp);
-                        return provider.getNodeWrapper(localPath, user);
+                        return provider.getNodeWrapper(provider.getRelativeRoot()+ localPath, user);
                     }
                 }
                 for (Iterator<String> iterator = mountPoints.keySet().iterator(); iterator.hasNext();) {
@@ -303,7 +303,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                         if (localPath.equals("")) {
                             localPath = "/";
                         }
-                        return provider.getNodeWrapper(localPath, user);
+                        return provider.getNodeWrapper(provider.getRelativeRoot()+localPath, user);
                     }
                 }
                 return null;
@@ -313,7 +313,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                 String localPath = path.substring(index+1);
                 JCRStoreProvider provider = providers.get(key);
                 if (provider != null) {
-                    return provider.getNodeWrapper(localPath, user);
+                    return provider.getNodeWrapper(provider.getRelativeRoot()+localPath, user);
                 }
             }
         }

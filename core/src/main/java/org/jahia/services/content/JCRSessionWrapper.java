@@ -40,13 +40,13 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
-import java.security.AccessControlException;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Map;
-import java.util.Iterator;
+import java.security.AccessControlException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -131,7 +131,7 @@ public class JCRSessionWrapper implements Session {
                 String localPath = path.substring(mp.length());
                 JCRStoreProvider provider = dynamicMountPoints.get(mp);
 //                Item item = getProviderSession(provider).getItem(localPath);
-                Item item = getProviderSession(provider).getItem(provider.encodeInternalName(localPath));
+                Item item = getProviderSession(provider).getItem(provider.getRelativeRoot() + provider.encodeInternalName(localPath));
                 if (item.isNode()) {
                     return provider.getNodeWrapper((Node) item, this);
                 } else {
@@ -152,7 +152,7 @@ public class JCRSessionWrapper implements Session {
                     localPath = "/";
                 }
 //                Item item = getProviderSession(provider).getItem(localPath);
-                Item item = getProviderSession(provider).getItem(provider.encodeInternalName(localPath));
+                Item item = getProviderSession(provider).getItem(provider.getRelativeRoot() + provider.encodeInternalName(localPath));
                 if (item.isNode()) {
                     return provider.getNodeWrapper((Node) item, this);
                 } else {

@@ -31,17 +31,7 @@
  */
 package org.jahia.services.content;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.InvalidItemStateException;
-import javax.jcr.Item;
-import javax.jcr.ItemExistsException;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.ItemVisitor;
-import javax.jcr.Node;
-import javax.jcr.ReferentialIntegrityException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Workspace;
+import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -77,7 +67,8 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
         } else if ("/".equals(localPath)) {
             return provider.getMountPoint();
         }
-        return provider.getMountPoint() + localPath;
+
+        return provider.getMountPoint() + localPath.substring(provider.getRelativeRoot().length());
     }
 
     public String getName() throws RepositoryException {

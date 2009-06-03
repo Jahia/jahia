@@ -31,12 +31,18 @@
  */
 package org.jahia.services.content;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.RemoteException;
-import java.util.*;
+import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
+import org.apache.jackrabbit.util.ISO9075;
+import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
@@ -50,19 +56,15 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
-
-import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
-import org.apache.jackrabbit.util.ISO9075;
-import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
-import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -79,6 +81,7 @@ public class JCRStoreProvider {
     private String key;
     private String mountPoint;
     private String webdavPath;
+    private String relativeRoot = "";
 
     private String repositoryName;
     private String factory;
@@ -128,6 +131,14 @@ public class JCRStoreProvider {
 
     public String getWebdavPath() {
         return webdavPath;
+    }
+
+    public String getRelativeRoot() {
+        return relativeRoot;
+    }
+
+    public void setRelativeRoot(String relativeRoot) {
+        this.relativeRoot = relativeRoot;
     }
 
     public int getDepth() {

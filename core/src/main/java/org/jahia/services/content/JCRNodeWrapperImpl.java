@@ -141,7 +141,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-        if (localPath.equals("/")) {
+        if (localPath.equals("/") || localPath.equals(provider.getRelativeRoot())) {
             if (provider.getMountPoint().equals("/")) {
                 throw new ItemNotFoundException();
             }
@@ -552,7 +552,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return null;
         }
         try {
-            if (objectNode.getPath().equals("/") && provider.getMountPoint().length()>1) {
+            if ((objectNode.getPath().equals("/") || objectNode.getPath().equals(provider.getRelativeRoot())) && provider.getMountPoint().length()>1) {
                 String mp = provider.getMountPoint();
                 return mp.substring(mp.lastIndexOf('/')+1);
             } else {
@@ -902,7 +902,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return result && deleteFile() == OK;
         } else {
             if (destProvider.getMountPoint().length()>1) {
-                dest = dest.substring(provider.getMountPoint().length());
+                dest = provider.getRelativeRoot() + dest.substring(provider.getMountPoint().length());
             }
             String copyPath = provider.encodeInternalName(dest) + "/" + name;
             try {

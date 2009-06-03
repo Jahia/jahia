@@ -109,6 +109,11 @@ public class ContentTest extends TestCase {
         }
     }
 
+    /**
+     * Test file upload
+     *
+     * @throws RepositoryException
+     */
     public void testUpload() throws Exception {
         JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
 
@@ -131,11 +136,11 @@ public class ContentTest extends TestCase {
             assertEquals(providerRoot + " : Size is not the same", value.length(), testFile.getFileContent().getContentLength());
             assertEquals(providerRoot + " : Mime type is not the same", mimeType, testFile.getFileContent().getContentType());
 
-//            long creationDate = testFile.getCreationDateAsDate().getTime();
-//            assertTrue(providerRoot+ " : Creation date invalid", creationDate < System.currentTimeMillis() && creationDate > System.currentTimeMillis()-10000);
+            long creationDate = testFile.getCreationDateAsDate().getTime();
+            assertTrue(providerRoot+ " : Creation date invalid", creationDate < System.currentTimeMillis() && creationDate > System.currentTimeMillis()-10000);
 
-//            long lastModifiedDate = testFile.getLastModifiedAsDate().getTime();
-//            assertTrue(providerRoot+ " : Modification date invalid", lastModifiedDate < System.currentTimeMillis() && lastModifiedDate > System.currentTimeMillis()-10000);
+            long lastModifiedDate = testFile.getLastModifiedAsDate().getTime();
+            assertTrue(providerRoot+ " : Modification date invalid", lastModifiedDate < System.currentTimeMillis() && lastModifiedDate > System.currentTimeMillis()-10000);
 
             testFile = session.getNode(providerRoot + "/" + name);
 
@@ -162,6 +167,11 @@ public class ContentTest extends TestCase {
         }
     }
 
+    /**
+     * Test simple property set
+     *
+     * @throws RepositoryException
+     */
     public void testSetStringProperty() throws Exception {
         JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
 
@@ -191,13 +201,16 @@ public class ContentTest extends TestCase {
             assertEquals("getPropertyAsString() : Property value is not the same",value, testCollection.getPropertyAsString("jcr:title"));
             assertEquals("getPropertiesAsString() : Property value is not the same",value, testCollection.getPropertiesAsString().get("jcr:title"));
 
-            PropertyIterator pi = testCollection.getProperties("jcr:title");
+            boolean found = false;
+            PropertyIterator pi = testCollection.getProperties();
             while (pi.hasNext()) {
                 Property p = pi.nextProperty();
                 if (p.getName().equals("jcr:title")) {
-                    // found
+                    found = true;
+                    break;
                 }
             }
+            assertTrue(found);
 
             testCollection.remove();
             session.save();
@@ -215,6 +228,104 @@ public class ContentTest extends TestCase {
 
     }
 
+    /**
+     * Test rename of a file
+     *
+     * @throws RepositoryException
+     */
+    public void testRename() throws Exception {
+        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
 
+        JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
+
+        try {
+            JCRNodeWrapper rootNode = session.getNode(providerRoot);
+
+            String value = "This is a test";
+            String mimeType = "text/plain";
+
+            InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+
+            String name = "test" + System.currentTimeMillis() + ".txt";
+            JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
+            session.save();
+
+            final String newname = "renamed" + name;
+            boolean result = testFile.renameFile(newname);
+
+            assertTrue("rename returned false", result);
+
+            try {
+                session.getNode(providerRoot + "/" + newname);
+            } catch (RepositoryException e) {
+                fail(providerRoot + " : Renamed file not found");
+            }
+
+            testFile.remove();
+            session.save();
+
+            try {
+                session.getNode(providerRoot + "/" + name);
+                fail(providerRoot + " : File has not been deleted");
+
+            } catch (PathNotFoundException e) {
+                // ok
+            }
+        } finally {
+            session.logout();
+        }
+    }
+
+    /**
+     * Test move of a file
+     *
+     * @throws RepositoryException
+     */
+    public void testMove() throws Exception {
+        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
+
+        JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
+
+        try {
+            JCRNodeWrapper rootNode = session.getNode(providerRoot);
+
+            String value = "This is a test";
+            String mimeType = "text/plain";
+
+            InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+
+            String name = "test" + System.currentTimeMillis() + ".txt";
+            JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
+
+            final String collectionName = "foldertest" + System.currentTimeMillis();
+            JCRNodeWrapper testCollection = rootNode.createCollection(collectionName);
+
+            session.save();
+
+            boolean result = testFile.moveFile(providerRoot + "/" + collectionName);
+
+            assertTrue("move returned false", result);
+
+            try {
+                session.getNode(providerRoot + "/" + collectionName);
+            } catch (RepositoryException e) {
+                fail(providerRoot + " : moved file not found");
+            }
+
+            testFile.remove();
+            rootNode.getNode(collectionName).remove();
+            session.save();
+
+            try {
+                session.getNode(providerRoot + "/" + name);
+                fail(providerRoot + " : File has not been deleted");
+
+            } catch (PathNotFoundException e) {
+                // ok
+            }
+        } finally {
+            session.logout();
+        }
+    }
 
 }

@@ -35,25 +35,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@page import="java.util.*" %>
 <%@page import="org.jahia.bin.*" %>
-<%@page import="org.jahia.utils.JahiaTools" %>
-<%@page import="org.jahia.services.sites.JahiaSite" %>
 <%@page import="org.jahia.data.JahiaData" %>
-<%@page import="org.jahia.data.beans.MenuItem" %>
-<%@page import="org.jahia.services.acl.JahiaACLManagerService" %>
-<%@page import="org.jahia.registries.ServicesRegistry" %>
-<%@page import="org.jahia.services.acl.JahiaBaseACL" %>
 <%@page import="org.jahia.params.ParamBean" %>
 <%@page import="org.jahia.settings.SettingsBean" %>
 <%@page import="org.jahia.services.usermanager.JahiaUser" %>
-<%!
-    private static JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-    private boolean isServerActionAllowed(String action, JahiaUser user, int currentSiteID) {
-        return aclService.getServerActionPermission(action, user, JahiaBaseACL.READ_RIGHTS, currentSiteID) > 0;
-    }
-    private boolean isSiteActionAllowed(String action, JahiaUser user, int currentSiteID) {
-        return aclService.getSiteActionPermission(action, user, JahiaBaseACL.READ_RIGHTS, currentSiteID) > 0;
-    }
-%>
 <%
 
     Boolean isSuperAdmin = (Boolean) request.getAttribute("isSuperAdmin");

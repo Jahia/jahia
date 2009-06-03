@@ -4,7 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <utility:useConstants var="jcr" className="org.jahia.api.Constants" scope="application"/>
 <jcr:node var="jcrnode" path="/content/shared/files"/>
-<p>Access to node attributes directly :</p>
+<h3>Access to node attributes directly :</h3>
 <ul>
     <li>Node: ${jcrnode.name}</li>
     <li>URL: ${jcrnode.url}</li>
@@ -13,7 +13,7 @@
     <li>Collection: ${jcrnode.collection}</li>
 </ul>
 
-<p>Access to node definition and node type directly :</p>
+<h3>Access to node definition and node type directly :</h3>
 <ul>
     <li>Definition - name: ${jcrnode.definition.name}</li>
     <li>Definition - declaring nodeType: ${jcrnode.definition.declaringNodeType.name}</li>
@@ -22,7 +22,7 @@
     </c:forEach>
 </ul>
 
-<p>Access to specific property</p>
+<h3>Access to specific property</h3>
 <jcr:nodeProperty node="${jcrnode}" name="jcr:created" var="createdDate" varDef="createdDef">
     <ul>
         <li>Creation Date : <fmt:formatDate value="${createdDate.date.time}" dateStyle="full"/></li>
@@ -32,7 +32,7 @@
 <br/>
 <br/>
 
-<p>Access to childs of a node</p>
+<h3>Access to childs of a node</h3>
 <c:forEach items="${jcrnode.children}" var="child">
     <ul>
         <li>Node: ${child.name}</li>
@@ -63,7 +63,7 @@
         </jcr:nodeProperty>
     </ul>
 </c:forEach>
-<p>Executing an xpath expression [//element(*, nt:query)] for retrieving all saved search:</p>
+<h3>Executing an XPath expression [//element(*, nt:query)] for retrieving all saved search:</h3>
 <jcr:xpath var="savedSearchIterator" xpath="//element(*, nt:query)"/>
 <c:forEach items="${savedSearchIterator}" var="node">
     <ul>
@@ -73,7 +73,7 @@
     </ul>
 </c:forEach>
 
-<p>Executing an xpath expression [//element(*, jnt:portlet)] for retrieving all mashups:</p>
+<h3>Executing an XPath expression [//element(*, jnt:portlet)] for retrieving all mashups:</h3>
 <jcr:xpath var="allMashupsIterator" xpath="//element(*, jnt:portlet)"/>
 <c:forEach items="${allMashupsIterator}" var="node">
     <ul>
@@ -83,13 +83,13 @@
     </ul>
 </c:forEach>
 
-<p>Usage of nodetype : </p>
+<h3>Usage of nodetype</h3>
 <jcr:nodeType ntName="${jcr.nt_file}" var="type"/>
 <ul>
     <li>Node type name : "${type.name}"</li>
     <li>Localized Node type name : "${jcr:label(type)}"</li>
 </ul>
-<p>Name of the different fields</p>
+<h3>Name of the different fields</h3>
 <ul>
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
         <li> Current Locale Name of field : ${jcr:label(propertyDefinition)}</li>

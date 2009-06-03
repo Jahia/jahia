@@ -10,42 +10,7 @@
     <short-name>jcr</short-name>
     <uri>http://www.jahia.org/tags/jcr</uri>
     <tag>
-        <description>Iterates over all available node types</description>
-        <name>nodeTypes</name>
-        <tag-class>org.jahia.taglibs.jcr.file.NodeTypesTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>id</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>baseType</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
-        <name>nodeTypeLabel</name>
-        <tag-class>org.jahia.taglibs.jcr.file.NodeTypeLabelTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>name</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>property</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>scope</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
+        <description>Exposes the requested node type into the template scope.</description>
         <name>nodeType</name>
         <tag-class>org.jahia.taglibs.jcr.node.JCRNodeTypeTag</tag-class>
         <body-content>empty</body-content>

@@ -51,15 +51,13 @@
     <select ${h:attributes(attributes)} name="src_documentType">
         <option value=""><fmt:message key="searchForm.any"/></option>
         <jcr:nodeType name="${jcr.nt_file}" var="type"/>
-            <option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>
-                ${jcr:label(type)}</option>
+            <option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>${jcr:label(type)}</option>
         <jcr:nodeType name="${jcr.nt_folder}" var="type"/>
-            <option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>
-                ${jcr:label(type)}</option>
-        <jcr:nodeTypes baseType="${jcr.jahiamix_extension}">
-            <option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>
-                <jcr:nodeTypeLabel/></option>
-        </jcr:nodeTypes>
+            <option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>${jcr:label(type)}</option>
+        <jcr:nodeType name="${jcr.jahiamix_extension}" var="extensionType"/>
+        <c:forEach items="${extensionType.mixinSubtypes}" var="type">
+            <option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>${jcr:label(type)}</option>
+        </c:forEach>
     </select>
 </c:if>
 <c:if test="${!display}"><input type="hidden" name="src_documentType" value="${value}"/></c:if>

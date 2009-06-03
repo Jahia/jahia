@@ -33,12 +33,14 @@
 package org.jahia.taglibs.jcr.node;
 
 import org.apache.log4j.Logger;
+import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.taglibs.AbstractJahiaTag;
 
-import javax.servlet.jsp.JspException;
-import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeType;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 
 /**
  * Tag for getting node type.
@@ -50,6 +52,7 @@ public class JCRNodeTypeTag extends AbstractJahiaTag {
     private transient static Logger logger = Logger.getLogger(JCRNodeTypeTag.class);
     private String var;
     private String ntName;
+    private int scope = PageContext.PAGE_SCOPE;
 
     public void setNtName(String ntName) {
         this.ntName = ntName;
@@ -57,6 +60,10 @@ public class JCRNodeTypeTag extends AbstractJahiaTag {
 
     public void setVar(String var) {
         this.var = var;
+    }
+
+    public void setScope(String scope) {
+        this.scope = Util.getScope(scope);
     }
 
     /**
@@ -70,7 +77,7 @@ public class JCRNodeTypeTag extends AbstractJahiaTag {
     public int doStartTag() throws JspException {
         try {
             NodeType type = NodeTypeRegistry.getInstance().getNodeType(ntName);
-            pageContext.setAttribute(var, type);
+            pageContext.setAttribute(var, type, scope);
         } catch (NoSuchNodeTypeException e) {
             logger.warn(ntName + " is not a valid node type");
             return SKIP_BODY;

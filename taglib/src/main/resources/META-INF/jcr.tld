@@ -104,7 +104,7 @@
     <tag>
         <name>nodeType</name>
         <tag-class>org.jahia.taglibs.jcr.node.JCRNodeTypeTag</tag-class>
-        <body-content>JSP</body-content>
+        <body-content>empty</body-content>
         <attribute>
             <name>ntName</name>
             <required>false</required>
@@ -113,6 +113,11 @@
         <attribute>
             <name>var</name>
             <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>scope</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
@@ -265,7 +270,7 @@
         <description>Exposes a JCR node as a JCRNodeWrapper object</description>
         <name>node</name>
         <tag-class>org.jahia.taglibs.jcr.node.JCRNodeTag</tag-class>
-        <body-content>JSP</body-content>
+        <body-content>empty</body-content>
         <attribute>
             <description>the name of the exposed bean</description>
             <name>var</name>

@@ -31,17 +31,18 @@
  */
 package org.jahia.taglibs.jcr.node;
 
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.apache.log4j.Logger;
+import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.apache.log4j.Logger;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.taglibs.AbstractJahiaTag;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import javax.jcr.RepositoryException;
 
 /**
  * Tag exposing a JCR node.
@@ -58,8 +59,6 @@ public class JCRNodeTag extends AbstractJahiaTag {
     private String path;
     private int scope = PageContext.PAGE_SCOPE;
 
-    private JCRNodeWrapper node;
-
     public void setVar(String var) {
         this.var = var;
     }
@@ -68,12 +67,8 @@ public class JCRNodeTag extends AbstractJahiaTag {
         this.path = path;
     }
 
-    public void setScope(int scope) {
-        this.scope = scope;
-    }
-
-    public JCRNodeWrapper getFile() {
-        return node;
+    public void setScope(String scope) {
+        this.scope = Util.getScope(scope);
     }
 
     public int doStartTag() throws JspException {
@@ -84,7 +79,7 @@ public class JCRNodeTag extends AbstractJahiaTag {
                 JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
                 JCRNodeWrapper n = service.checkExistence(path, user);
                 if (n != null) {
-                    node = service.getThreadSession(user).getNode(path);
+                    JCRNodeWrapper node = service.getThreadSession(user).getNode(path);
                     pageContext.setAttribute(var, node, scope);
                 } else {
                     logger.error("The path '" + path + "' does not exist");
@@ -100,7 +95,6 @@ public class JCRNodeTag extends AbstractJahiaTag {
 
     public int doEndTag() throws JspException {
         path = null;
-        node = null;
         scope = PageContext.PAGE_SCOPE;
         return EVAL_PAGE;
     }

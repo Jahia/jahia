@@ -50,12 +50,14 @@ import org.jahia.services.usermanager.JahiaUser;
 public abstract class AbstractAdministrationModule implements AdministrationModule {
 
     private String icon;
+    private String iconSmall;
     private String label;
     private String link;
     private String name;
     private String tooltip;
     private String urlKey;
     private String permissionName;
+    private int rank; 
     private String urlType;
     private String urlAction;
     private String urlParams;
@@ -216,5 +218,21 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
 
     public void init() {
         registry.add(this);
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public String getIconSmall() {
+        return iconSmall;
+    }
+
+    public void setIconSmall(String iconSmall) {
+        this.iconSmall = iconSmall;
     }
 }

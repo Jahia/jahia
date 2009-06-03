@@ -572,7 +572,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
             }
             menuItems.add(new MenuItem(module.getName(), actionUrl != null
                     && module.isEnabled(ctx.getUser(), ctx.getSiteID()), module
-                    .getLabel(), actionUrl, module.getIcon(), module
+                    .getLabel(), actionUrl, module.getIcon(), module.getIconSmall(), module
                     .getTooltip(), module.isSelected(ctx)));
         }
 

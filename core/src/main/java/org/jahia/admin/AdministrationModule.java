@@ -50,6 +50,8 @@ public interface AdministrationModule {
 
     public String getIcon();
 
+    public String getIconSmall();
+
     public String getLabel();
 
     public String getLink();
@@ -79,5 +81,14 @@ public interface AdministrationModule {
     public void service(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
     public boolean isSelected(ParamBean ctx);
+    
+    /**
+     * Returns the rank of the module. The modules in the menu will
+     * be sorted by rank ascending.
+     * 
+     * @return the rank of the module. The modules in the menu will
+     *         be sorted by rank ascending
+     */
+    public int getRank();
 
 }

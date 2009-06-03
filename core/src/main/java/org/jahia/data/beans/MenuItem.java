@@ -43,6 +43,8 @@ public class MenuItem {
 
     private String icon;
 
+    private String iconSmall;
+
     private String label;
 
     private String link;
@@ -64,7 +66,7 @@ public class MenuItem {
      */
     public MenuItem(String name, boolean enabled, String label, String link,
             String icon) {
-        this(name, enabled, label, link, icon, null, false);
+        this(name, enabled, label, link, icon, null, null, false);
     }
 
     /**
@@ -75,17 +77,19 @@ public class MenuItem {
      * @param label
      * @param link
      * @param icon
+     * @param iconSmall
      * @param tooltip
      * @param selected
      */
     public MenuItem(String name, boolean enabled, String label, String link,
-            String icon, String tooltip, boolean selected) {
+            String icon, String iconSmall, String tooltip, boolean selected) {
         super();
         this.name = name;
         this.enabled = enabled;
         this.label = label;
         this.link = link;
         this.icon = icon;
+        this.iconSmall = iconSmall;
         this.tooltip = tooltip;
         this.selected = selected;
     }
@@ -120,6 +124,14 @@ public class MenuItem {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public String getIconSmall() {
+        return iconSmall;
+    }
+
+    public void setIconSmall(String iconSmall) {
+        this.iconSmall = iconSmall;
     }
 
 }

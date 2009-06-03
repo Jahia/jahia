@@ -31,6 +31,8 @@
  */
 package org.jahia.admin;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,6 +50,14 @@ import org.apache.commons.collections.map.UnmodifiableMap;
  * Time: 9:46:21 AM
  */
 public class AdministrationModulesRegistry {
+
+    private static final Comparator<AdministrationModule> MODULE_COMPARATOR = new Comparator<AdministrationModule>() {
+        public int compare(AdministrationModule module1,
+                AdministrationModule module2) {
+            return (module1.getRank() < module2.getRank() ? -1 : (module1
+                    .getRank() == module2.getRank() ? 0 : 1));
+        }
+    };
 
     private List<AdministrationModule> serverModules = UnmodifiableList
             .decorate(new LinkedList<AdministrationModule>());
@@ -71,6 +81,7 @@ public class AdministrationModulesRegistry {
         if (module.isServerModule()) {
             serverModules = new LinkedList<AdministrationModule>(serverModules);
             serverModules.add(module);
+            Collections.sort(serverModules, MODULE_COMPARATOR);
             serverModules = UnmodifiableList.decorate(serverModules);
             serverModulesByUrlKey = new HashMap<String, AdministrationModule>(
                     serverModulesByUrlKey);
@@ -80,6 +91,7 @@ public class AdministrationModulesRegistry {
         } else {
             siteModules = new LinkedList<AdministrationModule>(siteModules);
             siteModules.add(module);
+            Collections.sort(siteModules, MODULE_COMPARATOR);
             siteModules = UnmodifiableList.decorate(siteModules);
             siteModulesByUrlKey = new HashMap<String, AdministrationModule>(
                     siteModulesByUrlKey);

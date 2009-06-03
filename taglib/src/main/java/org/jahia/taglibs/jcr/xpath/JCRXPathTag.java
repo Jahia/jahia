@@ -32,17 +32,18 @@
 package org.jahia.taglibs.jcr.xpath;
 
 import org.apache.log4j.Logger;
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.NodeIteratorImpl;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.params.ProcessingContext;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.query.QueryManager;
 import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -144,8 +145,8 @@ public class JCRXPathTag extends AbstractJahiaTag {
         var = null;
     }
 
-    public void setScope(int scope) {
-        this.scope = scope;
+    public void setScope(String scope) {
+        this.scope = Util.getScope(scope);
     }
 
     public void setVar(String var) {

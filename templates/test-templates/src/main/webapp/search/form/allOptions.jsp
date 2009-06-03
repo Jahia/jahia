@@ -64,7 +64,7 @@
     </fieldset>
     <fieldset>
         <legend>Document properties for 'jmix:test'</legend>
-        <jcr:nodeType ntName="jmix:test" var="type"/>
+        <jcr:nodeType name="jmix:test" var="type"/>
             <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
                 ${jcr:label(propertyDefinition)}:&nbsp;<s:documentProperty documentType="${type.name}" name="${propertyDefinition.name}" /><br/>
             </c:forEach>

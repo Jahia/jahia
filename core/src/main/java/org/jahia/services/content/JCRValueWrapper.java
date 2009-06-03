@@ -37,13 +37,17 @@ import org.jahia.data.beans.CategoryBean;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.PropertyDefinition;
+import java.util.Date;
 
 /**
  * This is a wrapper for interface javax.jcr.Value to allow more type of properties.
  *
- * @author : $Author$
- * Last Modified : $Date$
+ * @author : cédric mailleux
+ * @since : 6.1
  */
 public interface JCRValueWrapper extends Value {
     CategoryBean getCategory() throws ValueFormatException, RepositoryException;
+    PropertyDefinition getDefinition() throws RepositoryException;
+    Date getTime() throws ValueFormatException, RepositoryException;
 }

@@ -51,11 +51,11 @@ import javax.servlet.jsp.PageContext;
 public class JCRNodeTypeTag extends AbstractJahiaTag {
     private transient static Logger logger = Logger.getLogger(JCRNodeTypeTag.class);
     private String var;
-    private String ntName;
+    private String name;
     private int scope = PageContext.PAGE_SCOPE;
 
-    public void setNtName(String ntName) {
-        this.ntName = ntName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setVar(String var) {
@@ -76,10 +76,10 @@ public class JCRNodeTypeTag extends AbstractJahiaTag {
     @Override
     public int doStartTag() throws JspException {
         try {
-            NodeType type = NodeTypeRegistry.getInstance().getNodeType(ntName);
+            NodeType type = NodeTypeRegistry.getInstance().getNodeType(name);
             pageContext.setAttribute(var, type, scope);
         } catch (NoSuchNodeTypeException e) {
-            logger.warn(ntName + " is not a valid node type");
+            logger.warn(name + " is not a valid node type");
             return SKIP_BODY;
         }
 
@@ -96,7 +96,7 @@ public class JCRNodeTypeTag extends AbstractJahiaTag {
     @Override
     public int doEndTag() throws JspException {
         var = null;
-        ntName = null;
+        name = null;
         return super.doEndTag();
     }
 }

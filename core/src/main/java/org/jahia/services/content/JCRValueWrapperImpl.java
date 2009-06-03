@@ -43,7 +43,9 @@ import javax.jcr.ValueFormatException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
+import javax.jcr.nodetype.PropertyDefinition;
 import java.util.Calendar;
+import java.util.Date;
 import java.io.InputStream;
 
 /**
@@ -55,9 +57,11 @@ import java.io.InputStream;
 public class JCRValueWrapperImpl implements JCRValueWrapper {
     private transient static Logger logger = Logger.getLogger(JCRValueWrapperImpl.class);
     private Value value;
+    private final PropertyDefinition definition;
 
-    public JCRValueWrapperImpl(Value value) {
+    public JCRValueWrapperImpl(Value value,PropertyDefinition definition) {
         this.value = value;
+        this.definition = definition;
     }
 
     /**
@@ -79,6 +83,14 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
             }
         }
         return null;
+    }
+
+    public PropertyDefinition getDefinition() throws RepositoryException {
+        return definition;
+    }
+
+    public Date getTime() throws ValueFormatException, RepositoryException {
+        return getDate().getTime();
     }
 
     public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {

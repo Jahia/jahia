@@ -23,12 +23,11 @@
 </ul>
 
 <h3>Access to specific property</h3>
-<jcr:nodeProperty node="${jcrnode}" name="jcr:created" var="createdDate" varDef="createdDef">
+<jcr:nodeProperty node="${jcrnode}" name="jcr:created" var="createdDate"/>
     <ul>
-        <li>Creation Date : <fmt:formatDate value="${createdDate.date.time}" dateStyle="full"/></li>
-        <li>Is Property Multi Valued : ${createdDef.multiple}</li>
+        <li>Creation Date : <fmt:formatDate value="${createdDate.time}" dateStyle="full"/></li>
+        <li>Is Property Multi Valued : ${createdDate.definition.multiple}</li>
     </ul>
-</jcr:nodeProperty>
 
 <h3>Access to childs of a node</h3>
 <c:forEach items="${jcrnode.children}" var="child">
@@ -41,9 +40,9 @@
             <li>Download: <jcr:link path="${child.path}">link</jcr:link> or <jcr:link path="${child.path}"
                                                                                       absolute="true">absolute link</jcr:link></li>
         </c:if>
-        <jcr:nodeProperty node="${child}" name="j:defaultCategory" var="cat" varDef="catDef">
+        <jcr:nodeProperty node="${child}" name="j:defaultCategory" var="cat"/>
             <li>Access to categories as multivalued string :
-                <c:if test="${catDef.multiple}">
+                <c:if test="${cat.definition.multiple}">
                     <ul>
                         <c:forEach items="${cat}" var="category">
                             <li>${category.string}</li>
@@ -58,7 +57,6 @@
                     </c:forEach>
                 </ul>
             </li>
-        </jcr:nodeProperty>
     </ul>
 </c:forEach>
 <h3>Executing an XPath expression [//element(*, nt:query)] for retrieving all saved search:</h3>
@@ -88,7 +86,7 @@
 </c:forEach>
 
 <h3>Usage of nodetype</h3>
-<jcr:nodeType ntName="${jcr.nt_file}" var="type"/>
+<jcr:nodeType name="${jcr.nt_file}" var="type"/>
 <ul>
     <li>Node type name : "${type.name}"</li>
     <li>Localized Node type name : "${jcr:label(type)}"</li>

@@ -111,7 +111,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public Value getValue() throws ValueFormatException, RepositoryException {
-        return new JCRValueWrapperImpl(property.getValue());
+        return new JCRValueWrapperImpl(property.getValue(),property.getDefinition());
     }
 
     public Value[] getValues() throws ValueFormatException, RepositoryException {
@@ -119,7 +119,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         Value[] wrappedValues = new Value[values.length];
         for (int i = 0; i < values.length; i++) {
             Value value = values[i];
-            wrappedValues[i] = new JCRValueWrapperImpl(value);
+            wrappedValues[i] = new JCRValueWrapperImpl(value,property.getDefinition());
         }
         return wrappedValues;
     }

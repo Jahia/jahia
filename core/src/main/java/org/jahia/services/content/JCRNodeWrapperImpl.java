@@ -520,25 +520,26 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         try {
             PropertyIterator pi = objectNode.getProperties();
-
-            while (pi.hasNext()) {
-                Property p = pi.nextProperty();
-                if (p.getType() == PropertyType.BINARY) {
-                    continue;
-                }
-                if (!p.getDefinition().isMultiple()) {
-                    res.put(p.getName(), p.getString());
-                } else {
-                    Value[] vs = p.getValues();
-                    StringBuffer b = new StringBuffer();
-                    for (int i = 0; i < vs.length; i++) {
-                        Value v = vs[i];
-                        b.append(v.getString());
-                        if (i+1<vs.length) {
-                            b.append(" ");
-                        }
+            if (pi != null) {
+                while (pi.hasNext()) {
+                    Property p = pi.nextProperty();
+                    if (p.getType() == PropertyType.BINARY) {
+                        continue;
                     }
-                    res.put(p.getName(), b.toString());
+                    if (!p.getDefinition().isMultiple()) {
+                        res.put(p.getName(), p.getString());
+                    } else {
+                        Value[] vs = p.getValues();
+                        StringBuffer b = new StringBuffer();
+                        for (int i = 0; i < vs.length; i++) {
+                            Value v = vs[i];
+                            b.append(v.getString());
+                            if (i + 1 < vs.length) {
+                                b.append(" ");
+                            }
+                        }
+                        res.put(p.getName(), b.toString());
+                    }
                 }
             }
         } catch (RepositoryException e) {

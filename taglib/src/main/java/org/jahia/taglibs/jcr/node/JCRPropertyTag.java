@@ -53,7 +53,6 @@ public class JCRPropertyTag extends AbstractJahiaTag {
     private JCRNodeWrapper node;
     private String name;
     private String var;
-    private String varDef;
 
     public void setNode(JCRNodeWrapper node) {
         this.node = node;
@@ -84,9 +83,6 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                         pageContext.getOut().print(property.getValue().getString());
                     }
                 }
-                if (varDef != null) {
-                    pageContext.setAttribute(varDef, property.getDefinition());
-                }
             }
         } catch (PathNotFoundException e) {
             logger.warn("Property : "+name+" not found in node "+node.getPath());
@@ -109,14 +105,6 @@ public class JCRPropertyTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         node = null;
         name = null;
-        if (var != null) {
-            pageContext.removeAttribute(var);
-            var = null;
-        }
-        if (varDef != null) {
-            pageContext.removeAttribute(varDef);            
-            varDef = null;
-        }
         return EVAL_PAGE;
     }
 
@@ -137,14 +125,5 @@ public class JCRPropertyTag extends AbstractJahiaTag {
      */
     public void setVar(String var) {
         this.var = var;
-    }
-
-    /**
-     * If you want to have access to the javax.jcr.PropertyDefinition object associated with this property.
-     *
-     * @param varDef The name in the pageContext where you will find the javax.jcr.PropertyDefinition object.
-     */
-    public void setVarDef(String varDef) {
-        this.varDef = varDef;
     }
 }

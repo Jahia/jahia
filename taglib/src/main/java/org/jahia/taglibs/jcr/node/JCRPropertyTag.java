@@ -34,22 +34,21 @@ package org.jahia.taglibs.jcr.node;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Property;
 import javax.jcr.PathNotFoundException;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 
 /**
  * This Tag allows access to specific property of a node.
  * <p/>
- * Last Modified : $Date$.
  *
- * @author : $Author$.
+ * @author cmailleux
  */
-public class JCRPropertyTag extends TagSupport {
+public class JCRPropertyTag extends AbstractJahiaTag {
     private transient static Logger logger = Logger.getLogger(JCRPropertyTag.class);
     private JCRNodeWrapper node;
     private String name;

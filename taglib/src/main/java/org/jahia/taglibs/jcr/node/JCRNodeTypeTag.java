@@ -34,8 +34,8 @@ package org.jahia.taglibs.jcr.node;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.taglibs.AbstractJahiaTag;
 
-import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -43,10 +43,10 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 /**
  * Tag for getting node type.
  *
- * @author : cmailleux
- * @since : Jahia 6.1
+ * @author cmailleux
+ * @since Jahia 6.1
  */
-public class JCRNodeTypeTag extends TagSupport {
+public class JCRNodeTypeTag extends AbstractJahiaTag {
     private transient static Logger logger = Logger.getLogger(JCRNodeTypeTag.class);
     private String var;
     private String ntName;

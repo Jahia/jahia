@@ -34,14 +34,13 @@ package org.jahia.taglibs.jcr.node;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.data.JahiaData;
+import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.apache.log4j.Logger;
 
-import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.ServletRequest;
 import javax.jcr.RepositoryException;
 
 /**
@@ -51,7 +50,7 @@ import javax.jcr.RepositoryException;
  * Date: 27 mai 2009
  * Time: 14:06:08
  */
-public class JCRNodeTag extends TagSupport {
+public class JCRNodeTag extends AbstractJahiaTag {
 
     private final static Logger logger = Logger.getLogger(JCRNodeTag.class);
 
@@ -78,10 +77,9 @@ public class JCRNodeTag extends TagSupport {
     }
 
     public int doStartTag() throws JspException {
-        ServletRequest request = pageContext.getRequest();
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        if (jData != null) {
-            JahiaUser user = jData.getProcessingContext().getUser();
+        ProcessingContext ctx = getProcessingContext();
+        if (ctx != null) {
+            JahiaUser user = ctx.getUser();
             try {
                 JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
                 JCRNodeWrapper n = service.checkExistence(path, user);
@@ -95,7 +93,7 @@ public class JCRNodeTag extends TagSupport {
                 logger.error("Could not retrieve JCR node using path '" + path + "'", e);
             }
         } else {
-            logger.error("JahiaData is null");
+            logger.error("ProcesingContext is null");
         }
         return EVAL_BODY_INCLUDE;
     }

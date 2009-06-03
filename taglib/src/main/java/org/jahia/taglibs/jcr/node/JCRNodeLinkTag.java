@@ -35,12 +35,11 @@ import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.data.JahiaData;
+import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
 
-import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
-import javax.servlet.ServletRequest;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 
@@ -52,7 +51,7 @@ import java.io.IOException;
  * Date: 27 mai 2009
  * Time: 16:14:28
  */
-public class JCRNodeLinkTag extends TagSupport {
+public class JCRNodeLinkTag extends AbstractJahiaTag {
 
     private final static Logger logger = Logger.getLogger(JCRNodeTag.class);
 
@@ -69,17 +68,16 @@ public class JCRNodeLinkTag extends TagSupport {
     }
 
     public int doStartTag() throws JspException {
-        ServletRequest request = pageContext.getRequest();
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        if (jData != null) {
-            JahiaUser user = jData.getProcessingContext().getUser();
+        ProcessingContext ctx = getProcessingContext();
+        if (ctx != null) {
+            JahiaUser user = ctx.getUser();
             try {
                 node = JCRStoreService.getInstance().checkExistence(path, user);
                 if (node != null) {
                     if (node.isFile()) {
                         StringBuilder link = new StringBuilder("<a href=\"");
                         if (absolute) {
-                            link.append(node.getAbsoluteUrl((ParamBean) jData.getProcessingContext()));
+                            link.append(node.getAbsoluteUrl((ParamBean) ctx));
                         } else {
                             link.append(node.getUrl());
                         }
@@ -97,7 +95,7 @@ public class JCRNodeLinkTag extends TagSupport {
                 logger.error(e.toString(), e);
             }
         } else {
-            logger.error("JahiaData is null");
+            logger.error("ProcessingContext is null");
         }
         return EVAL_BODY_INCLUDE;
     }

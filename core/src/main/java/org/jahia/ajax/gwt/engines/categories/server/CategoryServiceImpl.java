@@ -118,12 +118,12 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
         final TreeSet<Category> childrenCategories = new TreeSet<Category>(new NumericStringComparator<Category>());
         childrenCategories.addAll(cat.getChildCategories());
         for (Category childCategory : childrenCategories) {
-            if (pathsToAdd.contains(childCategory.getCategoryPath((Principal) null))) {
+//            if (pathsToAdd.contains(childCategory.getCategoryPath((Principal) null))) {
                 GWTJahiaCategoryNode childNode = createGWTJahiaCategoryNode(node.getKey(), childCategory, false, locale);
                 addChildrenToCategory(childNode, pathsToAdd, currentUser, locale);
                 node.add(childNode);
                 childNode.setParent(node);
-            }
+//            }
         }
     }
 

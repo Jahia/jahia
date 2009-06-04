@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.client.util.category;
 
 import com.google.gwt.core.client.JsArray;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
+import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryTitle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,20 +53,40 @@ public class CategoryHelper {
                 CategoryJavaScriptObject categoryJavaScriptObject = categoryOverlayTypeJsArray.get(i);
                 GWTJahiaCategoryNode categoryNode = new GWTJahiaCategoryNode();
                 categoryNode.setCategoryId(categoryJavaScriptObject.getId());
-                categoryNode.setName(categoryJavaScriptObject.getName());
-                categoryNode.setKey(categoryJavaScriptObject.getKey());
+                String name = categoryJavaScriptObject.getName();
+
+                String key = categoryJavaScriptObject.getKey();
+                categoryNode.setKey(key);
                 categoryNode.setPath(categoryJavaScriptObject.getPath());
+                List<GWTJahiaCategoryTitle> titles = new ArrayList<GWTJahiaCategoryTitle>();
+                GWTJahiaCategoryTitle title = new GWTJahiaCategoryTitle();
+                title.setLocale(getCategoryLocale());
+                title.setTitleValue(name);
+                titles.add(title);
+                categoryNode.setCategoryTitles(titles);
+                String extendedName;
+                if (name == null || name.length() == 0) {
+                    name = "(" + key + ")";
+                    extendedName = "(" + key + ")";
+                } else {
+                    extendedName = "(" + key + ") " + name;
+                }
+                categoryNode.setName(name);
+                categoryNode.setExtendedName(extendedName);
                 selectedCategories.add(categoryNode);
             }
         }
         return selectedCategories;
     }
+
     public static native String getCategoryLocale() /*-{
         return $wnd.sLocale;
     }-*/;
+
     public static native String getAutoSelectParent() /*-{
         return $wnd.sAutoSelectParent;
     }-*/;
+
     private static native JsArray<CategoryJavaScriptObject> getCategoryOverlayTypes() /*-{
     // Get a reference to the first customer in the JSON array from earlier
     return $wnd.sCategories;

@@ -113,30 +113,30 @@
     <c:if test="${!display}">
         <c:choose>
             <c:when test="${descriptor.type == 'BOOLEAN' && value == 'true'}">
-                <input type="hidden" name="${propName}" value="${value}"/>
+                <input type="hidden" name="${propName}" value="${fn:escapeXml(value)}"/>
             </c:when>
             <c:when test="${descriptor.type == 'TEXT'}">
-                <input type="hidden" name="${propName}" value="${value}"/>
+                <input type="hidden" name="${propName}" value="${fn:escapeXml(value)}"/>
                 <c:if test="${not descriptor.constrained && not empty match}">
-                    <input type="hidden" name="src_properties(${documentType}).${name}.match" value="${match}"/>
+                    <input type="hidden" name="src_properties(${documentType}).${name}.match" value="${fn:escapeXml(match)}"/>
                 </c:if>
             </c:when>
             <c:when test="${descriptor.type == 'CATEGORY'}">
                 <input type="hidden" name="src_properties(${documentType}).${name}.categoryValue.value"
-                       value="${value}"/>
+                       value="${fn:escapeXml(value)}"/>
                 <c:set var="includeChildren" value="${not empty includeChildren ? includeChildren : 'true'}"/>
                 <input type="hidden" name="src_properties(${documentType}).${name}.categoryValue.includeChildren"
-                       value="${includeChildren}"/>
+                       value="${fn:escapeXml(includeChildren)}"/>
             </c:when>
             <c:when test="${descriptor.type == 'DATE'}">
-                <input type="hidden" name="src_properties(${documentType}).${name}.dateValue.type" value="${value}"/>
+                <input type="hidden" name="src_properties(${documentType}).${name}.dateValue.type" value="${fn:escapeXml(value)}"/>
                 <c:if test="${value == 'range'}">
                     <c:if test="${not empty from}">
                         <input type="hidden" name="src_properties(${documentType}).${name}.dateValue.from"
-                               value="${from}"/>
+                               value="${fn:escapeXml(from)}"/>
                     </c:if>
                     <c:if test="${not empty to}">
-                        <input type="hidden" name="src_properties(${documentType}).${name}.dateValue.to" value="${to}"/>
+                        <input type="hidden" name="src_properties(${documentType}).${name}.dateValue.to" value="${fn:escapeXml(to)}"/>
                     </c:if>
                 </c:if>
             </c:when>

@@ -69,4 +69,4 @@
         </c:forTokens>
     </select>
 </c:if>
-<c:if test="${!display}"><input type="hidden" name="src_languages.values" value="${value}"/></c:if>
+<c:if test="${!display}"><input type="hidden" name="src_languages.values" value="${fn:escapeXml(value)}"/></c:if>

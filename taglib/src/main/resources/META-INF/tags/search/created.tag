@@ -94,4 +94,4 @@
             <ui:dateSelector fieldName="${valueParamName}" value="${h:default(param[valueParamName], to)}"/>
     </div>
 </c:if>
-<c:if test="${!display}"><input type="hidden" name="${valueParamName}" value="${value}"/></c:if>
+<c:if test="${!display}"><input type="hidden" name="${valueParamName}" value="${fn:escapeXml(value)}"/></c:if>

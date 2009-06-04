@@ -69,5 +69,5 @@
     </select>
     </c:if>
 </c:if>
-<c:if test="${!display && not empty value}"><input type="hidden" name="src_terms[${termIndex}].match" value="${value}"/></c:if>
+<c:if test="${!display && not empty value}"><input type="hidden" name="src_terms[${termIndex}].match" value="${fn:escapeXml(value)}"/></c:if>
 <c:set target="${searchTermMatchIndexes}" property="${formId}" value="${searchTermMatchIndexes[formId] + 1}"/>

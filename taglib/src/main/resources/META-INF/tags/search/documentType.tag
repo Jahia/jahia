@@ -33,6 +33,7 @@
 --%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -60,4 +61,4 @@
         </c:forEach>
     </select>
 </c:if>
-<c:if test="${!display}"><input type="hidden" name="src_documentType" value="${value}"/></c:if>
+<c:if test="${!display}"><input type="hidden" name="src_documentType" value="${fn:escapeXml(value)}"/></c:if>

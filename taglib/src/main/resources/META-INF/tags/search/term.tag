@@ -65,7 +65,7 @@
 <input ${h:attributes(attributes)} value="${fn:escapeXml(value)}"/>
 <c:if test="${not empty match && match != 'as_is'}">
     <c:set var="key" value="src_terms[${termIndex}].match"/>
-    <input type="hidden" name="${key}" value="${h:default(param[key], match)}"/>
+    <input type="hidden" name="${key}" value="${fn:escapeXml(h:default(param[key], match))}"/>
 </c:if>
 <c:if test="${searchInAllowSelection || not empty searchIn}">
     <s:termFields value="${searchIn}" selectionOptions="${searchInSelectionOptions}" display="${searchInAllowSelection}"/>

@@ -69,7 +69,7 @@
     <c:forTokens items="${selectionOptions}" delims="," var="field">
         <c:set var="key" value="src_terms[${termIndex}].fields.${field}"/>
         <c:set var="fieldSelected" value="${h:default(param[key], fn:contains(value, field))}"/>
-        <input type="hidden" id="src_terms[${termIndex}].fields.${field}" name="src_terms[${termIndex}].fields.${field}" value="${fieldSelected}"/>
+        <input type="hidden" id="src_terms[${termIndex}].fields.${field}" name="src_terms[${termIndex}].fields.${field}" value="${fn:escapeXml(fieldSelected)}"/>
         <span class="searchField"><input type="checkbox" id="src_terms[${termIndex}].fields.${field}_view" name="src_terms[${termIndex}].fields.${field}_view" value="true" ${fieldSelected ? 'checked="checked"' : ''} onchange="document.getElementById('src_terms[${termIndex}].fields.${field}').value = this.checked;"/>&nbsp;<label for="src_terms[${termIndex}].fields.${field}_view"><fmt:message key="searchForm.term.searchIn.${field}"/></label></span>
     </c:forTokens>
         </div>

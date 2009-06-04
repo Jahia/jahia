@@ -44,6 +44,7 @@
 <jsp:useBean id="searchTermMatchIndexes" class="java.util.HashMap" scope="request"/>
 <jsp:useBean id="searchTermFieldIndexes" class="java.util.HashMap" scope="request"/>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search"%>
 <c:set var="org.jahia.tags.search.form.class" value="<%= this.getClass() %>" scope="request"/>
@@ -60,9 +61,9 @@
     <s:resultsPageUrl var="resultsPage"/>
 </c:if>
 <form ${h:attributes(attributes)}>
-    <input type="hidden" name="src_mode" value="${searchFor}"/>
+    <input type="hidden" name="src_mode" value="${fn:escapeXml(searchFor)}"/>
     <c:if test="${not empty resultsPage && resultsPage != 'this'}">
-        <input type="hidden" name="template" value="${resultsPage}"/>
+        <input type="hidden" name="template" value="${fn:escapeXml(resultsPage)}"/>
     </c:if>
     <jsp:doBody/>
 </form>

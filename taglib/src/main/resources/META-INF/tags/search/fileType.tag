@@ -36,6 +36,7 @@
 <%@ tag import="org.jahia.services.content.JCRContentUtils" %>
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
@@ -60,4 +61,4 @@
         </c:forEach>
     </select>
 </c:if>
-<c:if test="${!display}"><input type="hidden" name="src_fileType" value="${value}"/></c:if>
+<c:if test="${!display}"><input type="hidden" name="src_fileType" value="${fn:escapeXml(value)}"/></c:if>

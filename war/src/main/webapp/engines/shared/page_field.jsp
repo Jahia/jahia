@@ -308,13 +308,11 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 	            for (var i = 0; i < document.mainForm.operation.length; i++) {
 	                if (document.mainForm.operation[i].checked) {
 	                    checked = true;
+                        break;
 	                }
 	            }
 	        } else {
-	            // if operation == 1 then we have to test differently.
-	            if (document.mainForm.operation.checked) {
-	                checked = true;
-	            }
+	            checked = true;
 	        }
 	        if (!checked) return false;
 	      }
@@ -731,10 +729,8 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 </td>
 </tr>
 <% } else { %>
-<input id="directPageRadio" type="hidden" name="operation"
-       value="<%=Page_Field.UPDATE_PAGE%>" checked="checked">
-<input  type="hidden" name="template_id"
-       value="<%=pageBean.getPageTemplateID()%>" checked="checked">
+<input id="directPageRadio" type="hidden" name="operation" value="<%=Page_Field.UPDATE_PAGE%>"/>
+<input type="hidden" name="template_id" value="<%=pageBean.getPageTemplateID()%>"/>
 <script type="text/javascript">
 	disableUrlKey(false);
 </script>

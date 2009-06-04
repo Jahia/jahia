@@ -37,7 +37,7 @@
 %><%@taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" 
 %><%@taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <div class="searchform">
-<s:form resultsPage="this">
+<s:form resultsPage="this" searchFor="autodetect">
     <fieldset>
         <legend>Text search</legend>
         Search term:&nbsp;<s:term searchIn="content,filename,description,documentTitle,keywords" searchInAllowSelection="true" searchInSelectionOptions="content,filename,description,documentTitle,keywords"/><br/>

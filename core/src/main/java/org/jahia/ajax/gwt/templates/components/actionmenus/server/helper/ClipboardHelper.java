@@ -42,7 +42,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.lock.LockRegistry;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -59,10 +58,9 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Locale;
 
 /**
- * Created by IntelliJ IDEA.
+ * Helper class for performing copy/paste operation on the content.
  *
  * @author rfelden
  * @version 27 f�vr. 2008 - 15:01:25
@@ -142,7 +140,7 @@ public class ClipboardHelper {
      * Check the clipboard state to display an appropriate icon.
      *
      * @param request the current request
-     * @return true ir empty, false otherwise
+     * @return true if empty, false otherwise
      */
     public static boolean clipboardIsEmpty(HttpServletRequest request) {
         Object clipboardContent = request.getSession().getAttribute(GWTJahiaAction.CLIPBOARD_CONTENT) ;
@@ -231,7 +229,6 @@ public class ClipboardHelper {
                 if (linkedCopy) {
                     jobDataMap.put(CopyJob.LINK, StructuralRelationship.ACTIVATION_PICKER_LINK);
                 }
-                jobDataMap.put(CopyJob.VERSION, CopyJob.VERSION_CURRENT);
                 jobDataMap.put(CopyJob.SITESOURCE, ServicesRegistry.getInstance().getJahiaSitesService().getSite(source.getSiteID()).getSiteKey());
                 jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, ServicesRegistry.getInstance().getJahiaSitesService().getSite(dest.getSiteID()).getSiteKey());
                 jobDataMap.put(BackgroundJob.JOB_TYPE, linkedCopy ? CopyJob.PICKERCOPY_TYPE : CopyJob.COPYPASTE_TYPE);

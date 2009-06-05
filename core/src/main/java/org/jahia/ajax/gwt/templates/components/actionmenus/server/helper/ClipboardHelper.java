@@ -228,6 +228,7 @@ public class ClipboardHelper {
                 jobDataMap.put(CopyJob.DEST, dest.getObjectKey().toString());
                 if (linkedCopy) {
                     jobDataMap.put(CopyJob.LINK, StructuralRelationship.ACTIVATION_PICKER_LINK);
+                    jobDataMap.put(CopyJob.VERSION, CopyJob.VERSION_CURRENT);
                 }
                 jobDataMap.put(CopyJob.SITESOURCE, ServicesRegistry.getInstance().getJahiaSitesService().getSite(source.getSiteID()).getSiteKey());
                 jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, ServicesRegistry.getInstance().getJahiaSitesService().getSite(dest.getSiteID()).getSiteKey());

@@ -68,6 +68,8 @@ public class JCRPropertyTag extends AbstractJahiaTag {
     @Override
     public int doStartTag() throws JspException {
         int returnValue = SKIP_BODY;
+        if(var!=null)
+        pageContext.removeAttribute(var);
         try {
             Property property = node.getProperty(name);
             if (property != null) {

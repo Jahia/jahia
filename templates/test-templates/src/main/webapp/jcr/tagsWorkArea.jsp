@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <utility:useConstants var="jcr" className="org.jahia.api.Constants" scope="application"/>
 <jcr:node var="jcrnode" path="/content/shared/files"/>
 <h3>Access to node attributes directly :</h3>
@@ -38,17 +39,16 @@
         <li>File: ${child.file}</li>
         <c:if test="${child.file}">
             <li>Download: <jcr:link path="${child.path}">link</jcr:link> or <jcr:link path="${child.path}"
-                                                                                      absolute="true">absolute link</jcr:link></li>
+                                                                                      absolute="true">absolute link</jcr:link></li>            
         </c:if>
         <jcr:nodeProperty node="${child}" name="j:defaultCategory" var="cat"/>
+        <c:if test="${cat != null}">
             <li>Access to categories as multivalued string :
-                <c:if test="${cat.definition.multiple}">
-                    <ul>
-                        <c:forEach items="${cat}" var="category">
-                            <li>${category.string}</li>
-                        </c:forEach>
-                    </ul>
-                </c:if>
+                <ul>
+                    <c:forEach items="${cat}" var="category">
+                        <li>${category.string}</li>
+                    </c:forEach>
+                </ul>
             </li>
             <li>Access to categories as org.jahia.data.beans.CategoryBean :
                 <ul>
@@ -57,6 +57,7 @@
                     </c:forEach>
                 </ul>
             </li>
+        </c:if>
     </ul>
 </c:forEach>
 <h3>Executing an XPath expression [//element(*, nt:query)] for retrieving all saved search:</h3>

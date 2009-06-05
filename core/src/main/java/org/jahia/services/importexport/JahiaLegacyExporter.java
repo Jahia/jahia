@@ -73,18 +73,17 @@ import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import javax.jcr.nodetype.NodeType;
 import javax.jcr.RepositoryException;
 import java.util.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
+ * The implementation of the exporter service that uses internal Jahia XML format.
+ * 
+ * @author Thomas Draier
  * Date: Apr 21, 2008
  * Time: 5:09:39 PM
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaLegacyExporter extends Exporter{
     private static Logger logger = Logger
@@ -376,7 +375,7 @@ public class JahiaLegacyExporter extends Exporter{
                         currentPage = ContentPage.getPage(cp.getParentID(toLoadRequest));
                         elementName = "url";
                         if (view) {
-                            String s = cp.getURL(jParams, languageCode);
+                            String s = cp.getRemoteURL(toLoadRequest);
                             if (s != null) {
                                 attr.addAttribute(ImportExportService.JAHIA_URI, "value", "jahia:value", CDATA, s);
                             }

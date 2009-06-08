@@ -222,18 +222,6 @@
                 validate="false">
         </action>
 
-        <action path="/GetCategories"
-                type="org.jahia.ajax.categories.GetCategories"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/GetCategoryChildren"
-                type="org.jahia.ajax.categories.GetCategoryChildren"
-                parameter="method"
-                validate="false">
-        </action>
-
         <action path="/GetQuotedPrintable"
                 type="org.jahia.ajax.GetQuotedPrintableStringAction"
                 parameter="method"
@@ -256,16 +244,6 @@
                 validate="false">
         </action>
 
-        <action path="/GetTreeCategory"
-                type="org.jahia.ajax.categories.GetTreeCategory"
-                parameter="method"
-                validate="false" />
-
-        <action path="/IsCategoryKeyValid"
-                type="org.jahia.ajax.categories.IsCategoryKeyValid" 
-                parameter="method"
-                validate="false" />
-                
         <action path="/SearchAutoFullFill"
                 type="org.jahia.ajax.search.SearchAutoFullFillAction"
                 parameter="method"

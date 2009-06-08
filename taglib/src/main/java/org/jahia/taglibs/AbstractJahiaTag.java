@@ -411,8 +411,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
     }
 
     protected boolean isLogged() {
-        final JahiaBean jBean = (JahiaBean) pageContext.getAttribute("jahia", PageContext.REQUEST_SCOPE);
-        return jBean.getRequestInfo().isLogged();
+        return getJahiaBean().getRequestInfo().isLogged();
     }
 
     @Override

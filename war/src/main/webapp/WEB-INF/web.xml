@@ -144,7 +144,7 @@
                 Expires should be the number of seconds from now when a given static resource should expire
             </description>
             <param-name>Expires</param-name>
-            <param-value>2592000</param-value>
+            <param-value>2678400</param-value>
         </init-param>
         <init-param>
             <description>
@@ -239,10 +239,58 @@
         </init-param>
     </filter>
 
-    <!--<filter-mapping>
+    <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>-->
+        <url-pattern>*.html</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/css/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/engines/gwtfilemanager/javascript/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/engines/images/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/engines/jahiatools/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/gwt/resources/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/html/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/htmleditors/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/iphone/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/javascript/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/monitor/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/processing/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/templates/*</url-pattern>
+    </filter-mapping>
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
         <url-pattern>${jahia.deploy.war.servletPath}</url-pattern>

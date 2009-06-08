@@ -90,6 +90,13 @@ public class GWTInitializer {
 
     private static String generateInitializerStructure(HttpServletRequest request, HttpSession session, ProcessingContext processingContext) {
         StringBuilder buf = new StringBuilder();
+        
+        String context = request.getContextPath();
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-engines.css\" rel=\"stylesheet\"/>\n");
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-templates.css\" rel=\"stylesheet\"/>\n");
+
         Locale locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
         if (locale == null) {
             locale = Locale.ENGLISH;
@@ -178,11 +185,6 @@ public class GWTInitializer {
         buf.append("<script type='text/javascript'>\n");
         buf.append(getJahiaGWTConfig(params));
         buf.append("\n</script>\n");
-        String context = request.getContextPath();
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-engines.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-templates.css\" rel=\"stylesheet\"/>\n");
 
         return buf.toString();
     }

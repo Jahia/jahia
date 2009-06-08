@@ -34,10 +34,9 @@ package org.jahia.taglibs.internal.utility;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspWriter;
 
-import org.jahia.data.JahiaData;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.template.templatestructure.DefaultIncludeProvider;
 import org.jahia.utils.JahiaConsole;
 
 /**
@@ -65,27 +64,11 @@ public class JSToolsTag extends AbstractJahiaTag {
 
     public int doStartTag() {
 
-        final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         try {
-            final JahiaData jData = (JahiaData) request.getAttribute(
-                    "org.jahia.data.JahiaData");
-            StringBuffer buf = new StringBuffer() ;
-            if (jData.gui().isLogged()) {
-                buf.append("<script type=\"text/javascript\" src=\"");
-                buf.append(jData.getProcessingContext().settings().getJsHttpPath());
-                buf.append("\"></script>\n");
-            }
-            buf.append("<!--[if lte IE 6]>\n");
-            buf.append("<style type=\"text/css\">\n");
-            buf.append("img {\n");
-            buf.append("behavior: url(\"");
-            buf.append(request.getContextPath());
-            buf.append("/css/pngbehavior.jsp\")");
-            buf.append("}\n");
-            buf.append("</style>\n");
-            buf.append("<![endif]-->\n");
-            final JspWriter out = pageContext.getOut();
-            out.print(buf.toString());
+            pageContext.getOut().print(
+                    DefaultIncludeProvider.getJSToolsImport(
+                            (HttpServletRequest) pageContext.getRequest(),
+                            getJahiaData()));
         } catch (IOException ioe) {
             JahiaConsole.println("JSToolsTag: doStartTag ", ioe.toString());
         }

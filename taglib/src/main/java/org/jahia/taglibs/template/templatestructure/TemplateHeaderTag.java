@@ -45,6 +45,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.Tag;
 import java.io.IOException;
 
@@ -129,7 +130,7 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
     public int doStartTag() throws JspException {
         // retrieve parameters
         ServletRequest request = pageContext.getRequest();
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+        JahiaData jData = getJahiaData();
         JahiaPage page = jData.page();
         String title = page.getTitle();
         if (title == null) {
@@ -146,23 +147,9 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
             }
         }
 
-        // check the gwtForGuest attribute from parent tag
-        Tag parent = getParent();
-        boolean gwtForGuest = false;
-        if (parent instanceof TemplateTag) {
-            gwtForGuest = ((TemplateTag) parent).enableGwtForGuest();
-        }
-
         // write output to StringBuffer
-        StringBuffer buf = new StringBuffer("<head>\n");
+        StringBuilder buf = new StringBuilder("<head>\n");
 
-        if (AdvPreviewSettings.isInUserAliasingMode() || isLogged() || gwtForGuest) {
-            buf.append(("<!-- cache:vars var=\""+ SkeletonAggregatorValve.GWT_VARIABLE+"\" -->"));
-            buf.append(GWTInitializer.getInitString(pageContext)).append("\n");
-            buf.append("<!-- /cache:vars -->");
-            buf.append(DefaultIncludeProvider.getJSToolsImport((HttpServletRequest) request, jData));
-        }
-        buf.append(DefaultIncludeProvider.getServerConfigImport((HttpServletRequest) request));
         buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         buf.append(((HttpServletRequest) request).getContextPath());
         buf.append("/css/styles.css\"/>");
@@ -175,6 +162,7 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
         buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         buf.append(((HttpServletRequest) request).getContextPath());
         buf.append("/css/portlets.css\"/>");
+        buf.append(DefaultIncludeProvider.getJSToolsImportCss((HttpServletRequest) pageContext.getRequest()));
         buf.append("\t<title>").append(title).append("</title>\n");
 
         // write StringBuffer to JspWriter
@@ -188,6 +176,20 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
 
     public int doEndTag() throws JspException {
         try {
+            // check the gwtForGuest attribute from parent tag
+            Tag parent = getParent();
+            boolean gwtForGuest = false;
+            if (parent instanceof TemplateTag) {
+                gwtForGuest = ((TemplateTag) parent).enableGwtForGuest();
+            }
+
+            if (AdvPreviewSettings.isInUserAliasingMode() || isLogged() || gwtForGuest) {
+                JspWriter out = pageContext.getOut();
+                out.append(("<!-- cache:vars var=\""+ SkeletonAggregatorValve.GWT_VARIABLE+"\" -->"));
+                out.append(GWTInitializer.getInitString(pageContext)).append("\n");
+                out.append("<!-- /cache:vars -->\n");
+                out.append(DefaultIncludeProvider.getJSToolsImportJavaScript(getJahiaData()));
+            }
             pageContext.getOut().println("</head>");
         } catch (IOException e) {
             throw new JspTagException(e);

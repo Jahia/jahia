@@ -96,12 +96,17 @@ public class DefaultIncludeProvider {
      * @return the script include
      */
     public static String getJSToolsImport(final HttpServletRequest request, final JahiaData jData) {
+        return getJSToolsImportCss(request) + getJSToolsImportJavaScript(jData);
+    }
+
+    /**
+     * Translation of the tag <content:JSTools/>
+     *
+     * @param request the current request
+     * @return the CSS include
+     */
+    public static String getJSToolsImportCss(HttpServletRequest request) {
         final StringBuilder buf = new StringBuilder();
-        if (jData.gui().isLogged()) {
-            buf.append("<script type=\"text/javascript\" src=\"");
-            buf.append(jData.getProcessingContext().settings().getJsHttpPath());
-            buf.append("\"></script>\n");
-        }
         buf.append("<!--[if lte IE 6]>\n");
         buf.append("<style type=\"text/css\">\n");
         buf.append("img {\n");
@@ -115,20 +120,20 @@ public class DefaultIncludeProvider {
     }
 
     /**
-     * Translation of <%@ include file="/javascript/serverconfig_js.inc"%>
+     * Translation of the tag <content:JSTools/>
      *
-     * @param request the request
-     * @return the script to include
+     * @param jData   jahia data
+     * @return the script include
      */
-    public static String getServerConfigImport(final HttpServletRequest request) {
-        final String jahiaContextPath = request.getContextPath();
-        final String jahiaMainServletPath = jahiaContextPath + org.jahia.bin.Jahia.getServletPath();
-        final StringBuilder buf = new StringBuilder("<script type=\"text/javascript\" language=\"JavaScript\">\n");
-        buf.append("var jahiaMainServletPath=\"").append(jahiaMainServletPath).append("\";\n");
-        buf.append("var jahiaContextPath =\"").append(jahiaContextPath).append("\";\n");
-        buf.append("var jahiaCoreWebdavPath =\"").append(jahiaContextPath).append("/webdav\";\n");
-        buf.append("</script>\n");
-        return buf.toString();
+    public static String getJSToolsImportJavaScript(final JahiaData jData) {
+        if (jData.gui().isLogged()) {
+            final StringBuilder buf = new StringBuilder();
+            buf.append("<script type=\"text/javascript\" src=\"");
+            buf.append(jData.getProcessingContext().settings().getJsHttpPath());
+            buf.append("\"></script>\n");
+            return buf.toString();
+        } else {
+            return "";
+        }
     }
-
 }

@@ -180,9 +180,10 @@ public class HTMLToolBox {
         // BEGIN [for CAS authentication]
         final StringBuffer buff = new StringBuffer();
         if (Jahia.usesSso()) {
-            return buff.append("window.location = '").
-                    append(Jahia.getSsoValve().getRedirectUrl(jParams)).
-                    append("'").toString();
+            String loginUrl = Jahia.getSsoValve().getRedirectUrl(jParams);
+            if (loginUrl != null) {
+                return buff.append("window.location = '").append(loginUrl).append("'").toString();
+            }
         }
         // END [for CAS authentication]
         final String popupLoginURL = gui.drawPopupLoginUrl();
@@ -200,9 +201,10 @@ public class HTMLToolBox {
         // BEGIN [for CAS authentication]
         final StringBuffer buff = new StringBuffer();
         if (Jahia.usesSso()) {
-            return buff.append("window.location = '").
-                    append(Jahia.getSsoValve().getRedirectUrl(jParams)).
-                    append("'").toString();
+            String loginUrl = Jahia.getSsoValve().getRedirectUrl(jParams);
+            if (loginUrl != null) {
+                return buff.append("window.location = '").append(loginUrl).append("'").toString();
+            }
         }
         // END [for CAS authentication]
         final String popupLoginURL = gui.drawPopupLoginUrl(destinationPageID);

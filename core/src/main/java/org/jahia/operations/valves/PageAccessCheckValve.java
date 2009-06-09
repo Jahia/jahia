@@ -63,8 +63,11 @@ public class PageAccessCheckValve implements Valve {
                 !processingContext.getContentPage().checkReadAccess(processingContext.getUser())) {
             if (Jahia.usesSso()) {
                 try {
-                    ((ParamBean) processingContext).getResponse().sendRedirect(Jahia.getSsoValve().getRedirectUrl(processingContext));
-                    return;
+                    String loginUrl = Jahia.getSsoValve().getRedirectUrl(processingContext);
+                    if (loginUrl != null) {
+                        ((ParamBean) processingContext).getResponse().sendRedirect(loginUrl);
+                        return;
+                    }
                 } catch (Exception e) {
                 }
             }

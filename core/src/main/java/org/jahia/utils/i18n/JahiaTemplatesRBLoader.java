@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,11 +47,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
+import java.util.regex.Pattern;
 
 public class JahiaTemplatesRBLoader extends ClassLoader {
     private static transient Logger logger = Logger.getLogger(JahiaTemplatesRBLoader.class);
+    private static final Pattern NAME_PATTERN = Pattern.compile("\\\\.");
     private ClassLoader loader = ClassLoader.getSystemClassLoader();
     private JahiaTemplatesPackage aPackage;
+    private JahiaTemplateManagerService templateManagerService;
     
     private static WeakHashMap<ClassLoader, Map<String, JahiaTemplatesRBLoader>> loadersCache = new WeakHashMap<ClassLoader, Map<String, JahiaTemplatesRBLoader>>();
 
@@ -98,7 +102,9 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
     }
     
     private JahiaTemplatesRBLoader(ClassLoader loader, String templatePackageName) {
-        aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templatePackageName);
+        super();
+        templateManagerService =  ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        aPackage = templateManagerService.getTemplatePackage(templatePackageName);
         if (loader != null) {
             this.loader = loader;
         }
@@ -127,24 +133,17 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
             if (stream != null) {
                 return stream;
             } else {
-                File s;
+                String fileName = NAME_PATTERN.matcher(name).replaceAll(File.separator);
                 if (aPackage != null) {
-                    s = new File(new File(Jahia.getSettings()
-                            .getJahiaTemplatesDiskPath(), aPackage
-                            .getRootFolder()), name.replaceAll("\\\\.", File.separator));
-                } else {
-                    s = new File(Jahia.getSettings().getClassDiskPath(), name.replaceAll("\\\\.", File.separator));
+                    String path = templateManagerService.resolveResourcePath(fileName, aPackage.getName());
+                    if (path != null) {
+                        return Jahia.getStaticServletConfig().getServletContext().getResourceAsStream(path);
+                    }
                 }
                 try {
-                    return new FileInputStream(s);
+                    return new FileInputStream(new File(Jahia.getSettings().getClassDiskPath(), fileName));
                 } catch (FileNotFoundException e) {
-                    // Try to find it inside WEB-INF/classes
-                    s = new File(Jahia.getSettings().getClassDiskPath(), name.replaceAll("\\\\.", File.separator));
-                    try {
-                        return new FileInputStream(s);
-                    } catch (FileNotFoundException e1) {
-                        logger.warn(e1);
-                    }
+                    logger.warn(e);
                 }
             }
         }

@@ -43,7 +43,7 @@ import java.io.Serializable;
  * @version 17 d�c. 2007
  */
 public class ContainerHTMLCacheEntry implements Serializable {
-
+    
     private String bodyContent ;
 
     private Map<Serializable, Serializable> properties = null ;
@@ -55,8 +55,8 @@ public class ContainerHTMLCacheEntry implements Serializable {
 
     private String cleanHtml(String bodyContent) {
         // Try to remove all cache/(o|b).*/ and also jessionid
-        String cleanBodyContent = bodyContent.replaceAll("cache/(o|b)[a-z]*/","");
-        cleanBodyContent = cleanBodyContent.replaceAll(SkeletonParseAndStoreValve.SESSION_ID_REGEXP,"$1");
+        String cleanBodyContent = SkeletonParseAndStoreValve.CACHE_PATTERN.matcher(bodyContent).replaceAll("");
+        cleanBodyContent = SkeletonParseAndStoreValve.SESSION_ID_REGEXP.matcher(cleanBodyContent).replaceAll("$1");
         return cleanBodyContent;
     }
 

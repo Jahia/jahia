@@ -565,8 +565,8 @@ public class JahiaBigTextField extends JahiaField implements
 
     private static String cleanHtml (String bodyContent) {
         // Try to remove all cache/(o|b).*/ and also jessionid
-        String cleanBodyContent = bodyContent.replaceAll("cache/(o|b)[a-z]*/", "");
-        cleanBodyContent = cleanBodyContent.replaceAll(SkeletonParseAndStoreValve.SESSION_ID_REGEXP, "$1");
+        String cleanBodyContent = SkeletonParseAndStoreValve.CACHE_PATTERN.matcher(bodyContent).replaceAll("");
+        cleanBodyContent = SkeletonParseAndStoreValve.SESSION_ID_REGEXP.matcher(cleanBodyContent).replaceAll("$1");
         return cleanBodyContent;
     }
 

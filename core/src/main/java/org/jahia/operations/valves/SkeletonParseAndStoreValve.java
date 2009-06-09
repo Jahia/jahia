@@ -35,7 +35,6 @@ import au.id.jericho.lib.html.OutputDocument;
 import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.SourceFormatter;
 import au.id.jericho.lib.html.StartTag;
-import au.id.jericho.lib.html.Tag;
 
 import org.apache.log4j.Category;
 import org.jahia.content.ContentObjectKey;
@@ -53,6 +52,7 @@ import org.jahia.services.cache.SkeletonCache;
 import org.jahia.services.cache.SkeletonCacheEntry;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * <p>Title: </p> <p>Description: </p> <p>Copyright: Copyright (c) 2004</p> <p>Company: Jahia Ltd</p>
@@ -66,13 +66,16 @@ public class SkeletonParseAndStoreValve implements Valve {
 
     private static Category logger = org.apache.log4j.Logger.getLogger(SkeletonParseAndStoreValve.class);
     private PageGeneratorQueue generatorQueue;
-    public static final String SESSION_ID_REGEXP = ";jsessionid=[^?\"']*([\"'])";
 
-    public static final String ESI_INCLUDE_STARTTAG_REGEXP = "<!-- cache:include src=\\\"(.*)\\\" -->";
-    public static final String ESI_INCLUDE_STOPTAG_REGEXP = "<!-- /cache:include -->";
+    public static final Pattern CACHE_PATTERN = Pattern.compile("cache/(o|b)[a-z]*/");
 
-    public static final String ESI_VAR_STARTTAG_REGEXP = "<!-- cache:vars var=\\\"(.*)\\\" -->";
-    public static final String ESI_VAR_STOPTAG_REGEXP = "<!-- /cache:vars -->";
+    public static final Pattern SESSION_ID_REGEXP = Pattern.compile(";jsessionid=[^?\"']*([\"'])");
+
+    private static final Pattern ESI_INCLUDE_STARTTAG_REGEXP = Pattern.compile("<!-- cache:include src=\\\"(.*)\\\" -->");
+    private static final Pattern ESI_INCLUDE_STOPTAG_REGEXP = Pattern.compile("<!-- /cache:include -->");
+
+    private static final Pattern ESI_VAR_STARTTAG_REGEXP = Pattern.compile("<!-- cache:vars var=\\\"(.*)\\\" -->");
+    private static final Pattern ESI_VAR_STOPTAG_REGEXP = Pattern.compile("<!-- /cache:vars -->");
 
     public void setGeneratorQueue(PageGeneratorQueue generatorQueue) {
         this.generatorQueue = generatorQueue;
@@ -212,10 +215,10 @@ public class SkeletonParseAndStoreValve implements Valve {
                 }
                 // first we will quickly replace all the HTML comments with real tags, this is a hack to avoid
                 // generating tags to the browser that causes DOM parsing problems. Can we find a better way to do this ?
-                generatedOutput = generatedOutput.replaceAll(ESI_INCLUDE_STOPTAG_REGEXP, "</esi:include>");
-                generatedOutput = generatedOutput.replaceAll(ESI_INCLUDE_STARTTAG_REGEXP, "<esi:include src=\"$1\">");
-                generatedOutput = generatedOutput.replaceAll(ESI_VAR_STOPTAG_REGEXP, "</esi:vars>");
-                generatedOutput = generatedOutput.replaceAll(ESI_VAR_STARTTAG_REGEXP, "<esi:vars var=\"$1\">");
+                generatedOutput = ESI_INCLUDE_STOPTAG_REGEXP.matcher(generatedOutput).replaceAll("</esi:include>");
+                generatedOutput = ESI_INCLUDE_STARTTAG_REGEXP.matcher(generatedOutput).replaceAll("<esi:include src=\"$1\">");
+                generatedOutput = ESI_VAR_STOPTAG_REGEXP.matcher(generatedOutput).replaceAll("</esi:vars>");
+                generatedOutput = ESI_VAR_STARTTAG_REGEXP.matcher(generatedOutput).replaceAll("<esi:vars var=\"$1\">");
 
                 Source source = new Source(cleanHtml(generatedOutput));
                 // This will remove all blank line and drastically reduce data in memory
@@ -300,7 +303,7 @@ public class SkeletonParseAndStoreValve implements Valve {
     private String cleanHtml(String bodyContent) {
         // Try to remove all cache/(o|b).*/ and also jessionid
         String cleanBodyContent = bodyContent.replaceAll("cache/(o|b)[a-z]*/","");
-        cleanBodyContent = cleanBodyContent.replaceAll(SESSION_ID_REGEXP,"$1");
+        cleanBodyContent = SkeletonParseAndStoreValve.SESSION_ID_REGEXP.matcher(cleanBodyContent).replaceAll("$1");
         return cleanBodyContent;
     }
 }

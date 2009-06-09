@@ -130,6 +130,29 @@
         </init-param>
     </filter>
 
+    <filter>
+        <filter-name>SpnegoHttpFilter</filter-name>
+        <filter-class>org.jahia.bin.filters.spnego.SpnegoHttpFilter</filter-class>
+        <init-param>
+            <!-- Use this parameter to deactivate NTLM authentification. If
+                 NTLM authentification is activated, you will only be able
+                 to log on using this method, or by using Basic authentification
+                 if the enableBasic parameter is set to true.
+            -->
+            <param-name>http.skipAuthentification</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <!-- This parameter controls whether the detected BASIC authentification passed
+                 over to the filter will be used to do an SMB login. Set this to true if
+                 you want to use BASIC authentification to login on your domain controller,
+                 and set to false if you want Jahia to handle the basic authentification.
+            -->
+            <param-name>http.useBasic</param-name>
+            <param-value>true</param-value>
+        </init-param>        
+    </filter>
+
     <!-- Filter for displaytag export options -->
     <filter>
         <filter-name>ResponseOverrideFilter</filter-name>
@@ -314,6 +337,14 @@
         Uncomment this to use NTLM.
         <filter-mapping>
             <filter-name>NtlmHttpFilter</filter-name>
+            <url-pattern>/*</url-pattern>
+        </filter-mapping>
+    -->
+
+    <!--
+        Uncomment this to use SPNEGO.
+        <filter-mapping>
+            <filter-name>SpnegoHttpFilter</filter-name>
             <url-pattern>/*</url-pattern>
         </filter-mapping>
     -->

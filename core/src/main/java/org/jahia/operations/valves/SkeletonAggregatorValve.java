@@ -61,12 +61,16 @@ import org.jahia.services.cache.SkeletonCacheEntry;
 import org.jahia.services.events.JahiaEventGeneratorBaseService;
 import org.jahia.services.theme.ThemeService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.StringResponseWrapper;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.springframework.util.StopWatch;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashSet;
@@ -234,73 +238,92 @@ public class SkeletonAggregatorValve implements Valve {
                                     throw new PipelineException(e);
                                 }
                             }
-                            if (containerHTMLCache != null) {
-                                watch.start("Iterate through include tags (" + esiIncludeTags.size() + ")");
-                                for (Iterator<? extends Tag> i = esiIncludeTags.iterator(); i.hasNext();) {
-                                    StartTag segment = (StartTag) i.next();
-                                    String[] attrs = segment.getAttributeValue("src").split("&");
-                                    String cacheKey = "";
+                            watch.start("Iterate through include tags (" + esiIncludeTags.size() + ")");
+                            for (Iterator<? extends Tag> i = esiIncludeTags.iterator(); i.hasNext();) {
+                                StartTag segment = (StartTag) i.next();
+                                String srcAtribute = segment.getAttributeValue("src");
+                                if (srcAtribute.contains("cacheKey")) {
+                                    if (containerHTMLCache != null) {
+                                        String[] attrs = srcAtribute.split("&");
+                                        String cacheKey = "";
+                                        try {
+                                            cacheKey = attrs[1].split("=")[1];
+                                        } catch (ArrayIndexOutOfBoundsException e) {
+                                            // No cachekey
+                                        }
+                                        int ctnid = Integer.parseInt(attrs[0].split("=")[1]);
+                                        GroupCacheKey containerKey =
+                                                cacheKeyGeneratorService.computeContainerEntryKey(ctnid,
+                                                                                 cacheKey,
+                                                                                 jahiaUser,
+                                                                                 curLanguageCode,
+                                                                                 processingContext.getOperationMode(),
+                                                                                 processingContext.getScheme(),
+                                                                                 processingContext.getSiteID());
+                                        ContainerHTMLCacheEntry containerHTMLCacheEntry =
+                                                (ContainerHTMLCacheEntry) containerHTMLCache.get(containerKey);
+                                        if (containerHTMLCacheEntry != null)
+                                            outputDocument.replace(segment.getBegin(), segment.getElement()
+                                                    .getEndTag().getEnd(), containerHTMLCacheEntry.getBodyContent());
+                                        else {
+                                            ValveContext.valveResources.set(new PageState(false, entryKey));
+                                            return exit;
+                                        }
+                                    }
+                                } else {
+                                    String content = null;
                                     try {
-                                        cacheKey = attrs[1].split("=")[1];
-                                    } catch (ArrayIndexOutOfBoundsException e) {
-                                        // No cachekey
+                                        content = getIncludedContent(srcAtribute, (ParamBean) processingContext);
+                                    } catch (Exception e) {
+                                        logger.warn(
+                                                "Error including the content of the resource '"
+                                                        + srcAtribute
+                                                        + "'. Cause: "
+                                                        + e.getMessage(), e);
                                     }
-                                    int ctnid = Integer.parseInt(attrs[0].split("=")[1]);
-                                    GroupCacheKey containerKey =
-                                            cacheKeyGeneratorService.computeContainerEntryKey(ctnid,
-                                                                             cacheKey,
-                                                                             jahiaUser,
-                                                                             curLanguageCode,
-                                                                             processingContext.getOperationMode(),
-                                                                             processingContext.getScheme(),
-                                                                             processingContext.getSiteID());
-                                    ContainerHTMLCacheEntry containerHTMLCacheEntry =
-                                            (ContainerHTMLCacheEntry) containerHTMLCache.get(containerKey);
-                                    if (containerHTMLCacheEntry != null)
+                                    if (content != null) {
                                         outputDocument.replace(segment.getBegin(), segment.getElement()
-                                                .getEndTag().getEnd(), containerHTMLCacheEntry.getBodyContent());
-                                    else {
-                                        ValveContext.valveResources.set(new PageState(false, entryKey));
-                                        return exit;
+                                                .getEndTag().getEnd(), content);
                                     }
                                 }
-                                watch.stop();
-                                watch.start("Iterate through vars tags (" + esiVarsTags.size() + ")");
-                                for (Iterator<? extends Tag> i = esiVarsTags.iterator(); i.hasNext();) {
-                                    StartTag segment = (StartTag) i.next();
-                                    String variableName = segment.getAttributeValue("var");
-                                    if (variableName.equals(ESI_VARIABLE_USERNAME)) {
-                                        JahiaUser user = AdvPreviewSettings.getAliasedUser(jahiaUser);
-                                        String s = jahiaUser.getUsername();
-                                        if (!s.equals(user.getUsername())) {
-                                            s = s + " ( " + user.getUsername() + " )";
-                                        }
-                                        outputDocument.replace(segment.getBegin(),
-                                                               segment.getElement().getEndTag().getEnd(),
-                                                               s);
-                                    }
-                                    else if (variableName.startsWith(ESI_VARIABLE_USER)) {
-                                        String propertyName = variableName.split("\\.")[1];
-                                        final String s = jahiaUser.getProperty(propertyName);
-                                        outputDocument.replace(segment.getBegin(),
-                                                segment.getElement().getEndTag().getEnd(),
-                                                s != null ? s : "");
-                                    } else if (variableName.equals(THEME_VARIABLE)) {
-                                        final String jahiaThemeCurrent = (String) processingContext.getAttribute(ThemeValve.THEME_ATTRIBUTE_NAME + "_" + processingContext.getSite().getID());
-                                        if (jahiaThemeCurrent != null) {
-                                            logger.debug("Try to apply theme : "+jahiaThemeCurrent);
-                                            outputDocument.replace(segment.getBegin(),
-                                                    segment.getElement().getEndTag().getEnd(),
-                                                    ThemeService.getInstance().getCssLinks(processingContext, processingContext.getSite(), jahiaThemeCurrent));
-                                        }
-                                    } else if (variableName.equals(GWT_VARIABLE)) {
-                                        outputDocument.replace(segment.getBegin(),
-                                                segment.getElement().getEndTag().getEnd(),
-                                                GWTInitializer.getInitString((ParamBean) processingContext));
-                                    }
-                                }
-                                watch.stop();
                             }
+                            watch.stop();
+                            watch.start("Iterate through vars tags (" + esiVarsTags.size() + ")");
+                            for (Iterator<? extends Tag> i = esiVarsTags.iterator(); i.hasNext();) {
+                                StartTag segment = (StartTag) i.next();
+                                String variableName = segment.getAttributeValue("var");
+                                if (variableName.equals(ESI_VARIABLE_USERNAME)) {
+                                    JahiaUser user = AdvPreviewSettings.getAliasedUser(jahiaUser);
+                                    String s = jahiaUser.getUsername();
+                                    if (!s.equals(user.getUsername())) {
+                                        s = s + " ( " + user.getUsername() + " )";
+                                    }
+                                    outputDocument.replace(segment.getBegin(),
+                                                           segment.getElement().getEndTag().getEnd(),
+                                                           s);
+                                } else if (variableName.startsWith(ESI_VARIABLE_USER)) {
+                                    String propertyName = variableName.split("\\.")[1];
+                                    final String s = jahiaUser.getProperty(propertyName);
+                                    outputDocument.replace(segment.getBegin(),
+                                            segment.getElement().getEndTag().getEnd(),
+                                            s != null ? s : "");
+                                } else if (variableName.equals(THEME_VARIABLE)) {
+                                    final String jahiaThemeCurrent = (String) processingContext.getAttribute(ThemeValve.THEME_ATTRIBUTE_NAME + "_" + processingContext.getSite().getID());
+                                    if (jahiaThemeCurrent != null) {
+                                        if (logger.isDebugEnabled()) {
+                                            logger.debug("Try to apply theme : "+jahiaThemeCurrent);
+                                        }
+                                        outputDocument.replace(segment.getBegin(),
+                                                segment.getElement().getEndTag().getEnd(),
+                                                ThemeService.getInstance().getCssLinks(processingContext, processingContext.getSite(), jahiaThemeCurrent));
+                                    }
+                                } else if (variableName.equals(GWT_VARIABLE)) {
+                                    outputDocument.replace(segment.getBegin(),
+                                            segment.getElement().getEndTag().getEnd(),
+                                            GWTInitializer.getInitString((ParamBean) processingContext));
+                                }
+                            }
+                            watch.stop();
                             watch.start("Send to client");
                             if (logger.isDebugEnabled())
                                 logger.debug("Found content in cache, writing directly bypassing processing...");
@@ -363,6 +386,22 @@ public class SkeletonAggregatorValve implements Valve {
             ValveContext.valveResources.set(new PageState(false, null));
         }
         return exit;
+    }
+
+    private String getIncludedContent(String url, ParamBean ctx) throws ServletException, IOException {
+        if (ctx.getRequest().getAttribute("jahia") == null) {
+            // expose beans into the request scope  
+            EngineValve.setContentAccessBeans(ctx);
+        }
+        
+        RequestDispatcher dispatcher = ctx.getRequest().getRequestDispatcher(
+                url);
+        StringResponseWrapper responseWrapper = new StringResponseWrapper(
+                (HttpServletResponse) ctx.getResponse());
+
+        dispatcher.include(ctx.getRequest(), responseWrapper);
+
+        return responseWrapper.getString();
     }
 
     public void initialize() {

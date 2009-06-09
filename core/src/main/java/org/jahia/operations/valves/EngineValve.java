@@ -285,7 +285,7 @@ public class EngineValve implements Valve {
         this.skeletonAggregatorValve = skeletonAggregatorValve;
     }
 
-    private void setContentAccessBeans(ParamBean jParams) {
+    public static void setContentAccessBeans(ParamBean jParams) {
         final HttpServletRequest request = jParams.getRequest();
         PageBean pageBean = null;
         if (jParams.getPage()!=null) {
@@ -329,30 +329,20 @@ public class EngineValve implements Valve {
         request.setAttribute ("javaScriptPath",
                 jParams.settings ().getJsHttpPath ());
         request.setAttribute ("URL",
-                getJahiaCoreHttpPath (jParams) +
+                jParams.getContextPath() +
                 jParams.settings ().
                 getEnginesContext ());
         request.setAttribute (JahiaEngine.ENGINE_URL_PARAM,
-                getJahiaCoreHttpPath (jParams) +
+                jParams.getContextPath() +
                 jParams.settings ().
                 getEnginesContext ());
         request.setAttribute ("serverURL",
-                getJahiaCoreHttpPath (jParams));
+                jParams.getContextPath());
         request.setAttribute ("httpJsContextPath",
-                getJahiaCoreHttpPath (jParams) +
+                jParams.getContextPath() +
                 jParams.settings ().
                 getJavascriptContext ());
    
     }
     
-    /**
-     * Build an http path containing the server name for the current site, instead of the path
-     * from JahiaPrivateSettings.
-     *
-     * @return An http path leading to Jahia, built with the server name, and the server port if
-     *         nonstandard.
-     */
-    private String getJahiaCoreHttpPath (final ProcessingContext jParams) {
-        return jParams.getContextPath ();
-    }
 }

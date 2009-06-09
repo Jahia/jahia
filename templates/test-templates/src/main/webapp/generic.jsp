@@ -55,13 +55,7 @@
                     </span>
                     <ui:currentPagePath cssClassName="breadcrumbs"/>
                     <ui:languageSwitchingLinks display="horizontal" linkDisplay="flag" displayLanguageState="true"/>
-                    <div class="history">
-                        <ul class="breadcrumbs">
-                            <c:forEach var="historyBean" items="${sessionScope['org.jahia.toolbar.history']}">
-                                <li><a href="${historyBean.url}">${historyBean.pageTitle}</a></li>
-                            </c:forEach>
-                        </ul>
-                    </div>
+                    <template:include page="common/breadcrumbs.jsp" cache="false"/>
                 </div>
             </div>
         </div>

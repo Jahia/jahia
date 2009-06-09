@@ -31,10 +31,13 @@
  */
 package org.jahia.taglibs.template.include;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
@@ -96,6 +99,8 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
  */
 @SuppressWarnings("serial")
 public class IncludeTag extends ImportSupport {
+    
+    private boolean cache = true;
     
     public IncludeTag() {
         super();
@@ -172,4 +177,37 @@ public class IncludeTag extends ImportSupport {
             this.url = getResolvedPath(normalizedPath);
         }
     }
+
+    @Override
+    public void release() {
+        cache = true;
+        super.release();
+    }
+
+    public void setCache(boolean cache) {
+        this.cache = cache;
+    }
+
+    @Override
+    public int doEndTag() throws JspException {
+        JspWriter out = pageContext.getOut();
+        if (!cache) {
+            try {
+                out.append("<!-- cache:include src=\"").append(url).append(
+                        "\" -->");
+            } catch (IOException e) {
+                throw new JspTagException(e.toString(), e);
+            }
+        }
+        super.doEndTag();
+        if (!cache) {
+            try {
+                out.append("<!-- /cache:include -->");
+            } catch (IOException e) {
+                throw new JspTagException(e.toString(), e);
+            }
+        }
+        return EVAL_PAGE;
+    }
+
 }

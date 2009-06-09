@@ -334,9 +334,27 @@
         <tag-class>org.jahia.taglibs.template.include.IncludeTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>
+                The JSP page to include. The path should be relative to the template set root folder.
+                The actual resource to include will be resolved considering the template set inheritance.
+            </description>
             <name>page</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                If set to 'false' the included JSP page will not be cached by the HTML container cache and the page skeleton cache.
+                A placeholder will be included in the page skeleton to always request the JSP page when the result HTML page content
+                is built by the SkeletonAggregatorValve.
+                This is useful, for example, when including a navigation history (breadcrumbs) into the page to be always refreshed
+                from the server.
+                The default value is 'true'.   
+            </description>
+            <name>cache</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
         </attribute>
     </tag>
     <tag>

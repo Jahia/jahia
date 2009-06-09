@@ -732,3 +732,10 @@ wrapperBufferFlushingActivated = true
 # will not be exported. Security conscious users might want to turn
 # this off.
 gmailPasswordExported = true
+
+######################################################################
+### History (breadcrumbs) settings ###################################
+######################################################################
+# These are the breadcrumbs settings
+historySize = 5
+historyUrlBased = true

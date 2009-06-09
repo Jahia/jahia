@@ -286,6 +286,11 @@ public class SettingsBean {
     private boolean checkAclInPagePath ;
 
     private String ehCacheJahiaFile;
+
+    // preferences related settings
+    private int historySize;
+    private boolean historyUrlBased;
+
     /**
      * Default constructor.
      *
@@ -653,6 +658,8 @@ public class SettingsBean {
                 System.setProperty("cluster.tcp.ehcache.hibernate.nodes.ip_address",getString("cluster.tcp.ehcache.hibernate.nodes.ip_address"));
                 System.setProperty("cluster.tcp.ehcache.hibernate.port",getString("cluster.tcp.ehcache.hibernate.port"));
             }
+            historySize = getInt("historySize", 10);
+            historyUrlBased = getBoolean("historyUrlBased", false);
         } catch (NullPointerException npe) {
             logger.debug ("Properties file is not valid...!", npe);
         } catch (NumberFormatException nfe) {
@@ -1647,4 +1654,21 @@ public class SettingsBean {
             boolean considerPreferredLanguageAfterLogin) {
         this.considerPreferredLanguageAfterLogin = considerPreferredLanguageAfterLogin;
     }
+
+    public int getHistorySize() {
+        return historySize;
+    }
+
+    public void setHistorySize(int historySize) {
+        this.historySize = historySize;
+    }
+
+    public boolean isHistoryUrlBased() {
+        return historyUrlBased;
+    }
+
+    public void setHistoryUrlBased(boolean historyUrlBased) {
+        this.historyUrlBased = historyUrlBased;
+    }
+    
 }

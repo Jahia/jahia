@@ -37,6 +37,7 @@ import org.jahia.pipelines.PipelineException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.data.beans.history.HistoryBean;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.settings.SettingsBean;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -51,12 +52,13 @@ public class HistoryValve implements Valve {
     public static final String ORG_JAHIA_TOOLBAR_HISTORY = "org.jahia.toolbar.history";
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
-        logger.debug("starting " + this.getClass().getName() + ".invoke()...");
+        if (logger.isDebugEnabled()) {
+            logger.debug("starting " + this.getClass().getName() + ".invoke()...");
+        }
         ProcessingContext processingContext = (ProcessingContext) context;
 
         // update history bean list
         updateHistoryBeanList(processingContext);
-
 
         // invoke next valve
         valveContext.invokeNext(context);
@@ -74,11 +76,22 @@ public class HistoryValve implements Valve {
         if (processingContext.getThePage() != null) {
             historyBean.setPageTitle(processingContext.getThePage().getTitle());
         }
-        try {
-            historyBean.setUrl(processingContext.composePageUrl(processingContext.getPageID()));
-        } catch (JahiaException e) {
-            logger.error(e, e);
+        String URL = "";
+        if (SettingsBean.getInstance().isHistoryUrlBased()) {
+            StringBuilder URLbuf = new StringBuilder(processingContext.getRequestURI());
+            String query = processingContext.getQueryString();
+            if (query != null && query.trim().length() > 0) {
+                URLbuf.append("?").append(query);
+            }
+            URL = URLbuf.toString();
+        } else {
+            try {
+                URL = processingContext.composePageUrl(processingContext.getPageID());
+            } catch (JahiaException e) {
+                logger.error(e.toString(), e);
+            }
         }
+        historyBean.setUrl(URL);
 
         // remove if exist
         if (historyBeanList.contains(historyBean)) {
@@ -89,9 +102,8 @@ public class HistoryValve implements Valve {
         // add it to history bean position
         historyBeanList.add(0, historyBean);
 
-        // TO Do: add it in jahia.properties
-        int maxHistory = 10;
-        if (historyBeanList.size() > 11) {
+        int maxHistory = SettingsBean.getInstance().getHistorySize();
+        while (historyBeanList.size() >= maxHistory) {
             historyBeanList.remove(historyBeanList.size() - 1);
         }
 

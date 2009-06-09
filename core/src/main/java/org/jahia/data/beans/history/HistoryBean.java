@@ -43,7 +43,6 @@ import java.io.Serializable;
  */
 public class HistoryBean implements Serializable {
 
-    private static final long serialVersionUID = 1724028111779019468L;
     private int pid;
     private String pageTitle;
     private String url;
@@ -73,21 +72,19 @@ public class HistoryBean implements Serializable {
     }
 
     public boolean equals(Object obj) {
-        if (this == obj) return true;
+        if (this == obj) {
+            return true;
+        }
 
         if (obj != null && this.getClass() == obj.getClass()) {
             final HistoryBean castOther = (HistoryBean) obj;
-            return new EqualsBuilder()
-                    .append(this.getPid(), castOther.getPid())
-                    .isEquals();
+            return new EqualsBuilder().append(this.getPid(), castOther.getPid()).append(this.getUrl(), castOther.getUrl()).isEquals();
         }
         return false;
     }
 
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(getPid())
-                .toHashCode();
+        return new HashCodeBuilder().append(getPid()).toHashCode();
     }
 
 

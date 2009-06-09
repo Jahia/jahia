@@ -156,7 +156,7 @@
                             <databaseUrl>jdbc:mysql://10.8.37.246/qa_241?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
                             <databaseUsername>jahia</databaseUsername>
                             <databasePassword>jahia</databasePassword>
-                            <overwritedb>false</overwritedb>
+                            <overwritedb>true</overwritedb>
                             <storeFilesInDB>true</storeFilesInDB>
                             <cluster_node_serverId>qa-j2</cluster_node_serverId>
                             <localIp>10.8.37.242</localIp>

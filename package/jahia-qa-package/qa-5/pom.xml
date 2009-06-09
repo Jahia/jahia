@@ -152,8 +152,8 @@
                         <configuration>
                             <targetServerDirectory>${project.build.directory}/apache-tomcat-6.0.18</targetServerDirectory>
                             <siteImportLocation>
-                                <param>/home/bamboo/bin/siteImport_testSite.zip</param>
                                 <param>/home/bamboo/bin/siteImport_DemoSite.zip</param>
+                                <param>/home/bamboo/bin/siteImport_testSite.zip</param>
                             </siteImportLocation>
                             <cluster_activated>false</cluster_activated>
                             <processingServer>true</processingServer>

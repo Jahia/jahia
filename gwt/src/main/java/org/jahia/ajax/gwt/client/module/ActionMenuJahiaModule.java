@@ -31,11 +31,17 @@
  */
 package org.jahia.ajax.gwt.client.module;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
+
+import org.jahia.ajax.gwt.client.service.actionmenu.ActionMenuService;
 import org.jahia.ajax.gwt.client.util.actionmenus.ClipboardTool;
 import org.jahia.ajax.gwt.client.core.JahiaModule;
 import org.jahia.ajax.gwt.client.core.JahiaType;
+import org.jahia.ajax.gwt.client.data.actionmenu.GWTJahiaGlobalState;
+import org.jahia.ajax.gwt.client.data.actionmenu.GWTJahiaGlobalStateKey;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
@@ -43,6 +49,7 @@ import org.jahia.ajax.gwt.client.widget.actionmenu.StateDisplay;
 import org.jahia.ajax.gwt.client.widget.actionmenu.ActionMenuDisplay;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -67,33 +74,56 @@ public class ActionMenuJahiaModule extends JahiaModule {
         // clipboard tool
         clipboardTool = new ClipboardTool(page);
 
+        final List<GWTJahiaGlobalStateKey> keys = new ArrayList<GWTJahiaGlobalStateKey>();
+        final List<RootPanel> panels = new ArrayList<RootPanel>();
         for (RootPanel actionPane : rootPanels) {
-            String objectKey = DOM.getElementAttribute(actionPane.getElement(), "id") ;
+            String objectKey = DOM.getElementAttribute(actionPane.getElement(),
+                    "id");
             int idSeparator = objectKey.lastIndexOf(Constants.UID_SEPARATOR);
             if (idSeparator > 0) {
                 objectKey = objectKey.substring(0, idSeparator);
             }
 
             if (objectKey.length() > 0) {
-                String wfKey = DOM.getElementAttribute(actionPane.getElement(), "wfkey");
-
-                // Check for status only display
-                String statusOnly = DOM.getElementAttribute(actionPane.getElement(), "statusonly");
-                String languageCode = DOM.getElementAttribute(actionPane.getElement(), "lang");
-                if (statusOnly.length() > 0 && languageCode.length() > 0) {
-                    boolean extended = "true".equalsIgnoreCase(DOM.getElementAttribute(actionPane.getElement(), "extended"));
-                    actionPane.add(new StateDisplay(page, languageCode, objectKey, wfKey, extended)) ;
-                } else {
-                    // Optional parameters (labels & co.)
-                    String iconStyle = DOM.getElementAttribute(actionPane.getElement(), "iconstyle");
-                    String bundleName = DOM.getElementAttribute(actionPane.getElement(), "bundlename");
-                    String namePostFix = DOM.getElementAttribute(actionPane.getElement(), "namepostfix");
-                    String labelKey = DOM.getElementAttribute(actionPane.getElement(), "labelkey");
-                    String toolbarView = DOM.getElementAttribute(actionPane.getElement(), "toolbarview");
-                    boolean disableToolbarView = (toolbarView != null && toolbarView.equalsIgnoreCase("false")) ;
-                    actionPane.add(new ActionMenuDisplay(page, objectKey, wfKey, bundleName, namePostFix, labelKey, iconStyle, disableToolbarView));
-                }
+                    keys.add(new GWTJahiaGlobalStateKey(objectKey, DOM
+                            .getElementAttribute(actionPane.getElement(), "wfkey"),
+                            DOM
+                                    .getElementAttribute(actionPane.getElement(),
+                                            "lang"), "true".equalsIgnoreCase(DOM.getElementAttribute(actionPane.getElement(), "extended"))));
+                    panels.add(actionPane);
             }
+        }
+        if (!keys.isEmpty()) {
+            ActionMenuService.App.getInstance().getGlobalStateForObject(page, keys, new AsyncCallback<List<GWTJahiaGlobalState>>() {
+                public void onFailure(Throwable throwable) {
+                    Log.error("Failed to retrieve object states for " + keys, throwable) ;
+                }
+                public void onSuccess(List<GWTJahiaGlobalState> states) {
+                    Iterator<RootPanel> actionPaneIterator = panels.iterator();
+                    Iterator<GWTJahiaGlobalStateKey> keyIterator = keys.iterator();
+                    for (GWTJahiaGlobalState state : states) {
+                        RootPanel actionPane = actionPaneIterator.next();
+                        GWTJahiaGlobalStateKey key = keyIterator.next();
+                        if (state != null) {
+                            String statusOnly = DOM.getElementAttribute(actionPane.getElement(), "statusonly");
+                            if (statusOnly.length() > 0 && key.getLanguageCode().length() > 0) {
+                                actionPane.add(new StateDisplay(page, state));
+                            } else {                
+                                // Optional parameters (labels & co.)
+                                String iconStyle = DOM.getElementAttribute(actionPane.getElement(), "iconstyle");
+                                String bundleName = DOM.getElementAttribute(actionPane.getElement(), "bundlename");
+                                String namePostFix = DOM.getElementAttribute(actionPane.getElement(), "namepostfix");
+                                String labelKey = DOM.getElementAttribute(actionPane.getElement(), "labelkey");
+                                String toolbarView = DOM.getElementAttribute(actionPane.getElement(), "toolbarview");
+                                boolean disableToolbarView = (toolbarView != null && toolbarView.equalsIgnoreCase("false")) ;
+                                actionPane.add(new ActionMenuDisplay(page, key.getObjectKey(), state, bundleName, namePostFix, labelKey, iconStyle, disableToolbarView));
+                            }
+                        }
+                    }
+                    keys.clear();
+                    panels.clear();
+                }
+            });
         }
     }
 

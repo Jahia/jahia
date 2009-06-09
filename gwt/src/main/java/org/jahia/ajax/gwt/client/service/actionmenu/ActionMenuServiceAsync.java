@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.data.actionmenu.actions.GWTJahiaAction;
 import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTimebasedPublishingState;
 import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTimebasedPublishingDetails;
 import org.jahia.ajax.gwt.client.data.actionmenu.GWTJahiaGlobalState;
+import org.jahia.ajax.gwt.client.data.actionmenu.GWTJahiaGlobalStateKey;
 import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffState;
 import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffDetails;
 import org.jahia.ajax.gwt.client.data.actionmenu.workflow.GWTJahiaWorkflowState;
@@ -46,6 +47,8 @@ import java.util.List;
 public interface ActionMenuServiceAsync {
 
     void getGlobalStateForObject(GWTJahiaPageContext page, String objectKey, String wfKey, String languageCode, AsyncCallback<GWTJahiaGlobalState> async);
+
+    void getGlobalStateForObject(GWTJahiaPageContext page, List<GWTJahiaGlobalStateKey> keys, AsyncCallback<List<GWTJahiaGlobalState>> async);
 
     void getWorkflowStateForObject(GWTJahiaPageContext page, String objectKey, String wfKey, String languageCode, AsyncCallback<GWTJahiaWorkflowState> async);
 

@@ -43,6 +43,7 @@ import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTim
 import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTimebasedPublishingState;
 import org.jahia.ajax.gwt.client.data.actionmenu.workflow.GWTJahiaWorkflowState;
 import org.jahia.ajax.gwt.client.data.actionmenu.GWTJahiaGlobalState;
+import org.jahia.ajax.gwt.client.data.actionmenu.GWTJahiaGlobalStateKey;
 import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffState;
 import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffDetails;
 
@@ -85,6 +86,16 @@ public interface ActionMenuService extends RemoteService {
      * @return a wrapper containing all needed states
      */
     public GWTJahiaGlobalState getGlobalStateForObject(GWTJahiaPageContext page, String objectKey, String wfKey, String languageCode) ;
+
+    /**
+     * Retrieve the global state (ACL difference, workflow state and timebased publishing state) for
+     * given objects.
+     *
+     * @param page the current page
+     * @param key list of object keys
+     * @return a list of wrappers containing all needed states
+     */
+    public List<GWTJahiaGlobalState> getGlobalStateForObject(GWTJahiaPageContext page, List<GWTJahiaGlobalStateKey> keys) ;
 
     /**
      * Retrieve the full workflow state (a code corresponding to a given image).

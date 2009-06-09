@@ -51,12 +51,20 @@ public class GWTJahiaGlobalState implements Serializable {
     private GWTJahiaWorkflowState workflowState ;
     private GWTJahiaIntegrityState integrityState;
 
-    public GWTJahiaGlobalState() {}
+    public GWTJahiaGlobalState() {
+        super();
+    }
 
     public GWTJahiaGlobalState(GWTJahiaAclDiffState acl, GWTJahiaTimebasedPublishingState tbp, GWTJahiaWorkflowState wf) {
+        this();
         aclDiffState = acl ;
         timebasedPublishingState = tbp ;
         workflowState = wf ;
+    }
+
+    public GWTJahiaGlobalState(GWTJahiaAclDiffState acl, GWTJahiaTimebasedPublishingState tbp, GWTJahiaWorkflowState wf, GWTJahiaIntegrityState integrityState) {
+        this(acl, tbp, wf);
+        this.integrityState = integrityState;
     }
 
     public GWTJahiaAclDiffState getAclDiffState() {

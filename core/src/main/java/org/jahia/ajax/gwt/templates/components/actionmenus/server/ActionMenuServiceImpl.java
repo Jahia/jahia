@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTim
 import org.jahia.ajax.gwt.client.data.actionmenu.actions.*;
 import org.jahia.ajax.gwt.client.data.actionmenu.workflow.GWTJahiaWorkflowState;
 import org.jahia.ajax.gwt.client.data.actionmenu.GWTJahiaGlobalState;
+import org.jahia.ajax.gwt.client.data.actionmenu.GWTJahiaGlobalStateKey;
 import org.jahia.ajax.gwt.client.data.actionmenu.GWTJahiaIntegrityState;
 import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffState;
 import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffDetails;
@@ -60,40 +61,65 @@ public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implement
 
     private final static Logger logger = Logger.getLogger(ActionMenuServiceImpl.class) ;
 
-    public GWTJahiaGlobalState getGlobalStateForObject(GWTJahiaPageContext page, String objectKey, String wfKey, String languageCode) {
-        final ProcessingContext jParams = retrieveParamBean(page) ;
-        GWTJahiaWorkflowState wf = null ;
-        if (wfKey != null && wfKey.length() > 0) {
-            wf = getWorkflowStateForObject(page, objectKey, wfKey,  languageCode) ;
+    public GWTJahiaGlobalState getGlobalStateForObject(
+            GWTJahiaPageContext page, String objectKey, String wfKey,
+            String languageCode) {
+        List<GWTJahiaGlobalStateKey> keys = new ArrayList<GWTJahiaGlobalStateKey>(
+                1);
+        keys.add(new GWTJahiaGlobalStateKey(objectKey, wfKey, languageCode, true));
+        return getGlobalStateForObject(page, keys).get(0);
+    }
+
+    public List<GWTJahiaGlobalState> getGlobalStateForObject(
+            GWTJahiaPageContext page, List<GWTJahiaGlobalStateKey> keys) {
+        List<GWTJahiaGlobalState> states = new ArrayList<GWTJahiaGlobalState>(
+                keys.size());
+        final ProcessingContext jParams = retrieveParamBean(page);
+        boolean aclDiff = UserPreferencesHelper.isDisplayAclDiffState(jParams
+                .getUser());
+        boolean timebasepublishing = UserPreferencesHelper
+                .isDisplayTbpState(jParams.getUser());
+        boolean integrity = UserPreferencesHelper
+                .isDisplayIntegrityState(jParams.getUser());
+        for (GWTJahiaGlobalStateKey key : keys) {
+            GWTJahiaGlobalState state = null;
+            try {
+                GWTJahiaWorkflowState wf = null;
+                if (key.getWorkflowKey() != null
+                        && key.getWorkflowKey().length() > 0) {
+                    wf = getWorkflowStateForObject(page, key.getObjectKey(),
+                            key.getWorkflowKey(), key.getLanguageCode());
+                }
+                GWTJahiaAclDiffState acl = null;
+                GWTJahiaTimebasedPublishingState tbp = null;
+                GWTJahiaIntegrityState integrityState = null;
+                if (key.isExtended()) {
+                    if (aclDiff) {
+                        acl = getAclDiffState(page, key.getObjectKey());
+                    }
+                    if (timebasepublishing) {
+                        tbp = getTimebasedPublishingState(page, key
+                                .getObjectKey());
+                    }
+                    if (integrity) {
+                        integrityState = getIntegrityState(page, key
+                                .getObjectKey());
+                    }
+                }
+
+                state = new GWTJahiaGlobalState(acl, tbp, wf, integrityState);
+            } catch (Exception ex) {
+                logger.warn("Unable to get the state for the object with key '"
+                        + key.getObjectKey() + "', workflow key '"
+                        + key.getWorkflowKey() + "' and language code '"
+                        + key.getLanguageCode() + "'. Cause: "
+                        + ex.getMessage(), ex);
+            } finally {
+                states.add(state);
+            }
         }
-        GWTJahiaAclDiffState acl = null ;
-        boolean aclDiff = UserPreferencesHelper.isDisplayAclDiffState(jParams.getUser()) ;
-        if (aclDiff) {
-            acl = getAclDiffState(page, objectKey) ;
-        }
-        GWTJahiaTimebasedPublishingState tbp = null ;
-        boolean timebasepublishing = UserPreferencesHelper.isDisplayTbpState(jParams.getUser()) ;
-        if (timebasepublishing) {
-            tbp = getTimebasedPublishingState(page, objectKey) ;
-        }
-        GWTJahiaIntegrityState integrityState = null ;
-        boolean integrity = UserPreferencesHelper.isDisplayIntegrityState(jParams.getUser()) ;
-        if (integrity) {
-            integrityState = getIntegrityState(page, objectKey) ;
-        }
-        
-        if (logger.isDebugEnabled()) {
-            logger.debug(new StringBuilder("Server call details :\n")
-                    .append("\t\t\t\t\tObject key : ").append(objectKey).append(" - Workflow key : ").append(wfKey).append("\n")
-                    .append("\t\t\t\t\tWorkflow state (").append(String.valueOf(wfKey != null)).append(") : ").append((wf != null ? wf.getExtendedWorkflowState() : "null")).append("\n")
-                    .append("\t\t\t\t\tACL diff state (").append(aclDiff).append(") : ").append(acl != null ? acl.getObjectKey() : "null").append("\n")
-                    .append("\t\t\t\t\tTBP state (").append(timebasepublishing).append(") : ").append((tbp != null ? tbp.getState() : "null"))
-                    .append("\t\t\t\t\tIntegrity state (").append(integrity).append(") : ").append((integrityState != null ? "not OK" : "OK")).toString());
-        }
-        GWTJahiaGlobalState state = new GWTJahiaGlobalState(acl, tbp, wf);
-        state.setIntegrityState(integrityState);
-        
-        return state;
+
+        return states;
     }
 
     private GWTJahiaIntegrityState getIntegrityState(GWTJahiaPageContext page,
@@ -102,8 +128,7 @@ public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implement
     }
 
     public GWTJahiaWorkflowState getWorkflowStateForObject(GWTJahiaPageContext page, String objectKey, String wfKey, String languageCode) {
-        final ProcessingContext jParams = retrieveParamBean(page) ;
-        return WorkflowHelper.getWorkflowStateForObject(jParams, wfKey, languageCode) ;
+        return WorkflowHelper.getWorkflowStateForObject(retrieveParamBean(page), wfKey, languageCode) ;
     }
 
     public GWTJahiaTimebasedPublishingState getTimebasedPublishingState(GWTJahiaPageContext page, String objectKey) {
@@ -173,6 +198,3 @@ public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implement
     }
 
 }
-
-
-

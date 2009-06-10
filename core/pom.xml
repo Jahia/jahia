@@ -40,11 +40,6 @@
             </snapshots>
         </repository>
     </repositories>
-    <scm>
-        <connection>scm:svn:https://jahia.mine.nu/svn/jahia/branches/JAHIA-ANDROMEDA-BRANCH/core</connection>
-        <developerConnection>scm:svn:http://svn.jahia.org/svn/jahia/branches/JAHIA-ANDROMEDA-BRANCH/core</developerConnection>
-        <url>http://svn.jahia.org/svn/jahia/branches/JAHIA-ANDROMEDA-BRANCH/core</url>
-    </scm>
     <pluginRepositories>
         <pluginRepository>
             <id>codehaus-plugins</id>

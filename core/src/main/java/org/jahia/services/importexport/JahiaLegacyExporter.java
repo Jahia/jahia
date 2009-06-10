@@ -471,8 +471,8 @@ public class JahiaLegacyExporter extends Exporter{
 
                 if (view) {
                     String fieldValue = getFieldValue(cf, files, jParams, toEntryState, attr);
-                    if (fieldValue != null && !(object instanceof ContentPageField)) {
-                        attr.addAttribute(ImportExportService.JAHIA_URI, "value", "jahia:value", CDATA, fieldValue);
+                    if (fieldValue != null && !(object instanceof ContentPageField) || (fieldValue == null && (object instanceof ContentFileField))) {
+                        attr.addAttribute(ImportExportService.JAHIA_URI, "value", "jahia:value", CDATA, fieldValue != null ? fieldValue : "");
                     }
                 } else if (ImportExportService.UNCHANGED_STATUS.equals(changedStatus) && cf instanceof ContentFileField && filesDates != null) {
                     Set f = new HashSet();

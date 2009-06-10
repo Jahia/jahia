@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="linkCheckerAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
+        <property name="urlKey" value="codeGenerator" />
+        <property name="permissionName" value="admin.linkChecker" />
+        <property name="name" value="linkChecker" />
+        <property name="icon" value="link" />
+        <property name="iconSmall" value="link_small" />
+        <property name="label" value="org.jahia.admin.linkChecker.label" />
+        <property name="tooltip" value="" />
+        <property name="urlType" value="link" />
+        <property name="urlAction" value="/admin/linkChecker.jsp" />
+        <property name="serverModule" value="false" />
+        <property name="rank" value="102" />
+    </bean>
+
+</beans>

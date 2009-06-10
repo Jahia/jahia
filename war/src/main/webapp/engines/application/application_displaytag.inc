@@ -76,7 +76,6 @@
 </script>
 <%
 //get resource bundle
-//JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
 String titleNameColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletNameColumnTitle.label", jData.getProcessingContext().getLocale());
 String titleDescriptionColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletDescriptionColumnTitle.label", jData.getProcessingContext().getLocale());
 String defaultDescription = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletNoDescription.label", jData.getProcessingContext().getLocale());
@@ -116,7 +115,7 @@ String paramOrderValue = request.getParameter(paramOrder);
           appID = "" + definition.getApplicationID();
           uniqueID = appID + "::" + definitionName;
           if (isPortlet) {
-              description = definition.getDescription();
+              description = definition.getDescription(jParams.getLocale());
           }
       }
 

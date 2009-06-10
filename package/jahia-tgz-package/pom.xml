@@ -19,7 +19,7 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>apache-tomcat</artifactId>
-            <version>6.0.18-jahia</version>
+            <version>${jahia.tomcat.version}</version>
             <type>tar.gz</type>
         </dependency>
         <dependency>
@@ -47,7 +47,7 @@
                                 <artifactItem>
                                     <groupId>org.apache.tomcat</groupId>
                                     <artifactId>apache-tomcat</artifactId>
-                                    <version>6.0.18-jahia</version>
+                                    <version>${jahia.tomcat.version}</version>
                                     <type>zip</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}</outputDirectory>
@@ -67,7 +67,7 @@
                 <configuration>
                     <targetServerType>tomcat</targetServerType>
                     <targetServerVersion>6</targetServerVersion>
-                    <targetServerDirectory>${project.build.directory}/apache-tomcat-6.0.18</targetServerDirectory>
+                    <targetServerDirectory>${project.build.directory}/apache-tomcat-${jahia.tomcat.version}</targetServerDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -118,28 +118,28 @@
                         <phase>package</phase>
                         <configuration>
                             <tasks>
-                            <echo message="${buildNumber}" file="${project.build.directory}/apache-tomcat-6.0.18/webapps/config/configuration_wizard/jahia-buildnumber.txt"/>
+                            <echo message="${buildNumber}" file="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/webapps/config/configuration_wizard/jahia-buildnumber.txt"/>
                                 <copy file="./src/resources/catalina.bat"
-                                      tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.bat"
+                                      tofile="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/bin/catalina.bat"
                                       overwrite="true"/>
                                 <copy file="./src/resources/catalina.sh"
-                                      tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.sh"
+                                      tofile="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/bin/catalina.sh"
                                       overwrite="true"/>
-                                <copy todir="${project.build.directory}/apache-tomcat-6.0.18/" overwrite="true">
+                                <copy todir="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/" overwrite="true">
                                     <fileset dir="./src/resources/startJahia/"/>
                                 </copy>
-                                <copy todir="${project.build.directory}/apache-tomcat-6.0.18/licenses" overwrite="true">
+                                <copy todir="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/licenses" overwrite="true">
                                     <fileset dir="./src/resources/licenses/"/>
                                 </copy>
                                 <copy file="./src/resources/README.txt"
-                                      todir="${project.build.directory}/apache-tomcat-6.0.18"/>
+                                      todir="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}"/>
                                 <copy file="./src/resources/LICENSE"
-                                      todir="${project.build.directory}/apache-tomcat-6.0.18"/>
+                                      todir="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}"/>
                                 <copy file="./src/resources/conf/server.xml"
-                                      tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/server.xml"
+                                      tofile="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/conf/server.xml"
                                       overwrite="true"/>
                                 <copy file="./src/resources/conf/web.xml"
-                                      tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/web.xml"
+                                      tofile="${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/conf/web.xml"
                                       overwrite="true"/>
                             </tasks>
                         </configuration>

@@ -6,12 +6,12 @@
     </formats>
     <fileSets>
         <fileSet>
-            <directory>${project.build.directory}/apache-tomcat-6.0.18</directory>
+            <directory>${project.build.directory}/apache-tomcat-${jahia.tomcat.version}</directory>
             <excludes><exclude>**/*.sh</exclude></excludes>
             <outputDirectory>${finalName}_r${buildNumber}</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>${project.build.directory}/apache-tomcat-6.0.18</directory>
+            <directory>${project.build.directory}/apache-tomcat-${jahia.tomcat.version}</directory>
             <includes><include>**/*.sh</include></includes>
             <fileMode>755</fileMode>
             <outputDirectory>${finalName}_r${buildNumber}</outputDirectory>

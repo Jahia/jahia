@@ -6,7 +6,7 @@
   </formats>
   <fileSets>
     <fileSet>
-      <directory>${project.build.directory}/apache-tomcat-6.0.18</directory>
+      <directory>${project.build.directory}/apache-tomcat-${jahia.tomcat.version}</directory>
       <outputDirectory>jahia</outputDirectory>
     </fileSet>
   </fileSets>

@@ -31,40 +31,33 @@
  */
 package org.jahia.ajax.gwt.client.widget.usergroup;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.PagingToolBar;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.button.SplitButton;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
-import com.extjs.gxt.ui.client.widget.menu.Item;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.allen_sauer.gwt.log.client.Log;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
-import org.jahia.ajax.gwt.client.service.UserManagerServiceAsync;
-import org.jahia.ajax.gwt.client.widget.SearchField;
-import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
-import org.jahia.ajax.gwt.client.service.JahiaService;
-import org.jahia.ajax.gwt.client.service.*;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
+import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
+import org.jahia.ajax.gwt.client.service.JahiaService;
+import org.jahia.ajax.gwt.client.service.JahiaServiceAsync;
+import org.jahia.ajax.gwt.client.service.UserManagerService;
+import org.jahia.ajax.gwt.client.service.UserManagerServiceAsync;
+import org.jahia.ajax.gwt.client.widget.SearchField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -245,7 +238,12 @@ public class UserGroupSelect extends Window {
                 if ("siteSelector".equals(aclContext)) {
                     context = "site:"+selectedSite;
                 }
-                service.searchGroupsInContext("*"+groupSearchField.getText()+"*",pageLoaderConfig.getOffset(), pageLoaderConfig.getLimit(), context, callback);
+
+                if (groupSearchField.getText().length()==0)  {
+                    service.searchGroupsInContext("*",pageLoaderConfig.getOffset(), pageLoaderConfig.getLimit(),context, callback);
+                } else {
+                    service.searchGroupsInContext("*"+groupSearchField.getText()+"*",pageLoaderConfig.getOffset(), pageLoaderConfig.getLimit(), context, callback);
+                }
             }
         };
         final BasePagingLoader loader = new BasePagingLoader<PagingLoadConfig,

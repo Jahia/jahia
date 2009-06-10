@@ -294,7 +294,7 @@ public class JahiaPagesDAO extends AbstractGeneratorDAO {
     public List<JahiaPageContentRights> getPageIDsWithAclIDs(Set aclIDs) {
         Query query = this.getSession().createQuery(
                 "select distinct pd.comp_id.id, pd.parentID, pd.jahiaAclId from JahiaPagesData pd "
-                        + "where pd.jahiaAclId in (:aclIDs) and (pd.pageType=0 or pd.pageType=1) and "
+                        + "where pd.jahiaAclId in (:aclIDs) and "
                         + "pd.comp_id.workflowState > " + EntryLoadRequest.VERSIONED_WORKFLOW_STATE);
         query.setParameterList("aclIDs", aclIDs);
         return fillPageRightObjects(query.list());

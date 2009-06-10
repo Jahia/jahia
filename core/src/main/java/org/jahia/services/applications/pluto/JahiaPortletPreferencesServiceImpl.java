@@ -30,35 +30,28 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 package org.jahia.services.applications.pluto;
-
-import org.apache.pluto.spi.optional.PortletPreferencesService;
-import org.apache.pluto.internal.InternalPortletPreference;
-import org.apache.pluto.internal.impl.PortletPreferenceImpl;
-import org.apache.pluto.PortletWindow;
-import org.apache.pluto.PortletContainerException;
+import org.apache.pluto.container.PortletPreference;
+import org.apache.pluto.container.impl.PortletPreferenceImpl;
+import org.apache.pluto.container.PortletWindow;
+import org.apache.pluto.container.PortletContainerException;
+import org.apache.pluto.driver.container.DefaultPortletPreferencesService;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.usermanager.JahiaUser;
-
 import javax.portlet.PortletRequest;
 import javax.jcr.RepositoryException;
-import javax.jcr.PropertyIterator;
-import javax.jcr.Property;
-import javax.jcr.Value;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
  * User: loom
  * Date: Nov 18, 2008
  * Time: 2:24:14 PM
- * To change this template use File | Settings | File Templates.
  */
-public class JahiaPortletPreferencesServiceImpl implements PortletPreferencesService {
+public class JahiaPortletPreferencesServiceImpl extends DefaultPortletPreferencesService {
 
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaPortletPreferencesServiceImpl.class);
 
@@ -83,24 +76,23 @@ public class JahiaPortletPreferencesServiceImpl implements PortletPreferencesSer
      * @return a copy of the stored portlet preferences array.
      * @throws PortletContainerException
      */
-    public InternalPortletPreference[] getStoredPreferences(PortletWindow portletWindow, PortletRequest request) throws PortletContainerException {
+    public Map<String,PortletPreference> getStoredPreferences(PortletWindow portletWindow, PortletRequest request) throws PortletContainerException {
         try {
             JahiaPreferencesProvider portletPreferenceProvider = jahiaPreferencesService.getPreferencesProviderByType("portlet");
             JahiaUser jahiaUser = (JahiaUser) request.getUserPrincipal();
-            String portletName = portletWindow.getContextPath() + "." + portletWindow.getPortletName();
+            String portletName = portletWindow.getPortletDefinition().getApplication().getContextPath() + "." + portletWindow.getPortletDefinition().getPortletName();
             List<JahiaPreference> foundPreferences = portletPreferenceProvider.findJahiaPreferences(jahiaUser, JahiaPreferencesXpathHelper.getPortletXpath(portletName));
             if (foundPreferences == null) {
-                return new InternalPortletPreference[0];
+                return  new HashMap<String,PortletPreference>();
             }
-            List<InternalPortletPreference> portletPreferences = new ArrayList<InternalPortletPreference>();
+            Map<String,PortletPreference> portletPreferences = new HashMap<String,PortletPreference>();
 
             for (JahiaPreference currentPreference : foundPreferences) {
                 JahiaPortletPreference curPortletPreference = (JahiaPortletPreference) currentPreference.getNode();
                 PortletPreferenceImpl portletPreferenceImpl = new PortletPreferenceImpl(curPortletPreference.getPrefName(), curPortletPreference.getValues(), curPortletPreference.getReadOnly());
-                portletPreferences.add(portletPreferenceImpl);
+                portletPreferences.put(portletPreferenceImpl.getName(),portletPreferenceImpl);
             }
-            InternalPortletPreference[] portletPreferenceArray = portletPreferences.toArray(new InternalPortletPreference[portletPreferences.size()]);
-            return portletPreferenceArray;
+            return portletPreferences;
         } catch (JahiaPreferenceProviderException e) {
             logger.error("Error while retrieving portlet preferences", e);
         } catch (RepositoryException e) {
@@ -121,15 +113,16 @@ public class JahiaPortletPreferencesServiceImpl implements PortletPreferencesSer
      *
      * @param portletWindow the portlet window
      * @param request       the portlet request from which the remote user is retrieved.
-     * @param preferences   the portlet preferences to store.
+     * @param stringPortletPreferenceMap   the portlet preferences to store.
      * @throws PortletContainerException
      * @see javax.portlet.PortletPreferences#store()
      */
-    public void store(PortletWindow portletWindow, PortletRequest request, InternalPortletPreference[] preferences) throws PortletContainerException {
+    public void store(PortletWindow portletWindow, PortletRequest request, Map<String,PortletPreference> stringPortletPreferenceMap) throws PortletContainerException {
         try {
             JahiaPreferencesProvider portletPreferenceProvider = jahiaPreferencesService.getPreferencesProviderByType("portlet");
-            for (InternalPortletPreference curPlutoPreference : preferences) {
-                String portletName = portletWindow.getContextPath() + "." + portletWindow.getPortletName();
+            Collection<PortletPreference > preferences = stringPortletPreferenceMap.values();
+            for (PortletPreference curPlutoPreference : preferences) {
+                String portletName = portletWindow.getPortletDefinition().getApplication().getContextPath() + "." + portletWindow.getPortletDefinition().getPortletName();
                 JahiaPreference portletPreference = portletPreferenceProvider.getJahiaPreference(request.getUserPrincipal(), JahiaPreferencesXpathHelper.getPortletXpath(portletName, curPlutoPreference.getName()));
                 if (portletPreference == null) {
                     portletPreference = portletPreferenceProvider.createJahiaPreferenceNode(request.getUserPrincipal());
@@ -156,5 +149,4 @@ public class JahiaPortletPreferencesServiceImpl implements PortletPreferencesSer
             logger.error("Error while retrieving portlet preferences", e);
         }
     }
-
 }

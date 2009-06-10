@@ -38,7 +38,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.portals.bridges.struts.StrutsPortlet;
-import org.apache.pluto.internal.impl.PortletConfigImpl;
+import org.apache.pluto.container.driver.DriverPortletConfig;
+
 
 public class PlutoStrutsPortlet extends StrutsPortlet{
  protected HttpServletRequest getHttpServletRequest(GenericPortlet portlet, PortletRequest request, PortletResponse response) {
@@ -50,8 +51,8 @@ public class PlutoStrutsPortlet extends StrutsPortlet{
      return httpServletResponse;
  }
  protected ServletContext getServletContext(GenericPortlet portlet, PortletRequest request, PortletResponse response) {
-     PortletConfigImpl portletConfigImpl =(PortletConfigImpl)request.getAttribute("javax.portlet.config");
-     ServletContext servletContext = portletConfigImpl.getServletConfig().getServletContext();
+     DriverPortletConfig portletConfigImpl =(DriverPortletConfig)request.getAttribute("javax.portlet.config");
+     ServletContext servletContext = null;//portletConfigImpl.getServletConfig().getServletContext();
   return servletContext;
  }
 }

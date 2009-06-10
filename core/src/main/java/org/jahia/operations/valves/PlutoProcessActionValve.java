@@ -36,13 +36,10 @@ import java.util.Enumeration;
 import javax.portlet.MimeResponse;
 import javax.portlet.PortletException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.pluto.PortletContainer;
-import org.apache.pluto.PortletContainerException;
-import org.apache.pluto.PortletWindow;
-import org.apache.pluto.descriptors.portlet.PortletDD;
+import org.apache.pluto.container.PortletContainer;
+import org.apache.pluto.container.PortletContainerException;
 import org.apache.pluto.driver.AttributeKeys;
 import org.apache.pluto.driver.core.PortalRequestContext;
 import org.apache.pluto.driver.core.PortletWindowImpl;
@@ -77,6 +74,7 @@ public class PlutoProcessActionValve implements Valve {
     public void initialize() {
     }
 
+
     /**
      * invoke
      *
@@ -84,19 +82,16 @@ public class PlutoProcessActionValve implements Valve {
      * @param valveContext ValveContext
      * @throws PipelineException
      */
-    public void invoke(Object context, ValveContext valveContext)
-            throws PipelineException {
+    public void invoke(Object context, ValveContext valveContext) throws PipelineException {
 
         ProcessingContext processingContext = (ProcessingContext) context;
-        PortletContainer container = (PortletContainer)
-                ((ParamBean) processingContext).getContext().getAttribute(AttributeKeys.PORTLET_CONTAINER);
+        PortletContainer container = (PortletContainer) ((ParamBean) processingContext).getContext().getAttribute(AttributeKeys.PORTLET_CONTAINER);
 
         try {
             final ParamBean jParams = ((ParamBean) processingContext);
             JahiaUserRequestWrapper request = new JahiaUserRequestWrapper(jParams.getUser(), jParams.getRequest());
             HttpServletResponse response = jParams.getResponse();
-            PortalRequestContext portalRequestContext =
-                    new PortalRequestContext(((ParamBean) processingContext).getContext(), request, response);
+            PortalRequestContext portalRequestContext = new PortalRequestContext(((ParamBean) processingContext).getContext(), request, response);
 
             PortalURL portalURL = portalRequestContext.getRequestedPortalURL();
             String actionWindowId = portalURL.getActionWindow();
@@ -114,8 +109,7 @@ public class PlutoProcessActionValve implements Valve {
             // Action window config will only exist if there is an action request.
             if (actionWindowConfig != null) {
                 flushPortletCache(processingContext, jParams, actionWindowConfig);
-                PortletWindowImpl portletWindow = new PortletWindowImpl(
-                        actionWindowConfig, portalURL);
+                PortletWindowImpl portletWindow = new PortletWindowImpl(container, actionWindowConfig, portalURL);
                 if (logger.isDebugEnabled()) {
                     logger.debug("Processing action request for window: "
                             + portletWindow.getId().getStringId());
@@ -129,12 +123,12 @@ public class PlutoProcessActionValve implements Valve {
                 }
 
                 // copy jahia attibutes nested by the portlet
-                JahiaPortletUtil.copyJahiaAttributes(entryPointInstance,jParams, portletWindow, request,true);
+                JahiaPortletUtil.copyJahiaAttributes(entryPointInstance, jParams, portletWindow, request, true);
 
 
                 try {
                     container.doAction(portletWindow, request, jParams.getResponse());
-                    JahiaPortletUtil.copySharedMapFromPortletToJahia(jParams,request,portletWindow);
+                    JahiaPortletUtil.copySharedMapFromPortletToJahia(jParams, request, portletWindow);
                 } catch (PortletContainerException ex) {
                     throw new ServletException(ex);
                 } catch (PortletException ex) {
@@ -147,27 +141,22 @@ public class PlutoProcessActionValve implements Valve {
             }
             //Resource request
             else if (resourceWindowConfig != null) {
-                try {
-                    if (request.getParameterNames().hasMoreElements())
-                        setPublicRenderParameter(container, request, portalURL, portalURL.getResourceWindow());
-                } catch (PortletContainerException e) {
-                    logger.warn(e);
-                }
-                PortletWindowImpl portletWindow = new PortletWindowImpl(
+                PortletWindowImpl portletWindow = new PortletWindowImpl(container,
                         resourceWindowConfig, portalURL);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Processing resource Serving request for window: "
-                            + portletWindow.getId().getStringId());
+                    logger.debug("Processing resource Serving request for window: "+ portletWindow.getId().getStringId());
                 }
                 try {
-                    container.doServeResource(portletWindow, request, jParams.getRealResponse());
+                    container.doServeResource(portletWindow, request, response);
                 } catch (PortletContainerException ex) {
+                    logger.error(ex.getMessage(), ex);
                     throw new ServletException(ex);
                 } catch (PortletException ex) {
+                    logger.error(ex.getMessage(), ex);
                     throw new ServletException(ex);
                 }
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Action request processed.\n\n");
+                    logger.debug("Resource serving request processed.\n\n");
                 }
                 return;
             }
@@ -232,7 +221,7 @@ public class PlutoProcessActionValve implements Valve {
      * @throws ServletException
      * @throws PortletContainerException
      */
-    private void setPublicRenderParameter(PortletContainer container, HttpServletRequest request, PortalURL portalURL, String portletID) throws ServletException, PortletContainerException {
+    /*private void setPublicRenderParameter(PortletContainer container, HttpServletRequest request, PortalURL portalURL, String portletID) throws ServletException, PortletContainerException {
         String applicationId = PortletWindowConfig.parseContextPath(portletID);
         String portletName = PortletWindowConfig.parsePortletName(portletID);
         PortletDD portletDD = container.getOptionalContainerServices().getPortletRegistryService()
@@ -249,7 +238,7 @@ public class PlutoProcessActionValve implements Valve {
                 }
             }
         }
-    }
+    } */
 
 
 }

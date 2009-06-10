@@ -109,6 +109,10 @@ public class JahiaApplicationManager {
         return applicationBean;
     }
 
+    /**
+     * Add application bean
+     * @param app
+     */
     public void addApplication(ApplicationBean app) {
         JahiaAcl jahiaAcl = aclDAO.findLazyAclById(new Integer(app.getRights()));
         JahiaAppDef appDef = new JahiaAppDef();
@@ -124,6 +128,10 @@ public class JahiaApplicationManager {
         app.setID(appDef.getId().intValue());
     }
 
+    /**
+     * Update application bean
+     * @param app
+     */
     public void updateApplication(ApplicationBean app) {
         try {
             JahiaAppDef appDef = dao.loadApplicationDefinition(new Integer(app.getID()));
@@ -142,10 +150,19 @@ public class JahiaApplicationManager {
         }
     }
 
+    /**
+     * Remove application
+     * @param appID
+     */
     public void removeApplication(int appID) {
         dao.delete(dao.loadApplicationDefinition(new Integer(appID)));
     }
 
+    /**
+     * Get Application bean depending on visibility
+     * @param visible
+     * @return
+     */
     public List<ApplicationBean> getApplicationsList(boolean visible) {
         List<ApplicationBean> applicationBeanList = Collections.emptyList();
         List<JahiaAppDef> jahiaAppDefList = visible ? dao.getVisibleApplications() : dao.getAllApplications();

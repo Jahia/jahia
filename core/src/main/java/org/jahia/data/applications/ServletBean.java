@@ -95,12 +95,22 @@ public class ServletBean implements Serializable, EntryPointDefinition {
     public String getName () {return name;
     }
 
-    public String getDisplayName() {
+    /**
+     * Get display name. Locale is not supported. Return the name
+     * @param locale
+     * @return
+     */
+    public String getDisplayName(java.util.Locale locale) {
         // name and displayName are same
         return getName();
     }
 
-    public String getDescription() {
+    /**
+     * Get description. Locale is not supported
+     * @param locale
+     * @return
+     */
+    public String getDescription(java.util.Locale locale) {
         return desc;
     }
 

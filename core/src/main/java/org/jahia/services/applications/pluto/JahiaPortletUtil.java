@@ -35,8 +35,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.registries.ServicesRegistry;
-import org.apache.pluto.PortletWindow;
-import org.apache.pluto.driver.core.PortalServletRequest;
+import org.apache.pluto.container.PortletWindow;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.jcr.*;

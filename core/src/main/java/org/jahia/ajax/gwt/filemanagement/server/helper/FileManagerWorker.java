@@ -72,7 +72,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.StringValue;
 import org.apache.log4j.Logger;
-import org.apache.pluto.descriptors.portlet.ExpirationCacheDD;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -443,7 +442,7 @@ public class FileManagerWorker {
                 if ((filtersToApply.length == 0 && mimeTypesToMatch.length == 0)
                         || n.isCollection()
                         || (matchesFilters(n.getName(), filtersToApply) && matchesFilters(n.getFileContent().getContentType(), mimeTypesToMatch))) {
-                    String path = n.getPath() ;
+                    String path = n.getPath();
                     if (!foundPaths.contains(path)) { // TODO dirty filter, please correct search/index issue (sometimes duplicate results)
                         foundPaths.add(path);
                         result.add(getGWTJahiaNode(n));
@@ -703,7 +702,7 @@ public class FileManagerWorker {
 
     public static boolean checkExistence(String path, JahiaUser user) throws GWTJahiaServiceException {
         try {
-            return jcr.checkExistence(path, user) != null ;
+            return jcr.checkExistence(path, user) != null;
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException("Error:\n" + e.toString());
@@ -867,7 +866,7 @@ public class FileManagerWorker {
         }
     }
 
-        public static void paste(final List<GWTJahiaNode> pathsToCopy, final String destinationPath, boolean cut, JahiaUser user) throws GWTJahiaServiceException {
+    public static void paste(final List<GWTJahiaNode> pathsToCopy, final String destinationPath, boolean cut, JahiaUser user) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         for (GWTJahiaNode aNode : pathsToCopy) {
             JCRNodeWrapper node = jcr.getFileNode(aNode.getPath(), user);
@@ -1487,7 +1486,7 @@ public class FileManagerWorker {
             try {
                 session = jcr.getSystemSession(user.getName());
                 JCRNodeWrapper parent = session.getNode("/content");
-                JCRNodeWrapper mounts ;
+                JCRNodeWrapper mounts;
                 try {
                     mounts = (JCRNodeWrapper) parent.getNode("mounts");
                 } catch (PathNotFoundException nfe) {
@@ -1549,7 +1548,7 @@ public class FileManagerWorker {
                     List l = appBean.getEntryPointDefinitions();
                     for (Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
                         EntryPointDefinition entryPointDefinition = (EntryPointDefinition) iterator1.next();
-                        results.add(createGWTJahiaPortletDefinition(appBean, entryPointDefinition));
+                        results.add(createGWTJahiaPortletDefinition(jParams, appBean, entryPointDefinition));
                     }
                 }
             }
@@ -1562,37 +1561,35 @@ public class FileManagerWorker {
     /**
      * Create a GWTJahiaPortletDefinition object from an applicationBean and an entryPointDefinition objects
      *
-     * @param appBean the application bean
+     * @param appBean              the application bean
      * @param entryPointDefinition the entry point definition
      * @return the portlet definition
      * @throws JahiaException sthg bad happened
      */
-    private static GWTJahiaPortletDefinition createGWTJahiaPortletDefinition(ApplicationBean appBean, EntryPointDefinition entryPointDefinition) throws JahiaException {
+    private static GWTJahiaPortletDefinition createGWTJahiaPortletDefinition(ProcessingContext jParams, ApplicationBean appBean, EntryPointDefinition entryPointDefinition) throws JahiaException {
         String portletType = null;
         int expTime = 0;
         String cacheScope = null;
         if (entryPointDefinition instanceof PortletEntryPointDefinition) {
-            portletType = ((PortletEntryPointDefinition) entryPointDefinition).getInitParameter("portletType");
-            ExpirationCacheDD dd = ((PortletEntryPointDefinition) entryPointDefinition).getPortletDefinition().getExpirationCacheDD();
-            if (dd != null) {
-                expTime = dd.getExpirationTime();
-                cacheScope = dd.getScope();
-            }
+            PortletEntryPointDefinition portletEntryPointDefinition = ((PortletEntryPointDefinition) entryPointDefinition);
+            portletType = portletEntryPointDefinition.getInitParameter("portletType");
+            expTime = portletEntryPointDefinition.getExpirationCache();
+            cacheScope = portletEntryPointDefinition.getCacheScope();
         }
         if (portletType == null) {
             portletType = "jnt:portlet";
         }
         GWTJahiaNodeACL gwtJahiaNodeACL = new GWTJahiaNodeACL(new ArrayList<GWTJahiaNodeACE>());
         gwtJahiaNodeACL.setAvailablePermissions(JCRPortletNode.getAvailablePermissions(appBean.getContext(), entryPointDefinition.getName()));
-        return new GWTJahiaPortletDefinition(appBean.getContext(), entryPointDefinition.getName(), entryPointDefinition.getDisplayName(), portletType, gwtJahiaNodeACL, entryPointDefinition.getDescription(), expTime, cacheScope);
+        return new GWTJahiaPortletDefinition(appBean.getContext(), entryPointDefinition.getName(), entryPointDefinition.getDisplayName(jParams.getLocale()), portletType, gwtJahiaNodeACL, entryPointDefinition.getDescription(jParams.getLocale()), expTime, cacheScope);
     }
 
     /**
      * Create a  GWTJahiaNode object that represents a portlet instance.
      *
-     * @param parentPath where to create the node
+     * @param parentPath                 where to create the node
      * @param gwtJahiaNewPortletInstance the portlet instance
-     * @param context the processing context
+     * @param context                    the processing context
      * @return a node
      * @throws GWTJahiaServiceException sthg bad happened
      */
@@ -1632,7 +1629,7 @@ public class FileManagerWorker {
                     }
                 }
             }
-            
+
             try {
                 parentNode.save();
             } catch (RepositoryException e) {
@@ -1791,7 +1788,7 @@ public class FileManagerWorker {
                             EntryPointDefinition entryPointDefinition = (EntryPointDefinition) iterator1.next();
                             boolean foundEntryPointDefinition = appName.equalsIgnoreCase(appBean.getName()) && entryPointDefinition.getName().equalsIgnoreCase(entryPointName);
                             if (foundEntryPointDefinition) {
-                                return createGWTJahiaPortletDefinition(appBean, entryPointDefinition);
+                                return createGWTJahiaPortletDefinition(context, appBean, entryPointDefinition);
                             }
                         }
                     }

@@ -39,7 +39,7 @@
 <%@ page import="org.jahia.data.applications.EntryPointDefinition" %>
 <%@ page import="java.util.*" %>
 <%@ page import="org.apache.commons.collections.FastHashMap" %>
-<%@ page import="org.apache.pluto.descriptors.portlet.UserAttributeDD" %>
+<%@ page import="org.apache.pluto.container.om.portlet.UserAttribute" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
@@ -171,7 +171,7 @@
                               Iterator userIterator = userAttributes.iterator();
                               Map alreadyExistingMapping = new FastHashMap(userAttributes.size());
                               while (userIterator.hasNext()) {
-                                  UserAttributeDD userAttribute = (UserAttributeDD) userIterator.next();
+                                  UserAttribute userAttribute = (UserAttribute) userIterator.next();
                                   Iterator userRefsIterator = userAttributeRefs.iterator();
                                   while (userRefsIterator.hasNext()) {
                                       /** todo implement mapping */
@@ -215,12 +215,12 @@
                               <%
                               iterator = userAttributes.iterator();
                               while (iterator.hasNext()) {
-                                UserAttributeDD attribute = (UserAttributeDD) iterator.next();
+                                UserAttribute attribute = (UserAttribute) iterator.next();
                                 String name = attribute.getName();
                                 String existingMapping = (String) (alreadyExistingMapping.get(name) != null ? alreadyExistingMapping.get(name) : "");
                                 %>
                                 <tr>
-                                  <td title="<%=attribute.getDescription()%>">
+                                  <td title="<%=attribute.getDescription(jParams.getLocale())%>">
                                     <%=name%>
                                   </td>
                                   <td>

@@ -33,7 +33,7 @@
 
 import java.util.List;
 
-import org.apache.pluto.PortletWindow;
+import org.apache.pluto.container.PortletWindow;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.EntryPointInstance;

@@ -42,9 +42,6 @@ package org.jahia.services.webapps_deployer;
 
 
 import org.apache.log4j.Logger;
-import org.apache.pluto.core.PortletContextManager;
-import org.apache.pluto.spi.optional.PortletRegistryEvent;
-import org.apache.pluto.spi.optional.PortletRegistryListener;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.webapps.*;
 import org.jahia.exceptions.JahiaException;

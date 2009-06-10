@@ -37,7 +37,7 @@ import java.util.List;
 import javax.portlet.PortletMode;
 import javax.portlet.WindowState;
 
-import org.apache.pluto.PortletWindow;
+import org.apache.pluto.container.PortletWindow;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.params.ProcessingContext;
@@ -58,8 +58,7 @@ public class PortletWindowBean {
     private int ID;
     private EntryPointInstance entryPointInstance;
     private ProcessingContext processingContext;
-    private org.jahia.data.applications.EntryPointDefinition
-            entryPointDefinition;
+    private EntryPointDefinition entryPointDefinition;
     private PortletWindow portletWindow;
 
     public PortletWindowBean() {
@@ -82,6 +81,10 @@ public class PortletWindowBean {
         return entryPointInstance.getID();
     }
 
+    /**
+     * Get list of supported portlet modes (view,edit,help)
+     * @return
+     */
     public List<PortletModeBean> getPortletModeBeans() {
         List<PortletModeBean> portletModeBeans = new ArrayList<PortletModeBean>();
         if (entryPointDefinition != null) {
@@ -97,6 +100,10 @@ public class PortletWindowBean {
         return portletModeBeans;
     }
 
+    /**
+     * Get supported window state (minimized, normal and maximized)
+     * @return
+     */
     public List<WindowStateBean> getWindowStateBeans() {
         List<WindowStateBean> windowStateBeans = new ArrayList<WindowStateBean>();
         if (entryPointDefinition != null) {
@@ -110,91 +117,71 @@ public class PortletWindowBean {
         return windowStateBeans;
     }
 
+    /**
+     * Get current portlet mode (view, edit or help)
+     * @return
+     */
     public PortletModeBean getCurrentPortletModeBean() {
-
-        /*
-        NavigationalStateComponent nav = (NavigationalStateComponent)Jetspeed.getComponentManager().getComponent(NavigationalStateComponent.class);
-        RequestContextComponent contextComponent = null;
-        RequestContext context = null;
-        contextComponent = (RequestContextComponent)Jetspeed.getComponentManager().getComponent(RequestContextComponent.class);
-        HttpServletRequest request = ((ParamBean) processingContext).getRequest();
-        HttpServletResponse response = ((ParamBean) processingContext).getResponse();
-        context = ApplicationsManagerJetspeedProvider.getRequestContext((ParamBean) processingContext,contextComponent);
-        request.setAttribute(JahiaJ2SessionPortalURL.
-                             PARAMBEAN_REQUEST_ATTRIBUTEKEY, processingContext);
-        request.setAttribute(JahiaJ2SessionPortalURL.
-                             APPUNIQUEID_REQUEST_ATTRIBUTEKEY,
-                             getPortletWindow().getId() + "_" +
-                             Integer.toString(getEntryPointInstanceID()));
-        PortalURL portalURL = nav.createURL(request, response.getCharacterEncoding());
-        MutableNavigationalState navState = (MutableNavigationalState) portalURL.getNavigationalState();
-        if (navState != null && context!=null) {
-            navState.sync(context);
-            PortletMode portletMode = navState.getMode(getPortletWindow());
-            request.removeAttribute(JahiaJ2SessionPortalURL.PARAMBEAN_REQUEST_ATTRIBUTEKEY);
-            request.removeAttribute(JahiaJ2SessionPortalURL.APPUNIQUEID_REQUEST_ATTRIBUTEKEY);
-            PortletModeBean currentPortletModeBean = new PortletModeBean(processingContext, this);
-            currentPortletModeBean.setName(portletMode.toString());
-            return currentPortletModeBean;
-        }
-        */
         PortletModeBean portletModeBean = new PortletModeBean(processingContext, this);
         portletModeBean.setName(portletWindow.getPortletMode().toString());
         return portletModeBean;
     }
 
+    /**
+     * Get current window state (minimized, normal, maximized)
+     * @return
+     */
     public WindowStateBean getCurrentWindowStateBean() {
-        /*
-        NavigationalStateComponent nav = (NavigationalStateComponent)Jetspeed.getComponentManager().getComponent(NavigationalStateComponent.class);
-        RequestContextComponent contextComponent = null;
-        RequestContext context = null;
-        contextComponent = (RequestContextComponent)Jetspeed.getComponentManager().getComponent(RequestContextComponent.class);
-        HttpServletRequest request = ((ParamBean) processingContext).getRequest();
-        HttpServletResponse response = ((ParamBean) processingContext).getResponse();
-        context = ApplicationsManagerJetspeedProvider.getRequestContext(processingContext,contextComponent);
-        request.setAttribute(JahiaJ2SessionPortalURL.
-                             PARAMBEAN_REQUEST_ATTRIBUTEKEY, processingContext);
-        request.setAttribute(JahiaJ2SessionPortalURL.
-                             APPUNIQUEID_REQUEST_ATTRIBUTEKEY,
-                             getPortletWindow().getId() + "_" +
-                             Integer.toString(getEntryPointInstanceID()));
-        PortalURL portalURL = nav.createURL(request, response.getCharacterEncoding());
-        MutableNavigationalState navState = (MutableNavigationalState) portalURL.getNavigationalState();
-        WindowStateBean currentWindowStateBean = new WindowStateBean(processingContext, this);
-        if (navState != null && context!=null) {
-            navState.sync(context);
-            WindowState windowState = navState.getState(getPortletWindow());
-            request.removeAttribute(JahiaJ2SessionPortalURL.PARAMBEAN_REQUEST_ATTRIBUTEKEY);
-            request.removeAttribute(JahiaJ2SessionPortalURL.APPUNIQUEID_REQUEST_ATTRIBUTEKEY);
-            currentWindowStateBean.setName(windowState.toString());
-        }
-        */
         WindowStateBean currentWindowStateBean = new WindowStateBean(processingContext, this);
         currentWindowStateBean.setName(portletWindow.getWindowState().toString());
         return currentWindowStateBean;
     }
 
+    /**
+     * Get the entryPointInstance
+     * @return
+     */
     public EntryPointInstance getEntryPointInstance() {
         return entryPointInstance;
     }
 
+    /**
+     * Set the entrypointInstance
+     * @param entryPointInstance
+     */
     public void setEntryPointInstance(EntryPointInstance entryPointInstance) {
         this.entryPointInstance = entryPointInstance;
     }
 
+    /**
+     * Get current ParamBean
+     * @return
+     */
     public ProcessingContext getParamBean() {
         return processingContext;
     }
 
+    /**
+     * Get the entrypointDefinition
+     * @return
+     */
     public EntryPointDefinition getEntryPointDefinition() {
         return entryPointDefinition;
     }
 
-    public void setEntryPointDefinition(EntryPointDefinition
-            entryPointDefinition) {
+    /**
+     * Set the entryPointDefinitin
+     * @param entryPointDefinition
+     */
+    public void setEntryPointDefinition(EntryPointDefinition entryPointDefinition) {
         this.entryPointDefinition = entryPointDefinition;
     }
 
+
+    /**
+     * Get the portlet window object
+     * @return
+     */
     public PortletWindow getPortletWindow() {
         return portletWindow;
     }

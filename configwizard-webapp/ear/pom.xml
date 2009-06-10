@@ -23,26 +23,62 @@
             <version>2.0</version>
         </dependency>
 
-        <!-- Pluto dependencies -->
+        <!-- Pluto 2.0-->
         <dependency>
-            <groupId>org.apache.pluto</groupId>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-container-api</artifactId>
+            <version>${pluto.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-container-driver-api</artifactId>
+            <version>${pluto.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
             <artifactId>pluto-container</artifactId>
             <version>${pluto.version}</version>
+            <exclusions>
+                <exclusion>
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>slf4j-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.pluto</groupId>
-            <artifactId>pluto-descriptor-api</artifactId>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-portal-driver</artifactId>
             <version>${pluto.version}</version>
+            <exclusions>
+                <exclusion>
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>slf4j-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.pluto</groupId>
-            <artifactId>pluto-descriptor-impl</artifactId>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-portal-driver-impl</artifactId>
             <version>${pluto.version}</version>
+            <exclusions>
+                <exclusion>
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>slf4j-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.pluto</groupId>
-            <artifactId>pluto-taglib</artifactId>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-util</artifactId>
             <version>${pluto.version}</version>
+            <exclusions>
+                <exclusion>
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>slf4j-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Pluto transitive dependencies -->
@@ -135,24 +171,45 @@
                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <jarModule>
-                            <groupId>org.apache.pluto</groupId>
-                            <artifactId>pluto-container</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
+                            <groupId>org.apache.portals</groupId>
+                            <artifactId>portlet-api_2.0_spec</artifactId>
+                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <jarModule>
-                            <groupId>org.apache.pluto</groupId>
-                            <artifactId>pluto-descriptor-api</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
+                            <groupId>org.apache.portals.pluto</groupId>
+                            <artifactId>pluto-container-api</artifactId>
+                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <jarModule>
-                            <groupId>org.apache.pluto</groupId>
-                            <artifactId>pluto-descriptor-impl</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
+                            <groupId>org.apache.portals.pluto</groupId>
+                            <artifactId>pluto-container-driver-api</artifactId>
+                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <jarModule>
-                            <groupId>org.apache.pluto</groupId>
+                            <groupId>org.apache.portals.pluto</groupId>
                             <artifactId>pluto-taglib</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
+                             <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <!-- Pluto 2.0-->
+                        <jarModule>
+                            <groupId>org.apache.portals.pluto</groupId>
+                            <artifactId>pluto-container</artifactId>
+                             <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>org.apache.portals.pluto</groupId>
+                            <artifactId>pluto-portal-driver</artifactId>
+                             <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>org.apache.portals.pluto</groupId>
+                            <artifactId>pluto-portal-driver-impl</artifactId>
+                             <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>org.apache.portals.pluto</groupId>
+                            <artifactId>pluto-util</artifactId>
+                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
 
                         <jarModule>

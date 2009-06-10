@@ -1,98 +1,102 @@
-/**
- * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program
- * Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
- * for your use, please contact the sales department at sales@jahia.com.
- */
 package org.jahia.portlets;
 
-import java.io.File;
+import org.apache.pluto.container.driver.*;
+import org.apache.pluto.container.om.portlet.PortletDefinition;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: jahia
+ * Date: 9 juin 2009
+ * Time: 16:25:27
+ * To change this template use File | Settings | File Templates.
+ */
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
+import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.*;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.net.MalformedURLException;
 
-import javax.portlet.*;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.Servlet;
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.EventPortlet;
+import javax.portlet.EventRequest;
+import javax.portlet.EventResponse;
+import javax.portlet.Portlet;
+import javax.portlet.PortletConfig;
+import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
+import javax.portlet.ResourceServingPortlet;
+import javax.portlet.UnavailableException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.pluto.Constants;
-import org.apache.pluto.PortletContainerException;
-import org.apache.pluto.PortletWindow;
-import org.apache.pluto.core.*;
-import org.apache.pluto.descriptors.portlet.PortletDD;
-import org.apache.pluto.internal.InternalPortletConfig;
-import org.apache.pluto.internal.InternalPortletContext;
-import org.apache.pluto.internal.InternalPortletRequest;
-import org.apache.pluto.internal.InternalPortletResponse;
-import org.apache.pluto.internal.impl.ActionRequestImpl;
-import org.apache.pluto.internal.impl.ActionResponseImpl;
-import org.apache.pluto.internal.impl.EventRequestImpl;
-import org.apache.pluto.internal.impl.EventResponseImpl;
-import org.apache.pluto.internal.impl.PortletContextImpl;
-import org.apache.pluto.internal.impl.RenderRequestImpl;
-import org.apache.pluto.internal.impl.RenderResponseImpl;
-import org.apache.pluto.internal.impl.ResourceRequestImpl;
-import org.apache.pluto.internal.impl.ResourceResponseImpl;
-import org.apache.pluto.spi.FilterManager;
-import org.apache.pluto.spi.optional.AdministrativeRequestListener;
-import org.apache.pluto.spi.optional.PortalAdministrationService;
-import org.apache.pluto.spi.optional.PortletInvocationEvent;
-import org.apache.pluto.spi.optional.PortletInvocationListener;
+import org.apache.pluto.container.FilterManager;
+import org.apache.pluto.container.PortletContainerException;
+import org.apache.pluto.container.PortletInvokerService;
+import org.apache.pluto.container.PortletRequestContext;
+import org.apache.pluto.container.PortletResponseContext;
+import org.apache.pluto.container.PortletWindow;
+import org.apache.pluto.container.impl.PortletContextImpl;
+import org.apache.pluto.container.om.portlet.PortletDefinition;
+import org.apache.pluto.driver.container.InitParameterApplicationIdResolver;
 import org.jahia.bin.Jahia;
-import org.jahia.services.applications.pluto.JahiaPortalServletRequest;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Sep 17, 2008
- * Time: 3:07:31 PM
- * To change this template use File | Settings | File Templates.
+ * Portlet Invocation Servlet. This servlet recieves cross context requests from
+ * the the container and services the portlet request for the specified method.
+ *
+ * @version 1.1
+ * @since 09/22/2004
  */
 public class PortletServlet extends HttpServlet {
+    private static final long serialVersionUID = -5096339022539360365L;
 
+    static class NullPortlet implements EventPortlet, ResourceServingPortlet, Portlet {
+        public void processEvent(EventRequest arg0, EventResponse arg1)
+                throws PortletException, IOException {
+        }
+
+        public void serveResource(ResourceRequest arg0, ResourceResponse arg1)
+                throws PortletException, IOException {
+        }
+
+        public void destroy() {
+        }
+
+        public void init(PortletConfig arg0) throws PortletException {
+        }
+
+        public void processAction(ActionRequest arg0, ActionResponse arg1)
+                throws PortletException, IOException {
+        }
+
+        public void render(RenderRequest arg0, RenderResponse arg1)
+                throws PortletException, IOException {
+        }
+    }
 
     // Private Member Variables ------------------------------------------------
-
     /**
      * The portlet name as defined in the portlet app descriptor.
      */
@@ -101,23 +105,33 @@ public class PortletServlet extends HttpServlet {
     /**
      * The portlet instance wrapped by this servlet.
      */
-    private Map<String,Portlet> portlets = new HashMap<String,Portlet>();
+    private Portlet portlet;
 
     /**
      * The internal portlet context instance.
      */
-    private InternalPortletContext portletContext;
+    private DriverPortletContext portletContext;
 
     /**
      * The internal portlet config instance.
      */
-    private Map<String, InternalPortletConfig> portletConfigs = new HashMap<String, InternalPortletConfig>();
+    private DriverPortletConfig portletConfig;
 
-    /** The Event Portlet instance (the same object as portlet) wrapped by this servlet. */
-    private Map<String,EventPortlet>  eventPortlets = new HashMap<String, EventPortlet>();
+    /**
+     * The Event Portlet instance (the same object as portlet) wrapped by this
+     * servlet.
+     */
+    private EventPortlet eventPortlet;
 
-    /** The resource serving portlet instance wrapped by this servlet. */
-    private Map<String, ResourceServingPortlet> resourceServingPortlets = new HashMap<String, ResourceServingPortlet>();
+    /**
+     * The resource serving portlet instance wrapped by this servlet.
+     */
+    private ResourceServingPortlet resourceServingPortlet;
+
+    private PortletContextService contextService;
+
+    private boolean started = false;
+    Timer startTimer;
 
     // HttpServlet Impl --------------------------------------------------------
 
@@ -127,103 +141,118 @@ public class PortletServlet extends HttpServlet {
 
     /**
      * Initialize the portlet invocation servlet.
-     * @throws ServletException  if an error occurs while loading portlet.
+     *
+     * @throws javax.servlet.ServletException if an error occurs while loading portlet.
      */
-    public void init() throws ServletException {
+    public void init(ServletConfig config) throws ServletException {
 
-    	// Call the super initialization method.
-    	super.init();
+        // Call the super initialization method.
+        super.init(config);
 
-        // Retrieve the associated internal portlet context.
-        PortletContextManager mgr = PortletContextManager.getManager();
-        File f = new File(getServletContext().getRealPath("/WEB-INF/fragments"));
-        File[] fragments = f.listFiles();
+        // Retrieve portlet name as defined as an initialization parameter.
+        portletName = getInitParameter("portlet-name");
 
-        for (int i = 0; i < fragments.length; i++) {
-            try {
-                File fragment = fragments[i];
-                log("Processing fragment " + fragment);
-                ServletConfig config = new ServletConfigWrapper(getServletConfig(), fragment.getName());
-                String applicationId = mgr.register(config);
-                portletContext = (InternalPortletContext) mgr.getPortletContext(applicationId);
-                List portlets = ((PortletContextImpl)mgr.getPortletContext(applicationId)).getPortletApplicationDefinition().getPortlets();
-                for (Iterator iterator = portlets.iterator(); iterator.hasNext();) {
-                    PortletDD portletDD = (PortletDD) iterator.next();
-                    portletConfigs.put( Jahia.getContextPath()+"/"+fragment.getName()+"."+portletDD.getPortletName(), (InternalPortletConfig) mgr.getPortletConfig(applicationId, portletDD.getPortletName()));
-                }
-            } catch (PortletContainerException ex) {
-                log("Error while registering portlet", ex);
-            }
-        }
+        started = false;
 
-        for (Map.Entry<String, InternalPortletConfig> entry : portletConfigs.entrySet()) {
-            InternalPortletConfig portletConfig = entry.getValue();
-            PortletDD portletDD = portletConfig.getPortletDefinition();
-
-            // Create and initialize the portlet wrapped in the servlet.
-            try {
-                ClassLoader loader = Thread.currentThread().getContextClassLoader();
-                Class clazz = loader.loadClass((portletDD.getPortletClass()));
-                Portlet portlet = (Portlet) clazz.newInstance();
-
-                String rootPath = portletConfig.getInitParameter("rootPath");
-                String realPath = portletConfig.getPortletContext().getRealPath(rootPath + "/definitions.cnd" );
-                if (new File(realPath).exists()) {
-                    try {
-                        NodeTypeRegistry.getInstance().addDefinitionsFile(new File(realPath), portletConfig.getPortletName(), true);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        startTimer = new Timer(true);
+        final ServletContext servletContext = getServletContext();
+        final ClassLoader paClassLoader = Thread.currentThread().getContextClassLoader();
+        startTimer.schedule(new TimerTask() {
+            public void run() {
+                synchronized (servletContext) {
+                    if (startTimer != null) {
+                       /*
+                       To Do: fix this in order to register internal portlet
+                       if (attemptRegistration(servletContext, paClassLoader)) {
+                            startTimer.cancel();
+                            startTimer = null;
+                        }*/
                     }
                 }
-                portlet.init(portletConfig);
+            }
+        }, 1, 10000);
+    }
 
-                portlets.put(entry.getKey(), portlet);
-            } catch (ClassNotFoundException ex) {
-                ex.printStackTrace();
-                throw new ServletException(ex);
-            } catch (IllegalAccessException ex) {
-                ex.printStackTrace();
-                throw new ServletException(ex);
-            } catch (InstantiationException ex) {
-                ex.printStackTrace();
-                throw new ServletException(ex);
-            } catch (PortletException ex) {
-                ex.printStackTrace();
-                throw new ServletException(ex);
+    protected boolean attemptRegistration(ServletContext context, ClassLoader paClassLoader) {
+        if (PlutoServices.getServices() != null) {
+            contextService = PlutoServices.getServices().getPortletContextService();
+            try {
+                ServletConfig sConfig = getServletConfig();
+                if (sConfig == null) {
+                    String msg = "Problem obtaining servlet configuration(getServletConfig() returns null).";
+                    context.log(msg);
+                    return true;
+                }
+
+                String applicationName = contextService.register(sConfig);
+                started = true;
+                portletContext = contextService.getPortletContext(applicationName);
+                portletConfig = contextService.getPortletConfig(applicationName, portletName);
+
+            }
+            catch (PortletContainerException ex) {
+                context.log(ex.getMessage(), ex);
+                return true;
+            }
+
+            PortletDefinition portletDD = portletConfig.getPortletDefinition();
+
+            //          Create and initialize the portlet wrapped in the servlet.
+            try {
+                Class<?> clazz = paClassLoader.loadClass((portletDD.getPortletClass()));
+                portlet = (Portlet) clazz.newInstance();
+                portlet.init(portletConfig);
+                initializeEventPortlet();
+                initializeResourceServingPortlet();
+                return true;
+            }
+            catch (Exception ex) {
+                context.log(ex.getMessage(), ex);
+                // take out of service
+                portlet = null;
+                portletConfig = null;
+                return true;
             }
         }
-        initializeEventPortlet();
-        initializeResourceServingPortlet();
+        return false;
     }
 
     public void destroy() {
-        PortletContextManager.getManager().remove(portletContext);
-        for (Portlet portlet : portlets.values()) {
-            portlet.destroy();
+        synchronized (getServletContext()) {
+            if (startTimer != null) {
+                startTimer.cancel();
+                startTimer = null;
+            } else if (started && portletContext != null) {
+                started = false;
+                contextService.unregister(portletContext);
+                if (portlet != null) {
+                    try {
+                        portlet.destroy();
+                    }
+                    catch (Exception e) {
+                        // ignore
+                    }
+                    portlet = null;
+                }
+            }
+            super.destroy();
         }
-        super.destroy();
     }
 
     protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
-    throws ServletException, IOException {
+                         HttpServletResponse response) throws ServletException, IOException {
         dispatch(request, response);
     }
 
     protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response)
-    throws ServletException, IOException {
+                          HttpServletResponse response) throws ServletException, IOException {
         dispatch(request, response);
     }
 
     protected void doPut(HttpServletRequest request,
-                         HttpServletResponse response)
-    throws ServletException, IOException {
+                         HttpServletResponse response) throws ServletException, IOException {
         dispatch(request, response);
     }
-
 
     // Private Methods ---------------------------------------------------------
 
@@ -232,162 +261,136 @@ public class PortletServlet extends HttpServlet {
      * assumes that the following attributes are set in the servlet request
      * scope:
      * <ul>
-     *   <li>METHOD_ID: indicating which method to dispatch.</li>
-     *   <li>PORTLET_REQUEST: the internal portlet request.</li>
-     *   <li>PORTLET_RESPONSE: the internal portlet response.</li>
+     * <li>METHOD_ID: indicating which method to dispatch.</li>
+     * <li>PORTLET_REQUEST: the internal portlet request.</li>
+     * <li>PORTLET_RESPONSE: the internal portlet response.</li>
      * </ul>
      *
      * @param request  the servlet request.
-     * @param response  the servlet response.
+     * @param response the servlet response.
      * @throws ServletException
      * @throws IOException
      */
     private void dispatch(HttpServletRequest request,
-                          HttpServletResponse response)
-    throws ServletException, IOException {
-        InternalPortletRequest portletRequest = null;
-        InternalPortletResponse portletResponse = null;
-        // Save portlet config into servlet request.
-
-        String id = ((JahiaPortalServletRequest)request).getId();
-        String name = id.substring(0, id.indexOf("!"));
-
-        Portlet portlet = portlets.get(name);
-        EventPortlet eventPortlet = eventPortlets.get(name);
-        ResourceServingPortlet resourceServingPortlet = resourceServingPortlets.get(name);
-        InternalPortletConfig portletConfig = portletConfigs.get(name);
-
-        request.setAttribute(Constants.PORTLET_CONFIG, portletConfig);
+                          HttpServletResponse response) throws ServletException, IOException {
+        if (portlet == null) {
+            throw new javax.servlet.UnavailableException("Portlet " + portletName + " unavailable");
+        }
 
         // Retrieve attributes from the servlet request.
-        Integer methodId = (Integer) request.getAttribute(
-            Constants.METHOD_ID);
+        Integer methodId = (Integer) request.getAttribute(PortletInvokerService.METHOD_ID);
 
-        portletRequest = (InternalPortletRequest) request.getAttribute(
-            Constants.PORTLET_REQUEST);
+        final PortletRequest portletRequest = (PortletRequest) request.getAttribute(PortletInvokerService.PORTLET_REQUEST);
 
-        portletResponse = (InternalPortletResponse) request.getAttribute(
-            Constants.PORTLET_RESPONSE);
+        final PortletResponse portletResponse = (PortletResponse) request.getAttribute(PortletInvokerService.PORTLET_RESPONSE);
 
-        FilterManager filterManager = (FilterManager) request.getAttribute(Constants.FILTER_MANAGER);
+        final PortletRequestContext requestContext = (PortletRequestContext) portletRequest.getAttribute(PortletInvokerService.REQUEST_CONTEXT);
+        final PortletResponseContext responseContext = (PortletResponseContext) portletRequest.getAttribute(PortletInvokerService.RESPONSE_CONTEXT);
 
-        portletRequest.init(portletContext, request);
+        final FilterManager filterManager = (FilterManager) request.getAttribute(PortletInvokerService.FILTER_MANAGER);
 
-        PortletWindow window =
-            ContainerInvocation.getInvocation().getPortletWindow();
+        request.removeAttribute(PortletInvokerService.METHOD_ID);
+        request.removeAttribute(PortletInvokerService.PORTLET_REQUEST);
+        request.removeAttribute(PortletInvokerService.PORTLET_RESPONSE);
+        request.removeAttribute(PortletInvokerService.FILTER_MANAGER);
 
-        PortletInvocationEvent event =
-            new PortletInvocationEvent(portletRequest, window, methodId.intValue());
+        requestContext.init(portletConfig, getServletContext(), request, response);
+        responseContext.init(request, response);
+
+        PortletWindow window = requestContext.getPortletWindow();
+
+        PortletInvocationEvent event = new PortletInvocationEvent(portletRequest, window, methodId.intValue());
 
         notify(event, true, null);
 
-//      Init the classloader for the filter and get the Service for processing the filters.
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-//        FilterManager filtermanager = (FilterManager) request.getAttribute(
-//        		"filter-manager");
+        // FilterManager filtermanager = (FilterManager) request.getAttribute(
+        // "filter-manager");
 
         try {
 
             // The requested method is RENDER: call Portlet.render(..)
-            if (methodId.equals(Constants.METHOD_RENDER)) {
-                RenderRequestImpl renderRequest =
-                		(RenderRequestImpl) portletRequest;
-                RenderResponseImpl renderResponse =
-                    	(RenderResponseImpl) portletResponse;
-                filterManager.processFilter(renderRequest, renderResponse, loader, portlet,portletContext);
+            if (methodId == PortletInvokerService.METHOD_RENDER) {
+                RenderRequest renderRequest = (RenderRequest) portletRequest;
+                RenderResponse renderResponse = (RenderResponse) portletResponse;
+                filterManager.processFilter(renderRequest, renderResponse,
+                        portlet, portletContext);
             }
 
-            //The requested method is RESOURCE: call ResourceServingPortlet.serveResource(..)
-            else if (methodId.equals(Constants.METHOD_RESOURCE)) {
-            	ResourceRequestImpl resourceRequest =
-                    	(ResourceRequestImpl) portletRequest;
-            	ResourceResponseImpl resourceResponse =
-                    	(ResourceResponseImpl) portletResponse;
-            	filterManager.processFilter(resourceRequest, resourceResponse, loader, resourceServingPortlet,portletContext);
+            // The requested method is RESOURCE: call
+            // ResourceServingPortlet.serveResource(..)
+            else if (methodId == PortletInvokerService.METHOD_RESOURCE) {
+                ResourceRequest resourceRequest = (ResourceRequest) portletRequest;
+                ResourceResponse resourceResponse = (ResourceResponse) portletResponse;
+                filterManager.processFilter(resourceRequest, resourceResponse,
+                        resourceServingPortlet, portletContext);
             }
 
             // The requested method is ACTION: call Portlet.processAction(..)
-            else if (methodId.equals(Constants.METHOD_ACTION)) {
-                ActionRequestImpl actionRequest =
-                    	(ActionRequestImpl) portletRequest;
-                ActionResponseImpl actionResponse =
-                    	(ActionResponseImpl) portletResponse;
-                filterManager.processFilter(actionRequest, actionResponse, loader, portlet,portletContext);
+            else if (methodId == PortletInvokerService.METHOD_ACTION) {
+                ActionRequest actionRequest = (ActionRequest) portletRequest;
+                ActionResponse actionResponse = (ActionResponse) portletResponse;
+                filterManager.processFilter(actionRequest, actionResponse,
+                        portlet, portletContext);
             }
 
-            //The request methode is Event: call Portlet.processEvent(..)
-            else if (methodId.equals(Constants.METHOD_EVENT)){
-            	EventRequestImpl eventRequest =
-                	(EventRequestImpl) portletRequest;
-            	EventResponseImpl eventResponse =
-                	(EventResponseImpl) portletResponse;
-            	filterManager.processFilter(eventRequest, eventResponse, loader, eventPortlet,portletContext);
+            // The request methode is Event: call Portlet.processEvent(..)
+            else if (methodId == PortletInvokerService.METHOD_EVENT) {
+                EventRequest eventRequest = (EventRequest) portletRequest;
+                EventResponse eventResponse = (EventResponse) portletResponse;
+                filterManager.processFilter(eventRequest, eventResponse,
+                        eventPortlet, portletContext);
             }
             // The requested method is ADMIN: call handlers.
-            else if (methodId.equals(Constants.METHOD_ADMIN)) {
-                ContainerInvocation inv = ContainerInvocation.getInvocation();
-                PortalAdministrationService pas =
-                    inv.getPortletContainer()
-                        .getOptionalContainerServices()
-                        .getPortalAdministrationService();
+            else if (methodId == PortletInvokerService.METHOD_ADMIN) {
+                PortalAdministrationService pas = PlutoServices.getServices().getPortalAdministrationService();
 
-                Iterator it = pas.getAdministrativeRequestListeners().iterator();
-                while (it.hasNext()) {
-                    AdministrativeRequestListener l = (AdministrativeRequestListener) it.next();
+                for (AdministrativeRequestListener l : pas.getAdministrativeRequestListeners()) {
                     l.administer(portletRequest, portletResponse);
                 }
             }
 
-            // The requested method is NOOP: do nothing.
-            else if (methodId.equals(Constants.METHOD_NOOP)) {
+            // The requested method is LOAD: do nothing.
+            else if (methodId == PortletInvokerService.METHOD_LOAD) {
                 // Do nothing.
             }
 
             notify(event, false, null);
 
-
-        } catch (javax.portlet.UnavailableException ex) {
-            ex.printStackTrace();
-            /*
-            if (e.isPermanent()) {
-                throw new UnavailableException(e.getMessage());
-            } else {
-                throw new UnavailableException(e.getMessage(), e.getUnavailableSeconds());
-            }*/
+        }
+        catch (UnavailableException ex) {
+            //
+            // if (e.isPermanent()) { throw new
+            // UnavailableException(e.getMessage()); } else { throw new
+            // UnavailableException(e.getMessage(), e.getUnavailableSeconds());
+            // }
+            //
 
             // Portlet.destroy() isn't called by Tomcat, so we have to fix it.
             try {
                 portlet.destroy();
-            } catch (Throwable th) {
-                // Don't care for Exception
             }
+            catch (Throwable th) {
+                // Don't care for Exception
+                this.getServletContext().log("Error during portlet destroy.", th);
+            }
+            // take portlet out of service
+            portlet = null;
 
             // TODO: Handle everything as permanently for now.
             throw new javax.servlet.UnavailableException(ex.getMessage());
 
-        } catch (PortletException ex) {
+        }
+        catch (PortletException ex) {
             notify(event, false, ex);
-            ex.printStackTrace();
             throw new ServletException(ex);
 
-        } finally {
-            request.removeAttribute(Constants.PORTLET_CONFIG);
-            if (portletRequest != null) {
-            	portletRequest.release();
-            }
         }
     }
 
-
     protected void notify(PortletInvocationEvent event, boolean pre, Throwable e) {
-        ContainerInvocation inv = ContainerInvocation.getInvocation();
-        PortalAdministrationService pas = inv.getPortletContainer()
-            .getOptionalContainerServices()
-            .getPortalAdministrationService();
+        PortalAdministrationService pas = PlutoServices.getServices().getPortalAdministrationService();
 
-        Iterator i = pas.getPortletInvocationListeners().iterator();
-        while (i.hasNext()) {
-            PortletInvocationListener listener = (PortletInvocationListener) i.next();
+        for (PortletInvocationListener listener : pas.getPortletInvocationListeners()) {
             if (pre) {
                 listener.onBegin(event);
             } else if (e == null) {
@@ -396,28 +399,21 @@ public class PortletServlet extends HttpServlet {
                 listener.onError(event, e);
             }
         }
-
     }
 
     private void initializeEventPortlet() {
-        for (Map.Entry<String, Portlet> entry : portlets.entrySet()) {
-            if (entry.getValue() instanceof EventPortlet) {
-                    eventPortlets.put(entry.getKey(),(EventPortlet) entry.getValue());
-            }
-            else{
-                eventPortlets.put(entry.getKey(),new NullPortlet());
-            }
+        if (portlet instanceof EventPortlet) {
+            eventPortlet = (EventPortlet) portlet;
+        } else {
+            eventPortlet = new NullPortlet();
         }
     }
 
     private void initializeResourceServingPortlet() {
-        for (Map.Entry<String, Portlet> entry : portlets.entrySet()) {
-            if (entry.getValue() instanceof ResourceServingPortlet) {
-                    resourceServingPortlets.put(entry.getKey(),(ResourceServingPortlet) entry.getValue());
-            }
-            else{
-                resourceServingPortlets.put(entry.getKey(),new NullPortlet());
-            }
+        if (portlet instanceof ResourceServingPortlet) {
+            resourceServingPortlet = (ResourceServingPortlet) portlet;
+        } else {
+            resourceServingPortlet = new NullPortlet();
         }
     }
 
@@ -458,11 +454,12 @@ public class PortletServlet extends HttpServlet {
 
         /**
          * This only gets called in Servlet API 2.5 and above. We need to find another way for Servlet API 2.4 and
-         * earlier ? 
+         * earlier ?
+         *
          * @return
          */
         public String getContextPath() {
-            return Jahia.getContextPath()+"/"+contextPath;
+            return Jahia.getContextPath() + "/" + contextPath;
         }
 
         public ServletContext getContext(String s) {
@@ -491,7 +488,7 @@ public class PortletServlet extends HttpServlet {
 
         public InputStream getResourceAsStream(String s) {
             if (s.equals("/WEB-INF/portlet.xml")) {
-                return deleguee.getResourceAsStream("/WEB-INF/fragments/"+contextPath+"/portlet.xml");
+                return deleguee.getResourceAsStream("/WEB-INF/fragments/" + contextPath + "/portlet.xml");
             }
             return deleguee.getResourceAsStream(s);
         }
@@ -540,7 +537,7 @@ public class PortletServlet extends HttpServlet {
             if (InitParameterApplicationIdResolver.CONTEXT_PATH_PARAM.equals(s)) {
                 // this code is used internally by Pluto to determine the context if we are using a container
                 // that is not Servlet API 2.5+ compliant.
-                return new String(Jahia.getContextPath()+"/"+contextPath);
+                return new String(Jahia.getContextPath() + "/" + contextPath);
             }
             return deleguee.getInitParameter(s);
         }

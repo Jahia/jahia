@@ -73,11 +73,6 @@
             <type>rar</type>
         </dependency>
         -->
-        <dependency>
-            <groupId>javax.portlet</groupId>
-            <artifactId>portlet-api</artifactId>
-            <version>2.0</version>
-        </dependency>
 
         <!-- should be removed from here ! shared lib deployement from profile does not work -->
         <dependency>
@@ -85,30 +80,28 @@
             <artifactId>clover</artifactId>
             <version>2.4.2</version>
         </dependency>
-
-
-        <!-- Pluto dependencies -->
+        <!-- Pluto 2.0 -->
         <dependency>
-            <groupId>org.apache.pluto</groupId>
-            <artifactId>pluto-container</artifactId>
+            <groupId>org.apache.portals</groupId>
+            <artifactId>portlet-api_2.0_spec</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-container-api</artifactId>
             <version>${pluto.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.pluto</groupId>
-            <artifactId>pluto-descriptor-api</artifactId>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-container-driver-api</artifactId>
             <version>${pluto.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.pluto</groupId>
-            <artifactId>pluto-descriptor-impl</artifactId>
-            <version>${pluto.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.pluto</groupId>
+            <groupId>org.apache.portals.pluto</groupId>
             <artifactId>pluto-taglib</artifactId>
             <version>${pluto.version}</version>
         </dependency>
-
+        
         <!-- Pluto transitive dependencies -->
         <dependency>
             <groupId>javax.activation</groupId>

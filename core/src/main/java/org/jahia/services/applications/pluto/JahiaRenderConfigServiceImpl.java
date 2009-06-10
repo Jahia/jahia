@@ -31,8 +31,8 @@
  */
 package org.jahia.services.applications.pluto;
 
-import org.apache.pluto.driver.services.impl.resource.RenderConfigServiceImpl;
 import org.apache.pluto.driver.services.portal.PageConfig;
+import org.apache.pluto.driver.services.impl.resource.RenderConfigServiceImpl;
 import org.apache.pluto.driver.PortalDriverServlet;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRStoreService;

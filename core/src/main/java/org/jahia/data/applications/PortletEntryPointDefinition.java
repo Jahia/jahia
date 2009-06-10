@@ -35,12 +35,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.portlet.PortletMode;
 
-import org.apache.pluto.descriptors.common.InitParamDD;
-import org.apache.pluto.descriptors.portlet.PortletDD;
-import org.apache.pluto.descriptors.portlet.SupportsDD;
+import org.apache.pluto.container.om.portlet.impl.PortletType;
+import org.apache.pluto.container.om.portlet.Supports;
+import org.apache.pluto.container.om.portlet.InitParam;
+import org.apache.pluto.container.om.portlet.PortletDefinition;
 import org.jahia.registries.ServicesRegistry;
 
 /**
@@ -65,54 +65,89 @@ public class PortletEntryPointDefinition implements Serializable, EntryPointDefi
 
     private int applicationID;
     private String context;
-    private PortletDD portletDefinition;
+    private PortletDefinition portletDefinition;
     private List<PortletMode> portletModes = null;
 
-    public PortletEntryPointDefinition(int applicationID,
-                                       String context,
-                                       PortletDD portletDefinition) {
+    public PortletEntryPointDefinition(int applicationID, String context, PortletDefinition portletDefinition) {
         this.applicationID = applicationID;
         this.context = context;
         this.portletDefinition = portletDefinition;
     }
 
+    /**
+     * Get the context
+     *
+     * @return
+     */
     public String getContext() {
         return context;
     }
 
+    /**
+     * Get the portlet name
+     *
+     * @return
+     */
     public String getName() {
         return portletDefinition.getPortletName();
     }
 
-    public String getDisplayName() {
-        String displayName = portletDefinition.getDisplayName();
-        if (displayName == null || displayName.length() == 0) {
+    /**
+     * Get display name.
+     *
+     * @param locale
+     * @return
+     */
+    public String getDisplayName(java.util.Locale locale) {
+        org.apache.pluto.container.om.portlet.DisplayName displayName = portletDefinition.getDisplayName(locale);
+        if (displayName == null || displayName.getDisplayName() == null || displayName.getDisplayName().length() == 0) {
             return getName();
         }
-        return displayName;
+        return displayName.getDisplayName();
     }
 
-    public String getDescription() {
-        return portletDefinition.getDescription();
+
+    /**
+     * Get description depending on locale
+     *
+     * @param locale
+     * @return
+     */
+    public String getDescription(java.util.Locale locale) {
+        org.apache.pluto.container.om.portlet.Description description = portletDefinition.getDescription(locale);
+        if (description != null) {
+            return description.getDescription();
+        }
+        return null;
     }
 
+    /**
+     * Get the application id
+     *
+     * @return
+     */
     public int getApplicationID() {
         return applicationID;
     }
 
+    /**
+     * Get list of portlet modes supported by the portlet
+     *
+     * @return
+     */
     public List<PortletMode> getPortletModes() {
         if (portletModes == null) {
 
-            List<SupportsDD> supportDDList = portletDefinition.getSupports();
+            java.util.List<? extends Supports> supportsList = portletDefinition.getSupports();
             List<String> definitionPortletModes = null;
-            for (SupportsDD currentSupportDD : supportDDList) {
-                if ("text/html".equals(currentSupportDD.getMimeType())) {
-                    definitionPortletModes = currentSupportDD.getPortletModes();
+            for (Supports currentSupport : supportsList) {
+                if ("text/html".equals(currentSupport.getMimeType())) {
+                    definitionPortletModes = currentSupport.getPortletModes();
                 }
             }
 
             if (definitionPortletModes == null) {
-                logger.error("Couldn't find portlet mode definition for portlet" + portletDefinition.getDisplayName() + " returning empty list !");
+                logger.error("Couldn't find portlet mode definition for portlet" + portletDefinition.getPortletName() + " returning empty list !");
                 return new ArrayList<PortletMode>();
             }
 
@@ -123,15 +158,12 @@ public class PortletEntryPointDefinition implements Serializable, EntryPointDefi
                 lowercaseDefinitionPortletModes.add(curPortletMode.toLowerCase());
             }
 
-            List portalPortletModes = ServicesRegistry.getInstance().
-                    getApplicationsManagerService().
-                    getSupportedPortletModes();
+            // returns only mode that are activated by the portlet and supported by the portal
+            List<PortletMode> portalPortletModes = ServicesRegistry.getInstance().getApplicationsManagerService().getSupportedPortletModes();
             List<PortletMode> resultPortletModes = new ArrayList<PortletMode>();
             Iterator portalPortletModesIter = portalPortletModes.iterator();
             while (portalPortletModesIter.hasNext()) {
-                PortletMode curPortletMode = (PortletMode)
-                        portalPortletModesIter.
-                                next();
+                PortletMode curPortletMode = (PortletMode)portalPortletModesIter. next();
                 if (lowercaseDefinitionPortletModes.contains(curPortletMode.toString().toLowerCase())) {
                     resultPortletModes.add(curPortletMode);
                 }
@@ -143,24 +175,57 @@ public class PortletEntryPointDefinition implements Serializable, EntryPointDefi
         }
     }
 
+    /**
+     * Get List of window states
+     *
+     * @return
+     */
     public List getWindowStates() {
-        return ServicesRegistry.getInstance().getApplicationsManagerService().
-                getSupportedWindowStates();
+        return ServicesRegistry.getInstance().getApplicationsManagerService().getSupportedWindowStates();
     }
 
-    public PortletDD getPortletDefinition() {
+    /**
+     * Get portlet defintion
+     *
+     * @return
+     */
+    public PortletDefinition getPortletDefinition() {
         return portletDefinition;
     }
 
+    /**
+     * Get init parameter
+     *
+     * @param param
+     * @return
+     */
     public String getInitParameter(String param) {
         if (portletDefinition.getInitParams() != null) {
-            for (InitParamDD dd : portletDefinition.getInitParams()) {
-                if (param.equals(dd.getParamName())) {
-                    return dd.getParamValue();
+            for (InitParam initParam : portletDefinition.getInitParams()) {
+                if (param.equals(initParam.getParamName())) {
+                    return initParam.getParamValue();
                 }
             }
         }
         return null;
+    }
+
+    /**
+     * Get cache scope
+     *
+     * @return
+     */
+    public String getCacheScope() {
+        return portletDefinition.getCacheScope();
+    }
+
+    /**
+     * Get expiration cache
+     *
+     * @return
+     */
+    public int getExpirationCache() {
+        return portletDefinition.getExpirationCache();
     }
 
 }

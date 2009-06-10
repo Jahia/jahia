@@ -41,8 +41,7 @@ import java.util.List;
 
 import javax.portlet.PortletMode;
 import javax.portlet.WindowState;
-
-import org.apache.pluto.PortletWindow;
+import org.apache.pluto.container.PortletWindow;
 import org.jahia.data.JahiaDOMObject;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;

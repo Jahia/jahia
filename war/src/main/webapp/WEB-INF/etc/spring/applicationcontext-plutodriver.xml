@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 Licensed to the Apache Software Foundation (ASF) under one or more
 contributor license agreements.  See the NOTICE file distributed with
@@ -45,13 +44,21 @@ limitations under the License.
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <bean id="RequiredContainerServices"
-          name="OptionalContainerServices"
-          class="org.apache.pluto.driver.services.container.ContainerServicesImpl"
+
+	<bean id="PlutoServices"
+	      class="org.apache.pluto.container.driver.PlutoServices"
+          scope="singleton">
+      <constructor-arg><ref bean="PortalDriverServices"/></constructor-arg>
+	</bean>
+
+    <bean id="PortalDriverServices"
+          class="org.apache.pluto.driver.container.PortalDriverServicesImpl"
           scope="singleton">
       <constructor-arg><ref bean="PortalContext"/></constructor-arg>
-      <constructor-arg><ref bean="DriverConfiguration"/></constructor-arg>
-      <constructor-arg><ref bean="CCPPProfileService"/></constructor-arg>
+      <constructor-arg><ref bean="PortletRequestContextService"/></constructor-arg>
+      <constructor-arg><ref bean="EventCoordinationService"/></constructor-arg>
+      <constructor-arg><ref bean="FilterManagerService"/></constructor-arg>
+      <constructor-arg><ref bean="PortletURLListenerService"/></constructor-arg>
     </bean>
 
     <bean id="PortalContext"
@@ -59,9 +66,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
         <constructor-arg><ref bean="DriverConfiguration"/></constructor-arg>
     </bean>
 
-    <bean id="JahiaPortletPreferencesService" class="org.jahia.services.applications.pluto.JahiaPortletPreferencesServiceImpl">
-        <property name="jahiaPreferencesService" ref="JahiaPreferencesService" />
-    </bean>
+
 
     <!-- ================================================ -->
     <!-- The single top element of the configuration tree -->
@@ -76,14 +81,11 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
       <constructor-arg><ref bean="SupportedModesService"/></constructor-arg>
       <constructor-arg><ref bean="SupportedWindowStatesService"/></constructor-arg>
 
-      <!-- === Container Services === -->
-      <constructor-arg><ref bean="PortalCallbackService"/></constructor-arg>
-
-      <!--  Optional Container Services -->
       <property name="portletPreferencesService"><ref bean="JahiaPortletPreferencesService"/></property>
-      <!--
-      <property name="userAttributeService"><ref bean="UserAttributeService"/></property>
-      -->
+    </bean>
+
+    <bean id="JahiaPortletPreferencesService" class="org.jahia.services.applications.pluto.JahiaPortletPreferencesServiceImpl">
+        <property name="jahiaPreferencesService" ref="JahiaPreferencesService" />
     </bean>
 
     <!-- ================================================ -->
@@ -128,13 +130,20 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
     <!-- ================================================ -->
     <!-- Container Services injected into  Configuration  -->
     <!-- ================================================ -->
-    <bean id="PortalCallbackService"
-          class="org.apache.pluto.driver.services.container.PortalCallbackServiceImpl"
+    <bean id="PortletRequestContextService"
+          class="org.apache.pluto.driver.services.container.PortletRequestContextServiceImpl"
           scope="singleton">
     </bean>
-
-    <bean id="CCPPProfileService"
-    	  class="org.apache.pluto.spi.DummyCCPPProfileServiceImpl"
+    <bean id="EventCoordinationService"
+          class="org.apache.pluto.driver.services.container.EventCoordinationServiceImpl"
+          scope="singleton">
+    </bean>
+    <bean id="FilterManagerService"
+          class="org.apache.pluto.driver.services.container.FilterManagerServiceImpl"
+          scope="singleton">
+    </bean>
+    <bean id="PortletURLListenerService"
+          class="org.apache.pluto.driver.services.container.PortletURLListenerServiceImpl"
           scope="singleton">
     </bean>
 

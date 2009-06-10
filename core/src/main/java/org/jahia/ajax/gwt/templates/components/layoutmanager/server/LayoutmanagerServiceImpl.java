@@ -33,7 +33,7 @@ package org.jahia.ajax.gwt.templates.components.layoutmanager.server;
 
 
 import org.apache.log4j.Logger;
-import org.apache.pluto.PortletWindow;
+import org.apache.pluto.container.PortletWindow;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;

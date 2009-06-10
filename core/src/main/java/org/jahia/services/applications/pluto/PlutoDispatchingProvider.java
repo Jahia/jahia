@@ -31,13 +31,12 @@
  */
 package org.jahia.services.applications.pluto;
 
-import org.apache.pluto.PortletContainer;
-import org.apache.pluto.PortletWindow;
+import org.apache.pluto.container.PortletContainer;
+import org.apache.pluto.container.PortletWindow;
 import org.apache.pluto.driver.AttributeKeys;
 import org.apache.pluto.driver.config.AdminConfiguration;
 import org.apache.pluto.driver.config.DriverConfiguration;
 import org.apache.pluto.driver.core.PortalRequestContext;
-import org.apache.pluto.driver.core.PortalServletRequest;
 import org.apache.pluto.driver.core.PortalServletResponse;
 import org.apache.pluto.driver.core.PortletWindowImpl;
 import org.apache.pluto.driver.services.portal.PortletWindowConfig;
@@ -46,7 +45,6 @@ import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.DispatchingProvider;
 import org.jahia.services.cache.ContainerHTMLCacheEntry;
@@ -104,8 +102,7 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
             }
         }
         JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jParams, jParams.getRealRequest());
-        if (Jahia.getServletPath() != null &&
-                !Jahia.getServletPath().equals(jahiaContextRequest.getServletPath())) {
+        if (Jahia.getServletPath() != null &&!Jahia.getServletPath().equals(jahiaContextRequest.getServletPath())) {
             String pageURL = jParams.composePageUrl(jParams.getPageID());
             jahiaContextRequest.setServletPath(Jahia.getServletPath());
             pageURL = pageURL.substring(Jahia.getServletPath().length());
@@ -130,8 +127,11 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
         PortalRequestContext portalEnv = PortalRequestContext.getContext(jahiaContextRequest);
         PortalURL portalURL = portalEnv.getRequestedPortalURL();
 
+        // Retrieve the portlet container from servlet context.
+        PortletContainer container = (PortletContainer)servletContext.getAttribute(AttributeKeys.PORTLET_CONTAINER);
+
         // Create the portlet window to render.
-        PortletWindow window = new PortletWindowImpl(windowConfig, portalURL);
+        PortletWindow window = new PortletWindowImpl(container,windowConfig, portalURL);
 
         // Check if someone else is maximized. If yes, don't show content.
         Map windowStates = portalURL.getWindowStates();
@@ -146,22 +146,18 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
 
         // Create portal servlet request and response to wrap the original
         // HTTP servlet request and response.
-        PortalServletRequest portalRequest = new JahiaPortalServletRequest(entryPointInstance, jParams.getUser(), (HttpServletRequest) jParams.getRealRequest(), window);
+        HttpServletRequest portalRequest = new JahiaPortalServletRequest(entryPointInstance, jParams.getUser(),jParams.getRealRequest());
 
 
         // copy jahia attibutes nested by the portlet
         JahiaPortletUtil.copyJahiaAttributes(entryPointInstance,jParams, window, portalRequest,false);
 
-
+        // wrappe in a porteal response
         PortalServletResponse portalResponse = new PortalServletResponse(jParams.getResponse());
-
-        // Retrieve the portlet container from servlet context.
-        PortletContainer container = (PortletContainer)servletContext.getAttribute(AttributeKeys.PORTLET_CONTAINER);
 
         // Render the portlet and cache the response.
         try {
             container.doRender(window, portalRequest, portalResponse);
-            /** todo do something with the response */
         } catch (Exception th) {
             logger.error("Error while rendering portlet", th);
         }

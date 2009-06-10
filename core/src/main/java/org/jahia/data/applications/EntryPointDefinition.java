@@ -55,14 +55,36 @@ import java.util.List;
  */
 public interface EntryPointDefinition {
 
+    /**
+     * Get the context
+     * @return
+     */
     public String getContext();
 
+    /**
+     * Get the name
+     * @return  name
+     */
     public String getName ();
 
-    public String getDisplayName();
+    /**
+     * Get display name depending on the locale
+     * @param locale
+     * @return display name
+     */
+    public String getDisplayName(java.util.Locale locale);
 
-    public String getDescription();
+    /**
+     * Get description depending on the locale
+     * @param locale
+     * @return
+     */
+    public String getDescription(java.util.Locale locale);
 
+    /**
+     * Get the application id
+     * @return
+     */
     public int getApplicationID();
 
     /**

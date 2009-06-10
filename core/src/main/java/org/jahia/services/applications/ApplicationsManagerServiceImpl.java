@@ -46,8 +46,9 @@ import javax.portlet.WindowState;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.LogFactory;
-import org.apache.pluto.PortletWindow;
-import org.apache.pluto.core.PortletContextManager;
+import org.apache.pluto.container.PortletWindow;
+import org.apache.pluto.container.driver.PlutoServices;
+import org.apache.pluto.container.driver.PortletRegistryService;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaDOMObject;
 import org.jahia.data.applications.ApplicationBean;
@@ -248,8 +249,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             // try to load from db
             app = applicationManager.getApplicationDefinition(context);
             if (app != null) {
-                applicationCache.put(APPLICATION_DEFINITION + app.getID(), app);
-                applicationCache.put(APPLICATION_DEFINITION_CONTEXT +app.getContext(),app);
+                putInApplicationCache(app);
             }
         }
         return app;
@@ -315,8 +315,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         }
         applicationManager.addApplication(app);
 
-        applicationCache.put(APPLICATION_DEFINITION+app.getID(), app);
-        applicationCache.put(APPLICATION_DEFINITION_CONTEXT+app.getContext(),app);
+        putInApplicationCache(app);
         return true;
     }
 
@@ -337,8 +336,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             return false;
         }
         applicationManager.updateApplication(app);
-        applicationCache.put(APPLICATION_DEFINITION+app.getID(), app);
-        applicationCache.put(APPLICATION_DEFINITION_CONTEXT+app.getContext(),app);
+        putInApplicationCache(app);
         return true;
     }
 
@@ -476,8 +474,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      */
     public WebAppContext getApplicationContext (ApplicationBean appBean)
         throws JahiaException {
-        return servletContextManager.getApplicationContext(
-            appBean);
+        return servletContextManager.getApplicationContext(appBean);
     }
 
     /**
@@ -487,8 +484,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * @throws JahiaException
      * @return the created instance for the entry point definition.
      */
-    public EntryPointInstance createEntryPointInstance (
-        EntryPointDefinition entryPointDefinition)
+    public EntryPointInstance createEntryPointInstance (EntryPointDefinition entryPointDefinition)
         throws JahiaException {
         if(entryPointDefinition==null) {
             return null;
@@ -518,24 +514,36 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 parentNode.save();
                 epInstance.setID(wrapper.getUUID());
             } catch (RepositoryException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error(e,e);
             }
             entryPointCache.put(ENTRY_POINT_INSTANCE+epInstance.getID(),epInstance);
         }
         return epInstance;
     }
 
+    /**
+     * Get Portlet Window object
+     * @param entryPointInstance
+     * @param windowID
+     * @param jParams
+     * @return
+     * @throws JahiaException
+     */
     public PortletWindow getPortletWindow(EntryPointInstance entryPointInstance, String windowID, ParamBean jParams)
     throws JahiaException {
         ApplicationBean appBean = getApplication(entryPointInstance.getContextName());
         ApplicationsManagerProvider appProvider = getProvider(appBean);
-        PortletWindow window;
-        window = appProvider.getPortletWindow(entryPointInstance, windowID, jParams);
+        PortletWindow window = appProvider.getPortletWindow(entryPointInstance, windowID, jParams);
         return window;
 
     }
 
-
+    /**
+     * Get all EntryPointDefinition od the application bean
+     * @param appBean ApplicationBean the application for which to retrieve
+     * the entry point definitions
+     * @return
+     */
     public List<EntryPointDefinition> getAppEntryPointDefinitions(ApplicationBean appBean) {
         ApplicationsManagerProvider appProvider = getProvider(appBean);
         try {
@@ -576,7 +584,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 return null;
             }             
             catch (RepositoryException e) {
-                e.printStackTrace(); 
+                logger.error(e,e);
             }
         }
         return entryPointInstanceByID;
@@ -600,7 +608,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 entryPointCache.remove(ENTRY_POINT_INSTANCE + epInstanceID);
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+          logger.error(e,e);
         }
     }
 
@@ -616,8 +624,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             int size = apps.size();
             for (int i = 0; i < size; i++) {
                 app = (ApplicationBean) apps.get(i);
-                applicationCache.put(APPLICATION_DEFINITION + app.getID(), app);
-                applicationCache.put(APPLICATION_DEFINITION_CONTEXT + app.getContext(), app);
+                putInApplicationCache(app);
             }
         }
     }
@@ -638,32 +645,57 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
     }
 
+    /**
+     * Sync Pluto with Jahia DB - Is it-possible to find another way ?
+     * @throws JahiaException
+     */
     private void syncPlutoWithDB() throws JahiaException {
         // here we will compare Pluto's memory state with the state of the database, and add any missing application.
-        Iterator<String> portletApplicationIdsIterator = PortletContextManager.getManager().getRegisteredPortletApplicationIds();
-        while (portletApplicationIdsIterator.hasNext()) {
-            String currentPortletApplicationId = portletApplicationIdsIterator.next();
-            ApplicationBean app = applicationCache.get(APPLICATION_DEFINITION_CONTEXT + currentPortletApplicationId);
+        PortletRegistryService portletRegistryService = PlutoServices.getServices().getPortletRegistryService();
+        Iterator<String> portletApplicationNames = portletRegistryService.getRegisteredPortletApplicationNames();
+        while (portletApplicationNames.hasNext()) {
+            String currentPortletApplicationName = portletApplicationNames.next();
+            String currentContext = "/"+currentPortletApplicationName;
+            ApplicationBean app = applicationCache.get(APPLICATION_DEFINITION_CONTEXT + currentContext);
+
             if (app == null) {
                 // try to load from db
-                app = applicationManager.getApplicationDefinition(currentPortletApplicationId);
+                app = applicationManager.getApplicationDefinition(currentPortletApplicationName);
                 if (app != null) {
-                    applicationCache.put(APPLICATION_DEFINITION + app.getID(), app);
-                    applicationCache.put(APPLICATION_DEFINITION_CONTEXT +app.getContext(),app);
+                    putInApplicationCache(app);
                 }
             }
+
             if (app == null) {
                 // The app was not found in Jahia but is registered in Pluto, so we register it in Jahia.
-                logger.info("Registering portlet context " + currentPortletApplicationId + " in Jahia.");
-                ServicesRegistry.getInstance().getJahiaWebAppsDeployerService().registerWebApps(currentPortletApplicationId);
+                logger.info("Registering portlet context " + currentPortletApplicationName + " in Jahia.");
+                ServicesRegistry.getInstance().getJahiaWebAppsDeployerService().registerWebApps(currentPortletApplicationName);
             }
         }
     }
 
+    /**
+     * Put in apllication cache
+     * @param app
+     */
+    private void putInApplicationCache(ApplicationBean app) {
+        applicationCache.put(APPLICATION_DEFINITION + app.getID(), app);
+        applicationCache.put(APPLICATION_DEFINITION_CONTEXT +app.getContext(),app);
+    }
+
+    /**
+     * Get ApplicationManagerProvider depending on appBean type
+     * @param appBean
+     * @return
+     */
     private ApplicationsManagerProvider getProvider(ApplicationBean appBean) {
         return managerProviders.get(appBean.getType());
     }
 
+    /**
+     * load custom portlet mode
+     * @param supportedPortletModesConfigFileName
+     */
     public void loadCustomPortletModes(String supportedPortletModesConfigFileName) {
 
         // Add XML file structure to Digester
@@ -687,14 +719,26 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
     }
 
+    /**
+     * Add custom portlet modes
+     * @param customPortletMode
+     */
     public void addCustomPortletModeBean(CustomPortletMode customPortletMode) {
         supportedPortletModes.add(new PortletMode(customPortletMode.getName()));
     }
 
+    /**
+     * Get supported portlet modes
+     * @return
+     */
     public List<PortletMode> getSupportedPortletModes() {
         return supportedPortletModes;
     }
 
+    /**
+     * Load custom window states
+     * @param supportedWindowStatesConfigFileName
+     */
     public void loadCustomWindowStates(String supportedWindowStatesConfigFileName) {
 
         // Add XML file structure to Digester
@@ -718,10 +762,18 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
     }
 
+    /**
+     * Add custom window state
+     * @param customWindowState
+     */
     public void addCustomWindowState(CustomWindowState customWindowState) {
         supportedWindowStates.add(new WindowState(customWindowState.getName()));
     }
 
+    /**
+     * Get supported window states
+     * @return
+     */
     public List<WindowState> getSupportedWindowStates() {
         return supportedWindowStates;
     }

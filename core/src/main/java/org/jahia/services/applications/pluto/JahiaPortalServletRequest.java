@@ -32,12 +32,8 @@
 package org.jahia.services.applications.pluto;
 
 import java.security.Principal;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.pluto.PortletWindow;
-import org.apache.pluto.driver.core.PortalServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.data.applications.EntryPointInstance;
 
@@ -48,16 +44,14 @@ import org.jahia.data.applications.EntryPointInstance;
  * Time: 12:27:46
  * To change this template use File | Settings | File Templates.
  */
-public class JahiaPortalServletRequest extends PortalServletRequest {
+public class JahiaPortalServletRequest extends HttpServletRequestWrapper {
     
     private JahiaUser jahiaUser;
-    private String id;
     private EntryPointInstance entryPointInstance;
 
-    public JahiaPortalServletRequest(EntryPointInstance entryPointInstance,JahiaUser jahiaUser, HttpServletRequest request, PortletWindow window) {
-        super(request, window);
+    public JahiaPortalServletRequest(EntryPointInstance entryPointInstance,JahiaUser jahiaUser, HttpServletRequest request) {
+        super(request);
         this.jahiaUser = jahiaUser;
-        id = window.getId().getStringId();
         this.entryPointInstance = entryPointInstance;
     }
 
@@ -69,9 +63,6 @@ public class JahiaPortalServletRequest extends PortalServletRequest {
         return jahiaUser;
     }
 
-    public String getId() {
-        return id;
-    }
 
     public boolean isUserInRole(String role) {
         // This method maps servlet roles on Jahia's groups

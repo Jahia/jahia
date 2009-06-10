@@ -12,7 +12,7 @@
   <description>Jahia Full Package</description>
 
   <properties>
-    <pluto.version>2.0.0-RI</pluto.version>
+    <pluto.version>2.0.0</pluto.version>
     <spring.version>2.5.5</spring.version>
     <jackrabbit.version>1.5.0</jackrabbit.version>
     <lucene.version>2.3.2</lucene.version>

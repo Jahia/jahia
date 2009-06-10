@@ -69,8 +69,7 @@ public class PortletModeBean {
 
     public String getURL () {
         // Retrieve the portal environment.
-        PortalRequestContext portalEnv = PortalRequestContext.getContext(
-                (HttpServletRequest) ((ParamBean) processingContext).getRequest());
+        PortalRequestContext portalEnv = PortalRequestContext.getContext(((ParamBean) processingContext).getRequest());
 
         PortalURL portalUrl =  portalEnv.createPortalURL();
         String portletWindowID = portletWindowBean.getPortletWindow().getId().getStringId();

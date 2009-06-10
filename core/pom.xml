@@ -39,6 +39,14 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>maven-apache</id>
+            <url>https://repository.apache.org/content/groups/public</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
     </repositories>
     <scm>
         <connection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</connection>
@@ -908,33 +916,75 @@
             <artifactId>xalan</artifactId>
             <version>2.7.0</version>
         </dependency>
-        <!-- Pluto dependencies -->
+        <!-- Pluto 2.0 shared lib-->
         <dependency>
-            <groupId>org.apache.pluto</groupId>
-            <artifactId>pluto-container</artifactId>
+            <groupId>org.apache.portals</groupId>
+            <artifactId>portlet-api_2.0_spec</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-container-api</artifactId>
             <version>${pluto.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-container-driver-api</artifactId>
+            <version>${pluto.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-taglib</artifactId>
+            <version>${pluto.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Pluto 2.0-->
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-container</artifactId>
+            <version>${pluto.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>xerces</groupId>
-                    <artifactId>xerces</artifactId>
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>slf4j-jdk14</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.pluto</groupId>
+            <groupId>org.apache.portals.pluto</groupId>
             <artifactId>pluto-portal-driver</artifactId>
             <version>${pluto.version}</version>
+            <exclusions>
+                <exclusion>
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>slf4j-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.pluto</groupId>
+            <groupId>org.apache.portals.pluto</groupId>
             <artifactId>pluto-portal-driver-impl</artifactId>
             <version>${pluto.version}</version>
+            <exclusions>
+                <exclusion>
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>slf4j-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.pluto</groupId>
+            <groupId>org.apache.portals.pluto</groupId>
             <artifactId>pluto-util</artifactId>
             <version>${pluto.version}</version>
+            <exclusions>
+                <exclusion>
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>slf4j-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 <!-- BEGIN clipBuilder dependencies--><!-- main lib -->

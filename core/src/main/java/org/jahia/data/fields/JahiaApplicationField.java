@@ -37,7 +37,6 @@ package org.jahia.data.fields;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.apache.pluto.PortletWindow;
 import org.jahia.data.ConnectionTypes;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
@@ -54,6 +53,7 @@ import org.jahia.services.fields.ContentFieldTools;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
+import org.apache.pluto.container.PortletWindow;
 
 public class JahiaApplicationField extends JahiaField implements JahiaAllowApplyChangeToAllLangField {
 

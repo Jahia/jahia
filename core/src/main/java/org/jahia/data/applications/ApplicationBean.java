@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.data.applications;
+package org.jahia.data.applications;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -37,7 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.apache.pluto.descriptors.portlet.UserAttributeDD;
+import org.apache.pluto.container.om.portlet.UserAttribute;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLNotFoundException;
 import org.jahia.services.acl.ACLResourceInterface;
@@ -47,6 +47,7 @@ import org.jahia.services.acl.JahiaBaseACL;
  * This object contains all the data relative to an application, notably the
  * context in which it should run, it's type (servlet or JSP) and additionnal
  * information such as rights, etc...
+ *
  * @author Serge Huber
  * @version 1.0
  */
@@ -55,7 +56,7 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
     private static final long serialVersionUID = -5886294839254670413L;
 
     private static final transient Logger logger = Logger.getLogger(ApplicationBean.class);
-    
+
     private int ID;
     private String name;
     private String context;
@@ -66,21 +67,21 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
     private String desc = "";
     private String type;
     private List<EntryPointInstance> entryPointInstances;
-    private List<UserAttributeDD> userAttributes;
+    private List<UserAttribute> userAttributes;
 
     /**
-     *
+     * Basic constructor
+     * @param ID
+     * @param name
+     * @param context
+     * @param visible
+     * @param shared
+     * @param rights
+     * @param filename
+     * @param desc
+     * @param type
      */
-    public ApplicationBean(int ID,
-                           String name,
-                           String context,
-                           int visible,
-                           boolean shared,
-                           int rights,
-                           String filename,
-                           String desc,
-                           String type
-    ) {
+    public ApplicationBean(int ID, String name,String context,int visible,boolean shared,int rights,String filename,String desc,String type) {
         setID(ID);
         this.name = name;
         this.context = context;
@@ -96,82 +97,182 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
      * accessor methods
      * {
      */
-    public int getID () {return ID;
+    public int getID() {
+        return ID;
     }
 
-    public String getName () {return name;
+    /**
+     * Get name
+     *
+     * @return
+     */
+    public String getName() {
+        return name;
     }
 
-    public String getContext () {return context;
+    /**
+     * Get context
+     *
+     * @return
+     */
+    public String getContext() {
+        return context;
     }
 
-    public int getVisibleStatus () {return visible;
+    /**
+     * Get visible status
+     *
+     * @return
+     */
+    public int getVisibleStatus() {
+        return visible;
     }
 
-    public boolean isShared () {return shared;
+    /**
+     * Get shared
+     *
+     * @return
+     */
+    public boolean isShared() {
+        return shared;
     }
 
-    public int getRights () {return rights;
+    /**
+     * Get rigths
+     *
+     * @return
+     */
+    public int getRights() {
+        return rights;
     }
 
-    public String getFilename () {return filename;
+    /**
+     * Get filename
+     *
+     * @return
+     */
+    public String getFilename() {
+        return filename;
     }
 
-    public String getdesc () {return desc;
+    /**
+     * Get description
+     *
+     * @return
+     */
+    public String getdesc() {
+        return desc;
     }
 
-    public void setID (int ID) {this.ID = ID;
+    /**
+     * Set id
+     *
+     * @param ID
+     */
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
-    public void setName (String name) {this.name = name;
+    /**
+     * Set name
+     *
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setVisible (int visible) {this.visible = visible;
+    /**
+     * Set visibility
+     *
+     * @param visible
+     */
+    public void setVisible(int visible) {
+        this.visible = visible;
     }
 
-    public void setShared (boolean shared) {this.shared = shared;
+    /**
+     * set shared
+     *
+     * @param shared
+     */
+    public void setShared(boolean shared) {
+        this.shared = shared;
     }
 
-    public void setRights (int rights) {this.rights = rights;
+    /**
+     * Get rights
+     *
+     * @param rights
+     */
+    public void setRights(int rights) {
+        this.rights = rights;
     }
 
-    public void setFilename (String filename) {this.filename = filename;
+    /**
+     * Get filename
+     *
+     * @param filename
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
-    public void setdesc (String descr) {this.desc = descr;
+    /**
+     * Set description
+     *
+     * @param descr
+     */
+    public void setdesc(String descr) {
+        this.desc = descr;
     }
 
     // end accessor methods
 
-    //-------------------------------------------------------------------------
     /**
-     * Compare between two objects, sort by their name
+     * Compare methode
      *
-     * @param Object
-     * @param Object
+     * @param c1
+     * @param c2
+     * @return
+     * @throws ClassCastException
      */
-    public int compare (ApplicationBean c1, ApplicationBean c2)
-        throws ClassCastException {
+    public int compare(ApplicationBean c1, ApplicationBean c2)
+            throws ClassCastException {
 
         return (c1.getName().compareToIgnoreCase(c2.getName()));
 
     }
 
-    public String getType () {
+    /**
+     * Get type
+     *
+     * @return
+     */
+    public String getType() {
         return type;
     }
 
+    /**
+     * Get all entrypoint definition
+     *
+     * @return
+     */
     public List<EntryPointDefinition> getEntryPointDefinitions() {
         return ServicesRegistry.getInstance().getApplicationsManagerService().getAppEntryPointDefinitions(this);
     }
 
+    /**
+     * find EntryPointInstance by definition name
+     *
+     * @param definitionName
+     * @return
+     */
     public EntryPointDefinition getEntryPointDefinitionByName(String definitionName) {
         EntryPointDefinition entryPointDefinition = null;
-        Iterator<EntryPointDefinition> entryPointDefinitions = getEntryPointDefinitions().
-                                         iterator();
+        Iterator<EntryPointDefinition> entryPointDefinitions = getEntryPointDefinitions().iterator();
         while (entryPointDefinitions.hasNext()) {
-            EntryPointDefinition curEntryPointDefinition = (
-                EntryPointDefinition) entryPointDefinitions.next();
+            EntryPointDefinition curEntryPointDefinition =  entryPointDefinitions.next();
             if (curEntryPointDefinition.getName().equals(definitionName)) {
                 entryPointDefinition = curEntryPointDefinition;
                 break;
@@ -180,13 +281,29 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
         return entryPointDefinition;
     }
 
+    /**
+     * Get entryPointInstance
+     *
+     * @return
+     */
     public List<EntryPointInstance> getEntryPointInstances() {
         return entryPointInstances;
     }
+
+    /**
+     * Set entrypoint
+     *
+     * @param entryPointInstances
+     */
     public void setEntryPointInstances(List<EntryPointInstance> entryPointInstances) {
         this.entryPointInstances = entryPointInstances;
     }
 
+    /**
+     * Clone current object
+     *
+     * @return
+     */
     public Object clone() {
         try {
             return super.clone();
@@ -196,10 +313,15 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
         }
     }
 
+    /**
+     * Get acl object of the current portlet
+     *
+     * @return
+     */
     public JahiaBaseACL getACL() {
         JahiaBaseACL acl = null;
         try {
-            acl = new JahiaBaseACL (rights);
+            acl = new JahiaBaseACL(rights);
         } catch (ACLNotFoundException ex) {
             logger.error(ex.getMessage(), ex);
         } catch (Exception t) {
@@ -208,10 +330,21 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
         return acl;
     }
 
+    /**
+     * Get acl id
+     *
+     * @return
+     */
     public int getAclID() {
         return rights;
     }
 
+    /**
+     * eqiasl method
+     *
+     * @param o
+     * @return
+     */
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -222,15 +355,30 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
 
     }
 
+    /**
+     * return hashcode
+     *
+     * @return
+     */
     public int hashCode() {
         return ID;
     }
 
-    public List<UserAttributeDD> getUserAttributes() {
+    /**
+     * Get user attributes
+     *
+     * @return
+     */
+    public List<UserAttribute> getUserAttributes() {
         return userAttributes;
     }
 
-    public void setUserAttributes(List<UserAttributeDD> userAttributes) {
+    /**
+     * Set user attributes
+     *
+     * @param userAttributes
+     */
+    public void setUserAttributes(List<UserAttribute> userAttributes) {
         this.userAttributes = userAttributes;
     }
-} // end ApplicationBean
+} 

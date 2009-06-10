@@ -146,13 +146,12 @@
             </activation>
             <build>
                 <plugins>
-                    <plugin>
+                  <plugin>
                         <groupId>com.totsp.gwt</groupId>
                         <artifactId>maven-googlewebtoolkit2-plugin</artifactId>
                         <version>2.0-RC1-jahiafork</version>
                         <configuration>
                             <sourcesOnPath>true</sourcesOnPath>
-                            <!--              style>PRETTY</style-->
                             <runTarget>com.me.MyModule/MyHostPage.jsp</runTarget>
                             <output>${project.build.directory}/${project.build.finalName}/gwt/</output>
                             <extraJvmArgs>-Xmx1024m</extraJvmArgs>
@@ -174,8 +173,7 @@
                                 <value>org.jahia.ajax.gwt.template.mediagallery.live.Live</value>
                                 <value>org.jahia.ajax.gwt.template.opensearch.edit.Edit</value>
                                 <value>org.jahia.ajax.gwt.template.opensearch.live.Live</value>
-                                <!--value>org.jahia.ajax.gwt.template.sitemap.edit.Edit</value>
-                                <value>org.jahia.ajax.gwt.template.sitemap.live.Live</value-->
+
                                 <value>org.jahia.ajax.gwt.module.acleditor.ACLEditor</value>
                                 <value>org.jahia.ajax.gwt.module.admin.Admin</value>
                                 <value>org.jahia.ajax.gwt.module.categorymanager.CategoryManager</value>
@@ -462,33 +460,73 @@
             <artifactId>urlrewritefilter</artifactId>
             <version>3.1.0</version>
         </dependency>
-        <!-- Pluto dependencies -->
+        <!-- Pluto 2.0 shared lib-->
         <dependency>
-            <groupId>org.apache.pluto</groupId>
-            <artifactId>pluto-container</artifactId>
-            <version>${pluto.version}</version>
-            <optional>true</optional>
+            <groupId>org.apache.portals</groupId>
+            <artifactId>portlet-api_2.0_spec</artifactId>
+            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.pluto</groupId>
-            <artifactId>pluto-descriptor-api</artifactId>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-container-api</artifactId>
             <version>${pluto.version}</version>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.pluto</groupId>
-            <artifactId>pluto-descriptor-impl</artifactId>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-container-driver-api</artifactId>
             <version>${pluto.version}</version>
-            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-taglib</artifactId>
+            <version>${pluto.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Pluto 2.0-->
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-container</artifactId>
+            <version>${pluto.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib-full</artifactId>
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>slf4j-jdk14</artifactId>
                 </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-portal-driver</artifactId>
+            <version>${pluto.version}</version>
+            <exclusions>
                 <exclusion>
-                    <groupId>xerces</groupId>
-                    <artifactId>xerces</artifactId>
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>slf4j-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-portal-driver-impl</artifactId>
+            <version>${pluto.version}</version>
+            <exclusions>
+                <exclusion>
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>slf4j-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-util</artifactId>
+            <version>${pluto.version}</version>
+            <exclusions>
+                <exclusion>
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>slf4j-jdk14</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

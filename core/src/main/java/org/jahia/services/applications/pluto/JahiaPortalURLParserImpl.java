@@ -31,7 +31,6 @@
  */
 package org.jahia.services.applications.pluto;
 
-import org.apache.pluto.driver.url.impl.PortalURLParserImpl;
 import org.apache.pluto.driver.url.PortalURLParser;
 import org.apache.pluto.driver.url.PortalURL;
 
@@ -46,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class JahiaPortalURLParserImpl implements PortalURLParser {
 
-    PortalURLParser portalURLParserImpl = PortalURLParserImpl.getParser();
+   // PortalURLParser portalURLParserImpl = PortalURLParserImpl.getParser();
 
     public PortalURL parse(HttpServletRequest httpServletRequest) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.

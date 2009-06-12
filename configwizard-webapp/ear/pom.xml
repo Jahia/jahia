@@ -166,11 +166,6 @@
                             <bundleFileName>config.war</bundleFileName>
                         </webModule>
                         <jarModule>
-                            <groupId>javax.portlet</groupId>
-                            <artifactId>portlet-api</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
                             <groupId>org.apache.portals</groupId>
                             <artifactId>portlet-api_2.0_spec</artifactId>
                              <includeInApplicationXml>true</includeInApplicationXml>

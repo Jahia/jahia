@@ -180,11 +180,7 @@
                             <artifactId>pluto-container-driver-api</artifactId>
                              <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
-                        <jarModule>
-                            <groupId>org.apache.portals.pluto</groupId>
-                            <artifactId>pluto-taglib</artifactId>
-                             <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
+                        
                         <!-- Pluto 2.0-->
                         <jarModule>
                             <groupId>org.apache.portals.pluto</groupId>

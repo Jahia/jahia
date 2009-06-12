@@ -47,6 +47,18 @@ public class SpringContextSingleton {
         }
         return ourInstance;
     }
+    
+    /**
+     * Returns an instance of the request bean.
+     * 
+     * @param beanId
+     *            the request bean ID
+     * @return an instance of the request bean
+     */
+    public static Object getBean(String beanId) {
+        return getInstance().getContext().getBean(beanId);
+    }
+    
     private boolean initialized;
 
     private WebApplicationContext springContext;
@@ -66,4 +78,5 @@ public class SpringContextSingleton {
         this.springContext = springContext;
         initialized = true;
     }
+
 }

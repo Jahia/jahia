@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.client.widget.linkchecker;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.StatusBar;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.grid.*;
@@ -64,6 +65,7 @@ public class LinkChecker extends ContentPanel {
     private ListStore<GWTJahiaCheckedLink> m_store;
     private Timer m_timer;
     private TextToolItem stop;
+    private StatusBar m_status;
 
     public LinkChecker() {
         super(new FitLayout());
@@ -91,10 +93,15 @@ public class LinkChecker extends ContentPanel {
                     }
 
                     public void onSuccess(List<GWTJahiaCheckedLink> gwtJahiaCheckedLinks) {
-                        for (GWTJahiaCheckedLink link: gwtJahiaCheckedLinks) {
-                            if (!m_store.contains(link)) {
-                                m_store.add(link);
+                        if (gwtJahiaCheckedLinks != null) {
+                            for (GWTJahiaCheckedLink link: gwtJahiaCheckedLinks) {
+                                if (!m_store.contains(link)) {
+                                    m_store.add(link);
+                                }
                             }
+                        } else {
+                            Log.debug("polling over");
+                            stop();
                         }
                     }
                 });
@@ -142,29 +149,39 @@ public class LinkChecker extends ContentPanel {
         toolBar.add(csvExport);
 
         setTopComponent(toolBar);
+
+        m_status = new StatusBar();
+        m_status.setMessage("idle");
+        setBottomComponent(m_status);
+
         add(linkTable);
     }
 
     private void startPolling() {
         Log.debug("scheduled every second");
         m_timer.scheduleRepeating(1000);
+        m_status.showBusy("checking links");
     }
 
     private void stopPolling() {
         LinkCheckerService.App.getInstance().stopCheckingLinks(new AsyncCallback() {
             public void onFailure(Throwable throwable) {
                 Log.error(throwable.toString());
-                m_timer.cancel();
-                stop.setEnabled(false);
+                stop();
             }
 
             public void onSuccess(Object o) {
                 Log.debug("cancelled successfully");
-                m_timer.cancel();
-                stop.setEnabled(false);
+                stop();
             }
         });
+    }
 
+    private void stop() {
+        m_timer.cancel();
+        stop.setEnabled(false);
+        m_status.clear();
+        m_status.setMessage("done");
     }
 
     private ColumnModel getHeaders() {

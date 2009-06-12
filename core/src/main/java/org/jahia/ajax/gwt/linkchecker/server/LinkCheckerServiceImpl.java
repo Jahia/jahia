@@ -66,6 +66,11 @@ public class LinkCheckerServiceImpl extends AbstractJahiaGWTServiceImpl implemen
                 siteID) > 0;
     }
 
+    /**
+     * This methods retrieve the content of the checked links list. If it returns null, this means the process is over.
+     *
+     * @return the checked links or null if it is over
+     */
     public List<GWTJahiaCheckedLink> lookForCheckedLinks() {
         return LinkChecker.getInstance().getLinks();
     }

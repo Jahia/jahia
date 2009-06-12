@@ -169,39 +169,21 @@ public class PortletServlet extends HttpServlet {
                     File fragment = fragments[i];
                     log("Processing fragment " + fragment);
                     ServletConfig config = new ServletConfigWrapper(getServletConfig(), fragment.getName());
-                    String applicationId = contextService.register(config);
-                    portletContext = contextService.getPortletContext(applicationId);
-                    List<? extends PortletDefinition> portlets = contextService.getPortletContext(applicationId).getPortletApplicationDefinition().getPortlets();
+                    String applicationName =  contextService.register(config);
+                    portletContext = contextService.getPortletContext(applicationName);
+                    List<? extends PortletDefinition> portlets = contextService.getPortletContext(applicationName).getPortletApplicationDefinition().getPortlets();
                     for (Iterator iterator = portlets.iterator(); iterator.hasNext();) {
                         PortletDefinition portletDD = (PortletDefinition) iterator.next();
-                        portletConfigs.put(Jahia.getContextPath() + "/" + fragment.getName() + "." + portletDD.getPortletName(), contextService.getPortletConfig(applicationId, portletDD.getPortletName()));
+                        portletConfigs.put(Jahia.getContextPath() + "/" + fragment.getName() + "." + portletDD.getPortletName(), contextService.getPortletConfig(applicationName, portletDD.getPortletName()));
                     }
-                } catch (PortletContainerException ex) {
+                } catch (Exception ex) {
                     log("Error while registering portlet", ex);
                 }
             }
+            started = true;
 
             for (Map.Entry<String, DriverPortletConfig> entry : portletConfigs.entrySet()) {
                 DriverPortletConfig portletConfig = entry.getValue();
-                try {
-                    ServletConfig sConfig = new ServletConfigWrapper(getServletConfig(), portletConfig.getPortletName());
-                    if (sConfig == null) {
-                        String msg = "Problem obtaining servlet configuration(getServletConfig() returns null).";
-                        context.log(msg);
-                        return true;
-                    }
-
-                    String applicationName = contextService.register(sConfig);
-                    started = true;
-                    portletContext = contextService.getPortletContext(applicationName);
-                    //portletConfig = contextService.getPortletConfig(applicationName, portletName);
-
-                }
-                catch (PortletContainerException ex) {
-                    context.log(ex.getMessage(), ex);
-                    return true;
-                }
-
                 PortletDefinition portletDD = portletConfig.getPortletDefinition();
 
                 //          Create and initialize the portlet wrapped in the servlet.
@@ -222,17 +204,19 @@ public class PortletServlet extends HttpServlet {
                     }
 
                     portlet.init(portletConfig);
+                    portlets.put(entry.getKey(), portlet);
+                    
                     initializeEventPortlet();
                     initializeResourceServingPortlet();
-                    return true;
+                    //return true;
                 }
                 catch (Exception ex) {
                     context.log(ex.getMessage(), ex);
                     // take out of service
-                    return true;
+                    //return true;
                 }
             }
-
+            return true;
         }
         return false;
     }
@@ -302,7 +286,7 @@ public class PortletServlet extends HttpServlet {
                           HttpServletResponse response) throws ServletException, IOException {
 
         String id = ((JahiaPortalServletRequest) request).getId();
-        String portletName = id.substring(0, id.indexOf("!"));
+        String portletName = "/"+id.substring(0, id.indexOf("!"));
         Portlet portlet = portlets.get(portletName);
         if (portlet == null) {
             throw new javax.servlet.UnavailableException("Portlet " + portletName + " unavailable");

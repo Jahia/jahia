@@ -767,6 +767,12 @@
         </servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>linkCheckerGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.linkchecker.server.LinkCheckerServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>subscriptionGWTService</servlet-name>
         <servlet-class>org.jahia.ajax.gwt.templates.components.subscription.server.SubscriptionServiceImpl</servlet-class>
     </servlet>
@@ -939,6 +945,10 @@
     <servlet-mapping>
         <servlet-name>openSearchGWTService</servlet-name>
         <url-pattern>/gwt/opensearch/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>linkCheckerGWTService</servlet-name>
+        <url-pattern>/gwt/linkchecker/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>subscriptionGWTService</servlet-name>

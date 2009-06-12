@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <bean id="linkCheckerAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
-        <property name="urlKey" value="codeGenerator" />
+        <property name="urlKey" value="linkChecker" />
         <property name="permissionName" value="admin.linkChecker" />
         <property name="name" value="linkChecker" />
         <property name="icon" value="link" />
@@ -13,7 +13,7 @@
         <property name="label" value="org.jahia.admin.linkChecker.label" />
         <property name="tooltip" value="" />
         <property name="urlType" value="link" />
-        <property name="urlAction" value="/admin/linkChecker.jsp" />
+        <property name="urlAction" value="/admin/linkchecker/linkChecker.jsp" />
         <property name="serverModule" value="false" />
         <property name="rank" value="102" />
     </bean>

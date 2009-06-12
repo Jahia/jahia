@@ -189,6 +189,8 @@
                                 <value>org.jahia.ajax.gwt.module.usergroup.UserGroupSelect</value>
                                 <value>org.jahia.ajax.gwt.module.versioning.VersionComparison</value>
                                 <value>org.jahia.ajax.gwt.module.workflow.WorkflowManager</value>
+                                
+                                <value>org.jahia.ajax.gwt.module.linkchecker.LinkChecker</value>
                             </compileTargets>
                             <gwtVersion>1.5.3</gwtVersion>
                         </configuration>

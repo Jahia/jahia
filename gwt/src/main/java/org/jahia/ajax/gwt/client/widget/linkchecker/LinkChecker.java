@@ -99,7 +99,7 @@ public class LinkChecker extends ContentPanel {
         stop.setEnabled(false);
         final TextToolItem csvExport = new TextToolItem("Export as CSV", new SelectionListener<ToolBarEvent>() {
             public void componentSelected(ToolBarEvent toolBarEvent) {
-                // TODO csv export (client side)
+                new CSVExporter(m_store.getModels()).show();
             }
         });
         csvExport.setEnabled(false);

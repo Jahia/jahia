@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.data.applications.EntryPointInstance;
+import org.apache.pluto.container.PortletWindow;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,11 +49,13 @@ public class JahiaPortalServletRequest extends HttpServletRequestWrapper {
     
     private JahiaUser jahiaUser;
     private EntryPointInstance entryPointInstance;
+    private String id;
 
-    public JahiaPortalServletRequest(EntryPointInstance entryPointInstance,JahiaUser jahiaUser, HttpServletRequest request) {
+    public JahiaPortalServletRequest(EntryPointInstance entryPointInstance,JahiaUser jahiaUser, HttpServletRequest request, PortletWindow window) {
         super(request);
         this.jahiaUser = jahiaUser;
         this.entryPointInstance = entryPointInstance;
+        this.id = window.getId().getStringId();
     }
 
     public String getRemoteUser() {
@@ -63,6 +66,9 @@ public class JahiaPortalServletRequest extends HttpServletRequestWrapper {
         return jahiaUser;
     }
 
+    public String getId() {
+        return id;
+    }
 
     public boolean isUserInRole(String role) {
         // This method maps servlet roles on Jahia's groups

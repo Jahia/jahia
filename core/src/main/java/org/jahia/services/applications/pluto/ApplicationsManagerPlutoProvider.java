@@ -65,7 +65,6 @@ import org.springframework.web.context.ServletContextAware;
  * User: Serge Huber
  * Date: 15 juil. 2008
  * Time: 15:54:24
- * To change this template use File | Settings | File Templates.
  */
 public class ApplicationsManagerPlutoProvider implements ApplicationsManagerProvider, ServletContextAware {
 

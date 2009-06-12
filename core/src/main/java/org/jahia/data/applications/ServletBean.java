@@ -190,6 +190,4 @@ public class ServletBean implements Serializable, EntryPointDefinition {
         return ServicesRegistry.getInstance().getApplicationsManagerService().getSupportedWindowStates();
     }
 
-    // end accessor methods
-
 } // end ServletBean

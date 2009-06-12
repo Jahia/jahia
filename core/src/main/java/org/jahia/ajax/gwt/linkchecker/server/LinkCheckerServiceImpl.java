@@ -35,6 +35,9 @@ import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.client.service.linkchecker.LinkCheckerService;
 import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaCheckedLink;
 import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.acl.JahiaBaseACL;
 
 import java.util.List;
 
@@ -47,12 +50,20 @@ public class LinkCheckerServiceImpl extends AbstractJahiaGWTServiceImpl implemen
 
     public Boolean checkLinks() {
         ProcessingContext ctx = retrieveParamBean();
-        if (ctx.getUser().isAdminMember(ctx.getSiteID())) {
+        if (ctx.getUser().isAdminMember(ctx.getSiteID()) || hasAccess(ctx.getUser(), ctx.getSiteID())) {
             LinkChecker.getInstance().startCheckingLinks();
             return Boolean.TRUE;
         } else {
             return Boolean.FALSE;
         }
+    }
+
+    private boolean hasAccess(JahiaUser user, int siteID) {
+        return ServicesRegistry.getInstance().getJahiaACLManagerService().getSiteActionPermission(
+                "extensions.linkchecker",
+                user,
+                JahiaBaseACL.READ_RIGHTS,
+                siteID) > 0;
     }
 
     public List<GWTJahiaCheckedLink> lookForCheckedLinks() {

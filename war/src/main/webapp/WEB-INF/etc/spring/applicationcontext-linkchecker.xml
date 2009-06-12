@@ -6,7 +6,7 @@
 
     <bean id="linkCheckerAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
         <property name="urlKey" value="linkChecker" />
-        <property name="permissionName" value="admin.linkChecker" />
+        <property name="permissionName" value="extensions.linkchecker" />
         <property name="name" value="linkChecker" />
         <property name="icon" value="link" />
         <property name="iconSmall" value="link_small" />

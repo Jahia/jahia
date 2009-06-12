@@ -39,6 +39,10 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ToolBarEvent;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.Events;
+import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -67,7 +71,16 @@ public class LinkChecker extends ContentPanel {
 
         // data container initialization
         m_store = new ListStore<GWTJahiaCheckedLink>();
-        Grid<GWTJahiaCheckedLink> m_linkTable = new Grid<GWTJahiaCheckedLink>(m_store, getHeaders());
+        final Grid<GWTJahiaCheckedLink> linkTable = new Grid<GWTJahiaCheckedLink>(m_store, getHeaders());
+        linkTable.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        linkTable.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
+            public void handleEvent(GridEvent event) {
+                GWTJahiaCheckedLink selection = linkTable.getSelectionModel().getSelectedItem();
+                if (selection != null) {
+                    Window.open(selection.getPageUrl(), "_blank", "");
+                }
+            }
+        });
 
         m_timer = new Timer() {
             public void run() {
@@ -129,7 +142,7 @@ public class LinkChecker extends ContentPanel {
         toolBar.add(csvExport);
 
         setTopComponent(toolBar);
-        add(m_linkTable);
+        add(linkTable);
     }
 
     private void startPolling() {

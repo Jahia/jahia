@@ -125,6 +125,7 @@ public class LinkChecker extends ContentPanel {
         csvExport.setEnabled(false);
         TextToolItem checkLinks = new TextToolItem("Check links", new SelectionListener<ToolBarEvent>() {
             public void componentSelected(ToolBarEvent event) {
+                m_store.removeAll();
                 LinkCheckerService.App.getInstance().checkLinks(new AsyncCallback<Boolean>() {
                     public void onFailure(Throwable throwable) {
                         Log.error(throwable.toString());

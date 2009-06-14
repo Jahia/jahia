@@ -43,6 +43,7 @@ import org.jahia.hibernate.model.JahiaPagesProp;
 import org.jahia.hibernate.model.JahiaPagesPropPK;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPageContentRights;
+import org.jahia.services.pages.PageInfoInterface;
 import org.jahia.services.pages.PageProperty;
 import org.jahia.services.version.EntryLoadRequest;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -314,6 +315,31 @@ public class JahiaPagesDAO extends AbstractGeneratorDAO {
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
         return template.find("select distinct pd.comp_id.id from JahiaPagesData pd where pd.siteId=? order by pd.comp_id.id",
                 new Object[]{siteId});
+    }
+
+    /**
+     * Returns a list of IDs and URLs for pages of type
+     * {@link PageInfoInterface#TYPE_URL} with non-empty values. Versioned pages
+     * are not considered.
+     * 
+     * @param siteId
+     *            the corresponding site ID
+     * @return a list of Object arrays [JahiaPagesDataPK, remoteURL] for pages
+     *         of type {@link PageInfoInterface#TYPE_URL} with non-empty values
+     */
+    public List<Object[]> getPageIdsForExternalLinks(Integer siteId) {
+        final HibernateTemplate template = getHibernateTemplate();
+        template.setCacheQueries(false);
+        template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
+        return template.find(
+                "select pd.comp_id, pd.remoteURL from JahiaPagesData pd"
+                        + " where pd.siteId=? and" + " pd.pageType="
+                        + PageInfoInterface.TYPE_URL
+                        + " and pd.comp_id.workflowState>="
+                        + EntryLoadRequest.ACTIVE_WORKFLOW_STATE
+                        + " and pd.remoteURL<>'"
+                        + PageInfoInterface.NO_REMOTE_URL + "'"
+                        + " order by pd.comp_id.id", new Object[] { siteId });
     }
 
     public List<Object[]> getPageProperties(Integer pageId) {

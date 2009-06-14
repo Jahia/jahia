@@ -3,7 +3,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
-
+       
     <bean id="linkCheckerAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
         <property name="urlKey" value="linkChecker" />
         <property name="permissionName" value="extensions.linkchecker" />
@@ -17,5 +17,48 @@
         <property name="serverModule" value="false" />
         <property name="rank" value="102" />
     </bean>
+    
+    <bean id="org.jahia.services.integrity.LinkValidatorService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.integrity.LinkValidatorService" parent="jahiaServiceTemplate">
+                <property name="validators">
+                    <map>
+                        <entry key="EXTERNAL">
+                            <bean class="org.jahia.services.integrity.ExternalLinkValidator">
+                                <property name="httpClient">
+                                    <bean class="org.apache.commons.httpclient.HttpClient">
+                                        <constructor-arg index="0" ref="MultiThreadedHttpConnectionManager"/>
+                                    </bean>
+                                </property>
+                            </bean>
+                        </entry>
+                        <entry key="INTERNAL_PAGE">
+                            <bean class="org.jahia.services.integrity.BaseLinkValidator"/>
+                        </entry>
+                        <entry key="INTERNAL_FILE">
+                            <bean class="org.jahia.services.integrity.BaseLinkValidator"/>
+                        </entry>
+                    </map>
+                </property>
+                <property name="pagesManager" ref="org.jahia.hibernate.manager.JahiaPagesManager"/>
+                <property name="fieldsDataManager" ref="org.jahia.hibernate.manager.JahiaFieldsDataManager"/>
+                <property name="textFileService" ref="JahiaTextFileService"/>
+            </bean>
+        </property>
+    </bean>
 
+    <bean id="MultiThreadedHttpConnectionManager" class="org.apache.commons.httpclient.MultiThreadedHttpConnectionManager" scope="prototype">
+        <property name="params">
+            <bean class="org.apache.commons.httpclient.params.HttpConnectionManagerParams">
+                <property name="connectionTimeout" value="10000"/>
+                <property name="soTimeout" value="15000"/>
+            </bean>
+        </property>
+    </bean>
+                                            
+    <bean id="org.jahia.ajax.gwt.linkchecker.server.LinkChecker" class="org.jahia.ajax.gwt.linkchecker.server.LinkChecker">
+        <property name="batchSize" value="10"/>
+        <property name="linkValidatorService" ref="org.jahia.services.integrity.LinkValidatorService"/>
+    </bean>
+                                            
 </beans>

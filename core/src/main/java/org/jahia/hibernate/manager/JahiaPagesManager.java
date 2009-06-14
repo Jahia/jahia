@@ -49,12 +49,17 @@ import org.jahia.hibernate.model.JahiaPagesDataPK;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.integrity.Link;
+import org.jahia.services.integrity.Link.Type;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPageContentRights;
 import org.jahia.services.pages.JahiaPageInfo;
+import org.jahia.services.pages.PageInfoInterface;
 import org.jahia.services.pages.PageProperty;
+import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntryStateable;
+import org.jahia.services.version.RevisionEntry;
 import org.jahia.workflow.nstep.dao.WorkflowInstanceDAO;
 import org.jahia.workflow.nstep.dao.WorkflowHistoryDAO;
 import org.springframework.orm.ObjectRetrievalFailureException;
@@ -63,11 +68,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by IntelliJ IDEA.
+ * Hibernate manager implementation for Jahia pages service.
+ *  
  * User: Rincevent
  * Date: 25 févr. 2005
  * Time: 10:25:55
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaPagesManager {
     // ------------------------------ FIELDS ------------------------------
@@ -373,6 +378,30 @@ public class JahiaPagesManager {
 
     public List<Integer> getPageIdsInSiteOrderById(int siteID) {
         return dao.getPageIdsInSiteOrderById((siteID));
+    }
+
+    /**
+     * Returns a list of external links for pages of type
+     * {@link PageInfoInterface#TYPE_URL} with non-empty values. Versioned pages
+     * are not considered.
+     * 
+     * @param siteId
+     *            the corresponding site ID
+     * @return a list of {@link Link} objects for pages of type
+     *         {@link PageInfoInterface#TYPE_URL} with non-empty values
+     */
+    public List<Link> getExternalLinks(Integer siteId) {
+        List<Link> links = new LinkedList<Link>();
+        List<Object[]> data = dao.getPageIdsForExternalLinks(siteId);
+        for (Object[] linkData : data) {
+            JahiaPagesDataPK key = (JahiaPagesDataPK) linkData[0];
+            links.add(new Link(Type.EXTERNAL, (String) linkData[1],
+                    new RevisionEntry(new ContentObjectEntryState(key
+                            .getWorkflowState(), key.getVersionId(), key
+                            .getLanguageCode()),
+                            new ContentPageKey(key.getId()))));
+        }
+        return links;
     }
 
     public synchronized int getRealActiveNbPages(int siteId) {

@@ -31,9 +31,11 @@
  */
 package org.jahia.ajax.gwt.linkchecker.server;
 
+import org.jahia.admin.AdministrationModule;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.client.service.linkchecker.LinkCheckerService;
 import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaCheckedLink;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
@@ -51,7 +53,7 @@ public class LinkCheckerServiceImpl extends AbstractJahiaGWTServiceImpl implemen
     public Boolean checkLinks() {
         ProcessingContext ctx = retrieveParamBean();
         if (ctx.getUser().isAdminMember(ctx.getSiteID()) || hasAccess(ctx.getUser(), ctx.getSiteID())) {
-            LinkChecker.getInstance().startCheckingLinks();
+            LinkChecker.getInstance().startCheckingLinks(ctx.getSiteID());
             return Boolean.TRUE;
         } else {
             return Boolean.FALSE;
@@ -60,7 +62,7 @@ public class LinkCheckerServiceImpl extends AbstractJahiaGWTServiceImpl implemen
 
     private boolean hasAccess(JahiaUser user, int siteID) {
         return ServicesRegistry.getInstance().getJahiaACLManagerService().getSiteActionPermission(
-                "extensions.linkchecker",
+                ((AdministrationModule)SpringContextSingleton.getBean("linkCheckerAdministrationModule")).getPermissionName(),
                 user,
                 JahiaBaseACL.READ_RIGHTS,
                 siteID) > 0;
@@ -72,7 +74,9 @@ public class LinkCheckerServiceImpl extends AbstractJahiaGWTServiceImpl implemen
      * @return the checked links or null if it is over
      */
     public List<GWTJahiaCheckedLink> lookForCheckedLinks() {
-        return LinkChecker.getInstance().getLinks();
+        LinkChecker checker = LinkChecker.getInstance();
+        List<GWTJahiaCheckedLink> links = checker.getLinks();
+        return !links.isEmpty() || checker.getStatus().isActive() ? links : null;
     }
 
     public void stopCheckingLinks() {

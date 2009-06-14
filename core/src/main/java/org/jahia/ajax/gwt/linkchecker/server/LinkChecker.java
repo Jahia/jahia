@@ -31,12 +31,19 @@
  */
 package org.jahia.ajax.gwt.linkchecker.server;
 
+import static org.apache.commons.httpclient.HttpStatus.*;
+
 import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaCheckedLink;
+import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaLinkChckerStatus;
+import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.integrity.Link;
+import org.jahia.services.integrity.LinkValidationResult;
+import org.jahia.services.integrity.LinkValidatorService;
 import org.apache.log4j.Logger;
 
 import java.util.List;
-import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * User: romain
@@ -47,19 +54,14 @@ public class LinkChecker {
 
     private final static Logger logger = Logger.getLogger(LinkChecker.class);
 
-    private List<GWTJahiaCheckedLink> m_links;
-    private boolean running = true;
-
-    private LinkChecker() {
-        m_links = Collections.synchronizedList(new ArrayList<GWTJahiaCheckedLink>());
-    }
-
-    private static class InstanceHolder {
-        private static final LinkChecker M_INSTANCE = new LinkChecker();
-    }
+    private int batchSize;
+    private LinkValidatorService linkValidatorService; 
+    private List<GWTJahiaCheckedLink> m_links = new ArrayList<GWTJahiaCheckedLink>();
+    private boolean running = false;
+    private GWTJahiaLinkChckerStatus status = new GWTJahiaLinkChckerStatus();
 
     public static LinkChecker getInstance() {
-        return InstanceHolder.M_INSTANCE;
+        return (LinkChecker) SpringContextSingleton.getBean(LinkChecker.class.getName());
     }
 
     public void purge() {
@@ -73,43 +75,75 @@ public class LinkChecker {
     }
 
     public List<GWTJahiaCheckedLink> getLinks() {
-        ArrayList<GWTJahiaCheckedLink> links = new ArrayList<GWTJahiaCheckedLink>(m_links.size());
-        for (GWTJahiaCheckedLink link: m_links) {
-            links.add(link);
-        }
+        ArrayList<GWTJahiaCheckedLink> links = new ArrayList<GWTJahiaCheckedLink>(m_links);
         purge();
         return links;
     }
 
     /**
      * This is the emulation of a link check in multiple phases.
+     * @param siteId the ID of the site to check links
      */
-    public void startCheckingLinks() {
+    public void startCheckingLinks(final int siteId) {
+        if (running) {
+            logger.warn("Link validation process is already running");
+            return;
+        }
         new Thread() {
             public void run() {
-                final String link = "http://www.link.com/";
-                final String title = "title";
-                final String url = "#";
-                final int code = 404;
-                int i = 0;
                 running = true;
+                status = new GWTJahiaLinkChckerStatus();
                 purge();
-                while (running) {
-                    m_links.add(new GWTJahiaCheckedLink(link + i, title + i, url, code));
-                    i++;
-                    try {
-                        long sleepTime = Math.round(Math.random() * 1000);
-                        Thread.sleep(sleepTime);
-                    } catch (InterruptedException e) {
-                        logger.error(e.toString(), e);
+                status.setActive(true);
+                
+                List<Link> links = linkValidatorService.getAllLinks(siteId);
+                status.setTotal(links.size());
+                
+                while (running && !links.isEmpty()) {
+                    int toIndex = Math.min(links.size(), batchSize);
+                    List<Link> toProcess = links.subList(0, toIndex);
+                    Map<Link, LinkValidationResult> validationResult = linkValidatorService.validate(toProcess);
+                    for (Map.Entry<Link, LinkValidationResult> entry : validationResult.entrySet()) {
+                        status.setProcessed(status.getProcessed()+1);
+                        if (entry.getValue().getErrorCode() == SC_OK) {
+                            status.setSuccess(status.getSuccess()+1);
+                        } else {
+                            status.setFailed(status.getFailed()+1);
+                            m_links.add(new GWTJahiaCheckedLink(entry.getKey().getUrl(), String.valueOf(entry.getKey().getSource()), "#", entry.getValue().getErrorCode()));
+                        }
                     }
+                    toProcess.clear();
                 }
+                status.setActive(false);
+                running = false;
             }
         }.start();
     }
 
     public void stopCheckingLinks() {
+        if (!running) {
+            logger.warn("Link validation process is not running");
+        }
         running = false;
+    }
+
+    /**
+     * Returns the link validation process status, including total count and
+     * remaining links.
+     * 
+     * @return the link validation process status, including total count and
+     *         remaining links
+     */
+    public GWTJahiaLinkChckerStatus getStatus() {
+        return status;
+    }
+
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
+    }
+
+    public void setLinkValidatorService(LinkValidatorService linkValidatorService) {
+        this.linkValidatorService = linkValidatorService;
     }
 
 }

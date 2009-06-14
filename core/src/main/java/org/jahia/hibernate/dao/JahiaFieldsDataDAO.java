@@ -41,9 +41,8 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
-import org.jahia.content.ContentFieldKey;
-import org.jahia.content.ObjectKey;
 import org.jahia.data.fields.FieldTypes;
+import org.jahia.data.fields.JahiaField;
 import org.jahia.hibernate.model.*;
 import org.jahia.services.fields.ContentFieldTypes;
 import org.jahia.services.version.EntryLoadRequest;
@@ -56,11 +55,10 @@ import java.sql.SQLException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * DAO implementation for managing persistence of Jahia field values. 
  * User: Rincevent
  * Date: 17 janv. 2005
  * Time: 17:11:57
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
 // ------------------------------ FIELDS ------------------------------
@@ -1359,7 +1357,26 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
                                          "and p.comp_id.fieldId=?", new Object[]{name, ctnId}));
     }
 
-
+    /**
+     * Returns list of field IDs for fields of type BigText with non-empty
+     * value. Versioned field entries are not considered.
+     * 
+     * @param siteId
+     *            the ID of the site to get the list of fields
+     * @return list of Object arrays [JahiaFieldsDataPK, Integer] for fields of
+     *         type BigText with non-empty value. Versioned field entries are
+     *         not considered.
+     */
+    public List<Object[]> findBigTextFieldsIdInSite(Integer siteId) {
+        final HibernateTemplate template = getHibernateTemplate();
+        template.setCacheQueries(false);
+        template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
+        return template.find(
+                "select f.comp_id, f.pageId from JahiaFieldsData f where f.siteId=?"
+                        + " and f.comp_id.workflowState>="
+                        + EntryLoadRequest.ACTIVE_WORKFLOW_STATE
+                        + " and f.value<>'" + JahiaField.NULL_STRING_MARKER
+                        + "' order by f.comp_id.id", new Object[] { siteId });
+    }
 
 }
-

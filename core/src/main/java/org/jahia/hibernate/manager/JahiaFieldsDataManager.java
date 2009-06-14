@@ -67,6 +67,7 @@ import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntryStateable;
 import org.jahia.services.version.JahiaSaveVersion;
+import org.jahia.services.version.RevisionEntry;
 import org.jahia.services.webdav.UsageEntry;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.ObjectRetrievalFailureException;
@@ -74,11 +75,10 @@ import org.springframework.orm.ObjectRetrievalFailureException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Persistence manager implementation for Jahia field values. 
  * User: Rincevent
  * Date: 17 janv. 2005
  * Time: 17:32:02
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaFieldsDataManager {
 // ------------------------------ FIELDS ------------------------------
@@ -1326,6 +1326,28 @@ public class JahiaFieldsDataManager {
         dao.deleteFieldProperty(id, name);
     }
 
+    /**
+     * Returns list of field IDs for fields of type BigText having non-empty
+     * value. Versioned field entries are not considered.
+     * 
+     * @param siteId
+     *            the ID of the site to get the list of fields
+     * @return list of Object arrays [{@link RevisionEntry}, Integer] for fields
+     *         of type BigText having non-empty value. Versioned field entries
+     *         are not considered.
+     */
+    public List<Object[]> getBigTextFieldIds(Integer siteId) {
+        List<Object[]> fieldIds = dao.findBigTextFieldsIdInSite(siteId);
+        List<Object[]> fields = new LinkedList<Object[]>();
+        for (Object[] fld : fieldIds) {
+            JahiaFieldsDataPK key = (JahiaFieldsDataPK) fld[0];
+            fields.add(new Object[] {
+                    new RevisionEntry(new ContentObjectEntryState(key
+                            .getWorkflowState(), key.getVersionId(), key
+                            .getLanguageCode()), new ContentFieldKey(key
+                            .getId())), fld[1] });
+        }
+        return fields;
+    }
 
 }
-

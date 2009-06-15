@@ -158,8 +158,9 @@
                             </siteImportLocation>
                             <cluster_activated>false</cluster_activated>
                             <processingServer>true</processingServer>
-                            <databaseUrl>jdbc:mysql://10.8.37.246/qa_243?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
-                            <databaseUsername>jahia</databaseUsername>
+                            <!--databaseUrl>jdbc:mysql://10.8.37.246/qa_243?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl-->
+                            <databaseUrl>jdbc:oracle:thin:@10.8.37.8:1521:test</databaseUrl>
+                            <databaseUsername>QA_243</databaseUsername>
                             <databasePassword>jahia</databasePassword>
                             <overwritedb>true</overwritedb>
                             <storeFilesInDB>true</storeFilesInDB>

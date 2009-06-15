@@ -59,7 +59,7 @@ public interface JahiaNodeService extends RemoteService {
 
         public static synchronized JahiaNodeServiceAsync getInstance() {
             if (app == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "node/";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "node.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 app = (JahiaNodeServiceAsync) GWT.create(JahiaNodeService.class);
                 ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);

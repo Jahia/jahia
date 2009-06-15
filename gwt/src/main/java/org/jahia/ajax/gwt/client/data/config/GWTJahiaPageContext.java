@@ -46,11 +46,23 @@ public class GWTJahiaPageContext implements Serializable {
 
 
     public GWTJahiaPageContext() {
-
+        super();
     }
 
     public GWTJahiaPageContext(String windowURL) {
+        this();
         this.windowURL = windowURL;
+    }
+    
+    /**
+     * Initializes an instance of this class.
+     * @param pid
+     * @param mode
+     */
+    public GWTJahiaPageContext(int pid, String mode) {
+        this();
+        this.pid = pid;
+        this.mode = mode;
     }
 
     public int getPid() {

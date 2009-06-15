@@ -669,112 +669,11 @@
         <servlet-class>org.jahia.bin.GetFile</servlet-class>
     </servlet>
 
-    <!-- Jahia GWT service-->
-    <servlet>
-        <servlet-name>jahiaBaseGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.commons.server.rpc.JahiaServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>jahiaContentGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.commons.server.rpc.JahiaContentServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>contentDefinitionGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.definitions.server.ContentDefinitionServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>jahiaPdisplayGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>actionMenuGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.templates.components.actionmenus.server.ActionMenuServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>nodeGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.filemanagement.server.JahiaNodeServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>aclGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.aclmanagement.server.ACLServiceImpl
-        </servlet-class>
-    </servlet>
     <servlet>
         <servlet-name>fileManagerGWTUploadService</servlet-name>
         <servlet-class>
             org.jahia.ajax.gwt.filemanagement.server.GWTFileManagerUploadServlet
         </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>workflowGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.engines.workflow.server.WorkflowServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>categoryGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.engines.categories.server.CategoryServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>layoutmanagerGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.templates.components.layoutmanager.server.LayoutmanagerServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>toolbarGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.templates.components.toolbar.server.ToolbarServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>jahiaRPCVersioningGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.engines.versioning.server.RPCVersioningServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>userManagerGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.commons.server.rpc.UserManagerServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>sessionManagerGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.commons.server.rpc.SessionManagerServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>openSearchGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.templates.components.opensearch.server.JahiaOpenSearchServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>linkCheckerGWTService</servlet-name>
-        <servlet-class>
-            org.jahia.ajax.gwt.linkchecker.server.LinkCheckerServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>subscriptionGWTService</servlet-name>
-        <servlet-class>org.jahia.ajax.gwt.templates.components.subscription.server.SubscriptionServiceImpl</servlet-class>
     </servlet>
 
     <servlet>
@@ -822,6 +721,15 @@
         <servlet-name>tokenGenerator</servlet-name>
         <servlet-class>org.jahia.bin.TokenGeneratorServlet</servlet-class>
         <load-on-startup>12</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>GWTDispatcherServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>WEB-INF/etc/spring/applicationcontext-gwt*.xml</param-value>
+        </init-param>
     </servlet>
 
 
@@ -881,79 +789,11 @@
         <url-pattern>/servlet/AdminServlet</url-pattern>
     </servlet-mapping>
 
-    <!-- gwt mapping-->
-    <servlet-mapping>
-        <servlet-name>jahiaBaseGWTService</servlet-name>
-        <url-pattern>/gwt/base/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>jahiaContentGWTService</servlet-name>
-        <url-pattern>/gwt/content/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>contentDefinitionGWTService</servlet-name>
-        <url-pattern>/gwt/contentDefinition/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>actionMenuGWTService</servlet-name>
-        <url-pattern>/gwt/actionmenus/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>nodeGWTService</servlet-name>
-        <url-pattern>/gwt/node/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>aclGWTService</servlet-name>
-        <url-pattern>/gwt/acl/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>categoryGWTService</servlet-name>
-        <url-pattern>/gwt/category/*</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>fileManagerGWTUploadService</servlet-name>
         <url-pattern>/gwt/fileupload/*</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>workflowGWTService</servlet-name>
-        <url-pattern>/gwt/workflow/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>jahiaPdisplayGWTService</servlet-name>
-        <url-pattern>/gwt/pdisplay/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>layoutmanagerGWTService</servlet-name>
-        <url-pattern>/gwt/layoutmanager/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>toolbarGWTService</servlet-name>
-        <url-pattern>/gwt/toolbar/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>jahiaRPCVersioningGWTService</servlet-name>
-        <url-pattern>/gwt/versioning/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>userManagerGWTService</servlet-name>
-        <url-pattern>/gwt/userManager/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>sessionManagerGWTService</servlet-name>
-        <url-pattern>/gwt/sessionManager/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>openSearchGWTService</servlet-name>
-        <url-pattern>/gwt/opensearch/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>linkCheckerGWTService</servlet-name>
-        <url-pattern>/gwt/linkchecker/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>subscriptionGWTService</servlet-name>
-        <url-pattern>/gwt/subscription/*</url-pattern>
-    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>Webdav</servlet-name>
         <url-pattern>/repository/*</url-pattern>
@@ -1018,6 +858,11 @@
     <servlet-mapping>
         <servlet-name>tokenGenerator</servlet-name>
         <url-pattern>/tokenGenerator</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>GWTDispatcherServlet</servlet-name>
+        <url-pattern>*.gwt</url-pattern>
     </servlet-mapping>
     
     <!-- Session timeout value is set in minutes. Comment this section out

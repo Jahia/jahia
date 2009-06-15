@@ -36,7 +36,7 @@ import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
 import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.toolbar.*;
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -84,7 +84,7 @@ import java.util.*;
  * Date: 4 mars 2008
  * Time: 17:29:58
  */
-public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements ToolbarService {
+public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarService {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ToolbarServiceImpl.class);
     private static JahiaPreferencesProvider toolbarPreferencesProvider;
 

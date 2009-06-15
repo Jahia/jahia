@@ -29,55 +29,37 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.service.opensearch;
+package org.jahia.ajax.gwt.commons.server;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.util.URL;
-import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngine;
-import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngineGroup;
-
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by IntelliJ IDEA.
- * User: hollis
- * Date: 18 oct. 2007
- * Time: 14:13:47
- * To change this template use File | Settings | File Templates.
+ * Interface to be implemented by any object that wishes to get use of the
+ * current {@link HttpServletRequest} and {@link HttpServletResponse} objects. <br/>
+ * Used by Jahia {@link GWTController} to propagate the request/response pair to
+ * the invoked GWT service instance.
+ * 
+ * @see GWTController
+ * @author Sergiy Shyrkov
  */
-public interface GWTOpenSearchService extends RemoteService {
-
-    public static class App {
-        private static GWTOpenSearchServiceAsync app = null;
-
-        public static synchronized GWTOpenSearchServiceAsync getInstance() {
-            if (app == null) {
-                String serviceEntryPoint = URL.getAbsolutleURL(JahiaGWTParameters.getServiceEntryPoint()+"opensearch.gwt");
-                app = (GWTOpenSearchServiceAsync) GWT.create(GWTOpenSearchService.class);
-                ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
-            }
-            return app;
-        }
-    }
+public interface RequestResponseAware {
 
     /**
-     * Returns the list of search engines
-     *
-     * @return
-     * @throws Exception
+     * Is invoked by the {@link GWTController} to propagate the request object
+     * to the invoked GWT service instance.
+     * 
+     * @param request
+     *            current request object
      */
-    public List<GWTJahiaOpenSearchEngine> getSearchEngines();
+    void setRequest(HttpServletRequest request);
 
     /**
-     * Returns the list of search engine groups
-     *
-     * @return
-     * @throws Exception
+     * Is invoked by the {@link GWTController} to propagate the response object
+     * to the invoked GWT service instance.
+     * 
+     * @param response
+     *            current response object
      */
-    public List<GWTJahiaOpenSearchEngineGroup> getSearchEngineGroups();
-
-
+    void setResponse(HttpServletResponse response);
 }

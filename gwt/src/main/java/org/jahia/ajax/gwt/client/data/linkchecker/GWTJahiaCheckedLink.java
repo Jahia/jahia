@@ -54,40 +54,111 @@ public class GWTJahiaCheckedLink extends BaseModel implements Serializable {
         setCode(code);
     }
 
+    public GWTJahiaCheckedLink(String link, String pageTitle, String pageUrl, int workflowState, String languageCode, int code, String errorDetails) {
+        this(link, pageTitle, pageUrl, code);
+        setWorkflowState(workflowState);
+        setLanguageCode(languageCode);
+        setErrorDetails(errorDetails);
+    }
+
+    public int getCode() {
+        Integer code = get("code");
+        return code != null ? code.intValue() : -1;
+    }
+
+    public String getCodeText() {
+        return get("codeText");
+    }
+
+    public String getErrorDetails() {
+        return get("errorDetails");
+    }
+
+    public int getFieldId() {
+        Integer fieldId = get("fieldId");
+        return fieldId != null ? fieldId.intValue() : -1;
+    }
+
+    public String getFieldType() {
+        return get("fieldType");
+    }
+
+    public String getLanguageCode() {
+        return get("languageCode");
+    }
+
     public String getLink() {
         return get("link");
     }
 
-    public void setLink(String link) {
-        set("link", link);
+    public int getPageId() {
+        Integer pageId = get("pageId");
+        return pageId != null ? pageId.intValue() : -1;
+    }
+    
+    public String getPageTitle() {
+        return get("pageTitle");
     }
 
     public String getPageUrl() {
         return get("pageUrl");
     }
 
-    public void setPageUrl(String pageUrl) {
-        set("pageUrl", pageUrl);
+    public String getUpdateUrl() {
+        return get("updateUrl");
     }
 
-    public String getPageTitle() {
-        return get("pageTitle");
+    public int getWorkflowState() {
+        Integer state = get("workflowState");
+        return state != null ? state.intValue() : -1;
+    }
+
+    public void setCode(int code) {
+        set("code", Integer.valueOf(code));
+    }
+
+    public void setCodeText(String codeText) {
+        set("codeText", codeText);
+    }
+
+    public void setErrorDetails(String details) {
+        set("errorDetails", details);
+    }
+
+    public void setFieldId(int fieldId) {
+        set("fieldId", Integer.valueOf(fieldId));
+    }
+
+    public void setFieldType(String fieldType) {
+        set("fieldType", fieldType);
+    }
+
+    public void setLanguageCode(String languageCode) {
+        set("languageCode", languageCode);
+    }
+
+    public void setLink(String link) {
+        set("link", link);
+    }
+
+    public void setPageId(int pageId) {
+        set("pageId", Integer.valueOf(pageId));
     }
 
     public void setPageTitle(String pageTitle) {
         set("pageTitle", pageTitle);
     }
 
-    public int getCode() {
-        Integer code = get("code");
-        if (code != null) {
-            return code.intValue();
-        } else {
-            return -1;
-        }
+    public void setPageUrl(String pageUrl) {
+        set("pageUrl", pageUrl);
     }
 
-    public void setCode(int code) {
-        set("code", Integer.valueOf(code));
+    public void setUpdateUrl(String updateUrl) {
+        set("updateUrl", updateUrl);
     }
+
+    public void setWorkflowState(int workflowState) {
+        set("workflowState", Integer.valueOf(workflowState));
+    }
+
 }

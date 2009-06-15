@@ -38,10 +38,11 @@ import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.ToolBarEvent;
+import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ToolBarEvent;
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -53,7 +54,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaCheckedLink;
+import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaLinkCheckerStatus;
 import org.jahia.ajax.gwt.client.service.linkchecker.LinkCheckerService;
+import org.jahia.ajax.gwt.client.util.URL;
 
 /**
  * User: romain
@@ -66,6 +69,7 @@ public class LinkChecker extends ContentPanel {
     private Timer m_timer;
     private TextToolItem stop;
     private StatusBar m_status;
+    private Grid<GWTJahiaCheckedLink> linkTable;
 
     public LinkChecker() {
         super(new FitLayout());
@@ -73,7 +77,9 @@ public class LinkChecker extends ContentPanel {
 
         // data container initialization
         m_store = new ListStore<GWTJahiaCheckedLink>();
-        final Grid<GWTJahiaCheckedLink> linkTable = new Grid<GWTJahiaCheckedLink>(m_store, getHeaders());
+        
+        linkTable = new Grid<GWTJahiaCheckedLink>(m_store, getHeaders());
+        linkTable.addPlugin((RowExpander)linkTable.getColumnModel().getColumn(0));
         linkTable.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         linkTable.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent event) {
@@ -87,21 +93,34 @@ public class LinkChecker extends ContentPanel {
         m_timer = new Timer() {
             public void run() {
                 Log.debug("polling...");
-                LinkCheckerService.App.getInstance().lookForCheckedLinks(new AsyncCallback<List<GWTJahiaCheckedLink>>() {
+                LinkCheckerService.App.getInstance().lookForCheckedLinks(new AsyncCallback<GWTJahiaLinkCheckerStatus>() {
                     public void onFailure(Throwable throwable) {
                         Log.error(throwable.toString());
                     }
 
-                    public void onSuccess(List<GWTJahiaCheckedLink> gwtJahiaCheckedLinks) {
-                        if (gwtJahiaCheckedLinks != null) {
-                            for (GWTJahiaCheckedLink link: gwtJahiaCheckedLinks) {
-                                if (!m_store.contains(link)) {
-                                    m_store.add(link);
-                                }
+                    public void onSuccess(GWTJahiaLinkCheckerStatus status) {
+                        List<GWTJahiaCheckedLink> gwtJahiaCheckedLinks = status.getLinks();
+                        for (GWTJahiaCheckedLink link: gwtJahiaCheckedLinks) {
+                            if (!m_store.contains(link)) {
+                                m_store.add(link);
                             }
-                        } else {
+                        }
+                        if (!status.isActive()) {
                             Log.debug("polling over");
                             stop();
+                            m_status.setMessage("Processed "
+                                            + status.getProcessed()
+                                            + " links. Found "
+                                            + status.getFailed()
+                                            + " invalid entries.");
+                        } else {
+                            m_status.showBusy("checking links... "
+                                            + "Processed "
+                                            + status.getProcessed() + " of "
+                                            + status.getTotal()
+                                            + " links. Found "
+                                            + status.getFailed()
+                                            + " invalid entries.");
                         }
                     }
                 });
@@ -153,14 +172,15 @@ public class LinkChecker extends ContentPanel {
 
         m_status = new StatusBar();
         m_status.setMessage("idle");
+
         setBottomComponent(m_status);
 
         add(linkTable);
     }
 
     private void startPolling() {
-        Log.debug("scheduled every second");
-        m_timer.scheduleRepeating(1000);
+        Log.debug("scheduled every 2 seconds");
+        m_timer.scheduleRepeating(2000);
         m_status.showBusy("checking links");
     }
 
@@ -187,21 +207,77 @@ public class LinkChecker extends ContentPanel {
 
     private ColumnModel getHeaders() {
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
-        ColumnConfig col = new ColumnConfig("link", "Link", 500);
+
+        headerList
+                .add(new RowExpander(
+                        XTemplate
+                                .create("<p><b>Link:</b> {link}</p><br/>"
+                                        + "<p><b>Page:</b> <a href=\"{pageUrl}\" target=\"_blank\">{pageTitle} [{pageId}]</a></p><br/>"
+                                        + "<p><b>Field:</b> {fieldType} [{fieldId}]</p><br/>"
+                                        + "<p><b>Language:</b> {languageCode}</p><br/>"
+                                        + "<p><b>Workflow state:</b> {workflowState}</p><br/>"
+                                        + "<p><b>Error code:</b> {code} {codeText}</p><br/>"
+                                        + "<p><b>Details:</b><br/>{errorDetails}</p><br/>"
+                                        + "<p><b>Edit:</b> <a href=\"{updateUrl}\" target=\"_blank\">link</a></p>")));  
+        
+        ColumnConfig col = new ColumnConfig("link", "Link", 380);
         col.setSortable(true);
         col.setResizable(true);
         headerList.add(col);
 
-        col = new ColumnConfig("pageTitle", "Page title", 300);
+        col = new ColumnConfig("pageTitle", "Page title", 200);
+        col.setSortable(true);
+        col.setResizable(true);
+        col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>(){
+            public String render(GWTJahiaCheckedLink link, String property,
+                    ColumnData config, int rowIndex, int colIndex,
+                    ListStore<GWTJahiaCheckedLink> store) {
+                return "<a href=\"" + link.getPageUrl()
+                        + "\" target=\"_blank\">" + link.getPageTitle() + " ["
+                        + link.getPageId() + "]</a>";
+            }});
+        headerList.add(col);
+
+        col = new ColumnConfig("languageCode", "Language", 60);
         col.setSortable(true);
         col.setResizable(true);
         headerList.add(col);
 
-        col = new ColumnConfig("code", "Code", 60);
+        col = new ColumnConfig("workflowState", "Workflow", 60);
         col.setSortable(true);
         col.setResizable(true);
         headerList.add(col);
 
+        col = new ColumnConfig("code", "Code", 50);
+        col.setSortable(true);
+        col.setResizable(true);
+        col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>() {
+            public String render(GWTJahiaCheckedLink link, String property,
+                    ColumnData config, int rowIndex, int colIndex,
+                    ListStore<GWTJahiaCheckedLink> store) {
+                return "<span title=\"" + link.getCodeText() + "\">"
+                        + link.getCode() + "</span>";
+            }
+        });
+        headerList.add(col);
+
+        col = new ColumnConfig("edit", "Edit", 50);
+        col.setSortable(false);
+        col.setResizable(false);
+        col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>() {
+            public String render(GWTJahiaCheckedLink link, String property,
+                    ColumnData config, int rowIndex, int colIndex,
+                    ListStore<GWTJahiaCheckedLink> store) {
+                return "<a href=\""
+                        + link.getUpdateUrl()
+                        + "\" target=\"_blank\"><img src=\""
+                        + URL.getJahiaContext()
+                        + "/gwt/resources/org/jahia/ajax/gwt/public/images/actions/update.png\""
+                        + " height=\"16\" width=\"16\" alt=\"edit\"/></a>";
+            }
+        });
+        headerList.add(col);
+        
         return new ColumnModel(headerList);
     }
 

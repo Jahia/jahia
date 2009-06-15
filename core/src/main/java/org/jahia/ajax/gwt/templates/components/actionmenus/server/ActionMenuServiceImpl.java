@@ -43,7 +43,7 @@ import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffState;
 import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffDetails;
 import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.*;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.apache.log4j.Logger;
@@ -57,7 +57,7 @@ import java.util.*;
  * @author rfelden
  * @version 22 janv. 2008 - 12:00:25
  */
-public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implements ActionMenuService {
+public class ActionMenuServiceImpl extends JahiaRemoteService implements ActionMenuService {
 
     private final static Logger logger = Logger.getLogger(ActionMenuServiceImpl.class) ;
 

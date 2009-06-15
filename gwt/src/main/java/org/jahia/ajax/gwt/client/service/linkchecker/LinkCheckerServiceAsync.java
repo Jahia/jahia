@@ -31,9 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.service.linkchecker;
 
-import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaCheckedLink;
-
-import java.util.List;
+import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaLinkCheckerStatus;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -46,7 +44,7 @@ public interface LinkCheckerServiceAsync {
 
     public void checkLinks(AsyncCallback<Boolean> callback);
 
-    public void lookForCheckedLinks(AsyncCallback<List<GWTJahiaCheckedLink>> callback);
+    public void lookForCheckedLinks(AsyncCallback<GWTJahiaLinkCheckerStatus> callback);
 
     public void stopCheckingLinks(AsyncCallback callback);
 

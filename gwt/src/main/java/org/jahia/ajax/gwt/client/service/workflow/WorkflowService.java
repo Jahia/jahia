@@ -59,7 +59,7 @@ public interface WorkflowService extends RemoteService {
 
         public static synchronized WorkflowServiceAsync getInstance() {
             if (app == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"workflow/";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"workflow.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 app = (WorkflowServiceAsync) GWT.create(WorkflowService.class);
                 ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);

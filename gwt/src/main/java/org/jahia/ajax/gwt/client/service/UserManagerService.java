@@ -55,7 +55,7 @@ public interface UserManagerService extends RemoteService  {
 
         public static synchronized UserManagerServiceAsync getInstance() {
             if (serv == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"userManager/";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"userManager.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 serv = (UserManagerServiceAsync) GWT.create(UserManagerService.class);
                 ((ServiceDefTarget) serv).setServiceEntryPoint(serviceEntryPoint);

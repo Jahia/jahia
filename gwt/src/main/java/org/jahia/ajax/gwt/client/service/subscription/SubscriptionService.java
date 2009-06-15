@@ -58,7 +58,7 @@ public interface SubscriptionService extends RemoteService {
                 ((ServiceDefTarget) app).setServiceEntryPoint(URL
                         .getAbsolutleURL(JahiaGWTParameters
                                 .getServiceEntryPoint()
-                                + "subscription/"));
+                                + "subscription.gwt"));
             }
             return app;
         }

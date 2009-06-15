@@ -33,7 +33,7 @@ package org.jahia.ajax.gwt.engines.categories.server;
 
 import org.jahia.ajax.gwt.client.service.category.CategoryService;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
@@ -54,7 +54,6 @@ import org.jahia.data.events.JahiaEvent;
 
 
 import java.util.*;
-import java.security.Principal;
 
 /**
  * User: ktlili
@@ -62,7 +61,7 @@ import java.security.Principal;
  * Time: 17:25:18
  */
 @SuppressWarnings("serial")
-public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements CategoryService {
+public class CategoryServiceImpl extends JahiaRemoteService implements CategoryService {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(CategoryServiceImpl.class);
 
     public List<GWTJahiaCategoryNode> lsInit(final String rootKey, final List<GWTJahiaCategoryNode> selectedCategories, final String categoryLocale) throws GWTJahiaServiceException {

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+       
+    <bean name="aclServiceMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <value>
+                /**/acl.gwt=aclServiceController
+                /**/actionmenus.gwt=actionMenuServiceController
+                /**/base.gwt=baseServiceController
+                /**/category.gwt=categoryServiceController
+                /**/content.gwt=contentServiceController
+                /**/contentDefinition.gwt=contentDefinitionServiceController
+                /**/layoutmanager.gwt=layoutServiceController
+                /**/node.gwt=nodeServiceController
+                /**/opensearch.gwt=openSearchServiceController
+                /**/pdisplay.gwt=pdisplayServiceController
+                /**/sessionManager.gwt=sessionManagerServiceController
+                /**/subscription.gwt=subscriptionServiceController
+                /**/toolbar.gwt=toolbarServiceController
+                /**/userManager.gwt=userManagerServiceController
+                /**/versioning.gwt=versioningServiceController
+                /**/workflow.gwt=workflowServiceController
+            </value>
+        </property>
+    </bean>
+    
+    <bean name="aclServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtACLService"/>
+    </bean>
+    <bean name="gwtACLService" class="org.jahia.ajax.gwt.aclmanagement.server.ACLServiceImpl" scope="prototype"/>
+
+    <bean name="actionMenuServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtActionMenuService"/>
+    </bean>
+    <bean name="gwtActionMenuService" class="org.jahia.ajax.gwt.templates.components.actionmenus.server.ActionMenuServiceImpl" scope="prototype"/>
+
+    <bean name="baseServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtJahiaService"/>
+    </bean>
+    <bean name="gwtJahiaService" class="org.jahia.ajax.gwt.commons.server.rpc.JahiaServiceImpl" scope="prototype"/>
+
+    <bean name="categoryServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtCategoryService"/>
+    </bean>
+    <bean name="gwtCategoryService" class="org.jahia.ajax.gwt.engines.categories.server.CategoryServiceImpl" scope="prototype"/>
+
+    <bean name="contentServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtContentService"/>
+    </bean>
+    <bean name="gwtContentService" class="org.jahia.ajax.gwt.commons.server.rpc.JahiaContentServiceImpl" scope="prototype"/>
+
+    <bean name="contentDefinitionServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtContentDefinitionService"/>
+    </bean>
+    <bean name="gwtContentDefinitionService" class="org.jahia.ajax.gwt.definitions.server.ContentDefinitionServiceImpl" scope="prototype"/>
+
+    <bean name="layoutServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtJahiaLayoutService"/>
+    </bean>
+    <bean name="gwtJahiaLayoutService" class="org.jahia.ajax.gwt.templates.components.layoutmanager.server.LayoutmanagerServiceImpl" scope="prototype"/>
+
+    <bean name="nodeServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtJahiaNodeService"/>
+    </bean>
+    <bean name="gwtJahiaNodeService" class="org.jahia.ajax.gwt.filemanagement.server.JahiaNodeServiceImpl" scope="prototype"/>
+
+    <bean name="openSearchServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtOpenSearchService"/>
+    </bean>
+    <bean name="gwtOpenSearchService" class="org.jahia.ajax.gwt.templates.components.opensearch.server.JahiaOpenSearchServiceImpl" scope="prototype"/>
+    
+    <bean name="pdisplayServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtProcessDisplayService"/>
+    </bean>
+    <bean name="gwtProcessDisplayService" class="org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl" scope="prototype"/>
+    
+    <bean name="toolbarServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtToolbarService"/>
+    </bean>
+    <bean name="gwtToolbarService" class="org.jahia.ajax.gwt.templates.components.toolbar.server.ToolbarServiceImpl" scope="prototype"/>
+    
+    <bean name="sessionManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtSessionManagerService"/>
+    </bean>
+    <bean name="gwtSessionManagerService" class="org.jahia.ajax.gwt.commons.server.rpc.SessionManagerServiceImpl" scope="prototype"/>
+    
+    <bean name="subscriptionServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtSubscriptionService"/>
+    </bean>
+    <bean name="gwtSubscriptionService" class="org.jahia.ajax.gwt.templates.components.subscription.server.SubscriptionServiceImpl" scope="prototype"/>
+    
+    <bean name="userManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtUserManagerService"/>
+    </bean>
+    <bean name="gwtUserManagerService" class="org.jahia.ajax.gwt.commons.server.rpc.UserManagerServiceImpl" scope="prototype"/>
+
+    <bean name="versioningServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtVersioningService"/>
+    </bean>
+    <bean name="gwtVersioningService" class="org.jahia.ajax.gwt.engines.versioning.server.RPCVersioningServiceImpl" scope="prototype"/>
+
+    <bean name="workflowServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="gwtWorkflowService"/>
+    </bean>
+    <bean name="gwtWorkflowService" class="org.jahia.ajax.gwt.engines.workflow.server.WorkflowServiceImpl" scope="prototype"/>
+</beans>

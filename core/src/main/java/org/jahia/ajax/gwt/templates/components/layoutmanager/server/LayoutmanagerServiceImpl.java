@@ -35,7 +35,7 @@ package org.jahia.ajax.gwt.templates.components.layoutmanager.server;
 import org.apache.log4j.Logger;
 import org.apache.pluto.container.PortletWindow;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.layoutmanager.LayoutmanagerService;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
@@ -58,7 +58,6 @@ import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.beans.portlets.PortletWindowBean;
 import org.jahia.data.beans.portlets.PortletModeBean;
 import org.jahia.api.Constants;
-import org.jahia.params.ParamBean;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -75,7 +74,7 @@ import java.security.Principal;
  * Date: 19 mars 2008
  * Time: 17:24:54
  */
-public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implements LayoutmanagerService {
+public class LayoutmanagerServiceImpl extends JahiaRemoteService implements LayoutmanagerService {
     private static transient final ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
     private static transient final Logger logger = Logger.getLogger(LayoutmanagerServiceImpl.class);
     private JCRStoreService jcrStoreService = ServicesRegistry.getInstance().getJCRStoreService();

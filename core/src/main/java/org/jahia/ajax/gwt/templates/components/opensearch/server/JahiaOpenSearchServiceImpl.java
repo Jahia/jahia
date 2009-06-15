@@ -37,7 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.client.service.opensearch.GWTOpenSearchService;
 import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngineGroup;
 import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchDescriptor;
@@ -53,9 +53,8 @@ import org.jahia.services.opensearch.SearchEngineGroupBean;
  * User: hollis
  * Date: 18 oct. 2007
  * Time: 14:29:34
- * To change this template use File | Settings | File Templates.
  */
-public class JahiaOpenSearchServiceImpl extends AbstractJahiaGWTServiceImpl implements GWTOpenSearchService {
+public class JahiaOpenSearchServiceImpl extends JahiaRemoteService implements GWTOpenSearchService {
 
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(JahiaOpenSearchServiceImpl.class);

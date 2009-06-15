@@ -18,7 +18,7 @@
         <property name="rank" value="102" />
     </bean>
     
-    <bean id="org.jahia.services.integrity.LinkValidatorService" parent="proxyTemplate">
+    <bean name="org.jahia.services.integrity.LinkValidatorService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.integrity.LinkValidatorService" parent="jahiaServiceTemplate">
                 <property name="validators">
@@ -47,7 +47,7 @@
         </property>
     </bean>
 
-    <bean id="MultiThreadedHttpConnectionManager" class="org.apache.commons.httpclient.MultiThreadedHttpConnectionManager" scope="prototype">
+    <bean name="MultiThreadedHttpConnectionManager" class="org.apache.commons.httpclient.MultiThreadedHttpConnectionManager" scope="prototype">
         <property name="params">
             <bean class="org.apache.commons.httpclient.params.HttpConnectionManagerParams">
                 <property name="connectionTimeout" value="10000"/>
@@ -55,10 +55,27 @@
             </bean>
         </property>
     </bean>
-                                            
-    <bean id="org.jahia.ajax.gwt.linkchecker.server.LinkChecker" class="org.jahia.ajax.gwt.linkchecker.server.LinkChecker">
+
+    <bean name="linkCheckerServiceMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <value>
+                /**/linkchecker.gwt=linkCheckerGwtController
+            </value>
+        </property>
+    </bean>
+
+    <bean name="linkCheckerGwtController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+        <property name="remoteServiceName" value="GWTLinkCheckerService"/>
+    </bean>
+
+    <bean name="GWTLinkCheckerService" class="org.jahia.ajax.gwt.linkchecker.server.LinkCheckerServiceImpl" scope="prototype">
+        <property name="aclManagerService" ref="JahiaACLManagerService"/>
+        <property name="linkCheckerAdministrationModule" ref="linkCheckerAdministrationModule"/>
+        <property name="linkChecker" ref="LinkChecker"/>
+    </bean>
+
+    <bean name="LinkChecker" class="org.jahia.ajax.gwt.linkchecker.server.LinkChecker">
         <property name="batchSize" value="10"/>
         <property name="linkValidatorService" ref="org.jahia.services.integrity.LinkValidatorService"/>
     </bean>
-                                            
 </beans>

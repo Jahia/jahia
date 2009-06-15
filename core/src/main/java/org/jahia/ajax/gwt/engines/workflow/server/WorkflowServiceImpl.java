@@ -34,7 +34,7 @@ package org.jahia.ajax.gwt.engines.workflow.server;
 import org.jahia.ajax.gwt.client.service.workflow.WorkflowService;
 import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
 import org.jahia.ajax.gwt.engines.workflow.server.helper.GWTJahiaWorkflowElementComparator;
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLabel;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
@@ -75,7 +75,7 @@ import com.extjs.gxt.ui.client.data.BaseListLoadResult;
  * @author rfelden
  * @version 17 juil. 2008 - 15:58:14
  */
-public class WorkflowServiceImpl extends AbstractJahiaGWTServiceImpl implements WorkflowService {
+public class WorkflowServiceImpl extends JahiaRemoteService implements WorkflowService {
 
     private static final org.apache.log4j.Logger logger = Logger.getLogger(WorkflowServiceImpl.class);
 

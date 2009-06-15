@@ -33,7 +33,6 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
@@ -76,7 +75,6 @@ public class UserManagerServiceImpl extends SessionManagerServiceImpl implements
             }
             List<GWTJahiaUser> result = new ArrayList<GWTJahiaUser>();
             for (Integer siteId : sites) {
-                JahiaSite jahiaSite = sitesService.getSite(siteId);
                 users = userMgrServ.searchUsers(siteId, criterias);
                 if (users != null) {
                     Iterator iterator = users.iterator();

@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.definitions.server;
 
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
 import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionService;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -39,13 +39,11 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Aug 25, 2008
  * Time: 6:26:11 PM
- * To change this template use File | Settings | File Templates.
  */
-public class ContentDefinitionServiceImpl extends AbstractJahiaGWTServiceImpl implements ContentDefinitionService {
+public class ContentDefinitionServiceImpl extends JahiaRemoteService implements ContentDefinitionService {
     public GWTJahiaNodeType getNodeType(String name) {
         return ContentDefinitionHelper.getNodeType(name, retrieveParamBean());
     }

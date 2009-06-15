@@ -52,7 +52,7 @@ public interface SessionManagerService extends RemoteService {
 
         public static synchronized SessionManagerServiceAsync getInstance() {
             if (serv == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"sessionManager/";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"sessionManager.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 serv = (SessionManagerServiceAsync) GWT.create(SessionManagerService.class);
                 ((ServiceDefTarget) serv).setServiceEntryPoint(serviceEntryPoint);

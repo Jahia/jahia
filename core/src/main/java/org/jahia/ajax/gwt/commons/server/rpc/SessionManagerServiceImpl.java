@@ -33,7 +33,7 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaContext;
 import org.jahia.ajax.gwt.client.service.SessionManagerService;
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.utils.JahiaGWTUtils;
 
 /**
@@ -43,7 +43,7 @@ import org.jahia.ajax.gwt.utils.JahiaGWTUtils;
  * Time: 12:53:39
  * To change this template use File | Settings | File Templates.
  */
-public class SessionManagerServiceImpl extends AbstractJahiaGWTServiceImpl implements SessionManagerService {
+public class SessionManagerServiceImpl extends JahiaRemoteService implements SessionManagerService {
 
     public GWTJahiaContext getCoreSessionContext() {
         GWTJahiaContext gwtContext = JahiaGWTUtils.jahiaContextToGWTJahiaContext(retrieveParamBean());

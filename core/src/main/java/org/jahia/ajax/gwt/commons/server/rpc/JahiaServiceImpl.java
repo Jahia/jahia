@@ -43,8 +43,7 @@ import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.JahiaService;
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
-import org.jahia.ajax.gwt.commons.server.BufferedHttpResponseWrapper;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
 import org.jahia.content.ContentPageKey;
 import org.jahia.data.JahiaData;
@@ -84,9 +83,6 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.gui.GuiBean;
 
 import javax.jcr.RepositoryException;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -98,7 +94,7 @@ import java.util.*;
  * Date: 5 juil. 2007
  * Time: 14:04:49
  */
-public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements JahiaService {
+public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService {
     private static final ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
     private static JahiaPreferencesProvider<BookmarksJahiaPreference> bookmarksPreferencesProvider;
     private static final Logger logger = Logger.getLogger(JahiaContentServiceImpl.class);
@@ -264,23 +260,6 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
 
     private JahiaContainersService getJahiaContainersService() {
         return servicesRegistry.getJahiaContainersService();
-    }
-
-    public String getHTML(String jspPath) {
-        logger.debug("get html from a jsp file");
-        String output = null;
-        try {
-            BufferedHttpResponseWrapper httpResponseWrapper = new BufferedHttpResponseWrapper(getThreadLocalResponse());
-            RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher(jspPath);
-            requestDispatcher.include(getThreadLocalRequest(), httpResponseWrapper);
-            output = httpResponseWrapper.getOutput();
-            logger.debug(output);
-        } catch (ServletException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return output;
     }
 
     public GWTJahiaPortletOutputBean drawPortletInstanceOutput(GWTJahiaPageContext page, String windowID, String entryPointIDStr, String pathInfo, String queryString) {

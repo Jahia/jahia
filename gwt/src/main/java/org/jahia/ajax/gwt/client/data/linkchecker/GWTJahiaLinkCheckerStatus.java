@@ -31,6 +31,9 @@
  */
 package org.jahia.ajax.gwt.client.data.linkchecker;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.extjs.gxt.ui.client.data.BaseModel;
 
 /**
@@ -39,8 +42,10 @@ import com.extjs.gxt.ui.client.data.BaseModel;
  * 
  * @author Sergiy Shyrkov
  */
-public class GWTJahiaLinkChckerStatus extends BaseModel {
+public class GWTJahiaLinkCheckerStatus extends BaseModel {
 
+    private List<GWTJahiaCheckedLink> links = new ArrayList<GWTJahiaCheckedLink>();
+    
     public Integer getFailed() {
         return get("failed", 0);
     }
@@ -83,5 +88,9 @@ public class GWTJahiaLinkChckerStatus extends BaseModel {
 
     public void setTotal(Integer total) {
         set("total", total);
+    }
+
+    public List<GWTJahiaCheckedLink> getLinks() {
+        return links;
     }
 }

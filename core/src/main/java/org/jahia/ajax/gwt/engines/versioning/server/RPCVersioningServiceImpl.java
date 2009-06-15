@@ -35,7 +35,7 @@ import org.jahia.ajax.gwt.client.service.versioning.RPCVersioningService;
 import org.jahia.ajax.gwt.client.data.versioning.GWTJahiaVersionsData;
 import org.jahia.ajax.gwt.client.data.GWTJahiaVersion;
 import org.jahia.ajax.gwt.client.data.versioning.GWTJahiaVersionComparisonData;
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -48,7 +48,7 @@ import java.util.Locale;
 /**
  *
  */
-public class RPCVersioningServiceImpl extends AbstractJahiaGWTServiceImpl implements RPCVersioningService {
+public class RPCVersioningServiceImpl extends JahiaRemoteService implements RPCVersioningService {
 
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(RPCVersioningServiceImpl.class);

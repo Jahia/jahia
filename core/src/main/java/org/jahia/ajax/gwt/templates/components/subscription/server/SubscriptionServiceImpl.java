@@ -33,7 +33,7 @@ package org.jahia.ajax.gwt.templates.components.subscription.server;
 
 import java.util.List;
 
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionInfo;
 import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
 import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionStatus;
@@ -50,8 +50,8 @@ import org.jahia.settings.SettingsBean;
  * 
  * @author Sergiy Shyrkov
  */
-public class SubscriptionServiceImpl extends AbstractJahiaGWTServiceImpl
-        implements SubscriptionService {
+public class SubscriptionServiceImpl extends JahiaRemoteService implements
+        SubscriptionService {
 
     private static org.jahia.services.notification.SubscriptionService getSubscriptionService() {
         return ServicesRegistry.getInstance().getSubscriptionService();

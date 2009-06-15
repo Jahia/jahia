@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.aclmanagement.server;
 
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.commons.server.rpc.JahiaContentServiceImpl;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.acl.ACLService;
@@ -52,7 +52,7 @@ import java.util.Map;
  * User: rfelden
  * Date: 27 nov. 2008 - 10:59:06
  */
-public class ACLServiceImpl extends AbstractJahiaGWTServiceImpl implements ACLService {
+public class ACLServiceImpl extends JahiaRemoteService implements ACLService {
 
     private static final Logger logger = Logger.getLogger(JahiaContentServiceImpl.class);
 

@@ -33,16 +33,14 @@ package org.jahia.ajax.gwt.linkchecker.server;
 
 import static org.apache.commons.httpclient.HttpStatus.*;
 
-import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaCheckedLink;
-import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaLinkChckerStatus;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaLinkCheckerStatus;
 import org.jahia.services.integrity.Link;
 import org.jahia.services.integrity.LinkValidationResult;
 import org.jahia.services.integrity.LinkValidatorService;
 import org.apache.log4j.Logger;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -50,32 +48,27 @@ import java.util.Map;
  * Date: 11 juin 2009
  * Time: 15:26:28
  */
-public class LinkChecker {
+class LinkChecker {
 
     private final static Logger logger = Logger.getLogger(LinkChecker.class);
 
     private int batchSize;
     private LinkValidatorService linkValidatorService; 
-    private List<GWTJahiaCheckedLink> m_links = new ArrayList<GWTJahiaCheckedLink>();
+    private List<Object[]> m_links = new LinkedList<Object[]>(); 
     private boolean running = false;
-    private GWTJahiaLinkChckerStatus status = new GWTJahiaLinkChckerStatus();
-
-    public static LinkChecker getInstance() {
-        return (LinkChecker) SpringContextSingleton.getBean(LinkChecker.class.getName());
-    }
+    private GWTJahiaLinkCheckerStatus status = new GWTJahiaLinkCheckerStatus();
+    
 
     public void purge() {
         m_links.clear();
     }
 
-    public void add(GWTJahiaCheckedLink ... links) {
-        for (GWTJahiaCheckedLink link: links) {
-            m_links.add(link);
-        }
+    public void add(Link link, LinkValidationResult result) {
+        m_links.add(new Object[] {link, result});
     }
 
-    public List<GWTJahiaCheckedLink> getLinks() {
-        ArrayList<GWTJahiaCheckedLink> links = new ArrayList<GWTJahiaCheckedLink>(m_links);
+    public List<Object[]> getLinks() {
+        List<Object[]> links = new LinkedList<Object[]>(m_links);
         purge();
         return links;
     }
@@ -92,7 +85,7 @@ public class LinkChecker {
         new Thread() {
             public void run() {
                 running = true;
-                status = new GWTJahiaLinkChckerStatus();
+                status = new GWTJahiaLinkCheckerStatus();
                 purge();
                 status.setActive(true);
                 
@@ -109,7 +102,7 @@ public class LinkChecker {
                             status.setSuccess(status.getSuccess()+1);
                         } else {
                             status.setFailed(status.getFailed()+1);
-                            m_links.add(new GWTJahiaCheckedLink(entry.getKey().getUrl(), String.valueOf(entry.getKey().getSource()), "#", entry.getValue().getErrorCode()));
+                            add(entry.getKey(), entry.getValue());
                         }
                     }
                     toProcess.clear();
@@ -134,7 +127,7 @@ public class LinkChecker {
      * @return the link validation process status, including total count and
      *         remaining links
      */
-    public GWTJahiaLinkChckerStatus getStatus() {
+    public GWTJahiaLinkCheckerStatus getStatus() {
         return status;
     }
 

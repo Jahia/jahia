@@ -54,7 +54,7 @@ public interface CategoryService extends RemoteService {
 
         public static synchronized CategoryServiceAsync getInstance() {
             if (app == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "category/";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "category.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 app = (CategoryServiceAsync) GWT.create(CategoryService.class);
                 ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);

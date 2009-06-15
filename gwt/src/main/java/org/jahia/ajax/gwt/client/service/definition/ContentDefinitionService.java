@@ -54,7 +54,7 @@ public interface ContentDefinitionService  extends RemoteService {
 
         public static synchronized ContentDefinitionServiceAsync getInstance() {
             if (app == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"contentDefinition/";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"contentDefinition.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 app = (ContentDefinitionServiceAsync) GWT.create(ContentDefinitionService.class);
                 ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);

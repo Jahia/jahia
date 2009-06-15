@@ -53,7 +53,7 @@ public interface ACLService  extends RemoteService {
 
         public static synchronized ACLServiceAsync getInstance() {
             if (ourInstance == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"acl/";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"acl.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 ourInstance = (ACLServiceAsync) GWT.create(ACLService.class);
                 ((ServiceDefTarget) ourInstance).setServiceEntryPoint(serviceEntryPoint);

@@ -56,7 +56,7 @@ public interface RPCVersioningService extends RemoteService {
 
         public static synchronized RPCVersioningServiceAsync getInstance() {
             if (ourInstance == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "versioning/";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "versioning.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 ourInstance = (RPCVersioningServiceAsync) GWT.create(RPCVersioningService.class);
                 ((ServiceDefTarget) ourInstance).setServiceEntryPoint(serviceEntryPoint);

@@ -66,7 +66,7 @@ public interface ActionMenuService extends RemoteService {
 
         public static synchronized ActionMenuServiceAsync getInstance() {
             if (ourInstance == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"actionmenus/";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"actionmenus.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 ourInstance = (ActionMenuServiceAsync) GWT.create(ActionMenuService.class);
                 ((ServiceDefTarget) ourInstance).setServiceEntryPoint(serviceEntryPoint);

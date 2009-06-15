@@ -1,0 +1,148 @@
+/**
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+package org.jahia.ajax.gwt.commons.server;
+
+import java.io.IOException;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.registries.ServicesRegistry;
+import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+
+import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.server.rpc.RPC;
+import com.google.gwt.user.server.rpc.RPCRequest;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+
+/**
+ * Spring MVC controller implementation to dispatch requests to GWT services.
+ * 
+ * @author Sergiy Shyrkov
+ */
+public class GWTController extends RemoteServiceServlet implements Controller,
+        ServletContextAware {
+
+    private String remoteServiceName;
+
+    private ServletContext servletContext;
+
+    @Override
+    public ServletContext getServletContext() {
+        return servletContext;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet
+     * .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public ModelAndView handleRequest(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        doPost(request, response);
+        return null;
+    }
+
+    @Override
+    public String processCall(String payload) throws SerializationException {
+        RemoteService remoteService = null;
+        try {
+            remoteService = (RemoteService) SpringContextSingleton
+                    .getBean(remoteServiceName);
+            setServiceData(remoteService, false);
+
+            RPCRequest rpcRequest = RPC.decodeRequest(payload, remoteService
+                    .getClass(), this);
+
+            return RPC.invokeAndEncodeResponse(remoteService, rpcRequest
+                    .getMethod(), rpcRequest.getParameters(), rpcRequest
+                    .getSerializationPolicy());
+        } catch (IncompatibleRemoteServiceException e) {
+            return RPC.encodeResponseForFailure(null, e);
+        } finally {
+            if (remoteService != null) {
+                setServiceData(remoteService, true);
+            }
+        }
+    }
+
+    @Override
+    protected void service(HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) throws ServletException,
+            IOException {
+        super.service(httpServletRequest, httpServletResponse);
+        ServicesRegistry.getInstance().getJahiaEventService()
+                .fireAggregatedEvents();
+    }
+
+    @Override
+    public void service(ServletRequest servletRequest,
+            ServletResponse servletResponse) throws ServletException,
+            IOException {
+        super.service(servletRequest, servletResponse);
+        ServicesRegistry.getInstance().getJahiaEventService()
+                .fireAggregatedEvents();
+    }
+
+    /**
+     * Injects the target GWT service to be called.
+     * 
+     * @param remoteServiceName
+     *            the Spring bean ID for the target GWT service to be called
+     */
+    public void setRemoteServiceName(String remoteServiceName) {
+        this.remoteServiceName = remoteServiceName;
+    }
+
+    private void setServiceData(RemoteService remoteService, boolean cleanUp) {
+        if (remoteService instanceof RequestResponseAware) {
+            RequestResponseAware service = (RequestResponseAware) remoteService;
+            service.setRequest(cleanUp ? null : getThreadLocalRequest());
+            service.setResponse(cleanUp ? null : getThreadLocalResponse());
+        }
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
+
+}

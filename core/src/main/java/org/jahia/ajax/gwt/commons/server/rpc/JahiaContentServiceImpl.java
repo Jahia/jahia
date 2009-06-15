@@ -34,11 +34,10 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.service.JahiaContentService;
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
-import org.jahia.ajax.gwt.utils.JahiaGWTUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.data.search.JahiaSearchResult;
@@ -51,7 +50,6 @@ import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.LoadFlags;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
-import org.jahia.engines.search.PagesSearchViewHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.BasicURLGeneratorImpl;
 import org.jahia.params.ProcessingContext;
@@ -67,19 +65,17 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.UserProperties;
 import org.jahia.services.usermanager.UserProperty;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.search.SearchHandler;
 import org.jahia.services.search.PageSearcher;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.ContentPageKey;
-import org.jahia.content.ContentObject;
 
 import java.util.*;
 
 /**
  * This is the content service, for getting pages, containers and so on...
  */
-public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl implements JahiaContentService {
+public class JahiaContentServiceImpl extends JahiaRemoteService implements JahiaContentService {
 
     private static final ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
     private static final Logger logger = Logger.getLogger(JahiaContentServiceImpl.class);

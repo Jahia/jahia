@@ -62,7 +62,7 @@ public interface LayoutmanagerService extends RemoteService {
 
         public static synchronized LayoutmanagerServiceAsync getInstance() {
             if (ourInstance == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "layoutmanager/";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "layoutmanager.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 ourInstance = (LayoutmanagerServiceAsync) GWT.create(LayoutmanagerService.class);
                 ((ServiceDefTarget) ourInstance).setServiceEntryPoint(serviceEntryPoint);

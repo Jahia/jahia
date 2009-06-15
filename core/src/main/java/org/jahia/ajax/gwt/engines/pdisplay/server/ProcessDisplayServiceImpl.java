@@ -36,7 +36,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.service.process.ProcessDisplayService;
 import org.jahia.ajax.gwt.engines.pdisplay.server.util.GWTProcessJobComparator;
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.commons.server.rpc.ProcessDisplayHelper;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJob;
@@ -65,7 +65,7 @@ import java.util.*;
  * Date: 10 janv. 2008
  * Time: 11:39:22
  */
-public class ProcessDisplayServiceImpl extends AbstractJahiaGWTServiceImpl implements ProcessDisplayService {
+public class ProcessDisplayServiceImpl extends JahiaRemoteService implements ProcessDisplayService {
     private static transient final JahiaSitesService JAHIA_SITES_SERVICE = ServicesRegistry.getInstance().getJahiaSitesService();
     private static transient final SchedulerService SCHEDULER_SERVICE = ServicesRegistry.getInstance().getSchedulerService();
 

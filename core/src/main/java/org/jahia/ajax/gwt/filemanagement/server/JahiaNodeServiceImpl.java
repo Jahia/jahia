@@ -46,7 +46,7 @@ import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
 import org.jahia.ajax.gwt.filemanagement.server.helper.FileManagerWorker;
 import org.jahia.ajax.gwt.filemanagement.server.helper.JCRVersioningHelper;
@@ -72,7 +72,7 @@ import java.util.Map;
  * @author rfelden
  * @version 5 mai 2008 - 17:23:39
  */
-public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements JahiaNodeService {
+public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNodeService {
     private static final transient Logger logger = Logger.getLogger(JahiaNodeServiceImpl.class);
 
     public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {

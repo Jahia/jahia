@@ -58,7 +58,7 @@ public interface ProcessDisplayService extends RemoteService {
 
         public static synchronized ProcessDisplayServiceAsync getInstance() {
             if (ourInstance == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "pdisplay/";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "pdisplay.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 ourInstance = (ProcessDisplayServiceAsync) GWT.create(ProcessDisplayService.class);
                 ((ServiceDefTarget) ourInstance).setServiceEntryPoint(serviceEntryPoint);

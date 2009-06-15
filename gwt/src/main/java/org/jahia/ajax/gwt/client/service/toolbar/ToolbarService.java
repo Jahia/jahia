@@ -64,7 +64,7 @@ public interface ToolbarService extends RemoteService {
 
         public static synchronized ToolbarServiceAsync getInstance() {
             if (ourInstance == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "toolbar/";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "toolbar.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 ourInstance = (ToolbarServiceAsync) GWT.create(ToolbarService.class);
                 ((ServiceDefTarget) ourInstance).setServiceEntryPoint(serviceEntryPoint);

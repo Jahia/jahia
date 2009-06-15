@@ -31,29 +31,152 @@
  */
 package org.jahia.ajax.gwt.linkchecker.server;
 
-import org.jahia.admin.AdministrationModule;
-import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
-import org.jahia.ajax.gwt.client.service.linkchecker.LinkCheckerService;
-import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaCheckedLink;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.acl.JahiaBaseACL;
-
 import java.util.List;
+
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.log4j.Logger;
+import org.jahia.admin.AdministrationModule;
+import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaCheckedLink;
+import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaLinkCheckerStatus;
+import org.jahia.ajax.gwt.client.service.linkchecker.LinkCheckerService;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
+import org.jahia.content.ContentFieldKey;
+import org.jahia.content.ContentObject;
+import org.jahia.content.ContentPageKey;
+import org.jahia.data.JahiaData;
+import org.jahia.data.fields.FieldTypes;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ProcessingContext;
+import org.jahia.services.acl.JahiaACLManagerService;
+import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.fields.ContentField;
+import org.jahia.services.integrity.Link;
+import org.jahia.services.integrity.LinkValidationResult;
+import org.jahia.services.pages.ContentPage;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * User: romain
  * Date: 11 juin 2009
  * Time: 15:09:20
  */
-public class LinkCheckerServiceImpl extends AbstractJahiaGWTServiceImpl implements LinkCheckerService {
+public class LinkCheckerServiceImpl extends JahiaRemoteService implements LinkCheckerService {
+    
+    private final static Logger logger = Logger.getLogger(LinkCheckerServiceImpl.class);
+    
+    private LinkChecker linkChecker;
+    
+    private static GWTJahiaCheckedLink getGWTViewObject(Link link,
+            LinkValidationResult validationResult, JahiaData jData) {
 
+        GWTJahiaCheckedLink viewObject = new GWTJahiaCheckedLink(link.getUrl(),
+                link.getSource().getObjectKey().toString(), "#", link
+                        .getSource().getWorkflowState(), link.getSource()
+                        .getLanguageCode(), validationResult.getErrorCode(),
+                validationResult.getErrorMessage());
+
+        viewObject.setCodeText(HttpStatus.getStatusText(validationResult
+                .getErrorCode()));
+        
+        ProcessingContext ctx = jData.getProcessingContext();
+        
+        ContentObject contentObj;
+        try {
+            contentObj = (ContentObject) ContentObject.getInstance(link.getSource().getObjectKey());
+        } catch (ClassNotFoundException ex) {
+            throw new IllegalArgumentException(ex.getMessage());
+        }
+        
+        if (contentObj != null) {
+            viewObject.setPageId(contentObj.getPageID());
+            ContentPage contentPage = null;
+            try {
+                contentPage = ContentPage
+                        .getPage(contentObj.getPageID(), false);
+            } catch (JahiaException ex) {
+                logger.warn("Unable to retrieve page with ID: "
+                        + contentObj.getPageID(), ex);
+            }
+
+            if (contentPage != null) {
+                String pageTitle = contentPage.getTitle(ctx
+                        .getEntryLoadRequest(), false);
+                if (pageTitle != null) {
+                    viewObject.setPageTitle(pageTitle);
+                }
+                try {
+                    String pageUrl = null;
+                    if (contentObj instanceof ContentPage) {
+                        int parentPageId = ((ContentPage) contentObj)
+                                .getParentID(ctx);
+                        ContentPage parent = ContentPage.getPage(parentPageId,
+                                false);
+                        if (parent != null) {
+                            pageUrl = parent.getUrl(ctx);
+                            viewObject.setPageId(parent.getPageID());
+                        }
+                    } else {
+                        pageUrl = contentPage.getUrl(ctx);
+                    }
+                    viewObject.setPageUrl(pageUrl);
+                } catch (JahiaException e) {
+                    logger.warn(e.getMessage(), e);
+                }
+            }
+
+            String updateUrl = null;
+            try {
+                ContentField fld = null;
+                if (ContentFieldKey.FIELD_TYPE.equals(contentObj.getObjectKey()
+                        .getType())) {
+                    fld = (ContentField) contentObj;
+                } else if (ContentPageKey.PAGE_TYPE.equals(contentObj
+                        .getObjectKey().getType())) {
+
+                    fld = (ContentField) contentObj.getParent(ctx
+                            .getEntryLoadRequest());
+                }
+                if (fld != null) {
+                    ContentContainer cnt = null;
+                    if (fld.getContainerID() != 0) {
+                        try {
+                            cnt = ContentContainer.getContainer(fld
+                                    .getContainerID());
+                        } catch (Exception ex) {
+                            // ignore
+                        }
+                    }
+                    updateUrl = (cnt != null ? jData.gui()
+                            .drawUpdateContainerUrl(cnt, fld.getID()) : jData
+                            .gui().drawUpdateFieldUrl(fld))
+                            + "&engine_lang="
+                            + link.getSource().getLanguageCode();
+                    viewObject.setFieldId(fld.getID());
+                    viewObject.setFieldType(FieldTypes.typeName[fld.getType()]);
+                }
+            } catch (JahiaException e) {
+                logger.error("Unable to compose update URL for the object: "
+                        + link.getSource().getObjectKey() + ". Cause: "
+                        + e.getMessage(), e);
+            }
+            if (updateUrl != null) {
+                viewObject.setUpdateUrl(updateUrl);
+            }
+        }
+        
+        return viewObject;
+    }
+    
+    private JahiaACLManagerService aclManagerService;
+    
+    private AdministrationModule linkCheckerAdministrationModule;
+    
     public Boolean checkLinks() {
         ProcessingContext ctx = retrieveParamBean();
         if (ctx.getUser().isAdminMember(ctx.getSiteID()) || hasAccess(ctx.getUser(), ctx.getSiteID())) {
-            LinkChecker.getInstance().startCheckingLinks(ctx.getSiteID());
+            linkChecker.startCheckingLinks(ctx.getSiteID());
             return Boolean.TRUE;
         } else {
             return Boolean.FALSE;
@@ -61,26 +184,55 @@ public class LinkCheckerServiceImpl extends AbstractJahiaGWTServiceImpl implemen
     }
 
     private boolean hasAccess(JahiaUser user, int siteID) {
-        return ServicesRegistry.getInstance().getJahiaACLManagerService().getSiteActionPermission(
-                ((AdministrationModule)SpringContextSingleton.getBean("linkCheckerAdministrationModule")).getPermissionName(),
+        return aclManagerService.getSiteActionPermission(
+                linkCheckerAdministrationModule.getPermissionName(),
                 user,
                 JahiaBaseACL.READ_RIGHTS,
                 siteID) > 0;
     }
 
     /**
-     * This methods retrieve the content of the checked links list. If it returns null, this means the process is over.
-     *
-     * @return the checked links or null if it is over
+     * Retrieves the status and list of links to be displayed in the report.
+     * 
+     * @return the status and list of links to be displayed in the report
      */
-    public List<GWTJahiaCheckedLink> lookForCheckedLinks() {
-        LinkChecker checker = LinkChecker.getInstance();
-        List<GWTJahiaCheckedLink> links = checker.getLinks();
-        return !links.isEmpty() || checker.getStatus().isActive() ? links : null;
+    public GWTJahiaLinkCheckerStatus lookForCheckedLinks() {
+        GWTJahiaLinkCheckerStatus status = new GWTJahiaLinkCheckerStatus();
+        status.setProperties(linkChecker.getStatus().getProperties());
+
+        List<Object[]> invalidLinks = linkChecker.getLinks();
+        if (!invalidLinks.isEmpty()) {
+            ProcessingContext ctx = retrieveParamBean();
+            JahiaData jData = retrieveJahiaData(new GWTJahiaPageContext(ctx
+                    .getPageID(), ctx.getOperationMode()));
+            for (Object[] processedLink : invalidLinks) {
+                status
+                        .getLinks()
+                        .add(
+                                getGWTViewObject(
+                                        (Link) processedLink[0],
+                                        (LinkValidationResult) processedLink[1],
+                                        jData));
+            }
+        }
+        return status;
+    }
+    
+    public void setAclManagerService(JahiaACLManagerService aclManagerService) {
+        this.aclManagerService = aclManagerService;
+    }
+
+    public void setLinkCheckerAdministrationModule(
+            AdministrationModule linkCheckerAdministrationModule) {
+        this.linkCheckerAdministrationModule = linkCheckerAdministrationModule;
     }
 
     public void stopCheckingLinks() {
-        LinkChecker.getInstance().stopCheckingLinks();
+        linkChecker.stopCheckingLinks();
+    }
+
+    public void setLinkChecker(LinkChecker linkChecker) {
+        this.linkChecker = linkChecker;
     }
     
 }

@@ -146,7 +146,7 @@
             </activation>
             <build>
                 <plugins>
-                  <plugin>
+                   <plugin>
                         <groupId>com.totsp.gwt</groupId>
                         <artifactId>maven-googlewebtoolkit2-plugin</artifactId>
                         <version>2.0-RC1-jahiafork</version>
@@ -173,7 +173,6 @@
                                 <value>org.jahia.ajax.gwt.template.mediagallery.live.Live</value>
                                 <value>org.jahia.ajax.gwt.template.opensearch.edit.Edit</value>
                                 <value>org.jahia.ajax.gwt.template.opensearch.live.Live</value>
-
                                 <value>org.jahia.ajax.gwt.module.acleditor.ACLEditor</value>
                                 <value>org.jahia.ajax.gwt.module.admin.Admin</value>
                                 <value>org.jahia.ajax.gwt.module.categorymanager.CategoryManager</value>
@@ -196,7 +195,7 @@
                         </configuration>
                         <executions>
                             <execution>
-                            		<phase>compile</phase>
+                                <phase>compile</phase>
                                 <goals>
                                     <goal>compile</goal>
                                 </goals>
@@ -242,7 +241,7 @@
                         </configuration>
                         <executions>
                             <execution>
-                            		<phase>compile</phase>
+                                <phase>compile</phase>
                                 <goals>
                                     <goal>compile</goal>
                                 </goals>
@@ -437,6 +436,14 @@
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -494,8 +501,8 @@
             <version>${pluto.version}</version>
             <exclusions>
                 <exclusion>
-                     <groupId>org.slf4j</groupId>
-                     <artifactId>slf4j-jdk14</artifactId>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-jdk14</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -505,8 +512,8 @@
             <version>${pluto.version}</version>
             <exclusions>
                 <exclusion>
-                     <groupId>org.slf4j</groupId>
-                     <artifactId>slf4j-jdk14</artifactId>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-jdk14</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -516,8 +523,16 @@
             <version>${pluto.version}</version>
             <exclusions>
                 <exclusion>
-                     <groupId>org.slf4j</groupId>
-                     <artifactId>slf4j-jdk14</artifactId>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-jdk14</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xerces</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -527,8 +542,8 @@
             <version>${pluto.version}</version>
             <exclusions>
                 <exclusion>
-                     <groupId>org.slf4j</groupId>
-                     <artifactId>slf4j-jdk14</artifactId>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-jdk14</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -656,7 +671,8 @@
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${pom.basedir}/src/main/webapp/WEB-INF/var/prepackagedSites</outputDirectory>
+                            <outputDirectory>${pom.basedir}/src/main/webapp/WEB-INF/var/prepackagedSites
+                            </outputDirectory>
                             <stripVersion>true</stripVersion>
                         </configuration>
 
@@ -676,7 +692,8 @@
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${pom.basedir}/src/main/webapp/WEB-INF/var/prepackagedSites</outputDirectory>
+                            <outputDirectory>${pom.basedir}/src/main/webapp/WEB-INF/var/prepackagedSites
+                            </outputDirectory>
                             <stripVersion>true</stripVersion>
                         </configuration>
 

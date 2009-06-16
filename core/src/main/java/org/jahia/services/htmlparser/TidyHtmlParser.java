@@ -34,7 +34,6 @@ package org.jahia.services.htmlparser;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.JahiaTools;
-import org.jahia.utils.fileparsers.CharsetDetection;
 import org.jahia.utils.properties.PropertiesManager;
 import org.w3c.dom.Document;
 import org.w3c.tidy.Tidy;
@@ -202,19 +201,9 @@ public class TidyHtmlParser implements HtmlParser {
 
         // charset
         byte[] strByte = null;
-        String charSet = null; // by default open as ascii
-        CharsetDetection charsetDet = new CharsetDetection();
-        try {
-            strByte = result.getBytes();
-            strIn = new ByteArrayInputStream(strByte);
-            charsetDet.charsetDetection(strIn);
-            charSet = charsetDet.getCharset();
-
-            if ((config.getProperty(TidyConfig.CHAR_ENCODING) == null)
-                    && "UTF-8".equalsIgnoreCase(charSet)) {
-                config.setProperty(TidyConfig.CHAR_ENCODING, "utf8");
-            }
-        } catch (Exception t) {
+        String charSet = SettingsBean.getInstance().getDefaultResponseBodyEncoding();
+        if ("UTF-8".equalsIgnoreCase(charSet) && config.getProperty(TidyConfig.CHAR_ENCODING) == null) {
+            config.setProperty(TidyConfig.CHAR_ENCODING, "utf8");
         }
 
         tidy.setConfigurationFromProps(config);

@@ -993,84 +993,12 @@
             </exclusions>
         </dependency>
 
-<!-- BEGIN clipBuilder dependencies--><!-- main lib -->
-        <dependency>
-            <groupId>jahia</groupId>
-            <artifactId>clipBuilder</artifactId>
-            <version>SNAPSHOT</version>
-        </dependency>
-        <!-- expering cache-->
-        <!--<dependency>
-            <groupId>expiringcache</groupId>
-            <artifactId>expiringcache</artifactId>
-            <version>1.0</version>
-        </dependency>-->
-        <!-- ecs -->
-        <!--<dependency>
-            <groupId>ecs</groupId>
-            <artifactId>ecs</artifactId>
-            <version>1.4.2</version>
-        </dependency>-->
-        <!-- htmlunit dep: gsbase-->
-        <dependency>
-            <groupId>gsbase</groupId>
-            <artifactId>gsbase</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <!-- htmlunit dep: js-1.6R1-->
-        <dependency>
-            <groupId>rhino</groupId>
-            <artifactId>js</artifactId>
-            <version>1.6R1</version>
-        </dependency>
-        <!-- htmlunit dep: junitperf-1.8-->
-        <dependency>
-            <groupId>junitperf</groupId>
-            <artifactId>junitperf</artifactId>
-            <version>1.8</version>
-        </dependency>
-        <!-- htmlparser dep: filterbuilder-->
-        <dependency>
-            <groupId>htmlparser</groupId>
-            <artifactId>filterbuilder</artifactId>
-            <version>1.5</version>
-        </dependency>
-        <!-- htmlParser dep: htmlparser-->
-        <dependency>
-            <groupId>htmlparser</groupId>
-            <artifactId>htmlparser</artifactId>
-            <version>1.5</version>
-        </dependency>
-        <!-- htmlparser dep: thumbelina-->
-        <dependency>
-            <groupId>htmlparser</groupId>
-            <artifactId>thumbelina</artifactId>
-            <version>1.5</version>
-        </dependency>
-        <!-- htmlparser dep: sax -->
-        <dependency>
-            <groupId>sax</groupId>
-            <artifactId>sax</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <!-- htmlparser dep: checkstyle-->
-        <dependency>
-            <groupId>checkstyle</groupId>
-            <artifactId>checkstyle</artifactId>
-            <version>3.1</version>
-        </dependency>
-        <!-- eh-cache -->
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>1.5.0</version>
         </dependency>
-        <!--<dependency>
-            <groupId>backport-util-concurrent</groupId>
-            <artifactId>backport-util-concurrent</artifactId>
-            <version>3.0</version>
-        </dependency>-->
-        <!-- End clipbuilder dependencies-->
+
         <!-- todo: migrate to junit 4.4-->
         <dependency>
             <groupId>junit</groupId>
@@ -1137,12 +1065,6 @@
             <groupId>xmlrpc</groupId>
             <artifactId>xmlrpc</artifactId>
             <version>1.2</version>
-        </dependency>
-        <!-- ESI related packages -->
-        <dependency>
-            <groupId>fastmd5</groupId>
-            <artifactId>fastmd5</artifactId>
-            <version>2.6</version>
         </dependency>
         <!-- hibernate dependent package and package for test purpose -->
         <dependency>

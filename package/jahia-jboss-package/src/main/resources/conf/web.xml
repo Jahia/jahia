@@ -305,6 +305,11 @@
            <param-name>tagLibJar1</param-name>
            <param-value>jstl.jar</param-value>
         </init-param>
+        <init-param>
+           <description>Portlet taglibs</description>
+           <param-name>tagLibJar2</param-name>
+           <param-value>../../lib/pluto-taglib-2.0.0.jar</param-value>
+        </init-param>
 
         <load-on-startup>3</load-on-startup>
     </servlet>

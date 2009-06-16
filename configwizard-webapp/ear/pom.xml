@@ -25,60 +25,24 @@
 
         <!-- Pluto 2.0-->
         <dependency>
+            <groupId>org.apache.portals</groupId>
+            <artifactId>portlet-api_2.0_spec</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.portals.pluto</groupId>
             <artifactId>pluto-container-api</artifactId>
             <version>${pluto.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.portals.pluto</groupId>
             <artifactId>pluto-container-driver-api</artifactId>
             <version>${pluto.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.portals.pluto</groupId>
-            <artifactId>pluto-container</artifactId>
+            <artifactId>pluto-taglib</artifactId>
             <version>${pluto.version}</version>
-            <exclusions>
-                <exclusion>
-                     <groupId>org.slf4j</groupId>
-                     <artifactId>slf4j-jdk14</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.portals.pluto</groupId>
-            <artifactId>pluto-portal-driver</artifactId>
-            <version>${pluto.version}</version>
-            <exclusions>
-                <exclusion>
-                     <groupId>org.slf4j</groupId>
-                     <artifactId>slf4j-jdk14</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.portals.pluto</groupId>
-            <artifactId>pluto-portal-driver-impl</artifactId>
-            <version>${pluto.version}</version>
-            <exclusions>
-                <exclusion>
-                     <groupId>org.slf4j</groupId>
-                     <artifactId>slf4j-jdk14</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.portals.pluto</groupId>
-            <artifactId>pluto-util</artifactId>
-            <version>${pluto.version}</version>
-            <exclusions>
-                <exclusion>
-                     <groupId>org.slf4j</groupId>
-                     <artifactId>slf4j-jdk14</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Pluto transitive dependencies -->

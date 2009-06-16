@@ -110,14 +110,14 @@ public class LinkChecker extends ContentPanel {
                             Log.debug("polling over");
                             stop();
                             m_status.setMessage(Messages.getResource("lc_processed") + " "
-                                            + status.getProcessed()
+                                            + status.getProcessed() + " "
                                             + Messages.getResource("lc_linksfound") + " "
-                                            + status.getFailed()
+                                            + status.getFailed() + " "
                                             + Messages.getResource("lc_invalid"));
                         } else {
                             m_status.showBusy(Messages.getResource("lc_checking")+"... "
                                             + Messages.getResource("lc_processed") + " "
-                                            + status.getProcessed() + Messages.getResource("lc_of") +" "
+                                            + status.getProcessed() + " " + Messages.getResource("lc_of") + " "
                                             + status.getTotal() +" "
                                             + Messages.getResource("lc_linksfound") + " "
                                             + status.getFailed() + " "
@@ -182,7 +182,7 @@ public class LinkChecker extends ContentPanel {
     private void startPolling() {
         Log.debug("scheduled every 2 seconds");
         m_timer.scheduleRepeating(2000);
-        m_status.showBusy("checking links");
+        m_status.showBusy(Messages.getResource("lc_checking"));
     }
 
     private void stopPolling() {
@@ -212,14 +212,33 @@ public class LinkChecker extends ContentPanel {
         headerList
                 .add(new RowExpander(
                         XTemplate
-                                .create("<p><b>Link:</b> {link}</p><br/>"
-                                        + "<p><b>Page:</b> <a href=\"{pageUrl}\" target=\"_blank\">{pageTitle} [{pageId}]</a></p><br/>"
-                                        + "<p><b>Field:</b> {fieldType} [{fieldId}]</p><br/>"
-                                        + "<p><b>Language:</b> {languageCode}</p><br/>"
-                                        + "<p><b>Workflow state:</b> {workflowState}</p><br/>"
-                                        + "<p><b>Error code:</b> {code} {codeText}</p><br/>"
-                                        + "<p><b>Details:</b><br/>{errorDetails}</p><br/>"
-                                        + "<p><b>Edit:</b> <a href=\"{updateUrl}\" target=\"_blank\">link</a></p>")));  
+                                .create("<p><b>"
+                                        + Messages.getResource("lc_link")
+                                        + ":</b> {link}</p><br/>"
+                                        + "<p><b>"
+                                        + Messages.getResource("lc_page")
+                                        + ":</b> <a href=\"{pageUrl}\" target=\"_blank\">{pageTitle} [{pageId}]</a></p><br/>"
+                                        + "<p><b>"
+                                        + Messages.getResource("lc_field")
+                                        + ":</b> {fieldType} [{fieldId}]</p><br/>"
+                                        + "<p><b>"
+                                        + Messages.getResource("lc_language")
+                                        + ":</b> {languageCode}</p><br/>"
+                                        + "<p><b>"
+                                        + Messages.getResource("lc_workflow")
+                                        + ":</b> {workflowState}</p><br/>"
+                                        + "<p><b>"
+                                        + Messages.getResource("lc_code")
+                                        + ":</b> {code} {codeText}</p><br/>"
+                                        + "<p><b>"
+                                        + Messages.getResource("lc_details")
+                                        + ":</b><br/>{errorDetails}</p><br/>"
+                                        + "<p><b>"
+                                        + Messages.getResource("lc_edit")
+                                        + ":</b> <a href=\"{updateUrl}\" target=\"_blank\"><img src=\""
+                                        + URL.getJahiaContext()
+                                        + "/gwt/resources/org/jahia/ajax/gwt/public/images/actions/update.png\""
+                                        + " height=\"16\" width=\"16\" alt=\"edit\"/></a></p>")));  
         
         ColumnConfig col = new ColumnConfig("link", Messages.getResource("lc_link"), 380);
         col.setSortable(true);
@@ -244,7 +263,7 @@ public class LinkChecker extends ContentPanel {
         col.setResizable(true);
         headerList.add(col);
 
-        col = new ColumnConfig("workflowState", Messages.getResource("lc_workflow"), 60);
+        col = new ColumnConfig("workflowState", Messages.getResource("lc_workflow"), 100);
         col.setSortable(true);
         col.setResizable(true);
         col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>() {

@@ -63,6 +63,12 @@
                                         aliasResourceName="lc_code"/>
             <internal:gwtResourceBundle resourceName="org.jahia.admin.linkChecker.edit.label"
                                         aliasResourceName="lc_edit"/>
+            <internal:gwtResourceBundle resourceName="org.jahia.admin.linkChecker.page.label"
+                                        aliasResourceName="lc_page"/>
+            <internal:gwtResourceBundle resourceName="org.jahia.admin.linkChecker.field.label"
+                                        aliasResourceName="lc_field"/>
+            <internal:gwtResourceBundle resourceName="org.jahia.admin.linkChecker.details.label"
+                                        aliasResourceName="lc_details"/>
 
             <internal:gwtResourceBundle resourceName="org.jahia.admin.linkChecker.processed.label"
                                         aliasResourceName="lc_processed"/>

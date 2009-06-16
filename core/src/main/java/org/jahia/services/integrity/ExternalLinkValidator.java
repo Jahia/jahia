@@ -174,6 +174,10 @@ public class ExternalLinkValidator extends BaseLinkValidator {
         this.httpClient = httpClient;
     }
 
+    public void setMaxRedirects(int maxRedirects) {
+        this.maxRedirects = maxRedirects;
+    }
+
     public void setMethod(String method) {
         this.method = method;
     }

@@ -30,6 +30,8 @@
                                         <constructor-arg index="0" ref="MultiThreadedHttpConnectionManager"/>
                                     </bean>
                                 </property>
+                                <property name="maxRedirects" value="10"/>
+                                <property name="method" value="head"/>
                             </bean>
                         </entry>
                         <entry key="INTERNAL_PAGE">

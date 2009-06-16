@@ -32,10 +32,12 @@
       </init-param>
    </filter>
 
+<!-- 
    <filter-mapping>
       <filter-name>CommonHeadersFilter</filter-name>
       <url-pattern>/*</url-pattern>
    </filter-mapping>
+ -->   
    
    <!-- JBAS-4752: This filter should be enabled when authentication cache   -->
    <!-- must be flushed as soon as the http sessions expire.                 -->

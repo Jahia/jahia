@@ -41,7 +41,6 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
-import org.apache.commons.io.FilenameUtils;
 import org.jahia.data.beans.JahiaBean;
 import org.jahia.data.beans.TemplatePathResolverBean;
 import org.jahia.data.beans.TemplatePathResolverFactory;
@@ -171,11 +170,7 @@ public class IncludeTag extends ImportSupport {
     }
 
     public void setPage(String page) throws JspTagException {
-        String normalizedPath = FilenameUtils.normalize(page);
-        this.url = null;
-        if(normalizedPath!=null) {
-            this.url = getResolvedPath(normalizedPath);
-        }
+        this.url = getResolvedPath(page);
     }
 
     @Override

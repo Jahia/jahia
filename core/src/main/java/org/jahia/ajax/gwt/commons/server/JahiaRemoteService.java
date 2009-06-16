@@ -53,6 +53,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
@@ -73,7 +74,8 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
     private static final String ORG_JAHIA_DATA_JAHIA_DATA = "org.jahia.data.JahiaData";
     private static final String ORG_JAHIA_PARAMS_PARAM_BEAN = "org.jahia.params.ParamBean";
     
-    private JahiaPreferencesService preferencesService;
+    private JahiaPreferencesService preferencesService = ServicesRegistry
+            .getInstance().getJahiaPreferencesService();
     private HttpServletRequest request;
     private HttpServletResponse response;
     private ServletContext servletContext;

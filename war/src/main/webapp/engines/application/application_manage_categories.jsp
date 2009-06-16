@@ -96,7 +96,7 @@
         // get description
         String description = defaultDescription;
         if (isPortlet) {
-            description = definition.getDescription();
+            description = definition.getDescription(jData.getProcessingContext().getLocale());
         }
 
         //get Category

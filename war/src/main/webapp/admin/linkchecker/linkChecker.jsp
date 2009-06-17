@@ -32,14 +32,19 @@
 
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
-<html>
+<%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
+<utility:setBundle basename="JahiaInternalResources"/>
+<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>Jahia Link Checker</title>
 		<internal:gwtInit standalone="true"/>
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.linkchecker.LinkChecker" />
 		<link href="screen.css" rel="stylesheet" type="text/css"/>
-    <link href="jcg.css" rel="stylesheet" type="text/css"/>
+        <link href="jcg.css" rel="stylesheet" type="text/css"/>
+        <link href="../../css/andromeda.css" rel="stylesheet" type="text/css"/>
 	</head>
 	<body>
 		<div id="wrapper">
@@ -97,5 +102,12 @@
     	<br class="c"/>
 			<div id="linkchecker" />
 		</div>
+        <div id="actionBar">
+            <span class="dex-PushButton">
+                <span class="first-child">
+                    <a class="ico-back" href='<%=org.jahia.bin.JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
+                </span>
+            </span>
+        </div>
 	</body>
 </html>

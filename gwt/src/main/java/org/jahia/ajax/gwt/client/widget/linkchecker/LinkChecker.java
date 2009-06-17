@@ -50,8 +50,10 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.allen_sauer.gwt.log.client.Log;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaCheckedLink;
 import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaLinkCheckerStatus;
@@ -66,11 +68,40 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class LinkChecker extends ContentPanel {
 
+    private static String[] WORKFLOW_STATE = new String[]{Messages.getResource("lc_versioned"), Messages.getResource("lc_live"), Messages.getResource("lc_staging"), Messages.getResource("lc_notify")};
+    private static String[] WORKFLOW_IMAGES = new String[]{"600", "111", "121", "130"};
+    private static Map<Integer, String> CODE_ICONS;
+
+    static {
+        CODE_ICONS = new HashMap<Integer, String>();
+        CODE_ICONS.put(0, "warning.png");
+        CODE_ICONS.put(300, "check.png");
+        CODE_ICONS.put(301, "arrow_right_green.png");
+        CODE_ICONS.put(302, "arrow_right_green.png");
+        CODE_ICONS.put(307, "arrow_right_green.png");
+        CODE_ICONS.put(400, "warning.png");
+        CODE_ICONS.put(401, "lock.png");
+        CODE_ICONS.put(403, "lock.png");
+        CODE_ICONS.put(404, "unknown.png");
+        CODE_ICONS.put(500, "error.png");
+    }
+    
     private ListStore<GWTJahiaCheckedLink> m_store;
     private Timer m_timer;
     private TextToolItem stop;
     private StatusBar m_status;
     private Grid<GWTJahiaCheckedLink> linkTable;
+
+    private static String getCodeIcon(int errorCode) {
+        String icon = CODE_ICONS.get(errorCode);
+        if (icon == null) {
+            icon = CODE_ICONS.get(100 * (int) (errorCode / 100));
+        }
+        if (icon == null) {
+            icon = CODE_ICONS.get(0);
+        }
+        return icon;
+    }
 
     public LinkChecker() {
         super(new FitLayout());
@@ -172,7 +203,7 @@ public class LinkChecker extends ContentPanel {
         setTopComponent(toolBar);
 
         m_status = new StatusBar();
-        m_status.setMessage("idle");
+        m_status.setMessage("&nbsp;");
 
         setBottomComponent(m_status);
 
@@ -203,10 +234,11 @@ public class LinkChecker extends ContentPanel {
         m_timer.cancel();
         stop.setEnabled(false);
         m_status.clear();
-        m_status.setMessage("done");
+        m_status.setMessage("&nbsp;");
     }
 
     private ColumnModel getHeaders() {
+        final String ctx = URL.getJahiaContext();
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
 
         headerList
@@ -236,11 +268,44 @@ public class LinkChecker extends ContentPanel {
                                         + "<p><b>"
                                         + Messages.getResource("lc_edit")
                                         + ":</b> <a href=\"{updateUrl}\" target=\"_blank\"><img src=\""
-                                        + URL.getJahiaContext()
+                                        + ctx
                                         + "/gwt/resources/org/jahia/ajax/gwt/public/images/actions/update.png\""
                                         + " height=\"16\" width=\"16\" alt=\"edit\"/></a></p>")));  
         
-        ColumnConfig col = new ColumnConfig("link", Messages.getResource("lc_link"), 380);
+        ColumnConfig col = new ColumnConfig("code", "", 30);
+        col.setSortable(true);
+        col.setResizable(false);
+        col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>() {
+            public String render(GWTJahiaCheckedLink link, String property,
+                    ColumnData config, int rowIndex, int colIndex,
+                    ListStore<GWTJahiaCheckedLink> store) {
+                return "<span title=\""
+                        + link.getCodeText()
+                        + "\">"
+                        + "<img src=\""
+                        + ctx
+                        + "/gwt/resources/org/jahia/ajax/gwt/public/images/icons/"
+                        + getCodeIcon(link.getCode()) + "\""
+                        + " height=\"16\" width=\"16\" alt=\"" + link.getCode()
+                        + "\" title=\"" + link.getCodeText() + "\"/></span>";
+            }
+        });
+        headerList.add(col);
+
+        col = new ColumnConfig("code", Messages.getResource("lc_code"), 50);
+        col.setSortable(true);
+        col.setResizable(true);
+        col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>() {
+            public String render(GWTJahiaCheckedLink link, String property,
+                    ColumnData config, int rowIndex, int colIndex,
+                    ListStore<GWTJahiaCheckedLink> store) {
+                return "<span title=\"" + link.getCodeText() + "\">"
+                        + link.getCode() + "</span>";
+            }
+        });
+        headerList.add(col);
+
+        col = new ColumnConfig("link", Messages.getResource("lc_link"), 380);
         col.setSortable(true);
         col.setResizable(true);
         headerList.add(col);
@@ -268,25 +333,14 @@ public class LinkChecker extends ContentPanel {
         col.setResizable(true);
         col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>() {
             public String render(GWTJahiaCheckedLink gwtJahiaCheckedLink, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaCheckedLink> gwtJahiaCheckedLinkListStore) {
-                String[] ws = new String[]{Messages.getResource("lc_versioned"), Messages.getResource("lc_live"), Messages.getResource("lc_staging"), Messages.getResource("lc_notify")};
-                String[] images = new String[]{"600", "111", "121", "130"};
-                return "<img src=\"../../engines/images/icons/workflow/" + images[gwtJahiaCheckedLink.getWorkflowState()] + ".png\">&nbsp;" + ws[gwtJahiaCheckedLink.getWorkflowState()];
+                return "<img src=\"../../engines/images/icons/workflow/"
+                        + WORKFLOW_IMAGES[gwtJahiaCheckedLink.getWorkflowState()]
+                        + ".png\" height=\"12\" width=\"12\" alt=\""
+                        + gwtJahiaCheckedLink.getWorkflowState() + "\">&nbsp;"
+                        + WORKFLOW_STATE[gwtJahiaCheckedLink.getWorkflowState()];
             }
         });
 
-        headerList.add(col);
-
-        col = new ColumnConfig("code", Messages.getResource("lc_code"), 50);
-        col.setSortable(true);
-        col.setResizable(true);
-        col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>() {
-            public String render(GWTJahiaCheckedLink link, String property,
-                    ColumnData config, int rowIndex, int colIndex,
-                    ListStore<GWTJahiaCheckedLink> store) {
-                return "<span title=\"" + link.getCodeText() + "\">"
-                        + link.getCode() + "</span>";
-            }
-        });
         headerList.add(col);
 
         col = new ColumnConfig("edit", Messages.getResource("lc_edit"), 50);
@@ -299,7 +353,7 @@ public class LinkChecker extends ContentPanel {
                 return "<a href=\""
                         + link.getUpdateUrl()
                         + "\" target=\"_blank\"><img src=\""
-                        + URL.getJahiaContext()
+                        + ctx
                         + "/gwt/resources/org/jahia/ajax/gwt/public/images/actions/update.png\""
                         + " height=\"16\" width=\"16\" alt=\"edit\"/></a>";
             }
@@ -308,5 +362,5 @@ public class LinkChecker extends ContentPanel {
         
         return new ColumnModel(headerList);
     }
-
+    
 }

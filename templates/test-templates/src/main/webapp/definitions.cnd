@@ -161,6 +161,9 @@
  bigText content
  page source (page[type="external"])
 
+[test_templates:newsletterLink] > jnt:container
+ page link (page[type="direct",templates="Newsletter"])
+
 [test_templates:allFieldsWithSubSubList] > test_templates:allFields
  containerList allFields (test_templates:allFields)
   
@@ -267,6 +270,12 @@
  containerList subscribableContent (test_templates:subscribableContent [addListMixin="jmix:subscribable"])
  containerList subscribableTechWatch (test_templates:subscribableTechWatch [addListMixin="jmix:rssable,jmix:subscribable"])
  containerList subscribableArticle (test_templates:subscribableArticle)
+ 
+[test_templates:newsletterSubscription] > test_templates:generic
+ containerList navLink (jnt:navLink)
+ containerList newsletter (test_templates:newsletterLink)
+
+[test_templates:newsletter] > jnt:page
  
 [test_templates:addressing] > test_templates:generic
 

@@ -103,6 +103,10 @@
                   page-type="test_templates:generic" description="description.template.subscriptions"/>
         <template name="JCR Tags" display-name="template.name.jcr.tags" filename="jcr/tags.jsp"
                   page-type="test_templates:generic" description="description.template.jcr.tags"/>
+        <template name="Newsletter subscription" display-name="template.name.newsletterSubscription" filename="generic.jsp?workAreaJSP=miscellaneous/newsletterSubscription.jsp"
+                  page-type="test_templates:newsletterSubscription" description="description.template.newsletterSubscription"/>
+        <template name="Newsletter" display-name="template.name.newsletter" filename="miscellaneous/newsletter.jsp"
+                  page-type="test_templates:newsletter" description="description.template.newsletter"/>
                           
         <!-- remove inherited -->
         <template name="FAQ" display-name="template.name.faq" filename="faq.jsp" visible="false"

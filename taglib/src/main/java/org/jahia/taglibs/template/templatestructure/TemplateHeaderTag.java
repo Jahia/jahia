@@ -45,7 +45,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.Tag;
 import java.io.IOException;
 
@@ -126,6 +125,8 @@ import java.io.IOException;
 public class TemplateHeaderTag extends AbstractJahiaTag {
 
     private final static Logger logger = Logger.getLogger(TemplateHeaderTag.class);
+    
+    private boolean gwtForGuest;
 
     public int doStartTag() throws JspException {
         // retrieve parameters
@@ -150,6 +151,19 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
         // write output to StringBuffer
         StringBuilder buf = new StringBuilder("<head>\n");
 
+        // check the gwtForGuest attribute from parent tag
+        Tag parent = getParent();
+        gwtForGuest = false;
+        if (parent instanceof TemplateTag) {
+            gwtForGuest = ((TemplateTag) parent).enableGwtForGuest();
+        }
+
+        if (AdvPreviewSettings.isInUserAliasingMode() || isLogged() || gwtForGuest) {
+            buf.append(("<!-- cache:vars var=\""+ SkeletonAggregatorValve.GWT_VARIABLE+"\" -->"));
+            buf.append(GWTInitializer.getInitString(pageContext)).append("\n");
+            buf.append("<!-- /cache:vars -->\n");
+        }
+        
         buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         buf.append(((HttpServletRequest) request).getContextPath());
         buf.append("/css/styles.css\"/>");
@@ -176,19 +190,8 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
 
     public int doEndTag() throws JspException {
         try {
-            // check the gwtForGuest attribute from parent tag
-            Tag parent = getParent();
-            boolean gwtForGuest = false;
-            if (parent instanceof TemplateTag) {
-                gwtForGuest = ((TemplateTag) parent).enableGwtForGuest();
-            }
-
             if (AdvPreviewSettings.isInUserAliasingMode() || isLogged() || gwtForGuest) {
-                JspWriter out = pageContext.getOut();
-                out.append(("<!-- cache:vars var=\""+ SkeletonAggregatorValve.GWT_VARIABLE+"\" -->"));
-                out.append(GWTInitializer.getInitString(pageContext)).append("\n");
-                out.append("<!-- /cache:vars -->\n");
-                out.append(DefaultIncludeProvider.getJSToolsImportJavaScript(getJahiaData()));
+                pageContext.getOut().append(DefaultIncludeProvider.getJSToolsImportJavaScript(getJahiaData()));
             }
             pageContext.getOut().println("</head>");
         } catch (IOException e) {

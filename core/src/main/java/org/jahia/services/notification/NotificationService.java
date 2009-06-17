@@ -40,6 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.IOException;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.OrderedMap;
@@ -53,6 +54,8 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.params.ProcessingContext;
 
 /**
  * Jahia service implementation for firing notification events and calling
@@ -310,6 +313,18 @@ public class NotificationService extends JahiaService {
 
     public void setSubscriptionService(SubscriptionService subscriptionService) {
         this.subscriptionService = subscriptionService;
+    }
+
+    public String getPageAsNewsletter(ProcessingContext processingContext, JahiaUser user, String language, int pageID) {
+        try {
+            String html = HtmlHelper.getPage(processingContext, user, language, pageID);
+            return HtmlHelper.cleanHtmlForNewsletter(processingContext, html);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        } catch (JahiaException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
     }
 
     @Override

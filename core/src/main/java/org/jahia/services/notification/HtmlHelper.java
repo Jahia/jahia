@@ -119,11 +119,9 @@ public class HtmlHelper {
                     continue;
                 }
 
-                if (href.startsWith("/")) {
-                    href = ctx.getScheme() + "://" + ctx.getServerName() + ":" + ctx.getServerPort() + href;
-                }
                 try {
-                    InputStream is = new URL(href).openStream();
+                    InputStream is = new URL(org.jahia.settings.SettingsBean.getInstance().getLocalAccessUri()+href).openStream();
+
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     IOUtils.copy(is,baos);
 
@@ -132,7 +130,12 @@ public class HtmlHelper {
                     if ( type!=null ) {
                         sb.append(' ').append(type);
                     }
-                    String basehref = href.substring(0,href.lastIndexOf('/')+1);
+                    String baseHref = href;
+                    if (baseHref.startsWith("/")) {
+                        baseHref = ctx.getScheme() + "://" + ctx.getSite().getServerName() + ":" + ctx.getServerPort() + href;
+                    }
+                    String basehref = baseHref.substring(0,baseHref.lastIndexOf('/')+1);
+                    
                     String stylesheet = baos.toString("UTF-8");
                     
                     stylesheet = Pattern.compile("url *\\( *\"?([^\\:\" )]*)\"? *\\)").matcher(stylesheet).replaceAll("url(\""+basehref+"$1\")");
@@ -149,7 +152,7 @@ public class HtmlHelper {
             final Attributes attributes = startTag.getAttributes();
             final Attribute styleAttr = attributes.get("style");
             if (styleAttr != null ) {
-                String basehref = ctx.getScheme() + "://" + ctx.getServerName() + ":" + ctx.getServerPort();
+                String basehref = ctx.getScheme() + "://" + ctx.getSite().getServerName() + ":" + ctx.getServerPort();
                 String v = styleAttr.getValue();
                 v = Pattern.compile("url *\\( *\"?([^\\:\")]*)\"? *\\)").matcher(v).replaceAll("url("+basehref+"$1)");
                 document.replace(styleAttr.getValueSegment(), v);
@@ -170,7 +173,7 @@ public class HtmlHelper {
         String originalHrefValue = href.getValue();
         String hrefValue = originalHrefValue;
         if (hrefValue.startsWith("/")) {
-            hrefValue = ctx.getScheme() + "://" + ctx.getServerName() + ":" + ctx.getServerPort() + hrefValue;
+            hrefValue = ctx.getScheme() + "://" + ctx.getSite().getServerName() + ":" + ctx.getServerPort() + hrefValue;
             if (hrefValue.contains(";jsessionid")) {
                 hrefValue = hrefValue.substring(0,hrefValue.indexOf(";jsessionid"));
             }

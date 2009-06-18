@@ -1096,9 +1096,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
             SAXParser parser = factory.newSAXParser();
-
-            JahiaUser user = JahiaAdminUser.getAdminUser(jParams.getSiteID());
-            jParams.setTheUser(user);
+            if (!jParams.getUser().isAdminMember(jParams.getSiteID())) {
+                JahiaUser user = JahiaAdminUser.getAdminUser(jParams.getSiteID());
+                jParams.setTheUser(user);
+            }
 
             ImportHandler handler = new ImportHandler(parent, jParams, lang, actions, result);
             handler.setUpdateOnly(updateOnly);

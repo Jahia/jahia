@@ -32,6 +32,7 @@
 package org.jahia.services.content;
 
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
+import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -61,6 +62,11 @@ import javax.security.auth.callback.*;
 import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.util.*;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.net.MalformedURLException;
 
 /**
  *
@@ -72,6 +78,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(JCRStoreService.class);
 
+    private Map<String,String> descriptors = new HashMap<String,String>();
     private Map<String,JCRStoreProvider> providers = new HashMap<String,JCRStoreProvider>();
     private SortedMap<String,JCRStoreProvider> mountPoints = new TreeMap<String,JCRStoreProvider>();
     private SortedMap<String,JCRStoreProvider> dynamicMountPoints = new TreeMap<String,JCRStoreProvider>();
@@ -121,6 +128,31 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             };
             this.mountPoints = new TreeMap<String,JCRStoreProvider>(invertedStringComparator);
             this.dynamicMountPoints = new TreeMap<String,JCRStoreProvider>(invertedStringComparator);
+
+            try {
+                Registry r = LocateRegistry.createRegistry(2099);
+                r.bind("jcrStoreService", new ServerAdapterFactory().getRemoteRepository(this));
+            } catch (RemoteException e) {
+                logger.error(e.getMessage(), e);
+            }
+
+            this.descriptors = new HashMap<String,String>();
+
+            descriptors.put("jcr.specification.version" , "1.0");
+            descriptors.put("jcr.specification.name" , "Content Repository API for Java(TM) Technology Specification");
+            descriptors.put("jcr.repository.vendor" , "Jahia");
+            descriptors.put("jcr.repository.vendor.url", "http://www.jahia.org/");
+            descriptors.put("jcr.repository.name" , "UnitedContentBus");
+            descriptors.put("jcr.repository.version" , "6.1");
+            descriptors.put("level.1.supported" , "true");
+            descriptors.put("level.2.supported" , "true");
+            descriptors.put("option.transactions.supported" , "true");
+            descriptors.put("option.versioning.supported" , "true");
+            descriptors.put("option.observation.supported" , "false");
+            descriptors.put("option.locking.supported" , "true");
+            descriptors.put("option.query.sql.supported" , "true");
+            descriptors.put("query.xpath.pos.index" , "true");
+            descriptors.put("query.xpath.doc.order" , "false");            
         } catch (Exception e){
             logger.error("Repository init error",e);
         }
@@ -541,11 +573,11 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
 
     public String[] getDescriptorKeys() {
-        return new String[0];
+        return descriptors.keySet().toArray(new String[descriptors.size()]);
     }
 
     public String getDescriptor(String s) {
-        return null;
+        return descriptors.get(s);
     }
 
     public JCRSessionWrapper login(Credentials credentials, String workspace) throws LoginException, NoSuchWorkspaceException, RepositoryException {

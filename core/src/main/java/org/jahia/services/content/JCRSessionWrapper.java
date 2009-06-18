@@ -34,12 +34,22 @@ package org.jahia.services.content;
 import org.jahia.services.usermanager.JahiaUser;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+import org.apache.jackrabbit.commons.xml.Exporter;
+import org.apache.jackrabbit.commons.xml.DocumentViewExporter;
+import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -217,22 +227,6 @@ public class JCRSessionWrapper implements Session {
         throw new UnsupportedRepositoryOperationException();
     }
 
-    public void exportSystemView(String s, ContentHandler contentHandler, boolean b, boolean b1) throws PathNotFoundException, SAXException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
-    }
-
-    public void exportSystemView(String s, OutputStream outputStream, boolean b, boolean b1) throws IOException, PathNotFoundException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
-    }
-
-    public void exportDocumentView(String s, ContentHandler contentHandler, boolean b, boolean b1) throws PathNotFoundException, SAXException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
-    }
-
-    public void exportDocumentView(String s, OutputStream outputStream, boolean b, boolean b1) throws IOException, PathNotFoundException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
-    }
-
     public void setNamespacePrefix(String s, String s1) throws NamespaceException, RepositoryException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -283,4 +277,160 @@ public class JCRSessionWrapper implements Session {
     public JahiaUser getUser() {
         return user;
     }
+
+
+    /**
+     * Generates a document view export using a {@link org.apache.jackrabbit.commons.xml.DocumentViewExporter}
+     * instance.
+     *
+     * @param path of the node to be exported
+     * @param handler handler for the SAX events of the export
+     * @param skipBinary whether binary values should be skipped
+     * @param noRecurse whether to export just the identified node
+     * @throws PathNotFoundException if a node at the given path does not exist
+     * @throws SAXException if the SAX event handler failed
+     * @throws RepositoryException if another error occurs
+     */
+    public void exportDocumentView(
+            String path, ContentHandler handler,
+            boolean skipBinary, boolean noRecurse)
+            throws PathNotFoundException, SAXException, RepositoryException {
+        export(path, new DocumentViewExporter(
+                this, handler, !noRecurse, !skipBinary));
+    }
+
+    /**
+     * Generates a system view export using a {@link org.apache.jackrabbit.commons.xml.SystemViewExporter}
+     * instance.
+     *
+     * @param path of the node to be exported
+     * @param handler handler for the SAX events of the export
+     * @param skipBinary whether binary values should be skipped
+     * @param noRecurse whether to export just the identified node
+     * @throws PathNotFoundException if a node at the given path does not exist
+     * @throws SAXException if the SAX event handler failed
+     * @throws RepositoryException if another error occurs
+     */
+    public void exportSystemView(
+            String path, ContentHandler handler,
+            boolean skipBinary, boolean noRecurse)
+            throws PathNotFoundException, SAXException, RepositoryException {
+        export(path, new SystemViewExporter(
+                this, handler, !noRecurse, !skipBinary));
+    }
+
+    /**
+     * Calls {@link Session#exportDocumentView(String, ContentHandler, boolean, boolean)}
+     * with the given arguments and a {@link ContentHandler} that serializes
+     * SAX events to the given output stream.
+     *
+     * @param absPath passed through
+     * @param out output stream to which the SAX events are serialized
+     * @param skipBinary passed through
+     * @param noRecurse passed through
+     * @throws IOException if the SAX serialization failed
+     * @throws RepositoryException if another error occurs
+     */
+    public void exportDocumentView(
+            String absPath, OutputStream out,
+            boolean skipBinary, boolean noRecurse)
+            throws IOException, RepositoryException {
+        try {
+            ContentHandler handler = getExportContentHandler(out);
+            exportDocumentView(absPath, handler, skipBinary, noRecurse);
+        } catch (SAXException e) {
+            Exception exception = e.getException();
+            if (exception instanceof RepositoryException) {
+                throw (RepositoryException) exception;
+            } else if (exception instanceof IOException) {
+                throw (IOException) exception;
+            } else {
+                throw new RepositoryException(
+                        "Error serializing document view XML", e);
+            }
+        }
+    }
+
+    /**
+     * Calls {@link Session#exportSystemView(String, ContentHandler, boolean, boolean)}
+     * with the given arguments and a {@link ContentHandler} that serializes
+     * SAX events to the given output stream.
+     *
+     * @param absPath passed through
+     * @param out output stream to which the SAX events are serialized
+     * @param skipBinary passed through
+     * @param noRecurse passed through
+     * @throws IOException if the SAX serialization failed
+     * @throws RepositoryException if another error occurs
+     */
+    public void exportSystemView(
+            String absPath, OutputStream out,
+            boolean skipBinary, boolean noRecurse)
+            throws IOException, RepositoryException {
+        try {
+            ContentHandler handler = getExportContentHandler(out);
+            exportSystemView(absPath, handler, skipBinary, noRecurse);
+        } catch (SAXException e) {
+            Exception exception = e.getException();
+            if (exception instanceof RepositoryException) {
+                throw (RepositoryException) exception;
+            } else if (exception instanceof IOException) {
+                throw (IOException) exception;
+            } else {
+                throw new RepositoryException(
+                        "Error serializing system view XML", e);
+            }
+        }
+    }
+
+    /**
+     * Exports content at the given path using the given exporter.
+     *
+     * @param path of the node to be exported
+     * @param exporter document or system view exporter
+     * @throws SAXException if the SAX event handler failed
+     * @throws RepositoryException if another error occurs
+     */
+    private synchronized void export(String path, Exporter exporter)
+            throws PathNotFoundException, SAXException, RepositoryException {
+        Item item = getItem(path);
+        if (item.isNode()) {
+            exporter.export((Node) item);
+        } else {
+            throw new PathNotFoundException(
+                    "XML export is not defined for properties: " + path);
+        }
+    }
+
+    /**
+     * Creates a {@link ContentHandler} instance that serializes the
+     * received SAX events to the given output stream.
+     *
+     * @param stream output stream to which the SAX events are serialized
+     * @return SAX content handler
+     * @throws RepositoryException if an error occurs
+     */
+    private ContentHandler getExportContentHandler(OutputStream stream)
+            throws RepositoryException {
+        try {
+            SAXTransformerFactory stf = (SAXTransformerFactory)
+                SAXTransformerFactory.newInstance();
+            TransformerHandler handler = stf.newTransformerHandler();
+
+            Transformer transformer = handler.getTransformer();
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty(OutputKeys.INDENT, "no");
+
+            handler.setResult(new StreamResult(stream));
+            return handler;
+        } catch (TransformerFactoryConfigurationError e) {
+            throw new RepositoryException(
+                    "SAX transformer implementation not available", e);
+        } catch (TransformerException e) {
+            throw new RepositoryException(
+                    "Error creating an XML export content handler", e);
+        }
+    }
+
 }

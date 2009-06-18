@@ -397,6 +397,35 @@
           <type>boolean</type>
       </attribute>
     </tag>
+
+
+    <tag>
+        <description>Module include
+        </description>
+        <name>module</name>
+        <tag-class>org.jahia.taglibs.template.include.ModuleTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>contentBean</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>node</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>path</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>template</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
     <tag>
         <description>
             Used to call the overriden JSP from the parent set. Does nothing, if it is not found.

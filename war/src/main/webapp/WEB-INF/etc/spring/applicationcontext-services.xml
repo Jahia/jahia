@@ -1070,6 +1070,15 @@ FRAG2(frag_size=60000)</value>
         <constructor-arg index="3"><value>180</value></constructor-arg>
     </bean>
 
+    <bean id="RenderService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.render.RenderService" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="storeService" ref="JCRStoreService" />
+            </bean>
+        </property>
+
+    </bean>
+
     <bean id="extraction" class="org.jahia.services.content.automation.ExtractionService" factory-method="getInstance">
         <property name="extractors">
             <map>

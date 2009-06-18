@@ -1,0 +1,1 @@
+${currentNode.primaryNodeTypeName} - ${currentNode.name}

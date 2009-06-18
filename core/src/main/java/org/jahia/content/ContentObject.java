@@ -62,6 +62,7 @@ import org.jahia.services.version.*;
 import org.jahia.services.workflow.ExternalWorkflow;
 import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
@@ -2150,7 +2151,7 @@ public abstract class ContentObject extends JahiaObject {
         }
     }
 
-    public Node getJCRNode(ProcessingContext context) throws JahiaException {
+    public JCRNodeWrapper getJCRNode(ProcessingContext context) throws JahiaException {
         try {
             return ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(getUUID(), context.getUser());
         } catch (RepositoryException e) {

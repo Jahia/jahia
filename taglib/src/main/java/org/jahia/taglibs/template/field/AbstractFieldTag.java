@@ -47,7 +47,7 @@ public class AbstractFieldTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = Logger.getLogger(AbstractFieldTag.class);
 
-    protected JahiaField loadField(final String fieldName, final String containerName) throws JahiaException {
+    protected JahiaField loadField(final String fieldName, String containerName) throws JahiaException {
 
         // checks if in declaration phase or if there are already container
         JahiaContainer container = null;
@@ -58,7 +58,11 @@ public class AbstractFieldTag extends AbstractJahiaTag {
             if (parent != null) {
                 container = parent.getContainer();
             }
-        } else {
+        }
+        if (parent == null && container == null) {
+            if (containerName == null || containerName.length() == 0) {
+                containerName = "container";
+            }
             ContainerBean containerBean = (ContainerBean) pageContext.findAttribute(containerName);
             if (containerBean != null) {
                 container = containerBean.getJahiaContainer();

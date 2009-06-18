@@ -296,3 +296,6 @@
 
  [test_templates:samelistviews] > test_templates:generic
  containerList someFields (test_templates:someFields)
+
+[test_templates:render] > test_templates:generic
+ containerList maincontent2 (jnt:mainContentContainer)

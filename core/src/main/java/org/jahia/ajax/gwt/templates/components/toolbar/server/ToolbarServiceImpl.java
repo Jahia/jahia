@@ -87,6 +87,7 @@ import java.util.*;
 public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarService {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ToolbarServiceImpl.class);
     private static JahiaPreferencesProvider toolbarPreferencesProvider;
+    private static Map<String, Class> CLASS_CACHE = new HashMap<String, Class>();
 
     private static final ServicesRegistry SERVICES_REGISTRY = ServicesRegistry.getInstance();
     private static transient JahiaToolbarService JAHIA_TOOLBAR_SERVICE;
@@ -222,7 +223,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
 
                     // execute actionProperty
                     logger.debug("Execute [" + classActionValue + "," + actionValue + "]");
-                    AjaxAction ajaxAction = (AjaxAction) Class.forName(classActionValue).newInstance();
+                    AjaxAction ajaxAction = (AjaxAction) getClassInstance(classActionValue);
                     return ajaxAction.execute(jData, actionValue, gwtPropertiesMap);
                 } catch (Exception e) {
                     logger.error(e, e);
@@ -421,15 +422,10 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                 String classProvider = itemsProvider.getClassProvider();
                 logger.debug("ItemsProvider: " + classProvider);
                 try {
-                    ItemsGroupFactory groupFactory = (ItemsGroupFactory) Class.forName(classProvider).newInstance();
+                    ItemsGroupFactory groupFactory = (ItemsGroupFactory) getClassInstance(classProvider);
                     gwtToolbarItemsList = groupFactory.populateItemsList(gwtToolbarItemsList, jData, itemsProvider.getInputProvider(), itemsProvider.getProperties(jData));
-                } catch (InstantiationException e) {
+                } catch (Exception e) {
                     logger.error("Unable to instanciate, class[" + classProvider + "]");
-                } catch (IllegalAccessException e) {
-                    logger.error("IllegalAccessException, class[" + classProvider + "]");
-
-                } catch (ClassNotFoundException e) {
-                    logger.error("ClassNotFoundException, class[" + classProvider + "]");
                 }
             }
         }
@@ -453,6 +449,32 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         }
         gwtToolbarItemsGroup.setGwtToolbarItems(gwtToolbarItemsList);
         return gwtToolbarItemsGroup;
+    }
+
+    private Object getClassInstance(String className) {
+        Class clazz = CLASS_CACHE.get(className);
+        if (null == clazz) {
+            synchronized (ToolbarServiceImpl.class) {
+                if (null == clazz) {
+                    try {
+                        clazz = Class.forName(className);
+                        CLASS_CACHE.put(className, clazz);
+                    } catch (ClassNotFoundException e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                }
+            }
+        }
+
+        Object classInstance = null;
+        try {
+            classInstance = clazz.newInstance();
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return classInstance;
     }
 
     private GWTJahiaToolbarItem createGWTItem(GWTJahiaPageContext page, Item item) {

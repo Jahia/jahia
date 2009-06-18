@@ -160,7 +160,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      *
      */
     public void start() throws JahiaInitializationException {
-        applicationCache = cacheService.createCacheInstance("AppplicationCache");
+        applicationCache = cacheService.createCacheInstance("ApplicationCache");
         entryPointCache = cacheService.createCacheInstance("ApplicationEntryPointCache");
         try {
 
@@ -660,7 +660,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
             if (app == null) {
                 // try to load from db
-                app = applicationManager.getApplicationDefinition(currentPortletApplicationName);
+                app = applicationManager.getApplicationDefinition(currentContext);
                 if (app != null) {
                     putInApplicationCache(app);
                 }
@@ -669,7 +669,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             if (app == null) {
                 // The app was not found in Jahia but is registered in Pluto, so we register it in Jahia.
                 logger.info("Registering portlet context " + currentPortletApplicationName + " in Jahia.");
-                ServicesRegistry.getInstance().getJahiaWebAppsDeployerService().registerWebApps(currentPortletApplicationName);
+                ServicesRegistry.getInstance().getJahiaWebAppsDeployerService().registerWebApps(currentContext);
             }
         }
     }

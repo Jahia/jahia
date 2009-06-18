@@ -2,10 +2,10 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 
 <h3>View page through renderer</h3>
-<a href="<%= request.getContextPath() %>/render/default${currentPage.JCRPath}.html"><%= request.getContextPath() %>/render/default${currentPage.JCRPath}.html</a>
+<a href="<%= request.getContextPath() %>/render/default${currentPage.JCRPath}.html">${currentPage.JCRPath}.html</a>
 
 <h3>View container list as RSS</h3>
-<a href="<%= request.getContextPath() %>/render/default${currentPage.JCRPath}/maincontentList2.rss"><%= request.getContextPath() %>/render/default${currentPage.JCRPath}/maincontentList2.rss</a>
+<a href="<%= request.getContextPath() %>/render/default${currentPage.JCRPath}/maincontent2.rss">maincontentList2.rss</a>
 
 
 <h3>Default template</h3>

@@ -738,6 +738,68 @@
                 </jahia:page>
             </navLink>
         </navLink>
+        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="38088f6d-d23b-42e0-ba58-200431bd9756"
+                 jcr:lastModified="2009-06-18T17:18:45" jahia:createdBy="root" jcr:created="2009-06-18T17:18:45"
+                 jahia:lastModifiedBy="root">
+            <navLink jcr:uuid="1d48771a-9b1d-4d3c-a131-b5066a1acf63">
+                <jahia:page jahia:template="Render engine tests" jcr:primaryType="test_templates:render"
+                            jahia:title="Render" jahia:hideFromNavigationMenu="true"
+                            jcr:uuid="e442bc33-ecc3-4434-9956-9e6abc11626a" jahia:createdBy="root"
+                            jahia:lastModifiedBy="root" jcr:created="2009-06-18T17:18:45"
+                            jcr:lastModified="2009-06-18T18:02:56" jahia:pid="82">
+                    <maincontentList jcr:primaryType="jnt:mainContentContainerList"
+                                     jcr:uuid="b87ec8fc-4b81-4b9f-847b-596074261795"
+                                     jcr:lastModified="2009-06-18T17:18:45" jahia:lastModifiedBy="root"
+                                     jcr:created="2009-06-18T17:18:45" jahia:createdBy="root"></maincontentList>
+                    <maincontent2List jcr:primaryType="jnt:mainContentContainerList"
+                                      jcr:uuid="dc3dac9d-bfd5-4f70-be31-dede2eb9cd20" jahia:lastModifiedBy="root"
+                                      jcr:created="2009-06-18T17:18:45" jcr:lastModified="2009-06-18T18:02:56"
+                                      jahia:createdBy="root">
+                        <maincontent2 jcr:primaryType="jnt:mainContentContainer"
+                                      jcr:uuid="e5f83cbf-501b-4294-80e0-b93397ec9794"
+                                      jcr:lastModified="2009-06-18T18:02:06" jahia:createdBy="root"
+                                      jcr:created="2009-06-18T17:26:04" jahia:lastModifiedBy="root">
+                            <mainContentAlign
+                                    jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.left&quot; default-value=&quot;left&quot;/&gt;"
+                                    jcr:uuid="f21c46f3-3a96-4a71-8a7a-a5b34afacee7"></mainContentAlign>
+                            <mainContentImage jahia:value=""
+                                              jcr:uuid="719c6b35-de06-4c53-9683-5d8bd2f876da"></mainContentImage>
+                            <mainContentBody jahia:value="&lt;p&gt;From the concept to completion, it took 6 years for this building of 180-metres high with 47 storeys and four basement levels.&lt;/p&gt;
+&lt;p&gt;The building is located along the southern side of Statue Square at the location of the old City Hall, Hong Kong.&lt;/p&gt;
+&lt;p&gt;The main characteristics of the new Hotel are its absence of internal supporting structure and the way the light is thinking.&lt;/p&gt;
+&lt;p&gt;Natural light is the major source of lighting inside the hotel that is made it totally spectacular and uncommon.&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+" jcr:uuid="f9f56d02-8b88-4a85-a3e2-b9bc5c05481f"></mainContentBody>
+                            <mainContentTitle jahia:value="New 5 stars hotel in Hong Kong build by ACME Contruction"
+                                              jcr:uuid="7fca0306-995b-4906-82b9-fdaeea702e3c"></mainContentTitle>
+                        </maincontent2>
+                        <maincontent2 jcr:primaryType="jnt:mainContentContainer"
+                                      jcr:uuid="2813d93c-9a48-425a-8edc-249ea647fcba"
+                                      jcr:lastModified="2009-06-18T18:02:56" jahia:createdBy="root"
+                                      jcr:created="2009-06-18T18:02:56" jahia:lastModifiedBy="root">
+                            <mainContentAlign
+                                    jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.left&quot; default-value=&quot;left&quot;/&gt;"
+                                    jcr:uuid="d5c52d1f-a641-4f76-9838-cfa6355b9bb2"></mainContentAlign>
+                            <mainContentImage jahia:value=""
+                                              jcr:uuid="2e087a0e-cd02-4793-840d-7d43055d1f65"></mainContentImage>
+                            <mainContentBody jahia:value="&lt;p&gt;&amp;nbsp;We are pleased to announce the expansion of our company to the city of Hong Kong since the 1st of January.&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Our new office is now open and located at the following address: No 20A/98, Thai Ha street North Point Hong Kong.&lt;/p&gt;
+&lt;p&gt;This new subsidiary allows us to address this growing market with a local team of expert.&lt;/p&gt;
+&lt;p&gt;Our commitment to excellence, combined with our mission to deliver outstanding project, has earned our company the excellent reputation it enjoys today.&lt;/p&gt;
+&lt;p&gt;2009 will be the year of expansion and new challenge for our company.&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+" jcr:uuid="e123568b-1792-46e1-8620-096bc303550e"></mainContentBody>
+                            <mainContentTitle jahia:value="New Office announcement in Hong Kong for ACME"
+                                              jcr:uuid="6db35cd5-3185-4f03-9e46-57fc4cf2be33"></mainContentTitle>
+                        </maincontent2>
+                    </maincontent2List>
+                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="2767907e-a25b-4709-9412-99d159290d84"
+                                 jahia:lastModifiedBy="root" jcr:created="2009-06-18T17:18:45" jahia:createdBy="root"
+                                 jcr:lastModified="2009-06-18T17:18:45"></navLinkList>
+                </jahia:page>
+            </navLink>
+        </navLink>
     </navLinkList>
 </jahia:page>
 

@@ -63,7 +63,6 @@ public class Render extends HttpServlet {
     }
 
     public StringBuffer render(String workspace, String path, ProcessingContext ctx, HttpServletRequest request, HttpServletResponse response) throws RepositoryException, IOException {
-        Resource r = resolveResource(workspace, path, ctx.getUser());
         try {
             if (workspace.equals("default")) {
                 ctx.setOperationMode("edit");
@@ -71,6 +70,7 @@ public class Render extends HttpServlet {
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);
         }
+        Resource r = resolveResource(workspace, path, ctx.getUser());
         Node current = r.getNode();
         try {
             while (true) {

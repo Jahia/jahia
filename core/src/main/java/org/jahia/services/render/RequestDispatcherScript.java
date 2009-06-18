@@ -54,7 +54,15 @@ import java.util.Arrays;
 import java.util.Collections;
 
 /**
- * TODO Comment me
+ * This class uses the standard request dispatcher to execute a JSP script.
+ *
+ * It will try to resolve the JSP from the following schema :
+ *
+ * /templates/[currentTemplateSet]/modules/[nodetypenamespace]/[nodetypename]/[templatetype]/[templatename].jsp
+ * /templates/[parentTemplateSet]/modules/[nodetypenamespace]/[nodetypename]/[templatetype]/[templatename].jsp
+ * /templates/default/modules/[nodetypenamespace]/[nodetypename]/[templatetype]/[templatename].jsp
+ *
+ * And then iterates on the supertype of the resource, until nt:base
  *
  * @author toto
  */
@@ -64,6 +72,13 @@ public class RequestDispatcherScript implements Script {
     private HttpServletRequest request;
     private HttpServletResponse response;
 
+    /**
+     * Builds the script, tries to resolve the jsp template
+     * @param resource resource to display
+     * @param request servlet request
+     * @param response servlet response
+     * @throws IOException if template cannot be found, or something wrong happens
+     */
     public RequestDispatcherScript(Resource resource, HttpServletRequest request, HttpServletResponse response) throws IOException {
         TemplatePathResolverFactory factory = (TemplatePathResolverFactory) SpringContextSingleton.getInstance().getContext().getBean("TemplatePathResolverFactory");
         ProcessingContext threadParamBean = Jahia.getThreadParamBean();
@@ -100,10 +115,15 @@ public class RequestDispatcherScript implements Script {
     private String getTemplatePath(Resource resource, TemplatePathResolverBean templatePathResolver, ExtendedNodeType nt) {
         return templatePathResolver.lookup("modules/" +
                 nt.getAlias().replace(':','/') +
-                "/" + resource.getExtension() +
+                "/" + resource.getTemplateType() +
                 "/" + resource.getTemplate() + ".jsp");
     }
 
+    /**
+     * Execute the script and return the result as a string
+     * @return the rendered resource
+     * @throws IOException
+     */
     public String execute() throws IOException {
         final boolean[] isWriter = new boolean[1];
         final StringWriter stringWriter = new StringWriter();

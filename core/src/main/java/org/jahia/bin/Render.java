@@ -24,11 +24,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: May 13, 2009
- * Time: 6:52:17 PM
- * To change this template use File | Settings | File Templates.
+ * Rendering servlet. Resolves the node and the template, and renders it by executing the appropriate script
+ *
  */
 public class Render extends HttpServlet {
     private static Logger logger = Logger.getLogger(Render.class);
@@ -93,6 +90,22 @@ public class Render extends HttpServlet {
         return RenderService.getInstance().render(r, request, response);
     }
 
+    /**
+     * Creates a resource from the specified path.
+     *
+     * The path should looks like : [nodepath][.templatename].[templatetype]
+     * or [nodepath].[templatetype]
+     *
+     *
+     *
+     * @param workspace The workspace where to get the node
+     * @param path The path of the node, in the specified workspace
+     * @param user Current user
+     * @return The resource, if found
+     *
+     * @throws PathNotFoundException if the resource cannot be resolved
+     * @throws RepositoryException
+     */
     private Resource resolveResource(String workspace, String path, JahiaUser user) throws RepositoryException {
         JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(user, workspace);
 

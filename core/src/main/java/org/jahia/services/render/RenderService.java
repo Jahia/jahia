@@ -32,11 +32,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: May 12, 2009
- * Time: 7:06:33 PM
- * To change this template use File | Settings | File Templates.
+ * Service to render node
+ *  
+ * @author toto
+ *
  */
 public class RenderService extends JahiaService {
     private static volatile RenderService instance;
@@ -66,6 +65,16 @@ public class RenderService extends JahiaService {
 
     }
 
+    /**
+     * Render a specific resource and returns it as a StringBuffer.
+     *
+     * @param resource Resource to display
+     * @param request Servlet request
+     * @param response Servlet response
+     * @return The rendered result
+     * @throws RepositoryException
+     * @throws IOException
+     */
     public StringBuffer render(Resource resource, HttpServletRequest request, final HttpServletResponse response) throws RepositoryException, IOException {
         Script script = resolveScript(resource, request, response);
 
@@ -88,10 +97,27 @@ public class RenderService extends JahiaService {
         return new StringBuffer(res);
     }
 
+    /**
+     * This resolves the executable script from the resource object. This should be able to find the proper script
+     * depending of the template / template type. Currently resolves only simple RequestDispatcherScript.
+     *
+     * @param resource The resource to display
+     * @param request Serlvet request
+     * @param response Servlet response
+     * @return An executable script
+     * @throws RepositoryException
+     * @throws IOException
+     */
     private Script resolveScript(Resource resource, HttpServletRequest request, final HttpServletResponse response) throws RepositoryException, IOException {
         return new RequestDispatcherScript(resource, request, response);
     }
 
+    /**
+     * This set Jahia context attributes, so that legacy jahia tags can still be used in the templates
+     * @param request Request where the attributes will be set
+     * @param node Node to display
+     * @param threadParamBean The "param bean"
+     */
     private void setJahiaAttributes(HttpServletRequest request, JCRNodeWrapper node, ProcessingContext threadParamBean) {
         try {
             if (node instanceof JCRJahiaContentNode) {

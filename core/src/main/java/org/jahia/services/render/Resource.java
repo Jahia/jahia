@@ -34,19 +34,26 @@ package org.jahia.services.render;
 import org.jahia.services.content.JCRNodeWrapper;
 
 /**
- * TODO Comment me
+ * A resource is the aggregation of a node and a specific template
+ * It's something that can be handled by the render engine to be displayed.
  *
  * @author toto
  */
 public class Resource {
 
     private JCRNodeWrapper node;
-    private String extension;
+    private String templateType;
     private String template;
 
-    public Resource(JCRNodeWrapper node, String extension, String template) {
+    /**
+     * Creates a resource from the specified parameter
+     * @param node The node to display
+     * @param templateType template type
+     * @param template the template name, null if default
+     */
+    public Resource(JCRNodeWrapper node, String templateType, String template) {
         this.node = node;
-        this.extension = extension;
+        this.templateType = templateType;
         this.template = template;
     }
 
@@ -54,8 +61,8 @@ public class Resource {
         return node;
     }
 
-    public String getExtension() {
-        return extension;
+    public String getTemplateType() {
+        return templateType;
     }
 
     public String getTemplate() {

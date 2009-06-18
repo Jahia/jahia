@@ -483,7 +483,9 @@ public class ToolbarXMLParser {
 
             // set visibility
             Visibility visibility = getVisibility(itemElement);
-            item.setVisibility(visibility);
+            if (visibility != null) {
+                item.setVisibility(visibility);
+            }
 
             // load property
             String itemXpathProperty = itemXpath + "//property";

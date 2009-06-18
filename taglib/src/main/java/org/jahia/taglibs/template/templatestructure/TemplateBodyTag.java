@@ -136,6 +136,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     private final static String DEFAULT_CONTENT = "actualContent";
     private transient Map<String, Object> attributes = new HashMap<String, Object>();
     private String gwtScript;
+    boolean useGwt = false;
 
 
     /**
@@ -153,7 +154,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
     public int doStartTag() {
         try {
-            boolean useGwt = false;
+            useGwt = false;
             ServletRequest request = pageContext.getRequest();
             JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
 
@@ -290,12 +291,14 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             if (checkGAprofileOn(jData) && isLiveMode()) {
                 buf.append(gaTrackingCode(((JahiaData) request.getAttribute("org.jahia.data.JahiaData"))));
             }
-            // Generate jahia_gwt_dictionnary
-            Map<String, String> dictionaryMap = getJahiaGwtDictionary();
-            if (dictionaryMap != null) {
-                buf.append("<script type='text/javascript'>\n");
-                buf.append(generateJahiaGwtDictionary());
-                buf.append("</script>\n");
+            if (useGwt) {
+                // Generate jahia_gwt_dictionnary
+                Map<String, String> dictionaryMap = getJahiaGwtDictionary();
+                if (dictionaryMap != null) {
+                    buf.append("<script type='text/javascript'>\n");
+                    buf.append(generateJahiaGwtDictionary());
+                    buf.append("</script>\n");
+                }
             }
             buf.append("</body>");
 
@@ -307,6 +310,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         // reset attributes
         gwtScript = null;
         attributes = new HashMap<String, Object>();
+        useGwt = false;
         return EVAL_PAGE;
     }
 

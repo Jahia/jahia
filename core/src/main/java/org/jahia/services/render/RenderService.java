@@ -101,6 +101,8 @@ public class RenderService extends JahiaService {
      * This resolves the executable script from the resource object. This should be able to find the proper script
      * depending of the template / template type. Currently resolves only simple RequestDispatcherScript.
      *
+     * If template cannot be resolved, fall back on default template
+     *
      * @param resource The resource to display
      * @param request Serlvet request
      * @param response Servlet response
@@ -109,7 +111,15 @@ public class RenderService extends JahiaService {
      * @throws IOException
      */
     private Script resolveScript(Resource resource, HttpServletRequest request, final HttpServletResponse response) throws RepositoryException, IOException {
-        return new RequestDispatcherScript(resource, request, response);
+        try {
+            return new RequestDispatcherScript(resource, request, response);
+        } catch (IOException e) {
+            if (resource.getTemplate() != null) {
+                return new RequestDispatcherScript(new Resource(resource.getNode(), resource.getTemplateType() ,null), request,response);
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**

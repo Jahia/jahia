@@ -112,7 +112,7 @@ public class JahiaApplicationField extends JahiaField implements JahiaAllowApply
                         defName = portletDefName;
                         portletWindowID = portletEntityID;
                     } else {
-                        int plutoSeperatorPos = defName.indexOf(".");
+                        int plutoSeperatorPos = defName.lastIndexOf(".");
                         if (plutoSeperatorPos != -1) {
                             String portletContext = defName.substring(0, plutoSeperatorPos);
                             String portletDefName = defName.substring(plutoSeperatorPos + ".".length());

@@ -220,6 +220,10 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         return display;
     }
 
+    public void setSeparatorName(String separatorName) {
+        this.separatorName = separatorName;
+    }
+
     private static SimpleDateFormat dateFormat = new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT);
 
     public int doStartTag() throws JspException {
@@ -336,7 +340,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
             pageFieldName = "navLink";
             separatorName = "separator";
 
-        } else if (containerListName != null ^ pageFieldName != null ^ separatorName !=null) {
+        } else if (containerListName == null || pageFieldName == null || separatorName ==null) {
             throw new JahiaException("You must either declare container list, page field and separator field or none",
                     "Unable to create the navmenu container list", JahiaException.TEMPLATE_SERVICE_ERROR,
                     JahiaException.ERROR_SEVERITY);

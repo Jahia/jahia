@@ -177,8 +177,10 @@ public class ErrorHandler {
             request.setAttribute("org.jahia.exception.StackTrace", traceWriter
                     .getBuffer().toString());
 
-            // set proper error code (and use the trick, because Tomcat will not use custom error page for 503 error)
-            response.sendError(code != SC_SERVICE_UNAVAILABLE ? code : SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            if (!response.isCommitted()) {
+                // set proper error code (and use the trick, because Tomcat will not use custom error page for 503 error)
+                response.sendError(code != SC_SERVICE_UNAVAILABLE ? code : SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            }
         }
     }
 

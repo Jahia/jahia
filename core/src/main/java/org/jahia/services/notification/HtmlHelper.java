@@ -35,13 +35,14 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.utils.JahiaTools;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import java.net.URL;
 import java.io.InputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -54,20 +55,21 @@ import au.id.jericho.lib.html.*;
  * @author toto
  */
 public class HtmlHelper {
-    public static final Logger logger = Logger.getLogger(HtmlHelper.class);
+    private static final Logger logger = Logger.getLogger(HtmlHelper.class);
+    private static final Pattern PATTERN_OPERATION_MODE = Pattern.compile("/op/[a-z]+/");
 
     public static String getPage(ProcessingContext processingContext, JahiaUser user, String language, int pageID) throws IOException, JahiaException {
         String s = processingContext.composePageUrl(pageID, language);
-        s = Pattern.compile("/op/[a-z]+/").matcher(s).replaceAll("/");
+        s = PATTERN_OPERATION_MODE.matcher(s).replaceAll("/");
         if (s.contains(";jsessionid")) {
             s = s.substring(0,s.indexOf(";jsessionid"));
         }
-        URL url = new URL(org.jahia.settings.SettingsBean.getInstance().getLocalAccessUri() + s);
+        URL url = new URL(SettingsBean.getInstance().getLocalAccessUri() + s);
 
         InputStream is = JahiaTools.makeJahiaRequest(url, user, null, null, 5);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        IOUtils.copy(is,baos);
-        return baos.toString("UTF-8");
+        StringWriter out = new StringWriter();
+        IOUtils.copy(is,out);
+        return out.toString();
     }
 
     public static String cleanHtmlForNewsletter(ProcessingContext ctx, String content) throws JahiaException {
@@ -120,9 +122,9 @@ public class HtmlHelper {
                 }
 
                 try {
-                    InputStream is = new URL(org.jahia.settings.SettingsBean.getInstance().getLocalAccessUri()+href).openStream();
+                    InputStream is = new URL(SettingsBean.getInstance().getLocalAccessUri()+href).openStream();
 
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    StringWriter baos = new StringWriter();
                     IOUtils.copy(is,baos);
 
                     sb.setLength(0);
@@ -136,7 +138,7 @@ public class HtmlHelper {
                     }
                     String basehref = baseHref.substring(0,baseHref.lastIndexOf('/')+1);
                     
-                    String stylesheet = baos.toString("UTF-8");
+                    String stylesheet = baos.toString();
                     
                     stylesheet = Pattern.compile("url *\\( *\"?([^\\:\" )]*)\"? *\\)").matcher(stylesheet).replaceAll("url(\""+basehref+"$1\")");
 

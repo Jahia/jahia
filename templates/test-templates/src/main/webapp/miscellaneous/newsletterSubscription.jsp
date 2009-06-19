@@ -33,11 +33,23 @@
 --%>
 <%@ include file="../common/declarations.jspf"%>
 
-<template:containerList name="newsletter" id="newsletters">
-    <c:if test="${not empty newsletters}">
+<template:containerList name="newsletterChannels" id="channels">
+    <c:if test="${not empty channels}">
         <ul>
-            <template:container id="newsletter">
-                <li><template:field name="link" var="newsletterLink"/><ui:subscribeButton source="${newsletterLink.page.contentObject.objectKey}" event="newsletter${newsletterLink.page.ID}"/></li>
+            <template:container id="channel">
+                <li>
+                    <ui:subscribeButton source="${channel.key}" event="newsletter"/>                    
+                    <h3><template:field name="title"/></h3>
+                    <template:containerList name="issues" id="issues">
+                        <c:if test="${not empty issues}">
+                            <ul>
+                                <template:container id="issue">
+                                    <li><template:field name="link" var="newsletterLink"/></li>
+                                </template:container>
+                            </ul>
+                        </c:if>
+                    </template:containerList>
+                </li>
             </template:container>
         </ul>
     </c:if>

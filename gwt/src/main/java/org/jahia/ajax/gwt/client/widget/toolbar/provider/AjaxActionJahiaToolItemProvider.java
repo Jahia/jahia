@@ -90,11 +90,23 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
     public static final String REFRESH = "refresh";
     public static final String SELECTED = "selected";
     public static final String TOGGLE = "toggle";
+    private static final String CONFIRMATION = "confirmation";
+    private static final String PROMPT = "prompt";
+    private static final String MULTIPROMPT = "multiprompt";
 
 
     public static final String SITE_STATS = "siteStats";
     public static final String PAGE_STATS = "pageStats";
 
+    private static String getPropertyValue(GWTJahiaToolbarItem gwtToolbarItem,
+            String propertyName) {
+        Map properties = gwtToolbarItem.getProperties();
+        GWTJahiaProperty property = properties != null ? (GWTJahiaProperty) properties
+                .get(propertyName)
+                : null;
+        return property != null ? property.getValue() : null;
+    }
+    
     Map<String, String> data = new HashMap<String, String>();
 
     public SelectionListener getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem) {
@@ -104,21 +116,63 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                 if (handleAddCommentProperty(gwtToolbarItem)) {
                     return;
                 }
+                
+                String prompt = getPropertyValue(gwtToolbarItem, PROMPT);
+                if (prompt != null && prompt.length() != 0) {
+                    MessageBox.prompt(gwtToolbarItem.getTitle(), prompt, new Listener<WindowEvent>() {
+                        public void handleEvent(WindowEvent be) {
+                            if (MessageBox.OK.equalsIgnoreCase(be.buttonClicked.getText())) {
+                                gwtToolbarItem
+                                        .getProperties()
+                                        .put(COMMENT,
+                                                new GWTJahiaProperty(COMMENT, (String) ((MessageBoxEvent) be).messageBox.getTextBox().getValue()));
+                                execute(gwtToolbarItem);
+                            }
+                        }
+                    });
+                    return;
+                }
+
+                String multiprompt = getPropertyValue(gwtToolbarItem, MULTIPROMPT);
+                if (multiprompt != null && multiprompt.length() != 0) {
+                    MessageBox.prompt(gwtToolbarItem.getTitle(), multiprompt, true, new Listener<WindowEvent>() {
+                        public void handleEvent(WindowEvent be) {
+                            if (MessageBox.OK.equalsIgnoreCase(be.buttonClicked.getText())) {
+                                gwtToolbarItem
+                                        .getProperties()
+                                        .put(COMMENT,
+                                                new GWTJahiaProperty(COMMENT, ((MessageBoxEvent) be).messageBox.getTextArea().getValue()));
+                                execute(gwtToolbarItem);
+                            }
+                        }
+                    });
+                    return;
+                }
+
+                String confirmation = getPropertyValue(gwtToolbarItem, CONFIRMATION);
+                if (confirmation != null && confirmation.length() != 0) {
+                    MessageBox.confirm(gwtToolbarItem.getTitle(), confirmation, new Listener<WindowEvent>() {
+                        public void handleEvent(WindowEvent be) {
+                            if (Dialog.YES.equalsIgnoreCase(be.buttonClicked.getText())) {
+                                execute(gwtToolbarItem);
+                            }
+                        }
+                    });
+                    return;
+                }
+                
                 // create a selectedProperty property
-                GWTJahiaProperty selectedProperty = new GWTJahiaProperty();
-                selectedProperty.setName(SELECTED);
-                selectedProperty.setValue(String.valueOf(!gwtToolbarItem.isSelected()));
+                gwtToolbarItem.getProperties().put(SELECTED, new GWTJahiaProperty(SELECTED, String.valueOf(!gwtToolbarItem.isSelected())));
 
-                gwtToolbarItem.getProperties().put(SELECTED, selectedProperty);
-
-                // execute action withou diplaying a MessageBox
+                // execute action without displaying a MessageBox
                 execute(gwtToolbarItem);
 
             }
         };
         return listener;
     }
-
+    
+    
     /**
      * Open dialog box
      *
@@ -126,38 +180,33 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
      * @return
      */
     private boolean handleAddCommentProperty(GWTJahiaToolbarItem gwtToolbarItem) {
-        Map properties = gwtToolbarItem.getProperties();
-        if (properties != null) {
-            GWTJahiaProperty property = (GWTJahiaProperty) properties.get(ADD_COMMENT);
-            if (property != null) {
-                final String value = property.getValue();
-                if (value != null) {
-                    if (value.endsWith("Stats")) {
-                        ToolbarService.App.getInstance().isTracked(new AsyncCallback<Boolean>() {
+        final String value = getPropertyValue(gwtToolbarItem, ADD_COMMENT);
+        if (value != null) {
+            if (value.endsWith("Stats")) {
+                ToolbarService.App.getInstance().isTracked(
+                        new AsyncCallback<Boolean>() {
                             public void onSuccess(Boolean isTracked) {
                                 if (isTracked) {
                                     showStatsDialogBox(value);
                                 } else {
-                                    Info.display("", "Your website is not tracked by google analyitcs");
+                                    Info
+                                            .display("", "Your website is not tracked by google analyitcs");
                                 }
                             }
 
                             public void onFailure(Throwable throwable) {
                             }
                         });
-                        return true;
-                    }
-                    boolean addComment = Boolean.valueOf(value);
-                    if (addComment) {
-                        try {
-                            showDialogBox(gwtToolbarItem);
-                            return true;
-                        } catch (NumberFormatException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                return true;
+            }
+            boolean addComment = Boolean.valueOf(value);
+            if (addComment) {
+                try {
+                    showDialogBox(gwtToolbarItem);
+                    return true;
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
                 }
-
             }
         }
         return false;
@@ -200,15 +249,11 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                 Dialog dialog = (Dialog) ce.component;
                 Button btn = dialog.getButtonPressed();
                 if (btn.getText().equalsIgnoreCase(MessageBox.OK)) {
-                    // create a comment property
-                    GWTJahiaProperty comment = new GWTJahiaProperty();
-                    comment.setName(COMMENT);
-                    comment.setValue(box.getMessage());
-
                     // add comment in the properties map
-                    Map<String, GWTJahiaProperty> properties = gwtToolbarItem.getProperties();
-                    properties.put(COMMENT, comment);
-                    gwtToolbarItem.setProperties(properties);
+                    gwtToolbarItem.getProperties().put(
+                            COMMENT,
+                            new GWTJahiaProperty(COMMENT, box.getTextArea()
+                                    .getValue()));
 
                     // execute ajax action
                     execute(gwtToolbarItem);

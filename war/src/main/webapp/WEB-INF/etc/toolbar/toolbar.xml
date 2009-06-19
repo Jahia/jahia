@@ -295,6 +295,8 @@
         <!-- subscriptions -->
         <itemsgroup type="org.jahia.toolbar.itemsgroup.Subscriptions" layout="button-label">
             <item ref-type="org.jahia.toolbar.item.Subscriptions"/>
+            <item ref-type="org.jahia.toolbar.item.Newsletter"/>
+            <item ref-type="org.jahia.toolbar.item.NewsletterTest"/>
         </itemsgroup>
     </custom-itemsgroup>
     <!-- defines items-->
@@ -800,6 +802,32 @@
             <icon-style min="gwt-toolbar-ItemsGroup-icons-subscriptions-min"
                         max="gwt-toolbar-ItemsGroup-icons-subscriptions-normal"/>
             <property name="events" value="contentPublished,commentAdded"/>
+        </item>
+        
+        <!-- newsletter -->
+        <item type="org.jahia.toolbar.item.Newsletter" extends="org.jahia.toolbar.item.AjaxAction">
+            <title-resourcebundle-key key="toolbar.subscriptions.button.newsletter.title"/>
+            <description-resourcebundle-key key="toolbar.subscriptions.button.newsletter.description"/>
+            <visibility>
+                <value-resolver class="org.jahia.services.toolbar.resolver.impl.SendAsNewsletterVisibilityResolver"/>
+            </visibility>
+            <icon-style min="gwt-toolbar-ItemsGroup-icons-subscriptions-min"
+                        max="gwt-toolbar-ItemsGroup-icons-subscriptions-normal"/>
+            <property name="classAction" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.SendAsNewsletterActionImpl"/>
+            <property name="confirmation">
+                <value-resolver class="org.jahia.services.toolbar.resolver.impl.ResourceBundlePropertyResolver"
+                                input="toolbar.subscriptions.button.newsletter.confirmation"/>
+            </property>
+            <property name="onSuccess" value="info"/>
+        </item>
+        <item type="org.jahia.toolbar.item.NewsletterTest" extends="org.jahia.toolbar.item.Newsletter">
+            <title-resourcebundle-key key="toolbar.subscriptions.button.newsletterTest.title"/>
+            <description-resourcebundle-key key="toolbar.subscriptions.button.newsletterTest.description"/>
+            <property name="prompt">
+                <value-resolver class="org.jahia.services.toolbar.resolver.impl.ResourceBundlePropertyResolver"
+                                input="toolbar.subscriptions.button.newsletterTest.description"/>
+            </property>
+            <property name="action" value="test"/>
         </item>
     </custom-item>
 </toolbars>

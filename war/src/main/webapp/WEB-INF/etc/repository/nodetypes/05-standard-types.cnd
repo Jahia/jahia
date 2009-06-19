@@ -31,6 +31,8 @@
 
 [jmix:rssable] > jmix:containerExtension mixin
 
+[jmix:sendAsNewsletter] mixin
+
 [jnt:navLink] > jnt:container
  page navLink primary
  smallText separator

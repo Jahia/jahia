@@ -125,7 +125,7 @@ public class SubscriptionManager {
         template.setIncludeChildren(true);
         List<SubscriptionData> subscriptions = subscriptionDao.findAllParents(
                 template, parentObjectKeys, "confirmationKey",
-                "confirmationRequestTimestamp");
+                "confirmationRequestTimestamp", "userRegistered");
         return toBusinessObjects(subscriptions);
     }
 

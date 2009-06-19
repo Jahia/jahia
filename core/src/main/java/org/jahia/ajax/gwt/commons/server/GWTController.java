@@ -31,17 +31,11 @@
  */
 package org.jahia.ajax.gwt.commons.server;
 
-import java.io.IOException;
-
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.registries.ServicesRegistry;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -103,24 +97,6 @@ public class GWTController extends RemoteServiceServlet implements Controller,
                 setServiceData(remoteService, true);
             }
         }
-    }
-
-    @Override
-    protected void service(HttpServletRequest httpServletRequest,
-            HttpServletResponse httpServletResponse) throws ServletException,
-            IOException {
-        super.service(httpServletRequest, httpServletResponse);
-        ServicesRegistry.getInstance().getJahiaEventService()
-                .fireAggregatedEvents();
-    }
-
-    @Override
-    public void service(ServletRequest servletRequest,
-            ServletResponse servletResponse) throws ServletException,
-            IOException {
-        super.service(servletRequest, servletResponse);
-        ServicesRegistry.getInstance().getJahiaEventService()
-                .fireAggregatedEvents();
     }
 
     /**

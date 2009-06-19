@@ -197,7 +197,10 @@ public class ActionMenuURIFormatter {
                         jParams.getUser(),
                         JahiaBaseACL.READ_RIGHTS,
                         jParams.getSiteID()) > 0) {
-            url = drawUrlCheckWriteAccess(jParams, UpdateContainer_Engine.ENGINE_NAME, contentContainer, false, false);
+            // display update for linkedcopy only for admin
+            if (contentContainer.getPickedObject() == null || contentContainer.checkAdminAccess(jParams.getUser())) {
+                url = drawUrlCheckWriteAccess(jParams, UpdateContainer_Engine.ENGINE_NAME, contentContainer, false, false);
+            }
         }
         if (focusedFieldId > 0 && url != null && url.length() > 0) {
             url = new StringBuffer(url.length() + 16).append(url).append(

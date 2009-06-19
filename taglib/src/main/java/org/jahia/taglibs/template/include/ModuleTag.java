@@ -38,6 +38,8 @@ public class ModuleTag extends BodyTagSupport {
 
     private String template;
 
+    private String templateType = "html";
+
     public void setPath(String path) {
         this.path = path;
     }
@@ -54,6 +56,10 @@ public class ModuleTag extends BodyTagSupport {
         this.template = template;
     }
 
+    public void setTemplateType(String templateType) {
+        this.templateType = templateType;
+    }
+
     @Override
     public int doStartTag() throws JspException {
         return super.doStartTag();    //To change body of overridden methods use File | Settings | File Templates.
@@ -65,11 +71,11 @@ public class ModuleTag extends BodyTagSupport {
             Resource resource = null;
             if (node != null) {
                 JCRNodeWrapper nodewrapper  = (JCRNodeWrapper) pageContext.getAttribute(node);
-                resource = new Resource(nodewrapper, "html", template);
+                resource = new Resource(nodewrapper, templateType, template);
             } else if (contentBean != null) {
                 try {
                     ContentBean bean = (ContentBean) pageContext.getAttribute(contentBean);
-                    resource = new Resource(bean.getContentObject().getJCRNode(Jahia.getThreadParamBean()), "html", template);
+                    resource = new Resource(bean.getContentObject().getJCRNode(Jahia.getThreadParamBean()), templateType, template);
                 } catch (JahiaException e) {
                     logger.error(e.getMessage(), e);
                 }
@@ -88,6 +94,8 @@ public class ModuleTag extends BodyTagSupport {
             path = null;
             contentBean = null;
             node = null;
+            template = null;
+            templateType = "html";
         } catch (IOException ex) {
             ex.printStackTrace();
         }

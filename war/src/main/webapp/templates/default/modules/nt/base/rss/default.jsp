@@ -12,16 +12,7 @@
         <description>${currentNode.name}</description>
         <generator>Jahia 6.0, http://www.jahia.org</generator>
             <c:forEach items="${currentNode.children}" var="child">
-                <% if (((Node)pageContext.getAttribute("child")).isNodeType("jnt:container")) { %>
-                <item>
-                    <title>${child.name}</title>
-                    <link><%= request.getContextPath() %>/render/default${child.path}.html</link>
-                    <description>${child.name}</description>
-                    <jcr:nodeProperty node="${child}" name="jcr:created" var="created"/>
-                    <pubDate>${newsDate}.date</pubDate>
-                    <dc:date>${newsDate}.date</dc:date>                   
-                </item>
-                <% } %>
+                <template:module templateType="rss" template="item" node="child" />
             </c:forEach>
     </channel>
 </rss>

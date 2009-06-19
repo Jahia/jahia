@@ -4,7 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
-Page : ${currentNode.name}
+ContentObject : ${currentNode.name}
 
 <br/>
 
@@ -17,6 +17,13 @@ Page : ${currentNode.name}
                 <td><template:module node="child" /></td>
             </tr>
         </table>
+    </ul>
+</c:forEach>
+
+<c:forEach items="${currentNode.properties}" var="property">
+    <ul>
+        ${property.name} = ${property.string}
+
     </ul>
 </c:forEach>
 

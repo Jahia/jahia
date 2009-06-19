@@ -43,7 +43,7 @@
                 </toolbar>
                 <simple jcr:primaryType="jnt:preferenceProvider" jcr:uuid="20c70af6-1f6c-46f1-9ea4-577fc106a8f8">
                     <preference j:prefValue="/content/sites/ACME/mashups/Google Gadgets" jcr:primaryType="jnt:simplePreference" j:prefName="org.jahia.preferences.filemanager.savedopenpaths.websiteMashupRepository" jcr:uuid="20c64a21-6f44-4ddb-82fb-980f9263264e"></preference>
-                    <preference j:prefValue="true" jcr:primaryType="jnt:simplePreference" j:prefName="inlineediting.activated" jcr:uuid="7844918f-ca4b-4d9d-9f5e-629886644e91"></preference>
+                    <preference j:prefValue="false" jcr:primaryType="jnt:simplePreference" j:prefName="inlineediting.activated" jcr:uuid="7844918f-ca4b-4d9d-9f5e-629886644e91"></preference>
                 </simple>
             </preferences>
             <j:acl jcr:primaryType="jnt:acl">

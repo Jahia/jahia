@@ -38,17 +38,14 @@
         <ul>
             <template:container id="channel">
                 <li>
-                    <ui:subscribeButton source="${channel.key}" event="newsletter"/>                    
-                    <h3><template:field name="title"/></h3>
-                    <template:containerList name="issues" id="issues">
-                        <c:if test="${not empty issues}">
-                            <ul>
-                                <template:container id="issue">
-                                    <li><template:field name="link" var="newsletterLink"/></li>
-                                </template:container>
-                            </ul>
-                        </c:if>
-                    </template:containerList>
+                    <template:field name="link" display="false" var="link"/>
+                    <ui:subscribeButton source="${link.page.key}" event="newsletter" style="float: right"/>                    
+                    <h3><template:link page="link"/></h3>
+                    <p>
+                        <template:image file="image" cssClassName="left"/>
+                        <template:field name="description"/>
+                    </p>
+                    <br class="clear"/>
                 </li>
             </template:container>
         </ul>

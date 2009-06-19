@@ -39,6 +39,7 @@ import org.jahia.ajax.gwt.client.module.CalendarJahiaModule;
 import org.jahia.ajax.gwt.client.module.RSSJahiaModule;
 import org.jahia.ajax.gwt.client.module.FormJahiaModule;
 import org.jahia.ajax.gwt.client.module.PortletRenderJahiaModule;
+import org.jahia.ajax.gwt.client.module.SubscriptionJahiaModule;
 
 /**
  * User: jahia
@@ -58,6 +59,8 @@ public class LiveJahiaModuleProvider extends JahiaModuleProvider {
                 return new FormJahiaModule();
             } else if (jahiaType.equalsIgnoreCase(JahiaType.PORTLET_RENDER)) {
                 return new PortletRenderJahiaModule();
+            } else if (jahiaType.equalsIgnoreCase(JahiaType.SUBSCRIPTION)) {
+                return new SubscriptionJahiaModule();
             }
         }
         return null;

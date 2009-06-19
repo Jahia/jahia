@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.client.service.subscription;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionStatus;
@@ -52,6 +53,7 @@ public interface SubscriptionServiceAsync {
 
     void subscribe(String objectKey, String eventType,
             boolean confirmationRequired,
+            Map<String, String> properties,
             AsyncCallback<SubscriptionStatus> callback);
 
     void unsubscribe(String objectKey, String eventType,

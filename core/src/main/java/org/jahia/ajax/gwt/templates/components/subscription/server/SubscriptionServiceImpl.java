@@ -32,13 +32,15 @@
 package org.jahia.ajax.gwt.templates.components.subscription.server;
 
 import java.util.List;
+import java.util.Map;
 
-import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
-import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionInfo;
 import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
+import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionInfo;
 import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionStatus;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.mail.MailService;
 import org.jahia.services.notification.Subscription;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
@@ -53,9 +55,7 @@ import org.jahia.settings.SettingsBean;
 public class SubscriptionServiceImpl extends JahiaRemoteService implements
         SubscriptionService {
 
-    private static org.jahia.services.notification.SubscriptionService getSubscriptionService() {
-        return ServicesRegistry.getInstance().getSubscriptionService();
-    }
+    private org.jahia.services.notification.SubscriptionService subscriptionService;
 
     private int getSiteId() {
         ProcessingContext ctx = retrieveParamBean();
@@ -78,8 +78,8 @@ public class SubscriptionServiceImpl extends JahiaRemoteService implements
         } else if (UserPreferencesHelper.getEmailAddress(user) == null) {
             status = SubscriptionStatus.NO_EMAIL_ADDRESS;
         } else {
-            status = getSubscriptionService().isSubscribed(objectKey,
-                    eventType, user.getUsername(), getSiteId()) ? SubscriptionStatus.SUBSCRIBED
+            status = subscriptionService.isSubscribed(objectKey, eventType,
+                    user.getUsername(), getSiteId()) ? SubscriptionStatus.SUBSCRIBED
                     : SubscriptionStatus.NOT_SUBSCRIBED;
         }
 
@@ -109,7 +109,6 @@ public class SubscriptionServiceImpl extends JahiaRemoteService implements
                 subscription.setStatus(SubscriptionStatus.UNAUTHORIZED);
             }
         } else {
-            org.jahia.services.notification.SubscriptionService subscriptionService = getSubscriptionService();
             for (SubscriptionInfo subscription : subscriptions) {
                 Subscription subscriptionData = subscriptionService
                         .getSubscription(subscription.getSource(), subscription
@@ -126,23 +125,32 @@ public class SubscriptionServiceImpl extends JahiaRemoteService implements
         return subscriptions;
     }
 
+    public void setSubscriptionService(
+            org.jahia.services.notification.SubscriptionService subscriptionService) {
+        this.subscriptionService = subscriptionService;
+    }
+
     public SubscriptionStatus subscribe(String objectKey, String eventType,
-            boolean confirmationRequired) {
+            boolean confirmationRequired, Map<String, String> properties) {
 
         SubscriptionStatus status = SubscriptionStatus.SUBSCRIBED;
 
-        org.jahia.services.notification.SubscriptionService service = ServicesRegistry
-                .getInstance().getSubscriptionService();
-
         JahiaUser user = getUser();
         if (JahiaUserManagerService.isGuest(user)) {
-            status = SubscriptionStatus.UNAUTHORIZED;
+            String email = properties.get("email");
+            if (email == null || email.length() == 0
+                    || !MailService.isValidEmailAddress(email, false)) {
+                status = SubscriptionStatus.UNAUTHORIZED;
+            } else {
+                subscriptionService.subscribeAndAskForConfirmation(objectKey,
+                        true, eventType, email, false, getSiteId(), properties);
+            }
         } else {
             if (confirmationRequired) {
-                service.subscribeAndAskForConfirmation(objectKey, true,
-                        eventType, user.getUsername(), getSiteId());
+                subscriptionService.subscribeAndAskForConfirmation(objectKey,
+                        true, eventType, user.getUsername(), getSiteId());
             } else {
-                service.subscribe(objectKey, true, eventType, user
+                subscriptionService.subscribe(objectKey, true, eventType, user
                         .getUsername(), getSiteId());
             }
         }
@@ -153,14 +161,11 @@ public class SubscriptionServiceImpl extends JahiaRemoteService implements
 
         SubscriptionStatus status = SubscriptionStatus.NOT_SUBSCRIBED;
 
-        org.jahia.services.notification.SubscriptionService service = ServicesRegistry
-                .getInstance().getSubscriptionService();
-
         ProcessingContext ctx = retrieveParamBean();
         if (JahiaUserManagerService.isGuest(ctx.getUser())) {
             status = SubscriptionStatus.UNAUTHORIZED;
         } else {
-            service.unsubscribe(objectKey, eventType, ctx.getUser()
+            subscriptionService.unsubscribe(objectKey, eventType, ctx.getUser()
                     .getUsername(), ctx.getSiteID());
             status = getStatus(objectKey, eventType);
         }
@@ -172,7 +177,6 @@ public class SubscriptionServiceImpl extends JahiaRemoteService implements
         if (JahiaUserManagerService.isGuest(user)) {
             return false;
         } else {
-            org.jahia.services.notification.SubscriptionService subscriptionService = getSubscriptionService();
             for (SubscriptionInfo subscription : subscriptions) {
                 if (SubscriptionStatus.SUBSCRIBED == subscription.getStatus()) {
                     subscriptionService.subscribe(subscription.getSource(),

@@ -56,8 +56,12 @@ public class SendAsNewsletterVisibilityResolver implements VisibilityResolver {
     public boolean isVisible(JahiaData data, String type) {
         boolean result = true;
         try {
-            result = data.getProcessingContext().getPage().getPageTemplate()
-                    .getNodeType().isNodeType("jmix:sendAsNewsletter");
+            if (data != null && data.getProcessingContext() != null
+                    && data.getProcessingContext().getPage() != null) {
+                result = data.getProcessingContext().getPage()
+                        .getPageTemplate().getNodeType().isNodeType(
+                                "jmix:sendAsNewsletter");
+            }
         } catch (Exception e) {
             logger.warn(
                     "Unable to resolve visibility for 'Send as newsletter' button. Cause: "

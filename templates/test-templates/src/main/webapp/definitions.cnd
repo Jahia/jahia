@@ -292,16 +292,22 @@
  containerList maincontent2 (jnt:mainContentContainer)
  
 /* Newsletter */
+[test_templates:newsletterIssuePage] > jnt:page, jmix:sendAsNewsletter
+
 [test_templates:newsletterIssue] > jnt:container
- page link (page[type="direct",templates="Newsletter"])
+ page link (page[type="direct",templates="Newsletter issue"])
+ file image (file[mime='image/*'])
+ bigText description
+
+[test_templates:newsletter] > test_templates:generic
+ containerList issues (test_templates:newsletterIssue)
 
 [test_templates:newsletterChannel] > jnt:container
- smallText title mandatory
- containerList issues (test_templates:newsletterIssue)
- 
+ page link (page[type="direct",templates="Newsletter"])
+ file image (file[mime='image/*'])
+ bigText description
+
 [test_templates:newsletterSubscription] > test_templates:generic
  containerList newsletterChannels (test_templates:newsletterChannel)
-
-[test_templates:newsletter] > jnt:page, jmix:sendAsNewsletter
 
 /* end of Newsletter*/

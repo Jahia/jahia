@@ -90,7 +90,9 @@
     <bean name="subscriptionServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtSubscriptionService"/>
     </bean>
-    <bean name="gwtSubscriptionService" class="org.jahia.ajax.gwt.templates.components.subscription.server.SubscriptionServiceImpl" scope="prototype"/>
+    <bean name="gwtSubscriptionService" class="org.jahia.ajax.gwt.templates.components.subscription.server.SubscriptionServiceImpl" scope="prototype">
+        <property name="subscriptionService" ref="SubscriptionService"/>
+    </bean>
     
     <bean name="userManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtUserManagerService"/>

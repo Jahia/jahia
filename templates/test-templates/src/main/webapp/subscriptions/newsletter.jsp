@@ -31,6 +31,22 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<jsp:include page="../generic.jsp" flush="true">
-  <jsp:param name="workAreaJSP" value='miscellaneous/subscriptionsWorkArea.jsp'/>
-</jsp:include>
+<%@ include file="../common/declarations.jspf"%>
+
+<ui:subscribeButton source="${jahia.page.key}" event="newsletter"/>                    
+<template:containerList name="issues" id="issues">
+    <c:if test="${not empty issues}">
+        <ul>
+            <template:container id="issue">
+                <li>
+                    <h3><template:field name="link"/></h3>
+                    <p>
+                        <template:image file="image" cssClassName="left"/>
+                        <template:field name="description"/>
+                    </p>
+                    <br class="clear"/>
+                </li>
+            </template:container>
+        </ul>
+    </c:if>
+</template:containerList>

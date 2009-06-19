@@ -33,10 +33,12 @@ package org.jahia.ajax.gwt.client.widget.subscription;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.MissingResourceException;
 
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
 import org.jahia.ajax.gwt.client.service.subscription.SubscriptionServiceAsync;
-import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
@@ -52,6 +54,16 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Sergiy Shyrkov
  */
 public class SubscribeButton extends HTML {
+
+    private static boolean isGuest = true;
+
+    static {
+        try {
+            isGuest = "guest".equals(JahiaGWTParameters.getCurrentUser());
+        } catch (MissingResourceException ex) {
+            // ignore it
+        }
+    }
 
     private static String getAttribute(Element elem, String attributeName,
             String defaultValue) {
@@ -85,8 +97,8 @@ public class SubscribeButton extends HTML {
         source = wrapper.getAttribute("source");
         event = wrapper.getAttribute("event");
         event = event.length() > 0 ? event : "contentPublished";
-        confirmationRequired = "true".equals(wrapper
-                .getAttribute("confirmationRequired"));
+        confirmationRequired = isGuest
+                || "true".equals(wrapper.getAttribute("confirmationRequired"));
         initStyles(wrapper);
         initMessages(wrapper);
         init();
@@ -97,6 +109,9 @@ public class SubscribeButton extends HTML {
     }
 
     private void getStatus() {
+        if (isGuest) {
+            return;
+        }
         getService().getStatus(source, event,
                 new AsyncCallback<SubscriptionStatus>() {
                     public void onFailure(Throwable caught) {
@@ -116,14 +131,32 @@ public class SubscribeButton extends HTML {
     }
 
     private void init() {
+        if (isGuest) {
+            status = SubscriptionStatus.NOT_SUBSCRIBED;
+        }
+
         updateState(status);
         addClickListener(new ClickListener() {
 
             public void onClick(Widget sender) {
                 switch (status) {
                 case NOT_SUBSCRIBED:
-                    if (Window.confirm(i18n.get("subscribe.confirm"))) {
-                        subscribe();
+                    if (isGuest) {
+                        String email = Window
+                                .prompt(
+                                        i18n.get("subscribe.confirm")
+                                                + "\n"
+                                                + i18n
+                                                        .get("subscribe.confirm.provideEmailAddress"),
+                                        "");
+                        if (email != null) {
+                            Map<String, String> properties = new HashMap<String, String>(
+                                    1);
+                            properties.put("email", email);
+                            subscribe(properties);
+                        }
+                    } else if (Window.confirm(i18n.get("subscribe.confirm"))) {
+                        subscribe(null);
                     }
                     break;
 
@@ -154,6 +187,10 @@ public class SubscribeButton extends HTML {
         i18n.put("subscribe.confirm",
                 getAttribute(elem, "messageSubscribeConfirmation",
                         getMessage("subscribe.confirm")));
+        i18n.put("subscribe.confirm.provideEmailAddress", getAttribute(elem,
+                "messageSubscribeConfirmationProvideEmailAddress",
+                getMessage("subscribe.confirm.provideEmailAddress")));
+
         i18n.put("subscribe.success", getAttribute(elem,
                 "messageSubscribeSuccess", getMessage("subscribe.success")));
         i18n.put("subscribe.success.confirmationEmail", getAttribute(elem,
@@ -173,6 +210,9 @@ public class SubscribeButton extends HTML {
 
         i18n.put("unsubscribe.title", getAttribute(elem,
                 "messageUnsubscribeTitle", getMessage("unsubscribe.title")));
+        i18n.put("window.title", getAttribute(elem, "messageWindowTitle",
+                getMessage("window.title")));
+
     }
 
     private void initStyles(Element elem) {
@@ -190,8 +230,8 @@ public class SubscribeButton extends HTML {
                 "styleUnknown", "subscribe-button subscription-unknown"));
     }
 
-    private void subscribe() {
-        getService().subscribe(source, event, confirmationRequired,
+    private void subscribe(Map<String, String> properties) {
+        getService().subscribe(source, event, confirmationRequired, properties,
                 new AsyncCallback<SubscriptionStatus>() {
                     public void onFailure(Throwable caught) {
                         caught.printStackTrace();
@@ -207,6 +247,10 @@ public class SubscribeButton extends HTML {
                                                     + i18n
                                                             .get("subscribe.success.confirmationEmail")
                                                     : ""));
+                        } else if (SubscriptionStatus.UNAUTHORIZED == result) {
+                            Window
+                                    .alert(i18n
+                                            .get("subscribe.confirm.provideEmailAddress"));
                         } else {
                             Window.alert(i18n.get("operation.failure"));
                         }
@@ -233,10 +277,12 @@ public class SubscribeButton extends HTML {
                         updateState(result);
                     }
                 });
-        updateState(SubscriptionStatus.NOT_SUBSCRIBED);
     }
 
     private void updateState(SubscriptionStatus status) {
+        if (isGuest) {
+            status = SubscriptionStatus.NOT_SUBSCRIBED;
+        }
         this.status = status;
         setStyleName(statusStyleMapping.get(status));
         String title = null;

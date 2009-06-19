@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.client.service.subscription;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.util.URL;
@@ -97,10 +98,12 @@ public interface SubscriptionService extends RemoteService {
      * @param confirmationRequired
      *            if set to <code>true</code> an e-mail with the confirmation
      *            request will be sent
+     * @param properties
+     *            any custom user data
      * @return the status information about user subscription
      */
     SubscriptionStatus subscribe(String objectKey, String eventType,
-            boolean confirmationRequired);
+            boolean confirmationRequired, Map<String, String> properties);
 
     /**
      * Removes a subscription entry for the current user, the specified object

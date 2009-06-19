@@ -63,10 +63,12 @@
     <utility:gwtResourceBundle resourceName="subscriptions.button.provideEmailAddress"/>
     <utility:gwtResourceBundle resourceName="subscriptions.button.subscribe.title"/>
     <utility:gwtResourceBundle resourceName="subscriptions.button.subscribe.confirm"/>
+    <utility:gwtResourceBundle resourceName="subscriptions.button.subscribe.confirm.provideEmailAddress"/>
     <utility:gwtResourceBundle resourceName="subscriptions.button.subscribe.success"/>
     <utility:gwtResourceBundle resourceName="subscriptions.button.subscribe.success.confirmationEmail"/>
     <utility:gwtResourceBundle resourceName="subscriptions.button.unsubscribe.confirm"/>
     <utility:gwtResourceBundle resourceName="subscriptions.button.unsubscribe.success"/>
     <utility:gwtResourceBundle resourceName="subscriptions.button.unsubscribe.title"/>
+    <utility:gwtResourceBundle resourceName="subscriptions.button.window.title"/>
 </c:if>
 <span ${h:attributes(attributes)}></span>

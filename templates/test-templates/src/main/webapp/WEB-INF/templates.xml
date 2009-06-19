@@ -99,16 +99,19 @@
                   page-type="test_templates:samelistviews" description="description.template.samelistviews"/>                             
         <template name="Form" display-name="template.name.form" filename="form/form.jsp"
                   page-type="test_templates:form" description="description.template.form"/>
-        <template name="Subscriptions" display-name="template.name.subscriptions" filename="miscellaneous/subscriptions.jsp"
-                  page-type="test_templates:generic" description="description.template.subscriptions"/>
         <template name="JCR Tags" display-name="template.name.jcr.tags" filename="jcr/tags.jsp"
                   page-type="test_templates:generic" description="description.template.jcr.tags"/>
         <template name="Render engine tests" display-name="template.name.render" filename="render/render.jsp"
                   page-type="test_templates:render" description="description.template.render"/>
-        <template name="Newsletter subscription" display-name="template.name.newsletterSubscription" filename="generic.jsp?workAreaJSP=miscellaneous/newsletterSubscription.jsp"
+
+        <template name="Subscriptions" display-name="template.name.subscriptions" filename="generic.jsp?workAreaJSP=subscriptions/subscriptions.jsp"
+                  page-type="test_templates:generic" description="description.template.subscriptions"/>
+        <template name="Newsletter subscription" display-name="template.name.newsletterSubscription" filename="generic.jsp?workAreaJSP=subscriptions/newsletterSubscription.jsp&amp;useGWT=true"
                   page-type="test_templates:newsletterSubscription" description="description.template.newsletterSubscription"/>
-        <template name="Newsletter" display-name="template.name.newsletter" filename="miscellaneous/newsletter.jsp"
+        <template name="Newsletter" display-name="template.name.newsletter" filename="generic.jsp?workAreaJSP=subscriptions/newsletter.jsp&amp;useGWT=true"
                   page-type="test_templates:newsletter" description="description.template.newsletter"/>
+        <template name="Newsletter issue" display-name="template.name.newsletterIssue" filename="subscriptions/newsletterIssue.jsp"
+                  page-type="test_templates:newsletterIssuePage" description="description.template.newsletterIssue"/>
                           
         <!-- remove inherited -->
         <template name="FAQ" display-name="template.name.faq" filename="faq.jsp" visible="false"

@@ -294,6 +294,9 @@ public class ActionMenuURIFormatter {
                         }
                     }
                 }
+                if (cPage == null) {
+                    cPage = pickedContainer.getPage();
+                }
                 if (cPage != null) {
                     Map<String, String> source = new HashMap<String, String>(1) ;
                     source.put(new StringBuilder("site: ").append(cPage.getSite().getSiteKey()).append(" / pid: ").append(cPage.getPageID()).toString(), cPage.getUrl(processingContext)) ;

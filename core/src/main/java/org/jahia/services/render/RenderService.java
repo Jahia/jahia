@@ -82,6 +82,9 @@ public class RenderService extends JahiaService {
         Object old = request.getAttribute("currentNode");
         request.setAttribute("currentNode", resource.getNode());
 
+        Object oldResource = request.getAttribute("currentResource");
+        request.setAttribute("currentResource", resource);
+
         ProcessingContext threadParamBean = Jahia.getThreadParamBean();
         Config.set(request, Config.FMT_LOCALIZATION_CONTEXT,
                 new LocalizationContext(new JahiaResourceBundle(threadParamBean
@@ -93,6 +96,7 @@ public class RenderService extends JahiaService {
         String res = script.execute();
 
         request.setAttribute("currentNode",old);
+        request.setAttribute("currentResource",oldResource);
 
         return new StringBuffer(res);
     }
@@ -111,15 +115,15 @@ public class RenderService extends JahiaService {
      * @throws IOException
      */
     private Script resolveScript(Resource resource, HttpServletRequest request, final HttpServletResponse response) throws RepositoryException, IOException {
-        try {
+//        try {
             return new RequestDispatcherScript(resource, request, response);
-        } catch (IOException e) {
-            if (resource.getTemplate() != null) {
-                return new RequestDispatcherScript(new Resource(resource.getNode(), resource.getTemplateType() ,null), request,response);
-            } else {
-                throw e;
-            }
-        }
+//        } catch (IOException e) {
+//            if (resource.getTemplate() != null) {
+//                return new RequestDispatcherScript(new Resource(resource.getNode(), resource.getTemplateType() ,null), request,response);
+//            } else {
+//                throw e;
+//            }
+//        }
     }
 
     /**

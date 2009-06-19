@@ -90,6 +90,21 @@ public abstract class MailService extends JahiaService {
                                String subject, String message);
 
     /**
+     * Send message in the HTML format to the desired destination with cc and bcc option. The
+     * subject can also be mentioned.
+     *
+     * @param from The message sender
+     * @param to The message destination.
+     * @param cc The message copy destination.
+     * @param bcc The message copy blind destination.
+     * @param subject The message subject.
+     * @param message The message to send.
+     * @return True if message is sent successfully, false otherwise
+     */
+    public abstract boolean sendHtmlMessage(String from, String to, String cc, String bcc,
+                               String subject, String message);
+
+    /**
      * Send message to the desired destination with cc and bcc option. The
      * subject can also be mentioned. Also the
      *

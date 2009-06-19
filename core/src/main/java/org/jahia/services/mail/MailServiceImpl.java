@@ -37,6 +37,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.mail.Message;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.collections.Buffer;
@@ -48,6 +49,7 @@ import org.apache.commons.collections.buffer.UnboundedFifoBuffer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -416,4 +418,32 @@ public class MailServiceImpl extends MailService {
         this.backgroundTaskPeriod = backgroundTaskPeriod;
     }
 
+    @Override
+    public boolean sendHtmlMessage(final String from, final String to,
+            final String cc, final String bcc, final String subject,
+            final String message) {
+        return sendTemplateMessage(new MimeMessagePreparator() {
+            public void prepare(MimeMessage mimeMessage) throws Exception {
+                mimeMessage.setContent(message, "text/html; charset="
+                        + getSettingsBean().getDefaultResponseBodyEncoding());
+                mimeMessage.addFrom(InternetAddress.parse(StringUtils
+                        .isNotEmpty(from) ? from : defaultSender()));
+
+                mimeMessage.addRecipients(Message.RecipientType.TO,
+                        InternetAddress.parse(StringUtils.isNotEmpty(to) ? to
+                                : defaultRecipient()));
+                if (cc != null) {
+                    mimeMessage.addRecipients(Message.RecipientType.CC,
+                            InternetAddress.parse(cc));
+                }
+                if (bcc != null) {
+                    mimeMessage.addRecipients(Message.RecipientType.BCC,
+                            InternetAddress.parse(bcc));
+                }
+                mimeMessage.setSubject(subject, getSettingsBean()
+                        .getDefaultResponseBodyEncoding());
+            }
+        });
+    }
+    
 }

@@ -837,6 +837,47 @@
                 </jahia:page>
             </navLink>
         </navLink>        
+        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="813648ae-828d-47c6-b500-0dac7d0fab2a" jcr:lastModified="2009-06-21T17:15:49" jahia:createdBy="root" jcr:created="2009-06-21T17:15:49" jahia:lastModifiedBy="root">
+            <navLink jcr:uuid="7ed7cfd5-0f38-4609-b93d-509a18774cfc">
+                <jahia:page jahia:template="Simple" jcr:primaryType="test_templates:generic" jahia:pageKey="subscriptions" jahia:title="Souscriptions" jahia:hideFromNavigationMenu="true" jcr:uuid="5aa49355-bf77-4102-8925-2c1aee42b471" jcr:lastModified="2009-06-21T17:30:17" jcr:created="2009-06-21T17:15:49" jahia:lastModifiedBy="root" jahia:createdBy="root" jahia:pid="42">
+                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="9e19e738-6433-463e-b026-19703527a453" jahia:createdBy="root" jcr:created="2009-06-21T17:15:49" jcr:lastModified="2009-06-21T17:27:19" jahia:lastModifiedBy="root">
+                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="b301c839-b536-4c09-9e63-fbe5f9724ba5" jcr:lastModified="2009-06-21T17:21:49" jahia:createdBy="root" jcr:created="2009-06-21T17:21:49" jahia:lastModifiedBy="root">
+                            <navLink jcr:uuid="8f27627a-47b9-47e9-9c99-d2687c41c218">
+                                <jahia:page jahia:template="Newsletter subscription" jcr:primaryType="test_templates:newsletterSubscription" jahia:pageKey="newsletter" jahia:title="Gestion de newsletter" jcr:uuid="14c6e7e1-30c2-4f9b-ac53-8dbe05cdb20c" jahia:createdBy="root" jcr:lastModified="2009-06-21T17:21:49" jahia:lastModifiedBy="root" jcr:created="2009-06-21T17:21:49" jahia:pid="43">
+                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="f3216db3-87b1-4041-8965-9564a4f168ff" jahia:createdBy="root" jahia:lastModifiedBy="root" jcr:lastModified="2009-06-21T17:21:49" jcr:created="2009-06-21T17:21:49"></navLinkList>
+                                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="b74d92ee-3766-4d61-a24e-126d9d3e0e08" jahia:lastModifiedBy="root" jcr:lastModified="2009-06-21T17:21:49" jcr:created="2009-06-21T17:21:49" jahia:createdBy="root"></maincontentList>
+                                    <newsletterChannelsList jcr:primaryType="test_templates:newsletterChannelList" jcr:uuid="8a69ab07-1aa8-4d73-bc53-c8e3a59dc559" jahia:lastModifiedBy="root" jcr:created="2009-06-21T17:21:49" jcr:lastModified="2009-06-21T17:21:49" jahia:createdBy="root"></newsletterChannelsList>
+                                </jahia:page>
+                            </navLink>
+                        </navLink>
+                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="18519078-d5e7-4372-9cd0-6e8bf44dd1df" jcr:lastModified="2009-06-21T17:27:19" jahia:createdBy="root" jcr:created="2009-06-21T17:27:19" jahia:lastModifiedBy="root">
+                            <navLink jcr:uuid="49ead69f-1368-45d3-98ae-54779cc12cc9">
+                                <jahia:page jahia:template="Subscriptions" jcr:primaryType="test_templates:generic" jahia:pageKey="api" jahia:title="Subscription API" jcr:uuid="9667e96f-94b4-4b05-a806-a81515333ae7" jcr:lastModified="2009-06-21T17:27:19" jahia:createdBy="root" jahia:lastModifiedBy="root" jcr:created="2009-06-21T17:27:19" jahia:pid="44">
+                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="05a0aee1-f958-4d46-8d2d-eec6fdbc9c91" jcr:lastModified="2009-06-21T17:27:19" jcr:created="2009-06-21T17:27:19" jahia:createdBy="root" jahia:lastModifiedBy="root"></navLinkList>
+                                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="b74558cb-51d3-49e5-a3da-ea575fbd53ae" jcr:created="2009-06-21T17:27:19" jcr:lastModified="2009-06-21T17:27:19" jahia:lastModifiedBy="root" jahia:createdBy="root"></maincontentList>
+                                </jahia:page>
+                            </navLink>
+                        </navLink>
+                    </navLinkList>
+                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="b2d75b3f-323d-45ca-ac31-af1762ee3793" jahia:createdBy="root" jahia:lastModifiedBy="root" jcr:created="2009-06-21T17:15:49" jcr:lastModified="2009-06-21T17:30:17">
+                        <maincontent jcr:primaryType="jnt:mainContentContainer" jcr:uuid="a4a4c310-c250-4cb9-aa9b-3e9951f930d5" jcr:lastModified="2009-06-21T17:30:17" jahia:createdBy="root" jcr:created="2009-06-21T17:19:23" jahia:lastModifiedBy="root">
+                            <mainContentAlign jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.left&quot; default-value=&quot;left&quot;/&gt;" jcr:uuid="6aa39f48-8ffd-4f94-a172-b4e411714eae"></mainContentAlign>
+                            <mainContentBody jahia:value="&lt;p&gt;Following pages show the usage of the subscriptions:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;
+        &lt;a href=&quot;###page:/lang/fr/ref/14c6e7e1-30c2-4f9b-ac53-8dbe05cdb20c&quot; title=&quot;Gestion de newsletter&quot;&gt;Newsletter&lt;/a&gt; - subscription to a newsltter, creating of a newsletter issues and sending them to the subscribers
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;a href=&quot;###page:/lang/fr/ref/9667e96f-94b4-4b05-a806-a81515333ae7&quot; title=&quot;Subscription API&quot;&gt;Subscription API&lt;/a&gt; - direct usage of the Jahia Subscription API feaures
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+" jcr:uuid="401595af-9c6c-4eff-a35c-7a0ee1c1ca99"></mainContentBody>
+                            <mainContentTitle jahia:value="" jcr:uuid="63783629-9cd8-4184-b4b3-2d56fcbf0ff1"></mainContentTitle>
+                        </maincontent>
+                    </maincontentList>
+                </jahia:page>
+            </navLink>
+        </navLink>
     </navLinkList>
 </jahia:page>
-

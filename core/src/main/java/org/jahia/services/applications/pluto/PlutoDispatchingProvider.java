@@ -153,7 +153,7 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
         JahiaPortletUtil.copyJahiaAttributes(entryPointInstance,jParams, window, portalRequest,false);
 
         // wrappe in a porteal response
-        PortalServletResponse portalResponse = new PortalServletResponse(jParams.getResponse());
+        PortalServletResponse portalResponse = new JahiaPortalServletResponse(jParams.getResponse());
 
         // Render the portlet and cache the response.
         try {

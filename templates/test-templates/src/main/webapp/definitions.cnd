@@ -292,12 +292,21 @@
  containerList maincontent2 (jnt:mainContentContainer)
  
 /* Newsletter */
-[test_templates:newsletterIssuePage] > jnt:page, jmix:sendAsNewsletter
+[test_templates:newsletterIssueHeader] > jnt:container
+ file logo (file[mime='image/*'])
+ bigText description
+
+[test_templates:newsletterIssueFooter] > jnt:container
+ bigText footer = "&copy; 2002-2009 Jahia Solutions Group SA. All rights reserved." i15d indexed=no
+
+[test_templates:newsletterIssuePage] > test_templates:generic, jmix:sendAsNewsletter
+ singleContainer newsletterHeader (test_templates:newsletterIssueHeader) mandatory
+ singleContainer newsletterFooter (test_templates:newsletterIssueFooter) mandatory
 
 [test_templates:newsletterIssue] > jnt:container
  page link (page[type="direct",templates="Newsletter issue"])
  file image (file[mime='image/*'])
- bigText description
+ bigText introduction
 
 [test_templates:newsletter] > test_templates:generic
  containerList issues (test_templates:newsletterIssue)

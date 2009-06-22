@@ -61,8 +61,6 @@ public class WorkflowMessageBuilder extends
     private static Logger logger = Logger
             .getLogger(WorkflowMessageBuilder.class);
 
-    private ProcessingContext ctx;
-
     private String jobComment;
 
     private String jobGroup;
@@ -72,9 +70,8 @@ public class WorkflowMessageBuilder extends
     private String jobTitle;
 
     public WorkflowMessageBuilder(JahiaUser subscriber,
-            List<NotificationEvent> events, ProcessingContext ctx) {
+                                  List<NotificationEvent> events) {
         super(subscriber, events);
-        this.ctx = ctx;
         retrieveActivtionJobData();
     }
 

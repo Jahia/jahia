@@ -133,6 +133,8 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
 
     protected String templatePackageName;
 
+    protected ProcessingContext ctx;
+
     /**
      * Initializes an instance of this class.
      * 
@@ -143,7 +145,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
      */
     public MessageBuilder(JahiaUser subscriber, int siteId) {
         this(subscriber, UserPreferencesHelper.getEmailAddress(subscriber),
-                siteId);
+                siteId, Jahia.getThreadParamBean());
     }
 
     /**
@@ -152,16 +154,17 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
      * @param subscriber
      *            the subscriber information
      * @param subscriberEmail
-     *            subscriber e-mail address
+ *            subscriber e-mail address
      * @param siteId
-     *            the site ID
+     * @param ctx
      */
     public MessageBuilder(JahiaUser subscriber, String subscriberEmail,
-            int siteId) {
+                          int siteId, ProcessingContext ctx) {
         super();
         this.subscriber = subscriber;
         this.subscriberEmail = subscriberEmail;
         this.siteId = siteId;
+        this.ctx = ctx;
         resolveServerAndSiteUrl();
         resolveTemplatePackageName();
     }
@@ -334,6 +337,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         binding.setVariable("subscriptionManagementLink",
                 getSubscriptionManagementLink());
         binding.setVariable("unsubscribeLink", getUnsubscribeLink());
+        binding.setVariable("jParams", ctx);
     }
 
     public void prepare(MimeMessage mimeMessage) throws MessagingException,

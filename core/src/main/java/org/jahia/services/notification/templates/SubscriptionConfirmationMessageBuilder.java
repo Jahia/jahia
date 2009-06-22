@@ -62,7 +62,7 @@ public class SubscriptionConfirmationMessageBuilder extends MessageBuilder {
      */
     public SubscriptionConfirmationMessageBuilder(JahiaUser user,
             String emailAddress, Subscription subscription) {
-        super(user, emailAddress, subscription.getSiteId());
+        super(user, emailAddress, subscription.getSiteId(), Jahia.getThreadParamBean());
         this.subscription = subscription;
     }
 

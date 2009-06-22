@@ -51,7 +51,7 @@
                     <template:image file="logo" cssClassName="left"/>
                 </c:if>
                 ${jahia.page.title}</h1>
-                <hr><br><br><br>
+                <hr><br>
                 <p><template:field name="introduction"/></p>
             </template:container>
         </c:if>

@@ -1,0 +1,7 @@
+${i18n.get("notifications.newsletter", "You received a newsletter")} : ${targetPage.absoluteUrl}
+
+${i18n.get("notifications.common.unsubscribe", "To unsubscribe from notifications for this content, please use the")}
+${unsubscribeLink.absoluteUrl}
+
+${i18n.get("notifications.common.updateProfile", "To update your profile or to stop receiving customized e-mail, please click")}
+${subscriptionManagementLink.absoluteUrl}

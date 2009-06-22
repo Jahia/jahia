@@ -99,8 +99,7 @@ public class WorkflowNotificationEventHandler extends
         ProcessingContext ctx = Jahia.getThreadParamBean();
         if (ctx != null) {
             getMailService().sendTemplateMessage(
-                    new WorkflowMessageBuilder((JahiaUser) subscriber, events,
-                            ctx));
+                    new WorkflowMessageBuilder((JahiaUser) subscriber, events));
         } else {
             logger.warn("Unable to get current ProcessingContext instance."
                     + " Skip sending workflow notifications.");

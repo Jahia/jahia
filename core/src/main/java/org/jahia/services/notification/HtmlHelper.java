@@ -59,6 +59,10 @@ public class HtmlHelper {
     private static final Pattern PATTERN_OPERATION_MODE = Pattern.compile("/op/[a-z]+/");
 
     public static String getPage(ProcessingContext processingContext, JahiaUser user, String language, int pageID) throws IOException, JahiaException {
+        if (processingContext == null) {
+            processingContext = new ProcessingContext();
+            processingContext.setOperationMode(ProcessingContext.NORMAL);
+        }
         String s = processingContext.composePageUrl(pageID, language);
         s = PATTERN_OPERATION_MODE.matcher(s).replaceAll("/");
         if (s.contains(";jsessionid")) {

@@ -33,10 +33,22 @@
                     <list>
                         <bean class="org.jahia.services.notification.EmailNotificationEventHandler" parent="EmailNotificationEventHandlerTemplate">
                             <property name="ignoreEventTypesPattern" value="workflow.*"/>
+                            <property name="ignoreEventTypes">
+                                 <set>
+                                     <value>newsletter</value>
+                                 </set>
+                             </property>
                         </bean>
                         <bean class="org.jahia.services.notification.WorkflowNotificationEventHandler" parent="EmailNotificationEventHandlerTemplate">
                             <property name="processEventTypesPattern" value="workflow.*"/>
                         </bean>
+                        <bean class="org.jahia.services.notification.NewsletterNotificationEventHandler" parent="EmailNotificationEventHandlerTemplate">
+                            <property name="processEventTypes">
+                                <set>
+                                    <value>newsletter</value>
+                                </set>
+                            </property>
+                        </bean>                        
                     </list>
                 </property>
             </bean>

@@ -34,6 +34,7 @@ package org.jahia.services.notification;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -51,6 +52,7 @@ import org.jahia.services.notification.templates.TemplateUtils;
 import org.jahia.services.notification.templates.UnsubscribeConfirmationMessageBuilder;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.bin.Jahia;
 
 /**
  * Jahia service for managing user subscriptions to different event types.
@@ -391,6 +393,12 @@ public class SubscriptionService extends JahiaService {
         Subscription template = new Subscription(objectKey, includeChildren,
                 eventType, username, siteId, enabled);
         template.setUserRegistered(userRegistered);
+        if (properties == null) {
+            properties = new HashMap<String,String>();
+        }
+        if (!properties.containsKey("preferredLanguage")) {
+            properties.put("preferredLanguage", Jahia.getThreadParamBean().getLocale().toString());
+        }
         template.setProperties(properties);
 
         List<Subscription> existingSubscriptions = subscriptionManager

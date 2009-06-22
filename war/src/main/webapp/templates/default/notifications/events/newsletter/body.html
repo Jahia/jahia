@@ -1,0 +1,4 @@
+<% print org.jahia.services.notification.NotificationService.getInstance().getPageAsNewsletter(jParams, subscriber.user ,locale.toString(),event.getPageId()) %>
+
+<p align="center">${i18n.get("notifications.common.unsubscribe", "To unsubscribe from notifications for this content, please use the")} <a href="${unsubscribeLink.absoluteUrl}">${i18n.get("notifications.common.unsubscribeLink", "unsubscribe service")}</a><br>
+${i18n.get("notifications.common.updateProfile", "To update your profile or to stop receiving customized e-mail, please click")} <a href="${subscriptionManagementLink.absoluteUrl}">${i18n.get("notifications.common.updateProfileLink", "here")}</a></p>

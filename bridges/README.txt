@@ -59,3 +59,8 @@ directory. You should also copy the portals-bridges-struts-1.2.7-1.0.4.jar from 
 
 7. You can now deploy the WAR_FILE_NAME to your application server and Jahia should detect it and make it available
 to use on your web pages.
+
+Tips & tricks :
+
+If you have deployment problems, such as XML validation issues, please check that your web app doesn't include an XML
+parser implementation. As Jahia already provides one, you should remove the one from your web application.

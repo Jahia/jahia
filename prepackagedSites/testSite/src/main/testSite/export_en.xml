@@ -800,42 +800,130 @@
                 </jahia:page>
             </navLink>
         </navLink>
-        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="813648ae-828d-47c6-b500-0dac7d0fab2a" jcr:lastModified="2009-06-21T17:15:49" jahia:createdBy="root" jcr:created="2009-06-21T17:15:49" jahia:lastModifiedBy="root">
-            <navLink jcr:uuid="7ed7cfd5-0f38-4609-b93d-509a18774cfc">
-                <jahia:page jahia:template="Simple" jcr:primaryType="test_templates:generic" jahia:pageKey="subscriptions" jahia:title="Subscriptions" jahia:hideFromNavigationMenu="true" jcr:uuid="5aa49355-bf77-4102-8925-2c1aee42b471" jcr:lastModified="2009-06-21T17:30:17" jcr:created="2009-06-21T17:15:49" jahia:lastModifiedBy="root" jahia:createdBy="root" jahia:pid="42">
-                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="9e19e738-6433-463e-b026-19703527a453" jahia:createdBy="root" jcr:created="2009-06-21T17:15:49" jcr:lastModified="2009-06-21T17:27:19" jahia:lastModifiedBy="root">
-                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="b301c839-b536-4c09-9e63-fbe5f9724ba5" jcr:lastModified="2009-06-21T17:21:49" jahia:createdBy="root" jcr:created="2009-06-21T17:21:49" jahia:lastModifiedBy="root">
-                            <navLink jcr:uuid="8f27627a-47b9-47e9-9c99-d2687c41c218">
-                                <jahia:page jahia:template="Newsletter subscription" jcr:primaryType="test_templates:newsletterSubscription" jahia:pageKey="newsletter" jahia:title="Newsletter management" jcr:uuid="14c6e7e1-30c2-4f9b-ac53-8dbe05cdb20c" jahia:createdBy="root" jcr:lastModified="2009-06-21T17:21:49" jahia:lastModifiedBy="root" jcr:created="2009-06-21T17:21:49" jahia:pid="43">
-                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="f3216db3-87b1-4041-8965-9564a4f168ff" jahia:createdBy="root" jahia:lastModifiedBy="root" jcr:lastModified="2009-06-21T17:21:49" jcr:created="2009-06-21T17:21:49"></navLinkList>
-                                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="b74d92ee-3766-4d61-a24e-126d9d3e0e08" jahia:lastModifiedBy="root" jcr:lastModified="2009-06-21T17:21:49" jcr:created="2009-06-21T17:21:49" jahia:createdBy="root"></maincontentList>
-                                    <newsletterChannelsList jcr:primaryType="test_templates:newsletterChannelList" jcr:uuid="8a69ab07-1aa8-4d73-bc53-c8e3a59dc559" jahia:lastModifiedBy="root" jcr:created="2009-06-21T17:21:49" jcr:lastModified="2009-06-21T17:21:49" jahia:createdBy="root"></newsletterChannelsList>
+        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="84da3b2b-ad50-4f68-b7ef-9327822e3ae5" jahia:originalUuid="813648ae-828d-47c6-b500-0dac7d0fab2a" jcr:lastModified="2009-06-22T10:41:24" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root">
+            <navLink jcr:uuid="1430b015-0fef-410e-8758-cba2b4d9ef8d" jahia:originalUuid="7ed7cfd5-0f38-4609-b93d-509a18774cfc">
+                <jahia:page jahia:template="Simple" jcr:primaryType="test_templates:generic" jahia:pageKey="subscriptions" jahia:title="Subscriptions" jahia:hideFromNavigationMenu="true" jcr:uuid="f343f3b6-aebf-4de0-bd33-2bf9a4f9ff0b" jahia:originalUuid="5aa49355-bf77-4102-8925-2c1aee42b471" jcr:lastModified="2009-06-22T10:41:24" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root" jahia:pid="42">
+                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="42881323-d81d-42c8-aa31-93f7bb90f763" jahia:originalUuid="9e19e738-6433-463e-b026-19703527a453" jcr:lastModified="2009-06-22T10:41:24" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root">
+                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="b5cb270b-ee9a-48fe-b986-46e1f57af8aa" jahia:originalUuid="b301c839-b536-4c09-9e63-fbe5f9724ba5" jcr:lastModified="2009-06-22T10:41:24" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root">
+                            <navLink jcr:uuid="2dcc6070-33c6-4f79-af79-5bdfd5abd3e4" jahia:originalUuid="8f27627a-47b9-47e9-9c99-d2687c41c218">
+                                <jahia:page jahia:template="Newsletter subscription" jcr:primaryType="test_templates:newsletterSubscription" jahia:pageKey="newsletter" jahia:title="Newsletter management" jcr:uuid="a6cfce7d-e51d-4ad8-b301-40b09ad7b492" jahia:originalUuid="14c6e7e1-30c2-4f9b-ac53-8dbe05cdb20c" jcr:lastModified="2009-06-22T10:44:37" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root" jahia:pid="43">
+                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="53676d95-917d-429e-9136-acf4affb4221" jahia:originalUuid="f3216db3-87b1-4041-8965-9564a4f168ff" jcr:lastModified="2009-06-22T10:41:24" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root"></navLinkList>
+                                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="06c185d1-a39d-4862-ba9a-a3ed677a5cab" jahia:originalUuid="b74d92ee-3766-4d61-a24e-126d9d3e0e08" jcr:lastModified="2009-06-22T10:41:24" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root"></maincontentList>
+                                    <newsletterChannelsList jcr:primaryType="test_templates:newsletterChannelList" jcr:uuid="d52a9a91-3c78-4df3-8f82-b229e9bdcc25" jahia:originalUuid="8a69ab07-1aa8-4d73-bc53-c8e3a59dc559" jcr:lastModified="2009-06-22T10:44:37" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root">
+                                        <newsletterChannels jcr:primaryType="test_templates:newsletterChannel" jcr:uuid="f1c58b9d-b55a-42b8-abb6-098e27f2823d" jcr:lastModified="2009-06-22T10:44:37" jahia:createdBy="root" jcr:created="2009-06-22T10:44:37" jahia:lastModifiedBy="root">
+                                            <description jahia:value="&lt;p&gt;Hightlights and tech hints from the Jahia product team.&lt;/p&gt;
+" jcr:uuid="18b0dcbd-c784-484e-b652-50a8e35a9fdd"></description>
+                                            <image jahia:value="/content/sites/testSite/files/newsletter/logo-jahia.gif" jcr:uuid="2a5b7db1-6d90-4b43-9155-aec5d69c2983"></image>
+                                            <link jcr:uuid="74112338-229f-41d2-8df4-0a96d0a07667">
+                                                <jahia:page jahia:template="Newsletter" jcr:primaryType="test_templates:newsletter" jahia:pageKey="product-news" jahia:title="Product news" jahia:hideFromNavigationMenu="true" jcr:uuid="7b6b30a4-add3-46a1-88fc-dbdf962a5901" jcr:lastModified="2009-06-22T10:48:43" jcr:created="2009-06-22T10:44:37" jahia:createdBy="root" jahia:lastModifiedBy="root" jahia:pid="45">
+                                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="b0e392df-e28a-4bd5-b7b2-06398ccc268e" jahia:createdBy="root" jcr:lastModified="2009-06-22T10:44:37" jcr:created="2009-06-22T10:44:37" jahia:lastModifiedBy="root"></navLinkList>
+                                                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="4f1e4f38-d90b-4202-9121-aa8b64b7403a" jahia:createdBy="root" jahia:lastModifiedBy="root" jcr:lastModified="2009-06-22T10:44:37" jcr:created="2009-06-22T10:44:37"></maincontentList>
+                                                    <issuesList jcr:primaryType="test_templates:newsletterIssueList" jcr:uuid="ddf5b75d-fff5-4e63-bf9b-70dfa2110e70" jahia:createdBy="root" jcr:lastModified="2009-06-22T10:48:43" jahia:lastModifiedBy="root" jcr:created="2009-06-22T10:44:37">
+                                                        <issues jcr:primaryType="test_templates:newsletterIssue" jcr:uuid="c96d3854-fdc9-453e-805f-5e216bc8c4cd" jcr:lastModified="2009-06-22T10:48:43" jahia:createdBy="root" jcr:created="2009-06-22T10:46:14" jahia:lastModifiedBy="root">
+                                                            <description jahia:value="&lt;p&gt;Product announcements and news at the beginning of the new year 2009.&lt;/p&gt;
+" jcr:uuid="d919f219-fa41-4228-80ae-0147dc4a3395"></description>
+                                                            <image jahia:value="/content/sites/testSite/files/newsletter/jaha-community-logo.gif" jcr:uuid="a01a5f3d-63ec-42ef-89fa-b6727ca8fd51"></image>
+                                                            <link jcr:uuid="57853d30-32bc-49d4-9c69-79acddc8199b">
+                                                                <jahia:page jahia:template="Newsletter issue" jcr:primaryType="test_templates:newsletterIssuePage" jahia:pageKey="february-2009" jahia:title="Product News - February 2009" jcr:uuid="d02e086a-51b8-43a2-a889-348437122a08" jahia:createdBy="root" jcr:created="2009-06-22T10:48:43" jahia:lastModifiedBy="root" jcr:lastModified="2009-06-22T11:09:08" jahia:pid="46">
+                                                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="a3e5804e-1a45-407f-ab49-a735c4e8cb8c" jcr:created="2009-06-22T10:46:14" jcr:lastModified="2009-06-22T10:46:14" jahia:createdBy="root" jahia:lastModifiedBy="root"></navLinkList>
+                                                                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="c66718cd-32d5-43bb-9bef-e7f94dae03fe" jahia:createdBy="root" jcr:created="2009-06-22T10:46:14" jahia:lastModifiedBy="root" jcr:lastModified="2009-06-22T11:09:08">
+                                                                        <maincontent jcr:primaryType="jnt:mainContentContainer" jcr:uuid="cfa869f5-2562-4d34-be18-b3db7c1cdd24" jcr:lastModified="2009-06-22T10:53:19" jahia:createdBy="root" jcr:created="2009-06-22T10:53:19" jahia:lastModifiedBy="root">
+                                                                            <mainContentAlign jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.right&quot; default-value=&quot;right&quot;/&gt;" jcr:uuid="f55cee22-f72e-4c5a-bd5c-2ef84b649fde"></mainContentAlign>
+                                                                            <mainContentImage jahia:value="/content/sites/testSite/files/newsletter/logo-enterprise.gif" jcr:uuid="3eba32bc-9858-43f2-8b32-56dae70696ec"></mainContentImage>
+                                                                            <mainContentBody jahia:value="&lt;p&gt;The 5th service pack of Jahia 5 is now available. Most of the enhancements are Patches fixing issues and optimizations such as:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Avoids ACL loop creation&lt;/li&gt;
+	&lt;li&gt;QueryTag usage optimizations&lt;/li&gt;
+	&lt;li&gt;Avoids security breaches that could provide access to system files&lt;/li&gt;
+	&lt;li&gt;Fixes issue with container display between live and edit mode&lt;/li&gt;
+	&lt;li&gt;Fixes Lucene problems on NFS&lt;/li&gt;
+	&lt;li&gt;Deletes temporary files used by the import module&lt;/li&gt;
+	&lt;li&gt;Better handling of the URL re-writing in the Bigtext field&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;This new Service Pack is available for download at &lt;a href=&quot;http://extranet.jahia.com/&quot; target=&quot;_blank&quot; title=&quot;Jahia extranet&quot;&gt;http://extranet.jahia.com&lt;/a&gt;, the Jahia Customers Extranet*.&lt;/p&gt;
+&lt;p class=&quot;small&quot;&gt;*To access this dedicated section you have to login with your Product Jira account. You must be a signed customer and/or partner to obtain access to the Extranet.&lt;/p&gt;
+" jcr:uuid="6bb27786-1d6f-4493-bf49-b0f096b29c70"></mainContentBody>
+                                                                            <mainContentTitle jahia:value="Jahia Enterprise Edition 5 SP 5" jcr:uuid="0984a73c-c8bf-4570-b657-47c53c2c157d"></mainContentTitle>
+                                                                        </maincontent>
+                                                                        <maincontent jcr:primaryType="jnt:mainContentContainer" jcr:uuid="e9287682-5d97-459b-861f-73ca4020b8de" jcr:lastModified="2009-06-22T11:09:08" jahia:createdBy="root" jcr:created="2009-06-22T11:09:08" jahia:lastModifiedBy="root">
+                                                                            <mainContentAlign jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.right&quot; default-value=&quot;right&quot;/&gt;" jcr:uuid="212ee636-6861-4548-acc5-32c329689a4b"></mainContentAlign>
+                                                                            <mainContentImage jahia:value="/content/sites/testSite/files/newsletter/box-community.gif" jcr:uuid="98d55d55-ee37-482c-8937-e2d5d3c90c87"></mainContentImage>
+                                                                            <mainContentBody jahia:value="&lt;p&gt;We are very glad to announce the launch of Jahia 6, Community Edition open for download at &lt;a href=&quot;http://www.jahia.org/&quot; target=&quot;_blank&quot; title=&quot;jahia.org&quot;&gt;www.jahia.org&lt;/a&gt;, our new Community Website.&lt;/p&gt;
+&lt;p&gt;Jahia 6, Community Edition offers a WCM platform with even stronger document management and portal features, fully leveraging AJAX technology and best of breed Open Source components, with major enhancements in:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Web 2.0 Ajax powered user interface, in-line editing capabilities, support for Google Analytics, customizable toolbars, improved workflow, and a modified front-end template infrastructure&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;
+	&lt;img alt=&quot;iphone&quot; height=&quot;112&quot; src=&quot;###file:/content/sites/testSite/files/newsletter/iphone.gif&quot; width=&quot;200&quot;/&gt;
+&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Document management support for the &amp;ldquo;Jackrabbit&amp;rdquo; JSR 170 content repository&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;
+	&lt;img alt=&quot;document manager&quot; height=&quot;149&quot; src=&quot;###file:/content/sites/testSite/files/newsletter/documentManagement.gif&quot; width=&quot;200&quot;/&gt;
+&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Embedded Apache Plutot 2.0 library for improved support for the latest version of the Portlets Standard (JSR 286), and a centralized mashup repository.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;
+	&lt;img alt=&quot;portal&quot; height=&quot;161&quot; src=&quot;###file:/content/sites/testSite/files/newsletter/portal_visitor_live.gif&quot; width=&quot;200&quot;/&gt;
+&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&amp;ldquo;Jahia 6.0 introduces a lot of visible enhancements, but the most important changes are in the underlying framework. We have introduced the GWT framework through the UI, JCR content definitions, and a completely revised tag library, to make this version our best web content management solution to date,&amp;rdquo; said Serge Huber CTO of Jahia.&lt;/p&gt;
+" jcr:uuid="d99ca15a-401d-4dd0-a160-9485c52af660"></mainContentBody>
+                                                                            <mainContentTitle jahia:value="Jahia 6 Community Edition" jcr:uuid="b0d173e6-4d43-4965-b8bf-ea15d7dcb2b9"></mainContentTitle>
+                                                                        </maincontent>
+                                                                    </maincontentList>
+                                                                    <newsletterHeaderList jcr:primaryType="test_templates:newsletterIssueHeaderList" jcr:uuid="bac2dd5e-8178-41ad-af84-07b8fb7161fb" jcr:created="2009-06-22T10:46:14" jcr:lastModified="2009-06-22T10:49:59" jahia:lastModifiedBy="root" jahia:createdBy="root">
+                                                                        <newsletterHeader jcr:primaryType="test_templates:newsletterIssueHeader" jcr:uuid="5e999592-9085-42bd-8507-bf9e9c8722ef" jahia:lastModifiedBy="root" jahia:createdBy="root" jcr:created="2009-06-22T10:46:14" jcr:lastModified="2009-06-22T10:49:59">
+                                                                            <introduction jahia:value="&lt;p&gt;Dear Customers, Dear Partners,&lt;/p&gt;
+&lt;p&gt;
+	&lt;br/&gt;
+	Here we are: 2009 has begun! The Jahia team wishes you all the best for this new year! We hope that it started well for you and that you made the 2009 resolution to keep making exciting projects with Jahia!&lt;br/&gt;
+	This year will be very important for our team as we have just launched 2 majors releases and 3 new websites to be even more in line with your specific needs and requirements.&lt;br/&gt;
+	&lt;br/&gt;
+	In this newsletter we will tell you more about our product's news and improvements as well as our recent achievements as a company. As always, we like to hear from you and receive your feedback.
+&lt;/p&gt;
+" jcr:uuid="79952687-6023-400d-83fd-9fca9f1bec8f"></introduction>
+                                                                            <logo jahia:value="/content/sites/testSite/files/newsletter/jaha-community-logo.gif" jcr:uuid="79639c61-b98e-4a79-b5f3-7e8a27a1c343"></logo>
+                                                                        </newsletterHeader>
+                                                                    </newsletterHeaderList>
+                                                                    <newsletterFooterList jcr:primaryType="test_templates:newsletterIssueFooterList" jcr:uuid="91737406-5cda-47bf-a979-760692664d74" jahia:createdBy="root" jcr:created="2009-06-22T10:46:14" jcr:lastModified="2009-06-22T10:46:14" jahia:lastModifiedBy="root">
+                                                                        <newsletterFooter jcr:primaryType="test_templates:newsletterIssueFooter" jcr:uuid="1ce43b0d-6cd6-4d16-9752-34d30d043834" jahia:createdBy="root" jcr:lastModified="2009-06-22T10:46:14" jahia:lastModifiedBy="root" jcr:created="2009-06-22T10:46:14">
+                                                                            <footer jahia:value="&amp;copy; 2002-2009 Jahia Solutions Group SA. All rights reserved.
+" jcr:uuid="8b196020-59b4-457f-b9a1-146edf51d773"></footer>
+                                                                        </newsletterFooter>
+                                                                    </newsletterFooterList>
+                                                                </jahia:page>
+                                                            </link>
+                                                        </issues>
+                                                    </issuesList>
+                                                </jahia:page>
+                                            </link>
+                                        </newsletterChannels>
+                                    </newsletterChannelsList>
                                 </jahia:page>
                             </navLink>
                         </navLink>
-                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="18519078-d5e7-4372-9cd0-6e8bf44dd1df" jcr:lastModified="2009-06-21T17:27:19" jahia:createdBy="root" jcr:created="2009-06-21T17:27:19" jahia:lastModifiedBy="root">
-                            <navLink jcr:uuid="49ead69f-1368-45d3-98ae-54779cc12cc9">
-                                <jahia:page jahia:template="Subscriptions" jcr:primaryType="test_templates:generic" jahia:pageKey="api" jahia:title="Subscription API" jcr:uuid="9667e96f-94b4-4b05-a806-a81515333ae7" jcr:lastModified="2009-06-21T17:27:19" jahia:createdBy="root" jahia:lastModifiedBy="root" jcr:created="2009-06-21T17:27:19" jahia:pid="44">
-                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="05a0aee1-f958-4d46-8d2d-eec6fdbc9c91" jcr:lastModified="2009-06-21T17:27:19" jcr:created="2009-06-21T17:27:19" jahia:createdBy="root" jahia:lastModifiedBy="root"></navLinkList>
-                                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="b74558cb-51d3-49e5-a3da-ea575fbd53ae" jcr:created="2009-06-21T17:27:19" jcr:lastModified="2009-06-21T17:27:19" jahia:lastModifiedBy="root" jahia:createdBy="root"></maincontentList>
+                        <navLink jcr:primaryType="jnt:navLink" jcr:uuid="faac1318-48a7-4014-9e1c-a5fe6896c41b" jahia:originalUuid="18519078-d5e7-4372-9cd0-6e8bf44dd1df" jcr:lastModified="2009-06-22T10:41:24" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root">
+                            <navLink jcr:uuid="fbdd14de-ce0f-4d56-acd7-c90497c7bd3a" jahia:originalUuid="49ead69f-1368-45d3-98ae-54779cc12cc9">
+                                <jahia:page jahia:template="Subscriptions" jcr:primaryType="test_templates:generic" jahia:pageKey="api" jahia:title="Subscription API" jcr:uuid="0a556393-896e-44ff-b43a-a9615c79054a" jahia:originalUuid="9667e96f-94b4-4b05-a806-a81515333ae7" jcr:lastModified="2009-06-22T10:41:24" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root" jahia:pid="44">
+                                    <navLinkList jcr:primaryType="jnt:navLinkList" jcr:uuid="ad5e8be3-b899-4ec9-af5f-3916c37fb005" jahia:originalUuid="05a0aee1-f958-4d46-8d2d-eec6fdbc9c91" jcr:lastModified="2009-06-22T10:41:24" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root"></navLinkList>
+                                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="a1d77715-328c-4aca-96a8-33c835ae7719" jahia:originalUuid="b74558cb-51d3-49e5-a3da-ea575fbd53ae" jcr:lastModified="2009-06-22T10:41:24" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root"></maincontentList>
                                 </jahia:page>
                             </navLink>
                         </navLink>
                     </navLinkList>
-                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="b2d75b3f-323d-45ca-ac31-af1762ee3793" jahia:createdBy="root" jahia:lastModifiedBy="root" jcr:created="2009-06-21T17:15:49" jcr:lastModified="2009-06-21T17:30:17">
-                        <maincontent jcr:primaryType="jnt:mainContentContainer" jcr:uuid="a4a4c310-c250-4cb9-aa9b-3e9951f930d5" jcr:lastModified="2009-06-21T17:30:17" jahia:createdBy="root" jcr:created="2009-06-21T17:19:23" jahia:lastModifiedBy="root">
-                            <mainContentAlign jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.left&quot; default-value=&quot;left&quot;/&gt;" jcr:uuid="6aa39f48-8ffd-4f94-a172-b4e411714eae"></mainContentAlign>
+                    <maincontentList jcr:primaryType="jnt:mainContentContainerList" jcr:uuid="fc51f299-bc8d-4cb5-a45b-9773e8a92905" jahia:originalUuid="b2d75b3f-323d-45ca-ac31-af1762ee3793" jcr:lastModified="2009-06-22T10:41:24" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root">
+                        <maincontent jcr:primaryType="jnt:mainContentContainer" jcr:uuid="91e81d2e-9e0c-467a-a046-ccf099ef429d" jahia:originalUuid="a4a4c310-c250-4cb9-aa9b-3e9951f930d5" jcr:lastModified="2009-06-22T10:41:24" jahia:createdBy="root" jcr:created="2009-06-22T10:41:24" jahia:lastModifiedBy="root">
+                            <mainContentAlign jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.left&quot; default-value=&quot;left&quot;/&gt;" jcr:uuid="9764418b-74fc-48a9-9a94-8461790014a6" jahia:originalUuid="6aa39f48-8ffd-4f94-a172-b4e411714eae"></mainContentAlign>
                             <mainContentBody jahia:value="&lt;p&gt;Following pages show the usage of the subscriptions:&lt;/p&gt;
 &lt;ul&gt;
-    &lt;li&gt;
-        &lt;a href=&quot;###page:/lang/en/ref/14c6e7e1-30c2-4f9b-ac53-8dbe05cdb20c&quot; title=&quot;Newsletter management&quot;&gt;Newsletter&lt;/a&gt; - subscription to a newsltter, creating of a newsletter issues and sending them to the subscribers
-    &lt;/li&gt;
-    &lt;li&gt;
-        &lt;a href=&quot;###page:/lang/fr/ref/9667e96f-94b4-4b05-a806-a81515333ae7&quot; title=&quot;Subscription API&quot;&gt;Subscription API&lt;/a&gt; - direct usage of the Jahia Subscription API feaures
-    &lt;/li&gt;
+	&lt;li&gt;         &lt;a href=&quot;###page:/lang/en/ref/a6cfce7d-e51d-4ad8-b301-40b09ad7b492&quot; title=&quot;Newsletter management&quot;&gt;Newsletter&lt;/a&gt; - subscription to a newsltter, creating of a newsletter issues and sending them to the subscribers     &lt;/li&gt;
+	&lt;li&gt;         &lt;a href=&quot;###page:/lang/fr/ref/0a556393-896e-44ff-b43a-a9615c79054a&quot; title=&quot;Subscription API&quot;&gt;Subscription API&lt;/a&gt; - direct usage of the Jahia Subscription API feaures     &lt;/li&gt;
 &lt;/ul&gt;
-" jcr:uuid="401595af-9c6c-4eff-a35c-7a0ee1c1ca99"></mainContentBody>
-                            <mainContentTitle jahia:value="" jcr:uuid="63783629-9cd8-4184-b4b3-2d56fcbf0ff1"></mainContentTitle>
+" jcr:uuid="561b47ec-c955-4072-a4e3-b1f8589f24a2" jahia:originalUuid="401595af-9c6c-4eff-a35c-7a0ee1c1ca99"></mainContentBody>
+                            <mainContentTitle jahia:value="" jcr:uuid="acb2e0cf-1f30-49d0-b7ff-4cd524d07513" jahia:originalUuid="63783629-9cd8-4184-b4b3-2d56fcbf0ff1"></mainContentTitle>
                         </maincontent>
                     </maincontentList>
                 </jahia:page>

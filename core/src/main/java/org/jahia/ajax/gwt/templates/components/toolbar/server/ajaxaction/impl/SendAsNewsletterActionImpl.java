@@ -38,9 +38,9 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.data.JahiaData;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.events.JahiaEventGeneratorService;
 import org.jahia.services.notification.NotificationEvent;
 import org.jahia.services.notification.NotificationService;
@@ -115,8 +115,8 @@ public class SendAsNewsletterActionImpl extends AjaxAction {
     private String getJCRPath(ProcessingContext ctx) {
         String path = null;
         try {
-            path = ctx.getContentPage().getJCRPath(ctx);
-        } catch (JahiaException e) {
+            path = JCRContentUtils.getContentObjectPath(ctx.getContentPage().getJCRNode(ctx));
+        } catch (Exception e) {
             logger.error("Error retrieving JCR path for the page: "
                     + ctx.getPage(), e);
         }

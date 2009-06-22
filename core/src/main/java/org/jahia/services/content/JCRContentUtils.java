@@ -94,9 +94,17 @@ public final class JCRContentUtils {
      */
     public static String getContentNodeName(Node node)
             throws RepositoryException {
-        return node instanceof JahiaContentNodeImpl ? ((JahiaContentNodeImpl) node)
-                .getContentObject().getObjectKey().getKey()
-                : node.getName();
+        String name = null;
+        if (node instanceof JahiaContentNodeImpl) {
+            name = ((JahiaContentNodeImpl) node).getContentObject()
+                    .getObjectKey().getKey();
+        } else if (node instanceof JCRJahiaContentNode) {
+            name = ((JCRJahiaContentNode) node).getContentObject()
+                    .getObjectKey().getKey();
+        } else {
+            name = node.getName();
+        }
+        return name;
     }
     
     /**
@@ -118,16 +126,22 @@ public final class JCRContentUtils {
         try {
             parent = node.getParent();
         } catch (ItemNotFoundException e) {
-            // on parent
+            parent = null;
         }
         while (parent != null) {
-            path.insert(0, getContentNodeName(parent)).insert(0, "/");
+            String name = getContentNodeName(parent);
+            path.insert(0, name);
+            if (!"/".equals(name) && name.length() > 0) {
+                path.insert(0, "/");
+            }
             try {
                 parent = parent.getParent();
             } catch (ItemNotFoundException e) {
-                // on parent
+                parent = null;
             }
-            if (parent instanceof JahiaRootNodeImpl) {
+            if (parent instanceof JahiaRootNodeImpl
+                    || (parent instanceof JCRNodeDecorator && ((JCRNodeDecorator) parent)
+                            .getRealNode() instanceof JahiaRootNodeImpl)) {
                 parent = null; // stop
             }
         }

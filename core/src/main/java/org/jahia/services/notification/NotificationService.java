@@ -318,7 +318,7 @@ public class NotificationService extends JahiaService {
     public String getPageAsNewsletter(ProcessingContext processingContext, JahiaUser user, String language, int pageID) {
         try {
             String html = HtmlHelper.getPage(processingContext, user, language, pageID);
-            return HtmlHelper.cleanHtmlForNewsletter(processingContext, html);
+            return HtmlHelper.cleanHtmlForNewsletter(processingContext, html, false);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         } catch (JahiaException e) {

@@ -76,7 +76,7 @@ public class HtmlHelper {
         return out.toString();
     }
 
-    public static String cleanHtmlForNewsletter(ProcessingContext ctx, String content) throws JahiaException {
+    public static String cleanHtmlForNewsletter(ProcessingContext ctx, String content, boolean includecss) throws JahiaException {
 
         if (content == null || content.length() == 0) {
             return "";
@@ -114,42 +114,46 @@ public class HtmlHelper {
         for (StartTag startTag : linkTags) {
             final Attributes attributes = startTag.getAttributes();
             if ("stylesheet".equals(attributes.get("rel").getValue())) {
-                Attribute type = attributes.get("type");
+                if (includecss) {
+                    Attribute type = attributes.get("type");
 
-                String href = attributes.get("href").getValue();
-                if (href == null) {
-                    continue;
-                }
-                Attribute media = attributes.get("media");
-                if (media != null && !media.getValue().equalsIgnoreCase("screen")) {
-                    continue;
-                }
-
-                try {
-                    InputStream is = new URL(SettingsBean.getInstance().getLocalAccessUri()+href).openStream();
-
-                    StringWriter baos = new StringWriter();
-                    IOUtils.copy(is,baos);
-
-                    sb.setLength(0);
-                    sb.append("<style");
-                    if ( type!=null ) {
-                        sb.append(' ').append(type);
+                    String href = attributes.get("href").getValue();
+                    if (href == null) {
+                        continue;
                     }
-                    String baseHref = href;
-                    if (baseHref.startsWith("/")) {
-                        baseHref = ctx.getScheme() + "://" + ctx.getSite().getServerName() + ":" + ctx.getServerPort() + href;
+                    Attribute media = attributes.get("media");
+                    if (media != null && !media.getValue().equalsIgnoreCase("screen")) {
+                        continue;
                     }
-                    String basehref = baseHref.substring(0,baseHref.lastIndexOf('/')+1);
-                    
-                    String stylesheet = baos.toString();
-                    
-                    stylesheet = Pattern.compile("url *\\( *\"?([^\\:\" )]*)\"? *\\)").matcher(stylesheet).replaceAll("url(\""+basehref+"$1\")");
 
-                    sb.append(">\n").append(stylesheet).append("\n</style>");
-			        document.replace(startTag,sb.toString());
-                } catch (IOException e) {
-                    logger.error("Cannot get stylesheet part", e);
+                    try {
+                        InputStream is = new URL(SettingsBean.getInstance().getLocalAccessUri()+href).openStream();
+
+                        StringWriter baos = new StringWriter();
+                        IOUtils.copy(is,baos);
+
+                        sb.setLength(0);
+                        sb.append("<style");
+                        if ( type!=null ) {
+                            sb.append(' ').append(type);
+                        }
+                        String baseHref = href;
+                        if (baseHref.startsWith("/")) {
+                            baseHref = ctx.getScheme() + "://" + ctx.getSite().getServerName() + ":" + ctx.getServerPort() + href;
+                        }
+                        String basehref = baseHref.substring(0,baseHref.lastIndexOf('/')+1);
+                    
+                        String stylesheet = baos.toString();
+                    
+                        stylesheet = Pattern.compile("url *\\( *\"?([^\\:\" )]*)\"? *\\)").matcher(stylesheet).replaceAll("url(\""+basehref+"$1\")");
+
+                        sb.append(">\n").append(stylesheet).append("\n</style>");
+                        document.replace(startTag,sb.toString());
+                    } catch (IOException e) {
+                        logger.error("Cannot get stylesheet part", e);
+                    }
+                } else {
+                    document.replace(startTag,"");
                 }
             }
         }

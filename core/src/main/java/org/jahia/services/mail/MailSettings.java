@@ -240,7 +240,6 @@ public class MailSettings implements Serializable {
         String user = null;
         if (host.contains("@")) {
             String authPart = StringUtils.substringBeforeLast(host, "@");
-            host = StringUtils.substringAfterLast(host, "@");
             if (authPart.contains(":")) {
                 user = StringUtils.substringBefore(authPart, ":");
             } else {
@@ -256,7 +255,6 @@ public class MailSettings implements Serializable {
         String pwd = null;
         if (host.contains("@")) {
             String authPart = StringUtils.substringBeforeLast(host, "@");
-            host = StringUtils.substringAfterLast(host, "@");
             if (authPart.contains(":")) {
                 pwd = StringUtils.substringAfter(authPart, ":");
             }

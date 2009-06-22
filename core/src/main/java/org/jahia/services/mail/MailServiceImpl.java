@@ -49,7 +49,6 @@ import org.apache.commons.collections.buffer.UnboundedFifoBuffer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -227,7 +226,7 @@ public class MailServiceImpl extends MailService {
         if (value != null) {
             sender.setPassword(value);
         }
-        Map options = settings.getOptions();
+        Map<String, String> options = settings.getOptions();
         if (!options.isEmpty()) {
             sender.getJavaMailProperties().putAll(options);
         }

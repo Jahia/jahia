@@ -85,6 +85,7 @@ import org.jahia.services.workflow.ExternalWorkflow;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.engines.EngineMessage;
 import org.jahia.security.license.LicenseActionChecker;
+import org.jahia.operations.valves.ThemeValve;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
@@ -1188,6 +1189,10 @@ public class ImportHandler extends DefaultHandler {
                 String pageKey = atts.getValue(ImportExportBaseService.JAHIA_URI, "pageKey");
                 setPageKey(pageKey, jahiaPage.getContentPage());
 
+                String themeKey = atts.getValue(ImportExportBaseService.JAHIA_URI, "theme");
+                if (themeKey != null ) {
+                    jahiaPage.getContentPage().setProperty(ThemeValve.THEME_ATTRIBUTE_NAME, themeKey);
+                }
                 String oldPid = atts.getValue(ImportExportBaseService.JAHIA_URI, "pid");
                 if (oldPid != null) {
                     result.addPidMapping(Integer.parseInt(oldPid), jahiaPage.getID());
@@ -1557,6 +1562,10 @@ public class ImportHandler extends DefaultHandler {
 
             String pageKey = atts.getValue(ImportExportBaseService.JAHIA_URI, "pageKey");
             setPageKey(pageKey, cp);
+            String themeKey = atts.getValue(ImportExportBaseService.JAHIA_URI, "theme");
+            if (themeKey != null ) {
+                cp.setProperty(ThemeValve.THEME_ATTRIBUTE_NAME, themeKey);
+            }
         }
         if (atts.getValue(ImportExportBaseService.JAHIA_URI, "hideFromNavigationMenu") != null) {
             cp.setProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU, "true");

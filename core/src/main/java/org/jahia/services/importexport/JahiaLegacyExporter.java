@@ -66,6 +66,7 @@ import org.jahia.hibernate.model.JahiaAclEntry;
 import org.jahia.hibernate.manager.JahiaLinkManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.operations.valves.ThemeValve;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -339,6 +340,7 @@ public class JahiaLegacyExporter extends Exporter{
                     case JahiaPage.TYPE_DIRECT:
                         currentPage = cp;
                         if (view) {
+
                             JahiaPageDefinition template = ((ContentPage) object).getPageTemplate(toLoadRequest);
                             attr.addAttribute(ImportExportService.JAHIA_URI, "template", "jahia:template", CDATA, template.getName());
                             if (template.getPageType() != null) {
@@ -352,6 +354,10 @@ public class JahiaLegacyExporter extends Exporter{
 
                             if (title != null) {
                                 attr.addAttribute(ImportExportService.JAHIA_URI, "title", "jahia:title", CDATA, title);
+                            }
+                            String themePage = cp.getProperty(ThemeValve.THEME_ATTRIBUTE_NAME);
+                            if (themePage != null) {
+                                attr.addAttribute(ImportExportService.JAHIA_URI, "theme", "jahia:theme", CDATA, themePage);
                             }
                         }
                         break;

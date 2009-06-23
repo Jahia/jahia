@@ -26,6 +26,8 @@
         <template name="publication" display-name="template.name.publications" filename="tpl.publications.jsp" page-type="web_templates:publication" description="description.template.publications"/>
         <template name="layout" display-name="template.name.myPortal" filename="tpl.layoutManager.jsp" page-type="web_templates:layoutManager" description="description.template.myPortal"/>
         <template name="mediaGallery" display-name="template.name.mediaGallery" filename="tpl.mediaGallery.jsp" page-type="web_templates:mediaGallery" description="description.template.mediaGallery"/>
+        <template name="newsletter" display-name="template.name.newsletter" filename="tpl.newsletter.jsp" page-type="web_templates:newsletter" description="description.template.newsletter"/>
+        <template name="newsletterIssue" display-name="template.name.newsletterIssue" filename="tpl.newsletterIssue.jsp" page-type="web_templates:newsletterIssuePage" description="description.template.newsletterIssue"/>
     </templates>
 </template-set>
 

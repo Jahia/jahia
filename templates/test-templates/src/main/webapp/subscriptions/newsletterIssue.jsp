@@ -35,8 +35,7 @@
 <%@ include file="../common/declarations.jspf" %>
 <template:template doctype="html-transitional">
 <template:templateHead>
-<link type="text/css" rel="stylesheet" href="/jahia/templates/test_templates/common/css/styles.css">
-
+<link type="text/css" rel="stylesheet" href="${jahia.includes.webPath['/common/css/styles.css']}">
 </template:templateHead>
 <template:templateBody>
 <center>

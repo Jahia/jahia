@@ -104,6 +104,7 @@ public class SendAsNewsletterActionImpl extends AjaxAction {
                 .getContentPage().getObjectKey().getKey(), "newsletter");
         evt.setSiteId(ctx.getSiteID());
         evt.setPageId(ctx.getPageID());
+        evt.setPageTitle(ctx.getPage().getTitle());
         evt.setObjectPath(getJCRPath(ctx));
         JahiaEventGeneratorService evtService = ServicesRegistry.getInstance().getJahiaEventService();
         evtService.fireNotification(evt);

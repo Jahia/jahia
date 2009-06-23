@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.tree.Tree;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.service.category.CategoryService;
 import org.jahia.ajax.gwt.client.service.category.CategoryServiceAsync;
@@ -71,41 +72,6 @@ public class CategoriesTree extends ContentPanel {
         setScrollMode(Style.Scroll.AUTO);
 
         final CategoryServiceAsync service = CategoryService.App.getInstance();
-
-        /*checkListener = new CheckChangedListener() {
-            @Override
-            public void checkChanged(CheckChangedEvent event) {
-                if (!muteListener) {
-                    Log.debug("check listener fired");
-                    List<GWTJahiaCategoryNode> checked = binder.getCheckedSelection();
-                    if (!multiple) {
-                        Log.debug("not multiple");
-                        if (lastChecked == null) {
-                            Log.debug("no last checked");
-                            if (checked.size() == 1) {
-                                Log.debug("size is 1");
-                                lastChecked = checked.get(0);
-                            } else {
-                                Log.error("checked list should not be this size : " + checked.size());
-                            }
-                        } else if (checked.size() == 2) {
-                            Log.debug("last checked exists and size 2");
-                            checked.remove(lastChecked);
-                            lastChecked = checked.get(0);
-                        } else {
-                            Log.error("checked list should not be this size : " + checked.size());
-                        }
-                        muteListener = true;
-                        Log.debug("listener muted");
-                        binder.setCheckedSelection(checked);
-                        muteListener = false;
-                        Log.debug("listener unmuted");
-                    }
-                    parentComponent.addCategories(checked);
-                }
-            }
-        };*/
-
         // data proxy
         RpcProxy<GWTJahiaCategoryNode, List<GWTJahiaCategoryNode>> proxy = new RpcProxy<GWTJahiaCategoryNode, List<GWTJahiaCategoryNode>>() {
             @Override
@@ -125,20 +91,20 @@ public class CategoriesTree extends ContentPanel {
             }
 
             protected void expandPreviousPaths() {
-                expandAllPreviousPaths();
-                //initSelectedCategories(multiple);
+               expandAllPreviousPaths();
             }
 
             @Override
             protected void onLoadSuccess(GWTJahiaCategoryNode gwtJahiaCategoryNode, List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
                 super.onLoadSuccess(gwtJahiaCategoryNode, gwtJahiaCategoryNodes);
+                Log.debug("Load "+gwtJahiaCategoryNodes.size()+" categories.");
                 if (init) {
                     init = false ;
                 } else {
                     for (GWTJahiaCategoryNode n: gwtJahiaCategoryNodes) {
-                        n.setParent(gwtJahiaCategoryNode);
+                    //    n.setParent(gwtJahiaCategoryNode);
                     }
-                    gwtJahiaCategoryNode.setChildren(gwtJahiaCategoryNodes);
+                   // gwtJahiaCategoryNode.setChildren(gwtJahiaCategoryNodes);
                 }
             }
         };
@@ -155,22 +121,24 @@ public class CategoriesTree extends ContentPanel {
         if (multiple) {
             tree.setSelectionMode(Style.SelectionMode.MULTI);
         }
-        /*tree.setCheckable(true);
-        if (autoSelectParent && multiple) {
-            tree.setCheckStyle(Tree.CheckCascade.PARENTS);
-        } else {
-            tree.setCheckStyle(Tree.CheckCascade.NONE);
-        }*/
+
         binder = new MyTreeBinder<GWTJahiaCategoryNode>(tree, store);
         binder.setDisplayProperty("extendedName");
 
         add(tree);
     }
 
+    /**
+     * Get treeStrore object
+     * @return
+     */
     public TreeStore<GWTJahiaCategoryNode> getStore() {
         return store;
     }
 
+    /**
+     * init
+     */
     public void init() {
         loader.load();
     }
@@ -182,6 +150,10 @@ public class CategoriesTree extends ContentPanel {
         previousPathsOpener.expandPreviousPaths();
     }
 
+    /**
+     * Get selected categories
+     * @return
+     */
     public List<GWTJahiaCategoryNode> getSelection() {
         if (!autoSelectParent) {
             return binder.getSelection() ;
@@ -200,30 +172,6 @@ public class CategoriesTree extends ContentPanel {
         return new ArrayList<GWTJahiaCategoryNode>(nodes);
     }
 
-/*    private void initSelectedCategories(boolean multiple) {
-        List<GWTJahiaCategoryNode> toCheck = new ArrayList<GWTJahiaCategoryNode>();
-        for (GWTJahiaCategoryNode n: store.getAllItems()) {
-            for (GWTJahiaCategoryNode selected: selectedCategories) {
-                if (n.getKey().equals(selected.getKey())) {
-                    toCheck.add(n);
-                }
-            }
-        }
-        binder.setCheckedSelection(toCheck);
-        binder.addCheckListener(checkListener);
-    }
-
-    private void checkSelectedCategories() {
-        List<GWTJahiaCategoryNode> toCheck = (List<GWTJahiaCategoryNode>) parentComponent.getLinker().getTableSelection() ;
-        for (GWTJahiaCategoryNode n: store.getAllItems()) {
-            for (GWTJahiaCategoryNode selected: selectedCategories) {
-                if (n.getKey().equals(selected.getKey())) {
-                    toCheck.add(n);
-                }
-            }
-        }
-        binder.setCheckedSelection(toCheck);
-    }*/
 
     /**
      * TreeBinder that has renderChildren public.
@@ -241,6 +189,7 @@ public class CategoriesTree extends ContentPanel {
                 super.renderChildren(parent, children);
             } catch (ConcurrentModificationException e) {
                 // weird harmless exception
+                Log.error(e.getMessage(),e);
             }
         }
 

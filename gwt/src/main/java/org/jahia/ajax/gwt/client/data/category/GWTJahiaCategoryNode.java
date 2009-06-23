@@ -185,6 +185,16 @@ public class GWTJahiaCategoryNode extends BaseTreeModel<GWTJahiaCategoryNode> im
         set("categoryId", id);
     }
 
+    @Override
+    public void setParent(GWTJahiaCategoryNode gwtJahiaCategoryNode) {
+        super.setParent(gwtJahiaCategoryNode);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setChildren(List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
+        super.setChildren(gwtJahiaCategoryNodes);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
     public String toString() {
         return getName();
     }

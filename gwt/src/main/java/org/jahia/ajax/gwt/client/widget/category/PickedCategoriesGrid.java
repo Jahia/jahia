@@ -33,8 +33,9 @@ package org.jahia.ajax.gwt.client.widget.category;
 
 import com.extjs.gxt.ui.client.data.ModelComparer;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -42,6 +43,9 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -58,7 +62,7 @@ public class PickedCategoriesGrid extends TopRightComponent {
     private ContentPanel m_component = new ContentPanel();
     private List<GWTJahiaCategoryNode> selectedCategories;
     private ListStore<GWTJahiaCategoryNode> store;
-    private Grid<GWTJahiaCategoryNode> grid ;
+    private Grid<GWTJahiaCategoryNode> grid;
     private boolean readOnly;
     private boolean multiple;
 
@@ -69,22 +73,50 @@ public class PickedCategoriesGrid extends TopRightComponent {
         createUI();
     }
 
-    public void setContent(Object root) {}
+    /**
+     * Set content
+     *
+     * @param root
+     */
+    public void setContent(Object root) {
+        Log.warn("Method setContent() not yet implemented");
+    }
 
+    /**
+     * Remove all categories
+     */
     public void clearTable() {
         store.removeAll();
     }
 
+    /**
+     * Get selected categories
+     *
+     * @return
+     */
     public Object getSelection() {
-        return store.getModels();  //To change body of implemented methods use File | Settings | File Templates.
+        return store.getModels();
     }
 
-    public void refresh() {}
+    /**
+     * refresh
+     */
+    public void refresh() {
+        Log.warn("Method refresh() no implemented");
+    }
 
+    /**
+     * Get component
+     *
+     * @return
+     */
     public Component getComponent() {
-        return m_component;  //To change body of implemented methods use File | Settings | File Templates.
+        return m_component;
     }
 
+    /**
+     * Create UI
+     */
     private void createUI() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
@@ -94,19 +126,29 @@ public class PickedCategoriesGrid extends TopRightComponent {
             public String render(GWTJahiaCategoryNode categoryNode, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<GWTJahiaCategoryNode> categoryNodeListStore) {
                 return "<input type=\"hidden\" name=\"category_" + categoryNode.getCategoryId() + "\"/> " + categoryNode.getExtendedName();
             }
-
-
         });
-        column.setId("extendedName");
-        column.setHeader(Messages.getResource("categories_selected"));
+        column.setId("name");
+        column.setHeader(Messages.getResource("name"));
+        configs.add(column);
+
+        // key
+        column = new ColumnConfig();
+        column.setId("key");
+        column.setHeader(Messages.getResource("key"));
         configs.add(column);
 
         // path
-//        column = new ColumnConfig();
-//        column.setId("path");
-//        column.setHeader(Messages.getResource("path"));
-//        column.setWidth(300);
-//        configs.add(column);
+        column = new ColumnConfig();
+        column.setId("path");
+        column.setRenderer(new GridCellRenderer<GWTJahiaCategoryNode>() {
+            public String render(GWTJahiaCategoryNode categoryNode, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<GWTJahiaCategoryNode> categoryNodeListStore) {
+                return categoryNode.getPath().replace("/root","");
+            }
+        });
+
+        column.setHeader(Messages.getResource("path"));
+        configs.add(column);
+
 
         // list loader
         store = new ListStore<GWTJahiaCategoryNode>();
@@ -124,7 +166,6 @@ public class PickedCategoriesGrid extends TopRightComponent {
             }
         });
         ColumnModel columnModel = new ColumnModel(configs);
-        //store.setDefaultSort("name", Style.SortDir.ASC);
         store.sort("extendedName", Style.SortDir.ASC);
 
         // main component
@@ -133,42 +174,22 @@ public class PickedCategoriesGrid extends TopRightComponent {
         m_component.setHeaderVisible(false);
         m_component.setLayout(new FitLayout());
         m_component.setSize(600, 300);
+        m_component.setBodyBorder(false);
+        m_component.setBorders(false);
 
         // grid
         grid = new Grid<GWTJahiaCategoryNode>(store, columnModel);
         grid.setBorders(true);
         grid.getView().setForceFit(true);
 
-//        if (!readonly) {
-//            TextToolItem unselectToolItem = new TextToolItem(Messages.getResource("remove"));
-//            unselectToolItem.setIconStyle("remove");
-//            unselectToolItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
-//                public void componentSelected(ComponentEvent event) {
-//                    List<GWTJahiaCategoryNode> categoryNodes = selectionModel.getSelectedItems();
-//                    if (categoryNodes != null && !categoryNodes.isEmpty()) {
-//                        Element ele = DOM.getElementById("removedCategories");
-//                        if (ele != null) {
-//                            String newValue = ele.getAttribute("value");
-//                            for (GWTJahiaCategoryNode categoryNode : categoryNodes) {
-//                                store.remove(categoryNode);
-//                                // update hidden value
-//
-//                                newValue = newValue + "," + "category_" + categoryNode.getCategoryId();
-//                            }
-//
-//                            ele.setAttribute("value", newValue);
-//                        }
-//                    }
-//                }
-//            });
-//
-//            ToolBar toolBar = new ToolBar();
-//            toolBar.add(unselectToolItem);
-//            m_component.setTopComponent(toolBar);
-//        }
         m_component.add(grid);
     }
 
+    /**
+     * Add categories to the UI
+     *
+     * @param gwtJahiaCategoryNodes
+     */
     public void addCategories(List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
         if (readOnly) {
             return;
@@ -179,10 +200,10 @@ public class PickedCategoriesGrid extends TopRightComponent {
         } else {
             List<GWTJahiaCategoryNode> toAdd = new ArrayList<GWTJahiaCategoryNode>();
             for (GWTJahiaCategoryNode gwtJahiaCategoryNode : gwtJahiaCategoryNodes) {
-                boolean add = true ;
-                for (GWTJahiaCategoryNode n: store.getModels()) {
+                boolean add = true;
+                for (GWTJahiaCategoryNode n : store.getModels()) {
                     if (gwtJahiaCategoryNode.getPath().equals(n.getPath())) {
-                        add = false ;
+                        add = false;
                         break;
                     }
                 }
@@ -195,21 +216,55 @@ public class PickedCategoriesGrid extends TopRightComponent {
         }
     }
 
+    /**
+     * Remove categories from the UI
+     */
     public void removeSelectedCategories() {
         if (readOnly) {
             return;
         }
         List<GWTJahiaCategoryNode> toremove = new ArrayList<GWTJahiaCategoryNode>();
-        for (GWTJahiaCategoryNode selectedNode: grid.getSelectionModel().getSelection()) {
+        for (GWTJahiaCategoryNode selectedNode : grid.getSelectionModel().getSelection()) {
             toremove.add(selectedNode);
         }
-        for (GWTJahiaCategoryNode n: toremove) {
+        for (GWTJahiaCategoryNode n : toremove) {
             store.remove(n);
         }
     }
 
+    /**
+     * Get all categories
+     *
+     * @return
+     */
     public List<GWTJahiaCategoryNode> getCategories() {
         return store.getModels();
+    }
+
+    public void initContextMenu() {
+        Menu m = new Menu();
+        MenuItem menuItem = new MenuItem(Messages.getResource("information"));
+        m.add(menuItem);
+        menuItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
+            public void componentSelected(ComponentEvent event) {
+                GWTJahiaCategoryNode node = grid.getSelectionModel().getSelectedItem();
+                if (node != null) {
+                    MessageBox box = new MessageBox();
+                    box.setButtons(MessageBox.OK);
+                    box.setIcon(MessageBox.INFO);
+                    box.setTitle(Messages.getResource("information")+": "+node.getExtendedName());
+                    box.setMessage(node.getPath().replace("/root",""));
+                    box.show();
+                }else{
+                    MessageBox box = new MessageBox();
+                    box.setButtons(MessageBox.OK);
+                    box.setIcon(MessageBox.WARNING);
+                    box.setMessage("Please select a category");
+                    box.show();
+                }
+            }
+        });
+        grid.setContextMenu(m);
     }
 
 }

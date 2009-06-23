@@ -61,16 +61,9 @@ public class CategoriesPickerLeftComponent extends LeftComponent {
         m_component.setBorders(false);
         m_component.setHeaderVisible(false);
 
-//        categoryFilter = new CategoryFilter() ;
-
         categoriesTree = new CategoriesTree(categoryKey, selectedCategories, categoryLocale, autoSelectParent, multiple);
         categoriesTree.setHeaderVisible(false);
         categoriesTree.setBodyBorder(false);
-
-//        StoreFilterField filter = categoryFilter.getFilter();
-//        filter.bind(categoriesTree.getStore());
-
-//        m_component.setTopComponent(categoryFilter.getComponent());
 
         Button add = new Button(">>", new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent componentEvent) {

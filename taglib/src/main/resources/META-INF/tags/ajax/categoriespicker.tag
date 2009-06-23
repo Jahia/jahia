@@ -114,4 +114,7 @@
                             aliasResourceName="path"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.selectedCategories.label"
                             aliasResourceName="categories_selected"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.editCategory.informations.label"
+                            aliasResourceName="information"/>
+
 <%}%>

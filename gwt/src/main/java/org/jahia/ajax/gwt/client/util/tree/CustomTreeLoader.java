@@ -65,15 +65,19 @@ public abstract class CustomTreeLoader<M extends BaseTreeModel> extends BaseTree
         this.openPreviousPaths = openPreviousPaths ;
     }
 
-    @Override
+ /*   @Override
     protected void onLoadSuccess(M parent, List<M> children) {
         super.onLoadSuccess(parent, children);
         if (openPreviousPaths) {
             openPreviousPaths = false ;
             expandPreviousPaths();
         }
-    }
+    } */
 
     protected abstract void expandPreviousPaths() ;
+
+    
+
+
 
 }

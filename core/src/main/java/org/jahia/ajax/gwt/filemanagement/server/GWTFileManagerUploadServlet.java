@@ -65,6 +65,11 @@ import java.text.MessageFormat;
  * @version 2 avr. 2008 - 16:51:39
  */
 public class GWTFileManagerUploadServlet extends HttpServlet {
+    public static final int OK = 0;
+    public static final int EXISTS = 1;
+    public static final int READONLY = 2;
+    public static final int BAD_LOCATION = 3;
+    public static final int UNKNOWN_ERROR = 9;
 
     private static Logger logger = Logger.getLogger(GWTFileManagerUploadServlet.class) ;
     private JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService() ;
@@ -81,6 +86,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
         String type = null;
         boolean unzip = false ;
 
+        final PrintWriter printWriter = response.getWriter();
         try {
 			List<FileItem> items = upload.parseRequest(request) ;
             for (FileItem item : items) {
@@ -116,11 +122,11 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                 locMsg = "File upload exceeding limit of " + Jahia.getSettings().getJahiaFileUploadMaxSize() + " bytes" ;
             }
             logger.error(locMsg, e) ;
-            response.getWriter().write(locMsg);
+            printWriter.write("UPLOAD-ISSUE: "+locMsg+"\n");
 			return ;
         } catch (FileUploadException e) {
             logger.error("UPLOAD-ISSUE", e) ;
-            response.getWriter().write("UPLOAD-ISSUE");
+            printWriter.write("UPLOAD-ISSUE"+"\n");
 			return;
         }
 
@@ -133,33 +139,45 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             final List<String> pathsToUnzip = new ArrayList<String>() ;
             for (String filename: uploads.keySet()) {
                 try  {
-                    if (!writeToDisk(user, uploads.get(filename), location, filename)) {
-                        logger.error("UPLOAD-FAILED: " + filename) ;
-                        failed = true ;
-                    } else {
-                        if (unzip && filename.toLowerCase().endsWith(".zip")) {
-                            pathsToUnzip.add(new StringBuilder(location).append("/").append(filename).toString()) ;
-                        }
+                    final FileItem item = uploads.get(filename);
+                    final int i = writeToDisk(user, item, location, filename);
+                    switch (i) {
+                        case OK:
+                            if (unzip && filename.toLowerCase().endsWith(".zip")) {
+                                pathsToUnzip.add(new StringBuilder(location).append("/").append(filename).toString()) ;
+                            }
+                            printWriter.write("OK: " + filename+"\n");
+                            break;
+                        case EXISTS:
+                            File f = File.createTempFile("upload", ".tmp");
+                            IOUtils.copy(item.getInputStream(), new FileOutputStream(f));
+                            asyncItems.put(f.getName(), new Item(item.getContentType(), item.getSize(), f));
+
+                            printWriter.write("EXISTS: " + item.getFieldName() + " " + f.getName() + " " + item.getName() + "\n");
+                            break;
+                        case READONLY:
+                            printWriter.write("READONLY: " +  item.getFieldName()+"\n");
+                            break;
+                        default:
+                            printWriter.write("UPLOAD-FAILED: " +  item.getFieldName()+"\n");
+                            break;
                     }
                 }  catch (IOException e) {
-                    logger.error("Upload failed for file " + filename, e) ;
+                    logger.error("Upload failed for file \n", e) ;
                     failed = true ;
                 }
             }
 
-            if (failed) {
-                response.getWriter().write("UPLOAD-FAILED");
-            } else {
-                // direct blocking unzip
-                if (unzip && pathsToUnzip.size() > 0) {
-                    try {
-                        FileManagerWorker.unzip(pathsToUnzip, true, user);
-                    } catch (GWTJahiaServiceException e) {
-                        logger.error("Auto-unzipping failed", e);
-                    }
+            // direct blocking unzip
+            if (unzip && pathsToUnzip.size() > 0) {
+                try {
+                    FileManagerWorker.unzip(pathsToUnzip, true, user);
+                } catch (GWTJahiaServiceException e) {
+                    logger.error("Auto-unzipping failed", e);
                 }
-                // unzip archives in another thread (do not block/interrupt post response)
-                /*new Thread() {
+            }
+            // unzip archives in another thread (do not block/interrupt post response)
+            /*new Thread() {
                     @Override
                     public void run() {
                         try {
@@ -169,18 +187,17 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                         }
                     }
                 }.start();*/
-                logger.debug("UPLOAD-SUCCEEDED") ;
-                response.getWriter().write("OK");
-            }
+//            logger.debug("UPLOAD-SUCCEEDED") ;
+//            printWriter.write("OK");
         } else {
             response.setContentType("text/html");
 
             for (FileItem fileItem : uploads.values()) {
-                response.getWriter().write("<html><body>");
+                printWriter.write("<html><body>");
                 File f = File.createTempFile("upload", ".tmp");
                 IOUtils.copy(fileItem.getInputStream(), new FileOutputStream(f));
-                response.getWriter().write("<div id=\"uploaded\" key=\""+f.getName() + "\" name=\""+fileItem.getName()+"\"></div>\n");
-                response.getWriter().write("</body></html>");
+                printWriter.write("<div id=\"uploaded\" key=\""+f.getName() + "\" name=\""+fileItem.getName()+"\"></div>\n");
+                printWriter.write("</body></html>");
                 asyncItems.put(f.getName(), new Item(fileItem.getContentType(), fileItem.getSize(), f));
             }
         }
@@ -196,7 +213,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
         }
     }
 
-    private boolean writeToDisk(JahiaUser user, FileItem item, String location, String filename) throws IOException {
+    private int writeToDisk(JahiaUser user, FileItem item, String location, String filename) throws IOException {
         if (logger.isDebugEnabled()) {
             logger.debug("item : " + item);
             logger.debug("destination : " + location);
@@ -204,7 +221,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             logger.debug("size : " + item.getSize()) ;
         }
         if (item == null || location == null || filename == null) {
-            return false ;
+            return UNKNOWN_ERROR ;
         }
 
 
@@ -213,7 +230,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             locationFolder = jcr.getThreadSession(user).getNode(location);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
-            return false;
+            return BAD_LOCATION;
         }
 
         Exception ex = locationFolder.getException() ;
@@ -223,19 +240,22 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
 
         if (!locationFolder.isWriteable()) {
             logger.debug("destination is not writable for user " + user.getName()) ;
-            return false ;
+            return READONLY;
         }
         JCRNodeWrapper result ;
         try {
+            if (locationFolder.hasNode(filename)) {
+                return EXISTS;
+            }
             InputStream is = item.getInputStream() ;
             result = locationFolder.uploadFile(filename, is, item.getContentType());
             is.close() ;
             locationFolder.saveSession();
         } catch (RepositoryException e) {
             logger.error("exception ",e) ;
-            return false;
+            return UNKNOWN_ERROR;
         }
-        return result.isValid() ;
+        return result.isValid() ? OK : UNKNOWN_ERROR ;
     }
 
     private static Map<String, Item> asyncItems = new HashMap<String, Item>();

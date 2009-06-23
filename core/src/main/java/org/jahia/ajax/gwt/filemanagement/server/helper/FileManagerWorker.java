@@ -80,6 +80,7 @@ import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
 import java.util.*;
+import java.io.FileInputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -875,25 +876,7 @@ public class FileManagerWorker {
                 JCRNodeWrapper dest = jcr.getFileNode(destinationPath, user);
                 if (dest.isCollection()) {
                     String destPath = dest.getPath();
-                    int i = 1;
-                    JCRNodeWrapper target = jcr.getFileNode(dest.getPath() + "/" + name, user);
-
-                    String basename = name;
-                    int dot = basename.lastIndexOf('.');
-                    String ext = "";
-                    if (dot > 0) {
-                        ext = basename.substring(dot);
-                        basename = basename.substring(0, dot);
-                    }
-                    int und = basename.lastIndexOf('_');
-                    if (und > -1 && basename.substring(und + 1).matches("[0-9]+")) {
-                        basename = basename.substring(0, und);
-                    }
-
-                    while (target.getException() == null) {
-                        name = basename + "_" + (i++) + ext;
-                        target = jcr.getFileNode(dest.getPath() + "/" + name, user);
-                    }
+                    name = findAvailableName(dest, name, user);
                     if (dest.isWriteable()) {
                         if (cut) {
                             try {
@@ -933,6 +916,29 @@ public class FileManagerWorker {
             }
             throw new GWTJahiaServiceException(errors.toString());
         }
+    }
+
+    private static String findAvailableName(JCRNodeWrapper dest, String name, JahiaUser user) {
+        int i = 1;
+        JCRNodeWrapper target = jcr.getFileNode(dest.getPath() + "/" + name, user);
+
+        String basename = name;
+        int dot = basename.lastIndexOf('.');
+        String ext = "";
+        if (dot > 0) {
+            ext = basename.substring(dot);
+            basename = basename.substring(0, dot);
+        }
+        int und = basename.lastIndexOf('_');
+        if (und > -1 && basename.substring(und + 1).matches("[0-9]+")) {
+            basename = basename.substring(0, und);
+        }
+
+        while (target.getException() == null) {
+            name = basename + "_" + (i++) + ext;
+            target = jcr.getFileNode(dest.getPath() + "/" + name, user);
+        }
+        return name;
     }
 
     public static void rename(String path, String newName, JahiaUser user) throws GWTJahiaServiceException {
@@ -1768,6 +1774,26 @@ public class FileManagerWorker {
         return createPortletInstance(parentPath, name, "googlegadget", "JahiaGoogleGadget", gwtJahiaNodeProperties, context);
     }
 
+    public static void renameUploadedFile(String location, String tmpName, int operation, String newName, ProcessingContext ctx)  throws GWTJahiaServiceException {
+        try {
+            JCRNodeWrapper parent = jcr.getThreadSession(ctx.getUser()).getNode(location);
+            switch (operation) {
+                case 1:
+                    newName = findAvailableName(parent, newName, ctx.getUser());
+                case 0:
+                    if (parent.hasNode(newName)) {
+                        throw new GWTJahiaServiceException("file exists");
+                    }
+                default:
+                    parent.uploadFile(newName, GWTFileManagerUploadServlet.getItem(tmpName).file, GWTFileManagerUploadServlet.getItem(tmpName).contentType);
+                    break;
+            }
+            parent.save();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+    }
 
     /**
      * @param appName

@@ -33,10 +33,8 @@ package org.jahia.ajax.gwt.client.widget.node;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Events;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.FormEvent;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
@@ -49,10 +47,15 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,22 +64,22 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  * @version 7 juil. 2008 - 17:45:41
  */
 public class FileUploader extends Window {
-    private int fieldCount = 0 ;
-    private FormPanel form ;
+    private int fieldCount = 0;
+    private FormPanel form;
 
     public FileUploader(final BrowserLinker linker, final GWTJahiaNode location) {
-        super() ;
+        super();
         setHeading(Messages.getResource("fm_uploadFiles"));
         setSize(500, 200);
         setResizable(false);
-        
-        ButtonBar buttons = new ButtonBar() ;
-        final ProgressBar bar = new ProgressBar() ;
+
+        ButtonBar buttons = new ButtonBar();
+        final ProgressBar bar = new ProgressBar();
         bar.setWidth(200);
-        form = new FormPanel() ;
-        String entryPoint = JahiaGWTParameters.getServiceEntryPoint() ;
+        form = new FormPanel();
+        String entryPoint = JahiaGWTParameters.getServiceEntryPoint();
         if (entryPoint == null) {
-            entryPoint = "/gwt/" ;
+            entryPoint = "/gwt/";
         }
         form.setHeaderVisible(false);
         form.setBorders(false);
@@ -89,18 +92,18 @@ public class FileUploader extends Window {
 
         setModal(true);
 
-        Hidden dest = new Hidden() ;
-        dest.setName("uploadLocation") ;
+        Hidden dest = new Hidden();
+        dest.setName("uploadLocation");
 
-        final CheckBox unzip = new CheckBox() ;
+        final CheckBox unzip = new CheckBox();
         unzip.setFieldLabel(Messages.getResource("fm_autoUnzip"));
         unzip.setName("unzip");
 
-        String parentPath = location.getPath() ;
+        String parentPath = location.getPath();
         if (location.isFile().booleanValue()) {
-            int index = parentPath.lastIndexOf("/") ;
+            int index = parentPath.lastIndexOf("/");
             if (index > 0) {
-                parentPath = parentPath.substring(0, index) ;
+                parentPath = parentPath.substring(0, index);
             }
         }
         dest.setValue(parentPath);
@@ -108,69 +111,128 @@ public class FileUploader extends Window {
         form.add(dest);
         form.add(unzip);
 
-        ToolBar toolBar = new ToolBar() ;
-        TextToolItem add = new TextToolItem(Messages.getResource("fm_addFile")) ;
+        final ToolBar toolBar = new ToolBar();
+        TextToolItem add = new TextToolItem(Messages.getResource("fm_addFile"));
         add.setIconStyle("fm-addFile");
         add.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 addUploadField();
             }
-        }) ;
+        });
         toolBar.add(add);
         bar.setVisible(false);
-        toolBar.add(new FillToolItem()) ;
-        toolBar.add(new AdapterToolItem(bar)) ;
+        toolBar.add(new FillToolItem());
+        toolBar.add(new AdapterToolItem(bar));
 
         Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
-                hide() ;
+                hide();
             }
         });
-        Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ComponentEvent>() {
+        final Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 try {
                     form.submit();
                 } catch (Exception e) {
-                    bar.reset() ;
+                    bar.reset();
                     bar.setVisible(false);
-                    com.google.gwt.user.client.Window.alert(Messages.getResource("fm_checkUploads")) ;
+                    com.google.gwt.user.client.Window.alert(Messages.getResource("fm_checkUploads"));
                 }
             }
-        }) ;
+        });
 
-        buttons.add(submit) ;
-        buttons.add(cancel) ;
+        buttons.add(submit);
+        buttons.add(cancel);
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setButtonBar(buttons);
 
         setTopComponent(toolBar);
 
-        final FileUpload upload = new FileUpload() ;
+        final FileUpload upload = new FileUpload();
         upload.setWidth("430px");
         DOM.setElementAttribute(upload.getElement(), "size", "53");
         upload.setName("uploadedFile" + fieldCount++);
         upload.addStyleName("fm-bottom-margin");
-        form.add(upload) ;
+        form.add(upload);
 
         form.addListener(Events.BeforeSubmit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
                 bar.setVisible(true);
-                bar.auto() ;
+                bar.auto();
             }
         });
         form.addListener(Events.Submit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
-                bar.reset() ;
-                hide();
-                linker.setSelectPathAfterDataUpdate(location.getPath()+"/"+upload.getFilename());
-                if (unzip.getValue().booleanValue()) {
-                    linker.refreshAll();
-                } else {
-                    linker.refreshTable();
+                bar.reset();
+                linker.setSelectPathAfterDataUpdate(location.getPath() + "/" + upload.getFilename());
+
+                String result = formEvent.resultHtml;
+                toolBar.removeAll();
+                removeAll();
+                String[] results = result.split("\n");
+
+                final List<Field[]> exists = new ArrayList<Field[]>();
+
+                for (int i = 0; i < results.length; i++) {
+                    String s = new HTML(results[i]).getText();
+                    if (s.startsWith("OK:")) {
+
+                    } else if (s.startsWith("EXISTS:")) {
+                        int i1 = s.indexOf(' ');
+                        int i2 = s.indexOf(' ', i1+1);
+                        int i3 = s.indexOf(' ', i2+1);                                                        
+                        final String key = s.substring(i1+1,i2);
+                        final String tmp = s.substring(i2+1,i3);
+                        final String name = s.substring(i3+1);
+
+                        addExistingToForm(exists, key, tmp, name);
+                    }
                 }
-                String result = formEvent.resultHtml ;
-                if (!result.contains("OK")) {
-                    com.google.gwt.user.client.Window.alert(new HTML(result).getText());
+                if (!exists.isEmpty()) {
+                    submit.removeAllListeners();
+                    submit.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                        public void componentSelected(ComponentEvent event) {
+                            submit.setEnabled(false);
+                            final List<Field[]> list = new ArrayList<Field[]>(exists);
+                            final List<Field[]> list2 = new ArrayList<Field[]>(exists);
+                            exists.clear();
+                            removeAll();
+                            for (final Field[] exist : list) {
+                                final String tmpName = (String) exist[0].getValue();
+                                final int operation = ((SimpleComboBox) exist[1]).getSelectedIndex();
+                                final String key = exist[1].getName();
+                                final String newName = (String) exist[2].getValue();
+                                JahiaNodeService.App.getInstance().renameUploadedFile(location.getPath(), tmpName, operation, newName, new AsyncCallback() {
+                                    public void onFailure(Throwable caught) {
+                                        addExistingToForm(exists, key, tmpName, newName);
+                                        end(exist);
+                                    }
+
+                                    public void onSuccess(Object result) {
+                                        end(exist);
+                                    }
+
+                                    private void end(Field[] exist) {
+                                        list2.remove(exist);
+                                        if (list2.isEmpty()) {
+                                            if (exists.isEmpty()) {
+                                                endUpload(unzip, linker);
+                                            } else {
+                                                submit.setEnabled(true);
+                                                layout();
+                                            }
+                                        }
+                                    }
+
+
+                                });
+                            }
+                        }
+                    });
+
+                    layout();
+                } else {
+                    endUpload(unzip, linker);
                 }
             }
         });
@@ -180,14 +242,64 @@ public class FileUploader extends Window {
         show();
     }
 
+    private void endUpload(CheckBox unzip, BrowserLinker linker) {
+        if (unzip.getValue().booleanValue()) {
+            linker.refreshAll();
+        } else {
+            linker.refreshTable();
+        }
+
+        hide();
+    }
+
+    private void addExistingToForm(List<Field[]> exists, String key, String tmp, final String name) {
+        final TextField textField = new TextField();
+        textField.setFieldLabel("rename");
+        textField.setName(key + "_name");
+        textField.setValue(name);
+
+        final HiddenField hiddenField = new HiddenField();
+        hiddenField.setName(key + "_tmp");
+        hiddenField.setValue(tmp);
+
+        final SimpleComboBox<String> choose = new SimpleComboBox<String>();
+        choose.setEditable(false);
+        choose.setName(key);
+        choose.add(Messages.getResource("fm_rename"));
+        choose.add(Messages.getResource("fm_rename") + " auto");
+        choose.add(Messages.getResource("fm_confOverwrite"));
+        choose.setHideLabel(true);
+        choose.setValue(choose.getStore().getAt(0));
+        choose.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent>() {
+            public void handleEvent(SelectionChangedEvent event) {
+                if (choose.getValue().getValue().equals("Rename"))  {
+                    textField.setValue(name);
+                    textField.enable();
+                } else {
+                    textField.setValue(name);
+                    textField.disable();
+                }
+            }
+        });
+
+        HorizontalPanel p = new HorizontalPanel();
+        final Label w = new Label(Messages.getResource("fm_alreadyExists"));
+        w.setStyleName("x-form-field");
+        p.add(w);
+        p.add(choose);
+        p.add(textField);
+        add(p);
+        exists.add(new Field[] {hiddenField, choose, textField});
+    }
+
     private void addUploadField() {
-        FileUpload upload = new FileUpload() ;
+        FileUpload upload = new FileUpload();
         upload.setWidth("430px");
         DOM.setElementAttribute(upload.getElement(), "size", "53");
         upload.setName("uploadedFile" + fieldCount++);
         upload.addStyleName("fm-bottom-margin");
-        form.add(upload) ;
-        form.layout() ;
+        form.add(upload);
+        form.layout();
     }
 
 }

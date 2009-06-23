@@ -94,8 +94,8 @@ public class PortletSaveAsCard extends MashupWizardCard {
                     getLinker().setSelectPathAfterDataUpdate(result.getPath());
                     getLinker().refreshTable();
                 }
-                hide();
                 getPortletWizardWindow().onPortletCreated();
+                getPortletWizardWindow().hide();
             }
 
             public void onFailure(Throwable caught) {

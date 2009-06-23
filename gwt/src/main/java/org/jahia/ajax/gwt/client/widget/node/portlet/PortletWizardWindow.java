@@ -123,6 +123,10 @@ public class PortletWizardWindow extends WizardWindow {
                 }
             }
         }
+        if (button == nextBtn && currentStep + 1 == cards.size()) {
+            return;
+        }
+
         super.onButtonPressed(button);
     }
 
@@ -144,6 +148,5 @@ public class PortletWizardWindow extends WizardWindow {
     }
 
     public void onPortletCreated() {
-
     }
 }

@@ -59,7 +59,6 @@ public class GetContainerTag extends ValueJahiaTag implements ContainerSupport {
      */
     public GetContainerTag() {
         super();
-        setValueID("container");
         setVar("container");
     }
 
@@ -127,6 +126,5 @@ public class GetContainerTag extends ValueJahiaTag implements ContainerSupport {
         containerID = -1;
         path = null;
         setVar("container");
-        setValueID("container");
     }
 }

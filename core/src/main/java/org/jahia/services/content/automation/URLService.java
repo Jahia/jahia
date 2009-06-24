@@ -31,17 +31,25 @@
  */
 package org.jahia.services.content.automation;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import org.jahia.data.search.JahiaSearchHit;
+import org.jahia.settings.SettingsBean;
 
 public class URLService {
     private static URLService instance;
+    private String encoding;
 
-    private URLService() {
+    private URLService(String encoding) {
+        super();
+        this.encoding = encoding;
     }
 
-    public static synchronized URLService getInstance() {
+    public static URLService getInstance() {
         if (instance == null) {
-            instance = new URLService();
+            instance = new URLService(SettingsBean.getInstance()
+                    .getDefaultURIEncoding());
         }
         return instance;
     }
@@ -54,14 +62,24 @@ public class URLService {
 
     public String addURLQueryParameter(JahiaSearchHit searchHit, String parameterName,
             String parameterValue) {
-        StringBuffer changedUrl = new StringBuffer(searchHit.getURL());
-        appendParams(changedUrl, parameterName + "=" + parameterValue);
+        StringBuilder changedUrl = new StringBuilder(searchHit.getURL());
+        appendParams(changedUrl, parameterName + "=" + encode(parameterValue));
         String url = changedUrl.toString();
         searchHit.setURL(url);        
         return url;
     }
 
-    protected void appendParams(final StringBuffer theUrl, String params) {
+    private String encode(String parameterValue) {
+        String value;
+        try {
+            value = URLEncoder.encode(parameterValue, encoding);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return value;
+    }
+
+    protected void appendParams(final StringBuilder theUrl, String params) {
 
         if (params != null && (params.length() > 0)) {
             if (theUrl.toString().indexOf("?") == -1) {

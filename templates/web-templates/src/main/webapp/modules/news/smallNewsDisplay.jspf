@@ -34,8 +34,11 @@
 --%>
 <ul class="newsList3">
     <template:container id="newsContainer" cacheKey="listNews" displayActionMenu="false"  displayExtensions="false" displayContainerAnchor="false">
-        <li><a href="${currentPage.url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}">
-            <template:field name='newsTitle'/></a></li>
+        <c:url var="detailsUrl" value="${currentPage.url}" context="/">
+            <c:param name="template" value="tpl.newsDetail"/>
+            <c:param name="queryPath" value="${newsContainer.JCRPath}"/>
+        </c:url>
+        <li><a href="${detailsUrl}"><template:field name='newsTitle'/></a></li>
         <!--stop newsListItem -->
     </template:container>
 </ul>

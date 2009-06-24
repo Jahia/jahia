@@ -36,7 +36,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="rss">
     <span class="rssButton">
-        <ui:rssButton
-                targetURL="${jahia.page.url}/template/news.rss?definitionName=${requestScope.definitionName}"/>
+        <c:url var="url" value="${jahia.page.url}" context="/">
+            <c:param name="template" value="news.rss"/>
+            <c:param name="definitionName" value="${requestScope.definitionName}"/>
+        </c:url>
+        <ui:rssButton targetURL="${url}"/>
     </span>
 </div>

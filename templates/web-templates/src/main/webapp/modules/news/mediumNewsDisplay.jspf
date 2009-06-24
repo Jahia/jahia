@@ -40,7 +40,11 @@
 
             <div class="summaryImg"><img src="${newsImage.file.downloadUrl}" alt='<template:field
                     name="newsTitle" inlineEditingActivated="false"/>'/></div>
-            <h4><a href="${currentPage.url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}"><template:field
+            <c:url var="detailsUrl" value="${currentPage.url}" context="/">
+                <c:param name="template" value="tpl.newsDetail"/>
+                <c:param name="queryPath" value="${newsContainer.JCRPath}"/>
+            </c:url>
+            <h4><a href="${detailsUrl}"><template:field
                     name='newsTitle' inlineEditingActivated="false"/></a></h4>
             <p class="summaryresume"><template:field name="newsDesc" maxChar="120" inlineEditingActivated="false"/></p>
             <div class="clear"> </div>

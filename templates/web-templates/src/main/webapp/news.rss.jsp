@@ -46,13 +46,17 @@
                             displaySkins="false" displayExtensions="false">
             <template:container id="newsContainer" displayActionMenu="false" displayContainerAnchor="false"
                                displaySkins="false" displayExtensions="false" cacheKey="rss">
+                <c:url var="detailsUrl" value="${url}" context="/">
+                    <c:param name="template" value="tpl.newsDetail"/>
+                    <c:param name="queryPath" value="${newsContainer.JCRPath}"/>
+                </c:url>
                 <template:field name="newsTitle" var="newsTitle" display="false" removeHtmlTags="true"/>
                 <template:field name="newsDesc" var="newsDesc" display="false" removeHtmlTags="true"/>
                 <template:field name="newsDate" var="newsDate" display="false"/>
                 <item>
                     <title><c:out value="${newsTitle}"/></title>
                     <description><![CDATA[<c:out value="${newsDesc}"/>]]></description>
-                    <guid isPermaLink="false">${url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}</guid>
+                    <guid isPermaLink="false">${detailsUrl}</guid>
                     <template:getContentObjectCategories objectKey="ContentContainer_${newsContainer.ID}" asSet="true"
                                                         var="categories"/>
                     <c:forEach items="${categories}" var="category">
@@ -60,7 +64,7 @@
                     </c:forEach>
                     <pubDate><c:out value="${newsDate}"/></pubDate>
                     <dc:date><c:out value="${newsDate}"/></dc:date>
-                    <link>${url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}</link>
+                    <link>${detailsUrl}</link>
                 </item>
             </template:container>
         </template:containerList>

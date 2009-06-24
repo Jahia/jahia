@@ -42,8 +42,11 @@
                 <fmt:message key='category'/> : <ui:displayCategoryTitle categoryKeys="${pressReleaseContainerCatKeys}"/>
             </span>
         </c:if>
-            <h4><a href="${currentPage.url}/template/tpl.pressReleasesDetail?queryPath=${pressReleaseContainer.JCRPath}">
-                <template:field name='title'/></a></h4>
+            <c:url var="detailsUrl" value="${currentPage.url}" context="/">
+                <c:param name="template" value="tpl.pressReleasesDetail"/>
+                <c:param name="queryPath" value="${pressReleaseContainer.JCRPath}"/>
+            </c:url>
+            <h4><a href="${detailsUrl}"><template:field name='title'/></a></h4>
         <div class="clear"> </div>
     </li>
 </template:container>

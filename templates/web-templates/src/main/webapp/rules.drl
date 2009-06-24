@@ -22,7 +22,7 @@ rule "News search result hit"
         A search result hit is present
             - the container is of type web_templates:newsContainer
   then
-        Append URL path "/template/tpl.newsDetail"
+        Append URL query-parameter "template" with "tpl.newsDetail"
         Append URL query-parameter "queryPath" with ((ContentObject)searchHit.getObject()).getJCRPath(processingContext)   
 end
 
@@ -31,6 +31,6 @@ rule "Press-release search result hit"
         A search result hit is present
             - the container is of type web_templates:pressContainer
   then
-        Append URL path "/template/tpl.pressReleasesDetail"
+        Append URL query-parameter "template" with "tpl.pressReleasesDetail"
         Append URL query-parameter "queryPath" with ((ContentObject)searchHit.getObject()).getJCRPath(processingContext)   
 end

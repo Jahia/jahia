@@ -36,10 +36,14 @@
 <%-- This file only describe the template --%>
 
 <%-- Define layout file --%>
+<c:url var="rssUrl" value="${currentPage.url}" context="/">
+    <c:param name="template" value="news.rss"/>
+    <c:param name="definitionName" value="web_templates_news_news"/>
+</c:url>
 <jsp:include page="positioning.jsp">
     <jsp:param name="position" value="position2"/>
     <jsp:param name="mainArea" value="areas/introduction_news.jsp"/>
     <jsp:param name="areaB" value="areas/search_nav_boxes.jsp"/>
     <jsp:param name="footerNav" value="true"/>
-    <jsp:param name="rssFeed" value="${currentPage.url}/template/news.rss?definitionName=web_templates_news_news" />
+    <jsp:param name="rssFeed" value="${rssUrl}" />
 </jsp:include>

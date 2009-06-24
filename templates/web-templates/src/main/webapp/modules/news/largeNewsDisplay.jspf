@@ -36,7 +36,11 @@
                     displayActionMenu="false" displayExtensions="false">
 
     <div class="newsListItem"><!--start newsListItem -->
-        <h4><a href="${currentPage.url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}"><template:field name='newsTitle'/></a></h4>
+        <c:url var="detailsUrl" value="${currentPage.url}" context="/">
+            <c:param name="template" value="tpl.newsDetail"/>
+            <c:param name="queryPath" value="${newsContainer.JCRPath}"/>
+        </c:url>
+        <h4><a href="${detailsUrl}"><template:field name='newsTitle'/></a></h4>
 
         <p class="newsInfo">
             <span class="newsLabelDate"><fmt:message key="news.date"/> :</span>
@@ -46,12 +50,12 @@
                 <c:if test="${dateTimeNews != '00:00'}">${dateTimeNews}</c:if>
             </span>
         </p>
-        <%--<div class="newsImg-right"><a href="${currentPage.url}/template/newsDetail?queryPath=${newsContainer.JCRPath}"><template:image file="newsImage"/></a></div>--%>
+        <%--<div class="newsImg-right"><a href="${detailsUrl}"><template:image file="newsImage"/></a></div>--%>
         <p class="newsResume">
             <template:field name="newsDesc" maxChar="300" inlineEditingActivated="false"/>
         </p>
 
-        <div class="more"><span><a href="${currentPage.url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}">
+        <div class="more"><span><a href="${detailsUrl}">
             <fmt:message key="news.readmore"/>
         </a></span></div>
         <template:getContentObjectCategories var="newsContainerCatKeys"

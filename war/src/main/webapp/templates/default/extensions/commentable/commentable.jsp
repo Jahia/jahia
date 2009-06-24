@@ -50,8 +50,8 @@
             <h3><fmt:message key="comments"/></h3>
             <template:container id="commentContainer" displayActionMenu="false">
                 <dl>
-                    <dt><a class="comment-number" href="#">1.</a> <template:field name="commentDate"/> <fmt:message
-                            key="by"/> <template:field name="commentAuthor"/>
+                    <dt><a class="comment-number" href="#">1.</a> <template:field name="commentDate"/>&nbsp;<fmt:message
+                            key="by"/>&nbsp;<template:field name="commentAuthor"/>
                     </dt>
                     <dd><h4><template:field name="commentTitle"/></h4>
                         <template:field name="commentBody"/>

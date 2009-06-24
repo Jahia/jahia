@@ -1179,6 +1179,7 @@ public class FileManagerWorker {
     }
 
     public static GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, ProcessingContext context) throws GWTJahiaServiceException {
+        checkName(name);
         if (checkExistence(parentPath + "/" + name, context.getUser())) {
             throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
         }
@@ -1606,7 +1607,7 @@ public class FileManagerWorker {
             if (name == null) {
                 name = gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName().replaceAll("/", "___") + Math.round(Math.random() * 1000000l);
             }
-
+            checkName(name);
             if (checkExistence(parentPath + "/" + name, context.getUser())) {
                 throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
             }
@@ -1646,9 +1647,6 @@ public class FileManagerWorker {
         } catch (RepositoryException e) {
             logger.error(e, e);
             throw new GWTJahiaServiceException("error");
-        } catch (Exception e) {
-            logger.error(e, e);
-            throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
@@ -1841,5 +1839,12 @@ public class FileManagerWorker {
         return isResponseCorrect;
     }
 
-
+    public static void checkName(String name) throws GWTJahiaServiceException {
+        if (name.indexOf("*") > 0 ||
+                name.indexOf("/") > 0 ||
+                name.indexOf(":") > 0||
+                name.indexOf("\"") > 0) {
+            throw new GWTJahiaServiceException("Invalid name : characters *,/,\",: cannot be used here");
+        }
+    }
 }

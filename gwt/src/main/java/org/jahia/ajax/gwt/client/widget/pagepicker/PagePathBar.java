@@ -90,7 +90,7 @@ public class PagePathBar extends TopBar {
             Log.debug("Page " + selection.getLink() + " selected");
             Log.debug("parentPath " + parentPath);
             Log.debug("parentPID " + selection.getParentPid());
-            if (selection.getPid() != 0 && (!operation.equals("movePage") || (!parentPath.contains("/" + selection.getPid() + "/") && !selection.isLocked()))) {
+            if (selection.getPid() != 0 && (!operation.equals("movePage") || (!parentPath.contains("/" + selection.getPid() + "/") && !selection.isLocked() && selection.isWriteable()))) {
                 if ("SetUrl".equals(callback)) {
                     nativeSetUrl(selection.getLink());
                 } else if ("setPid".equals(callback)) {

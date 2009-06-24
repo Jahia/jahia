@@ -138,6 +138,14 @@ public class GWTJahiaPageWrapper extends BaseModelData implements Serializable {
         return get("hasLive");
     }
 
+    public void setIsWriteable(Boolean i) {
+        set("isWriteable", i);
+    }
+
+    public Boolean isWriteable() {
+        return get("isWriteable");
+    }
+
     public void setWorkflowStatus(String i) {
         set("workflowStatus", i);
     }

@@ -151,7 +151,7 @@ public class PageExplorer extends TopRightComponent {
                             Log.debug("in path:"+page.getPid()+"/"+property);
                             return "gwt-pagepicker-icon-inpath";
                         }
-                        if (page.isLocked()) {
+                        if (page.isLocked() || !page.isWriteable()) {
                             return "gwt-pagepicker-icon-locked";
                         }
                     }
@@ -348,7 +348,7 @@ public class PageExplorer extends TopRightComponent {
                     if (operation.equals("movePage")) {
                         if (parentPath.contains("/"+page.getPid()+"/")) {
                             title.append("<span class=\"gwt-pagepicker-icon-inpath\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>");
-                        } else if (page.isLocked()) {
+                        } else if (page.isLocked() || !page.isWriteable()) {
                             title.append("<span class=\"gwt-pagepicker-icon-locked\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>");
                         } else {
                             title.append("<span class=\"icon-page\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>");

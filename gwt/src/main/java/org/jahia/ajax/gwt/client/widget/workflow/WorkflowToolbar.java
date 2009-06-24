@@ -283,6 +283,7 @@ public class WorkflowToolbar extends TopBar {
                 public void onSuccess(List<GWTJahiaLabel> actionsList) {
                     actionsInitialized = true ;
                     actionsLabel = new HashMap<String,String>();
+                    actionsMenu.removeAll();
                     for (GWTJahiaLabel action: actionsList) {
                         actionsLabel.put(action.getKey(), action.getLabel());
                         CheckMenuItem actionMenuItem = new CheckMenuItem(action.getLabel()) ;

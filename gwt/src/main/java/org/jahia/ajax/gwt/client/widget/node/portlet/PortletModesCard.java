@@ -88,6 +88,7 @@ public class PortletModesCard extends MashupWizardCard {
                     acl.setAce(aces);
                     initModeMappingEditor();
                     add(modeMappingEditor.renderNewAclPanel());
+                    getPortletWizardWindow().updateWizard();
                 }
 
                 public void onFailure(Throwable throwable) {

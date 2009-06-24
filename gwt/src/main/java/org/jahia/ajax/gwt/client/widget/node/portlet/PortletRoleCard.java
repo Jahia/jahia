@@ -88,6 +88,7 @@ public class PortletRoleCard extends MashupWizardCard {
                     acl.setAce(aces);
                     initAclEditor();
                     add(aclEditor.renderNewAclPanel());
+                    getPortletWizardWindow().updateWizard();
                 }
 
                 public void onFailure(Throwable throwable) {
@@ -116,6 +117,6 @@ public class PortletRoleCard extends MashupWizardCard {
 
     @Override
     public void refreshLayout() {
-        // do nothing
+        layout();
     }
 }

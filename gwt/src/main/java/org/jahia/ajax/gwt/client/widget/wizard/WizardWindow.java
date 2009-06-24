@@ -133,7 +133,7 @@ public class WizardWindow extends Window {
         }
     }
 
-    private void updateWizard() {
+    public void updateWizard() {
         WizardCard wc = cards.get(currentStep);
         headerPanel.updateIndicatorStep(wc.getCardTitle(), wc.getHtmltext());
         wc.refreshLayout();

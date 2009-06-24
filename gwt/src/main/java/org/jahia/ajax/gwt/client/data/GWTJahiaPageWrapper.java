@@ -154,4 +154,12 @@ public class GWTJahiaPageWrapper extends BaseModelData implements Serializable {
         return get("workflowStatus");
     }
 
+    public void setTemplateName(String i) {
+        set("templateName", i);
+    }
+
+    public String getTemplateName() {
+        return get("templateName");
+    }
+
 }

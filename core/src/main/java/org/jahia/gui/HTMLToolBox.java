@@ -1008,7 +1008,7 @@ public class HTMLToolBox {
             throws JahiaException {
         return drawSelectPageLauncher(operation, parentPageID, pageID,
                 callback, jParams.getSiteID(), jParams.getSite()
-                        .getHomePageID());
+                        .getHomePageID(), null);
     }
     
     /**
@@ -1027,7 +1027,7 @@ public class HTMLToolBox {
      */
     public String drawSelectPageLauncher(final String operation,
                                          final int parentPageID,
-                                         final int pageID, String callback, int siteID, int homepageID)
+                                         final int pageID, String callback, int siteID, int homepageID, String templates)
             throws JahiaException {
         final StringBuffer name = new StringBuffer("selectPage_");
         if (jParams.getPage() != null) {
@@ -1039,6 +1039,9 @@ public class HTMLToolBox {
         params.put(SelectPage_Engine.PAGE_ID, new Integer(pageID));
         params.put(SelectPage_Engine.SITE_ID, new Integer(siteID));
         params.put(SelectPage_Engine.HOMEPAGE_ID, new Integer(homepageID));
+        if (templates != null)  {
+            params.put("templates", templates);
+        }
         params.put("callback", callback);
         name.append(cleanSessionID(jParams.getSessionID()));
         final String selectPageURL = EnginesRegistry.getInstance().getEngineByBeanName("selectPageEngine").renderLink(

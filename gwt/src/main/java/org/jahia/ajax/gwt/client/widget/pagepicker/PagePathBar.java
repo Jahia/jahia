@@ -45,6 +45,9 @@ import org.jahia.ajax.gwt.client.widget.language.LanguageSwitcher;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 
+import java.util.List;
+import java.util.Arrays;
+
 /**
  * Created by IntelliJ IDEA.
  * User: rfelden
@@ -57,9 +60,10 @@ public class PagePathBar extends TopBar {
     private String parentPath;
     private String callback;
     private String operation;
+    private List<String> templates;
     private ToolBar m_component ;
 
-    public PagePathBar (String operation, String parentPath, String callback) {
+    public PagePathBar (String operation, String parentPath, String callback, final List<String> templates) {
         m_component = new ToolBar() ;
         m_component.add(new FillToolItem());
         LanguageSwitcher languageSwitcher = new LanguageSwitcher(true, true, false, false, JahiaGWTParameters.getEngineLanguage(), true, new LanguageSelectedListener() {
@@ -82,6 +86,7 @@ public class PagePathBar extends TopBar {
         this.callback = callback;
         this.parentPath = parentPath;
         this.operation = operation;
+        this.templates = templates;        
     }
 
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelection) {
@@ -90,7 +95,7 @@ public class PagePathBar extends TopBar {
             Log.debug("Page " + selection.getLink() + " selected");
             Log.debug("parentPath " + parentPath);
             Log.debug("parentPID " + selection.getParentPid());
-            if (selection.getPid() != 0 && (!operation.equals("movePage") || (!parentPath.contains("/" + selection.getPid() + "/") && !selection.isLocked() && selection.isWriteable()))) {
+            if (selection.getPid() != 0 && (templates == null || templates.contains(selection.getTemplateName())) && (!operation.equals("movePage") || (!parentPath.contains("/" + selection.getPid() + "/") && !selection.isLocked() && selection.isWriteable()))) {
                 if ("SetUrl".equals(callback)) {
                     nativeSetUrl(selection.getLink());
                 } else if ("setPid".equals(callback)) {

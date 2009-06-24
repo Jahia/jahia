@@ -83,7 +83,7 @@ public class PageExplorer extends TopRightComponent {
 
     private TreeItem lastSelection = null ;
 
-    public PageExplorer(final int homePageID, final int siteID, final String operation, String pagePath, final String parentPath) {
+    public PageExplorer(final int homePageID, final int siteID, final String operation, String pagePath, final String parentPath, final List<String> templates) {
         m_component = new ContentPanel(new FitLayout()) ;
         m_component.setBodyBorder(false);
         m_component.setBorders(false);
@@ -146,6 +146,9 @@ public class PageExplorer extends TopRightComponent {
         binder.setIconProvider(new ModelStringProvider<GWTJahiaPageWrapper>() {
             public String getStringValue(GWTJahiaPageWrapper page, String property) {
                 if (!page.isSiteRoot()) {
+                    if (templates != null && !templates.contains(page.getTemplateName())) {
+                        return "gwt-pagepicker-icon-inpath";
+                    }
                     if (operation.equals("movePage")) {
                         if (parentPath.contains("/"+page.getPid()+"/")) {
                             Log.debug("in path:"+page.getPid()+"/"+property);
@@ -199,7 +202,7 @@ public class PageExplorer extends TopRightComponent {
         tabs.add(treeTable) ;
 
         searchStore = new ListStore<GWTJahiaPageWrapper>() ;
-        m_searchTable = new Grid<GWTJahiaPageWrapper>(searchStore, getSearchHeaders(operation, parentPath)) ;
+        m_searchTable = new Grid<GWTJahiaPageWrapper>(searchStore, getSearchHeaders(operation, parentPath, templates)) ;
         m_searchTable.setBorders(false);
         m_searchTable.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         m_searchTable.addListener(Events.RowClick, new Listener<GridEvent>() {
@@ -338,14 +341,17 @@ public class PageExplorer extends TopRightComponent {
         return new TreeTableColumnModel(headerList);
     }
 
-    private static ColumnModel getSearchHeaders(final String operation, final String parentPath) {
+    private static ColumnModel getSearchHeaders(final String operation, final String parentPath, final List<String> templates) {
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
         ColumnConfig col = new ColumnConfig("title", Messages.getResource("pp_title"), 300) ;
         col.setRenderer(new GridCellRenderer<GWTJahiaPageWrapper>() {
             public String render(GWTJahiaPageWrapper page, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaPageWrapper> gwtJahiaPageWrapperListStore) {
                 StringBuilder title = new StringBuilder() ;
                 if (!page.isSiteRoot()) {
-                    if (operation.equals("movePage")) {
+
+                    if (templates != null && !templates.contains(page.getTemplateName())) {
+                        title.append("<span class=\"gwt-pagepicker-icon-inpath\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>");
+                    } else if (operation.equals("movePage")) {
                         if (parentPath.contains("/"+page.getPid()+"/")) {
                             title.append("<span class=\"gwt-pagepicker-icon-inpath\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>");
                         } else if (page.isLocked() || !page.isWriteable()) {

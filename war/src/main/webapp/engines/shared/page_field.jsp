@@ -156,6 +156,9 @@
     boolean isInternalLink = true; //default
 
     final ContentPage contentPage = jahiaPageBaseService.lookupContentPage(theField.getPageID(), false);
+
+    String templates = null;
+
     if (contentPage != null) {
         ExtendedNodeDefinition def = theField.getDefinition().getNodeDefinition();
 
@@ -166,7 +169,7 @@
             if (!types.contains("internal")) isInternalLink = false;
         }
 
-        String templates = def.getSelectorOptions().get("templates");
+        templates = def.getSelectorOptions().get("templates");
         if (templates != null) {
             tVlist = new ArrayList<String>(Arrays.asList(templates.split(",")));
         }
@@ -271,14 +274,14 @@ final boolean canChangeType = pageBean.getID() != jParams.getPageID() ||
         disableUrlKey(false);
         operation = "<%=SelectPage_Engine.MOVE_OPERATION%>";
     <%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.MOVE_OPERATION,
-pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
+pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1, templates)%>
     }
 
     function callSelectPageLink() {
         // Inhibate the engine pop up close
         disableUrlKey(true);
         operation = "<%=SelectPage_Engine.LINK_OPERATION%>";
-    <%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.LINK_OPERATION, pageBean.getParentID(), pageBean.getID(), "setPid", -1, -1)%>
+    <%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.LINK_OPERATION, pageBean.getParentID(), pageBean.getID(), "setPid", -1, -1, templates)%>
     }
 
     function titleInputEvent() {

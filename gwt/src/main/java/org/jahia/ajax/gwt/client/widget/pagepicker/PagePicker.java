@@ -39,6 +39,8 @@ import org.jahia.ajax.gwt.client.widget.tripanel.BottomBar;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: rfelden
@@ -48,14 +50,14 @@ import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
  */
 public class PagePicker extends TriPanelBrowserLayout {
 
-    public PagePicker(String operation, String pagePath, String parentPath, int homePageId, int siteId, String callback) {
+    public PagePicker(String operation, String pagePath, String parentPath, int homePageId, int siteId, String callback, List<String> templates) {
         super() ;
         setWidth("714px");
         setHeight("400px");
 
         // construction of the UI components
-        TopRightComponent treeTable = new PageExplorer(homePageId, siteId, operation, pagePath, parentPath) ;
-        TopBar pathBar = new PagePathBar(operation, parentPath, callback) ;
+        TopRightComponent treeTable = new PageExplorer(homePageId, siteId, operation, pagePath, parentPath, templates) ;
+        TopBar pathBar = new PagePathBar(operation, parentPath, callback, templates) ;
         BottomBar statusBar = new PageStatusBar() ;
 
         // setup widgets in layout

@@ -95,6 +95,6 @@
 <internal:gwtGenerateDictionary/>
 
 <div id="mainContent">
-  <div id="gwtpagepicker" pagePath="<%=pagePath%>" parentPath="<%=parentPath%>" selectPageOperation="<%=selectedPageOperation%>" siteID="${param['siteID']}" homePageID="${param['homepageID']}" callback="${param['callback']}">
+  <div id="gwtpagepicker" pagePath="<%=pagePath%>" parentPath="<%=parentPath%>" selectPageOperation="<%=selectedPageOperation%>" siteID="${param['siteID']}" homePageID="${param['homepageID']}" callback="${param['callback']}" templates="${param['templates']}">
   </div>
 </div>

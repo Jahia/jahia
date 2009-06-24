@@ -39,6 +39,9 @@ import org.jahia.ajax.gwt.client.util.JahiaGWT;
 import org.jahia.ajax.gwt.client.widget.pagepicker.PagePicker;
 import org.jahia.ajax.gwt.client.widget.pagepicker.PagePickerViewport;
 
+import java.util.List;
+import java.util.Arrays;
+
 /**
  * Created by IntelliJ IDEA.
  * User: rfelden
@@ -61,6 +64,7 @@ public class PagePickerEntryPoint  implements EntryPoint {
             String homepageIdStr = DOM.getElementAttribute(panel.getElement(), "homePageID");
             String siteIdStr = DOM.getElementAttribute(panel.getElement(), "siteID");
             String callback = DOM.getElementAttribute(panel.getElement(), "callback");
+            String templates = DOM.getElementAttribute(panel.getElement(), "templates");
 
             int homepageId = -1;
             if (homepageIdStr != null && !"".equals(homepageIdStr)) {
@@ -71,10 +75,16 @@ public class PagePickerEntryPoint  implements EntryPoint {
                 siteId = Integer.parseInt(siteIdStr);
             }
 
+            List templateList = null;
+            if (templates != null && templates.length()>0) {
+                templateList = Arrays.asList(templates.split(","));
+            }
+
+
             if (callback == null || callback.length() == 0) {
-                panel.add(new PagePicker(operation, pagePath, parentPath , homepageId, siteId, callback));
+                panel.add(new PagePicker(operation, pagePath, parentPath , homepageId, siteId, callback, templateList));
             } else {
-                panel.add(new PagePickerViewport(operation, pagePath, parentPath , homepageId, siteId, callback));
+                panel.add(new PagePickerViewport(operation, pagePath, parentPath , homepageId, siteId, callback, templateList));
             }
 
         }

@@ -113,15 +113,20 @@ public class SelectPage_Engine implements JahiaEngine {
         final Integer parentPageID = (Integer) params.get(PARENT_PAGE_ID);
         final Integer pageID = (Integer) params.get(PAGE_ID);
         final String callback = (String) params.get("callback");
+        final String templates = (String) params.get("templates");
         Integer homepageID = -1;
         Integer siteID = -1;
         if (params.get(HOMEPAGE_ID) != null)
             homepageID = (Integer) params.get(HOMEPAGE_ID);
         if (params.get(SITE_ID) != null)
             siteID = (Integer) params.get(SITE_ID);
-        return Jahia.getContextPath()+"/engines/selectpage/select_page.jsp?homepageID="+
+        String l = Jahia.getContextPath()+"/engines/selectpage/select_page.jsp?homepageID="+
                 homepageID + "&siteID="+siteID+"&pageID="+pageID+"&selectPageOperation="+operation+"&parentPageID="+parentPageID+
                 "&callback="+callback;
+        if (templates != null) {
+            l += "&templates="+templates;
+        }
+        return l;
     }
 
     /**

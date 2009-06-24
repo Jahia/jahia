@@ -150,7 +150,7 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
 
         // write output to StringBuffer
         StringBuilder buf = new StringBuilder("<head>\n");
-
+        buf.append("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=EmulateIE7\" />\n");  // should be fixed in GWT 1.6
         // check the gwtForGuest attribute from parent tag
         Tag parent = getParent();
         gwtForGuest = false;

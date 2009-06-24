@@ -123,7 +123,7 @@ public class FileManagerWorker {
      * @param noFolders don't retrieve folders if true
      * @throws GWTJahiaServiceException sthg bad happened
      */
-    private static void appendChildren(GWTJahiaNode node, String[] openPaths, ProcessingContext context, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {
+/*    private static void appendChildren(GWTJahiaNode node, String[] openPaths, ProcessingContext context, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {
         logger.debug("appending children for node " + node.getPath());
         if (node.isFile()) {
             return;
@@ -164,7 +164,7 @@ public class FileManagerWorker {
         } else {
             logger.debug(node.getPath() + " does not contain any more node to expand");
         }
-    }
+    }*/
 
     public static List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders, ProcessingContext context) throws GWTJahiaServiceException {
         JahiaUser user = context.getUser();
@@ -216,10 +216,10 @@ public class FileManagerWorker {
                 }
                 if (f.isCollection() || (matchesFilters(f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply))) {
                     GWTJahiaNode theNode = getGWTJahiaNode(f);
-                    if (openPaths != null && openPaths.length() > 0) {
-                        logger.debug("trying to append children");
-                        appendChildren(theNode, splitOpenPathList(openPaths), context, nodeTypes, mimeTypes, filters, noFolders);
-                    }
+//                    if (openPaths != null && openPaths.length() > 0) {
+//                        logger.debug("trying to append children");
+//                        appendChildren(theNode, splitOpenPathList(openPaths), context, nodeTypes, mimeTypes, filters, noFolders);
+//                    }
                     result.add(theNode);
                 } else {
                     logger.debug(new StringBuilder(f.getPath()).append(" did not match the filters or is not a collection"));
@@ -397,11 +397,11 @@ public class FileManagerWorker {
             }
         }
 
-        for (GWTJahiaNode userNode : userNodes) {
-            if (openPaths != null && openPaths.length() > 0) {
-                appendChildren(userNode, splitOpenPathList(openPaths), jParams, nodeTypes, mimeTypes, filters, false);
-            }
-        }
+//        for (GWTJahiaNode userNode : userNodes) {
+//            if (openPaths != null && openPaths.length() > 0) {
+//                appendChildren(userNode, splitOpenPathList(openPaths), jParams, nodeTypes, mimeTypes, filters, false);
+//            }
+//        }
 
         return userNodes;
     }

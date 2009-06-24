@@ -54,7 +54,7 @@ import org.jahia.ajax.gwt.client.util.nodes.actions.FileActions;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeBinder;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
-import org.jahia.ajax.gwt.client.util.tree.PreviousPathsOpener;
+//import org.jahia.ajax.gwt.client.util.tree.PreviousPathsOpener;
 import org.jahia.ajax.gwt.client.util.tree.TreeOpener;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
@@ -75,7 +75,7 @@ public class RepositoryTab extends ContentPanel {
     private FolderTree folderTreeContainer ;
     private MyTreeBinder<GWTJahiaNode> binder ;
     private Tree m_tree ;
-    private PreviousPathsOpener<GWTJahiaNode> previousPathsOpener = null ;
+    //private PreviousPathsOpener<GWTJahiaNode> previousPathsOpener = null ;
     private TreeItem lastSelection = null ;
     private JahiaNodeServiceAsync nodeService ;
 
@@ -129,7 +129,7 @@ public class RepositoryTab extends ContentPanel {
             }
 
             protected void expandPreviousPaths() {
-                expandAllPreviousPaths() ;
+//                expandAllPreviousPaths() ;
             }
         };
 
@@ -192,12 +192,12 @@ public class RepositoryTab extends ContentPanel {
         target.setAutoExpand(true);
     }
 
-    public void expandAllPreviousPaths() {
-        if (previousPathsOpener == null) {
-            previousPathsOpener = new PreviousPathsOpener<GWTJahiaNode>(m_tree, store, binder) ;
-        }
-        previousPathsOpener.expandPreviousPaths();
-    }
+//    public void expandAllPreviousPaths() {
+//        if (previousPathsOpener == null) {
+//            previousPathsOpener = new PreviousPathsOpener<GWTJahiaNode>(m_tree, store, binder) ;
+//        }
+//        previousPathsOpener.expandPreviousPaths();
+//    }
 
     public List<String> getOpenedPaths() {
         List<TreeItem> expandedItems = getOpenedPaths(m_tree.getRootItem()) ;

@@ -177,14 +177,14 @@ public class FolderTree extends LeftComponent {
         searchPanel.addListener(Events.Expand, accordionListener) ;
 
         // this is the save opened paths feature
-        Window.addWindowCloseListener(new WindowCloseListener() {
-            public String onWindowClosing() {
-                return null;
-            }
-            public void onWindowClosed() {
-                saveOpenedPaths();
-            }
-        });
+//        Window.addWindowCloseListener(new WindowCloseListener() {
+//            public String onWindowClosing() {
+//                return null;
+//            }
+//            public void onWindowClosed() {
+//                saveOpenedPaths();
+//            }
+//        });
     }
 
     private void renameSearch(GWTJahiaNode selection) {

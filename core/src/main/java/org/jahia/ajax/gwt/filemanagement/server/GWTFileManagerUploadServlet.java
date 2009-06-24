@@ -153,7 +153,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                             IOUtils.copy(item.getInputStream(), new FileOutputStream(f));
                             asyncItems.put(f.getName(), new Item(item.getContentType(), item.getSize(), f));
 
-                            printWriter.write("EXISTS: " + item.getFieldName() + " " + f.getName() + " " + item.getName() + "\n");
+                            printWriter.write("EXISTS: " + item.getFieldName() + " " + f.getName() + " " + filename + "\n");
                             break;
                         case READONLY:
                             printWriter.write("READONLY: " +  item.getFieldName()+"\n");

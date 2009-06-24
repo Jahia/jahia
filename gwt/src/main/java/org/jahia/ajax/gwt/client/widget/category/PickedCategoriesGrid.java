@@ -134,6 +134,7 @@ public class PickedCategoriesGrid extends TopRightComponent {
         // key
         column = new ColumnConfig();
         column.setId("key");
+        column.setHidden(true);
         column.setHeader(Messages.getResource("key"));
         configs.add(column);
 

@@ -102,7 +102,7 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
             }
         }
         JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jParams, jParams.getRealRequest());
-        if (Jahia.getServletPath() != null &&!Jahia.getServletPath().equals(jahiaContextRequest.getServletPath())) {
+        if (Jahia.getServletPath() != null && !Jahia.getServletPath().equals(jahiaContextRequest.getServletPath())) {
             String pageURL = jParams.composePageUrl(jParams.getPageID());
             jahiaContextRequest.setServletPath(Jahia.getServletPath());
             pageURL = pageURL.substring(Jahia.getServletPath().length());
@@ -128,10 +128,10 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
         PortalURL portalURL = portalEnv.getRequestedPortalURL();
 
         // Retrieve the portlet container from servlet context.
-        PortletContainer container = (PortletContainer)servletContext.getAttribute(AttributeKeys.PORTLET_CONTAINER);
+        PortletContainer container = (PortletContainer) servletContext.getAttribute(AttributeKeys.PORTLET_CONTAINER);
 
         // Create the portlet window to render.
-        PortletWindow window = new PortletWindowImpl(container,windowConfig, portalURL);
+        PortletWindow window = new PortletWindowImpl(container, windowConfig, portalURL);
 
         // Check if someone else is maximized. If yes, don't show content.
         Map windowStates = portalURL.getWindowStates();
@@ -146,18 +146,20 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
 
         // Create portal servlet request and response to wrap the original
         // HTTP servlet request and response.
-        HttpServletRequest portalRequest = new JahiaPortalServletRequest(entryPointInstance, jParams.getUser(),jParams.getRealRequest(),window);
+        HttpServletRequest portalRequest = new JahiaPortalServletRequest(entryPointInstance, jParams.getUser(), jParams.getRealRequest(), window);
 
 
         // copy jahia attibutes nested by the portlet
-        JahiaPortletUtil.copyJahiaAttributes(entryPointInstance,jParams, window, portalRequest,false);
+        JahiaPortletUtil.copyJahiaAttributes(entryPointInstance, jParams, window, portalRequest, false);
 
         // wrappe in a porteal response
         PortalServletResponse portalResponse = new JahiaPortalServletResponse(jParams.getResponse());
 
         // Render the portlet and cache the response.
         try {
+            Map<String, Object> map = JahiaPortletUtil.filterJahiaAttributes(portalRequest);
             container.doRender(window, portalRequest, portalResponse);
+            JahiaPortletUtil.setJahiaAttributes(portalRequest, map);
         } catch (Exception th) {
             logger.error("Error while rendering portlet", th);
         }
@@ -167,7 +169,6 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
         }
         return portletRendering;
     }
-
 
 
 }

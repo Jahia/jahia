@@ -40,9 +40,7 @@ import org.apache.pluto.container.PortletWindow;
 import javax.servlet.http.HttpServletRequest;
 import javax.jcr.*;
 import javax.jcr.nodetype.PropertyDefinition;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -271,4 +269,51 @@ public class JahiaPortletUtil {
         return "Pluto_" + window.getId().getStringId() + "_" + attributeName;
     }
 
+    /**
+     * Remove from request useless attributes
+     *
+     * @param portalRequest
+     * @return
+     */
+    public static Map<String, Object> filterJahiaAttributes(HttpServletRequest portalRequest) {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        Enumeration<String> enume = portalRequest.getAttributeNames();
+        while (enume.hasMoreElements()) {
+            String key = enume.nextElement();
+            if (isSpringAttribute(key)) {
+                Object value = portalRequest.getAttribute(key);
+                map.put(key, value);
+                portalRequest.removeAttribute(key);
+            }
+        }
+        return map;
+    }
+
+    /**
+     * true if it's a spring attr.
+     *
+     * @param key
+     * @return
+     */
+    private static boolean isSpringAttribute(String key) {
+        if (key != null && key.indexOf("org.springframework") == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Set jahia attributes
+     * @param portalRequest
+     * @param jahiaAttributes
+     */
+    public static void setJahiaAttributes(HttpServletRequest portalRequest, Map<String, Object> jahiaAttributes) {
+        Set<String> keys = jahiaAttributes.keySet();
+        Iterator<String> keysIte = keys.iterator();
+        while (keysIte.hasNext()) {
+            String key = keysIte.next();
+            Object value = portalRequest.getAttribute(key);
+            portalRequest.setAttribute(key, value);
+        }
+    }
 }

@@ -270,7 +270,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
             jParams.setQueryString(queryString);
             jParams.setPathInfo(pathInfo);
             jParams.setAttribute("org.jahia.data.JahiaData", new JahiaData(jParams));
-            jParams.setAttribute("currentRequest", new RequestBean (new GuiBean(jParams), jParams));
+            jParams.setAttribute("currentRequest", new RequestBean(new GuiBean(jParams), jParams));
             jParams.setAttribute("currentSite", new SiteBean(jParams.getSite(), jParams));
             jParams.setAttribute("currentPage", new PageBean(jParams.getPage(), jParams));
             jParams.setAttribute("currentUser", jParams.getUser());
@@ -300,7 +300,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
             List<StartTag> scriptTags = source.findAllStartTags("script");
             for (StartTag curScriptTag : scriptTags) {
                 if ((curScriptTag.getAttributeValue("src") != null) &&
-                   (!curScriptTag.getAttributeValue("src").equals("")) ) {
+                        (!curScriptTag.getAttributeValue("src").equals(""))) {
                     result.getScriptsWithSrc().add(curScriptTag.getAttributeValue("src"));
                 } else {
                     result.getScriptsWithCode().add(curScriptTag.getElement().getContent().toString());
@@ -322,7 +322,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
     }
 
 
-     public void deleteBookmark(GWTJahiaPageContext page, GWTJahiaBookmark gwtJahiaBookmark) {
+    public void deleteBookmark(GWTJahiaPageContext page, GWTJahiaBookmark gwtJahiaBookmark) {
         if (gwtJahiaBookmark == null) {
             logger.error("bookmark object is null.");
             return;
@@ -357,7 +357,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
                 // pid
                 try {
                     String pageUUID = bPref.getPageUUID();
-                    ContentPage contentPage = getContentPage(pageUUID,getRemoteJahiaUser());
+                    ContentPage contentPage = getContentPage(pageUUID, getRemoteJahiaUser());
                     String url = contentPage.getURL(retrieveParamBean());
                     String title = contentPage.getTitle(retrieveParamBean());
                     int pid = contentPage.getPageID();
@@ -454,26 +454,26 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
      *
      * @return a list of ordered language codes
      */
-    public GWTJahiaLanguageSwitcherBean getAvailableLanguagesAndWorkflowStates(boolean displayIsoCode,boolean displayLanguage, boolean inEngine) {
+    public GWTJahiaLanguageSwitcherBean getAvailableLanguagesAndWorkflowStates(boolean displayIsoCode, boolean displayLanguage, boolean inEngine) {
         ProcessingContext jParams = retrieveParamBean();
         Locale locale = jParams.getLocale();
-        if(inEngine) {
+        if (inEngine) {
             locale = getEngineLocale();
         }
-        Map<String,Locale> availableLocaleMap = WorkflowServiceHelper.retrieveOrderedLocaleDisplayForSite(jParams.getSite());
+        Map<String, Locale> availableLocaleMap = WorkflowServiceHelper.retrieveOrderedLocaleDisplayForSite(jParams.getSite());
         Map<String, String> workflowStates = WorkflowServiceHelper.getWorkflowStates(jParams.getContentPage());
-        Map<String,GWTLanguageSwitcherLocaleBean> availableLanguages = new HashMap<String, GWTLanguageSwitcherLocaleBean>(availableLocaleMap.size());
-        Set<Map.Entry<String,Locale>> iterator = availableLocaleMap.entrySet();
+        Map<String, GWTLanguageSwitcherLocaleBean> availableLanguages = new HashMap<String, GWTLanguageSwitcherLocaleBean>(availableLocaleMap.size());
+        Set<Map.Entry<String, Locale>> iterator = availableLocaleMap.entrySet();
         for (Map.Entry<String, Locale> stringLocaleEntry : iterator) {
             final Locale value = stringLocaleEntry.getValue();
             GWTLanguageSwitcherLocaleBean localeBean = new GWTLanguageSwitcherLocaleBean();
-            String country = value.getDisplayCountry(Locale.ENGLISH).toLowerCase().replace(" ","_");
+            String country = value.getDisplayCountry(Locale.ENGLISH).toLowerCase().replace(" ", "_");
             localeBean.setCountryIsoCode(country);
-            if(displayIsoCode) localeBean.setDisplayName(value.getISO3Language());
+            if (displayIsoCode) localeBean.setDisplayName(value.getISO3Language());
             else if (displayLanguage) localeBean.setDisplayName(StringUtils.capitalize(value.getDisplayName(value)));
             else localeBean.setDisplayName(value.getLanguage());
             localeBean.setLanguage(value.getLanguage());
-            availableLanguages.put(stringLocaleEntry.getKey(),localeBean);
+            availableLanguages.put(stringLocaleEntry.getKey(), localeBean);
         }
         return new GWTJahiaLanguageSwitcherBean(availableLanguages, workflowStates);
     }
@@ -540,8 +540,8 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
             // we must test several case because unfortunately not all browsers return the same
             // HTML for contentEditable DOM elements.
             if ((updatedContent.equals(fieldValue)) ||
-                 trimmedUpdatedContent.equals(trimmedFieldValue) ||
-                 cleanUpdatedContent.equals(cleanFieldValue)) {
+                    trimmedUpdatedContent.equals(trimmedFieldValue) ||
+                    cleanUpdatedContent.equals(cleanFieldValue)) {
                 resultBean.setSuccessful(true);
                 resultBean.setContentModified(false);
                 return resultBean;
@@ -565,7 +565,8 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
     }
 
     public Boolean isInlineEditingAllowed(Integer containerID, Integer fieldID) {
-        if (logger.isDebugEnabled()) logger.debug("isInlineEditingAllowed called for containerID=" + containerID + " fieldID=" + fieldID);
+        if (logger.isDebugEnabled())
+            logger.debug("isInlineEditingAllowed called for containerID=" + containerID + " fieldID=" + fieldID);
         ProcessingContext jParams = retrieveParamBean();
         final boolean inlineEditingActivatedPreference = UserPreferencesHelper.isEnableInlineEditing(jParams.getUser());
         if (!inlineEditingActivatedPreference) {
@@ -614,7 +615,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
         }
     }
 
-    public List<GWTJahiaSite> getAvailableSites () {
+    public List<GWTJahiaSite> getAvailableSites() {
         final Iterator<JahiaSite> sites;
         final List<GWTJahiaSite> returnedSites = new ArrayList<GWTJahiaSite>();
         try {
@@ -652,7 +653,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
         return result;
     }
 
-     private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
+    private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
         try {
             JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(uuid, jahiaUser);
             return (ContentPage) nodeWrapper.getContentObject();

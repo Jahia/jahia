@@ -269,7 +269,7 @@ public class FileUploader extends Window {
         choose.add(Messages.getResource("fm_rename") + " auto");
         choose.add(Messages.getResource("fm_confOverwrite"));
         choose.setHideLabel(true);
-        choose.setValue(choose.getStore().getAt(0));
+        choose.setValue(choose.getStore().getAt(1));
         choose.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent>() {
             public void handleEvent(SelectionChangedEvent event) {
                 if (choose.getValue().getValue().equals("Rename"))  {

@@ -527,6 +527,7 @@ public class JahiaContentServiceImpl extends JahiaRemoteService implements Jahia
             logger.error("Ccannot get status ",e);
         }
         wPage.setIsWriteable(jPage.checkWriteAccess(jParams.getUser()));
+        wPage.setTemplateName(jPage.getPageTemplate().getName());
         return wPage;
     }
 

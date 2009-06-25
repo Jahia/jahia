@@ -122,6 +122,11 @@ integer         maxNews = 10 indexed=no
 sharedSmallText display (choicelist) = medium indexed=no < large,medium,small
 category        filter (category[autoSelectParent=false]) indexed=no
 
+[web_templates:preferencesContainer] > jnt:container
+integer         maxNews = 10 indexed=no
+category        filter (category[autoSelectParent=false]) indexed=no
+
+
 [web_templates:mediaGalleryContainer] > jnt:container
 file pictFolder (file[folder])
 
@@ -223,4 +228,4 @@ containerList issues (web_templates:newsletterIssue)
 containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:fileContentBox"])
 
 [web_templates:newsletterIssuePage] > jnt:page,web_templates:navigation, web_templates:introduction, jmix:sendAsNewsletter
-singleContainer pictures (web_templates:mediaGalleryContainer)
+singleContainer preferences (web_templates:preferencesContainer)

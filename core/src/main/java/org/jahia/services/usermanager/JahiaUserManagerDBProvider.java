@@ -454,19 +454,14 @@ public class JahiaUserManagerDBProvider extends JahiaUserManagerProvider impleme
 
   /**
      * Transforms a search with "*" characters into a valid LIKE statement
-     * with "%" characters. Also escapes the string to remove all "'" and
-     * other chars that might disturb the request construct.
+     * with "%" characters.
      *
      * @param input the original String
      *
      * @return String a resulting string that has
      */
     private String makeLIKEString (String input) {
-        String result = JahiaTools.replacePattern (input, "*", "%");
-        result = JahiaTools.replacePattern (result, "'", "\\'");
-        result = JahiaTools.replacePattern (result, "\"", "\\\"");
-        result = JahiaTools.replacePattern (result, "_", "\\_");
-        return result;
+        return JahiaTools.replacePattern (input, "*", "%");
     }
 
     //--------------------------------------------------------------------------

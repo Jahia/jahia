@@ -105,7 +105,8 @@ public class LinkChecker extends ContentPanel {
 
     public LinkChecker() {
         super(new FitLayout());
-        setSize(980, 740);
+//        setSize(720, 740);
+        setHeight(740);
 
         // data container initialization
         m_store = new ListStore<GWTJahiaCheckedLink>();
@@ -305,12 +306,12 @@ public class LinkChecker extends ContentPanel {
         });
         headerList.add(col);
 
-        col = new ColumnConfig("link", Messages.getResource("lc_link"), 380);
+        col = new ColumnConfig("link", Messages.getResource("lc_link"), 250);
         col.setSortable(true);
         col.setResizable(true);
         headerList.add(col);
 
-        col = new ColumnConfig("pageTitle", Messages.getResource("lc_pageTitle"), 200);
+        col = new ColumnConfig("pageTitle", Messages.getResource("lc_pageTitle"), 150);
         col.setSortable(true);
         col.setResizable(true);
         col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>(){
@@ -323,17 +324,17 @@ public class LinkChecker extends ContentPanel {
             }});
         headerList.add(col);
 
-        col = new ColumnConfig("languageCode", Messages.getResource("lc_language"), 60);
+        col = new ColumnConfig("languageCode", Messages.getResource("lc_language"), 50);
         col.setSortable(true);
         col.setResizable(true);
         headerList.add(col);
 
-        col = new ColumnConfig("workflowState", Messages.getResource("lc_workflow"), 100);
+        col = new ColumnConfig("workflowState", Messages.getResource("lc_workflow"), 90);
         col.setSortable(true);
         col.setResizable(true);
         col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>() {
             public String render(GWTJahiaCheckedLink gwtJahiaCheckedLink, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaCheckedLink> gwtJahiaCheckedLinkListStore) {
-                return "<img src=\"../../engines/images/icons/workflow/"
+                return "<img src=\"../engines/images/icons/workflow/"
                         + WORKFLOW_IMAGES[gwtJahiaCheckedLink.getWorkflowState()]
                         + ".png\" height=\"12\" width=\"12\" alt=\""
                         + gwtJahiaCheckedLink.getWorkflowState() + "\">&nbsp;"

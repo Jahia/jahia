@@ -203,16 +203,31 @@ public class LinkCheckerServiceImpl extends JahiaRemoteService implements LinkCh
         List<Object[]> invalidLinks = linkChecker.getLinks();
         if (!invalidLinks.isEmpty()) {
             ProcessingContext ctx = retrieveParamBean();
-            JahiaData jData = retrieveJahiaData(new GWTJahiaPageContext(ctx
-                    .getPageID(), ctx.getOperationMode()));
-            for (Object[] processedLink : invalidLinks) {
-                status
-                        .getLinks()
-                        .add(
-                                getGWTViewObject(
-                                        (Link) processedLink[0],
-                                        (LinkValidationResult) processedLink[1],
-                                        jData));
+            String opMode = ctx.getOperationMode();
+            if (!ProcessingContext.EDIT.equals(opMode)) {
+                try {
+                    ctx.setOperationMode(ProcessingContext.EDIT);
+                } catch (JahiaException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            try {
+                JahiaData jData = retrieveJahiaData(new GWTJahiaPageContext(ctx
+                        .getPageID(), ctx.getOperationMode()));
+                for (Object[] processedLink : invalidLinks) {
+                    status.getLinks().add(
+                            getGWTViewObject((Link) processedLink[0],
+                                    (LinkValidationResult) processedLink[1],
+                                    jData));
+                }
+            } finally {
+                if (!ProcessingContext.EDIT.equals(opMode)) {
+                    try {
+                        ctx.setOperationMode(opMode);
+                    } catch (JahiaException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
             }
         }
         return status;

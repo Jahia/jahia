@@ -146,7 +146,12 @@ function saveContent() {
 <!--
 jahia.config = {
     contextPath: '<%=request.getContextPath()%>',
-    sendKeepAliveTimeOut: <%= session.getMaxInactiveInterval() * 1000 / 2 %>
+    sendKeepAliveTimeOut: <%= session.getMaxInactiveInterval() * 1000 / 2 %>,
+    <% if (results != null) {%>lockResults: true,<% } %>
+    lockKey: '<%=lockKey%>',
+    <% if (engineMap.containsKey("lock")) { %>lockType: '<%=((LockKey)engineMap.get("lock")).getType()%>',<% } %>
+    pid: <%=jParams.getPageID()%>,
+    needToRefreshParentPage: <%=session.getAttribute("needToRefreshParentPage") != null%>
 };
 var submittedCount = 0;
 
@@ -271,6 +276,8 @@ function showUserShell() {
         if (submittedCount == 0) {
             if (last != "save" && last != "cancel" && last != "showReport" && src != "apply" &&
                 src != "close" && src != "lock") {
+                releaseLock(jahia.config.lockType, jahia.config.pid, jahia.config.needToRefreshParentPage);
+                releaseLock('Versionning', jahia.config.pid, jahia.config.needToRefreshParentPage);
                 sendFormCancel();
                 //alert ("sendFormCancel" + "-" + last + "-" + src);
             }

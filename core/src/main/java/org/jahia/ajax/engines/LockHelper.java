@@ -157,6 +157,8 @@ public final class LockHelper {
             return releaseLockPageProperties(lockType, ctx);
         } else if (lockType.startsWith("Workflow_")) {
             return releaseLockWorkflow(lockType, ctx);
+        } else if (lockType.equals("Versionning")) {
+            return releaseLockVersioning(ctx);
         } else {
             return false;
         }
@@ -353,6 +355,31 @@ public final class LockHelper {
                 }
             }
             ctx.getSessionState().removeAttribute("initialObj");
+        }
+        return true;
+    }
+
+    private static boolean releaseLockVersioning(ProcessingContext ctx)
+            throws JahiaForbiddenAccessException {
+        final JahiaUser user = ctx.getUser();
+        if (user == null || !ctx.getPage().checkWriteAccess(user)) {
+            logger
+                    .warn("Cannot release the lock, since it has not previously been acquired in the same context");
+            throw new JahiaForbiddenAccessException(
+                    "Cannot release the lock, since it has not previously been acquired in the same context");
+        }
+        if (ctx.settings().areLocksActivated()) {
+            final Set locks = (Set) ctx.getSessionState().getAttribute(
+                    "VersionningLocks");
+            if (locks != null) {
+                final LockService lockRegistry = ServicesRegistry.getInstance()
+                        .getLockService();
+                final Iterator iterator = locks.iterator();
+                while (iterator.hasNext()) {
+                    final LockKey lockKey = (LockKey) iterator.next();
+                    lockRegistry.release(lockKey, user, user.getUserKey());
+                }
+            }
         }
         return true;
     }

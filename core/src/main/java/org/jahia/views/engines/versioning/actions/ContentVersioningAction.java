@@ -195,7 +195,9 @@ public class ContentVersioningAction extends AdminAction {
             }
 
             // check permission
-            ContentVersioningAction.logger.info("Logged in User :" + engineCommonData.getParamBean().getUser().getUsername());
+            if (ContentVersioningAction.logger.isDebugEnabled()) {
+                ContentVersioningAction.logger.debug("Logged in User: " + engineCommonData.getParamBean().getUser().getUsername());
+            }
             if (!contentObject.checkWriteAccess(engineCommonData.getParamBean().getUser())) {
                 if (!allowReadAccess.booleanValue()) {
                     throw new JahiaForbiddenAccessException();
@@ -1107,29 +1109,7 @@ public class ContentVersioningAction extends AdminAction {
                                 HttpServletRequest request,
                                 HttpServletResponse response)
             throws IOException, ServletException {
-        ActionForward forward = mapping.findForward("close");
-        ActionErrors errors = new ActionErrors();
-        JahiaEngineCommonData engineCommonData = null;
-        try {
-            init(mapping, request);
-            engineCommonData = (JahiaEngineCommonData)
-                    request.getAttribute(JahiaEngineCommonData.JAHIA_ENGINE_COMMON_DATA);
-        } catch (Exception t) {
-            handleException(t, request, response);
-            errors.add(ActionMessages.GLOBAL_MESSAGE,
-                    new ActionMessage("Error preparing Operation Choices view"));
-        } finally {
-            try {
-                releaseTreeLocks(engineCommonData.getParamBean());
-                // this is required in the case that we never locked the tree
-                releaseActionLock(engineCommonData.getParamBean());
-            } catch (Exception t) {
-                ContentVersioningAction.logger.debug("Fail releasing locks from versioning engine", t);
-            }
-        }
-        // set engine screen
-        request.setAttribute("engineView", "close");
-        return continueForward(mapping, request, errors, forward);
+        return continueForward(mapping, request, new ActionErrors(), mapping.findForward("close"));
     }
 
     /**

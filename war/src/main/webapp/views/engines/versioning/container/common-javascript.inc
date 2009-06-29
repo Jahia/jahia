@@ -104,9 +104,5 @@ function sendForm(method, params) {
     document.mainForm.submit();
 }
 
-function releaseLock(lockType, pid, refreshParentWindow) {
-  return;
-}
-
 //-->
 </script>

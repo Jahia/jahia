@@ -96,6 +96,15 @@ public class WorkflowTree extends LeftComponent {
                 return parent.hasChildren() ;
             }
 
+            @Override
+            protected void onLoadSuccess(GWTJahiaWorkflowElement parent, List<GWTJahiaWorkflowElement> children) {
+                super.onLoadSuccess(parent, children);
+                if (openPreviousPaths) {
+                    openPreviousPaths = false ;
+                    expandPreviousPaths();
+                }
+            }
+
             protected void expandPreviousPaths() {
                 expandWorkflowPreviousPaths() ;
             }

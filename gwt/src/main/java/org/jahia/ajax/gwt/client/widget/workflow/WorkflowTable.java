@@ -63,6 +63,7 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowManagerState;
 import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResult;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.*;
 
@@ -142,15 +143,15 @@ public class WorkflowTable extends TopRightComponent {
 
         pagingToolBar = new PagingToolBar(pageSize);
         PagingToolBar.PagingToolBarMessages msgs = pagingToolBar.getMessages() ;
-        msgs.setBeforePageText(WorkflowManager.getResource("wf_pagingPage")) ;
-        msgs.setAfterPageText(WorkflowManager.getResource("wf_pagingOf")) ;
-        msgs.setDisplayMsg(WorkflowManager.getResource("wf_pagingDisplay"));
-        msgs.setEmptyMsg(WorkflowManager.getResource("wf_pagingNodata"));
-        msgs.setFirstText(WorkflowManager.getResource("wf_pagingFirst"));
-        msgs.setLastText(WorkflowManager.getResource("wf_pagingLast"));
-        msgs.setNextText(WorkflowManager.getResource("wf_pagingNext"));
-        msgs.setPrevText(WorkflowManager.getResource("wf_pagingPrevious"));
-        msgs.setRefreshText(WorkflowManager.getResource("wf_pagingRefresh"));
+        msgs.setBeforePageText(Messages.getResource("wf_pagingPage")) ;
+        msgs.setAfterPageText(Messages.getResource("wf_pagingOf")) ;
+        msgs.setDisplayMsg(Messages.getResource("wf_pagingDisplay"));
+        msgs.setEmptyMsg(Messages.getResource("wf_pagingNodata"));
+        msgs.setFirstText(Messages.getResource("wf_pagingFirst"));
+        msgs.setLastText(Messages.getResource("wf_pagingLast"));
+        msgs.setNextText(Messages.getResource("wf_pagingNext"));
+        msgs.setPrevText(Messages.getResource("wf_pagingPrevious"));
+        msgs.setRefreshText(Messages.getResource("wf_pagingRefresh"));
 
         final NumberField depthField = new NumberField() ;
         depthField.setAllowDecimals(false);
@@ -160,7 +161,7 @@ public class WorkflowTable extends TopRightComponent {
         depthField.setWidth(25);
         AdapterToolItem depthFieldBox = new AdapterToolItem(depthField) ;
         depthFieldBox.addStyleName("item-field");
-        pagingToolBar.add(new LabelToolItem(WorkflowManager.getResource("wf_depth"))) ;
+        pagingToolBar.add(new LabelToolItem(Messages.getResource("wf_depth"))) ;
         pagingToolBar.add(depthFieldBox) ;
         depthField.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
@@ -185,7 +186,7 @@ public class WorkflowTable extends TopRightComponent {
         pageField.setWidth(25);
         AdapterToolItem pageFieldBox = new AdapterToolItem(pageField) ;
         pageFieldBox.addStyleName("item-field");
-        pagingToolBar.add(new LabelToolItem(WorkflowManager.getResource("wf_itemsPerPage"))) ;
+        pagingToolBar.add(new LabelToolItem(Messages.getResource("wf_itemsPerPage"))) ;
         pagingToolBar.add(pageFieldBox) ;
         pageField.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
@@ -222,7 +223,7 @@ public class WorkflowTable extends TopRightComponent {
     private void initHeaders(final Object root) {
         service.getWorkflowManagerState(new AsyncCallback<GWTJahiaWorkflowManagerState>() {
             public void onFailure(Throwable throwable) {
-                Window.alert(WorkflowManager.getResource("wf_noLanguages") + "\n\n" + throwable.getLocalizedMessage()) ;
+                Window.alert(Messages.getResource("wf_noLanguages") + "\n\n" + throwable.getLocalizedMessage()) ;
             }
 
             public void onSuccess(GWTJahiaWorkflowManagerState state) {
@@ -254,7 +255,7 @@ public class WorkflowTable extends TopRightComponent {
         col.setResizable(false);
         headerList.add(col) ;
 
-        col = new TableColumn("title", WorkflowManager.getResource("wf_title"), 150) ;
+        col = new TableColumn("title", Messages.getResource("wf_title"), 150) ;
         headerList.add(col) ;
         for (String languageCode: languageCodes) {
             col = new TableColumn(languageCode, languageCode, 40) ;
@@ -263,7 +264,7 @@ public class WorkflowTable extends TopRightComponent {
             headerList.add(col) ;
         }
 
-        col = new TableColumn("path", WorkflowManager.getResource("wf_path"), 390) ;
+        col = new TableColumn("path", Messages.getResource("wf_path"), 390) ;
         col.setHidden(true);
         headerList.add(col) ;
 
@@ -307,22 +308,63 @@ public class WorkflowTable extends TopRightComponent {
     public void setContextMenu() {
         Menu selectMenu = new Menu() ;
         if (languageCodes.size() > 1) {
-            MenuItem all = new MenuItem(WorkflowManager.getResource("wf_selectAll")) ;
+            MenuItem all = new MenuItem(Messages.getResource("wf_selectAll")) ;
             all.addSelectionListener(new SelectListener("all"));
             all.setIconStyle("wf-selection-select");
             selectMenu.add(all) ;
         }
-        MenuItem none = new MenuItem(WorkflowManager.getResource("wf_deselectAll")) ;
+        MenuItem none = new MenuItem(Messages.getResource("wf_deselectAll")) ;
         none.addSelectionListener(new SelectListener("none"));
         none.setIconStyle("wf-selection-deselect");
         selectMenu.add(none) ;
-        for (String lang: languageCodes) {
-            MenuItem langItem = new MenuItem(WorkflowManager.getResource("wf_select") + " " + lang) ;
+        Menu previewMenu = new Menu();
+        Menu compareMenu = new Menu();
+        for (final String lang: languageCodes) {
+            MenuItem langItem = new MenuItem(Messages.getResource("wf_select") + " " + lang) ;
             langItem.setIconStyle("flag_" + lang);
             langItem.addSelectionListener(new SelectListener(lang));
             selectMenu.add(langItem) ;
+            MenuItem previewItem = new MenuItem(lang, new SelectionListener<ComponentEvent>() {
+                public void componentSelected(ComponentEvent componentEvent) {
+                    openPreviewWindow(lang, false);
+                }
+            });
+            MenuItem compareItem = new MenuItem(lang, new SelectionListener<ComponentEvent>() {
+                public void componentSelected(ComponentEvent componentEvent) {
+                    openPreviewWindow(lang, true);
+                }
+            });
+            previewItem.setIconStyle("flag_" + lang);
+            compareItem.setIconStyle("flag_" + lang);
+            previewMenu.add(previewItem);
+            compareMenu.add(compareItem);
         }
+        MenuItem preview = new MenuItem(Messages.getResource("wf_preview"));
+        preview.setSubMenu(previewMenu);
+        preview.setIconStyle("wf-preview");
+        MenuItem compare = new MenuItem(Messages.getResource("wf_compare"));
+        compare.setSubMenu(compareMenu);
+        compare.setIconStyle("wf-compare");
+        selectMenu.add(preview);
+        selectMenu.add(compare);
         m_table.setContextMenu(selectMenu);
+    }
+    
+    private void openPreviewWindow(String languageCode, boolean compare) {
+        Object sel = getLinker().getTableSelection();
+        if (sel != null) {
+            GWTJahiaWorkflowElement selection = (GWTJahiaWorkflowElement) sel;
+            service.getPreviewLink(selection.getObjectKey(), compare, languageCode, new AsyncCallback<String>() {
+                public void onFailure(Throwable throwable) {
+                    Log.error("An error occured:\n" + throwable);
+                }
+                public void onSuccess(String s) {
+                    if (s != null) {
+                        Window.open(s, "_blank", "");
+                    }
+                }
+            });
+        }
     }
 
     public void setContent(Object root) {

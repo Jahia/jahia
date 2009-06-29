@@ -52,13 +52,13 @@ import java.util.Map;
  */
 public interface WorkflowServiceAsync {
 
-    public void getAvailableLanguages(AsyncCallback<List<String>> async) ;
+    public void getAvailableLanguages(AsyncCallback<List<String>> async);
 
     public void getSubElements(GWTJahiaWorkflowElement parent, AsyncCallback<List<GWTJahiaWorkflowElement>> async);
 
-    public void getFlattenedSubElements(GWTJahiaWorkflowElement parent, int depth, AsyncCallback<List<GWTJahiaWorkflowElement>> async) ;
+    public void getFlattenedSubElements(GWTJahiaWorkflowElement parent, int depth, AsyncCallback<List<GWTJahiaWorkflowElement>> async);
 
-    public void getPagedFlattenedSubElements(GWTJahiaWorkflowElement parent, int depth, int offset, int pageSize, String sortParameter, boolean isAscending, AsyncCallback<PagingLoadResult<GWTJahiaWorkflowElement>> async) ;
+    public void getPagedFlattenedSubElements(GWTJahiaWorkflowElement parent, int depth, int offset, int pageSize, String sortParameter, boolean isAscending, AsyncCallback<PagingLoadResult<GWTJahiaWorkflowElement>> async);
 
     public void getAvailableActions(AsyncCallback<List<GWTJahiaLabel>> async);
 
@@ -74,6 +74,8 @@ public interface WorkflowServiceAsync {
 
     public void saveWorkflowManagerState(GWTJahiaWorkflowManagerState state, AsyncCallback async);
 
-    public void getWorkflowManagerState(AsyncCallback<GWTJahiaWorkflowManagerState> async) ;
+    public void getWorkflowManagerState(AsyncCallback<GWTJahiaWorkflowManagerState> async);
+
+    public void getPreviewLink(String objectKey, boolean compareMode, String languageCode, AsyncCallback<String> async);
 
 }

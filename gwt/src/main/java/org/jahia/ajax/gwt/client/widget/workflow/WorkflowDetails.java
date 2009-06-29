@@ -38,6 +38,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResultItem;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowHistoryEntry;
 import org.jahia.ajax.gwt.client.service.workflow.WorkflowService;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel;
@@ -83,12 +84,12 @@ public class WorkflowDetails extends BottomRightComponent {
         m_component.setBorders(false);
         tabs = new TabPanel();
         validation = new AsyncTabItem();
-        validation.setText(WorkflowManager.getResource("wf_validation"));
+        validation.setText(Messages.getResource("wf_validation"));
         validation.setLayout(new TableLayout(2));
         validation.setScrollMode(Style.Scroll.AUTO);
         validation.addStyleName("raw-content");
         history = new AsyncTabItem();
-        history.setText(WorkflowManager.getResource("wf_history"));
+        history.setText(Messages.getResource("wf_history"));
         history.setLayout(new FitLayout());
         history.setScrollMode(Style.Scroll.AUTO);
         history.addStyleName("raw-content");
@@ -176,16 +177,16 @@ public class WorkflowDetails extends BottomRightComponent {
             TableColumn col = new TableColumn("date", "Date", 200) ;
             headerList.add(col) ;
 
-            col = new TableColumn("user", WorkflowManager.getResource("wf_user"), 80) ;
+            col = new TableColumn("user", Messages.getResource("wf_user"), 80) ;
             headerList.add(col) ;
 
-            col = new TableColumn("action", WorkflowManager.getResource("wf_action"), 100) ;
+            col = new TableColumn("action", Messages.getResource("wf_action"), 100) ;
             headerList.add(col) ;
 
-            col = new TableColumn("language", WorkflowManager.getResource("wf_language"), 51) ;
+            col = new TableColumn("language", Messages.getResource("wf_language"), 51) ;
             headerList.add(col) ;
 
-            col = new TableColumn("comment", WorkflowManager.getResource("wf_comment"), 260) ;
+            col = new TableColumn("comment", Messages.getResource("wf_comment"), 260) ;
             headerList.add(col) ;
 
             Log.debug("Resetting column model...");

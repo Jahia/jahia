@@ -48,6 +48,7 @@ import org.jahia.services.workflow.ActivationJob;
 import org.jahia.services.workflow.WorkflowAction;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
+import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
 import org.jahia.content.ObjectKey;
@@ -58,6 +59,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.data.beans.PageBean;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.PageLinkComposer;
 import org.apache.log4j.Logger;
 import org.quartz.JobDetail;
 import org.quartz.JobDataMap;
@@ -79,7 +81,7 @@ public class WorkflowServiceImpl extends JahiaRemoteService implements WorkflowS
 
     private static final org.apache.log4j.Logger logger = Logger.getLogger(WorkflowServiceImpl.class);
 
-    public final static String WORKFLOW_BATCH = "WorkflowBatch" ;
+    public final static String WORKFLOW_BATCH = "WorkflowBatch";
 
     /**
      * Retrieve all active languages for the current site.
@@ -87,8 +89,8 @@ public class WorkflowServiceImpl extends JahiaRemoteService implements WorkflowS
      * @return a list of ordered language codes
      */
     public List<String> getAvailableLanguages() {
-        ProcessingContext jParams = retrieveParamBean() ;
-        return WorkflowServiceHelper.retrieveOrderedLanguageCodesForSite(jParams.getSite()) ;
+        ProcessingContext jParams = retrieveParamBean();
+        return WorkflowServiceHelper.retrieveOrderedLanguageCodesForSite(jParams.getSite());
     }
 
     /**
@@ -98,75 +100,75 @@ public class WorkflowServiceImpl extends JahiaRemoteService implements WorkflowS
      * @return the children of the given parent element
      */
     public List<GWTJahiaWorkflowElement> getSubElements(GWTJahiaWorkflowElement parent) throws GWTJahiaServiceException {
-        ProcessingContext jParams = retrieveParamBean() ;
+        ProcessingContext jParams = retrieveParamBean();
         // this case should not be used any more
         if (parent == null) {
             if (jParams != null) {
                 List<GWTJahiaWorkflowElement> result = new ArrayList<GWTJahiaWorkflowElement>();
                 ContentPage homePage = jParams.getSite().getHomeContentPage();
                 if (homePage.checkReadAccess(jParams.getUser())) {
-                    ObjectKey key = homePage.getObjectKey() ;
-                    String title = homePage.getTitle(jParams) ;
+                    ObjectKey key = homePage.getObjectKey();
+                    String title = homePage.getTitle(jParams);
                     if (title == null || title.trim().length() == 0) {
                         title = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.display.notitle", jParams.getLocale());
                     }
-                    boolean hasChildren = WorkflowServiceHelper.hasSeparateWorkflowChildren(homePage, jParams.getUser(), true) ;
+                    boolean hasChildren = WorkflowServiceHelper.hasSeparateWorkflowChildren(homePage, jParams.getUser(), true);
                     GWTJahiaWorkflowElement workflowElement = new GWTJahiaWorkflowElement(homePage.getID(), key.getKey(), key.getType(), title, title, hasChildren, WorkflowServiceHelper.getWorkflowStates(homePage));
                     try {
                         workflowElement.setAvailableAction(WorkflowServiceHelper.getAvailableActionsForObject((ContentObjectKey) key, workflowElement.getWorkflowStates().keySet(), jParams));
                     } catch (JahiaException e) {
                         logger.error(e.getMessage(), e);
                     }
-                    result.add(workflowElement) ;
+                    result.add(workflowElement);
                 }
-                return result ;
+                return result;
             } else {
                 return new ArrayList<GWTJahiaWorkflowElement>();
             }
 
         // this is the new default case, retrieving the current page as subroot and crawl ip to the home page or to the first unreadable page
         } else if (parent.getPath() == null && parent.getObjectKey() != null) {
-            String objectKey = parent.getObjectKey() ;
-            int pid ;
+            String objectKey = parent.getObjectKey();
+            int pid;
             if (objectKey.length() == 0) {
-                pid = jParams.getPageID() ;
+                pid = jParams.getPageID();
             } else {
-                String id = parent.getObjectKey().replace(PageBean.TYPE + ObjectKeyInterface.KEY_SEPARATOR, "") ;
+                String id = parent.getObjectKey().replace(PageBean.TYPE + ObjectKeyInterface.KEY_SEPARATOR, "");
                 try {
-                    pid = Integer.parseInt(id) ;
+                    pid = Integer.parseInt(id);
                 } catch (NumberFormatException e) {
                     logger.error(e.getMessage(), e);
-                    pid = jParams.getPageID() ;
+                    pid = jParams.getPageID();
                 }
             }
             List<GWTJahiaWorkflowElement> result = new ArrayList<GWTJahiaWorkflowElement>();
             try {
-                List<GWTJahiaWorkflowElement> hierarchyRetrieved = WorkflowServiceHelper.getParentAndSiblingPages(pid, jParams) ;
+                List<GWTJahiaWorkflowElement> hierarchyRetrieved = WorkflowServiceHelper.getParentAndSiblingPages(pid, jParams);
                 if (hierarchyRetrieved != null) {
                     if (hierarchyRetrieved.size() == 0) {
                         logger.debug("There is a problem, no hierarchy could have been retrieved");
                     } else {
-                        result.addAll(hierarchyRetrieved) ;
+                        result.addAll(hierarchyRetrieved);
                     }
                 } else {
                     logger.debug("Home page is the current page for the workflow tree");
-                    ContentPage rootPage = ContentPage.getPage(pid) ;
+                    ContentPage rootPage = ContentPage.getPage(pid);
                     if (rootPage != null) {
                         if (rootPage.checkReadAccess(jParams.getUser())) {
                             if (objectKey.length() == 0) {
-                                objectKey = rootPage.getObjectKey().getKey() ;
+                                objectKey = rootPage.getObjectKey().getKey();
                             }
-                            String title = rootPage.getTitle(jParams) ;
+                            String title = rootPage.getTitle(jParams);
                             if (title == null || title.trim().length() == 0) {
                                 title = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.display.notitle", jParams.getLocale());
                             }
-                            boolean hasChildren = WorkflowServiceHelper.hasSeparateWorkflowChildren(rootPage, jParams.getUser(), true) ;
+                            boolean hasChildren = WorkflowServiceHelper.hasSeparateWorkflowChildren(rootPage, jParams.getUser(), true);
                             GWTJahiaWorkflowElement workflowElement = new GWTJahiaWorkflowElement(pid, objectKey, PageBean.TYPE, title, title, hasChildren, WorkflowServiceHelper.getWorkflowStates(rootPage));
                             workflowElement.setAvailableAction(WorkflowServiceHelper.getAvailableActionsForObject((ContentObjectKey) rootPage.getObjectKey(), workflowElement.getWorkflowStates().keySet(), jParams));
-                            result.add(workflowElement) ;
+                            result.add(workflowElement);
                         } else {
                             if (logger.isDebugEnabled()) {
-                                logger.debug("No read access for page") ;
+                                logger.debug("No read access for page");
                             }
                         }
                     }
@@ -174,17 +176,17 @@ public class WorkflowServiceImpl extends JahiaRemoteService implements WorkflowS
             } catch (JahiaException e) {
                 logger.error(e.getMessage(), e);
             }
-            return result ;
+            return result;
 
         // this is the sub content objects case, retrieving separate workflow objects for the given parent
         } else {
-            ContentObject object = null ;
+            ContentObject object = null;
             try {
-                object = JahiaObjectCreator.getContentObjectFromString(parent.getObjectKey()) ;
+                object = JahiaObjectCreator.getContentObjectFromString(parent.getObjectKey());
             } catch (ClassNotFoundException e) {
                 logger.error(e.getMessage(), e);
             }
-            return WorkflowServiceHelper.getSeparateWorkflowChildren(parent, object, true, jParams) ;
+            return WorkflowServiceHelper.getSeparateWorkflowChildren(parent, object, true, jParams);
         }
     }
 
@@ -196,21 +198,21 @@ public class WorkflowServiceImpl extends JahiaRemoteService implements WorkflowS
      * @return a list of flattened elements
      */
     public List<GWTJahiaWorkflowElement> getFlattenedSubElements(GWTJahiaWorkflowElement parent, int depth) {
-        ProcessingContext jParams = retrieveParamBean() ;
-        ContentObject object = null ;
+        ProcessingContext jParams = retrieveParamBean();
+        ContentObject object = null;
         try {
-            object = JahiaObjectCreator.getContentObjectFromString(parent.getObjectKey()) ;
+            object = JahiaObjectCreator.getContentObjectFromString(parent.getObjectKey());
         } catch (ClassNotFoundException e) {
             logger.error(e.getMessage(), e);
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("Getting flattened children for parent " + parent.getObjectKey() + " with depth=" + String.valueOf(depth)) ;
+            logger.debug("Getting flattened children for parent " + parent.getObjectKey() + " with depth=" + String.valueOf(depth));
         }
-        List<GWTJahiaWorkflowElement> result = WorkflowServiceHelper.getSubElementsRec(parent, object, depth, true, jParams) ;
+        List<GWTJahiaWorkflowElement> result = WorkflowServiceHelper.getSubElementsRec(parent, object, depth, true, jParams);
         if (logger.isDebugEnabled()) {
-            logger.debug("Retrieved flattened children for parent " + parent.getObjectKey() + " with depth=" + String.valueOf(depth)) ;
+            logger.debug("Retrieved flattened children for parent " + parent.getObjectKey() + " with depth=" + String.valueOf(depth));
         }
-        return result ;
+        return result;
     }
 
     /**
@@ -225,22 +227,22 @@ public class WorkflowServiceImpl extends JahiaRemoteService implements WorkflowS
      */
     public PagingLoadResult<GWTJahiaWorkflowElement> getPagedFlattenedSubElements(GWTJahiaWorkflowElement parent, int depth, int offset, int pageSize, String sortParameter, boolean isAscending) throws GWTJahiaServiceException {
         try {
-            List<GWTJahiaWorkflowElement> sublist ;
-            ProcessingContext jParams = retrieveParamBean() ;
-            ContentObject object = null ;
+            List<GWTJahiaWorkflowElement> sublist;
+            ProcessingContext jParams = retrieveParamBean();
+            ContentObject object = null;
             try {
-                object = JahiaObjectCreator.getContentObjectFromString(parent.getObjectKey()) ;
+                object = JahiaObjectCreator.getContentObjectFromString(parent.getObjectKey());
             } catch (ClassNotFoundException e) {
                 logger.error(e.getMessage(), e);
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("Getting flattened children for parent " + parent.getObjectKey() + " with depth=" + String.valueOf(depth)) ;
+                logger.debug("Getting flattened children for parent " + parent.getObjectKey() + " with depth=" + String.valueOf(depth));
             }
 
-            List<GWTJahiaWorkflowElement> result = new ArrayList<GWTJahiaWorkflowElement>() ;
+            List<GWTJahiaWorkflowElement> result = new ArrayList<GWTJahiaWorkflowElement>();
             for (GWTJahiaWorkflowElement wfEl: WorkflowServiceHelper.getSubElementsRec(parent, object, depth, true, jParams)) {
                 if (wfEl.isAccessibleInTable()) { // filter hidden pages (no rights except read)
-                    result.add(wfEl) ;
+                    result.add(wfEl);
                 }
             }
 
@@ -248,25 +250,25 @@ public class WorkflowServiceImpl extends JahiaRemoteService implements WorkflowS
                 Collections.sort(result, new GWTJahiaWorkflowElementComparator<GWTJahiaWorkflowElement>(sortParameter, isAscending));
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("Retrieved flattened children for parent " + parent.getObjectKey() + " with depth=" + String.valueOf(depth)) ;
+                logger.debug("Retrieved flattened children for parent " + parent.getObjectKey() + " with depth=" + String.valueOf(depth));
             }
             sublist = new ArrayList<GWTJahiaWorkflowElement>();
             for (int i=offset; i<offset+pageSize; i++) {
                 if (i<result.size()) {
-                    sublist.add(result.get(i)) ;
+                    sublist.add(result.get(i));
                 } else {
-                    break ;
+                    break;
                 }
             }
             return new BasePagingLoadResult<GWTJahiaWorkflowElement>(sublist, offset, result.size());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Failed to retrieve workflow elements\n" + e.toString()) ;
+            throw new GWTJahiaServiceException("Failed to retrieve workflow elements\n" + e.toString());
         }
     }
 
     public List<GWTJahiaLabel> getAvailableActions() {
-        ProcessingContext jParams = retrieveParamBean() ;
+        ProcessingContext jParams = retrieveParamBean();
         return WorkflowServiceHelper.getAvailableActions(jParams.getLocale());
     }
 
@@ -288,7 +290,7 @@ public class WorkflowServiceImpl extends JahiaRemoteService implements WorkflowS
     public void execute(GWTJahiaWorkflowBatch batch) {
         ParamBean jParams = retrieveParamBean();
 
-        final Class jobClass = ActivationJob.class;
+        final Class<? extends BackgroundJob> jobClass = ActivationJob.class;
 
         final JobDetail jobDetail = BackgroundJob.createJahiaJob("Activating", jobClass, jParams);
 
@@ -296,9 +298,9 @@ public class WorkflowServiceImpl extends JahiaRemoteService implements WorkflowS
         for (String action:  batch.getBatch().keySet()) {
             for (String key: batch.getBatch().get(action).keySet()) {
                 try {
-                    actions.add(new WorkflowAction((ContentObjectKey) ContentObjectKey.getInstance(key), batch.getBatch().get(action).get(key), action, batch.getComment())) ;
+                    actions.add(new WorkflowAction((ContentObjectKey) ContentObjectKey.getInstance(key), batch.getBatch().get(action).get(key), action, batch.getComment()));
                 } catch (ClassNotFoundException e) {
-                    logger.error(e.getMessage(), e) ;
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
@@ -321,44 +323,76 @@ public class WorkflowServiceImpl extends JahiaRemoteService implements WorkflowS
     }
 
     public ListLoadResult<GWTJahiaWorkflowHistoryEntry> getHistory(GWTJahiaWorkflowElement item) {
-        ProcessingContext jParams = retrieveParamBean() ;
+        ProcessingContext jParams = retrieveParamBean();
         List<GWTJahiaWorkflowHistoryEntry> l = WorkflowServiceHelper.getHistory(item, jParams);
         return new BaseListLoadResult<GWTJahiaWorkflowHistoryEntry>(l);
     }
 
     public void saveWorkflowManagerState(GWTJahiaWorkflowManagerState state) {
-        getThreadLocalRequest().getSession().setAttribute("workflow.manager.state", state) ;
+        getThreadLocalRequest().getSession().setAttribute("workflow.manager.state", state);
     }
 
     public GWTJahiaWorkflowManagerState getWorkflowManagerState() {
-        GWTJahiaWorkflowManagerState workflowState = (GWTJahiaWorkflowManagerState) getThreadLocalRequest().getSession().getAttribute("workflow.manager.state") ;
+        GWTJahiaWorkflowManagerState workflowState = (GWTJahiaWorkflowManagerState) getThreadLocalRequest().getSession().getAttribute("workflow.manager.state");
         getThreadLocalRequest().getSession().removeAttribute("workflow.manager.state");
         if (workflowState != null) {
-            Map<String, String> titleForObjectKey = new HashMap<String, String>() ;
-            ProcessingContext jParams = retrieveParamBean() ;
+            Map<String, String> titleForObjectKey = new HashMap<String, String>();
+            ProcessingContext jParams = retrieveParamBean();
             for (String objectKey: workflowState.getTitleForObjectKey().keySet()) {
                 try {
-                    ContentObject co = JahiaObjectCreator.getContentObjectFromString(objectKey) ;
-                    String title ;
+                    ContentObject co = JahiaObjectCreator.getContentObjectFromString(objectKey);
+                    String title;
                     if (co != null) {
-                        title = co.getDisplayName(jParams) ;
+                        title = co.getDisplayName(jParams);
                     } else {
-                        title = objectKey ;
+                        title = objectKey;
                     }
                     if (title == null || title.trim().length() == 0) {
                         title = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.display.notitle", jParams.getLocale());
                     }
-                    titleForObjectKey.put(objectKey, title) ;
+                    titleForObjectKey.put(objectKey, title);
                 } catch (ClassNotFoundException e) {
                     logger.error(e.getMessage(), e);
                 }
             }
             workflowState.setTitleForObjectKey(titleForObjectKey);
         } else {
-            workflowState = new GWTJahiaWorkflowManagerState(null, null, null, WorkflowServiceHelper.restoreBatch(retrieveParamBean())) ;
+            workflowState = new GWTJahiaWorkflowManagerState(null, null, null, WorkflowServiceHelper.restoreBatch(retrieveParamBean()));
         }
         workflowState.setAvailableLanguages(getAvailableLanguages());
-        return workflowState ;
+        return workflowState;
+    }
+
+    /**
+     * Retrieve a link to the page corresponding to the given object key.
+     *
+     * @param objectKey the object key
+     * @param compareMode use compare mode if true, use preview mode otherwise
+     * @param languageCode the language to use
+     * @return a link to the page using specified parameters
+     * @throws GWTJahiaServiceException sthg bad happened
+     */
+    public String getPreviewLink(String objectKey, boolean compareMode, String languageCode) throws GWTJahiaServiceException {
+        ProcessingContext ctx = retrieveParamBean();
+        try {
+            ContentObject obj = JahiaObjectCreator.getContentObjectFromString(objectKey) ;
+            int pid = -1;
+            if (obj != null) {
+                pid = obj.getPageID();
+            }
+            if (pid > 0) {
+                if (compareMode) {
+                    return PageLinkComposer.composeCompareUrl(ctx, pid, languageCode);
+                } else {
+                    return PageLinkComposer.composePreviewUrl(ctx, pid, languageCode);
+                }
+            } else {
+                throw new GWTJahiaServiceException("No associated link was found for key " + objectKey + " in " + languageCode);
+            }
+        } catch (ClassNotFoundException e) {
+            logger.error(e.toString(), e);
+            throw new GWTJahiaServiceException("An error occured :\n" + e.toString());
+        }
     }
 
 }

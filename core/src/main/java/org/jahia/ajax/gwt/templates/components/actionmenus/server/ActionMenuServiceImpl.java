@@ -59,7 +59,7 @@ import java.util.*;
  */
 public class ActionMenuServiceImpl extends JahiaRemoteService implements ActionMenuService {
 
-    private final static Logger logger = Logger.getLogger(ActionMenuServiceImpl.class) ;
+    private final static Logger logger = Logger.getLogger(ActionMenuServiceImpl.class);
 
     public GWTJahiaGlobalState getGlobalStateForObject(
             GWTJahiaPageContext page, String objectKey, String wfKey,
@@ -98,12 +98,10 @@ public class ActionMenuServiceImpl extends JahiaRemoteService implements ActionM
                         acl = getAclDiffState(page, key.getObjectKey());
                     }
                     if (timebasepublishing) {
-                        tbp = getTimebasedPublishingState(page, key
-                                .getObjectKey());
+                        tbp = getTimebasedPublishingState(page, key.getObjectKey());
                     }
                     if (integrity) {
-                        integrityState = getIntegrityState(page, key
-                                .getObjectKey());
+                        integrityState = getIntegrityState(page, key.getObjectKey());
                     }
                 }
 
@@ -122,75 +120,74 @@ public class ActionMenuServiceImpl extends JahiaRemoteService implements ActionM
         return states;
     }
 
-    private GWTJahiaIntegrityState getIntegrityState(GWTJahiaPageContext page,
-            String objectKey) {
+    private GWTJahiaIntegrityState getIntegrityState(GWTJahiaPageContext page, String objectKey) {
         return IntegrityHelper.getState(objectKey, retrieveParamBean(page));
     }
 
     public GWTJahiaWorkflowState getWorkflowStateForObject(GWTJahiaPageContext page, String objectKey, String wfKey, String languageCode) {
-        return WorkflowHelper.getWorkflowStateForObject(retrieveParamBean(page), wfKey, languageCode) ;
+        return WorkflowHelper.getWorkflowStateForObject(retrieveParamBean(page), wfKey, languageCode);
     }
 
     public GWTJahiaTimebasedPublishingState getTimebasedPublishingState(GWTJahiaPageContext page, String objectKey) {
-        return TimebasedPublishingHelper.getTimebasePublishingState(getThreadLocalRequest(), retrieveParamBean(page), objectKey) ;
+        return TimebasedPublishingHelper.getTimebasePublishingState(getThreadLocalRequest(), retrieveParamBean(page), objectKey);
     }
 
     public GWTJahiaTimebasedPublishingDetails getTimebasedPublishingDetails(GWTJahiaPageContext page, GWTJahiaTimebasedPublishingState state) {
-        return TimebasedPublishingHelper.getTimebasedPublishingDetails(retrieveParamBean(page), state) ;
+        return TimebasedPublishingHelper.getTimebasedPublishingDetails(retrieveParamBean(page), state);
     }
 
     public GWTJahiaAclDiffState getAclDiffState(GWTJahiaPageContext page, String objectKey) {
         GWTJahiaAclDiffState state = null;
         try {
-            state = AclDiffHelper.getAclDiffState(getThreadLocalRequest(), retrieveParamBean(page), objectKey) ;
+            state = AclDiffHelper.getAclDiffState(getThreadLocalRequest(), retrieveParamBean(page), objectKey);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        return state ;
+        return state;
     }
 
     public GWTJahiaAclDiffDetails getAclDiffDetails(GWTJahiaPageContext page, String objectKey) {
         GWTJahiaAclDiffDetails details = null;
         try {
-            details = AclDiffHelper.getAclDiffDetails(retrieveParamBean(page), objectKey) ;
+            details = AclDiffHelper.getAclDiffDetails(retrieveParamBean(page), objectKey);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        return details ;
+        return details;
     }
 
     public String isActionMenuAvailable(GWTJahiaPageContext page, String objectKey, String bundleName, String labelKey) {
-        ProcessingContext processingContext = retrieveParamBean(page) ;
-        return ActionMenuHelper.isActionMenuAvailable(processingContext, page, objectKey, bundleName, labelKey) ;
+        ProcessingContext processingContext = retrieveParamBean(page);
+        return ActionMenuHelper.isActionMenuAvailable(processingContext, page, objectKey, bundleName, labelKey);
     }
 
     public List<GWTJahiaAction> getAvailableActions(final GWTJahiaPageContext page, final String objectKey, final String bundleName, final String namePostFix) {
-        final ProcessingContext jParams = retrieveParamBean(page) ;
-        HttpSession session = getThreadLocalRequest().getSession() ;
-        return ActionMenuHelper.getAvailableActions(session, jParams, page, objectKey, bundleName, namePostFix) ;
+        final ProcessingContext jParams = retrieveParamBean(page);
+        HttpSession session = getThreadLocalRequest().getSession();
+        return ActionMenuHelper.getAvailableActions(session, jParams, page, objectKey, bundleName, namePostFix);
     }
 
     public Boolean clipboardIsEmpty() {
-        Object clipboardContent = getThreadLocalRequest().getSession().getAttribute(GWTJahiaAction.CLIPBOARD_CONTENT) ;
-        return clipboardContent == null ;
+        Object clipboardContent = getThreadLocalRequest().getSession().getAttribute(GWTJahiaAction.CLIPBOARD_CONTENT);
+        return clipboardContent == null;
     }
 
     public Boolean clipboardCopy(GWTJahiaPageContext page, String objectKey) {
-        HttpSession session = getThreadLocalRequest().getSession() ;
-        final ProcessingContext jParams = retrieveParamBean(page) ;
-        return ClipboardHelper.clipboardCopy(session, jParams, objectKey) ;
+        HttpSession session = getThreadLocalRequest().getSession();
+        final ProcessingContext jParams = retrieveParamBean(page);
+        return ClipboardHelper.clipboardCopy(session, jParams, objectKey);
     }
 
     public Boolean clipboardPaste(GWTJahiaPageContext page, String destObjectKey) {
-        final HttpSession session = getThreadLocalRequest().getSession() ;
-        final ProcessingContext processingContext  = retrieveParamBean(page) ;
-        return ClipboardHelper.clipboardPaste(session, processingContext,  destObjectKey, false) ;
+        final HttpSession session = getThreadLocalRequest().getSession();
+        final ProcessingContext processingContext = retrieveParamBean(page);
+        return ClipboardHelper.clipboardPaste(session, processingContext, destObjectKey, false);
     }
 
     public Boolean clipboardPasteReference(GWTJahiaPageContext page, String destObjectKey) {
-        final HttpSession session = getThreadLocalRequest().getSession() ;
-        final ProcessingContext processingContext  = retrieveParamBean(page) ;
-        return ClipboardHelper.clipboardPaste(session, processingContext,  destObjectKey, true) ;
+        final HttpSession session = getThreadLocalRequest().getSession();
+        final ProcessingContext processingContext = retrieveParamBean(page);
+        return ClipboardHelper.clipboardPaste(session, processingContext, destObjectKey, true);
     }
 
     public void hack(GWTJahiaAction action) {

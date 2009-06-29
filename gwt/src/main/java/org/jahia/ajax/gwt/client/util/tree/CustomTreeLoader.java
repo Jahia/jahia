@@ -43,7 +43,7 @@ import java.util.List;
  */
 public abstract class CustomTreeLoader<M extends BaseTreeModel> extends BaseTreeLoader<M> {
 
-    private boolean openPreviousPaths = true ;
+    protected boolean openPreviousPaths = true ;
 
     /**
      * Constructor with automatic restore of previous state

@@ -45,8 +45,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowBatch;
 import org.jahia.ajax.gwt.client.service.workflow.WorkflowService;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
-import org.jahia.ajax.gwt.client.widget.workflow.WorkflowManager;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 
 /**
@@ -67,17 +67,17 @@ public class WorkflowExecuteWindow extends Window {
         super();
         this.linker = linker ;
         setLayout(new FormLayout());
-        setHeading(WorkflowManager.getResource("wf_executeBatch"));
+        setHeading(Messages.getResource("wf_executeBatch"));
         setResizable(false);
         setModal(true);
 
         ButtonBar buttons = new ButtonBar() ;
-        Button cancel = new Button(WorkflowManager.getResource("wf_cancel"), new SelectionListener<ComponentEvent>() {
+        Button cancel = new Button(Messages.getResource("wf_cancel"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 hide() ;
             }
         }) ;
-        execute = new Button(WorkflowManager.getResource("wf_execute"), new SelectionListener<ComponentEvent>() {
+        execute = new Button(Messages.getResource("wf_execute"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 execute() ;
             }
@@ -90,9 +90,9 @@ public class WorkflowExecuteWindow extends Window {
         setButtonBar(buttons);
 
         title = new TextField() ;
-        title.setFieldLabel(WorkflowManager.getResource("wf_title"));
+        title.setFieldLabel(Messages.getResource("wf_title"));
         comments = new TextArea();
-        comments.setFieldLabel(WorkflowManager.getResource("wf_comment"));
+        comments.setFieldLabel(Messages.getResource("wf_comment"));
         add(title) ;
         add(comments);
     }

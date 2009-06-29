@@ -97,7 +97,4 @@ public class WorkflowManager extends TriPanelBrowserViewport {
         });
     }
 
-    public static String getResource(String key) {
-        return Messages.getResource(key) ;
-    }
 }

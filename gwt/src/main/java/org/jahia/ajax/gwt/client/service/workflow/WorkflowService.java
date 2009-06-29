@@ -68,13 +68,13 @@ public interface WorkflowService extends RemoteService {
         }
     }
 
-    public List<String> getAvailableLanguages() ;
+    public List<String> getAvailableLanguages();
 
     public List<GWTJahiaWorkflowElement> getSubElements(GWTJahiaWorkflowElement parent) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaWorkflowElement> getFlattenedSubElements(GWTJahiaWorkflowElement parent, int depth) ;
+    public List<GWTJahiaWorkflowElement> getFlattenedSubElements(GWTJahiaWorkflowElement parent, int depth);
 
-    public PagingLoadResult<GWTJahiaWorkflowElement> getPagedFlattenedSubElements(GWTJahiaWorkflowElement parent, int depth, int offset, int pageSize, String sortParameter, boolean isAscending) throws GWTJahiaServiceException ;
+    public PagingLoadResult<GWTJahiaWorkflowElement> getPagedFlattenedSubElements(GWTJahiaWorkflowElement parent, int depth, int offset, int pageSize, String sortParameter, boolean isAscending) throws GWTJahiaServiceException;
 
     public List<GWTJahiaLabel> getAvailableActions();
 
@@ -90,6 +90,8 @@ public interface WorkflowService extends RemoteService {
 
     public void saveWorkflowManagerState(GWTJahiaWorkflowManagerState state);
 
-    public GWTJahiaWorkflowManagerState getWorkflowManagerState() ;
+    public GWTJahiaWorkflowManagerState getWorkflowManagerState();
+    
+    public String getPreviewLink(String objectKey, boolean compareMode, String languageCode) throws GWTJahiaServiceException;
 
 }

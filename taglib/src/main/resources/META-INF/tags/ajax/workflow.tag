@@ -115,4 +115,9 @@
 <internal:gwtResourceBundle resourceName="org.jahia.engines.workflow.paging.refresh"
                             aliasResourceName="wf_pagingRefresh"/>
 
+<internal:gwtResourceBundle resourceName="operationMode.preview"
+                            aliasResourceName="wf_preview"/>
+<internal:gwtResourceBundle resourceName="operationMode.compare"
+                            aliasResourceName="wf_compare"/>
+
 

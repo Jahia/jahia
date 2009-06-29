@@ -61,6 +61,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.service.workflow.WorkflowService;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowManagerState;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.*;
 
@@ -88,7 +89,7 @@ public class WorkflowToolbar extends TopBar {
     public WorkflowToolbar() {
         m_component = new ToolBar() ;
 
-        chooseAction = new TextToolItem(WorkflowManager.getResource("wf_chooseAction")) ;
+        chooseAction = new TextToolItem(Messages.getResource("wf_chooseAction")) ;
         chooseAction.setIconStyle("wf-action");
         actionsMenu = new Menu() ;
         chooseAction.setMenu(actionsMenu);
@@ -97,7 +98,7 @@ public class WorkflowToolbar extends TopBar {
          // this allows to align remaining items right
         m_component.add(new FillToolItem()) ;
 
-        TextToolItem addToBatch = new TextToolItem(WorkflowManager.getResource("wf_addToBatch"));
+        TextToolItem addToBatch = new TextToolItem(Messages.getResource("wf_addToBatch"));
         addToBatch.setIconStyle("wf-add");
         addToBatch.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
@@ -106,10 +107,10 @@ public class WorkflowToolbar extends TopBar {
                     if (checked.size() > 0) {
                         addToBatch();
                     } else {
-                        Window.alert(WorkflowManager.getResource("wf_nothingChecked"));
+                        Window.alert(Messages.getResource("wf_nothingChecked"));
                     }
                 } else {
-                    Window.alert(WorkflowManager.getResource("wf_noAction")) ;
+                    Window.alert(Messages.getResource("wf_noAction")) ;
                 }
             }
         });
@@ -168,7 +169,7 @@ public class WorkflowToolbar extends TopBar {
         new WorkflowBatchViewer(batch, ((WorkflowTable) getLinker().getTopRightObject()).getTitleForObjectKey(), null, false){
             public void buildContextMenu(final Grid<ReportGrid.GWTReportElement> grid) {
                 Menu contextMenu = new Menu() ;
-                final MenuItem removeAction = new MenuItem(WorkflowManager.getResource("wf_removeAction"), new SelectionListener<ComponentEvent>() {
+                final MenuItem removeAction = new MenuItem(Messages.getResource("wf_removeAction"), new SelectionListener<ComponentEvent>() {
                     public void componentSelected(ComponentEvent event) {
                         ReportGrid.GWTReportElement elem = grid.getSelectionModel().getSelectedItem() ;
                         if (elem != null) {
@@ -324,7 +325,7 @@ public class WorkflowToolbar extends TopBar {
             }
         }
         if (!selectionDone) {
-            chooseAction.setText(WorkflowManager.getResource("wf_chooseAction"));
+            chooseAction.setText(Messages.getResource("wf_chooseAction"));
             chooseAction.setIconStyle("wf-action");
         }
     }

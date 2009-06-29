@@ -557,6 +557,13 @@ fm-globalMashupRepository {
     background-image: url( ../../../css/images/andromeda/icons/briefcase_view.png ) !important;
 }
 
+.wf-preview {
+    background-image: url( ../images/min/preview.png ) !important;
+}
+
+.wf-compare {
+    background-image: url( ../images/min/compare.png ) !important;
+}
 
 /* content object icons */
 .icon-ContentPage {

@@ -32,8 +32,8 @@
 package org.jahia.ajax.gwt.client.widget.workflow;
 
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomBar;
-import org.jahia.ajax.gwt.client.widget.workflow.WorkflowManager;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
@@ -55,19 +55,19 @@ import com.extjs.gxt.ui.client.Style;
     public WorkflowStatusBar() {
         m_component = new ButtonBar() ;
 
-        Button batch = new Button(WorkflowManager.getResource("wf_showBatch")) ;
+        Button batch = new Button(Messages.getResource("wf_showBatch")) ;
         batch.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent e) {
                 ((WorkflowToolbar) getLinker().getTopObject()).showBatchReport();
             }
         });
-        Button ok = new Button(WorkflowManager.getResource("wf_ok")) ;
+        Button ok = new Button(Messages.getResource("wf_ok")) ;
         ok.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent e) {
                 showExecuteWindow();
             }
         });
-        Button cancel = new Button(WorkflowManager.getResource("wf_cancel")) ;
+        Button cancel = new Button(Messages.getResource("wf_cancel")) ;
         cancel.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent e) {
                 WindowUtil.close();

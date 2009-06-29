@@ -476,7 +476,12 @@
     } else if (theField.getRawValue().startsWith("<jahia-resource")) {
         val = ResourceBundleMarker.getValue(theField.getRawValue(), jParams.getLocale());
     } else {
-        val = JahiaTools.replacePattern(theField.getValue(), "\"", "\\\"");
+        // IE6 don't handle &apos;
+        String valTmp = theField.getValue();
+        if (jParams.getUserAgent().indexOf("MSIE 6.0") > 0) {
+             valTmp = JahiaTools.replacePattern(valTmp, "&apos;", "'");
+        }
+        val = JahiaTools.replacePattern(valTmp, "\"", "\\\"");
     }
     if (propDef.getSelectorOptions().containsKey("multiline")) {
 %>

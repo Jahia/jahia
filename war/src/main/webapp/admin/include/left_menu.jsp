@@ -56,7 +56,7 @@
             </c:if>
             <c:if test="${item.enabled}">
                 <c:if test="${smallIconAvailable}">
-                    <a href="${item.link}" ${fn:indexOf(item.link, 'http://') == 0 || fn:indexOf(item.link, 'https://') == 0 ? 'target="_blank"' : ''} class="${item.selected ? ' selected' : ''}" style="background: url(${iconUrl}) no-repeat; background-position: 2px 2px;"><c:out value="${label}"/></a>
+                    <a href="${item.link}" ${fn:indexOf(item.link, 'http://') == 0 || fn:indexOf(item.link, 'https://') == 0 ? 'target="_blank"' : ''} class="${item.selected ? ' selected' : ''}" style="background: ${item.selected ? '#DBEDF4' : ''} url(${iconUrl}) no-repeat; background-position: 2px 2px;"><c:out value="${label}"/></a>
                 </c:if>
                 <c:if test="${!smallIconAvailable}">
                     <a href="${item.link}" ${fn:indexOf(item.link, 'http://') == 0 || fn:indexOf(item.link, 'https://') == 0 ? 'target="_blank"' : ''} class="set-${param.mode} ico-${param.mode}-${item.name}${item.selected ? ' selected' : ''}"><c:out value="${label}"/></a>

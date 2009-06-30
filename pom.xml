@@ -19,6 +19,12 @@
     <jahia.package.version>6.1-SNAPSHOT</jahia.package.version>
   </properties>
 
+  <scm>
+    <connection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</connection>
+    <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</developerConnection>
+    <url>http://10.8.37.111/svn/jahia/trunk</url>
+  </scm>
+  
   <repositories>
     <repository>
       <releases>
@@ -184,6 +190,25 @@
           <!-- put your configurations here -->
           <source>1.5</source>
           <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.0-beta-3</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <doCheck>false</doCheck>
+          <doUpdate>false</doUpdate>
+          <useLastCommittedRevision>true</useLastCommittedRevision>
+          <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
         </configuration>
       </plugin>
     </plugins>

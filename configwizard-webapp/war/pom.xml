@@ -15,11 +15,6 @@
             <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/</url>
         </repository>
     </repositories>
-    <scm>
-        <connection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</connection>
-        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</developerConnection>
-        <url>http://10.8.37.111/svn/jahia/trunk</url>
-    </scm>
     <name>New configuration wizard WAR module</name>
     <dependencies>
         <dependency>
@@ -189,24 +184,6 @@
     <build>
         <finalName>config</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>maven-buildnumber-plugin</artifactId>
-                <version>0.9.6</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <doCheck>false</doCheck>
-                    <doUpdate>false</doUpdate>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>com.totsp.gwt</groupId>
                 <artifactId>maven-googlewebtoolkit2-plugin</artifactId>

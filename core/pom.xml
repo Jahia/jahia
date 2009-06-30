@@ -48,11 +48,6 @@
         </repository>
 
     </repositories>
-    <scm>
-        <connection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</connection>
-        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</developerConnection>
-        <url>http://10.8.37.111/svn/jahia/trunk</url>
-    </scm>
     <pluginRepositories>
         <pluginRepository>
             <id>codehaus-plugins</id>
@@ -1259,23 +1254,6 @@
                 <version>2.4.2</version>
                 <configuration>
                     <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>maven-buildnumber-plugin</artifactId>
-                <version>0.9.6</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <doCheck>false</doCheck>
-                    <doUpdate>false</doUpdate>
                 </configuration>
             </plugin>
             <plugin>

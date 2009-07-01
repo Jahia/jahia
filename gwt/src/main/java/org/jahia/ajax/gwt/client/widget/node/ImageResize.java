@@ -48,7 +48,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.node.ExistingNodeException;
+import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
 /**
@@ -156,7 +156,7 @@ public class ImageResize extends Window {
     private void resizeImage(final String path, final String targetName, final int width, final int height, final boolean force) {
          JahiaNodeService.App.getInstance().resizeImage(path, targetName, width, height, force, new AsyncCallback() {
              public void onFailure(Throwable throwable) {
-                 if (throwable instanceof ExistingNodeException) {
+                 if (throwable instanceof ExistingFileException) {
                      if (com.google.gwt.user.client.Window.confirm(Messages.getResource("fm_alreadyExists") + "\n" + Messages.getResource("fm_confOverwrite"))) {
                          resizeImage(path, targetName, width, height, true);
                      }

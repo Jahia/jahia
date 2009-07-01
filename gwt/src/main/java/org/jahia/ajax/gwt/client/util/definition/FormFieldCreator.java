@@ -114,7 +114,7 @@ public class FormFieldCreator {
                     ((DateField) field).setHideTrigger(propDefinition.isProtected());
                     break;
                 /*case GWTJahiaNodeSelectorType.PORTLET:
-                    field = new ContentPickerField("/content/mashups", "jnt:portlet","","","","",false);
+                    field = new FilePickerField("/content/mashups", "jnt:portlet","","","","",false);
                     break;
                 case GWTJahiaNodeSelectorType.PORTLETDEFINITION:
                     field = new PortletDefinitionField();
@@ -128,7 +128,7 @@ public class FormFieldCreator {
                     field = new CategoryField();
                     break;
                 /*case GWTJahiaNodeSelectorType.FILE:
-                    field = new ContentPickerField("/", "","","","","",false);
+                    field = new FilePickerField("/", "","","","","",false);
                     break;*/
                 case GWTJahiaNodeSelectorType.CHOICELIST:
                     field = new SimpleComboBox<GWTJahiaNodeType>();

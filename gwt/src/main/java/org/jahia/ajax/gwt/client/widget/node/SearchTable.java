@@ -92,7 +92,7 @@ public class SearchTable extends TopRightComponent {
         table.addListener(Events.RowClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent event) {
                 getLinker().onTableItemSelected();
-				((ContentPickerContainer) getLinker().getTopRightObject()).handleNewSelection();
+				((FilePickerContainer) getLinker().getTopRightObject()).handleNewSelection();
             }
         });
         m_component.add(table) ;

@@ -38,25 +38,10 @@
 	<head>
 		<title><internal:message key="org.jahia.engines.filemanager.Filemanager_Engine.name.label"/></title>
 		<internal:gwtInit standalone="true"/>
-		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager" />
-        <link rel="stylesheet" type="text/css" media="screen" href="../shared/javascript/uvumi-crop.css"/>
-        <style type="text/css" >
-        .yellowSelection{
-        border: 2px dotted #FFB82F;
-        }
-
-        .blueMask{
-        background-color:#00f;
-        cursor:pointer;
-        }
-        </style>
-
-        <script type="text/javascript" src="../shared/javascript/mootools-for-crop.js"> </script>
-        <script type="text/javascript" src="../shared/javascript/UvumiCrop-compressed.js"> </script>
-        <script type="text/javascript" > var crop=0; 	</script>
+		<internal:gwtImport module="org.jahia.ajax.gwt.module.filemanager.FileManager" />
 	</head>
 	<body>
-		<internal:contentManager startPath="" enginemode="true" conf="filemanager"/>
+		<internal:fileManager startPath="" enginemode="true" conf="filemanager"/>
         <internal:gwtGenerateDictionary/>        
 	</body>
 </html>

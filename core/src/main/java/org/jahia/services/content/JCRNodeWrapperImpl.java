@@ -301,7 +301,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 }
             }
 
-            JahiaFile file = new JahiaFile (-1, // contentmanager id
+            JahiaFile file = new JahiaFile (-1, // filemanager id
                     -1, // folder id
                     owner,
                     uri, // realname
@@ -329,7 +329,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 logger.debug("Can't get orientation",e);
             }
         } else {
-            JahiaFile file = new JahiaFile (-1, // contentmanager id
+            JahiaFile file = new JahiaFile (-1, // filemanager id
                     -1, // folder id
                     "", // upload user
                     "", // realname

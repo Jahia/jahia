@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.workflow;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.client.service.workflow.WorkflowService;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.WindowCloseListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;

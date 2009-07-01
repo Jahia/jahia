@@ -52,10 +52,10 @@
         }
     </style>
     <internal:gwtInit standalone="true"/>
-    <internal:gwtImport module="org.jahia.ajax.gwt.module.filemanager.FileManager"/>
+    <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
 </head>
 <body>
-<internal:fileManager enginemode="true"
+<internal:contentManager enginemode="true"
                       rootPath="/content/mashups"
                       startPath="/content/mashups"
                       nodeTypes="jnt:portlet"

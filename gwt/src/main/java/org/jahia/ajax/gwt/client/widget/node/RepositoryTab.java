@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.nodes.actions.FileActions;
+import org.jahia.ajax.gwt.client.util.nodes.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeBinder;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
@@ -72,12 +72,12 @@ public class RepositoryTab extends ContentPanel {
     private String repositoryType ;
     private CustomTreeLoader<GWTJahiaNode> loader ;
     private TreeStore<GWTJahiaNode> store ;
-    private FolderTree folderTreeContainer ;
+    private ContentTrees contentTreeContainer;
     private MyTreeBinder<GWTJahiaNode> binder ;
     private Tree m_tree ;
     //private PreviousPathsOpener<GWTJahiaNode> previousPathsOpener = null ;
     private TreeItem lastSelection = null ;
-    private JahiaNodeServiceAsync nodeService ;
+    private JahiaNodeServiceAsync nodeService;
 
     /**
      * Constructor
@@ -88,12 +88,12 @@ public class RepositoryTab extends ContentPanel {
      * @param label the repository label
      * @param config the configuration to use
      */
-    public RepositoryTab(FolderTree container, final JahiaNodeServiceAsync service, String type, String label, final ManagerConfiguration config) {
+    public RepositoryTab(ContentTrees container, final JahiaNodeServiceAsync service, String type, String label, final ManagerConfiguration config) {
         super(new FitLayout()) ;
         setBorders(false);
         setBodyBorder(false);
         getHeader().setBorders(false);
-        folderTreeContainer = container ;
+        contentTreeContainer = container ;
         nodeService = service ;
         repositoryType = type ;
         getHeader().setIconStyle("fm-" + repositoryType);
@@ -183,7 +183,7 @@ public class RepositoryTab extends ContentPanel {
 
             @Override
             protected void handleAppendDrop(DNDEvent event, TreeItem item) {
-                FileActions.move(getLinker(), (List<GWTJahiaNode>) event.data, (GWTJahiaNode) item.getModel());
+                ContentActions.move(getLinker(), (List<GWTJahiaNode>) event.data, (GWTJahiaNode) item.getModel());
                 super.handleAppendDrop(event, item);
             }
         };
@@ -301,7 +301,7 @@ public class RepositoryTab extends ContentPanel {
     }
 
     private BrowserLinker getLinker() {
-        return folderTreeContainer.getLinker() ;
+        return contentTreeContainer.getLinker() ;
     }
 
     /**

@@ -41,14 +41,14 @@ import java.util.ArrayList;
 public class FileActionItemGroup {
 
     private String groupLabel;
-    private List<FileActionItemItf> items ;
+    private List<ContentActionItemItf> items ;
 
     public FileActionItemGroup(String name) {
         groupLabel = name ;
-        items = new ArrayList<FileActionItemItf>() ;
+        items = new ArrayList<ContentActionItemItf>() ;
     }
 
-    public void addItem(FileActionItemItf item) {
+    public void addItem(ContentActionItemItf item) {
         items.add(item) ;
     }
 
@@ -56,7 +56,7 @@ public class FileActionItemGroup {
         return groupLabel;
     }
 
-    public List<FileActionItemItf> getItems() {
+    public List<ContentActionItemItf> getItems() {
         return items;
     }
 }

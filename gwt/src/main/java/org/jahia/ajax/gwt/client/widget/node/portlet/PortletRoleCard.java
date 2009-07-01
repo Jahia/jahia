@@ -45,7 +45,6 @@ import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * User: ktlili

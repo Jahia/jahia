@@ -40,7 +40,7 @@ import java.util.ArrayList;
  */
 public class ManagerConfiguration {
 
-    private List<FileActionItemItf> items;
+    private List<ContentActionItemItf> items;
     private List<FileActionItemGroup> groupedItems;
 
     private boolean enableTextMenu;
@@ -64,14 +64,14 @@ public class ManagerConfiguration {
     private boolean displayDate = true;
 
     public ManagerConfiguration() {
-        items = new ArrayList<FileActionItemItf>();
+        items = new ArrayList<ContentActionItemItf>();
         groupedItems = new ArrayList<FileActionItemGroup>();
         tableColumns = new ArrayList<String>();
         accordionPanels = new ArrayList<String>();
         tabs = new ArrayList<String>();
     }
 
-    public void addItem(FileActionItemItf item) {
+    public void addItem(ContentActionItemItf item) {
         items.add(item);
     }
 
@@ -107,7 +107,7 @@ public class ManagerConfiguration {
         this.hideLeftPanel = hide;
     }
 
-    public List<FileActionItemItf> getItems() {
+    public List<ContentActionItemItf> getItems() {
         return items;
     }
 

@@ -90,7 +90,7 @@ public class JahiaFileFieldWrapper extends JahiaField implements JahiaAllowApply
 
 
         JahiaFileField fField;
-        JahiaFile file = new JahiaFile(-1, // filemanager id
+        JahiaFile file = new JahiaFile(-1, // contentmanager id
                 -1, // folder id
                 "", // upload user
                 "", // realname
@@ -180,7 +180,7 @@ public class JahiaFileFieldWrapper extends JahiaField implements JahiaAllowApply
 //                params.add("actionFileDownload");
 //                params.add(this);
 //                dUrl = ((Filemanager_Engine)EnginesRegistry.getInstance().
-//                    getEngine("filemanager")).renderLink(jParams, params);
+//                    getEngine("contentmanager")).renderLink(jParams, params);
 //            }
 //
 //            fField.setDownloadUrl(dUrl);

@@ -1,0 +1,5 @@
+
+<module>
+    <inherits name="org.jahia.ajax.gwt.JahiaGWT"/>
+    <entry-point class='org.jahia.ajax.gwt.module.contentpicker.client.ContentPickerEntryPoint'/>
+</module>

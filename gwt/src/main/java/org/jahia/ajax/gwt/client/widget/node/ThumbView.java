@@ -53,7 +53,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.util.nodes.actions.FileActions;
+import org.jahia.ajax.gwt.client.util.nodes.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
@@ -165,8 +165,8 @@ public class ThumbView extends TopRightComponent {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
                 getLinker().onTableItemSelected();
                 TopRightComponent topRight = getLinker().getTopRightObject() ;
-                if (topRight instanceof FilePickerContainer) {
-                    ((FilePickerContainer) topRight).handleNewSelection();
+                if (topRight instanceof ContentPickerContainer) {
+                    ((ContentPickerContainer) topRight).handleNewSelection();
                 }
             }
         });
@@ -180,7 +180,7 @@ public class ThumbView extends TopRightComponent {
                             if (selected.isDisplayable()) {
                                 ImagePopup.popImage(selected);
                             } else {
-                                FileActions.download(getLinker());
+                                ContentActions.download(getLinker());
                             }
                         }
                     } else {

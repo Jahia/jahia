@@ -32,7 +32,7 @@
 package org.jahia.ajax.gwt.client.widget.node;
 
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
-import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
+import org.jahia.ajax.gwt.client.service.node.ExistingNodeException;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
@@ -113,7 +113,7 @@ public class ImageRotate extends Window {
     private void rotateImage(final String path, final String target, final boolean clockwise, boolean force) {
          JahiaNodeService.App.getInstance().rotateImage(path, target, clockwise, force, new AsyncCallback() {
              public void onFailure(Throwable throwable) {
-                 if (throwable instanceof ExistingFileException) {
+                 if (throwable instanceof ExistingNodeException) {
                     if (com.google.gwt.user.client.Window.confirm(Messages.getResource("fm_alreadyExists") + "\n"+ Messages.getResource("fm_confOverwrite"))) {
                          rotateImage(path, target, clockwise, true);
                      }

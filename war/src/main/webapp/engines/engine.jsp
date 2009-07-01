@@ -113,7 +113,7 @@ static {
   includes.setProperty("select_page",                         "/engines/selectpage/select_page.jsp");
   includes.setProperty("selectPage_close",                    "/engines/selectpage/close.jsp");
 
-  // filemanager engine
+  // contentmanager engine
   includes.setProperty("helpGed",                             "/engines/filemanager/helpGed.jsp");
   includes.setProperty("ajaxfilemanager",                     "/engines/filemanager/AjaxFileManager.jsp");
   includes.setProperty("filemanager_fileupload",              "/engines/filemanager/fileupload.jsp");

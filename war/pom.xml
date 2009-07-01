@@ -173,14 +173,15 @@
                                 <value>org.jahia.ajax.gwt.template.mediagallery.live.Live</value>
                                 <value>org.jahia.ajax.gwt.template.opensearch.edit.Edit</value>
                                 <value>org.jahia.ajax.gwt.template.opensearch.live.Live</value>
+                                
                                 <value>org.jahia.ajax.gwt.module.acleditor.ACLEditor</value>
                                 <value>org.jahia.ajax.gwt.module.admin.Admin</value>
                                 <value>org.jahia.ajax.gwt.module.categorymanager.CategoryManager</value>
                                 <value>org.jahia.ajax.gwt.module.categorypicker.CategoryPicker</value>
+                                <value>org.jahia.ajax.gwt.module.contentmanager.ContentManager</value>
+                                <value>org.jahia.ajax.gwt.module.contentpicker.ContentPicker</value>
                                 <value>org.jahia.ajax.gwt.module.definition.ContentDefinition</value>
                                 <value>org.jahia.ajax.gwt.module.engines.Engines</value>
-                                <value>org.jahia.ajax.gwt.module.filemanager.FileManager</value>
-                                <value>org.jahia.ajax.gwt.module.filepicker.FilePicker</value>
                                 <value>org.jahia.ajax.gwt.module.jobreport.JobReport</value>
                                 <value>org.jahia.ajax.gwt.module.pagepicker.PagePicker</value>
                                 <value>org.jahia.ajax.gwt.module.pdisplay.ProcessDisplay</value>

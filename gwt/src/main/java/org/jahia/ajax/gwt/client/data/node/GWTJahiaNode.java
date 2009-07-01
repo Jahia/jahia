@@ -54,6 +54,7 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
     private String url;
     private boolean hasChildren = false;
     private boolean hasFolderChildren = false;
+    private boolean portlet = false;
     private String normalizedName = null;
     private int width = 0 ;
     private int height = 0 ;
@@ -338,5 +339,13 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
 
     public void setSortInfo(SortInfo sortInfo) {
         this.sortInfo = sortInfo ;
+    }
+
+    public boolean isPortlet() {
+        return portlet;
+    }
+
+    public void setPortlet(boolean portlet) {
+        this.portlet = portlet;
     }
 }

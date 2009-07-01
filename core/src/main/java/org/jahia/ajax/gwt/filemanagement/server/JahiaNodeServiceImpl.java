@@ -44,7 +44,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
+import org.jahia.ajax.gwt.client.service.node.ExistingNodeException;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
@@ -142,7 +142,7 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
 
     public void checkExistence(String path) throws GWTJahiaServiceException {
         if (FileManagerWorker.checkExistence(path, getUser())) {
-            throw new ExistingFileException(path);
+            throw new ExistingNodeException(path);
         }
     }
 
@@ -246,7 +246,7 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
         try {
             JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
             if (FileManagerWorker.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
-                throw new ExistingFileException("The file " + target + " already exists.");
+                throw new ExistingNodeException("The file " + target + " already exists.");
             }
 
             File tmp = File.createTempFile("image", "tmp");
@@ -265,7 +265,7 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
             node.getParent().save();
             tmp.delete();
             f.delete();
-        } catch (ExistingFileException e) {
+        } catch (ExistingNodeException e) {
             throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -278,7 +278,7 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
         try {
             JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
             if (FileManagerWorker.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
-                throw new ExistingFileException("The file " + target + " already exists.");
+                throw new ExistingNodeException("The file " + target + " already exists.");
             }
 
             File tmp = File.createTempFile("image", "tmp");
@@ -295,7 +295,7 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
             node.getParent().save();
             tmp.delete();
             f.delete();
-        } catch (ExistingFileException e) {
+        } catch (ExistingNodeException e) {
             throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -309,7 +309,7 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
         try {
             JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
             if (FileManagerWorker.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
-                throw new ExistingFileException("The file " + target + " already exists.");
+                throw new ExistingNodeException("The file " + target + " already exists.");
             }
 
             File tmp = File.createTempFile("image", "tmp");
@@ -330,7 +330,7 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
             node.getParent().save();
             tmp.delete();
             f.delete();
-        } catch (ExistingFileException e) {
+        } catch (ExistingNodeException e) {
             throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

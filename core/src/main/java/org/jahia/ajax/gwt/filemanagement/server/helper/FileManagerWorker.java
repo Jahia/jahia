@@ -586,6 +586,7 @@ public class FileManagerWorker {
         if (f.isFile() || f.isPortlet()) {
             n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), f.getNodeTypes(), inherited, aclContext, f.getFileContent().getContentLength(), new StringBuilder("icon-").append(FileUtils.getFileIcon(f.getName())).toString(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner());
             if (f.isPortlet()) {
+                n.setPortlet(true);
                 try {
                     JCRPortletNode portletNode = new JCRPortletNode(f);
                     if (portletNode.getContextName().equalsIgnoreCase("/rss")) {

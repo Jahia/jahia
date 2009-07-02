@@ -62,7 +62,7 @@ import java.util.List;
  * @author rfelden
  * @version 7 juil. 2008 - 14:45:03
  */
-public class FileActions {
+public class ContentActions {
 
     final static JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance();
 

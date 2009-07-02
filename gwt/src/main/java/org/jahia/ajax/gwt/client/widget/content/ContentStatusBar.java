@@ -41,11 +41,11 @@ import com.extjs.gxt.ui.client.widget.Component;
  * @author rfelden
  * @version 23 juin 2008 - 17:35:03
  */
-public class FileStatusBar extends BottomBar {
+public class ContentStatusBar extends BottomBar {
 
     private MyStatusBar m_component ;
 
-    public FileStatusBar() {
+    public ContentStatusBar() {
         m_component = new MyStatusBar() ;
         m_component.setHeight("19px");
     }

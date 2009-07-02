@@ -54,7 +54,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.content.FileStoreSorter;
-import org.jahia.ajax.gwt.client.util.content.actions.FileActions;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
@@ -69,7 +69,7 @@ import java.util.List;
  * @author rfelden
  * @version 20 juin 2008 - 09:53:08
  */
-public class FileTable extends TopRightComponent {
+public class TableView extends TopRightComponent {
 
     private LayoutContainer m_component;
     private Grid<GWTJahiaNode> m_table;
@@ -77,7 +77,7 @@ public class FileTable extends TopRightComponent {
     private ListLoader<GWTJahiaNode> loader ;
     private ManagerConfiguration configuration;
 
-    public FileTable(final ManagerConfiguration config) {
+    public TableView(final ManagerConfiguration config) {
         m_component = new LayoutContainer(new FitLayout());
         m_component.setBorders(false);
 
@@ -136,7 +136,7 @@ public class FileTable extends TopRightComponent {
                             if (el.isDisplayable()) {
                                 ImagePopup.popImage(el);
                             } else {
-                                FileActions.download(getLinker());
+                                ContentActions.download(getLinker());
                             }
                         }
                     } else {

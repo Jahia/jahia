@@ -67,7 +67,7 @@ import java.util.List;
 /**
  * TreeTable file picker for use within classic engines.
  */
-public class FileTreeTable extends TopRightComponent {
+public class ContentTreeTable extends TopRightComponent {
 
     private ManagerConfiguration configuration ;
 
@@ -121,7 +121,7 @@ public class FileTreeTable extends TopRightComponent {
                 }
                 if (selectPathAfterUpload != null) {
                     selectPath(selectPathAfterUpload);
-                    ((FilePickerContainer) getLinker().getTopRightObject()).handleNewSelection();
+                    ((ContentPickerContainer) getLinker().getTopRightObject()).handleNewSelection();
                     setSelectPathAfterDataUpdate(null);
                 }
             }
@@ -132,7 +132,7 @@ public class FileTreeTable extends TopRightComponent {
         };
     }
     
-    public FileTreeTable(String rootPath, String startPath, ManagerConfiguration config) {
+    public ContentTreeTable(String rootPath, String startPath, ManagerConfiguration config) {
         this.rootPath = rootPath != null && rootPath.length() > 0 ? rootPath : null;
         m_component = new ContentPanel(new FitLayout()) ;
         m_component.setHeaderVisible(false);
@@ -172,7 +172,7 @@ public class FileTreeTable extends TopRightComponent {
         binder.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                 getLinker().onTableItemSelected();
-                ((FilePickerContainer) getLinker().getTopRightObject()).handleNewSelection();
+                ((ContentPickerContainer) getLinker().getTopRightObject()).handleNewSelection();
             }
         });
 
@@ -234,7 +234,7 @@ public class FileTreeTable extends TopRightComponent {
     }
 
     public void initContextMenu() {
-         m_treeTable.setContextMenu(new FileListContextMenu(getLinker(), configuration));
+         m_treeTable.setContextMenu(new ContentListContextMenu(getLinker(), configuration));
     }
 
     public void setContent(Object root) {

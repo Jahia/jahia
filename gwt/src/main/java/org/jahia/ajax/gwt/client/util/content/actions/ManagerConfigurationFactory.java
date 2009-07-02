@@ -75,71 +75,71 @@ public class ManagerConfigurationFactory {
         ManagerConfiguration completeManagerConfig = new ManagerConfiguration();
         completeManagerConfig.setEnableTextMenu(true);
 
-        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu"));
-        FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
+        ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
+        ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         completeManagerConfig.addItem(newFolder);
-        FileActionItem newMashup = ItemCreator.createNewMashupItem(linker);
+        ContentActionItem newMashup = ItemCreator.createNewMashupItem(linker);
         file.addItem(newMashup);
-        FileActionItem newRSS = ItemCreator.createNewRSSItem(linker);
+        ContentActionItem newRSS = ItemCreator.createNewRSSItem(linker);
         file.addItem(newRSS);
-        FileActionItem newGadget = ItemCreator.createNewGadgetItem(linker);
+        ContentActionItem newGadget = ItemCreator.createNewGadgetItem(linker);
         file.addItem(newGadget);
         completeManagerConfig.addItem(newMashup);
-        FileActionItem upload = ItemCreator.createUploadItem(linker);
+        ContentActionItem upload = ItemCreator.createUploadItem(linker);
         file.addItem(upload);
         completeManagerConfig.addItem(upload);
-        FileActionItem download = ItemCreator.createDownloadItem(linker);
+        ContentActionItem download = ItemCreator.createDownloadItem(linker);
         file.addItem(download);
         completeManagerConfig.addItem(download);
         if (GXT.isIE) {
-            FileActionItem webFolder = ItemCreator.createWebfolderItem(linker);
+            ContentActionItem webFolder = ItemCreator.createWebfolderItem(linker);
             file.addItem(webFolder);
             completeManagerConfig.addItem(webFolder);
         }
-        file.addItem(new FileActionItemSeparator());
-        completeManagerConfig.addItem(new FileActionItemSeparator());
-        FileActionItem lock = ItemCreator.createLockItem(linker);
+        file.addItem(new ContentActionItemSeparator());
+        completeManagerConfig.addItem(new ContentActionItemSeparator());
+        ContentActionItem lock = ItemCreator.createLockItem(linker);
         file.addItem(lock);
-        FileActionItem unlock = ItemCreator.createUnlockItem(linker);
+        ContentActionItem unlock = ItemCreator.createUnlockItem(linker);
         file.addItem(unlock);
-        file.addItem(new FileActionItemSeparator());
-        FileActionItem zip = ItemCreator.createZipItem(linker);
+        file.addItem(new ContentActionItemSeparator());
+        ContentActionItem zip = ItemCreator.createZipItem(linker);
         file.addItem(zip);
-        FileActionItem unzip = ItemCreator.createUnzipItem(linker);
+        ContentActionItem unzip = ItemCreator.createUnzipItem(linker);
         file.addItem(unzip);
 
-        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
-        FileActionItem rename = ItemCreator.createRenameItem(linker);
+        ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
+        ContentActionItem rename = ItemCreator.createRenameItem(linker);
         edit.addItem(rename);
         completeManagerConfig.addItem(rename);
-        FileActionItem remove = ItemCreator.createRemoveItem(linker);
+        ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         edit.addItem(remove);
         completeManagerConfig.addItem(remove);
-        edit.addItem(new FileActionItemSeparator());
-        completeManagerConfig.addItem(new FileActionItemSeparator());
-        FileActionItem copy = ItemCreator.createCopyItem(linker);
+        edit.addItem(new ContentActionItemSeparator());
+        completeManagerConfig.addItem(new ContentActionItemSeparator());
+        ContentActionItem copy = ItemCreator.createCopyItem(linker);
         edit.addItem(copy);
         completeManagerConfig.addItem(copy);
-        FileActionItem cut = ItemCreator.createCutItem(linker);
+        ContentActionItem cut = ItemCreator.createCutItem(linker);
         edit.addItem(cut);
         completeManagerConfig.addItem(cut);
-        FileActionItem paste = ItemCreator.createPasteItem(linker);
+        ContentActionItem paste = ItemCreator.createPasteItem(linker);
         edit.addItem(paste);
         completeManagerConfig.addItem(paste);
 
-        FileActionItemGroup remote = new FileActionItemGroup(Messages.getResource("fm_remoteMenu"));
-        FileActionItem mount = ItemCreator.createMountItem(linker);
+        ContentActionItemGroup remote = new ContentActionItemGroup(Messages.getResource("fm_remoteMenu"));
+        ContentActionItem mount = ItemCreator.createMountItem(linker);
         remote.addItem(mount);
-        FileActionItem unmount = ItemCreator.createUnmountItem(linker);
+        ContentActionItem unmount = ItemCreator.createUnmountItem(linker);
         remote.addItem(unmount);
 
-        FileActionItemGroup image = new FileActionItemGroup(Messages.getResource("fm_imageMenu"));
-        FileActionItem crop = ItemCreator.createCropItem(linker);
+        ContentActionItemGroup image = new ContentActionItemGroup(Messages.getResource("fm_imageMenu"));
+        ContentActionItem crop = ItemCreator.createCropItem(linker);
         image.addItem(crop);
-        FileActionItem resize = ItemCreator.createResizeItem(linker);
+        ContentActionItem resize = ItemCreator.createResizeItem(linker);
         image.addItem(resize);
-        FileActionItem rotate = ItemCreator.createRotateItem(linker);
+        ContentActionItem rotate = ItemCreator.createRotateItem(linker);
         image.addItem(rotate);
 
         // add menus to the config as well
@@ -169,67 +169,67 @@ public class ManagerConfigurationFactory {
         ManagerConfiguration fileManagerConfig = new ManagerConfiguration();
         fileManagerConfig.setEnableTextMenu(true);
 
-        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu"));
-        FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
+        ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
+        ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         fileManagerConfig.addItem(newFolder);
-        FileActionItem upload = ItemCreator.createUploadItem(linker);
+        ContentActionItem upload = ItemCreator.createUploadItem(linker);
         file.addItem(upload);
         fileManagerConfig.addItem(upload);
-        FileActionItem download = ItemCreator.createDownloadItem(linker);
+        ContentActionItem download = ItemCreator.createDownloadItem(linker);
         file.addItem(download);
         fileManagerConfig.addItem(download);
-        FileActionItem preview = ItemCreator.createPreviewItem(linker);
+        ContentActionItem preview = ItemCreator.createPreviewItem(linker);
         file.addItem(preview);
         fileManagerConfig.addItem(preview);
         if (GXT.isIE) {
-            FileActionItem webFolder = ItemCreator.createWebfolderItem(linker);
+            ContentActionItem webFolder = ItemCreator.createWebfolderItem(linker);
             file.addItem(webFolder);
             fileManagerConfig.addItem(webFolder);
         }
-        file.addItem(new FileActionItemSeparator());
-        fileManagerConfig.addItem(new FileActionItemSeparator());
-        FileActionItem lock = ItemCreator.createLockItem(linker);
+        file.addItem(new ContentActionItemSeparator());
+        fileManagerConfig.addItem(new ContentActionItemSeparator());
+        ContentActionItem lock = ItemCreator.createLockItem(linker);
         file.addItem(lock);
-        FileActionItem unlock = ItemCreator.createUnlockItem(linker);
+        ContentActionItem unlock = ItemCreator.createUnlockItem(linker);
         file.addItem(unlock);
-        file.addItem(new FileActionItemSeparator());
-        FileActionItem zip = ItemCreator.createZipItem(linker);
+        file.addItem(new ContentActionItemSeparator());
+        ContentActionItem zip = ItemCreator.createZipItem(linker);
         file.addItem(zip);
-        FileActionItem unzip = ItemCreator.createUnzipItem(linker);
+        ContentActionItem unzip = ItemCreator.createUnzipItem(linker);
         file.addItem(unzip);
 
-        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
-        FileActionItem rename = ItemCreator.createRenameItem(linker);
+        ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
+        ContentActionItem rename = ItemCreator.createRenameItem(linker);
         edit.addItem(rename);
         fileManagerConfig.addItem(rename);
-        FileActionItem remove = ItemCreator.createRemoveItem(linker);
+        ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         edit.addItem(remove);
         fileManagerConfig.addItem(remove);
-        edit.addItem(new FileActionItemSeparator());
-        fileManagerConfig.addItem(new FileActionItemSeparator());
-        FileActionItem copy = ItemCreator.createCopyItem(linker);
+        edit.addItem(new ContentActionItemSeparator());
+        fileManagerConfig.addItem(new ContentActionItemSeparator());
+        ContentActionItem copy = ItemCreator.createCopyItem(linker);
         edit.addItem(copy);
         fileManagerConfig.addItem(copy);
-        FileActionItem cut = ItemCreator.createCutItem(linker);
+        ContentActionItem cut = ItemCreator.createCutItem(linker);
         edit.addItem(cut);
         fileManagerConfig.addItem(cut);
-        FileActionItem paste = ItemCreator.createPasteItem(linker);
+        ContentActionItem paste = ItemCreator.createPasteItem(linker);
         edit.addItem(paste);
         fileManagerConfig.addItem(paste);
 
-        FileActionItemGroup remote = new FileActionItemGroup(Messages.getResource("fm_remoteMenu"));
-        FileActionItem mount = ItemCreator.createMountItem(linker);
+        ContentActionItemGroup remote = new ContentActionItemGroup(Messages.getResource("fm_remoteMenu"));
+        ContentActionItem mount = ItemCreator.createMountItem(linker);
         remote.addItem(mount);
-        FileActionItem unmount = ItemCreator.createUnmountItem(linker);
+        ContentActionItem unmount = ItemCreator.createUnmountItem(linker);
         remote.addItem(unmount);
 
-        FileActionItemGroup image = new FileActionItemGroup(Messages.getResource("fm_imageMenu"));
-        FileActionItem crop = ItemCreator.createCropItem(linker);
+        ContentActionItemGroup image = new ContentActionItemGroup(Messages.getResource("fm_imageMenu"));
+        ContentActionItem crop = ItemCreator.createCropItem(linker);
         image.addItem(crop);
-        FileActionItem resize = ItemCreator.createResizeItem(linker);
+        ContentActionItem resize = ItemCreator.createResizeItem(linker);
         image.addItem(resize);
-        FileActionItem rotate = ItemCreator.createRotateItem(linker);
+        ContentActionItem rotate = ItemCreator.createRotateItem(linker);
         image.addItem(rotate);
 
         // add menus to the config as well
@@ -259,46 +259,46 @@ public class ManagerConfigurationFactory {
         ManagerConfiguration filePickerConfig = new ManagerConfiguration();
         filePickerConfig.setEnableTextMenu(false);
 
-        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu"));
-        FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
+        ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
+        ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         filePickerConfig.addItem(newFolder);
         file.addItem(newFolder);
-        FileActionItem upload = ItemCreator.createUploadItem(linker);
+        ContentActionItem upload = ItemCreator.createUploadItem(linker);
         filePickerConfig.addItem(upload);
         file.addItem(upload);
-        FileActionItem download = ItemCreator.createDownloadItem(linker);
+        ContentActionItem download = ItemCreator.createDownloadItem(linker);
         file.addItem(download);
         filePickerConfig.addItem(download);
-        FileActionItem preview = ItemCreator.createPreviewItem(linker);
+        ContentActionItem preview = ItemCreator.createPreviewItem(linker);
         file.addItem(preview);
         filePickerConfig.addItem(preview);
-        filePickerConfig.addItem(new FileActionItemSeparator());
+        filePickerConfig.addItem(new ContentActionItemSeparator());
 
-        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
-        FileActionItem rename = ItemCreator.createRenameItem(linker);
+        ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
+        ContentActionItem rename = ItemCreator.createRenameItem(linker);
         filePickerConfig.addItem(rename);
         edit.addItem(rename);
-        FileActionItem remove = ItemCreator.createRemoveItem(linker);
+        ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         filePickerConfig.addItem(remove);
         edit.addItem(remove);
-        edit.addItem(new FileActionItemSeparator());
-        filePickerConfig.addItem(new FileActionItemSeparator());
-        FileActionItem copy = ItemCreator.createCopyItem(linker);
+        edit.addItem(new ContentActionItemSeparator());
+        filePickerConfig.addItem(new ContentActionItemSeparator());
+        ContentActionItem copy = ItemCreator.createCopyItem(linker);
         filePickerConfig.addItem(copy);
         edit.addItem(copy);
-        FileActionItem cut = ItemCreator.createCutItem(linker);
+        ContentActionItem cut = ItemCreator.createCutItem(linker);
         filePickerConfig.addItem(cut);
         edit.addItem(cut);
-        FileActionItem paste = ItemCreator.createPasteItem(linker);
+        ContentActionItem paste = ItemCreator.createPasteItem(linker);
         filePickerConfig.addItem(paste);
         edit.addItem(paste);
 
-        FileActionItemGroup image = new FileActionItemGroup(Messages.getResource("fm_imageMenu"));
-        FileActionItem crop = ItemCreator.createCropItem(linker);
+        ContentActionItemGroup image = new ContentActionItemGroup(Messages.getResource("fm_imageMenu"));
+        ContentActionItem crop = ItemCreator.createCropItem(linker);
         image.addItem(crop);
-        FileActionItem resize = ItemCreator.createResizeItem(linker);
+        ContentActionItem resize = ItemCreator.createResizeItem(linker);
         image.addItem(resize);
-        FileActionItem rotate = ItemCreator.createRotateItem(linker);
+        ContentActionItem rotate = ItemCreator.createRotateItem(linker);
         image.addItem(rotate);
 
         // add menus to the config as well
@@ -326,37 +326,37 @@ public class ManagerConfigurationFactory {
         mashupManagerConfig.setDisplayExt(false);
         mashupManagerConfig.setDisplaySize(false);
         mashupManagerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
-        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu"));
-        FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
+        ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
+        ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         mashupManagerConfig.addItem(newFolder);
-        FileActionItem newMashup = ItemCreator.createNewMashupItem(linker);
+        ContentActionItem newMashup = ItemCreator.createNewMashupItem(linker);
         file.addItem(newMashup);
         mashupManagerConfig.addItem(newMashup);
-        FileActionItem newRSS = ItemCreator.createNewRSSItem(linker);
+        ContentActionItem newRSS = ItemCreator.createNewRSSItem(linker);
         file.addItem(newRSS);
         mashupManagerConfig.addItem(newRSS);
-        FileActionItem newGadget = ItemCreator.createNewGadgetItem(linker);
+        ContentActionItem newGadget = ItemCreator.createNewGadgetItem(linker);
         file.addItem(newGadget);
         mashupManagerConfig.addItem(newGadget);
-        mashupManagerConfig.addItem(new FileActionItemSeparator());
+        mashupManagerConfig.addItem(new ContentActionItemSeparator());
 
-        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
-        FileActionItem rename = ItemCreator.createRenameItem(linker);
+        ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
+        ContentActionItem rename = ItemCreator.createRenameItem(linker);
         edit.addItem(rename);
         mashupManagerConfig.addItem(rename);
-        FileActionItem remove = ItemCreator.createRemoveItem(linker);
+        ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         edit.addItem(remove);
         mashupManagerConfig.addItem(remove);
-        edit.addItem(new FileActionItemSeparator());
-        mashupManagerConfig.addItem(new FileActionItemSeparator());
-        FileActionItem copy = ItemCreator.createCopyItem(linker);
+        edit.addItem(new ContentActionItemSeparator());
+        mashupManagerConfig.addItem(new ContentActionItemSeparator());
+        ContentActionItem copy = ItemCreator.createCopyItem(linker);
         edit.addItem(copy);
         mashupManagerConfig.addItem(copy);
-        FileActionItem cut = ItemCreator.createCutItem(linker);
+        ContentActionItem cut = ItemCreator.createCutItem(linker);
         edit.addItem(cut);
         mashupManagerConfig.addItem(cut);
-        FileActionItem paste = ItemCreator.createPasteItem(linker);
+        ContentActionItem paste = ItemCreator.createPasteItem(linker);
         edit.addItem(paste);
         mashupManagerConfig.addItem(paste);
 
@@ -392,37 +392,37 @@ public class ManagerConfigurationFactory {
 
         mashupPickerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
 
-        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu"));
-        FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
+        ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
+        ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         mashupPickerConfig.addItem(newFolder);
-        FileActionItem newMashup = ItemCreator.createNewMashupItem(linker);
+        ContentActionItem newMashup = ItemCreator.createNewMashupItem(linker);
         file.addItem(newMashup);
         mashupPickerConfig.addItem(newMashup);
-        mashupPickerConfig.addItem(new FileActionItemSeparator());
-        FileActionItem newRSS = ItemCreator.createNewRSSItem(linker);
+        mashupPickerConfig.addItem(new ContentActionItemSeparator());
+        ContentActionItem newRSS = ItemCreator.createNewRSSItem(linker);
         file.addItem(newRSS);
         mashupPickerConfig.addItem(newRSS);
-        FileActionItem newGadget = ItemCreator.createNewGadgetItem(linker);
+        ContentActionItem newGadget = ItemCreator.createNewGadgetItem(linker);
         file.addItem(newGadget);
         mashupPickerConfig.addItem(newGadget);
 
-        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
-        FileActionItem rename = ItemCreator.createRenameItem(linker);
+        ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
+        ContentActionItem rename = ItemCreator.createRenameItem(linker);
         edit.addItem(rename);
         mashupPickerConfig.addItem(rename);
-        FileActionItem remove = ItemCreator.createRemoveItem(linker);
+        ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         edit.addItem(remove);
         mashupPickerConfig.addItem(remove);
-        edit.addItem(new FileActionItemSeparator());
-        mashupPickerConfig.addItem(new FileActionItemSeparator());
-        FileActionItem copy = ItemCreator.createCopyItem(linker);
+        edit.addItem(new ContentActionItemSeparator());
+        mashupPickerConfig.addItem(new ContentActionItemSeparator());
+        ContentActionItem copy = ItemCreator.createCopyItem(linker);
         edit.addItem(copy);
         mashupPickerConfig.addItem(copy);
-        FileActionItem cut = ItemCreator.createCutItem(linker);
+        ContentActionItem cut = ItemCreator.createCutItem(linker);
         edit.addItem(cut);
         mashupPickerConfig.addItem(cut);
-        FileActionItem paste = ItemCreator.createPasteItem(linker);
+        ContentActionItem paste = ItemCreator.createPasteItem(linker);
         edit.addItem(paste);
         mashupPickerConfig.addItem(paste);
 
@@ -449,10 +449,10 @@ public class ManagerConfigurationFactory {
      */
     private static class ItemCreator {
 
-        private static FileActionItem createRotateItem(final BrowserLinker linker) {
-            FileActionItem rotate = new FileActionItem(Messages.getResource("fm_rotate"), "fm-rotate") {
+        private static ContentActionItem createRotateItem(final BrowserLinker linker) {
+            ContentActionItem rotate = new ContentActionItem(Messages.getResource("fm_rotate"), "fm-rotate") {
                 public void onSelection() {
-                    FileActions.rotateImage(linker);
+                    ContentActions.rotateImage(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -462,10 +462,10 @@ public class ManagerConfigurationFactory {
             return rotate;
         }
 
-        private static FileActionItem createCropItem(final BrowserLinker linker) {
-            FileActionItem crop = new FileActionItem(Messages.getResource("fm_crop"), "fm-crop") {
+        private static ContentActionItem createCropItem(final BrowserLinker linker) {
+            ContentActionItem crop = new ContentActionItem(Messages.getResource("fm_crop"), "fm-crop") {
                 public void onSelection() {
-                    FileActions.cropImage(linker);
+                    ContentActions.cropImage(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -475,10 +475,10 @@ public class ManagerConfigurationFactory {
             return crop;
         }
 
-        private static FileActionItem createUnzipItem(final BrowserLinker linker) {
-            FileActionItem unzip = new FileActionItem(Messages.getResource("fm_unzip"), "fm-unzip") {
+        private static ContentActionItem createUnzipItem(final BrowserLinker linker) {
+            ContentActionItem unzip = new ContentActionItem(Messages.getResource("fm_unzip"), "fm-unzip") {
                 public void onSelection() {
-                    FileActions.unzip(linker);
+                    ContentActions.unzip(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -488,10 +488,10 @@ public class ManagerConfigurationFactory {
             return unzip;
         }
 
-        private static FileActionItem createUnlockItem(final BrowserLinker linker) {
-            FileActionItem unlock = new FileActionItem(Messages.getResource("fm_unlock"), "fm-unlock") {
+        private static ContentActionItem createUnlockItem(final BrowserLinker linker) {
+            ContentActionItem unlock = new ContentActionItem(Messages.getResource("fm_unlock"), "fm-unlock") {
                 public void onSelection() {
-                    FileActions.lock(false, linker);
+                    ContentActions.lock(false, linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -501,10 +501,10 @@ public class ManagerConfigurationFactory {
             return unlock;
         }
 
-        private static FileActionItem createWebfolderItem(final BrowserLinker linker) {
-            FileActionItem webFolder = new FileActionItem(Messages.getResource("fm_webfolder"), "fm-webfolder") {
+        private static ContentActionItem createWebfolderItem(final BrowserLinker linker) {
+            ContentActionItem webFolder = new ContentActionItem(Messages.getResource("fm_webfolder"), "fm-webfolder") {
                 public void onSelection() {
-                    FileActions.openWebFolder(linker);
+                    ContentActions.openWebFolder(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -514,10 +514,10 @@ public class ManagerConfigurationFactory {
             return webFolder;
         }
 
-        private static FileActionItem createNewFolderItem(final BrowserLinker linker) {
-            FileActionItem newFolder = new FileActionItem(Messages.getResource("fm_newdir"), "fm-newfolder") {
+        private static ContentActionItem createNewFolderItem(final BrowserLinker linker) {
+            ContentActionItem newFolder = new ContentActionItem(Messages.getResource("fm_newdir"), "fm-newfolder") {
                 public void onSelection() {
-                    FileActions.createFolder(linker);
+                    ContentActions.createFolder(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -527,10 +527,10 @@ public class ManagerConfigurationFactory {
             return newFolder;
         }
 
-        private static FileActionItem createCutItem(final BrowserLinker linker) {
-            FileActionItem cut = new FileActionItem(Messages.getResource("fm_cut"), "fm-cut") {
+        private static ContentActionItem createCutItem(final BrowserLinker linker) {
+            ContentActionItem cut = new ContentActionItem(Messages.getResource("fm_cut"), "fm-cut") {
                 public void onSelection() {
-                    FileActions.cut(linker);
+                    ContentActions.cut(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -540,10 +540,10 @@ public class ManagerConfigurationFactory {
             return cut;
         }
 
-        private static FileActionItem createRemoveItem(final BrowserLinker linker) {
-            FileActionItem remove = new FileActionItem(Messages.getResource("fm_remove"), "fm-remove") {
+        private static ContentActionItem createRemoveItem(final BrowserLinker linker) {
+            ContentActionItem remove = new ContentActionItem(Messages.getResource("fm_remove"), "fm-remove") {
                 public void onSelection() {
-                    FileActions.remove(linker);
+                    ContentActions.remove(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -553,10 +553,10 @@ public class ManagerConfigurationFactory {
             return remove;
         }
 
-        private static FileActionItem createPasteItem(final BrowserLinker linker) {
-            FileActionItem paste = new FileActionItem(Messages.getResource("fm_paste"), "fm-paste") {
+        private static ContentActionItem createPasteItem(final BrowserLinker linker) {
+            ContentActionItem paste = new ContentActionItem(Messages.getResource("fm_paste"), "fm-paste") {
                 public void onSelection() {
-                    FileActions.paste(linker);
+                    ContentActions.paste(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -566,10 +566,10 @@ public class ManagerConfigurationFactory {
             return paste;
         }
 
-        private static FileActionItem createCopyItem(final BrowserLinker linker) {
-            FileActionItem copy = new FileActionItem(Messages.getResource("fm_copy"), "fm-copy") {
+        private static ContentActionItem createCopyItem(final BrowserLinker linker) {
+            ContentActionItem copy = new ContentActionItem(Messages.getResource("fm_copy"), "fm-copy") {
                 public void onSelection() {
-                    FileActions.copy(linker);
+                    ContentActions.copy(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -579,10 +579,10 @@ public class ManagerConfigurationFactory {
             return copy;
         }
 
-        private static FileActionItem createRenameItem(final BrowserLinker linker) {
-            FileActionItem rename = new FileActionItem(Messages.getResource("fm_rename"), "fm-rename") {
+        private static ContentActionItem createRenameItem(final BrowserLinker linker) {
+            ContentActionItem rename = new ContentActionItem(Messages.getResource("fm_rename"), "fm-rename") {
                 public void onSelection() {
-                    FileActions.rename(linker);
+                    ContentActions.rename(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -592,10 +592,10 @@ public class ManagerConfigurationFactory {
             return rename;
         }
 
-        private static FileActionItem createResizeItem(final BrowserLinker linker) {
-            FileActionItem resize = new FileActionItem(Messages.getResource("fm_resize"), "fm-resize") {
+        private static ContentActionItem createResizeItem(final BrowserLinker linker) {
+            ContentActionItem resize = new ContentActionItem(Messages.getResource("fm_resize"), "fm-resize") {
                 public void onSelection() {
-                    FileActions.resizeImage(linker);
+                    ContentActions.resizeImage(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -605,10 +605,10 @@ public class ManagerConfigurationFactory {
             return resize;
         }
 
-        private static FileActionItem createMountItem(final BrowserLinker linker) {
-            FileActionItem mount = new FileActionItem(Messages.getResource("fm_mount"), "fm-mount") {
+        private static ContentActionItem createMountItem(final BrowserLinker linker) {
+            ContentActionItem mount = new ContentActionItem(Messages.getResource("fm_mount"), "fm-mount") {
                 public void onSelection() {
-                    FileActions.mountFolder(linker);
+                    ContentActions.mountFolder(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -618,10 +618,10 @@ public class ManagerConfigurationFactory {
             return mount;
         }
 
-        private static FileActionItem createUnmountItem(final BrowserLinker linker) {
-            FileActionItem mount = new FileActionItem(Messages.getResource("fm_unmount"), "fm-unmount") {
+        private static ContentActionItem createUnmountItem(final BrowserLinker linker) {
+            ContentActionItem mount = new ContentActionItem(Messages.getResource("fm_unmount"), "fm-unmount") {
                 public void onSelection() {
-                    FileActions.unmountFolder(linker);
+                    ContentActions.unmountFolder(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -631,10 +631,10 @@ public class ManagerConfigurationFactory {
             return mount;
         }
 
-        private static FileActionItem createZipItem(final BrowserLinker linker) {
-            FileActionItem zip = new FileActionItem(Messages.getResource("fm_zip"), "fm-zip") {
+        private static ContentActionItem createZipItem(final BrowserLinker linker) {
+            ContentActionItem zip = new ContentActionItem(Messages.getResource("fm_zip"), "fm-zip") {
                 public void onSelection() {
-                    FileActions.zip(linker);
+                    ContentActions.zip(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -644,10 +644,10 @@ public class ManagerConfigurationFactory {
             return zip;
         }
 
-        private static FileActionItem createLockItem(final BrowserLinker linker) {
-            FileActionItem lock = new FileActionItem(Messages.getResource("fm_lock"), "fm-lock") {
+        private static ContentActionItem createLockItem(final BrowserLinker linker) {
+            ContentActionItem lock = new ContentActionItem(Messages.getResource("fm_lock"), "fm-lock") {
                 public void onSelection() {
-                    FileActions.lock(true, linker);
+                    ContentActions.lock(true, linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -657,10 +657,10 @@ public class ManagerConfigurationFactory {
             return lock;
         }
 
-        private static FileActionItem createDownloadItem(final BrowserLinker linker) {
-            FileActionItem download = new FileActionItem(Messages.getResource("fm_download"), "fm-download") {
+        private static ContentActionItem createDownloadItem(final BrowserLinker linker) {
+            ContentActionItem download = new ContentActionItem(Messages.getResource("fm_download"), "fm-download") {
                 public void onSelection() {
-                    FileActions.download(linker);
+                    ContentActions.download(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -670,10 +670,10 @@ public class ManagerConfigurationFactory {
             return download;
         }
 
-        private static FileActionItem createPreviewItem(final BrowserLinker linker) {
-            FileActionItem download = new FileActionItem(Messages.getResource("fm_preview"), "fm-preview") {
+        private static ContentActionItem createPreviewItem(final BrowserLinker linker) {
+            ContentActionItem download = new ContentActionItem(Messages.getResource("fm_preview"), "fm-preview") {
                 public void onSelection() {
-                    FileActions.preview(linker);
+                    ContentActions.preview(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -683,10 +683,10 @@ public class ManagerConfigurationFactory {
             return download;
         }
 
-        private static FileActionItem createUploadItem(final BrowserLinker linker) {
-            FileActionItem upload = new FileActionItem(Messages.getResource("fm_upload"), "fm-upload") {
+        private static ContentActionItem createUploadItem(final BrowserLinker linker) {
+            ContentActionItem upload = new ContentActionItem(Messages.getResource("fm_upload"), "fm-upload") {
                 public void onSelection() {
-                    FileActions.upload(linker);
+                    ContentActions.upload(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -696,10 +696,10 @@ public class ManagerConfigurationFactory {
             return upload;
         }
 
-        private static FileActionItem createNewMashupItem(final BrowserLinker linker) {
-            FileActionItem newMashup = new FileActionItem(Messages.getResource("fm_newmashup"), "fm-newmashup") {
+        private static ContentActionItem createNewMashupItem(final BrowserLinker linker) {
+            ContentActionItem newMashup = new ContentActionItem(Messages.getResource("fm_newmashup"), "fm-newmashup") {
                 public void onSelection() {
-                    FileActions.showMashupWizard(linker);
+                    ContentActions.showMashupWizard(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -709,10 +709,10 @@ public class ManagerConfigurationFactory {
             return newMashup;
         }
 
-        private static FileActionItem createNewRSSItem(final BrowserLinker linker) {
-            FileActionItem newMashup = new FileActionItem(Messages.getResource("fm_newrssmashup"), "fm-newrssmashup") {
+        private static ContentActionItem createNewRSSItem(final BrowserLinker linker) {
+            ContentActionItem newMashup = new ContentActionItem(Messages.getResource("fm_newrssmashup"), "fm-newrssmashup") {
                 public void onSelection() {
-                    FileActions.showRSSForm(linker);
+                    ContentActions.showRSSForm(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
@@ -722,10 +722,10 @@ public class ManagerConfigurationFactory {
             return newMashup;
         }
 
-        private static FileActionItem createNewGadgetItem(final BrowserLinker linker) {
-            FileActionItem newMashup = new FileActionItem(Messages.getResource("fm_newgadgetmashup"), "fm-newgooglegadgetmashup") {
+        private static ContentActionItem createNewGadgetItem(final BrowserLinker linker) {
+            ContentActionItem newMashup = new ContentActionItem(Messages.getResource("fm_newgadgetmashup"), "fm-newgooglegadgetmashup") {
                 public void onSelection() {
-                    FileActions.showGoogleGadgetForm(linker);
+                    ContentActions.showGoogleGadgetForm(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {

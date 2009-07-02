@@ -38,7 +38,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import org.jahia.ajax.gwt.client.widget.content.FilePicker;
+import org.jahia.ajax.gwt.client.widget.content.ContentPicker;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.List;
@@ -50,7 +50,7 @@ import java.util.List;
  * Time: 6:37:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FilePickerField extends TriggerField<String> {
+public class ContentPickerField extends TriggerField<String> {
     private String rootPath;
     private String types;
     private String filters;
@@ -58,7 +58,7 @@ public class FilePickerField extends TriggerField<String> {
     private String configuration ;
     private boolean allowThumbs;
 
-    public FilePickerField(String rootPath, String types, String filters, String mimeTypes, String config, boolean allowThumbs) {
+    public ContentPickerField(String rootPath, String types, String filters, String mimeTypes, String config, boolean allowThumbs) {
         this.rootPath = rootPath;
         this.types = types;
         this.filters = filters;
@@ -75,14 +75,14 @@ public class FilePickerField extends TriggerField<String> {
         }
         final Window w = new Window();
         w.setLayout(new FitLayout());
-        final FilePicker filePicker = new FilePicker(rootPath, getValue()!=null?getValue():"", types, filters, mimeTypes, configuration, allowThumbs, "");
+        final ContentPicker contentPicker = new ContentPicker(rootPath, getValue()!=null?getValue():"", types, filters, mimeTypes, configuration, allowThumbs, "");
 
         w.setModal(true);
         w.setSize(600, 400);
         ButtonBar bar = new ButtonBar();
         Button ok = new Button("OK", new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
-                List<GWTJahiaNode> selection = (List<GWTJahiaNode>) filePicker.getLinker().getTableSelection();
+                List<GWTJahiaNode> selection = (List<GWTJahiaNode>) contentPicker.getLinker().getTableSelection();
                 if (selection != null && selection.size() > 0) {
                     StringBuilder conCat = new StringBuilder(selection.get(0).getPath());
                     for (int i = 1; i < selection.size(); i++) {
@@ -95,7 +95,7 @@ public class FilePickerField extends TriggerField<String> {
         });
         bar.add(ok);
         w.setButtonBar(bar);
-        w.add(filePicker);
+        w.add(contentPicker);
         w.show();
     }
 

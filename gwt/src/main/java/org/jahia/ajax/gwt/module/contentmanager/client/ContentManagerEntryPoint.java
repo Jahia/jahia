@@ -29,25 +29,31 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.util.content.actions;
+package org.jahia.ajax.gwt.module.contentmanager.client;
 
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
-import com.extjs.gxt.ui.client.widget.menu.Item;
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.DOM;
+import org.jahia.ajax.gwt.client.widget.content.ContentManager;
 
 /**
- * User: rfelden
- * Date: 7 janv. 2009 - 15:22:50
+ * Created by IntelliJ IDEA.
+ *
+ * @author rfelden
+ * @version 10 juil. 2008 - 16:58:16
  */
-public interface FileActionItemItf {
+public class ContentManagerEntryPoint implements EntryPoint {
 
-    public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) ;
-
-    public void setEnabled(boolean enabled) ;
-
-    public ToolItem getTextToolitem() ;
-
-    public Item getMenuItem() ;
-
-    public Item getContextMenuItem() ;
+    public void onModuleLoad() {
+        RootPanel panel = RootPanel.get("contentmanager") ;
+        if (panel != null) {
+            String conf = DOM.getElementAttribute(panel.getElement(), "config") ;
+            panel.add(new ContentManager(
+                    DOM.getElementAttribute(panel.getElement(), "nodeTypes"),
+                    DOM.getElementAttribute(panel.getElement(), "filters"),
+                    DOM.getElementAttribute(panel.getElement(), "mimeTypes"),
+                    conf)) ;
+        }
+    }
 
 }

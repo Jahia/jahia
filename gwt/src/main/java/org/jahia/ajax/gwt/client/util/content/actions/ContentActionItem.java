@@ -46,13 +46,13 @@ import org.jahia.ajax.gwt.client.util.Formatter;
  * User: rfelden
  * Date: 7 janv. 2009 - 12:25:42
  */
-public abstract class FileActionItem implements FileActionItemItf {
+public abstract class ContentActionItem implements ContentActionItemItf {
 
     private TextToolItem textToolitem = null ;
     private MenuItem menuItem = null ;
     private MenuItem contextMenuItem = null ;
 
-    public FileActionItem(String text, String style) {
+    public ContentActionItem(String text, String style) {
         textToolitem = new TextToolItem();
         textToolitem.setIconStyle(style);
         textToolitem.setToolTip(text);

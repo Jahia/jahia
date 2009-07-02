@@ -68,7 +68,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.content.actions.FileActions;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -85,7 +85,7 @@ import java.util.List;
  * @author rfelden
  * @version 23 juin 2008 - 16:15:46
  */
-public class FileDetails extends BottomRightComponent {
+public class ContentDetails extends BottomRightComponent {
     private ManagerConfiguration config;
     private ContentPanel m_component;
     private AsyncTabItem infoTabItem;
@@ -110,7 +110,7 @@ public class FileDetails extends BottomRightComponent {
     private final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance();
     private final ContentDefinitionServiceAsync cDefService = ContentDefinitionService.App.getInstance();
 
-    public FileDetails(ManagerConfiguration config) {
+    public ContentDetails(ManagerConfiguration config) {
         super();
         this.config = config;
         m_component = new ContentPanel(new FitLayout());
@@ -783,7 +783,7 @@ public class FileDetails extends BottomRightComponent {
                                     if (selectedNode.isDisplayable()) {
                                         ImagePopup.popImage(el.getNode());
                                     } else {
-                                        FileActions.download(getLinker(),el.getNode(), el.getNode().getUrl());
+                                        ContentActions.download(getLinker(),el.getNode(), el.getNode().getUrl());
                                     }
                                 }
                             }

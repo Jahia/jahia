@@ -52,27 +52,27 @@ import java.util.List;
  * User: rfelden
  * Date: 21 oct. 2008 - 16:47:12
  */
-public class FilePickerContainer extends TopRightComponent {
+public class ContentPickerContainer extends TopRightComponent {
 
     private ContentPanel m_component ;
-    private FileTreeTable m_treeTable ;
+    private ContentTreeTable m_treeTable ;
     private ThumbView m_thumbs ;
     private SearchTable m_search ;
-    private FilePathBar pathBar ;
+    private ContentPathBar pathBar ;
     private TabPanel tabs ;
     private TabItem treeTable ;
     private TabItem search ;
     private TabItem thumbs;
 
-    public FilePickerContainer(String rootPath, String startPath, ManagerConfiguration config, String callback, boolean allowThumbs) {
-        m_treeTable = new FileTreeTable(rootPath, startPath, config);
+    public ContentPickerContainer(String rootPath, String startPath, ManagerConfiguration config, String callback, boolean allowThumbs) {
+        m_treeTable = new ContentTreeTable(rootPath, startPath, config);
         m_search = new SearchTable(config) ;
         m_thumbs = new ThumbView(config) ;
         m_component = new ContentPanel(new FitLayout()) ;
         m_component.setBodyBorder(false);
         m_component.setBorders(false);
         m_component.setHeaderVisible(false);
-        pathBar = new FilePathBar(startPath, config, callback, allowThumbs) ;
+        pathBar = new ContentPathBar(startPath, config, callback, allowThumbs) ;
 
         tabs = new TabPanel() ;
         tabs.setBodyBorder(false);

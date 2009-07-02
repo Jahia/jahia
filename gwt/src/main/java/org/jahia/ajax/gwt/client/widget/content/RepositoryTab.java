@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.content.actions.FileActions;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeBinder;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
@@ -183,7 +183,7 @@ public class RepositoryTab extends ContentPanel {
 
             @Override
             protected void handleAppendDrop(DNDEvent event, TreeItem item) {
-                FileActions.move(getLinker(), (List<GWTJahiaNode>) event.data, (GWTJahiaNode) item.getModel());
+                ContentActions.move(getLinker(), (List<GWTJahiaNode>) event.data, (GWTJahiaNode) item.getModel());
                 super.handleAppendDrop(event, item);
             }
         };

@@ -54,7 +54,7 @@ import java.util.List;
  *
  * This component displays a path to the selected file.
  */
-public class FilePathBar extends TopBar {
+public class ContentPathBar extends TopBar {
 
     private ToolBar m_component ;
     private TextField selectedPath ;
@@ -63,7 +63,7 @@ public class FilePathBar extends TopBar {
     private boolean allowThumbs;
     private ManagerConfiguration config;
 
-    public FilePathBar(final String startPath, final ManagerConfiguration config, final String callback, final boolean allowThumbs) {
+    public ContentPathBar(final String startPath, final ManagerConfiguration config, final String callback, final boolean allowThumbs) {
         m_component = new ToolBar() ;
         selectedPath = new TextField() ;
         selectedPath.setId("file_id");

@@ -31,10 +31,10 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import org.jahia.ajax.gwt.client.widget.content.FileToolbar;
+import org.jahia.ajax.gwt.client.widget.content.ContentToolbar;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
-import org.jahia.ajax.gwt.client.widget.content.FilePickerContainer;
+import org.jahia.ajax.gwt.client.widget.content.ContentPickerContainer;
 import org.jahia.ajax.gwt.client.widget.tripanel.TriPanelBrowserViewport;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
@@ -45,9 +45,9 @@ import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
  * Date: 27 ao�t 2008
  * Time: 17:55:07
  */
-public class FilePickerViewport extends TriPanelBrowserViewport {
+public class ContentPickerViewport extends TriPanelBrowserViewport {
 
-    public FilePickerViewport(final String rootPath, final String startPath, String types, String filters, String mimeTypes, String conf, boolean allowThumbs, String callback) {
+    public ContentPickerViewport(final String rootPath, final String startPath, String types, String filters, String mimeTypes, String conf, boolean allowThumbs, String callback) {
         super() ;
         //setWidth("714px");
 
@@ -69,8 +69,8 @@ public class FilePickerViewport extends TriPanelBrowserViewport {
         }
 
         // construction of the UI components
-        TopBar toolbar = new FileToolbar(config) ;
-        TopRightComponent filepicker = new FilePickerContainer(rootPath, startPath, config, callback, allowThumbs) ;
+        TopBar toolbar = new ContentToolbar(config) ;
+        TopRightComponent filepicker = new ContentPickerContainer(rootPath, startPath, config, callback, allowThumbs) ;
 
         // setup widgets in layout
         initWidgets(null,

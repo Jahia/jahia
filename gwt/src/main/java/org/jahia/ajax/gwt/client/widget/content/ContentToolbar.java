@@ -56,13 +56,13 @@ import java.util.List;
  * @author rfelden
  * @version 7 juil. 2008 - 14:17:12
  */
-public class FileToolbar extends TopBar {
+public class ContentToolbar extends TopBar {
 
     private LayoutContainer m_component;
 
     private ManagerConfiguration configuration ;
 
-    public FileToolbar(ManagerConfiguration config) {
+    public ContentToolbar(ManagerConfiguration config) {
         m_component = new LayoutContainer(new RowLayout());
         configuration = config ;
 
@@ -71,7 +71,7 @@ public class FileToolbar extends TopBar {
         //menus.setHeight(21);
 
         // refresh item not bound to any configuration
-        FileActionItem refresh = new FileActionItem(Messages.getResource("fm_refresh"), "fm-refresh") {
+        ContentActionItem refresh = new ContentActionItem(Messages.getResource("fm_refresh"), "fm-refresh") {
             public void onSelection() {
                 getLinker().refreshTable();
             }
@@ -82,16 +82,16 @@ public class FileToolbar extends TopBar {
             }
         };
 
-        for (FileActionItemItf item: config.getItems()) {
+        for (ContentActionItemItf item: config.getItems()) {
             shortcuts.add(item.getTextToolitem()) ;
         }
         shortcuts.add(new SeparatorToolItem()) ;
         shortcuts.add(refresh.getTextToolitem()) ;
 
         if (config.isEnableTextMenu() && config.getGroupedItems().size() > 0) {
-            for (FileActionItemGroup group: config.getGroupedItems()) {
+            for (ContentActionItemGroup group: config.getGroupedItems()) {
                 Menu menu = new Menu() ;
-                for (FileActionItemItf item: group.getItems()) {
+                for (ContentActionItemItf item: group.getItems()) {
                     menu.add(item.getMenuItem()) ;
                 }
                 TextToolItem mMenu = new TextToolItem(group.getGroupLabel()) ;
@@ -196,8 +196,8 @@ public class FileToolbar extends TopBar {
             }
             isImage = topTableSelection.get(0).getNodeTypes().contains("jmix:image") ;
         }
-        for (FileActionItemGroup group: configuration.getGroupedItems()) {
-            for (FileActionItemItf item: group.getItems()) {
+        for (ContentActionItemGroup group: configuration.getGroupedItems()) {
+            for (ContentActionItemItf item: group.getItems()) {
                 item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isZip, isImage, isMount);
             }
         }

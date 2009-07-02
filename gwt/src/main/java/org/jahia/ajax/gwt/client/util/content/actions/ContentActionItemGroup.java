@@ -29,31 +29,34 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.module.contentmanager.client;
+package org.jahia.ajax.gwt.client.util.content.actions;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.DOM;
-import org.jahia.ajax.gwt.client.widget.content.FileManager;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author rfelden
- * @version 10 juil. 2008 - 16:58:16
+ * User: rfelden
+ * Date: 7 janv. 2009 - 14:09:05
  */
-public class FileManagerEntryPoint implements EntryPoint {
+public class ContentActionItemGroup {
 
-    public void onModuleLoad() {
-        RootPanel panel = RootPanel.get("contentmanager") ;
-        if (panel != null) {
-            String conf = DOM.getElementAttribute(panel.getElement(), "config") ;
-            panel.add(new FileManager(
-                    DOM.getElementAttribute(panel.getElement(), "nodeTypes"),
-                    DOM.getElementAttribute(panel.getElement(), "filters"),
-                    DOM.getElementAttribute(panel.getElement(), "mimeTypes"),
-                    conf)) ;
-        }
+    private String groupLabel;
+    private List<ContentActionItemItf> items ;
+
+    public ContentActionItemGroup(String name) {
+        groupLabel = name ;
+        items = new ArrayList<ContentActionItemItf>() ;
     }
 
+    public void addItem(ContentActionItemItf item) {
+        items.add(item) ;
+    }
+
+    public String getGroupLabel() {
+        return groupLabel;
+    }
+
+    public List<ContentActionItemItf> getItems() {
+        return items;
+    }
 }

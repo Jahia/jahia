@@ -40,8 +40,8 @@ import java.util.ArrayList;
  */
 public class ManagerConfiguration {
 
-    private List<FileActionItemItf> items;
-    private List<FileActionItemGroup> groupedItems;
+    private List<ContentActionItemItf> items;
+    private List<ContentActionItemGroup> groupedItems;
 
     private boolean enableTextMenu;
 
@@ -64,18 +64,18 @@ public class ManagerConfiguration {
     private boolean displayDate = true;
 
     public ManagerConfiguration() {
-        items = new ArrayList<FileActionItemItf>();
-        groupedItems = new ArrayList<FileActionItemGroup>();
+        items = new ArrayList<ContentActionItemItf>();
+        groupedItems = new ArrayList<ContentActionItemGroup>();
         tableColumns = new ArrayList<String>();
         accordionPanels = new ArrayList<String>();
         tabs = new ArrayList<String>();
     }
 
-    public void addItem(FileActionItemItf item) {
+    public void addItem(ContentActionItemItf item) {
         items.add(item);
     }
 
-    public void addGroup(FileActionItemGroup group) {
+    public void addGroup(ContentActionItemGroup group) {
         groupedItems.add(group);
     }
 
@@ -107,11 +107,11 @@ public class ManagerConfiguration {
         this.hideLeftPanel = hide;
     }
 
-    public List<FileActionItemItf> getItems() {
+    public List<ContentActionItemItf> getItems() {
         return items;
     }
 
-    public List<FileActionItemGroup> getGroupedItems() {
+    public List<ContentActionItemGroup> getGroupedItems() {
         return groupedItems;
     }
 

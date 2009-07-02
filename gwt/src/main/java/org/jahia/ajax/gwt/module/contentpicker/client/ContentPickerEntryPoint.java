@@ -32,8 +32,8 @@
 package org.jahia.ajax.gwt.module.contentpicker.client;
 
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
-import org.jahia.ajax.gwt.client.widget.content.FilePicker;
-import org.jahia.ajax.gwt.client.widget.content.FilePickerViewport;
+import org.jahia.ajax.gwt.client.widget.content.ContentPicker;
+import org.jahia.ajax.gwt.client.widget.content.ContentPickerViewport;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.core.client.EntryPoint;
@@ -46,14 +46,14 @@ import com.google.gwt.core.client.EntryPoint;
  *         Date: 27 ao�t 2008
  *         Time: 17:59:59
  */
-public class FilePickerEntryPoint implements EntryPoint {
+public class ContentPickerEntryPoint implements EntryPoint {
     public void onModuleLoad() {
         JahiaGWT.init();
         RootPanel panel = RootPanel.get("filemanager");
         if (panel != null) {
             String callback = DOM.getElementAttribute(panel.getElement(), "callback") ;
             if (callback == null || callback.length() == 0) {
-                panel.add(new FilePicker(
+                panel.add(new ContentPicker(
                         DOM.getElementAttribute(panel.getElement(), "rootPath"),
                         DOM.getElementAttribute(panel.getElement(), "startPath"),
                         DOM.getElementAttribute(panel.getElement(), "nodeTypes"),
@@ -63,7 +63,7 @@ public class FilePickerEntryPoint implements EntryPoint {
                         Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs")),
                         callback));
             } else {
-                panel.add(new FilePickerViewport(
+                panel.add(new ContentPickerViewport(
                         DOM.getElementAttribute(panel.getElement(), "rootPath"),
                         DOM.getElementAttribute(panel.getElement(), "startPath"),
                         DOM.getElementAttribute(panel.getElement(), "nodeTypes"),

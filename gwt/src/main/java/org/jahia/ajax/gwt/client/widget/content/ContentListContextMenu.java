@@ -40,8 +40,8 @@ import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.content.actions.FileActionItemGroup;
-import org.jahia.ajax.gwt.client.util.content.actions.FileActionItemItf;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActionItemGroup;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActionItemItf;
 
 import java.util.List;
 
@@ -51,18 +51,18 @@ import java.util.List;
  * @author rfelden
  * @version 8 juil. 2008 - 11:42:43
  */
-public class FileListContextMenu extends Menu {
+public class ContentListContextMenu extends Menu {
 
-    public FileListContextMenu(final BrowserLinker linker, final ManagerConfiguration config) {
+    public ContentListContextMenu(final BrowserLinker linker, final ManagerConfiguration config) {
         super() ;
 
         // add all items found in the defined menus
         for (int i=0; i<config.getGroupedItems().size(); i++) {
-            FileActionItemGroup group = config.getGroupedItems().get(i) ;
+            ContentActionItemGroup group = config.getGroupedItems().get(i) ;
             if (i > 0) {
                 add(new SeparatorMenuItem()) ;
             }
-            for (FileActionItemItf item: group.getItems()) {
+            for (ContentActionItemItf item: group.getItems()) {
                 add(item.getContextMenuItem()) ;
             }
         }
@@ -119,8 +119,8 @@ public class FileListContextMenu extends Menu {
                     }
                     isImage = topTableSelection.get(0).getNodeTypes().contains("jmix:image") ;
                 }
-                for (FileActionItemGroup group: config.getGroupedItems()) {
-                    for (FileActionItemItf item: group.getItems()) {
+                for (ContentActionItemGroup group: config.getGroupedItems()) {
+                    for (ContentActionItemItf item: group.getItems()) {
                         item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isZip, isImage, isMount);
                     }
                 }

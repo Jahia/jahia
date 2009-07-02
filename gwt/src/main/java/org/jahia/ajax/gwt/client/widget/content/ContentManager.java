@@ -33,8 +33,8 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 
-import org.jahia.ajax.gwt.client.widget.content.FileToolbar;
-import org.jahia.ajax.gwt.client.widget.content.FileStatusBar;
+import org.jahia.ajax.gwt.client.widget.content.ContentToolbar;
+import org.jahia.ajax.gwt.client.widget.content.ContentStatusBar;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 
@@ -44,9 +44,9 @@ import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactor
  * @author rfelden
  * @version 19 juin 2008 - 15:22:43
  */
-public class FileManager extends TriPanelBrowserViewport {
+public class ContentManager extends TriPanelBrowserViewport {
 
-    public FileManager(String types, String filters, String mimeTypes, String conf) {
+    public ContentManager(String types, String filters, String mimeTypes, String conf) {
         // superclass constructor (define linker)
         super();
 
@@ -69,9 +69,9 @@ public class FileManager extends TriPanelBrowserViewport {
 
         // construction of the UI components
         LeftComponent tree = new FolderTree(config);
-        final FilesView filesViews = new FilesView(config);
-        BottomRightComponent tabs = new FileDetails(config);
-        TopBar toolbar = new FileToolbar(config) {
+        final ContentViews filesViews = new ContentViews(config);
+        BottomRightComponent tabs = new ContentDetails(config);
+        TopBar toolbar = new ContentToolbar(config) {
             protected void setListView() {
                 filesViews.switchToListView();
             }
@@ -84,7 +84,7 @@ public class FileManager extends TriPanelBrowserViewport {
                 filesViews.switchToDetailedThumbView();
             }
         };
-        BottomBar statusBar = new FileStatusBar();
+        BottomBar statusBar = new ContentStatusBar();
 
         // setup widgets in layout
         initWidgets(tree.getComponent(),

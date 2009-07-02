@@ -53,9 +53,9 @@ import java.util.List;
  * User: rfelden
  * Date: 16 sept. 2008 - 09:46:42
  */
-public class FilesView extends TopRightComponent {
+public class ContentViews extends TopRightComponent {
 
-    private FileTable fileTable;
+    private TableView tableView;
     private ThumbView thumbView;
 
     private ThumbView detailedThumbView;
@@ -64,15 +64,15 @@ public class FilesView extends TopRightComponent {
     private TopRightComponent current;
     private SearchField searchField;
 
-    private FileListContextMenu contextMenu;
+    private ContentListContextMenu contextMenu;
 
     private ManagerConfiguration configuration;
 
     private List<GWTJahiaNode> searchResults = null;
 
-    public FilesView(ManagerConfiguration config) {
+    public ContentViews(ManagerConfiguration config) {
         configuration = config;
-        fileTable = new FileTable(config);
+        tableView = new TableView(config);
         thumbView = new ThumbView(config);
         detailedThumbView = new ThumbView(config) {
             @Override
@@ -120,24 +120,24 @@ public class FilesView extends TopRightComponent {
 
         // set default view
         if (config.getDefaultView() == JCRClientUtils.FILE_TABLE) {
-            current = fileTable;
+            current = tableView;
         } else if (config.getDefaultView() == JCRClientUtils.THUMB_VIEW) {
             current = thumbView;
         }else if (config.getDefaultView() == JCRClientUtils.DETAILED_THUMB_VIEW) {
             current = detailedThumbView;
         } else {
-            current = fileTable;          
+            current = tableView;
         }
         m_component.add(current.getComponent());
 
     }
 
     public void switchToListView() {
-        if (current != fileTable) {
+        if (current != tableView) {
             clearTable();
             m_component.removeAll();
-            //fileTable = new FileTable(configuration) ;
-            current = fileTable;
+            //tableView = new TableView(configuration) ;
+            current = tableView;
             current.setContextMenu(contextMenu);
             //current.initWithLinker(getLinker());
             m_component.add(current.getComponent());
@@ -228,13 +228,13 @@ public class FilesView extends TopRightComponent {
 
     public void initWithLinker(BrowserLinker linker) {
         super.initWithLinker(linker);
-        fileTable.initWithLinker(linker);
+        tableView.initWithLinker(linker);
         thumbView.initWithLinker(linker);
         detailedThumbView.initWithLinker(linker);
     }
 
     public void initContextMenu() {
-        contextMenu = new FileListContextMenu(getLinker(), configuration);
+        contextMenu = new ContentListContextMenu(getLinker(), configuration);
         current.setContextMenu(contextMenu);
     }
 

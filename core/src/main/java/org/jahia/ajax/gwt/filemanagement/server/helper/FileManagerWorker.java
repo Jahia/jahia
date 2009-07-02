@@ -37,7 +37,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
-import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.filemanagement.server.GWTFileManagerUploadServlet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.*;
@@ -111,7 +111,7 @@ public class FileManagerWorker {
         return b.toString();
     }
 
-    /**
+    /*
      * Append the children corresponding to the open paths.
      *
      * @param node      the node to retrieve children of

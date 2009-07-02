@@ -49,7 +49,7 @@ import com.google.gwt.core.client.EntryPoint;
 public class ContentPickerEntryPoint implements EntryPoint {
     public void onModuleLoad() {
         JahiaGWT.init();
-        RootPanel panel = RootPanel.get("filemanager");
+        RootPanel panel = RootPanel.get("contentmanager");
         if (panel != null) {
             String callback = DOM.getElementAttribute(panel.getElement(), "callback") ;
             if (callback == null || callback.length() == 0) {

@@ -136,11 +136,13 @@ public class FileDetails extends BottomRightComponent {
         rolesTabItem = new AsyncTabItem();
         rolesTabItem.setLayout(new FitLayout());
         rolesTabItem.setText(Messages.getResource("fm_roles"));
+        rolesTabItem.setEnabled(false);
 
         // modes
         modesTabItem = new AsyncTabItem();
         modesTabItem.setLayout(new FitLayout());
         modesTabItem.setText(Messages.getResource("fm_modes"));
+        modesTabItem.setEnabled(false);
 
         // authorizations
         authorizationsTabItem = new AsyncTabItem();
@@ -236,7 +238,7 @@ public class FileDetails extends BottomRightComponent {
             if (selectedNodes.size() == 1) {
                 infoTabItem.setEnabled(true);
                 propertiesTabItem.setEnabled(true);
-                if (selectedNodes.get(0).isFile()) {
+                if (selectedNodes.get(0).isPortlet()) {
                     modesTabItem.setEnabled(true);
                     rolesTabItem.setEnabled(true);
                 } else {

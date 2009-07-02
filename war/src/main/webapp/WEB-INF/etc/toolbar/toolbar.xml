@@ -32,7 +32,7 @@
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.sites" separator="false"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.View"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.Tools"/>
-            
+
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.License"/>
             <!-- push to right-->
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.Fill" separator="false"/>
@@ -105,12 +105,12 @@
         <itemsgroup type="org.jahia.toolbar.itemsgroup.Fill">
             <item ref-type="org.jahia.toolbar.item.Fill"/>
         </itemsgroup>
-        
+
         <itemsgroup type="org.jahia.toolbar.itemsgroup.License" layout="button-label">
-            <visibility authentication="true"/>        
+            <visibility authentication="true"/>
             <item ref-type="org.jahia.toolbar.item.License"/>
         </itemsgroup>
-         
+
         <!-- User-->
         <itemsgroup type="org.jahia.toolbar.itemsgroup.User" layout="button-label">
             <title-resourcebundle-key key='toolbar.itemgroups.user'/>
@@ -194,6 +194,7 @@
             <visibility authentication="true"/>
             <item ref-type="org.jahia.toolbar.item.FileManager"/>
             <item ref-type="org.jahia.toolbar.item.MashupManager"/>
+            <item ref-type="org.jahia.toolbar.item.ContentManager"/>
             <item ref-type="org.jahia.toolbar.item.GWTWorkflow"/>
             <item ref-type="org.jahia.toolbar.item.Pdisplay"/>
         </itemsgroup>
@@ -291,7 +292,7 @@
         <itemsgroup type="org.jahia.toolbar.itemsgroup.LanguageSwitcher" layout="button-label">
             <item ref-type="org.jahia.toolbar.item.LanguageSwitcher"/>
         </itemsgroup>
-        
+
         <!-- subscriptions -->
         <itemsgroup type="org.jahia.toolbar.itemsgroup.Subscriptions" layout="button-label">
             <item ref-type="org.jahia.toolbar.item.Subscriptions"/>
@@ -348,13 +349,13 @@
 
         <!-- fill item-->
         <item type="org.jahia.toolbar.item.Fill"/>
-        
+
         <item type="org.jahia.toolbar.item.Toolbars"/>
-        
+
         <item type="org.jahia.toolbar.item.ToolbarsTitle" extends="org.jahia.toolbar.item.Toolbars">
             <title-resourcebundle-key key="toolbar.view.toolbars"/>
         </item>
-        
+
         <!-- License information -->
         <item type="org.jahia.toolbar.item.License" extends="org.jahia.toolbar.item.InfoPanel">
         		<title-resourcebundle-key key="button.license"/>
@@ -363,7 +364,7 @@
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.InfoPropertyResolver" input="license_30"/>
             </property>
         </item>
-        
+
         <!-- Connected user -->
         <item type="org.jahia.toolbar.item.User" extends="org.jahia.toolbar.item.InfoPanel">
             <title-resourcebundle-key key="button.user"/>
@@ -503,7 +504,20 @@
             </property>
         </item>
 
-        <!-- File Manager -->
+        <!-- Content Manager -->
+        <item type="org.jahia.toolbar.item.ContentManager" extends="org.jahia.toolbar.item.OpenWindow">
+            <title-resourcebundle-key key="button.contentmanager"/>
+            <icon-style min="gwt-toolbar-ItemsGroup-icons-contentmanager-min"
+                        max="gwt-toolbar-ItemsGroup-icons-contentmanager-normal"/>
+            <description-resourcebundle-key key="button.contentmanager"/>
+            <visibility site-action-permission="engines.contentmanager"/>
+            <property name="url">
+                <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
+                                input="contentmanager"/>
+            </property>
+        </item>
+
+        <!-- Mashup Manager -->
         <item type="org.jahia.toolbar.item.MashupManager" extends="org.jahia.toolbar.item.OpenWindow">
             <title-resourcebundle-key key="button.mashupmanager"/>
             <icon-style min="gwt-toolbar-ItemsGroup-icons-mashupmanager-min"
@@ -803,7 +817,7 @@
                         max="gwt-toolbar-ItemsGroup-icons-subscriptions-normal"/>
             <property name="events" value="contentPublished,commentAdded"/>
         </item>
-        
+
         <!-- newsletter -->
         <item type="org.jahia.toolbar.item.Newsletter" extends="org.jahia.toolbar.item.AjaxAction">
             <title-resourcebundle-key key="toolbar.subscriptions.button.newsletter.title"/>

@@ -150,14 +150,7 @@ public class ManagerConfigurationFactory {
 
         // no columns to add (default)
 
-        // show all repository
-        completeManagerConfig.addAccordion(JCRClientUtils.WEBSITE_REPOSITORY);
-        completeManagerConfig.addAccordion(JCRClientUtils.SHARED_REPOSITORY);
-        completeManagerConfig.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY);
-        completeManagerConfig.addAccordion(JCRClientUtils.MY_REPOSITORY);
-        completeManagerConfig.addAccordion(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
-        completeManagerConfig.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY);
-        completeManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY);
+        // show root repository
         completeManagerConfig.addAccordion(JCRClientUtils.GLOBAL_REPOSITORY);
 
         completeManagerConfig.setNodeTypes("");
@@ -165,6 +158,9 @@ public class ManagerConfigurationFactory {
         // show the current site (first) tab by default
 
         // do not hide the left panel (default)
+
+        completeManagerConfig.addTab(JCRClientUtils.ROLES_ACL);
+        completeManagerConfig.addTab(JCRClientUtils.MODES_ACL);
 
         return completeManagerConfig;
     }
@@ -377,7 +373,6 @@ public class ManagerConfigurationFactory {
 
         mashupManagerConfig.addTab(JCRClientUtils.ROLES_ACL);
         mashupManagerConfig.addTab(JCRClientUtils.MODES_ACL);
-        mashupManagerConfig.addTab(JCRClientUtils.AUTHORIZATIONS_ACL);
 
 
         // show the mashup tab by default

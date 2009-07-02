@@ -33,15 +33,16 @@ package org.jahia.ajax.gwt.client.service.definition;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
+ * GWT remote service for retrieving JCR node type information.
+ * 
+ * @author Thomas Draier
  * Date: Aug 25, 2008
  * Time: 6:20:38 PM
- * To change this template use File | Settings | File Templates.
  */
 public interface JahiaContentDefinitionServiceAsync {
 
@@ -52,5 +53,6 @@ public interface JahiaContentDefinitionServiceAsync {
 
     public void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
 
+    void getNodeSubtypes(String baseType, GWTJahiaNode parentNode, AsyncCallback<List<GWTJahiaNodeType>> async);
 
 }

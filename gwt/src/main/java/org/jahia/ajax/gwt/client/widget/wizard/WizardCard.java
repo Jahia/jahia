@@ -52,13 +52,15 @@ import com.google.gwt.user.client.Element;
  * user extension for creating wizards.<br/><br/>"</br> + "Please click the
  * \"next\"-button and fill out all form values.");</br> cards.add(wc);</br>
  */
-public class WizardCard extends LayoutContainer {
+public abstract class WizardCard extends LayoutContainer {
 
     private List<Listener<BaseEvent>> finishListeners;
     private String cardtitle;
     private FormPanel panel;
     private WizardWindow wizardWindow;
     private String htmltext;
+    private boolean uiCreated;
+    private WizardCard nextWizardCard;
     /**
      * Creates a new wizard card.
      *
@@ -68,6 +70,17 @@ public class WizardCard extends LayoutContainer {
         super();
         this.cardtitle = cardtitle;
         setLayout(new RowLayout(Orientation.VERTICAL));
+    }
+
+    /**
+     * Creates a new wizard card.
+     *
+     * @param cardtitle title string of this card
+     * @param text he car text
+     */
+    public WizardCard(String cardtitle, String text) {
+        this(cardtitle);
+        setHtmlText(text);
     }
 
     @Override
@@ -161,4 +174,29 @@ public class WizardCard extends LayoutContainer {
       layout();
     }
     
+    public abstract void next();
+
+    public boolean isUiCreated() {
+        return uiCreated;
+    }
+
+    public void setUiCreated(boolean uiCreated) {
+        this.uiCreated = uiCreated;
+    }
+
+    public abstract void createUI();
+
+    public void resetUI() {
+        setUiCreated(false);
+    }
+
+    public WizardCard getNextCard() {
+        return nextWizardCard;
+    
+    }
+
+    public void setNextWizardCard(WizardCard nextWizardCard) {
+        this.nextWizardCard = nextWizardCard;
+    }
+
 }

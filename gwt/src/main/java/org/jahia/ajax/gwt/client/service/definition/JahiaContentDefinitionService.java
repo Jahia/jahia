@@ -37,15 +37,16 @@ import com.google.gwt.core.client.GWT;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
+ * GWT remote service for retrieving JCR node type information.
+ * 
+ * @author Thomas Draier
  * Date: Aug 25, 2008
  * Time: 6:20:26 PM
- * To change this template use File | Settings | File Templates.
  */
 public interface JahiaContentDefinitionService extends RemoteService {
 
@@ -69,4 +70,16 @@ public interface JahiaContentDefinitionService extends RemoteService {
 
     public List<GWTJahiaNodeType> getNodeTypes(List<String> names);
 
+    /**
+     * Returns a list of node types with name and label populated that are the
+     * sub-types of the specified base type.
+     * 
+     * @param baseType
+     *            the node type name to find sub-types
+     * @param parentNode
+     *            the parent node, where the wizard was called
+     * @return a list of node types with name and label populated that are the
+     *         sub-types of the specified base type
+     */
+    List<GWTJahiaNodeType> getNodeSubtypes(String baseType, GWTJahiaNode parentNode);
 }

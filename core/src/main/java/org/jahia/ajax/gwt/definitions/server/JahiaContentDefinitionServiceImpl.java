@@ -35,6 +35,7 @@ import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.*;
 
@@ -56,4 +57,18 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
         return ContentDefinitionHelper.getNodeTypes(names, retrieveParamBean());
     }
 
+    /**
+     * Returns a list of node types with name and label populated that are the
+     * sub-types of the specified base type.
+     * 
+     * @param baseType
+     *            the node type name to find sub-types
+     * @param parentNode
+     *            the parent node, where the wizard was called
+     * @return a list of node types with name and label populated that are the
+     *         sub-types of the specified base type
+     */
+    public List<GWTJahiaNodeType> getNodeSubtypes(String baseType, GWTJahiaNode parentNode) {
+        return ContentDefinitionHelper.getNodeSubtypes(baseType, parentNode, retrieveParamBean());
+    }
 }

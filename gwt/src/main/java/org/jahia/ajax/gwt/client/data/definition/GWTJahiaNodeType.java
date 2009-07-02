@@ -49,8 +49,14 @@ public class GWTJahiaNodeType extends BaseModelData implements Serializable {
     private List<GWTJahiaItemDefinition> items;
 
     public GWTJahiaNodeType() {
+        super();
     }
 
+    public GWTJahiaNodeType(String name, String label) {
+        this();
+        setName(name);
+        setLabel(label);
+    }
 
     public List<GWTJahiaItemDefinition> getInheritedItems() {
         return inheritedItems;

@@ -55,12 +55,7 @@ public class PortletRoleCard extends MashupWizardCard {
     private AclEditor aclEditor;
 
     public PortletRoleCard() {
-        super(Messages.getNotEmptyResource("mw_roles_perm", "Roles permissions"));
-        setHtmlText(getText());
-    }
-
-    public String getText() {
-        return Messages.getNotEmptyResource("mw_roles_perm_desc", "Set roles permissions");
+        super(Messages.getNotEmptyResource("mw_roles_perm", "Roles permissions"), Messages.getNotEmptyResource("mw_roles_perm_desc", "Set roles permissions"));
     }
 
     public void next() {

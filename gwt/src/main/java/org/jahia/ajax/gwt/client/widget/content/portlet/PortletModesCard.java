@@ -55,13 +55,7 @@ public class PortletModesCard extends MashupWizardCard {
 
 
     public PortletModesCard() {
-        super(Messages.getNotEmptyResource("mw_modes_permissions", "Modes permissions"));
-        setHtmlText(getText());
-
-    }
-
-    public String getText() {
-        return Messages.getNotEmptyResource("mw_modes_permissions_description", "Set modes permissions");
+        super(Messages.getNotEmptyResource("mw_modes_permissions", "Modes permissions"), Messages.getNotEmptyResource("mw_modes_permissions_description", "Set modes permissions"));
     }
 
     public void next() {

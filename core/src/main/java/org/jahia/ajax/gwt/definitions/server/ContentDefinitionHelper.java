@@ -35,6 +35,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaPropertyDefinition;
 import org.jahia.ajax.gwt.content.server.helper.Utils;
 import org.jahia.ajax.gwt.client.data.definition.*;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.utils.i18n.ResourceBundleMarker;
@@ -178,5 +179,49 @@ public class ContentDefinitionHelper {
         return null;
     }
 
+    /**
+     * Returns a list of node types with name and label populated that are the
+     * sub-types of the specified base type.
+     * 
+     * @param baseType
+     *            the node type name to find sub-types
+     * @param parentNode
+     *            the parent node, where the wizard was called
+     * @param ctx
+     *            current processing context instance
+     * @return a list of node types with name and label populated that are the
+     *         sub-types of the specified base type
+     */
+    public static List<GWTJahiaNodeType> getNodeSubtypes(String baseType,
+            GWTJahiaNode parentNode, ProcessingContext ctx) {
+
+        List<GWTJahiaNodeType> gwtNodeTypes = new ArrayList<GWTJahiaNodeType>();
+        try {
+            // TODO consider also parent node
+            baseType = baseType != null ? baseType : "jnt:container";
+            ExtendedNodeType baseNodeType = null;
+            try {
+                baseNodeType = NodeTypeRegistry.getInstance().getNodeType(
+                        baseType);
+            } catch (NoSuchNodeTypeException e) {
+                logger.warn("Node type with the name '" + baseType
+                        + "' cannot be found in the registry", e);
+            }
+            if (baseNodeType != null) {
+                ExtendedNodeType[] types = baseNodeType.getSubtypes();
+                for (int i = 0; i < types.length; i++) {
+                    ExtendedNodeType nodeType = types[i];
+                    if (!excludedTypes.contains(nodeType.getName())) {
+                        gwtNodeTypes
+                                .add(new GWTJahiaNodeType(nodeType.getName(),
+                                        nodeType.getLabel(ctx.getLocale())));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return gwtNodeTypes;
+    }
 
 }

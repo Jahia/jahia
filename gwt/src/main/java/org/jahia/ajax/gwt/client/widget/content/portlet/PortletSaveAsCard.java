@@ -49,12 +49,7 @@ public class PortletSaveAsCard extends MashupWizardCard {
     private TextField<String> saveAs = new TextField<String>();
 
     public PortletSaveAsCard() {
-        super(Messages.getNotEmptyResource("mw_finish","Finish"));
-        setHtmlText(getText());
-    }
-
-    public String getText() {
-        return Messages.getNotEmptyResource("mw_finish_description","");
+        super(Messages.getNotEmptyResource("mw_finish","Finish"), Messages.getNotEmptyResource("mw_finish_description",""));
     }
 
     public void createUI() {

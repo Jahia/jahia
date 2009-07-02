@@ -34,6 +34,8 @@ package org.jahia.ajax.gwt.client.widget.content.portlet;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
+
+import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -56,15 +58,9 @@ public class PortletDefinitionCard extends MashupWizardCard {
     private Grid<GWTJahiaPortletDefinition> grid;
 
     public PortletDefinitionCard() {
-        super(Messages.getNotEmptyResource("mw_mashups", "Mashup"));
+        super(Messages.getNotEmptyResource("mw_mashups", "Mashup"), Messages.getNotEmptyResource("mw_select_portlet_def", "Select a portlet definition"));
         createUI();
-        setHtmlText(getText());
     }
-
-    public String getText() {
-        return Messages.getNotEmptyResource("mw_select_portlet_def", "Select a portlet definition");
-    }
-
 
     public void createUI() {
         removeAll();
@@ -86,6 +82,7 @@ public class PortletDefinitionCard extends MashupWizardCard {
         ColumnModel cm = new ColumnModel(columns);
         grid = new Grid<GWTJahiaPortletDefinition>(store, cm);
         grid.setBorders(true);
+        grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         ContentPanel panel = new ContentPanel();
         panel.setLayout(new FitLayout());

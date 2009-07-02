@@ -31,69 +31,32 @@
  */
 package org.jahia.ajax.gwt.client.widget.content.portlet;
 
-import org.jahia.ajax.gwt.client.widget.wizard.WizardWindow;
-import org.jahia.ajax.gwt.client.widget.wizard.WizardCard;
+import org.jahia.ajax.gwt.client.widget.content.AddContentWizardWindow;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNewPortletInstance;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.extjs.gxt.ui.client.widget.button.Button;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
  * User: ktlili
  * Date: 25 nov. 2008
  * Time: 10:28:28
  */
-public class PortletWizardWindow extends WizardWindow {
-    private GWTJahiaNode parentNode;
-    private BrowserLinker linker;
+public class PortletWizardWindow extends AddContentWizardWindow {
     private GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
 
     public PortletWizardWindow(BrowserLinker linker, GWTJahiaNode parentNode) {
-        super(createCards());
-        this.parentNode = parentNode;
-        this.linker = linker;
-        setSize(650, 460);
-
+        super(linker, parentNode);
     }
 
     public PortletWizardWindow() {
         this(null, null);
     }
 
-    private static List<WizardCard> createCards() {
-        // setup an array of WizardCards
-        ArrayList<WizardCard> cards = new ArrayList<WizardCard>();
-
-        // 1st card
-        MashupWizardCard wc1 = new PortletDefinitionCard();
-        cards.add(wc1);
-
-        // 2nd card
-        MashupWizardCard wc2 = new PortletFormCard();
-        cards.add(wc2);
-        wc1.setNextWizardCard(wc2);
-
-        // 3rd card
-        MashupWizardCard wc3 = new PortletRoleCard();
-        cards.add(wc3);
-        wc2.setNextWizardCard(wc3);
-
-        // 4th card
-        MashupWizardCard wc4 = new PortletModesCard();
-        cards.add(wc4);
-        wc3.setNextWizardCard(wc4);
-
-        // 5th card
-        MashupWizardCard wc5 = new PortletSaveAsCard();
-        cards.add(wc5);
-        wc4.setNextWizardCard(wc5);
-
-
-        return cards;
+    protected void createCards() {
+        addCard(new PortletDefinitionCard()).addCard(new PortletFormCard())
+                .addCard(new PortletRoleCard()).addCard(new PortletModesCard())
+                .addCard(new PortletSaveAsCard());
     }
 
     public GWTJahiaNewPortletInstance getGwtJahiaNewPortletInstance() {
@@ -104,48 +67,12 @@ public class PortletWizardWindow extends WizardWindow {
         this.gwtJahiaNewPortletInstance = gwtJahiaNewPortletInstance;
     }
 
-    protected void onButtonPressed(Button button) {
-        if (button == nextBtn) {
-            if (!cards.get(currentStep).isValid()) {
-                return;
-            }
-
-            // execute next action
-            MashupWizardCard currentCard = (MashupWizardCard) cards.get(currentStep);
-            currentCard.next();
-
-            if (currentStep + 1 < cards.size()) {
-                MashupWizardCard nextCard = (MashupWizardCard) cards.get(currentStep + 1);
-                if (!nextCard.isUiCreated()) {
-                    nextCard.createUI();
-                    nextCard.setUiCreated(true);
-                }
-            }
-        }
-        if (button == nextBtn && currentStep + 1 == cards.size()) {
-            return;
-        }
-
-        super.onButtonPressed(button);
-    }
-
-    public void resetCards(int index) {
-        for (int i = index + 1; i < cards.size(); i++) {
-            MashupWizardCard card = (MashupWizardCard) cards.get(i);
-            if (card != null) {
-                card.resetUI();
-            }
-        }
-    }
-
-    public BrowserLinker getLinker() {
-        return linker;
-    }
-
-    public GWTJahiaNode getParentNode() {
-        return parentNode;
-    }
-
     public void onPortletCreated() {
     }
+
+    @Override
+    public String getHeaderTitle() {
+        return Messages.get("mw_title", "Add mashup");
+    }
+    
 }

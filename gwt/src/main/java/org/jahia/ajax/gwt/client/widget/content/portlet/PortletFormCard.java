@@ -31,7 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.content.portlet;
 
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -55,12 +54,7 @@ public class PortletFormCard extends MashupWizardCard {
     private PropertiesEditor pe;
 
     public PortletFormCard() {
-        super(Messages.getNotEmptyResource("mw_params","Parametes"));
-        setHtmlText(getText());
-    }
-
-    public String getText() {
-        return Messages.getNotEmptyResource("mw_edit_params","Edit parameters");
+        super(Messages.getNotEmptyResource("mw_params","Parametes"), Messages.getNotEmptyResource("mw_edit_params","Edit parameters"));
     }
 
     public void createUI() {
@@ -80,8 +74,7 @@ public class PortletFormCard extends MashupWizardCard {
 
     // laod form asyn
     private void createUIAsync() {
-        JahiaContentDefinitionServiceAsync service = JahiaContentDefinitionService.App.getInstance();
-        service.getNodeType(getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getPortletType(), new AsyncCallback<GWTJahiaNodeType>() {
+        JahiaContentDefinitionService.App.getInstance().getNodeType(getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getPortletType(), new AsyncCallback<GWTJahiaNodeType>() {
             public void onSuccess(GWTJahiaNodeType result) {
                 List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>();
                 list.add(result);

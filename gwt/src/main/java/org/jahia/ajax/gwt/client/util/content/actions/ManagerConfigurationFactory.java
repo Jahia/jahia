@@ -79,6 +79,9 @@ public class ManagerConfigurationFactory {
         ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         completeManagerConfig.addItem(newFolder);
+        ContentActionItem newContent = ItemCreator.createNewContentItem(linker);
+        file.addItem(newContent);
+        completeManagerConfig.addItem(newContent);
         ContentActionItem newMashup = ItemCreator.createNewMashupItem(linker);
         file.addItem(newMashup);
         ContentActionItem newRSS = ItemCreator.createNewRSSItem(linker);
@@ -733,6 +736,19 @@ public class ManagerConfigurationFactory {
                 }
             };
             return newMashup;
+        }
+
+        private static ContentActionItem createNewContentItem(final BrowserLinker linker) {
+            ContentActionItem newContent = new ContentActionItem(Messages.getResource("fm_newcontent"), "fm-newcontent") {
+                public void onSelection() {
+                    ContentActions.showContentWizard(linker);
+                }
+
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+                }
+            };
+            return newContent;
         }
 
     }

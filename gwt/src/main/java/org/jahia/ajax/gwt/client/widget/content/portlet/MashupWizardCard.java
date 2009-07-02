@@ -43,12 +43,9 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
  * Time: 11:09:55
  */
 public abstract class MashupWizardCard extends WizardCard {
-    private MashupWizardCard nextWizardCard;
-    private boolean uiCreated;
-    private String text;
 
-    public MashupWizardCard(String cardtitle) {
-        super(cardtitle);
+    public MashupWizardCard(String cardtitle, String text) {
+        super(cardtitle, text);
         setLayout(new FitLayout());
     }
 
@@ -91,42 +88,18 @@ public abstract class MashupWizardCard extends WizardCard {
         return getPortletWizardWindow().getParentNode();
     }
 
-    public MashupWizardCard getNextCard() {
-        return nextWizardCard;
-
-    }
-
-    public void setNextWizardCard(MashupWizardCard nextWizardCard) {
-        this.nextWizardCard = nextWizardCard;
-    }
-
-    public boolean isUiCreated() {
-        return uiCreated;
-    }
-
-    public void setUiCreated(boolean uiCreated) {
-        this.uiCreated = uiCreated;
-    }
-
-
-    public void resetUI() {
-        setUiCreated(false);
-    }
-
-    public void createUI(){
-       updateHtmlText(); 
-    }
-
-    public abstract String getText();
-
-    public abstract void next();
-
-    private void updateHtmlText() {
+    public void updateHtmlText() {
         String name = "";
         if (getGwtJahiaNewPortletInstance() != null && getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition() != null) {
             name = getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getDisplayName();
 
         }
-        super.setHtmlText("[" + name + "] " + getText());    //To change body of overridden methods use File | Settings | File Templates.
+        super.setHtmlText("[" + name + "] " + getHtmltext());
     }
+
+    @Override
+    public void createUI() {
+        updateHtmlText(); 
+    }
+    
 }

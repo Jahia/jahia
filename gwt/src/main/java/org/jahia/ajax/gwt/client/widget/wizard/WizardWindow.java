@@ -32,7 +32,10 @@
 package org.jahia.ajax.gwt.client.widget.wizard;
 
 
+import java.util.LinkedList;
 import java.util.List;
+
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -75,17 +78,9 @@ public class WizardWindow extends Window {
         NONE, DOT, PROGRESSBAR
     }
 
-    private String previousButtonText = "< Previous";
-    private String nextButtonText = "Next >";
-    protected String cancelButtonText = "Cancel";
-    private String finishButtonText = "Finish";
-    private String indicateStepText = "Step ";
-    private String indicateOfText = " of ";
-
     protected int currentStep = 0;
     protected List<WizardCard> cards;
 
-    private String headerTitle;
     private Header headerPanel;
     private CardPanel cardPanel;
     protected Button prevBtn;
@@ -100,14 +95,15 @@ public class WizardWindow extends Window {
      */
     public WizardWindow(List<WizardCard> cards) {
         super();
-        this.cards = cards;
-        for (WizardCard card : cards) {
+        this.cards = cards != null ? cards : new LinkedList();
+        for (WizardCard card : this.cards) {
             card.setWizardWindow(this);
         }
         setSize(540, 400);
         setClosable(true);
         setResizable(true);
         setModal(true);
+        setHeading(getHeaderTitle());
     }
 
     protected void onButtonPressed(Button button) {
@@ -140,9 +136,9 @@ public class WizardWindow extends Window {
         this.cardPanel.setActiveItem(wc);
 
         if (currentStep + 1 == cards.size()) {
-            nextBtn.setText(finishButtonText);
+            nextBtn.setText(getFinishButtonText());
         } else {
-            nextBtn.setText(nextButtonText);
+            nextBtn.setText(getNextButtonText());
         }
 
         if (currentStep == 0) {
@@ -156,9 +152,9 @@ public class WizardWindow extends Window {
     protected void onRender(Element parent, int pos) {
         setLayout(new BorderLayout());
 
-        prevBtn = new Button(previousButtonText);
-        nextBtn = new Button(nextButtonText);
-        cancelBtn = new Button(cancelButtonText);
+        prevBtn = new Button(getPreviousButtonText());
+        nextBtn = new Button(getNextButtonText());
+        cancelBtn = new Button(getCancelButtonText());
 
         buttonBar = new ButtonBar();
         buttonBar.add(prevBtn);
@@ -195,16 +191,7 @@ public class WizardWindow extends Window {
      * @return the header title
      */
     public String getHeaderTitle() {
-        return headerTitle;
-    }
-
-    /**
-     * Sets the title located in the top header
-     *
-     * @param hdrtitle string value
-     */
-    public void setHeaderTitle(String hdrtitle) {
-        this.headerTitle = hdrtitle;
+        return Messages.get("wizard_header_title", "Wizard");
     }
 
     /**
@@ -248,7 +235,7 @@ public class WizardWindow extends Window {
 
         protected void updateIndicatorStep(String cardtitle, String description) {
 
-            final String stepStr = indicateStepText + (1 + currentStep) + indicateOfText + cards.size() + " : " + cardtitle;
+            final String stepStr = getIndicateStepText() + " " + (1 + currentStep)+ " " + getIndicateOfText() + " " + cards.size() + " : " + cardtitle;
             final double stepRatio = (double) (1 + currentStep) / (double) cards.size();
             if (description != null) {
                 titleHTML.setHtml(description);
@@ -281,87 +268,78 @@ public class WizardWindow extends Window {
      * @return the previousButtonText
      */
     public String getPreviousButtonText() {
-        return previousButtonText;
-    }
-
-    /**
-     * @param previousButtonText the previousButtonText to set. Defaults to "< Previous".
-     */
-    public void setPreviousButtonText(String previousButtonText) {
-        this.previousButtonText = previousButtonText;
+        return Messages.get("wizard_button_prev", "< Previous");
     }
 
     /**
      * @return the nextButtonText
      */
     public String getNextButtonText() {
-        return nextButtonText;
-    }
-
-    /**
-     * @param nextButtonText the nextButtonText to set. Defaults to "Next >".
-     */
-    public void setNextButtonText(String nextButtonText) {
-        this.nextButtonText = nextButtonText;
+        return Messages.get("wizard_button_next", "Next >");
     }
 
     /**
      * @return the cancelButtonText
      */
     public String getCancelButtonText() {
-        return cancelButtonText;
-    }
-
-    /**
-     * @param cancelButtonText the cancelButtonText to set. Defaults to "Cancel".
-     */
-    public void setCancelButtonText(String cancelButtonText) {
-        this.cancelButtonText = cancelButtonText;
+        return Messages.get("wizard_button_cancel", "Cancel");
     }
 
     /**
      * @return the finishButtonText
      */
     public String getFinishButtonText() {
-        return finishButtonText;
-    }
-
-    /**
-     * @param finishButtonText the finishButtonText to set. Defaults to "Finish".
-     */
-    public void setFinishButtonText(String finishButtonText) {
-        this.finishButtonText = finishButtonText;
+        return Messages.get("wizard_button_finish", "Finish");
     }
 
     /**
      * @return the indicateStepText
      */
     public String getIndicateStepText() {
-        return indicateStepText;
-    }
-
-    /**
-     * @param indicateStepText the indicateStepText to set. Defaults to "Step ".
-     */
-    public void setIndicateStepText(String indicateStepText) {
-        this.indicateStepText = indicateStepText;
+        return Messages.get("wizard_steps_current", "Step");
     }
 
     /**
      * @return the indicateOfText
      */
     public String getIndicateOfText() {
-        return indicateOfText;
-    }
-
-    /**
-     * @param indicateOfText the indicateOfText to set. Defaults to " of ".
-     */
-    public void setIndicateOfText(String indicateOfText) {
-        this.indicateOfText = indicateOfText;
+        return Messages.get("wizard_steps_of", "of");
     }
 
     public List<WizardCard> getCards() {
         return cards;
     }
+
+    /**
+     * Resets the UI of all cards from the the specified one.
+     * 
+     * @param index
+     *            the card index to start after
+     */
+    public void resetCards(int index) {
+        for (int i = index + 1; i < cards.size(); i++) {
+            WizardCard card = cards.get(i);
+            if (card != null) {
+                card.resetUI();
+            }
+        }
+    }
+    
+    /**
+     * Adds the specified card to the wizard and link the previous one with it.
+     * 
+     * @param card
+     *            the wizard card to be added
+     * @return this wizard window object
+     */
+    public WizardWindow addCard(WizardCard card) {
+        if (cards.size() > 0) {
+            cards.get(cards.size() - 1).setNextWizardCard(card);
+        }
+        cards.add(card);
+        card.setWizardWindow(this);
+
+        return this;
+    }
+
 }

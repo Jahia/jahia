@@ -369,6 +369,19 @@ public class ContentActions {
         }
     }
 
+    public static void showContentWizard(final BrowserLinker linker) {
+        GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
+        if (parent == null) {
+            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+            if (selectedItems != null && selectedItems.size() == 1) {
+                parent = selectedItems.get(0);
+            }
+        }
+        if (parent != null && !parent.isFile()) {
+            new AddContentWizardWindow(linker, parent).show();
+        }
+    }
+
     public static void mountFolder(final BrowserLinker linker) {
 //        GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection() ;
 //        if (parent == null) {

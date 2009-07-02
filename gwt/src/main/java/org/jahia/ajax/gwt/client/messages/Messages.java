@@ -89,5 +89,17 @@ public class Messages {
         }
         return value;
     }
+    
+    /**
+     * Retrieve the resource bundle using <code>RESOURCE_BUNDLE_MODULE_TYPE</code> as default module type
+     * and <code>APPLICATION_RESOURCE_BUNDLE_ID</code> as default element id
+     *
+     * @param key
+     * @param defaultValue if the value is null or empty, return the defaultValue
+     * @return
+     */
+    public static String get(String key, String defaultValue) {
+        return getNotEmptyResource(key, defaultValue);
+    }
 
 }

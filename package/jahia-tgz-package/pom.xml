@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-package</artifactId>
-        <version>6.1-SNAPSHOT</version>
+        <version>7.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-tgz-package</artifactId>
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>configwizard-ear</artifactId>
-            <version>6.1-SNAPSHOT</version>
+            <version>${jahia.package.version}</version>
             <type>pom</type>
         </dependency>
     </dependencies>

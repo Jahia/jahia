@@ -29,12 +29,12 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.module.filemanager.client;
+package org.jahia.ajax.gwt.module.contentmanager.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.DOM;
-import org.jahia.ajax.gwt.client.widget.node.FileManager;
+import org.jahia.ajax.gwt.client.widget.content.FileManager;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,7 +45,7 @@ import org.jahia.ajax.gwt.client.widget.node.FileManager;
 public class FileManagerEntryPoint implements EntryPoint {
 
     public void onModuleLoad() {
-        RootPanel panel = RootPanel.get("filemanager") ;
+        RootPanel panel = RootPanel.get("contentmanager") ;
         if (panel != null) {
             String conf = DOM.getElementAttribute(panel.getElement(), "config") ;
             panel.add(new FileManager(

@@ -29,11 +29,11 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.module.filepicker.client;
+package org.jahia.ajax.gwt.module.contentpicker.client;
 
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
-import org.jahia.ajax.gwt.client.widget.node.FilePicker;
-import org.jahia.ajax.gwt.client.widget.node.FilePickerViewport;
+import org.jahia.ajax.gwt.client.widget.content.FilePicker;
+import org.jahia.ajax.gwt.client.widget.content.FilePickerViewport;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.core.client.EntryPoint;

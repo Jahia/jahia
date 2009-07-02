@@ -33,7 +33,7 @@ package org.jahia.ajax.gwt.definitions.server;
 
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaPropertyDefinition;
-import org.jahia.ajax.gwt.filemanagement.server.helper.Utils;
+import org.jahia.ajax.gwt.content.server.helper.Utils;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.*;

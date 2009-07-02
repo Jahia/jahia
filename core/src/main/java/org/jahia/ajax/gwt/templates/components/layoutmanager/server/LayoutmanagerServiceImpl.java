@@ -40,7 +40,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.layoutmanager.LayoutmanagerService;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutManagerConfig;
-import org.jahia.ajax.gwt.filemanagement.server.helper.FileManagerWorker;
+import org.jahia.ajax.gwt.content.server.helper.FileManagerWorker;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesProvider;

@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.filemanagement.server.helper;
+package org.jahia.ajax.gwt.content.server.helper;
 
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -38,7 +38,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.filemanagement.server.GWTFileManagerUploadServlet;
+import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
@@ -80,7 +80,6 @@ import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
 import java.util.*;
-import java.io.FileInputStream;
 
 /**
  * Created by IntelliJ IDEA.

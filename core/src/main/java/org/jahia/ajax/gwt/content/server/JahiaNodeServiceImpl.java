@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.filemanagement.server;
+package org.jahia.ajax.gwt.content.server;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
@@ -48,8 +48,8 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
-import org.jahia.ajax.gwt.filemanagement.server.helper.FileManagerWorker;
-import org.jahia.ajax.gwt.filemanagement.server.helper.JCRVersioningHelper;
+import org.jahia.ajax.gwt.content.server.helper.FileManagerWorker;
+import org.jahia.ajax.gwt.content.server.helper.JCRVersioningHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;

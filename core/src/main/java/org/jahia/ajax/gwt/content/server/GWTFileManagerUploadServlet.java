@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.filemanagement.server;
+package org.jahia.ajax.gwt.content.server;
 
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -46,7 +46,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.bin.Jahia;
-import org.jahia.ajax.gwt.filemanagement.server.helper.FileManagerWorker;
+import org.jahia.ajax.gwt.content.server.helper.FileManagerWorker;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import javax.servlet.http.HttpServlet;

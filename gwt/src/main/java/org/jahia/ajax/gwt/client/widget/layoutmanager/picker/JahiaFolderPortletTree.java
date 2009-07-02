@@ -44,10 +44,9 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.allen_sauer.gwt.log.client.Log;
-import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
-import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
-import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
+import org.jahia.ajax.gwt.client.service.content.JahiaNodeServiceAsync;
+import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.JahiaPortalManager;
 

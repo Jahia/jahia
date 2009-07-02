@@ -4,7 +4,7 @@
   <artifactId>jahia-root</artifactId>
   <name>Jahia Project Root</name>
   <groupId>org.jahia.server</groupId>
-  <version>6.1-SNAPSHOT</version>
+  <version>7.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <inceptionYear>2004</inceptionYear>
   <!--logo>/images/jahia.gif</logo-->
@@ -16,7 +16,7 @@
     <spring.version>2.5.5</spring.version>
     <jackrabbit.version>1.5.0</jackrabbit.version>
     <lucene.version>2.3.2</lucene.version>
-    <jahia.package.version>6.1-SNAPSHOT</jahia.package.version>
+    <jahia.package.version>7.0-SNAPSHOT</jahia.package.version>
   </properties>
 
   <scm>

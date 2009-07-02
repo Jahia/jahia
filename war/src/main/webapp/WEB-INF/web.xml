@@ -678,7 +678,7 @@
     <servlet>
         <servlet-name>fileManagerGWTUploadService</servlet-name>
         <servlet-class>
-            org.jahia.ajax.gwt.filemanagement.server.GWTFileManagerUploadServlet
+            org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet
         </servlet-class>
     </servlet>
 

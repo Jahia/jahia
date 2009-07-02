@@ -224,8 +224,8 @@
     </tag-file>
     <tag-file>
         <description>Displays the file manager engine</description>
-        <name>fileManager</name>
-        <path>/META-INF/tags/ajax/filemanager.tag</path>
+        <name>contentManager</name>
+        <path>/META-INF/tags/ajax/contentmanager.tag</path>
     </tag-file>
     <tag-file>
         <description>Displays the workflow manager engine</description>

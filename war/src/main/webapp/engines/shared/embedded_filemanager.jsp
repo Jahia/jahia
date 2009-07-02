@@ -44,7 +44,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 
-<internal:gwtImport module="org.jahia.ajax.gwt.module.filepicker.FilePicker" />
+<internal:gwtImport module="org.jahia.ajax.gwt.module.contentpicker.FilePicker" />
 <c:set var="jahia.engines.gwtModuleIncluded" value="true" scope="request"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
@@ -107,5 +107,5 @@
     </tr>
   </table> 
 </div>
-<internal:fileManager startPath="<%=path%>" enginemode="true" nodeTypes="<%=nodeType%>" mimeTypes="<%=mimeTypes%>" filters="<%=filters%>" conf="filepicker" rootPath="files" />
+<internal:contentManager startPath="<%=path%>" enginemode="true" nodeTypes="<%=nodeType%>" mimeTypes="<%=mimeTypes%>" filters="<%=filters%>" conf="filepicker" rootPath="files" />
 

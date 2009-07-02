@@ -38,10 +38,10 @@
 	<head>
 		<title><internal:message key="org.jahia.engines.filemanager.Filemanager_Engine.name.label"/></title>
 		<internal:gwtInit standalone="true"/>
-		<internal:gwtImport module="org.jahia.ajax.gwt.module.filemanager.FileManager" />
+		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.FileManager" />
 	</head>
 	<body>
-		<internal:fileManager startPath="" enginemode="true" conf="filemanager"/>
+		<internal:contentManager startPath="" enginemode="true" conf="filemanager"/>
         <internal:gwtGenerateDictionary/>        
 	</body>
 </html>

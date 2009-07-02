@@ -58,7 +58,7 @@ cursor:pointer;
 <script type="text/javascript" src="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/mootools-for-crop.js"> </script>
 <script type="text/javascript" src="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/UvumiCrop-compressed.js"> </script>
 <script type="text/javascript" > var crop=0; 	</script>
-<template:gwtJahiaModule id="filemanager" jahiaType="filemanager" rootPath="<%=rootPath%>" startPath="<%=startPath%>"
+<template:gwtJahiaModule id="contentmanager" jahiaType="contentmanager" rootPath="<%=rootPath%>" startPath="<%=startPath%>"
                          enginemode="<%=enginemode%>" nodeTypes="<%=nodeTypes%>" filters="<%=filters%>"
                          mimeTypes="<%=mimeTypes%>" callback="<%=callback%>" config="<%=conf%>"/>
 

@@ -70,7 +70,7 @@
 <s:termMatch/>
 <s:term/>
 <internal:processDisplay/>
-<internal:fileManager/>
+<internal:contentManager/>
 <internal:aclEditor/>
 <internal:categoryManager/>
 <internal:categorySelector/>

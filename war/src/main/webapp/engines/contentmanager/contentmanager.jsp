@@ -36,12 +36,12 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <html>
 	<head>
-		<title><internal:message key="org.jahia.engines.filemanager.Filemanager_Engine.name.label"/></title>
+		<title><internal:message key="org.jahia.engines.contentmanager.ContentManager_Engine.name.label"/></title>
 		<internal:gwtInit standalone="true"/>
-		<internal:gwtImport module="org.jahia.ajax.gwt.module.filemanager.FileManager" />
+		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.FileManager" />
 	</head>
 	<body>
-		<internal:fileManager startPath="" enginemode="true" conf="complete"/>
+		<internal:contentManager startPath="" enginemode="true" conf="complete"/>
         <internal:gwtGenerateDictionary/>        
 	</body>
 </html>

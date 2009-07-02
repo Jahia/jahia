@@ -65,7 +65,7 @@
     <bean name="nodeServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaNodeService"/>
     </bean>
-    <bean name="gwtJahiaNodeService" class="org.jahia.ajax.gwt.filemanagement.server.JahiaNodeServiceImpl" scope="prototype"/>
+    <bean name="gwtJahiaNodeService" class="org.jahia.ajax.gwt.content.server.JahiaNodeServiceImpl" scope="prototype"/>
 
     <bean name="openSearchServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtOpenSearchService"/>

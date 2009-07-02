@@ -40,7 +40,7 @@ import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
 
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Image;

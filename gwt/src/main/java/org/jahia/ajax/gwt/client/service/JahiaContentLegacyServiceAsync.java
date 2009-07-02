@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * Time: 11:23:49
  * To change this template use File | Settings | File Templates.
  */
-public interface JahiaContentServiceAsync {
+public interface JahiaContentLegacyServiceAsync {
 
     void loadContainerList(GWTJahiaPageContext page, String containerListName, AsyncCallback async);
 

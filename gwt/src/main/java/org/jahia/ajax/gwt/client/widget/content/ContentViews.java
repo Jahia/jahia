@@ -39,8 +39,8 @@ import com.google.gwt.user.client.Window;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeServiceAsync;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -99,7 +99,7 @@ public class ContentViews extends TopRightComponent {
                     String name = Window.prompt(Messages.getNotEmptyResource("fm_search_warning_entername","Please enter a name for this search"), JCRClientUtils.cleanUpFilename(value));
                     if (name != null && name.length() > 0) {
                         name = JCRClientUtils.cleanUpFilename(name);
-                        final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance();
+                        final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
                         service.saveSearch(value, name, new AsyncCallback<GWTJahiaNode>() {
                             public void onFailure(Throwable throwable) {
                                 Log.error("error", throwable);
@@ -191,7 +191,7 @@ public class ContentViews extends TopRightComponent {
     public void setSearchContent(String text) {
         clearTable();
         if (text != null && text.length() > 0) {
-            final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance();
+            final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
             if (getLinker() != null) {
                 getLinker().loading("searching content...");
             }

@@ -48,21 +48,21 @@ import java.util.List;
  * Time: 11:22:45
  * To change this template use File | Settings | File Templates.
  */
-public interface JahiaContentService extends RemoteService {
+public interface JahiaContentLegacyService extends RemoteService {
 
     /**
      * Utility/Convinience class.
      * Use JahiaService.App.getInstance() to access static instance of MyServiceAsync
      */
     public static class App {
-        private static JahiaContentServiceAsync ourInstance = null;
+        private static JahiaContentLegacyServiceAsync ourInstance = null;
 
 
-        public static synchronized JahiaContentServiceAsync getInstance() {
+        public static synchronized JahiaContentLegacyServiceAsync getInstance() {
             if (ourInstance == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"content.gwt";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"contentLegacy.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
-                ourInstance = (JahiaContentServiceAsync) GWT.create(JahiaContentService.class);
+                ourInstance = (JahiaContentLegacyServiceAsync) GWT.create(JahiaContentLegacyService.class);
                 ((ServiceDefTarget) ourInstance).setServiceEntryPoint(serviceEntryPoint);
             }
             return ourInstance;

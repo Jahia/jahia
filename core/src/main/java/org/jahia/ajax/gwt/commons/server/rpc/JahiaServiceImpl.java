@@ -97,7 +97,7 @@ import java.util.*;
 public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService {
     private static final ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
     private static JahiaPreferencesProvider<BookmarksJahiaPreference> bookmarksPreferencesProvider;
-    private static final Logger logger = Logger.getLogger(JahiaContentServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(JahiaContentLegacyServiceImpl.class);
 
     public String drawAddContainerUrl(GWTJahiaPageContext page, int parentConatainerId, String containerListName) {
         try {

@@ -50,8 +50,8 @@ import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeServiceAsync;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
@@ -215,7 +215,7 @@ public class ThumbView extends TopRightComponent {
     public void setContent(Object root) {
         clearTable();
         if (root != null) {
-            final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance();
+            final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
             if (getLinker() != null) {
                 getLinker().loading("listing directory content...");
             }

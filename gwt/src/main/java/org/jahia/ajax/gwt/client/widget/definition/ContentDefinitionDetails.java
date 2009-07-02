@@ -41,8 +41,8 @@ import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionServiceAsync;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionService;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 
 
 /**
@@ -57,7 +57,7 @@ public class ContentDefinitionDetails extends BottomRightComponent {
     private AsyncTabItem info;
     private TabPanel tabs;
 
-    private final ContentDefinitionServiceAsync service = ContentDefinitionService.App.getInstance();
+    private final JahiaContentDefinitionServiceAsync service = JahiaContentDefinitionService.App.getInstance();
 
     public ContentDefinitionDetails() {
         super();

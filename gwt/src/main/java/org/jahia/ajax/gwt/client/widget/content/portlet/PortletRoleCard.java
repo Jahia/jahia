@@ -36,7 +36,7 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.Label;
@@ -75,7 +75,7 @@ public class PortletRoleCard extends MashupWizardCard {
         final GWTJahiaNodeACL acl = getPortletWizardWindow().getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getBaseAcl();
         List<String> permissions = acl.getAvailablePermissions().get(JCRClientUtils.ROLES_ACL);
         if (permissions != null && permissions.size() > 0) {
-            JahiaNodeService.App.getInstance().createDefaultUsersGroupACE(permissions, true, new AsyncCallback<GWTJahiaNodeACE>() {
+            JahiaContentManagementService.App.getInstance().createDefaultUsersGroupACE(permissions, true, new AsyncCallback<GWTJahiaNodeACE>() {
                 public void onSuccess(GWTJahiaNodeACE gwtJahiaNodeACE) {
                     Log.debug("Add group ACE");
                     removeAll();

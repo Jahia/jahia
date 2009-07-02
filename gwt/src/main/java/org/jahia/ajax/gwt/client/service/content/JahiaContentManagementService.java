@@ -52,16 +52,16 @@ import java.util.Map;
  * @author rfelden
  * @version 5 mai 2008 - 17:23:39
  */
-public interface JahiaNodeService extends RemoteService {
+public interface JahiaContentManagementService extends RemoteService {
 
     public static class App {
-        private static JahiaNodeServiceAsync app = null;
+        private static JahiaContentManagementServiceAsync app = null;
 
-        public static synchronized JahiaNodeServiceAsync getInstance() {
+        public static synchronized JahiaContentManagementServiceAsync getInstance() {
             if (app == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "node.gwt";
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "contentManager.gwt";
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
-                app = (JahiaNodeServiceAsync) GWT.create(JahiaNodeService.class);
+                app = (JahiaContentManagementServiceAsync) GWT.create(JahiaContentManagementService.class);
                 ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
             }
             return app;

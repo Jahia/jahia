@@ -44,7 +44,7 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.allen_sauer.gwt.log.client.Log;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
@@ -108,7 +108,7 @@ public class Mounter extends Window {
                 linker.loading(Messages.getResource("fm_mounting")) ;
                 submit.setEnabled(false);
                 cancel.setEnabled(false);
-                JahiaNodeService.App.getInstance().mount("", f.getValue(), t.getValue(), new AsyncCallback() {
+                JahiaContentManagementService.App.getInstance().mount("", f.getValue(), t.getValue(), new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
                         Log.error(Messages.getResource("fm_failMount"), throwable);
                         linker.loaded() ;

@@ -29,44 +29,31 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.service.definition;
+package org.jahia.ajax.gwt.definitions.server;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.core.client.GWT;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.util.URL;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
+import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
-import java.util.List;
+import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Aug 25, 2008
- * Time: 6:20:26 PM
- * To change this template use File | Settings | File Templates.
+ * Time: 6:26:11 PM
  */
-public interface ContentDefinitionService  extends RemoteService {
-
-    public static class App {
-        private static ContentDefinitionServiceAsync app = null;
-
-        public static synchronized ContentDefinitionServiceAsync getInstance() {
-            if (app == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"contentDefinition.gwt";
-                String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
-                app = (ContentDefinitionServiceAsync) GWT.create(ContentDefinitionService.class);
-                ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
-            }
-            return app;
-        }
+public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implements JahiaContentDefinitionService {
+    public GWTJahiaNodeType getNodeType(String name) {
+        return ContentDefinitionHelper.getNodeType(name, retrieveParamBean());
     }
 
-    public GWTJahiaNodeType getNodeType(String names);
+    public List<GWTJahiaNodeType> getNodeTypes() {
+        return ContentDefinitionHelper.getNodeTypes(retrieveParamBean());
+    }
 
-    public List<GWTJahiaNodeType> getNodeTypes();
-
-    public List<GWTJahiaNodeType> getNodeTypes(List<String> names);
+    public List<GWTJahiaNodeType> getNodeTypes(List<String> names) {
+        return ContentDefinitionHelper.getNodeTypes(names, retrieveParamBean());
+    }
 
 }

@@ -11,10 +11,10 @@
                 /**/actionmenus.gwt=actionMenuServiceController
                 /**/base.gwt=baseServiceController
                 /**/category.gwt=categoryServiceController
-                /**/content.gwt=contentServiceController
+                /**/contentLegacy.gwt=contentLegacyServiceController
                 /**/contentDefinition.gwt=contentDefinitionServiceController
                 /**/layoutmanager.gwt=layoutServiceController
-                /**/node.gwt=nodeServiceController
+                /**/contentManager.gwt=contentManagerServiceController
                 /**/opensearch.gwt=openSearchServiceController
                 /**/pdisplay.gwt=pdisplayServiceController
                 /**/sessionManager.gwt=sessionManagerServiceController
@@ -47,25 +47,25 @@
     </bean>
     <bean name="gwtCategoryService" class="org.jahia.ajax.gwt.engines.categories.server.CategoryServiceImpl" scope="prototype"/>
 
-    <bean name="contentServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+    <bean name="contentLegacyServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtContentService"/>
     </bean>
-    <bean name="gwtContentService" class="org.jahia.ajax.gwt.commons.server.rpc.JahiaContentServiceImpl" scope="prototype"/>
+    <bean name="gwtContentService" class="org.jahia.ajax.gwt.commons.server.rpc.JahiaContentLegacyServiceImpl" scope="prototype"/>
 
     <bean name="contentDefinitionServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtContentDefinitionService"/>
     </bean>
-    <bean name="gwtContentDefinitionService" class="org.jahia.ajax.gwt.definitions.server.ContentDefinitionServiceImpl" scope="prototype"/>
+    <bean name="gwtContentDefinitionService" class="org.jahia.ajax.gwt.definitions.server.JahiaContentDefinitionServiceImpl" scope="prototype"/>
 
     <bean name="layoutServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaLayoutService"/>
     </bean>
     <bean name="gwtJahiaLayoutService" class="org.jahia.ajax.gwt.templates.components.layoutmanager.server.LayoutmanagerServiceImpl" scope="prototype"/>
 
-    <bean name="nodeServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+    <bean name="contentManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaNodeService"/>
     </bean>
-    <bean name="gwtJahiaNodeService" class="org.jahia.ajax.gwt.content.server.JahiaNodeServiceImpl" scope="prototype"/>
+    <bean name="gwtJahiaNodeService" class="org.jahia.ajax.gwt.content.server.JahiaContentManagementServiceImpl" scope="prototype"/>
 
     <bean name="openSearchServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtOpenSearchService"/>

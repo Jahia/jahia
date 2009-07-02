@@ -34,8 +34,8 @@ package org.jahia.ajax.gwt.client.widget.content;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.Formatter;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeServiceAsync;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.SearchField;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
@@ -101,7 +101,7 @@ public class SearchTable extends TopRightComponent {
     public void setSearchContent(String text) {
         clearTable();
         if (text != null && text.length()>0) {
-            final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance() ;
+            final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance() ;
             if (getLinker() != null) {
                 getLinker().loading("searching content...");
             }

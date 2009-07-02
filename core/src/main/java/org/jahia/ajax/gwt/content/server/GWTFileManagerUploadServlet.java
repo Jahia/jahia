@@ -46,7 +46,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.bin.Jahia;
-import org.jahia.ajax.gwt.content.server.helper.FileManagerWorker;
+import org.jahia.ajax.gwt.content.server.helper.ContentManagerHelper;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import javax.servlet.http.HttpServlet;
@@ -171,7 +171,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             // direct blocking unzip
             if (unzip && pathsToUnzip.size() > 0) {
                 try {
-                    FileManagerWorker.unzip(pathsToUnzip, true, user);
+                    ContentManagerHelper.unzip(pathsToUnzip, true, user);
                 } catch (GWTJahiaServiceException e) {
                     logger.error("Auto-unzipping failed", e);
                 }
@@ -181,7 +181,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                     @Override
                     public void run() {
                         try {
-                            FileManagerWorker.unzip(pathsToUnzip, true, user);
+                            ContentManagerHelper.unzip(pathsToUnzip, true, user);
                         } catch (GWTJahiaServiceException e) {
                             logger.error("Auto-unzipping failed", e);
                         }

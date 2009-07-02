@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.form;
 
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -86,7 +86,7 @@ public abstract class FormQuickRSS extends FormQuickMashup {
         Button saveButton = new Button(Messages.getResource("fm_save"));
         saveButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent componentEvent) {
-                JahiaNodeService.App.getInstance().createRSSPortletInstance(getFolderPath(),(String) nameField.getValue(), (String) urlField.getValue(), new AsyncCallback<GWTJahiaNode>() {
+                JahiaContentManagementService.App.getInstance().createRSSPortletInstance(getFolderPath(),(String) nameField.getValue(), (String) urlField.getValue(), new AsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                         onMashupCreated();                        
                         if(getParent() instanceof Window){

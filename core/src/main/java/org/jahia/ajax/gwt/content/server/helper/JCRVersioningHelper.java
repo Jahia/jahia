@@ -83,7 +83,7 @@ public class JCRVersioningHelper {
                 Version v = vi.nextVersion();
                 if (!v.getName().equals("jcr:rootVersion")) {
                     JCRNodeWrapper orig = ((JCRVersionHistory) v.getContainingHistory()).getNode();
-                    GWTJahiaNode n = FileManagerWorker.getGWTJahiaNode(orig);
+                    GWTJahiaNode n = ContentManagerHelper.getGWTJahiaNode(orig);
                     n.setUrl(orig.getUrl()+"?v="+v.getName());
                     GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getName(), v.getCreated().getTime());
                     jahiaNodeVersion.setNode(n);

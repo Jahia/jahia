@@ -61,10 +61,10 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionService;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionServiceAsync;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeServiceAsync;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
@@ -107,8 +107,8 @@ public class ContentDetails extends BottomRightComponent {
     private List<GWTJahiaNode> selectedNodes = null;
 
 
-    private final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance();
-    private final ContentDefinitionServiceAsync cDefService = ContentDefinitionService.App.getInstance();
+    private final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
+    private final JahiaContentDefinitionServiceAsync cDefService = JahiaContentDefinitionService.App.getInstance();
 
     public ContentDetails(ManagerConfiguration config) {
         super();
@@ -379,7 +379,7 @@ public class ContentDetails extends BottomRightComponent {
 
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
-                                JahiaNodeService.App.getInstance().saveProperties(elements, propertiesEditor.getProperties(), new AsyncCallback() {
+                                JahiaContentManagementService.App.getInstance().saveProperties(elements, propertiesEditor.getProperties(), new AsyncCallback() {
                                     public void onFailure(Throwable throwable) {
                                         Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                                         Log.error("failed", throwable);
@@ -444,7 +444,7 @@ public class ContentDetails extends BottomRightComponent {
                         item.setEnabled(w);
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
-                                JahiaNodeService.App.getInstance().saveProperties(selectedNodes, propertiesEditor.getProperties(), new AsyncCallback() {
+                                JahiaContentManagementService.App.getInstance().saveProperties(selectedNodes, propertiesEditor.getProperties(), new AsyncCallback() {
                                     public void onFailure(Throwable throwable) {
                                         Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                                         Log.error("failed", throwable);
@@ -734,7 +734,7 @@ public class ContentDetails extends BottomRightComponent {
         }
 
         public void componentSelected(ComponentEvent event) {
-            JahiaNodeService.App.getInstance().setACL(selectedNode.getPath(), acl, new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().setACL(selectedNode.getPath(), acl, new AsyncCallback() {
                 public void onSuccess(Object o) {
                     if (flag == ROLES_TAB_ITEM) {
                         roleAclEditor.setSaved();

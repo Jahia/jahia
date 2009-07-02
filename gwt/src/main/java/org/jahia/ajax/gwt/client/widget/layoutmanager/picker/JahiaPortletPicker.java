@@ -44,8 +44,8 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.DOM;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeServiceAsync;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.layoutmanager.JahiaPropertyHelper;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.JahiaPortalManager;
@@ -210,7 +210,7 @@ public class JahiaPortletPicker extends ContentPanel {
 
         selection = folder;
 
-        final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance();
+        final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
         service.ls(folder, null,  null , null, null,true, new AsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                 if (gwtJahiaNodes != null) {

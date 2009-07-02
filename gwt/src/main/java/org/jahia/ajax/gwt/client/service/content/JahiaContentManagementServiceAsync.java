@@ -47,7 +47,7 @@ import java.util.Map;
  * @author rfelden
  * @version 5 mai 2008 - 17:23:39
  */
-public interface JahiaNodeServiceAsync {
+public interface JahiaContentManagementServiceAsync {
 
     void ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders, AsyncCallback<List<GWTJahiaNode>> async);
 

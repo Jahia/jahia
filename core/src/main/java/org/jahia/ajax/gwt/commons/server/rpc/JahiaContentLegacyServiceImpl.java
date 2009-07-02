@@ -33,7 +33,7 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.service.JahiaContentService;
+import org.jahia.ajax.gwt.client.service.JahiaContentLegacyService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.*;
@@ -75,10 +75,10 @@ import java.util.*;
 /**
  * This is the content service, for getting pages, containers and so on...
  */
-public class JahiaContentServiceImpl extends JahiaRemoteService implements JahiaContentService {
+public class JahiaContentLegacyServiceImpl extends JahiaRemoteService implements JahiaContentLegacyService {
 
     private static final ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
-    private static final Logger logger = Logger.getLogger(JahiaContentServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(JahiaContentLegacyServiceImpl.class);
 
     public GWTJahiaContainerList loadContainerList(GWTJahiaPageContext page, String containerListName) {
         logger.debug("start: " + page);

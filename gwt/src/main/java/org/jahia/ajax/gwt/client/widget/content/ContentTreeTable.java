@@ -50,8 +50,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeServiceAsync;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.tree.PreviousPathsOpener;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeBinder;
@@ -87,7 +87,7 @@ public class ContentTreeTable extends TopRightComponent {
     protected String selectPathAfterUpload = null ;
 
     protected TreeLoader<GWTJahiaNode> getTreeLoader(final String startPath) {
-        final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance() ;
+        final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance() ;
 
         // data proxy
         RpcProxy<GWTJahiaNode, List<GWTJahiaNode>> proxy = new RpcProxy<GWTJahiaNode, List<GWTJahiaNode>>() {

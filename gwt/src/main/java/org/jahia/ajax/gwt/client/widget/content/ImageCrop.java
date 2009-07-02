@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
@@ -152,7 +152,7 @@ public class ImageCrop extends Window {
     }
 
     private void cropImage(final String path, final String targetName, final int top, final int left, final int width, final int height, final boolean force) {
-         JahiaNodeService.App.getInstance().cropImage(path, targetName, top, left, width, height, force, new AsyncCallback() {
+         JahiaContentManagementService.App.getInstance().cropImage(path, targetName, top, left, width, height, force, new AsyncCallback() {
              public void onFailure(Throwable throwable) {
                  if (throwable instanceof ExistingFileException) {
                     if (com.google.gwt.user.client.Window.confirm(Messages.getResource("fm_alreadyExists") + "\n" + Messages.getResource("fm_confOverwrite"))) {

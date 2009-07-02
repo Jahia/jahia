@@ -87,13 +87,13 @@ import java.util.*;
  * @author rfelden
  * @version 20 juin 2008 - 12:49:42
  */
-public class FileManagerWorker {
+public class ContentManagerHelper {
 
     public final static String SAVED_OPEN_PATHS = "org.jahia.preferences.filemanager.savedopenpaths.";
     public final static String OPEN_PATHS_SEPARATOR = "-_-";
 
     private static JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
-    private static Logger logger = Logger.getLogger(FileManagerWorker.class);
+    private static Logger logger = Logger.getLogger(ContentManagerHelper.class);
 
     public static String[] splitOpenPathList(String concatPaths) {
         return concatPaths.split(OPEN_PATHS_SEPARATOR);

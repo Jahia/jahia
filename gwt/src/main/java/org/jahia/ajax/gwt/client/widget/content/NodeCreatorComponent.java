@@ -36,8 +36,8 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionServiceAsync;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionService;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
@@ -58,7 +58,7 @@ public class NodeCreatorComponent extends SimplePanel {
         for (String s : nodeTypes.split(",")) {
             names.add(s);
         }
-        ContentDefinitionServiceAsync service = ContentDefinitionService.App.getInstance();
+        JahiaContentDefinitionServiceAsync service = JahiaContentDefinitionService.App.getInstance();
         service.getNodeTypes(names, new AsyncCallback<List<GWTJahiaNodeType>>() {
             public void onFailure(Throwable caught) {
                 //To change body of implemented methods use File | Settings | File Templates.

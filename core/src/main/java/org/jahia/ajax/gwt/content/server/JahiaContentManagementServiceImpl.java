@@ -45,10 +45,10 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
-import org.jahia.ajax.gwt.content.server.helper.FileManagerWorker;
+import org.jahia.ajax.gwt.content.server.helper.ContentManagerHelper;
 import org.jahia.ajax.gwt.content.server.helper.JCRVersioningHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
@@ -72,15 +72,15 @@ import java.util.Map;
  * @author rfelden
  * @version 5 mai 2008 - 17:23:39
  */
-public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNodeService {
-    private static final transient Logger logger = Logger.getLogger(JahiaNodeServiceImpl.class);
+public class JahiaContentManagementServiceImpl extends JahiaRemoteService implements JahiaContentManagementService {
+    private static final transient Logger logger = Logger.getLogger(JahiaContentManagementServiceImpl.class);
 
     public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
-        return FileManagerWorker.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, retrieveParamBean());
+        return ContentManagerHelper.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, retrieveParamBean());
     }
 
     public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
-        return new BaseListLoadResult<GWTJahiaNode>(FileManagerWorker.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, retrieveParamBean())) ;
+        return new BaseListLoadResult<GWTJahiaNode>(ContentManagerHelper.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, retrieveParamBean())) ;
     }
 
     public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, String openPaths) throws GWTJahiaServiceException {
@@ -90,7 +90,7 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
         if (logger.isDebugEnabled()) {
             logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
         }
-        return FileManagerWorker.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, openPaths);
+        return ContentManagerHelper.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, openPaths);
     }
 
     public void saveOpenPaths(Map<String, List<String>> pathsForRepositoryType) throws GWTJahiaServiceException {
@@ -104,123 +104,123 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
                     }
                     logger.debug(s.toString());
                 }
-                setGenericPreferenceValue(FileManagerWorker.SAVED_OPEN_PATHS + repositoryType, FileManagerWorker.concatOpenPathsList(paths));
+                setGenericPreferenceValue(ContentManagerHelper.SAVED_OPEN_PATHS + repositoryType, ContentManagerHelper.concatOpenPathsList(paths));
             } else if (logger.isDebugEnabled()) {
                 logger.debug(new StringBuilder("no paths to save for ").append(repositoryType).toString());
-                //deleteGenericPreferenceValue(FileManagerWorker.SAVED_OPEN_PATHS + repositoryType);
+                //deleteGenericPreferenceValue(ContentManagerHelper.SAVED_OPEN_PATHS + repositoryType);
             }
         }
     }
 
     private String getOpenPathsForRepository(String repositoryType) {
-        return getGenericPreferenceValue(FileManagerWorker.SAVED_OPEN_PATHS + repositoryType);
+        return getGenericPreferenceValue(ContentManagerHelper.SAVED_OPEN_PATHS + repositoryType);
     }
 
     public List<GWTJahiaNode> search(String searchString, int limit) throws GWTJahiaServiceException {
-        return FileManagerWorker.search(searchString, limit, retrieveParamBean());
+        return ContentManagerHelper.search(searchString, limit, retrieveParamBean());
     }
 
     public List<GWTJahiaNode> search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException {
-        return FileManagerWorker.search(searchString, limit, nodeTypes, mimeTypes, filters, retrieveParamBean());
+        return ContentManagerHelper.search(searchString, limit, nodeTypes, mimeTypes, filters, retrieveParamBean());
     }
 
     public GWTJahiaNode saveSearch(String searchString, String name) throws GWTJahiaServiceException {
-        return FileManagerWorker.saveSearch(searchString, name, retrieveParamBean());
+        return ContentManagerHelper.saveSearch(searchString, name, retrieveParamBean());
     }
 
     public List<GWTJahiaNode> getSavedSearch() throws GWTJahiaServiceException {
-        return FileManagerWorker.getSavedSearch(retrieveParamBean());
+        return ContentManagerHelper.getSavedSearch(retrieveParamBean());
     }
 
     public List<GWTJahiaNode> getMountpoints() throws GWTJahiaServiceException {
-        return FileManagerWorker.getMountpoints(retrieveParamBean());
+        return ContentManagerHelper.getMountpoints(retrieveParamBean());
     }
 
     public void setLock(List<String> paths, boolean locked) throws GWTJahiaServiceException {
-        FileManagerWorker.setLock(paths, locked, getUser());
+        ContentManagerHelper.setLock(paths, locked, getUser());
     }
 
     public void checkExistence(String path) throws GWTJahiaServiceException {
-        if (FileManagerWorker.checkExistence(path, getUser())) {
+        if (ContentManagerHelper.checkExistence(path, getUser())) {
             throw new ExistingFileException(path);
         }
     }
 
     public void createFolder(String parentPath, String name) throws GWTJahiaServiceException {
-        FileManagerWorker.createFolder(parentPath, name, retrieveParamBean());
+        ContentManagerHelper.createFolder(parentPath, name, retrieveParamBean());
     }
 
     public void deletePaths(List<String> paths) throws GWTJahiaServiceException {
-        FileManagerWorker.deletePaths(paths, getUser());
+        ContentManagerHelper.deletePaths(paths, getUser());
     }
 
     public String getDownloadPath(String path) throws GWTJahiaServiceException {
-        return FileManagerWorker.getDownloadPath(path, getUser());
+        return ContentManagerHelper.getDownloadPath(path, getUser());
     }
 
     public String getAbsolutePath(String path) throws GWTJahiaServiceException {
-        return FileManagerWorker.getAbsolutePath(path, retrieveParamBean());
+        return ContentManagerHelper.getAbsolutePath(path, retrieveParamBean());
     }
 
     public void copy(List<GWTJahiaNode> paths) throws GWTJahiaServiceException {
-        FileManagerWorker.copy(paths, getUser());
+        ContentManagerHelper.copy(paths, getUser());
     }
 
     public void cut(List<GWTJahiaNode> paths) throws GWTJahiaServiceException {
-        FileManagerWorker.cut(paths, getUser());
+        ContentManagerHelper.cut(paths, getUser());
     }
 
     public void paste(List<GWTJahiaNode> pathsToCopy, String destinationPath, boolean cut) throws GWTJahiaServiceException {
-        FileManagerWorker.paste(pathsToCopy, destinationPath, cut, getUser());
+        ContentManagerHelper.paste(pathsToCopy, destinationPath, cut, getUser());
     }
 
     public void rename(String path, String newName) throws GWTJahiaServiceException {
-        FileManagerWorker.rename(path, newName, getUser());
+        ContentManagerHelper.rename(path, newName, getUser());
     }
 
     public GWTJahiaGetPropertiesResult getProperties(String path) throws GWTJahiaServiceException {
         ParamBean jParams = retrieveParamBean();
-        GWTJahiaNode node = FileManagerWorker.getNode(path, jParams.getUser());
+        GWTJahiaNode node = ContentManagerHelper.getNode(path, jParams.getUser());
         List<GWTJahiaNodeType> nodeTypes = ContentDefinitionHelper.getNodeTypes(node.getNodeTypes(), jParams);
-        Map<String, GWTJahiaNodeProperty> props = FileManagerWorker.getProperties(path, jParams);
+        Map<String, GWTJahiaNodeProperty> props = ContentManagerHelper.getProperties(path, jParams);
         return new GWTJahiaGetPropertiesResult(nodeTypes, props);
     }
 
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
-        if (captcha != null && !FileManagerWorker.checkCaptcha(context, captcha)) {
+        if (captcha != null && !ContentManagerHelper.checkCaptcha(context, captcha)) {
             throw new GWTJahiaServiceException("Invalid captcha");
         }
 
         if (captcha != null) {
-            return FileManagerWorker.unsecureCreateNode(parentPath, name, nodeType, props, context);
+            return ContentManagerHelper.unsecureCreateNode(parentPath, name, nodeType, props, context);
         } else {
-            return FileManagerWorker.createNode(parentPath, name, nodeType, props, context);
+            return ContentManagerHelper.createNode(parentPath, name, nodeType, props, context);
         }
     }
 
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException {
-        FileManagerWorker.saveProperties(nodes, newProps, getUser());
+        ContentManagerHelper.saveProperties(nodes, newProps, getUser());
     }
 
     public GWTJahiaNodeACL getACL(String path) throws GWTJahiaServiceException {
-        return FileManagerWorker.getACL(path, retrieveParamBean());
+        return ContentManagerHelper.getACL(path, retrieveParamBean());
     }
 
     public void setACL(String path, GWTJahiaNodeACL acl) throws GWTJahiaServiceException {
-        FileManagerWorker.setACL(path, acl, retrieveParamBean());
+        ContentManagerHelper.setACL(path, acl, retrieveParamBean());
     }
 
     public List<GWTJahiaNodeUsage> getUsages(String path) throws GWTJahiaServiceException {
-        return FileManagerWorker.getUsages(path, retrieveParamBean());
+        return ContentManagerHelper.getUsages(path, retrieveParamBean());
     }
 
     public void zip(List<String> paths, String archiveName) throws GWTJahiaServiceException {
-        FileManagerWorker.zip(paths, archiveName, getUser());
+        ContentManagerHelper.zip(paths, archiveName, getUser());
     }
 
     public void unzip(List<String> paths) throws GWTJahiaServiceException {
-        FileManagerWorker.unzip(paths, false, getUser());
+        ContentManagerHelper.unzip(paths, false, getUser());
     }
 
     public String getFileManagerUrl() throws GWTJahiaServiceException {
@@ -234,7 +234,7 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
     }
 
     public void mount(String path, String target, String root) throws GWTJahiaServiceException {
-        FileManagerWorker.mount(target, root, getUser());
+        ContentManagerHelper.mount(target, root, getUser());
     }
 
     private JahiaUser getUser() {
@@ -245,7 +245,7 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
         try {
             JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
-            if (FileManagerWorker.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
+            if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
 
@@ -277,7 +277,7 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
         try {
             JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
-            if (FileManagerWorker.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
+            if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
 
@@ -308,7 +308,7 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
         try {
             JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
-            if (FileManagerWorker.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
+            if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
 
@@ -340,7 +340,7 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
 
     public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException {
         try {
-            return FileManagerWorker.searchPortlets(retrieveParamBean());
+            return ContentManagerHelper.searchPortlets(retrieveParamBean());
         } catch (Exception e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -360,15 +360,15 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
     }
 
     public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz) throws GWTJahiaServiceException {
-        return FileManagerWorker.createPortletInstance(path, wiz, retrieveParamBean());
+        return ContentManagerHelper.createPortletInstance(path, wiz, retrieveParamBean());
     }
 
     public GWTJahiaNode createRSSPortletInstance(String path,String name,String url) throws GWTJahiaServiceException {
-        return FileManagerWorker.createRSSPortletInstance(path, name, url, retrieveParamBean());
+        return ContentManagerHelper.createRSSPortletInstance(path, name, url, retrieveParamBean());
     }
 
     public GWTJahiaNode createGoogleGadgetPortletInstance(String path, String name, String script) throws GWTJahiaServiceException{
-      return FileManagerWorker.createGoogleGadgetPortletInstance(path, name, script, retrieveParamBean());
+      return ContentManagerHelper.createGoogleGadgetPortletInstance(path, name, script, retrieveParamBean());
     }
 
     public GWTJahiaNodeACE createDefaultUsersGroupACE(List<String> permissions, boolean grand) throws GWTJahiaServiceException {
@@ -376,6 +376,6 @@ public class JahiaNodeServiceImpl extends JahiaRemoteService implements JahiaNod
     }
 
     public void renameUploadedFile(String location, String tmpName, int operation, String newName)  throws GWTJahiaServiceException {
-        FileManagerWorker.renameUploadedFile(location, tmpName, operation, newName, retrieveParamBean());
+        ContentManagerHelper.renameUploadedFile(location, tmpName, operation, newName, retrieveParamBean());
     }
 }

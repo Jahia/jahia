@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaUserProperty;
-import org.jahia.ajax.gwt.client.service.JahiaContentService;
+import org.jahia.ajax.gwt.client.service.JahiaContentLegacyService;
 import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
 import org.jahia.ajax.gwt.client.data.*;
@@ -70,7 +70,7 @@ public class MySettingsPanel extends AbsolutePanel {
     }
 
     private void init() {
-        JahiaContentService.App.getInstance().getJahiaUserProperties(true, new LoadUserPropertieyAsyncCallback(this));
+        JahiaContentLegacyService.App.getInstance().getJahiaUserProperties(true, new LoadUserPropertieyAsyncCallback(this));
     }
 
     /**
@@ -192,7 +192,7 @@ public class MySettingsPanel extends AbsolutePanel {
                     }
 
                     // update user properties
-                    JahiaContentService.App.getInstance().updateJahiaUserProperties(newJahiaUserProperties, removeJahiaUserProperties, new AsyncCallback() {
+                    JahiaContentLegacyService.App.getInstance().updateJahiaUserProperties(newJahiaUserProperties, removeJahiaUserProperties, new AsyncCallback() {
                         public void onFailure(Throwable throwable) {
                             Log.error("Can't update jahia user properties", throwable);
                             Info.display("MessageBox", "Error: Unable to save properties. See logs for details");
@@ -319,7 +319,7 @@ public class MySettingsPanel extends AbsolutePanel {
 
                     Log.debug("Number of properties to: " + userProperties.size());
                     // apply modification
-                    JahiaContentService.App.getInstance().updateJahiaUserProperties(new ArrayList<GWTJahiaUserProperty>(), userProperties, new AsyncCallback() {
+                    JahiaContentLegacyService.App.getInstance().updateJahiaUserProperties(new ArrayList<GWTJahiaUserProperty>(), userProperties, new AsyncCallback() {
                         public void onFailure(Throwable throwable) {
                             removePropertiesWindow.hide();
                             Log.error("Can't update jahia user properties", throwable);
@@ -331,7 +331,7 @@ public class MySettingsPanel extends AbsolutePanel {
                             removePropertiesWindow.hide();
                             GWTJahiaAjaxActionResult gwtAjaxActionResult = (GWTJahiaAjaxActionResult) o;
                             handleAjaxActionResult(gwtAjaxActionResult);
-                            JahiaContentService.App.getInstance().getJahiaUserProperties(true, new LoadUserPropertieyAsyncCallback(MySettingsPanel.this));
+                            JahiaContentLegacyService.App.getInstance().getJahiaUserProperties(true, new LoadUserPropertieyAsyncCallback(MySettingsPanel.this));
                         }
                     });
 
@@ -380,7 +380,7 @@ public class MySettingsPanel extends AbsolutePanel {
                 data.setValue(valueField.getRawValue());
                 jahiaUserProperty.setValue(data);
                 userProperties.add(jahiaUserProperty);
-                JahiaContentService.App.getInstance().updateJahiaUserProperties(userProperties, new ArrayList<GWTJahiaUserProperty>(), new AsyncCallback() {
+                JahiaContentLegacyService.App.getInstance().updateJahiaUserProperties(userProperties, new ArrayList<GWTJahiaUserProperty>(), new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
                         newFieldWindow.hide();
                         Log.error("Can't update jahia user properties", throwable);
@@ -393,7 +393,7 @@ public class MySettingsPanel extends AbsolutePanel {
                         newFieldWindow.hide();
                         GWTJahiaAjaxActionResult gwtAjaxActionResult = (GWTJahiaAjaxActionResult) o;
                         handleAjaxActionResult(gwtAjaxActionResult);
-                        JahiaContentService.App.getInstance().getJahiaUserProperties(true, new LoadUserPropertieyAsyncCallback(MySettingsPanel.this));
+                        JahiaContentLegacyService.App.getInstance().getJahiaUserProperties(true, new LoadUserPropertieyAsyncCallback(MySettingsPanel.this));
                     }
                 });
 

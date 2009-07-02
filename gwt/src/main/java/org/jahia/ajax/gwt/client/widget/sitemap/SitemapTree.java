@@ -35,8 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaPageWrapper;
-import org.jahia.ajax.gwt.client.service.JahiaContentService;
-import org.jahia.ajax.gwt.client.service.JahiaContentServiceAsync;
+import org.jahia.ajax.gwt.client.service.JahiaContentLegacyService;
+import org.jahia.ajax.gwt.client.service.JahiaContentLegacyServiceAsync;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 
 import com.extjs.gxt.ui.client.Events;
@@ -69,7 +69,7 @@ public class SitemapTree extends Tree {
     private TreeItem lastSelection = null ;
 
     public SitemapTree(final GWTJahiaPageContext page) {
-        final JahiaContentServiceAsync service = JahiaContentService.App.getInstance() ;
+        final JahiaContentLegacyServiceAsync service = JahiaContentLegacyService.App.getInstance() ;
 
         // data proxy
         RpcProxy<GWTJahiaPageWrapper, List<GWTJahiaPageWrapper>> proxy = new RpcProxy<GWTJahiaPageWrapper, List<GWTJahiaPageWrapper>>() {

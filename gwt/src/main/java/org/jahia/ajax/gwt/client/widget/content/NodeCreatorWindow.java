@@ -35,8 +35,8 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionServiceAsync;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionService;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
@@ -57,7 +57,7 @@ public class NodeCreatorWindow extends Window {
         setSize(800, 500);
         setResizable(true);
 
-        ContentDefinitionServiceAsync service = ContentDefinitionService.App.getInstance();
+        JahiaContentDefinitionServiceAsync service = JahiaContentDefinitionService.App.getInstance();
         service.getNodeTypes(names, new AsyncCallback<List<GWTJahiaNodeType>>() {
             public void onFailure(Throwable caught) {
                 //To change body of implemented methods use File | Settings | File Templates.

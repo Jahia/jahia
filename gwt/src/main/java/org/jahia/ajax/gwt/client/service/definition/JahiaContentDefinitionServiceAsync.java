@@ -29,31 +29,28 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.definitions.server;
+package org.jahia.ajax.gwt.client.service.definition;
 
-import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
-import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionService;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
-import java.util.*;
+import java.util.List;
 
 /**
+ * Created by IntelliJ IDEA.
  * User: toto
  * Date: Aug 25, 2008
- * Time: 6:26:11 PM
+ * Time: 6:20:38 PM
+ * To change this template use File | Settings | File Templates.
  */
-public class ContentDefinitionServiceImpl extends JahiaRemoteService implements ContentDefinitionService {
-    public GWTJahiaNodeType getNodeType(String name) {
-        return ContentDefinitionHelper.getNodeType(name, retrieveParamBean());
-    }
+public interface JahiaContentDefinitionServiceAsync {
 
-    public List<GWTJahiaNodeType> getNodeTypes() {
-        return ContentDefinitionHelper.getNodeTypes(retrieveParamBean());
-    }
 
-    public List<GWTJahiaNodeType> getNodeTypes(List<String> names) {
-        return ContentDefinitionHelper.getNodeTypes(names, retrieveParamBean());
-    }
+    public void getNodeType(String names, AsyncCallback<GWTJahiaNodeType> async);
+
+    public void getNodeTypes(AsyncCallback<List<GWTJahiaNodeType>> async);
+
+    public void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
+
 
 }

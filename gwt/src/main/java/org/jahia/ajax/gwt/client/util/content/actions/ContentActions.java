@@ -43,8 +43,8 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeServiceAsync;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
@@ -64,7 +64,7 @@ import java.util.List;
  */
 public class ContentActions {
 
-    final static JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance();
+    final static JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
     public static void copy(final BrowserLinker linker) {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();

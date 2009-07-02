@@ -51,8 +51,8 @@ import com.extjs.gxt.ui.client.event.GridEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPageWrapper;
-import org.jahia.ajax.gwt.client.service.JahiaContentServiceAsync;
-import org.jahia.ajax.gwt.client.service.JahiaContentService;
+import org.jahia.ajax.gwt.client.service.JahiaContentLegacyServiceAsync;
+import org.jahia.ajax.gwt.client.service.JahiaContentLegacyService;
 import org.jahia.ajax.gwt.client.util.tree.TreeOpener;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
@@ -93,7 +93,7 @@ public class PageExplorer extends TopRightComponent {
         tabs.setBodyBorder(false);
         tabs.setBorders(false);
 
-        final JahiaContentServiceAsync service = JahiaContentService.App.getInstance() ;
+        final JahiaContentLegacyServiceAsync service = JahiaContentLegacyService.App.getInstance() ;
         // data proxy
         RpcProxy<GWTJahiaPageWrapper, List<GWTJahiaPageWrapper>> proxy = new RpcProxy<GWTJahiaPageWrapper, List<GWTJahiaPageWrapper>>() {
             @Override
@@ -102,7 +102,7 @@ public class PageExplorer extends TopRightComponent {
                     if (homePageID != -1) {
                         service.getSubPagesForCurrentUser(homePageID, listAsyncCallback);
                     } else if (siteID != -1){
-                        JahiaContentService.App.getInstance().getSiteHomePage(siteID, new AsyncCallback<GWTJahiaPageWrapper>() {
+                        JahiaContentLegacyService.App.getInstance().getSiteHomePage(siteID, new AsyncCallback<GWTJahiaPageWrapper>() {
                             public void onFailure(Throwable throwable) {
                                 listAsyncCallback.onFailure(throwable);
                             }
@@ -240,7 +240,7 @@ public class PageExplorer extends TopRightComponent {
             if (getLinker() != null) {
                 getLinker().loading("searching content...");
             }
-            JahiaContentService.App.getInstance().searchInPages(text, new AsyncCallback<List<GWTJahiaPageWrapper>>() {
+            JahiaContentLegacyService.App.getInstance().searchInPages(text, new AsyncCallback<List<GWTJahiaPageWrapper>>() {
                 public void onFailure(Throwable throwable) {
                     com.google.gwt.user.client.Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage()) ;
                     if (getLinker() != null) {

@@ -31,7 +31,11 @@
  */
 package org.jahia.ajax.gwt.client.service.definition;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.core.client.GWT;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
 import java.util.List;
@@ -40,17 +44,29 @@ import java.util.List;
  * Created by IntelliJ IDEA.
  * User: toto
  * Date: Aug 25, 2008
- * Time: 6:20:38 PM
+ * Time: 6:20:26 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface ContentDefinitionServiceAsync {
+public interface JahiaContentDefinitionService extends RemoteService {
 
+    public static class App {
+        private static JahiaContentDefinitionServiceAsync app = null;
 
-    public void getNodeType(String names, AsyncCallback<GWTJahiaNodeType> async);
+        public static synchronized JahiaContentDefinitionServiceAsync getInstance() {
+            if (app == null) {
+                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"contentDefinition.gwt";
+                String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                app = (JahiaContentDefinitionServiceAsync) GWT.create(JahiaContentDefinitionService.class);
+                ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+            }
+            return app;
+        }
+    }
 
-    public void getNodeTypes(AsyncCallback<List<GWTJahiaNodeType>> async);
+    public GWTJahiaNodeType getNodeType(String names);
 
-    public void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
+    public List<GWTJahiaNodeType> getNodeTypes();
 
+    public List<GWTJahiaNodeType> getNodeTypes(List<String> names);
 
 }

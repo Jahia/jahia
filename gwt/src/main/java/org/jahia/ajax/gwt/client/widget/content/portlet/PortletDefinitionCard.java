@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.content.portlet;
 
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -69,7 +69,7 @@ public class PortletDefinitionCard extends MashupWizardCard {
     public void createUI() {
         removeAll();
         final ListStore<GWTJahiaPortletDefinition> store = new ListStore<GWTJahiaPortletDefinition>();
-        JahiaNodeService.App.getInstance().searchPortlets(null, new AsyncCallback<List<GWTJahiaPortletDefinition>>() {
+        JahiaContentManagementService.App.getInstance().searchPortlets(null, new AsyncCallback<List<GWTJahiaPortletDefinition>>() {
             public void onSuccess(List<GWTJahiaPortletDefinition> result) {
                 store.add(result);
             }

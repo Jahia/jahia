@@ -35,12 +35,12 @@ import org.jahia.ajax.gwt.client.core.JahiaModule;
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionServiceAsync;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionService;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -86,7 +86,7 @@ public class FormJahiaModule extends JahiaModule {
             final List<String> excludedItemsList = new ArrayList<String>();
             final List<String> excludedTypesList = new ArrayList<String>();
 
-            ContentDefinitionServiceAsync service = ContentDefinitionService.App.getInstance();
+            JahiaContentDefinitionServiceAsync service = JahiaContentDefinitionService.App.getInstance();
             service.getNodeType(nodeType, new AsyncCallback<GWTJahiaNodeType>() {
                 public void onFailure(Throwable caught) {
                     Log.error("error", caught);
@@ -116,7 +116,7 @@ public class FormJahiaModule extends JahiaModule {
                                     captchaValue = (String) captchaField.getValue();
                                     if (captchaValue == null) captchaValue = "";
                                 }
-                                JahiaNodeService.App.getInstance().createNode(target, "node" + System.currentTimeMillis(), nodeType, pe.getProperties(), captchaValue, new AsyncCallback<GWTJahiaNode>() {
+                                JahiaContentManagementService.App.getInstance().createNode(target, "node" + System.currentTimeMillis(), nodeType, pe.getProperties(), captchaValue, new AsyncCallback<GWTJahiaNode>() {
                                     public void onFailure(Throwable caught) {
                                         if (caught.getMessage().equals("Invalid captcha")) {
                                             String captchaUrl = captcha + "?" + System.currentTimeMillis();

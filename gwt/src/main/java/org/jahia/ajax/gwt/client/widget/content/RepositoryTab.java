@@ -48,7 +48,7 @@ import com.extjs.gxt.ui.client.widget.tree.Tree;
 import com.extjs.gxt.ui.client.widget.tree.TreeItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaNodeServiceAsync;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
@@ -77,7 +77,7 @@ public class RepositoryTab extends ContentPanel {
     private Tree m_tree ;
     //private PreviousPathsOpener<GWTJahiaNode> previousPathsOpener = null ;
     private TreeItem lastSelection = null ;
-    private JahiaNodeServiceAsync nodeService ;
+    private JahiaContentManagementServiceAsync contentManagementService;
 
     /**
      * Constructor
@@ -88,13 +88,13 @@ public class RepositoryTab extends ContentPanel {
      * @param label the repository label
      * @param config the configuration to use
      */
-    public RepositoryTab(FolderTree container, final JahiaNodeServiceAsync service, String type, String label, final ManagerConfiguration config) {
+    public RepositoryTab(FolderTree container, final JahiaContentManagementServiceAsync service, String type, String label, final ManagerConfiguration config) {
         super(new FitLayout()) ;
         setBorders(false);
         setBodyBorder(false);
         getHeader().setBorders(false);
         folderTreeContainer = container ;
-        nodeService = service ;
+        contentManagementService = service ;
         repositoryType = type ;
         getHeader().setIconStyle("fm-" + repositoryType);
 
@@ -104,10 +104,10 @@ public class RepositoryTab extends ContentPanel {
             protected void load(GWTJahiaNode gwtJahiaFolder, AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (init) {
                     Log.debug("retrieving root for " + repositoryType) ;
-                    nodeService.getRoot(repositoryType, JCRClientUtils.FOLDER_NODETYPES, config.getMimeTypes(), config.getFilters(), null, listAsyncCallback);
+                    contentManagementService.getRoot(repositoryType, JCRClientUtils.FOLDER_NODETYPES, config.getMimeTypes(), config.getFilters(), null, listAsyncCallback);
                 } else {
                     Log.debug("retrieving children of " + gwtJahiaFolder.getName() + " for " + repositoryType) ;
-                    nodeService.ls(gwtJahiaFolder, JCRClientUtils.FOLDER_NODETYPES, config.getMimeTypes(), config.getFilters(), null, false, listAsyncCallback);
+                    contentManagementService.ls(gwtJahiaFolder, JCRClientUtils.FOLDER_NODETYPES, config.getMimeTypes(), config.getFilters(), null, false, listAsyncCallback);
                 }
             }
         };

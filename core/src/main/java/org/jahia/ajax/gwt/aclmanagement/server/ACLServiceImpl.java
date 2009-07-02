@@ -32,7 +32,7 @@
 package org.jahia.ajax.gwt.aclmanagement.server;
 
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
-import org.jahia.ajax.gwt.commons.server.rpc.JahiaContentServiceImpl;
+import org.jahia.ajax.gwt.commons.server.rpc.JahiaContentLegacyServiceImpl;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.acl.ACLService;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -54,7 +54,7 @@ import java.util.Map;
  */
 public class ACLServiceImpl extends JahiaRemoteService implements ACLService {
 
-    private static final Logger logger = Logger.getLogger(JahiaContentServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(JahiaContentLegacyServiceImpl.class);
 
     public GWTJahiaNodeACL getACL(int aclid)  throws GWTJahiaServiceException {
         return getACL(aclid, false, null);

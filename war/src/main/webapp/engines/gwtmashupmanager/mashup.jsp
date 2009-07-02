@@ -52,7 +52,7 @@
         }
     </style>
     <internal:gwtInit standalone="true"/>
-    <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.FileManager"/>
+    <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
 </head>
 <body>
 <internal:contentManager enginemode="true"

@@ -44,7 +44,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title></title>
-<internal:gwtInit modules="org.jahia.ajax.gwt.module.contentpicker.FilePicker"/>
+<internal:gwtInit modules="org.jahia.ajax.gwt.module.contentpicker.ContentPicker"/>
 <script type="text/javascript">
 function handleSelection(path) {
     <c:if test="${not empty param.callback}">

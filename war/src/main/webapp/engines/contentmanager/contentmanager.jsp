@@ -38,7 +38,7 @@
 	<head>
 		<title><internal:message key="org.jahia.engines.contentmanager.ContentManager_Engine.name.label"/></title>
 		<internal:gwtInit standalone="true"/>
-		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.FileManager" />
+		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager" />
 	</head>
 	<body>
 		<internal:contentManager startPath="" enginemode="true" conf="complete"/>

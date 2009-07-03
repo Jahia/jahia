@@ -39,8 +39,8 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
+import org.apache.log4j.Logger;
 
-import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RPC;
@@ -54,6 +54,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 public class GWTController extends RemoteServiceServlet implements Controller,
         ServletContextAware {
+
+    private final static Logger logger = Logger.getLogger(GWTController.class);
 
     private String remoteServiceName;
 
@@ -90,7 +92,8 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             return RPC.invokeAndEncodeResponse(remoteService, rpcRequest
                     .getMethod(), rpcRequest.getParameters(), rpcRequest
                     .getSerializationPolicy());
-        } catch (IncompatibleRemoteServiceException e) {
+        } catch (Exception e) {
+            logger.error("An error occured calling the service " + remoteServiceName, e);
             return RPC.encodeResponseForFailure(null, e);
         } finally {
             if (remoteService != null) {

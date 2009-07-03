@@ -40,8 +40,11 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow.ContentWizardCard;
 
+import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -137,6 +140,11 @@ public class ContentDefinitionCard extends ContentWizardCard {
         grid = new Grid<GWTJahiaNodeType>(store, cm);
         grid.setBorders(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        grid.addListener(Events.RowDoubleClick, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                getWizardWindow().doNext();
+            }
+        });
 
         ContentPanel panel = new ContentPanel();
         panel.setLayout(new FitLayout());

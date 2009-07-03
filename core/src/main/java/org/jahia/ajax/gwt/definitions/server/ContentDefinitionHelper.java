@@ -36,6 +36,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaPropertyDefinition;
 import org.jahia.ajax.gwt.content.server.helper.Utils;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.api.Constants;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.utils.i18n.ResourceBundleMarker;
@@ -50,9 +51,9 @@ import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**
+ * Helper class for accessing node types and definitions. 
  *
- *
- * User: toto
+ * @author Thomas Draier
  * Date: Sep 12, 2008 - 11:48:20 AM
  */
 public class ContentDefinitionHelper {
@@ -181,7 +182,8 @@ public class ContentDefinitionHelper {
 
     /**
      * Returns a list of node types with name and label populated that are the
-     * sub-types of the specified base type.
+     * sub-types of the specified base type or that are allowed to be created in
+     * the specified parent node (if the baseType parameter is null).
      * 
      * @param baseType
      *            the node type name to find sub-types
@@ -190,31 +192,68 @@ public class ContentDefinitionHelper {
      * @param ctx
      *            current processing context instance
      * @return a list of node types with name and label populated that are the
-     *         sub-types of the specified base type
+     *         sub-types of the specified base type or that are allowed to be
+     *         created in the specified parent node (if the baseType parameter
+     *         is null)
      */
     public static List<GWTJahiaNodeType> getNodeSubtypes(String baseType,
             GWTJahiaNode parentNode, ProcessingContext ctx) {
 
         List<GWTJahiaNodeType> gwtNodeTypes = new ArrayList<GWTJahiaNodeType>();
+        NodeTypeRegistry registry = NodeTypeRegistry.getInstance();
         try {
-            // TODO consider also parent node
-            baseType = baseType != null ? baseType : "jnt:container";
-            ExtendedNodeType baseNodeType = null;
-            try {
-                baseNodeType = NodeTypeRegistry.getInstance().getNodeType(
-                        baseType);
-            } catch (NoSuchNodeTypeException e) {
-                logger.warn("Node type with the name '" + baseType
-                        + "' cannot be found in the registry", e);
-            }
-            if (baseNodeType != null) {
-                ExtendedNodeType[] types = baseNodeType.getSubtypes();
-                for (int i = 0; i < types.length; i++) {
-                    ExtendedNodeType nodeType = types[i];
-                    if (!excludedTypes.contains(nodeType.getName())) {
-                        gwtNodeTypes
-                                .add(new GWTJahiaNodeType(nodeType.getName(),
-                                        nodeType.getLabel(ctx.getLocale())));
+            if (baseType == null && parentNode != null) {
+                Map<String, ExtendedNodeDefinition> definitions = new HashMap<String, ExtendedNodeDefinition>();
+                for (String nodeTypeName : parentNode.getNodeTypes()) {
+                    ExtendedNodeType nodeType = registry
+                            .getNodeType(nodeTypeName);
+                    definitions.putAll(nodeType.getChildNodeDefinitionsAsMap());
+                }
+                for (ExtendedNodeDefinition nodeDef : definitions.values()) {
+                    if (nodeDef.getDeclaringNodeType().getName().equals(
+                            Constants.JAHIANT_PAGE)
+                            || nodeDef.getDeclaringNodeType().getName().equals(
+                                    Constants.JAHIANT_JAHIACONTENT)) {
+                        continue;
+                    }
+                    ExtendedNodeType[] requiredPrimaryTypes = nodeDef
+                            .getRequiredPrimaryTypes();
+//                    if (requiredPrimaryTypes[0]
+//                            .isNodeType(Constants.JAHIANT_CONTAINERLIST)) {
+//                        nodeDef = requiredPrimaryTypes[0]
+//                                .getDeclaredChildNodeDefinitionsAsMap()
+//                                .get("*");
+//                        requiredPrimaryTypes = nodeDef
+//                                .getRequiredPrimaryTypes();
+//                    }
+                    for (ExtendedNodeType extendedNodeType : requiredPrimaryTypes) {
+                        if (!excludedTypes.contains(extendedNodeType.getName())) {
+                            gwtNodeTypes
+                                    .add(new GWTJahiaNodeType(extendedNodeType
+                                            .getName(), extendedNodeType
+                                            .getLabel(ctx.getLocale())));
+                        }
+                    }
+                }
+            } else {
+                baseType = baseType != null ? baseType : "jnt:container";
+                ExtendedNodeType baseNodeType = null;
+                try {
+                    baseNodeType = NodeTypeRegistry.getInstance().getNodeType(
+                            baseType);
+                } catch (NoSuchNodeTypeException e) {
+                    logger.warn("Node type with the name '" + baseType
+                            + "' cannot be found in the registry", e);
+                }
+                if (baseNodeType != null) {
+                    ExtendedNodeType[] types = baseNodeType.getSubtypes();
+                    for (int i = 0; i < types.length; i++) {
+                        ExtendedNodeType nodeType = types[i];
+                        if (!excludedTypes.contains(nodeType.getName())) {
+                            gwtNodeTypes.add(new GWTJahiaNodeType(nodeType
+                                    .getName(), nodeType.getLabel(ctx
+                                    .getLocale())));
+                        }
                     }
                 }
             }

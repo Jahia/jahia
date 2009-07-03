@@ -47,8 +47,8 @@ import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow.Co
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 
@@ -90,12 +90,11 @@ public class ContentFormCard extends ContentWizardCard {
                         Map<String, GWTJahiaNodeProperty> defaultValues = new HashMap<String, GWTJahiaNodeProperty>();
 
                         formEditor = new PropertiesEditor(types, defaultValues,
-                                false, true, Arrays.asList("j:diff"), Arrays
-                                        .asList("mix:createdBy",
-                                                "mix:lastModified",
-                                                "mix:created",
-                                                "jmix:lastPublished",
-                                                "jmix:categorized"));
+                                false, true, null, Arrays.asList(
+                                        "mix:createdBy", "mix:lastModified",
+                                        "mix:created", "jmix:lastPublished",
+                                        "jmix:categorized", "jmix:description",
+                                        "jnt:jahiacontent"));
                         if (formEditor != null) {
                             setFormPanel(formEditor);
                             layout();
@@ -124,10 +123,17 @@ public class ContentFormCard extends ContentWizardCard {
                 new AsyncCallback<GWTJahiaNode>() {
                     public void onFailure(Throwable caught) {
                         Log.error("Error", caught);
-                        Window.alert(Messages.get(
-                                "add_content_wizard_card_form_error_save",
-                                "Unable to create new content. Cause: ")
-                                + caught.getMessage());
+                        MessageBox
+                                .alert(
+                                        Messages
+                                                .get(
+                                                        "add_content_wizard_card_form_error_save_title",
+                                                        "Error"),
+                                        Messages
+                                                .get(
+                                                        "add_content_wizard_card_form_error_save",
+                                                        "Unable to create new content. Cause: ")
+                                                + caught.getMessage(), null);
                     }
 
                     public void onSuccess(GWTJahiaNode result) {
@@ -137,7 +143,18 @@ public class ContentFormCard extends ContentWizardCard {
                                             result.getPath());
                             getWizardWindow().getLinker().refreshTable();
                         }
-                        Window.alert("Node created successfully: " + result);
+                        MessageBox
+                                .info(
+                                        Messages
+                                                .get(
+                                                        "add_content_wizard_card_form_success_save_title",
+                                                        "Info"),
+                                        Messages
+                                                .get(
+                                                        "add_content_wizard_card_form_success_save",
+                                                        "Content node created successfully: ")
+                                                + getWizardData().getNodeName(),
+                                        null);
                         getWizardWindow().hide();
                     }
                 });

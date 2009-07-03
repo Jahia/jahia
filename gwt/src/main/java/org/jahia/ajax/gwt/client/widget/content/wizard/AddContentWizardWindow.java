@@ -40,8 +40,6 @@ import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.widget.wizard.WizardCard;
 import org.jahia.ajax.gwt.client.widget.wizard.WizardWindow;
 
-import com.extjs.gxt.ui.client.widget.button.Button;
-
 /**
  * Widget for adding new content objects using a wizard.
  * 
@@ -51,24 +49,24 @@ public class AddContentWizardWindow extends WizardWindow {
 
     static class AddContentData implements Serializable {
 
-        private GWTJahiaNodeType nodeType;
-        
         private String nodeName;
-
-        public GWTJahiaNodeType getNodeType() {
-            return nodeType;
-        }
-
-        public void setNodeType(GWTJahiaNodeType nodeType) {
-            this.nodeType = nodeType;
-        }
+        
+        private GWTJahiaNodeType nodeType;
 
         public String getNodeName() {
             return nodeName;
         }
 
+        public GWTJahiaNodeType getNodeType() {
+            return nodeType;
+        }
+
         public void setNodeName(String nodeName) {
             this.nodeName = nodeName;
+        }
+
+        public void setNodeType(GWTJahiaNodeType nodeType) {
+            this.nodeType = nodeType;
         }
     }
 
@@ -85,11 +83,6 @@ public class AddContentWizardWindow extends WizardWindow {
             super(cardtitle, text);
         }
 
-        @Override
-        public AddContentWizardWindow getWizardWindow() {
-            return (AddContentWizardWindow) super.getWizardWindow();
-        }
-
         /**
          * Returns the wizard data entered by the user.
          * 
@@ -97,6 +90,11 @@ public class AddContentWizardWindow extends WizardWindow {
          */
         public AddContentData getWizardData() {
             return getWizardWindow().getWizardData();
+        }
+
+        @Override
+        public AddContentWizardWindow getWizardWindow() {
+            return (AddContentWizardWindow) super.getWizardWindow();
         }
 
     }
@@ -158,29 +156,4 @@ public class AddContentWizardWindow extends WizardWindow {
         return data;
     }
 
-    @Override
-    protected void onButtonPressed(Button button) {
-        if (button == nextBtn) {
-            if (!cards.get(currentStep).isValid()) {
-                return;
-            }
-
-            // execute next action
-            cards.get(currentStep).next();
-
-            if (currentStep + 1 < cards.size()) {
-                WizardCard nextCard = (WizardCard) cards.get(currentStep + 1);
-                if (!nextCard.isUiCreated()) {
-                    nextCard.createUI();
-                    nextCard.setUiCreated(true);
-                }
-            }
-        }
-        if (button == nextBtn && currentStep + 1 == cards.size()) {
-            return;
-        }
-
-        super.onButtonPressed(button);
-    }
-    
 }

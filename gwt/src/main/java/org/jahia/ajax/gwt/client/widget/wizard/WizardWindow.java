@@ -112,20 +112,44 @@ public class WizardWindow extends Window {
             return;
         }
         if (button == prevBtn) {
-            if (this.currentStep > 0) {
-                currentStep--;
-                updateWizard();
-            }
+            doPrevious();
         }
         if (button == nextBtn) {
-            if (!cards.get(currentStep).isValid()) return;
-            if (currentStep + 1 == cards.size()) {
-                cards.get(currentStep).notifyFinishListeners();
-                hide();
-            } else {
-                currentStep++;
-                updateWizard();
+            doNext();
+        }
+    }
+    
+    /**
+     * Performs operation on the cancel button click;
+     */
+    public void doCancel() {
+        hide();
+    }
+
+    public void doNext() {
+        if (!cards.get(currentStep).isValid()) return;
+        
+        // execute next action
+        cards.get(currentStep).next();
+        
+        if (currentStep + 1 == cards.size()) {
+            cards.get(currentStep).notifyFinishListeners();
+//            hide();
+        } else {
+            WizardCard nextCard = (WizardCard) cards.get(currentStep + 1);
+            if (!nextCard.isUiCreated()) {
+                nextCard.createUI();
+                nextCard.setUiCreated(true);
             }
+            currentStep++;
+            updateWizard();
+        }
+    }
+
+    public void doPrevious() {
+        if (this.currentStep > 0) {
+            currentStep--;
+            updateWizard();
         }
     }
 

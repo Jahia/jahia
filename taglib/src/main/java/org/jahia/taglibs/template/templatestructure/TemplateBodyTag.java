@@ -179,7 +179,9 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             if (useGwt) {
                 addMandatoryGwtMessages(jData);
                 if (!isLogged() && gwtForGuest) {
-                    gwtScript = "guest";
+                    if (gwtScript.equals("")) {
+                        gwtScript = "guest";
+                    }
                 } else if (gwtScript == null || gwtScript.equals("")) {
                     gwtScript = "general";
                 }

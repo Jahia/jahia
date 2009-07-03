@@ -331,14 +331,16 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
                 String parentCtnType = nodeDef.getDeclaringNodeType().getName() + " " + nodeDef.getName();
                 String containerName = nt.getName().replace(':','_') + "_" + nodeDef.getName();
 //                String containerName = nodeDef.getDeclaringNodeType().getName().replace(':','_') + "_" + nodeDef.getName();
-                if (nodeDef.getRequiredPrimaryTypes()[0].isNodeType(Constants.JAHIANT_CONTAINERLIST)) {
-                    nodeDef = nodeDef.getRequiredPrimaryTypes()[0].getDeclaredChildNodeDefinitionsAsMap().get("*");
+                ExtendedNodeType[] requiredPrimaryTypes = nodeDef.getRequiredPrimaryTypes();
+                if (requiredPrimaryTypes[0].isNodeType(Constants.JAHIANT_CONTAINERLIST)) {
+                    nodeDef = requiredPrimaryTypes[0].getDeclaredChildNodeDefinitionsAsMap().get("*");
+                    requiredPrimaryTypes = nodeDef.getRequiredPrimaryTypes(); 
                 }
 
-                StringBuffer defTypes = new StringBuffer();
-                if (nodeDef.getRequiredPrimaryTypes().length > 0) {
-                    for (int j = 0; j < nodeDef.getRequiredPrimaryTypes().length; j++) {
-                        NodeType nodeType = nodeDef.getRequiredPrimaryTypes()[j];
+                StringBuilder defTypes = new StringBuilder();
+                if (requiredPrimaryTypes.length > 0) {
+                    for (int j = 0; j < requiredPrimaryTypes.length; j++) {
+                        NodeType nodeType = requiredPrimaryTypes[j];
                         if (nodeType != null) {
                             defTypes.append(nodeType.getName());
                             defTypes.append(",");
@@ -348,7 +350,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
                 if (defTypes.length() == 0) {
                     logger.error("Definition for container " + nodeDef.getName() + " not found, skip it");
                 } else {
-                    String defTypesStr = defTypes.substring(0, defTypes.length() - 1);
+                    String defTypesStr = defTypes.deleteCharAt(defTypes.length() - 1).toString();
                     int defId = declareContainerDefinition(parentCtnType, containerName, defTypesStr, nodeDef.getSelectorOptions(), siteId, pageDefID, theSet);
                     if (defId > 0) {
                         containerNamesAndDefId.put(containerName, defId);

@@ -247,10 +247,11 @@ public abstract class NodeImpl extends ItemImpl implements Node {
         initNodes();
 
         List<Node> results = new ArrayList<Node>();
-        for (List<Node> nodeList : nodes.values()) {
-            results.addAll(nodeList);
+        if (nodes != null) {
+            for (List<Node> nodeList : nodes.values()) {
+                results.addAll(nodeList);
+            }
         }
-
         return new NodeIteratorImpl(results.iterator(), results.size());
     }
 

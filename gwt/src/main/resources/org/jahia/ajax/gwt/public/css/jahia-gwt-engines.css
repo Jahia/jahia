@@ -35,6 +35,10 @@
     background-image: url( ../images/newfolder.png ) !important;
 }
 
+.fm-newcontent {
+    background-image: url( ../images/add-file.png ) !important;
+}
+
 .fm-newmashup {
     background-image: url( ../images/application_add.png ) !important;
 }
@@ -125,6 +129,10 @@
 
 .fm-newfolder-bw {
     background-image: url( ../images/disabled/newfolder.png ) !important;
+}
+
+.fm-newcontent-bw {
+    background-image: url( ../images/disabled/add-file.png ) !important;
 }
 
 .fm-newmashup-bw {

@@ -87,6 +87,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void paste(List<GWTJahiaNode> pathsToCopy, String destinationPath, boolean cut, AsyncCallback async);
 
+    void pasteReference(List<GWTJahiaNode> pathsToCopy, String destinationPath, AsyncCallback async);
+
     void rename(String path, String newName, AsyncCallback async);
 
     void getProperties(String path, AsyncCallback<GWTJahiaGetPropertiesResult> async);

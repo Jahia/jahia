@@ -174,6 +174,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         ContentManagerHelper.paste(pathsToCopy, destinationPath, cut, getUser());
     }
 
+    public void pasteReference(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException {
+        ContentManagerHelper.pasteReference(pathsToCopy, destinationPath, getUser());
+    }
+
     public void rename(String path, String newName) throws GWTJahiaServiceException {
         ContentManagerHelper.rename(path, newName, getUser());
     }

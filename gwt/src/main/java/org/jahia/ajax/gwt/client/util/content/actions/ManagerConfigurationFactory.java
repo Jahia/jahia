@@ -130,6 +130,9 @@ public class ManagerConfigurationFactory {
         ContentActionItem paste = ItemCreator.createPasteItem(linker);
         edit.addItem(paste);
         completeManagerConfig.addItem(paste);
+        ContentActionItem pasteRef = ItemCreator.createPasteReferenceItem(linker);
+        edit.addItem(pasteRef);
+        completeManagerConfig.addItem(pasteRef);
 
         ContentActionItemGroup remote = new ContentActionItemGroup(Messages.getResource("fm_remoteMenu"));
         ContentActionItem mount = ItemCreator.createMountItem(linker);
@@ -220,6 +223,9 @@ public class ManagerConfigurationFactory {
         ContentActionItem paste = ItemCreator.createPasteItem(linker);
         edit.addItem(paste);
         fileManagerConfig.addItem(paste);
+        ContentActionItem pasteRef = ItemCreator.createPasteReferenceItem(linker);
+        edit.addItem(pasteRef);
+        fileManagerConfig.addItem(pasteRef);
 
         ContentActionItemGroup remote = new ContentActionItemGroup(Messages.getResource("fm_remoteMenu"));
         ContentActionItem mount = ItemCreator.createMountItem(linker);
@@ -293,8 +299,11 @@ public class ManagerConfigurationFactory {
         filePickerConfig.addItem(cut);
         edit.addItem(cut);
         ContentActionItem paste = ItemCreator.createPasteItem(linker);
-        filePickerConfig.addItem(paste);
         edit.addItem(paste);
+        filePickerConfig.addItem(paste);
+        ContentActionItem pasteRef = ItemCreator.createPasteReferenceItem(linker);
+        edit.addItem(pasteRef);
+        filePickerConfig.addItem(pasteRef);
 
         ContentActionItemGroup image = new ContentActionItemGroup(Messages.getResource("fm_imageMenu"));
         ContentActionItem crop = ItemCreator.createCropItem(linker);
@@ -362,6 +371,9 @@ public class ManagerConfigurationFactory {
         ContentActionItem paste = ItemCreator.createPasteItem(linker);
         edit.addItem(paste);
         mashupManagerConfig.addItem(paste);
+        ContentActionItem pasteRef = ItemCreator.createPasteReferenceItem(linker);
+        edit.addItem(pasteRef);
+        mashupManagerConfig.addItem(pasteRef);
 
         // add menus to the config as well
         mashupManagerConfig.addGroup(file);
@@ -428,7 +440,9 @@ public class ManagerConfigurationFactory {
         ContentActionItem paste = ItemCreator.createPasteItem(linker);
         edit.addItem(paste);
         mashupPickerConfig.addItem(paste);
-
+        ContentActionItem pasteRef = ItemCreator.createPasteReferenceItem(linker);
+        edit.addItem(pasteRef);
+        mashupPickerConfig.addItem(pasteRef);
         // add menus to the config as well
         mashupPickerConfig.addGroup(file);
         mashupPickerConfig.addGroup(edit);
@@ -560,6 +574,19 @@ public class ManagerConfigurationFactory {
             ContentActionItem paste = new ContentActionItem(Messages.getResource("fm_paste"), "fm-paste") {
                 public void onSelection() {
                     ContentActions.paste(linker);
+                }
+
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable && pasteAllowed || tableSelection && writable && pasteAllowed);
+                }
+            };
+            return paste;
+        }
+
+        private static ContentActionItem createPasteReferenceItem(final BrowserLinker linker) {
+            ContentActionItem paste = new ContentActionItem(Messages.getResource("fm_pasteref"), "fm-pasteref") {
+                public void onSelection() {
+                    ContentActions.pasteReference(linker);
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {

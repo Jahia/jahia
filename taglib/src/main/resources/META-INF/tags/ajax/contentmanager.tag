@@ -80,6 +80,8 @@ cursor:pointer;
                             aliasResourceName="fm_cut"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.pasteFile.label"
                             aliasResourceName="fm_paste"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.pasteRef.label"
+                            aliasResourceName="fm_pasteref"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.lockFile.label"
                             aliasResourceName="fm_lock"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.unlockFile.label"
@@ -137,6 +139,8 @@ cursor:pointer;
                             aliasResourceName="fm_newfoldering"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.statusbar.pasting.label"
                             aliasResourceName="fm_pasting"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.statusbar.pastingref.label"
+                            aliasResourceName="fm_pastingref"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.statusbar.removing.label"
                             aliasResourceName="fm_removing"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.statusbar.renaming.label"
@@ -183,6 +187,8 @@ cursor:pointer;
                             aliasResourceName="fm_failNewdir"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.paste.label"
                             aliasResourceName="fm_failPaste"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.pasteref.label"
+                            aliasResourceName="fm_failPasteref"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.rename.label"
                             aliasResourceName="fm_failRename"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.resize.label"

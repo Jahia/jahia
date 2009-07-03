@@ -941,6 +941,40 @@ public class ContentManagerHelper {
         return name;
     }
 
+    public static void pasteReference(final List<GWTJahiaNode> pathsToCopy, final String destinationPath, JahiaUser user) throws GWTJahiaServiceException {
+        List<String> missedPaths = new ArrayList<String>();
+        for (GWTJahiaNode aNode : pathsToCopy) {
+            JCRNodeWrapper node = jcr.getFileNode(aNode.getPath(), user);
+            String name = node.getName();
+            if (node.hasPermission(JCRNodeWrapper.READ)) {
+                JCRNodeWrapper dest = jcr.getFileNode(destinationPath, user);
+                if (dest.isCollection()) {
+                    name = findAvailableName(dest, name, user);
+                    if (dest.isWriteable()) {
+                        try {
+                            /*Property p = */dest.setProperty(node.getName(), node); // TODO what's with this property ?
+                            dest.saveSession();
+                        } catch (RepositoryException e) {
+                            logger.error("Exception", e);
+                            missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(dest.getPath()).toString());
+                        }
+                    } else {
+                        missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(dest.getPath()).toString());
+                    }
+                }
+            } else {
+                missedPaths.add(new StringBuilder("Source file ").append(name).append(" could not be read by ").append(user.getUsername()).append(" - ACCESS DENIED").toString());
+            }
+        }
+        if (missedPaths.size() > 0) {
+            StringBuilder errors = new StringBuilder("The following files could not have their reference pasted:");
+            for (String err : missedPaths) {
+                errors.append("\n").append(err);
+            }
+            throw new GWTJahiaServiceException(errors.toString());
+        }
+    }
+
     public static void rename(String path, String newName, JahiaUser user) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {

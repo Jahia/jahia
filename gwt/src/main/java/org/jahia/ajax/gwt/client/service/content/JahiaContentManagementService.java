@@ -106,6 +106,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void paste(List<GWTJahiaNode> pathsToCopy, String destinationPath, boolean cut) throws GWTJahiaServiceException;
 
+    public void pasteReference(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException;
+
     public void rename(String path, String newName) throws GWTJahiaServiceException;
 
     public GWTJahiaGetPropertiesResult getProperties(String path) throws GWTJahiaServiceException;

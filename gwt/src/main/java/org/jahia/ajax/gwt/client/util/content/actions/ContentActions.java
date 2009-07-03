@@ -161,6 +161,43 @@ public class ContentActions {
         }
     }
 
+    public static void pasteReference(final BrowserLinker linker) {
+        GWTJahiaNode m = (GWTJahiaNode) linker.getTreeSelection();
+        if (m == null) {
+            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+            if (selectedItems != null && selectedItems.size() == 1) {
+                m = selectedItems.get(0);
+            }
+        }
+        if (m != null && !m.isFile()) {
+            linker.loading(Messages.getResource("fm_pastingref"));
+            final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
+            service.pasteReference(copyPasteEngine.getCopiedPaths(), m.getPath(), new AsyncCallback() {
+                public void onFailure(Throwable throwable) {
+                    Window.alert(Messages.getResource("fm_failPasteref") + "\n" + throwable.getLocalizedMessage());
+                    linker.loaded();
+                }
+
+                public void onSuccess(Object o) {
+                    boolean refreshAll = false;
+                    for (GWTJahiaNode n : copyPasteEngine.getCopiedPaths()) {
+                        if (!n.isFile()) {
+                            refreshAll = true;
+                            break;
+                        }
+                    }
+                    copyPasteEngine.onPastedPath();
+                    linker.loaded();
+                    if (refreshAll) {
+                        linker.refreshAll();
+                    } else {
+                        linker.refreshTable();
+                    }
+                }
+            });
+        }
+    }
+
 
     public static void move(final BrowserLinker linker, final List<GWTJahiaNode> sources, GWTJahiaNode target) {
         service.paste(sources, target.getPath(), true, new AsyncCallback() {

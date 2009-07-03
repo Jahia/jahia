@@ -71,6 +71,10 @@
     background-image: url( ../images/paste.png ) !important;
 }
 
+.fm-pasteref {
+    background-image: url( ../images/pasteref.png ) !important;
+}
+
 .fm-download {
     background-image: url( ../images/download.png ) !important;
 }
@@ -165,6 +169,10 @@
 
 .fm-paste-bw {
     background-image: url( ../images/disabled/paste.png ) !important;
+}
+
+.fm-pasteref-bw {
+    background-image: url( ../images/disabled/pasteref.png ) !important;
 }
 
 .fm-download-bw {

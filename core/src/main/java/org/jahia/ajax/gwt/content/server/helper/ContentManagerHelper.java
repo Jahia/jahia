@@ -1195,7 +1195,7 @@ public class ContentManagerHelper {
             parentNode.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Folder creation failed");
+            throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
         }
         return getGWTJahiaNode(childNode);
     }
@@ -1211,11 +1211,11 @@ public class ContentManagerHelper {
                 setProperties(childNode, props);
             } catch (Exception e) {
                 logger.error("Exception", e);
-                throw new GWTJahiaServiceException("Folder creation failed");
+                throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
             }
         }
         if (childNode == null || !childNode.isValid()) {
-            throw new GWTJahiaServiceException("Folder creation failed");
+            throw new GWTJahiaServiceException("Node creation failed");
         }
         return childNode;
     }
@@ -1241,7 +1241,7 @@ public class ContentManagerHelper {
             parentNode.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Folder creation failed");
+            throw new GWTJahiaServiceException("Node creation failed");
         }
         return getGWTJahiaNode(childNode);
     }
@@ -1254,11 +1254,11 @@ public class ContentManagerHelper {
                 setProperties(childNode, props);
             } catch (Exception e) {
                 logger.error("Exception", e);
-                throw new GWTJahiaServiceException("Folder creation failed");
+                throw new GWTJahiaServiceException("Node creation failed");
             }
         }
         if (childNode == null || !childNode.isValid()) {
-            throw new GWTJahiaServiceException("Folder creation failed");
+            throw new GWTJahiaServiceException("Node creation failed");
         }
         return childNode;
     }

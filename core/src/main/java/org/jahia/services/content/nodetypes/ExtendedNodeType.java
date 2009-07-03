@@ -45,11 +45,10 @@ import javax.jcr.nodetype.NodeType;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
+ * Container extended JCR node type information.
+ * @author Thomas Draier
  * Date: 4 janv. 2008
  * Time: 14:02:22
- * To change this template use File | Settings | File Templates.
  */
 public class ExtendedNodeType implements NodeType {
     
@@ -238,8 +237,9 @@ public class ExtendedNodeType implements NodeType {
     public List<ExtendedItemDefinition>  getItems() {
         List<ExtendedItemDefinition> l = new ArrayList<ExtendedItemDefinition>();
 
-        for (int i = 0; i < getSupertypes().length; i++) {
-            ExtendedNodeType nodeType = getSupertypes()[i];
+        ExtendedNodeType[] supertypes = getSupertypes();
+        for (int i = 0; i < supertypes.length; i++) {
+            ExtendedNodeType nodeType = supertypes[i];
             List<ExtendedItemDefinition> c = nodeType.getDeclaredItems();
             l.addAll(c);
         }
@@ -256,8 +256,9 @@ public class ExtendedNodeType implements NodeType {
     public Map<String, ExtendedPropertyDefinition> getPropertyDefinitionsAsMap() {
         Map<String, ExtendedPropertyDefinition> l = new ListOrderedMap();
 
-        for (int i = 0; i < getSupertypes().length; i++) {
-            ExtendedNodeType nodeType = getSupertypes()[i];
+        ExtendedNodeType[] supertypes = getSupertypes();
+        for (int i = 0; i < supertypes.length; i++) {
+            ExtendedNodeType nodeType = supertypes[i];
             Map<String, ExtendedPropertyDefinition> c = nodeType.getDeclaredPropertyDefinitionsAsMap();
             l.putAll(c);
         }

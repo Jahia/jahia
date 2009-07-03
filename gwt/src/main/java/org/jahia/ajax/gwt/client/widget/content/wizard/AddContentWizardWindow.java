@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.widget.content;
+package org.jahia.ajax.gwt.client.widget.content.wizard;
 
 import java.io.Serializable;
 
@@ -52,6 +52,8 @@ public class AddContentWizardWindow extends WizardWindow {
     static class AddContentData implements Serializable {
 
         private GWTJahiaNodeType nodeType;
+        
+        private String nodeName;
 
         public GWTJahiaNodeType getNodeType() {
             return nodeType;
@@ -59,6 +61,14 @@ public class AddContentWizardWindow extends WizardWindow {
 
         public void setNodeType(GWTJahiaNodeType nodeType) {
             this.nodeType = nodeType;
+        }
+
+        public String getNodeName() {
+            return nodeName;
+        }
+
+        public void setNodeName(String nodeName) {
+            this.nodeName = nodeName;
         }
     }
 
@@ -79,6 +89,16 @@ public class AddContentWizardWindow extends WizardWindow {
         public AddContentWizardWindow getWizardWindow() {
             return (AddContentWizardWindow) super.getWizardWindow();
         }
+
+        /**
+         * Returns the wizard data entered by the user.
+         * 
+         * @return the wizard data entered by the user
+         */
+        public AddContentData getWizardData() {
+            return getWizardWindow().getWizardData();
+        }
+
     }
 
     private AddContentData data;
@@ -112,7 +132,7 @@ public class AddContentWizardWindow extends WizardWindow {
     }
 
     protected void createCards() {
-        addCard(new ContentDefinitionCard(parentNode)).addCard(
+        addCard(new ContentDefinitionCard(parentNode)).addCard(new ContentNameCard()).addCard(
                 new ContentFormCard());
     }
 
@@ -129,6 +149,11 @@ public class AddContentWizardWindow extends WizardWindow {
         return parentNode;
     }
 
+    /**
+     * Returns the wizard data entered by the user.
+     * 
+     * @return the wizard data entered by the user
+     */
     public AddContentData getWizardData() {
         return data;
     }

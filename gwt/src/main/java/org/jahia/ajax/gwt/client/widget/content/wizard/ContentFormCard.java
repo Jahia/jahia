@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.widget.content;
+package org.jahia.ajax.gwt.client.widget.content.wizard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +43,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.widget.content.AddContentWizardWindow.ContentWizardCard;
+import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow.ContentWizardCard;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -78,8 +78,8 @@ public class ContentFormCard extends ContentWizardCard {
     @Override
     public void createUI() {
         JahiaContentDefinitionService.App.getInstance().getNodeType(
-                (String) getWizardWindow().getWizardData().getNodeType()
-                        .getName(), new AsyncCallback<GWTJahiaNodeType>() {
+                getWizardData().getNodeType().getName(),
+                new AsyncCallback<GWTJahiaNodeType>() {
                     public void onFailure(Throwable caught) {
                         Log.error("error", caught);
                     }
@@ -117,8 +117,9 @@ public class ContentFormCard extends ContentWizardCard {
     @Override
     public void next() {
         JahiaContentManagementService.App.getInstance().createNode(
-                getWizardWindow().getParentNode().getPath(), null,
-                getWizardWindow().getWizardData().getNodeType().getName(),
+                getWizardWindow().getParentNode().getPath(),
+                getWizardData().getNodeName(),
+                getWizardData().getNodeType().getName(),
                 formEditor.getProperties(), null,
                 new AsyncCallback<GWTJahiaNode>() {
                     public void onFailure(Throwable caught) {

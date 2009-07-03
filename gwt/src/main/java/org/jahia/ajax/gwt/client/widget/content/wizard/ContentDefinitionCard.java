@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.widget.content;
+package org.jahia.ajax.gwt.client.widget.content.wizard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.widget.content.AddContentWizardWindow.ContentWizardCard;
+import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow.ContentWizardCard;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
@@ -109,8 +109,9 @@ public class ContentDefinitionCard extends ContentWizardCard {
     public void createUI() {
         removeAll();
         final ListStore<GWTJahiaNodeType> store = new ListStore<GWTJahiaNodeType>();
-        JahiaContentDefinitionService.App.getInstance().getNodeSubtypes(baseType,
-                parentNode, new AsyncCallback<List<GWTJahiaNodeType>>() {
+        JahiaContentDefinitionService.App.getInstance().getNodeSubtypes(
+                baseType, parentNode,
+                new AsyncCallback<List<GWTJahiaNodeType>>() {
                     public void onFailure(Throwable caught) {
                         Window
                                 .alert("Unable to load content definitions for base type '"
@@ -127,8 +128,10 @@ public class ContentDefinitionCard extends ContentWizardCard {
                 });
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("name", Messages.get("add_content_wizard_column_name", "Name"), 180));
-        columns.add(new ColumnConfig("label", Messages.get("add_content_wizard_column_label", "Label"), 400));
+        columns.add(new ColumnConfig("name", Messages.get(
+                "add_content_wizard_column_name", "Name"), 180));
+        columns.add(new ColumnConfig("label", Messages.get(
+                "add_content_wizard_column_label", "Label"), 400));
 
         ColumnModel cm = new ColumnModel(columns);
         grid = new Grid<GWTJahiaNodeType>(store, cm);
@@ -157,17 +160,16 @@ public class ContentDefinitionCard extends ContentWizardCard {
         GWTJahiaNodeType selectedType = grid.getSelectionModel()
                 .getSelectedItem();
         if (selectedType != null) {
-            if (!selectedType.equals(getWizardWindow().getWizardData()
-                    .getNodeType())) {
+            if (!selectedType.equals(getWizardData().getNodeType())) {
                 getWizardWindow().resetCards(0);
             }
         } else {
-            if (getWizardWindow().getWizardData().getNodeType() != null) {
+            if (getWizardData().getNodeType() != null) {
                 getWizardWindow().resetCards(0);
             }
         }
 
-        getWizardWindow().getWizardData().setNodeType(selectedType);
+        getWizardData().setNodeType(selectedType);
     }
 
 }

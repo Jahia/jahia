@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
 import org.jahia.ajax.gwt.client.widget.content.*;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
+import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
 import java.util.ArrayList;

@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.content.portlet;
 
-import org.jahia.ajax.gwt.client.widget.content.AddContentWizardWindow;
+import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNewPortletInstance;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;

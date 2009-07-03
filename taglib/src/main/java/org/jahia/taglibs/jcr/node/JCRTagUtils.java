@@ -34,6 +34,8 @@ package org.jahia.taglibs.jcr.node;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRNodeWrapperImpl;
 import org.jahia.utils.LanguageCodeConverters;
 import org.apache.log4j.Logger;
 
@@ -122,5 +124,13 @@ public class JCRTagUtils {
      */
     public static String label(Object nodeObject, String locale) {
         return label(nodeObject, LanguageCodeConverters.languageCodeToLocale(locale));
+    }
+    public static boolean isNodeType(JCRNodeWrapper node, String type) {
+        try {
+            return node.isNodeType(type);
+        } catch (RepositoryException e) {
+            logger.error(e, e);
+            return false;
+        }
     }
 }

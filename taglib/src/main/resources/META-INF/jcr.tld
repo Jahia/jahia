@@ -146,4 +146,14 @@
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
         <function-signature>java.lang.String label(java.lang.Object,java.lang.String)</function-signature>
     </function>
+    <function>
+        <description>
+            Test the nodeType of a node
+        </description>
+        <name>isNodeType</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>boolean isNodeType(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
+
+    </function>
+
 </taglib>

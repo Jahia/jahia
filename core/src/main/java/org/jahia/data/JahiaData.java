@@ -65,27 +65,24 @@ public class JahiaData {
 
     private JahiaContainerSet       containerSet;
     private GuiBean                 guiBean;
+    
+    private boolean doBuildData;
 
     /***
         * constructor
-        * Build a JahiaData and optionaly can force to create or not the fields set or containers set.
-        * This is used in particular situation where fields and conternaer sets are not required,
+        * Build a JahiaData and optionally can force to create or not the fields set or containers set.
+        * This is used in particular situation where fields and container sets are not required,
         * i.e. : when some engines are called from JahiaAdministration Servlet
         *
         * @author NK
         * @param jParams
         * @param doBuildData
         */
-    public JahiaData (ProcessingContext jParams, boolean doBuildData)
-    throws JahiaException
-    {
+    public JahiaData (ProcessingContext jParams, boolean doBuildData) throws JahiaException {
         this.jParams = jParams;
-        if ( doBuildData ){
-            buildData();        // throws JahiaException
-        } else {
-            guiBean         = new GuiBean( this.getProcessingContext() );
-        }
-    } // end constructor
+        guiBean = new GuiBean( this.getProcessingContext() );
+        this.doBuildData = doBuildData;
+    }
 
 
 
@@ -95,13 +92,9 @@ public class JahiaData {
         * EV    18.11.2000  added jSettings in parameters
         *
         */
-    public JahiaData (ProcessingContext jParams)
-    throws JahiaException
-    {
-        this.jParams    = jParams;
-
-        buildData();        // throws JahiaException
-    } // end constructor
+    public JahiaData (ProcessingContext jParams) throws JahiaException {
+        this(jParams, true);
+    }
 
 
 
@@ -110,9 +103,7 @@ public class JahiaData {
         * EV    30.10.2000
         *
         */
-    private void buildData()
-    throws JahiaException
-    {
+    private void buildData() throws JahiaException {
         try {
 
             // Get the current page and user
@@ -128,7 +119,6 @@ public class JahiaData {
                     {
                         containerSet    = ServicesRegistry.getInstance().getJahiaContainersService(
                                             ).buildContainerStructureForPage(getProcessingContext(), page());
-                        guiBean         = new GuiBean( this.getProcessingContext() );
                     }
 
                 } else {
@@ -176,11 +166,11 @@ public class JahiaData {
     /***
      * returns the container set of the current page
     */
-    public  JahiaContainerSet   containers()    { return containerSet;      }
+    public  JahiaContainerSet   containers()    { return getContainerLists();      }
     /***
      * returns an object allowing to retrieve paths and to draw links
     */
-    public  GuiBean             gui()           { return guiBean;           }
+    public  GuiBean             gui()           { return getGui();           }
     // end accessor methods
 
     /**
@@ -188,7 +178,12 @@ public class JahiaData {
      *
      * @return
      */
-    public  GuiBean             getGui()        { return guiBean;         }
+    public GuiBean getGui() {
+        if (guiBean == null && doBuildData) {
+            
+        }
+        return guiBean;
+    }
     /**
      * @return the current ParamBean object if this is what we are really using
      * @deprecated we strongly recommend using getProcessingContext instead of
@@ -200,6 +195,13 @@ public class JahiaData {
     }
 
     public JahiaContainerSet getContainerLists() {
+        if (containerSet == null && doBuildData) {
+            try {
+                buildData();
+            } catch (JahiaException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
         return containerSet;
     }
 

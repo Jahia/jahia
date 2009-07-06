@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
     <sites jcr:primaryType="jnt:systemfolder">
-        <testSite j:filename="testSite" jcr:created="2009-06-02T17:09:10.883+02:00" jcr:lastModified="2009-06-02T17:09:11.015+02:00" j:server="testservername" jcr:createdBy="root" jcr:primaryType="jnt:virtualsite" jcr:uuid="45c75e40-44a6-43a5-82a9-eba02222db10" jcr:lastModifiedBy="root" j:fullpath="/content/sites/testSite" j:name="testSite">
+        <testSite j:filename="testSite" jcr:created="2009-06-02T17:09:10.883+02:00" jcr:lastModified="2009-06-02T17:09:11.015+02:00" j:server="testservername" jcr:createdBy="root" jcr:primaryType="jnt:virtualsite" jcr:uuid="45c75e40-44a6-43a5-82a9-eba02222db10" jcr:lastModifiedBy="root" j:fullpath="/content/sites/testSite" j:serverName="testservername" jcr:mixinTypes="jmix:accessControlled">
             <j:acl jcr:primaryType="jnt:acl">
                 <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"></GRANT_jcr_read_g_users>
                 <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"></GRANT_jcr_write_g_users>

@@ -160,7 +160,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         return property.getLengths();
     }
 
-    public PropertyDefinition getDefinition() throws RepositoryException {
+    public ExtendedPropertyDefinition getDefinition() throws RepositoryException {
         PropertyDefinition def = property.getDefinition();
         String name = def.getDeclaringNodeType().getName();
         if (name.equals(Constants.NT_HIERARCHYNODE) && def.getName().equals(Constants.JCR_CREATED)) {

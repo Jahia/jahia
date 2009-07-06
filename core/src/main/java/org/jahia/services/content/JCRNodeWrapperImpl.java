@@ -46,6 +46,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
 import org.jahia.spring.aop.interceptor.SilentJamonPerformanceMonitorInterceptor;
@@ -565,7 +566,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return null;
     }
 
-    public NodeType getPrimaryNodeType() throws RepositoryException {
+    public ExtendedNodeType getPrimaryNodeType() throws RepositoryException {
         return NodeTypeRegistry.getInstance().getNodeType(objectNode.getPrimaryNodeType().getName());
     }
 
@@ -577,12 +578,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
-    public NodeType[] getMixinNodeTypes() throws RepositoryException {
+    public ExtendedNodeType[] getMixinNodeTypes() throws RepositoryException {
         List<NodeType> l = new ArrayList<NodeType>();
         for (NodeType nodeType : objectNode.getMixinNodeTypes()) {
             l.add(NodeTypeRegistry.getInstance().getNodeType(nodeType.getName()));
         }
-        return l.toArray(new NodeType[l.size()]);
+        return l.toArray(new ExtendedNodeType[l.size()]);
     }
 
     public void addMixin(String s) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
@@ -1274,6 +1275,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (objectNode.hasNode("j:acl")) {
             return objectNode.getNode("j:acl");
         } else {
+            objectNode.addMixin("jmix:accessControlled");
             return objectNode.addNode("j:acl","jnt:acl");
         }
     }
@@ -1384,6 +1386,26 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public List<UsageEntry> findUsages(ProcessingContext context, boolean onlyLocked) {
         return getProvider().getService().findUsages(getStorageName(), context, onlyLocked);
     }
+
+    protected ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName)
+            throws ConstraintViolationException, RepositoryException {
+        List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
+        types.add(getPrimaryNodeType());
+        ExtendedNodeType[] mixin = getMixinNodeTypes();
+        for (int i = 0; i < mixin.length; i++) {
+            ExtendedNodeType mixinType = mixin[i];
+            types.add(mixinType);
+        }
+        for (ExtendedNodeType type : types) {
+            final Map<String, ExtendedPropertyDefinition> definitionMap = type.getPropertyDefinitionsAsMap();
+            if (definitionMap.containsKey(propertyName)) {
+                return definitionMap.get(propertyName);
+            }
+        }
+        throw new ConstraintViolationException("Cannot find definition for "+propertyName);
+    }
+
+
 
     public boolean equals(final Object o) {
         if (this == o) return true;

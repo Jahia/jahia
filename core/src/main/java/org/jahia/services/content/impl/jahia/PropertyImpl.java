@@ -54,6 +54,7 @@ public class PropertyImpl extends ItemImpl implements Property {
     protected Value[] values;
     protected ExtendedPropertyDefinition def;
     protected String name;
+    protected boolean i18n;
 
     public PropertyImpl(SessionImpl session, Node node, ExtendedPropertyDefinition def, Value value) {
         this(session, node, def, new Value[] {value});
@@ -159,6 +160,14 @@ public class PropertyImpl extends ItemImpl implements Property {
 
     public long[] getLengths() throws ValueFormatException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
+    }
+
+    public boolean isI18n() {
+        return i18n;
+    }
+
+    public void setI18n(boolean i18n) {
+        this.i18n = i18n;
     }
 
     public PropertyDefinition getDefinition() throws RepositoryException {

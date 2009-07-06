@@ -1,0 +1,290 @@
+/* Core jahia definitions */
+
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<jcr = 'http://www.jcp.org/jcr/1.0'>
+<j = 'http://www.jahia.org/jahia/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+//---------------------------------------------------------
+// Default metadata
+//---------------------------------------------------------
+
+[jmix:metadata] mixin
+
+[jmix:categorized] > jmix:metadata mixin
+ - j:defaultCategory (string, category[autoSelectParent=false]) multiple
+
+[jmix:keywords] > jmix:metadata mixin
+ - j:keywords (string) multiple
+
+[jmix:contentmetadata] > jmix:metadata, mix:createdBy, mix:lastModified, mix:title, jmix:categorized, jmix:keywords mixin
+
+//---------------------------------------------------------
+// Multi language
+//---------------------------------------------------------
+
+[jnt:translation] > nt:base, mix:language
+  - * (undefined) multiple
+  - * (undefined)
+
+[jmix:i18n] mixin
+ + j:translation (jnt:translation) multiple
+
+//---------------------------------------------------------
+// Access control
+//---------------------------------------------------------
+
+[jnt:ace] > nt:base
+ - j:aceType (string) mandatory < 'GRANT', 'DENY'
+ - j:principal (string) mandatory
+ - j:privileges (name) mandatory multiple
+ - j:protected (boolean) mandatory
+
+[jnt:acl] > nt:base
+ orderable
+ + * (jnt:ace) = jnt:ace
+ - j:inherit (boolean)
+
+[jmix:accessControlled] mixin
+ + j:acl (jnt:acl) mandatory
+
+//---------------------------------------------------------
+// Time based publishing
+//---------------------------------------------------------
+
+[jmix:timebasedPublished] mixin
+
+[jmix:simpleTimebasedPublished] > jmix:timebasedPublished mixin
+ - j:startDate (date)
+ - j:endDate (date)
+
+//---------------------------------------------------------
+// Navigation
+//---------------------------------------------------------
+
+[jmix:navigation] mixin
+ - j:navigationType (string)
+
+//---------------------------------------------------------
+// Locks
+//---------------------------------------------------------
+
+[jmix:lockable] > mix:lockable mixin
+ - j:locktoken (string) protected indexed=no
+
+//---------------------------------------------------------
+// Workflow
+//---------------------------------------------------------
+
+[jnt:workflow]
+ - j:type (string)
+
+[jmix:workflowed] mixin
+ + j:workflow (jnt:workflow)
+ - j:workflowState (string) internationalized
+
+//---------------------------------------------------------
+// Hierarchy nodes
+//---------------------------------------------------------
+
+[jmix:hierarchyNode] > jmix:contentmetadata, mix:referenceable mixin
+ - j:filename (string) protected
+ - j:fullpath (string) protected
+ + thumbnail (jnt:extraResource)
+
+[jmix:collection] mixin
+
+//---------------------------------------------------------
+// Query
+//---------------------------------------------------------
+
+[jnt:query] > nt:query, jmix:hierarchyNode
+
+//---------------------------------------------------------
+// Files
+//---------------------------------------------------------
+
+[jnt:resource] > nt:resource
+ - j:extractedText (string)
+ - j:lastExtractionDate (date)
+
+[jnt:extraResource] > nt:resource
+ - j:name
+
+[jnt:folder] > nt:folder, jmix:hierarchyNode, jmix:collection
+ + * (jmix:hierarchyNode)
+
+[jnt:systemfolder] > jnt:folder
+
+[jnt:file] > nt:file, jmix:lockable, jmix:hierarchyNode
+
+//---------------------------------------------------------
+// Preferences
+//---------------------------------------------------------
+
+[jnt:preferences] > nt:base, jmix:hierarchyNode, jmix:collection
++ * (jnt:preferenceProvider)
+
+[jnt:preferenceProvider] > nt:base, jmix:hierarchyNode, jmix:collection
++ * (nt:base) multiple
+
+//---------------------------------------------------------
+// Users and groups
+//---------------------------------------------------------
+
+[jmix:usersFolder] mixin
+ - j:usersFolderConfig (string)
+ - j:usersFolderSkeleton (string)
+
+[jnt:user] > jnt:folder
+
+[jmix:groupsFolder] mixin
+ - j:groupsFolderConfig (string)
+ - j:groupsFolderSkeleton (string)
+
+[jnt:group] > jnt:folder
+
+
+//---------------------------------------------------------
+// AXIS views
+//---------------------------------------------------------
+
+[jnt:axisView] > jnt:systemfolder
+ - j:nodetype (name) multiple
+ - j:writeable (boolean) = false
+ + j:property (jnt:axisProperty) multiple
+
+[jnt:axisProperty] > nt:base
+ - j:name (name) mandatory
+ - j:format (string)
+
+[jnt:axisFolder] > jnt:systemfolder
+
+//---------------------------------------------------------
+// Virtual sites
+//---------------------------------------------------------
+
+[jmix:virtualsitesFolder] mixin
+ - j:virtualsitesFolderConfig (string)
+ - j:virtualsitesFolderSkeleton (string)
+
+[jnt:virtualsite] > nt:base, jmix:hierarchyNode, jmix:collection
+ - j:serverName (string) protected
+ - j:description (string) protected
+ + * (jmix:hierarchyNode)
+
+//---------------------------------------------------------
+// Imports
+//---------------------------------------------------------
+
+[jnt:importDropBox] > jnt:folder
+
+//---------------------------------------------------------
+// Repository mounts
+//---------------------------------------------------------
+
+[jnt:mountPoint] > nt:hierarchyNode, jmix:hierarchyNode, jmix:collection
+
+[jnt:vfsMountPoint] > jnt:mountPoint
+ - j:root (string)
+
+//---------------------------------------------------------
+// Rendering
+//---------------------------------------------------------
+
+[jmix:layout] mixin
+
+[jmix:renderable] > jmix:layout mixin
+ - j:defaultTemplate (string)
+ - j:theme (string)
+
+[jmix:positionable] > jmix:layout mixin
+ - j:columnIndex (long)
+ - j:rowIndex (long)
+ - j:columnSpan (long)
+ - j:rowSpan (long)
+
+//---------------------------------------------------------
+// References and links
+//---------------------------------------------------------
+
+[jmix:link] mixin
+
+[jnt:nodeReference] > nt:base, jmix:hierarchyNode, mix:created
+ - j:node (weakreference)
+
+[jnt:nodeLink] > jnt:nodeReference, jmix:link
+
+[jnt:externalLink] > nt:base, jmix:hierarchyNode, mix:created, jmix:link
+ - j:url (string)
+
+//---------------------------------------------------------
+// Pages, content lists
+//---------------------------------------------------------
+
+[jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:navigation
+ + * (nt:base)
+
+[jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable
+ + * (nt:base)
+
+[jnt:gridContentList] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable
+ - j:nbColumns (long)
+ + * (jmix:positionable)
+
+//---------------------------------------------------------
+// Portlets
+//---------------------------------------------------------
+
+[jnt:portletDefinition]
+ - j:name (string)
+ - j:description (string)
+ - j:isVisible (boolean)
+
+[jnt:portlet] > nt:base, mix:referenceable, jmix:hierarchyNode
+ - j:application (reference) protected < jnt:portletDefinition
+ - j:cacheScope (string, choicelist) < 'portlet.private-scope','portlet.public-scope'
+ - j:expirationTime (long)
+
+//---------------------------------------------------------
+// Internal //
+//---------------------------------------------------------
+
+[jnt:systemRoot] > nt:base, jmix:collection
+ + * (jnt:virtualsite) multiple
+
+[jnt:reference] > nt:base, jmix:hierarchyNode
+ - j:node (weakreference)
+ - j:propertyName (string)
+ - j:originalUuid (string)
+
+[jnt:referencesKeeper] > nt:base, jmix:hierarchyNode, jmix:collection
+ + j:reference (jnt:reference) multiple
+
+//---------------------------------------------------------
+// Compatibility nodes
+//---------------------------------------------------------
+
+[jnt:container] > nt:base, jmix:hierarchyNode
+
+[jnt:containerList] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable
+ + * (jnt:container)
+
+[jnt:internalPageLink] > jnt:nodeLink
+
+[jnt:externalPageLink] > jnt:externalLink
+
+[jnt:layoutItem]  > nt:base, mix:referenceable, jmix:hierarchyNode
+ - j:columnIndex (long)
+ - j:rowIndex (long)
+ - j:status (string)
+ - j:portlet (reference) < jnt:portlet
+
+[jnt:layout]  > nt:base, mix:referenceable, jmix:hierarchyNode, jmix:collection
+ - j:page (weakreference)
+ - j:nbColumns (long)
+ - j:liveEditable (boolean)
+ - j:liveDraggable (boolean)
+ + j:item (jnt:layoutItem) multiple

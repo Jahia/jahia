@@ -31,7 +31,7 @@
  boolean boolean2nd = true
  color color2nd (color) = '#ffffff'
  date date2nd
- + page2nd (jnt:pageLink)
+ page page2nd
  file file2nd
  portlet application2nd
  category category2nd multiple

@@ -55,7 +55,7 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 
     public JahiaAclNodeImpl(SessionImpl session, int aclId, NodeImpl parent) throws RepositoryException {
         super(session);
-        setDefinition(parent.getPrimaryNodeType().getChildNodeDefinitionsAsMap().get("j:acl"));
+        setDefinition(NodeTypeRegistry.getInstance().getNodeType("jmix:accessControlled").getChildNodeDefinitionsAsMap().get("j:acl"));
         setNodetype(NodeTypeRegistry.getInstance().getNodeType("jnt:acl"));
         this.aclId = aclId;
         this.parent = parent;

@@ -460,7 +460,7 @@ public class JCRStoreProvider {
     }
 
     public JCRPropertyWrapperImpl getPropertyWrapper(Property prop, JCRSessionWrapper session) throws RepositoryException {
-        return new JCRPropertyWrapperImpl(getNodeWrapper(prop.getNode(), session), prop, session, this);
+        return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getNode(), session, this), prop, session, this);
     }
 
     protected void registerCustomNodeTypes(Workspace ws) throws IOException, RepositoryException {
@@ -503,8 +503,8 @@ public class JCRStoreProvider {
                             }
 
                             Node siteNode = f.getNode(site.getSiteKey());
-                            siteNode.setProperty("j:name", site.getSiteKey());
-                            siteNode.setProperty("j:server", site.getServerName());
+                            siteNode.setProperty("j:description", site.getDescr());
+                            siteNode.setProperty("j:serverName", site.getServerName());
 
                             session.save();
                         }
@@ -549,7 +549,7 @@ public class JCRStoreProvider {
                                         Node userNode = f.getNode(username);
                                         JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
                                     } else {
-                                        Node userNode = f.addNode(username, Constants.JAHIANT_USER_FOLDER);
+                                        Node userNode = f.addNode(username, Constants.JAHIANT_USER);
                                         JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
                                     }
                                     session.save();
@@ -584,7 +584,7 @@ public class JCRStoreProvider {
 
     public List<JCRNodeWrapper> getUserFolders(String site, JahiaUser user) throws RepositoryException {
         String username = ISO9075.encode(encodeInternalName(user.getUsername()));
-        String xp = "//element("+ username +", jnt:userFolder)";
+        String xp = "//element("+ username +", jnt:user)";
 
         if (site != null) {
             site = ISO9075.encode(encodeInternalName(site));
@@ -599,7 +599,7 @@ public class JCRStoreProvider {
 
     public List<JCRNodeWrapper> getImportDropBoxes(String site, JahiaUser user) throws RepositoryException {
         String username = ISO9075.encode(encodeInternalName(user.getUsername()));
-        String xp = "//element("+ username +", jnt:userFolder)//element(*, jnt:importDropBox)";
+        String xp = "//element("+ username +", jnt:user)//element(*, jnt:importDropBox)";
 
         if (site != null) {
             site = ISO9075.encode(encodeInternalName(site));

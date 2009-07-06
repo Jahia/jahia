@@ -52,8 +52,8 @@ initialize
 [mix:shareable] > mix:referenceable mixin 
 
 [mix:title] mixin
-  - jcr:title (string)
-  - jcr:description (string, richtext)
+  - jcr:title (string) internationalized
+  - jcr:description (string, richtext) internationalized
   
 [mix:created] mixin
   - jcr:created (date) protected

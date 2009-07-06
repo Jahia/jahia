@@ -32,9 +32,9 @@
 [jnt:bookmarkPreference] > nt:base, jmix:hierarchyNode, jmix:collection
 - j:page (string)
 
-[jnt:layoutItemPreference] > nt:base, jmix:hierarchyNode, jmix:collection
-- j:page (string)
-+ j:layout (jnt:layout)
+//[jnt:layoutItemPreference] > nt:base, jmix:hierarchyNode, jmix:collection
+//- j:page (string)
+//+ j:layout (jnt:layout)
 
 [jnt:portletPreference] > nt:base, jmix:hierarchyNode, jmix:collection
 - j:portletName (string)

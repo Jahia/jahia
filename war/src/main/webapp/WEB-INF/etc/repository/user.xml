@@ -1,11 +1,11 @@
 
-<user jcr:primaryType="jnt:userFolder"
+<user jcr:primaryType="jnt:user"
            xmlns:jcr="http://www.jcp.org/jcr/1.0"
            xmlns:j="http://www.jahia.org/jahia/1.0"
            xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" >
 
     <files jcr:primaryType="jnt:folder">
-        <private jcr:primaryType="jnt:folder" >
+        <private jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
             <j:acl jcr:primaryType="jnt:acl">
                 <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"/>
                 <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"/>
@@ -17,7 +17,7 @@
 
     <mashups jcr:primaryType="jnt:folder"/>
 
-    <preferences jcr:primaryType="jnt:preferences"  >
+    <preferences jcr:primaryType="jnt:preferences" jcr:mixinTypes="jmix:accessControlled" >
         <j:acl jcr:primaryType="jnt:acl">
             <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"/>
             <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"/>

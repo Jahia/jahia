@@ -102,7 +102,8 @@ public class DefaultValueListener extends DefaultEventListener {
                             n = (Node) s.getItem(event.getPath());
                         }
                         if (event.getPath().endsWith(Constants.JCR_MIXINTYPES)) {
-                            n = (Node) s.getItem(event.getPath().substring(0,event.getPath().lastIndexOf('/')));                            
+                            String path = event.getPath().substring(0, event.getPath().lastIndexOf('/'));
+                            n = (Node) s.getItem(path.length() == 0 ? "/" : path);
                         }
                         if (n != null) {
                             List<NodeType> l = new ArrayList<NodeType>();
@@ -130,6 +131,7 @@ public class DefaultValueListener extends DefaultEventListener {
                                 }
                             }
                         }
+                    } catch (NoSuchNodeTypeException e) {
                     } catch (Exception e) {
                         logger.error("Error when executing event",e);
                     }

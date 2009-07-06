@@ -70,10 +70,12 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
 
     protected List<Item> fields;
     protected List<Item> emptyFields;
+    protected Map<String,TranslationNodeImpl> i18n;
 
     protected JahiaContentNodeImpl(SessionImpl session, ContentObject object) {
         super(session);
         this.object = object;
+        this.i18n = new HashMap<String, TranslationNodeImpl>();
     }
 
     @Override
@@ -114,7 +116,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             }
 
             // workflow mode todo
-            initNode(new WorkflowStateNodeImpl(getSession(), this));
+            //initNode(new WorkflowStateNodeImpl(getSession(), this));
 
             // jahialinks todo
 
@@ -152,7 +154,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             switch (contentField.getType()) {
                 case FieldTypes.DATE: {
                     if (value == null || value.length()==0 || value.equals("<empty>")) {
-                        emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField));
+                        emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField, !contentField.isShared()));
                     } else {
                         GregorianCalendar cal = new GregorianCalendar();
                         cal.setTime(new Date(Long.parseLong(value)));
@@ -173,7 +175,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                 }
                 case FieldTypes.BIGTEXT: {
                     if (value == null || value.length()==0 || value.equals("<empty>")) {
-                        emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField));
+                        emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField, !contentField.isShared()));
                     } else {
                         Value v = new ValueImpl(contentField.getValue(getProcessingContext()), PropertyType.STRING);
                         fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField));
@@ -185,7 +187,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                         return;
                     }
                     if (value == null || value.length()==0 || value.equals("<empty>")) {
-                        emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField));
+                        emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField, !contentField.isShared()));
                     } else {
                         Value v = new ValueImpl(contentField.getValue(getProcessingContext()), PropertyType.STRING);
                         ExtendedPropertyDefinition propertyDefinition = def.getPropertyDefinition();
@@ -222,7 +224,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
         if (p == null) {
             ExtendedPropertyDefinition def = nodetype.getPropertyDefinitionsAsMap().get(s);
             if (def != null) {
-                p = new JahiaFieldPropertyImpl(getSession(), this, def, new Value[0], null);
+                p = new JahiaFieldPropertyImpl(getSession(), this, def, new Value[0], null, def.isInternationalized());
                 properties.put(s,p);
                 return p;
             }

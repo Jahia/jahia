@@ -73,7 +73,7 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
         this.parent = node.getContentObject();
     }
 
-    public JahiaFieldPropertyImpl(SessionImpl session, JahiaContentNodeImpl node, ExtendedPropertyDefinition def, Value[] values, ContentField field) {
+    public JahiaFieldPropertyImpl(SessionImpl session, JahiaContentNodeImpl node, ExtendedPropertyDefinition def, Value[] values, ContentField field, boolean i18n) {
         super(session, node, def, values);
         this.field = field;
         this.parent = node.getContentObject();

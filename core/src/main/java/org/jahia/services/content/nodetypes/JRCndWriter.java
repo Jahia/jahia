@@ -155,6 +155,16 @@ public class JRCndWriter {
             out.write(sta[i].getName());
             delim = ", ";
         }
+
+        for (ExtendedPropertyDefinition definition : ntd.getPropertyDefinitions()) {
+            if (definition.isInternationalized()) {
+                out.write(delim);
+                out.write("jmix:i18n");
+                break;
+            }
+        }
+
+
     }
 
     /**
@@ -208,7 +218,7 @@ public class JRCndWriter {
         if (pd.isMandatory()) {
             out.write(" mandatory");
         }
-        if (pd.isMultiple() || pd.isInternationalized()) {
+        if (pd.isMultiple()) {
             out.write(" multiple");
         }
         if (pd.getOnParentVersion() != OnParentVersionAction.COPY) {

@@ -148,18 +148,17 @@ public class Constants {
     public static final String JAHIANT_VIRTUALSITE = "jnt:virtualsite";
     public static final String JAHIANT_SYSTEM = "jnt:system";
     public static final String JAHIANT_AXISFOLDER = "jnt:axisFolder";
-    public static final String JAHIANT_USER_FOLDER = "jnt:userFolder";
+    public static final String JAHIANT_USER = "jnt:user";
 
-    public static final String JAHIANT_JAHIA_VIRTUALSITE = "jnt:jahiaVirtualsite";
     public static final String JAHIANT_SYSTEM_ROOT = "jnt:systemRoot";
     public static final String JAHIANT_JAHIACONTENT = "jnt:jahiacontent";
     public static final String JAHIANT_PAGE = "jnt:page";
     public static final String JAHIANT_CONTAINER = "jnt:container";
     public static final String JAHIANT_CONTAINERLIST = "jnt:containerList";
-    public static final String JAHIANT_PAGE_LINK = "jnt:pageLink";
-    public static final String JAHIANT_INTERNAL_PAGE_LINK = "jnt:internalPageLink";
-    public static final String JAHIANT_EXTERNAL_PAGE_LINK = "jnt:externalPageLink";
-    public static final String JAHIANT_DIRECT_PAGE_LINK = "jnt:directPageLink";
+    public static final String JAHIANT_PAGE_LINK = "jmix:link";
+    public static final String JAHIANT_INTERNAL_PAGE_LINK = "jnt:nodeLink";
+    public static final String JAHIANT_EXTERNAL_PAGE_LINK = "jnt:externalLink";
+    public static final String JAHIANT_DIRECT_PAGE_LINK = "jnt:nodeLink";
     public static final String JAHIANT_PORTLET = "jnt:portlet";
     public static final String JAHIANT_LAYOUT = "jnt:layout";
     public static final String JAHIANT_LAYOUTITEM = "jnt:layoutItem";

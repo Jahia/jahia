@@ -1,6 +1,5 @@
 package org.jahia.bin;
 
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderService;
@@ -32,12 +31,15 @@ public class Render extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        
+        long startTime = System.currentTimeMillis();
+        
+        ProcessingContext ctx = null;
+        
         String path = req.getPathInfo();
 
-
         try {
-            ProcessingContext ctx = Jahia.createParamBean(req, resp, req.getSession());
+            ctx = Jahia.createParamBean(req, resp, req.getSession());
 
             int index = path.indexOf('/', 1);
             String workspace = path.substring(1, index);
@@ -52,9 +54,24 @@ public class Render extends HttpServlet {
             writer.print(out.toString());
             writer.close();
         } catch (Exception e) {
-
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
             throw new ServletException(e);
+        } finally {
+            if (logger.isInfoEnabled()) {
+                StringBuilder sb = new StringBuilder(100);
+                sb.append("Rendered [").append(req.getRequestURI());
+                if (ctx != null && ctx.getUser() != null) {
+                    sb.append("] user=[").append(ctx.getUser().getUsername());
+                }
+                sb.append("] ip=[").append(req.getRemoteAddr()).append(
+                        "] sessionID=[").append(req.getSession(true).getId())
+                        .append("] in [").append(
+                                System.currentTimeMillis() - startTime).append(
+                                "ms]");
+
+                logger.info(sb.toString());
+            }
+            
         }
 
     }

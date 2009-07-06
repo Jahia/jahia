@@ -97,7 +97,7 @@
     }
 
 
-    public boolean areValuesTheSameInAllActiveLanguages(final JahiaPageEngineTempBean pageBean,
+    public boolean areTitlesTheSameInAllActiveLanguages(final JahiaPageEngineTempBean pageBean,
                                                         final String langCode) {
         if (pageBean.getTitles().size() > 1) {
             final Iterator titles = pageBean.getTitles().values().iterator();
@@ -116,6 +116,36 @@
             return true;
         }
         return false;
+    }
+    
+    private boolean areURLsTheSameInAllActiveLanguages(final JahiaPageEngineTempBean pageBean,
+                                                       final String langCode) {
+
+        if (pageBean.getRemoteURLs().size() > 1) {
+            final Iterator urls = pageBean.getRemoteURLs().values().iterator();
+            final String theUrl = pageBean.getRemoteURL(langCode);
+            if (theUrl == null || theUrl.length() == 0 || theUrl.equals("http://")) {
+                return false;
+            }
+            String oldValue = null;
+            while (urls.hasNext()) {
+                final String url = (String) urls.next();
+                if (oldValue != null && !oldValue.equals(url)) {
+                    return false;
+                }
+                oldValue = url;
+            }
+            return true;
+        }
+
+        return false;
+    }
+    
+    public boolean areValuesTheSameInAllActiveLanguages(final JahiaPageEngineTempBean pageBean,
+                                                        final String langCode) {
+
+        return areTitlesTheSameInAllActiveLanguages(pageBean, langCode) 
+                && areURLsTheSameInAllActiveLanguages(pageBean, langCode);
     }
 %>
 

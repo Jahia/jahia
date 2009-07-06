@@ -7,7 +7,7 @@
 <c:forEach items="${currentNode.children}" var="subchild">
 <c:if test="${jcr:isNodeType(subchild, 'jnt:container')}">
 <p>
-    ${currentNode.name} <a href="${pageContext.request.contextPath}/render/default${subchild.path}.jcr.html">link</a>
+    ${currentNode.name}&nbsp;<a href="${pageContext.request.contextPath}/render/default${subchild.path}.html">link</a>
     <template:module node="${subchild}" />
 </p>
 </c:if>

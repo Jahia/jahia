@@ -56,6 +56,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.net.URLDecoder;
 
 /**
  * Serves resources from the JCR repository.
@@ -109,7 +110,7 @@ public class FilesServlet extends HttpServlet {
         if (p.startsWith(req.getServletPath())) {
             p = p.substring(req.getServletPath().length());
         }
-        p = Text.unescape(p);
+        p = Text.unescape(p.replaceAll("___",":"));
 
         JCRNodeWrapper n;
         try {

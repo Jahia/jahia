@@ -1392,7 +1392,9 @@ public class ContentManagerHelper {
         List<GWTJahiaNodeUsage> result = new ArrayList<GWTJahiaNodeUsage>();
 
         for (UsageEntry usage : usages) {
-            result.add(new GWTJahiaNodeUsage(usage.getId(), usage.getVersion(), usage.getWorkflow(), usage.getExtendedWorkflowState(), usage.getLang(), usage.getPageTitle(), usage.getUrl()));
+            GWTJahiaNodeUsage nodeUsage = new GWTJahiaNodeUsage(usage.getId(), usage.getVersion(), usage.getWorkflow(), usage.getExtendedWorkflowState(), usage.getLang(), usage.getPageTitle(), usage.getUrl());
+            nodeUsage.setVersionName(usage.getVersionName());
+            result.add(nodeUsage);
         }
         return result;
     }

@@ -79,6 +79,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -229,9 +230,25 @@ public class JahiaBigTextField extends JahiaField implements
         }
         Set<String> files = getFiles();
         for (String path : files) {
-            JCRNodeWrapper file = JCRStoreService.getInstance().getFileNode(path,jParams.getUser());
-            if (file.isValid()) {
-                String target; 
+            JCRNodeWrapper file = null;
+            try {
+                String[] versions = path.split("\\?");
+                final JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(jParams.getUser()).getNode(versions[0]);
+
+                if (versions.length > 1 && versions[1].contains("v=")) {
+                    String versionId = versions[1].split("=")[1];
+                    if (node.isValid() && node.isVersioned()) {
+                        JCRNodeWrapper versionNodeWrapper = node.getFrozenVersion(versionId);
+                        if (versionNodeWrapper != null && versionNodeWrapper.isValid()) {
+                            file = versionNodeWrapper;
+                        }
+                    }
+                }
+            } catch (RepositoryException e) {
+                logger.error(e);
+            }
+            if (file != null && file.isValid()) {
+                String target;
                 try {
                     target = JahiaFieldXRefManager.FILE + file.getProvider().getKey() + ":" + file.getUUID();
                 } catch (RepositoryException e) {
@@ -731,11 +748,29 @@ public class JahiaBigTextField extends JahiaField implements
                 // This is a file
                 try {
                     String path = URLDecoder.decode(hrefValue.substring((URL_MARKER + JahiaFieldXRefManager.FILE).length()), "UTF-8");
-                    final JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(path, processingContext.getUser());
-                    if (!node.isValid()) {
-                        logger.warn("Unable to retrieve a node for the path: " + path);
+                    try {
+                        String[] versions = path.split("\\?");
+                        final JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(processingContext.getUser()).getNode(versions[0]);
+                        boolean versionExists = false;
+                        if(versions.length>1 && versions[1].contains("v=")) {
+                            String versionId = versions[1].split("=")[1];
+                            if (node.isValid() && node.isVersioned()) {
+                                JCRNodeWrapper versionNodeWrapper = node.getFrozenVersion(versionId);
+                                if(versionNodeWrapper!=null && versionNodeWrapper.isValid()){
+                                    hrefValue = versionNodeWrapper.getUrl().replaceAll(":","___");
+                                    versionExists = true;
+                                }
+                            }
+                        }
+                        if (!node.isValid()) {
+                            logger.warn("Unable to retrieve a node for the path: " + path);
+                        }
+                        if(!versionExists) {
+                            hrefValue = node.getUrl();            
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error(e);
                     }
-                    hrefValue = node.getUrl();
                 } catch (UnsupportedEncodingException e) {
                     logger.error(e.getMessage(), e);
                 }

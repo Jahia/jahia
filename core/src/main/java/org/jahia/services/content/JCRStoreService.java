@@ -437,6 +437,10 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
     public List<UsageEntry> findUsages (String sourceUri, ProcessingContext jParams,
                             boolean onlyLockedUsages) {
+        return findUsages (sourceUri, Jahia.getThreadParamBean(), onlyLockedUsages,null);
+    }
+        public List<UsageEntry> findUsages (String sourceUri, ProcessingContext jParams,
+                            boolean onlyLockedUsages, String versionName) {
         List<UsageEntry> res = new ArrayList<UsageEntry>();
         if (fieldXRefManager == null) {
             fieldXRefManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldXRefManager.class.getName());
@@ -452,7 +456,11 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                     if (jahiaFieldXRef.getComp_id().getWorkflow() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
                         version = ContentField.getField(jahiaFieldXRef.getComp_id().getFieldId()).getActiveVersionID();
                     }
-                    res.add(new UsageEntry(jahiaFieldXRef.getComp_id().getFieldId(), version, jahiaFieldXRef.getComp_id().getWorkflow(), jahiaFieldXRef.getComp_id().getLanguage(), jahiaFieldXRef.getComp_id().getTarget().substring(JahiaFieldXRefManager.FILE.length()),jParams));
+                    UsageEntry entry = new UsageEntry(jahiaFieldXRef.getComp_id().getFieldId(), version, jahiaFieldXRef.getComp_id().getWorkflow(), jahiaFieldXRef.getComp_id().getLanguage(), jahiaFieldXRef.getComp_id().getTarget().substring(JahiaFieldXRefManager.FILE.length()), jParams);
+                    if(versionName!=null) {
+                        entry.setVersionName(versionName);
+                    }
+                    res.add(entry);
                 }
             } catch (JahiaException e) {
                 logger.error(e.getMessage(), e);

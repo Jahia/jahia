@@ -673,6 +673,9 @@ public class ContentDetails extends BottomRightComponent {
             col = new TableColumn(Messages.getResource("fm_workflow"), .10f);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             columns.add(col);
+            col = new TableColumn(Messages.getResource("fm_version"), .10f);
+            col.setAlignment(Style.HorizontalAlignment.CENTER);
+            columns.add(col);
 
             TableColumnModel cm = new TableColumnModel(columns);
             final Table tbl = new Table(cm);
@@ -691,13 +694,14 @@ public class ContentDetails extends BottomRightComponent {
                     public void onSuccess(List<GWTJahiaNodeUsage> gwtJahiaNodeUsages) {
 
                         for (final GWTJahiaNodeUsage gwtJahiaNodeUsage : gwtJahiaNodeUsages) {
-                            Object[] values = new Object[4];
+                            Object[] values = new Object[5];
                             values[0] = gwtJahiaNodeUsage.getPageTitle();
                             values[1] = gwtJahiaNodeUsage.getUrl();
                             values[2] = gwtJahiaNodeUsage.getLang();
                             String[] ws = new String[]{Messages.getResource("fm_versioned"), Messages.getResource("fm_live"), Messages.getResource("fm_staging"), Messages.getResource("fm_notify")};
                             String[] images = new String[]{"600", "111", "121", "130"};
                             values[3] = "<img src=\"../images/icons/workflow/" + images[gwtJahiaNodeUsage.getWorkflow()] + ".png\">&nbsp;" + ws[gwtJahiaNodeUsage.getWorkflow()];
+                            values[4] = gwtJahiaNodeUsage.getVersionName();
                             TableItem item = new TableItem(values);
                             tbl.add(item);
                         }

@@ -48,6 +48,7 @@ public class GWTJahiaNodeUsage implements Serializable {
     private String lang;
     private String pageTitle;
     private String url;
+    private String versionName;
 
     public GWTJahiaNodeUsage() {
     }
@@ -112,5 +113,13 @@ public class GWTJahiaNodeUsage implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getVersionName() {
+        return versionName;
+    }
+
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
     }
 }

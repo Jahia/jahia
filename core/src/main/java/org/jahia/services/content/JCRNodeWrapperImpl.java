@@ -1384,7 +1384,24 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public List<UsageEntry> findUsages(ProcessingContext context, boolean onlyLocked) {
-        return getProvider().getService().findUsages(getStorageName(), context, onlyLocked);
+        JCRStoreService service = getProvider().getService();
+        List<UsageEntry> usageEntryList = null;
+        if (isVersioned()) {
+            try {
+                usageEntryList = service.findUsages(getStorageName(), context, onlyLocked, getBaseVersion().getName());
+                VersionIterator allVersions = getVersionHistory().getAllVersions();
+                while (allVersions.hasNext()) {
+                    Version version = allVersions.nextVersion();
+                    JCRNodeWrapper frozen = (JCRNodeWrapper) version.getNode(Constants.JCR_FROZENNODE);
+                    usageEntryList.addAll(service.findUsages(frozen.getStorageName(), context, onlyLocked, version.getName()));
+                }
+            } catch (RepositoryException e) {
+                e.printStackTrace();
+            }
+        } else {
+            usageEntryList = service.findUsages(getStorageName(), context, onlyLocked);
+        }
+        return usageEntryList;
     }
 
     protected ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName)

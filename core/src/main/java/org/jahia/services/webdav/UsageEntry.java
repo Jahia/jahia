@@ -66,6 +66,7 @@ public class UsageEntry {
     private EntryLoadRequest loadRequest;
     private ContentPage aPage;
     private String url;
+    private String versionName;
 
     public UsageEntry (int id, int version, int workflow, String lang, String val, ProcessingContext jParams)
             throws JahiaException {
@@ -169,4 +170,11 @@ public class UsageEntry {
         return "UsageEntry for ContentField_"+ id;
     }
 
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
+    }
+
+    public String getVersionName() {
+        return versionName;
+    }
 }

@@ -12,7 +12,7 @@
         <description>${currentNode.name}</description>
         <generator>Jahia 6.0, http://www.jahia.org</generator>
             <c:forEach items="${currentNode.children}" var="child">
-                <template:module templateType="rss" template="item" node="child" />
+                <template:module templateType="rss" template="item" node="${child}" />
             </c:forEach>
     </channel>
 </rss>

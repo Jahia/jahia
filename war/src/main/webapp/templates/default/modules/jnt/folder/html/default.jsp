@@ -18,7 +18,7 @@ Folder = ${currentNode.name}
 <ul>
 <c:forEach var="child" items="${currentNode.nodes}">
     <li>
-        <template:module node="child"/>
+        <template:module node="${child}"/>
     </li>
 </c:forEach>
 </ul>

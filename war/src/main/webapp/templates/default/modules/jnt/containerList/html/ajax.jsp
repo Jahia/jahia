@@ -4,11 +4,16 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
+
+
 <c:forEach items="${currentNode.children}" var="subchild">
 <c:if test="${jcr:isNodeType(subchild, 'jnt:container')}">
 <p>
-    ${currentNode.name} <a href="${pageContext.request.contextPath}/render/default${subchild.path}.jcr.html">link</a>
-    <template:module node="${subchild}" />
+    ${currentNode.name} <a href="${pageContext.request.contextPath}/render/default${subchild.path}.html">link</a>
+    <div id ="content${subchild.UUID}"></div>
+    <script type="text/javascript">
+        replace("${pageContext.request.contextPath}/render/default${subchild.path}.html","content${subchild.UUID}");
+    </script>
 </p>
 </c:if>
 </c:forEach>

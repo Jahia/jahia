@@ -6,6 +6,29 @@
 <template:template>
 <head>
     <title>${currentNode.name}</title>
+
+
+<script type="text/javascript">
+
+
+function replace(url,divID) {
+    var http = false;
+
+    if(navigator.appName == "Microsoft Internet Explorer") {
+        http = new ActiveXObject("Microsoft.XMLHTTP");
+    } else {
+        http = new XMLHttpRequest();
+    }
+    http.open("GET", url, true);
+    http.onreadystatechange=function() {
+        if(http.readyState == 4) {
+            document.getElementById(divID).innerHTML = http.responseText;
+        }
+    }
+    http.send(null);
+}
+</script>
+
 </head>
 <body>
 <h1>Page : ${currentNode.name}</h1>
@@ -35,7 +58,10 @@
         <h2>Contenu</h2>
         <c:forEach items="${currentNode.children}" var="child">
             <c:if test="${jcr:isNodeType(child, 'jnt:containerList')}">
-            <template:module node="${child}"/>
+                <div id ="content${child.UUID}"></div>
+                <script type="text/javascript">
+                    replace("${pageContext.request.contextPath}/render/default${child.path}.html","content${child.UUID}");
+                </script>
             </c:if>
         </c:forEach>
 </div>

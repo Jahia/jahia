@@ -3,22 +3,20 @@ package org.jahia.taglibs.template.include;
 import org.jahia.data.beans.ContentBean;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.taglibs.internal.gwt.GWTIncluder;
 import org.apache.log4j.Logger;
 
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.IOException;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,9 +30,11 @@ public class ModuleTag extends BodyTagSupport {
 
     private String path;
 
-    private String node;
+    private JCRNodeWrapper node;
 
-    private String contentBean;
+    private String nodeName;
+
+    private String contentBeanName;
 
     private String template;
 
@@ -44,12 +44,16 @@ public class ModuleTag extends BodyTagSupport {
         this.path = path;
     }
 
-    public void setNode(String node) {
+    public void setNodeName(String node) {
+        this.nodeName = node;
+    }
+
+    public void setNode(JCRNodeWrapper node) {
         this.node = node;
     }
 
-    public void setContentBean(String contentBean) {
-        this.contentBean = contentBean;
+    public void setContentBeanName(String contentBeanName) {
+        this.contentBeanName = contentBeanName;
     }
 
     public void setTemplate(String template) {
@@ -68,20 +72,45 @@ public class ModuleTag extends BodyTagSupport {
     @Override
     public int doEndTag() throws JspException {
         try {
-            Resource resource = null;
-            if (node != null) {
-                JCRNodeWrapper nodewrapper  = (JCRNodeWrapper) pageContext.getAttribute(node);
-                resource = new Resource(nodewrapper, templateType, template);
-            } else if (contentBean != null) {
+
+            Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
+            if (currentResource != null) {
+                templateType = currentResource.getTemplateType();
+            }
+            if (nodeName != null) {
+                node = (JCRNodeWrapper) pageContext.findAttribute(nodeName);
+            } else if (contentBeanName != null) {
                 try {
-                    ContentBean bean = (ContentBean) pageContext.getAttribute(contentBean);
-                    resource = new Resource(bean.getContentObject().getJCRNode(Jahia.getThreadParamBean()), templateType, template);
+                    ContentBean bean = (ContentBean) pageContext.getAttribute(contentBeanName);
+                    node = bean.getContentObject().getJCRNode(Jahia.getThreadParamBean());
                 } catch (JahiaException e) {
                     logger.error(e.getMessage(), e);
                 }
-            }
+            } else if (path != null && currentResource != null) {                
+                Map<String, List<String>> p = (Map<String, List<String>>) pageContext.getAttribute("moduleTags", PageContext.REQUEST_SCOPE);
+                if (p != null) {
+                    List<String> list = p.get(currentResource.getNode().getPath());
+                    if (list == null) {
+                        list = new ArrayList<String>();
+                        p.put(currentResource.getNode().getPath(), list);
+                    }
+                    list.add(path);
+                }
 
-            if (resource != null) {
+                JCRNodeWrapper nodeWrapper = currentResource.getNode();
+                try {
+                    if (nodeWrapper.hasNode(path)) {
+                        node = (JCRNodeWrapper) nodeWrapper.getNode(path);
+                    } else {
+                        pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeHolder","placeholder"+ UUID.randomUUID().toString(),new HashMap()));
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            if (node != null) {
+                Resource resource = new Resource(node, templateType, template);
+
                 try {
                     StringBuffer buffer = RenderService.getInstance().render(resource, (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
 
@@ -92,7 +121,7 @@ public class ModuleTag extends BodyTagSupport {
             }
 
             path = null;
-            contentBean = null;
+            contentBeanName = null;
             node = null;
             template = null;
             templateType = "html";

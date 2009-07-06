@@ -406,12 +406,17 @@
         <tag-class>org.jahia.taglibs.template.include.ModuleTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <name>contentBean</name>
+            <name>contentBeanName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
             <name>node</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>nodeName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

@@ -53,6 +53,8 @@ public class Render extends HttpServlet {
             PrintWriter writer = resp.getWriter();
             writer.print(out.toString());
             writer.close();
+        } catch (PathNotFoundException e) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new ServletException(e);

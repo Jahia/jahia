@@ -13,7 +13,7 @@
 
 <template:containerList name="maincontent2" id="maincontentList2" actionMenuNamePostFix="mainContents" >
     <template:container id="mainContent2Container"  cacheKey="mainContent2Container">
-        <template:module contentBean="mainContent2Container" />
+        <template:module contentBeanName="mainContent2Container" />
     </template:container>
 </template:containerList>
 
@@ -22,7 +22,7 @@
 <template:containerList name="maincontent2" id="maincontentList2" actionMenuNamePostFix="mainContents"
                            displayActionMenu="false">
     <template:container id="mainContent2Container" displayActionMenu="false" cacheKey="module2">
-        <template:module template="small" contentBean="mainContent2Container" />
+        <template:module template="small" contentBeanName="mainContent2Container" />
     </template:container>
 </template:containerList>
 
@@ -31,7 +31,7 @@
 <template:containerList name="maincontent2" id="maincontentList2" actionMenuNamePostFix="mainContents"
                            displayActionMenu="false">
     <template:container id="mainContent2Container" displayActionMenu="false"  cacheKey="module3">
-        <template:module template="jcr" contentBean="mainContent2Container" />
+        <template:module template="jcr" contentBeanName="mainContent2Container" />
     </template:container>
 </template:containerList>
 
@@ -39,4 +39,4 @@
 <a href="<%= request.getContextPath() %>/render/default/content/shared/files.rss">RSS example</a> <br>
 <a href="<%= request.getContextPath() %>/render/default/content/shared.html">Full page recursive view</a><br>
 <jcr:node path="/content/shared" var="sharedFolder"/>
-<template:module node="sharedFolder" />
+<template:module nodeName="sharedFolder" />

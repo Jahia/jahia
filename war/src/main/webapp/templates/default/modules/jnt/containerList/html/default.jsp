@@ -4,12 +4,36 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
-<h2>ContainerList : ${currentNode.name}</h2>
-<c:forEach items="${currentNode.children}" var="child">
-    <ul>
-        <li>${child.name}</li>
-        <li><template:module node="child" /></li>
-    </ul>
-</c:forEach>
+<script type="text/javascript">
 
-<p><a href="<%= request.getContextPath() %>/render/default${currentNode.path}.html"><%= request.getContextPath() %>/render/default/${currentNode.path}.html</a></p>
+
+function replace(url,divID) {
+    var http = false;
+
+    if(navigator.appName == "Microsoft Internet Explorer") {
+      http = new ActiveXObject("Microsoft.XMLHTTP");
+    } else {
+      http = new XMLHttpRequest();
+    }
+    http.open("GET", url, true);
+    http.onreadystatechange=function() {
+    if(http.readyState == 4) {
+      document.getElementById(divID).innerHTML = http.responseText;
+    }
+  }
+  http.send(null);
+}
+</script>
+
+
+<c:forEach items="${currentNode.children}" var="subchild">
+<c:if test="${jcr:isNodeType(subchild, 'jnt:container')}">
+<p>
+    ${currentNode.name} <a href="<%= request.getContextPath() %>/render/default${subchild.path}.jcr.html">link</a>
+    <div id ="content${subchild.UUID}"></div>
+    <script type="text/javascript">
+        replace("<%= request.getContextPath() %>/render/default${subchild.path}.html","content${subchild.UUID}");
+    </script>
+</p>
+</c:if>
+</c:forEach>

@@ -57,7 +57,8 @@ public class ContentViews extends TopRightComponent {
 
     private TableView tableView;
     private ThumbView thumbView;
-
+    private TemplateView templateView;
+    
     private ThumbView detailedThumbView;
 
     private ContentPanel m_component;
@@ -74,6 +75,7 @@ public class ContentViews extends TopRightComponent {
         configuration = config;
         tableView = new TableView(config);
         thumbView = new ThumbView(config);
+        templateView = new TemplateView(config);
         detailedThumbView = new ThumbView(config) {
             @Override
             public native String getTemplate() /*-{
@@ -133,49 +135,28 @@ public class ContentViews extends TopRightComponent {
     }
 
     public void switchToListView() {
-        if (current != tableView) {
-            clearTable();
-            m_component.removeAll();
-            //tableView = new TableView(configuration) ;
-            current = tableView;
-            current.setContextMenu(contextMenu);
-            //current.initWithLinker(getLinker());
-            m_component.add(current.getComponent());
-            m_component.layout();
-
-            if (searchResults == null) {
-                refresh();
-            } else {
-                current.setProcessedContent(searchResults);
-            }
-            getLinker().handleNewSelection();
-        }
+        switchToView(tableView);
     }
 
     public void switchToThumbView() {
-        if (current != thumbView) {
-            clearTable();
-            m_component.removeAll();
-            current = thumbView;
-            current.setContextMenu(contextMenu);
-            m_component.add(current.getComponent());
-            m_component.layout();
-
-            if (searchResults == null) {
-                refresh();
-            } else {
-                current.setProcessedContent(searchResults);
-            }
-            getLinker().handleNewSelection();
-        }
+        switchToView(thumbView);
     }
 
     public void switchToDetailedThumbView() {
-        if (current != detailedThumbView) {
+        switchToView(detailedThumbView);
+    }
+
+    public void switchToTemplateView() {
+        switchToView(templateView);
+    }
+
+    public void switchToView(TopRightComponent newView) {
+        if (current != newView) {
             clearTable();
             m_component.removeAll();
-            current = detailedThumbView;
+            current = newView;
             current.setContextMenu(contextMenu);
+            //current.initWithLinker(getLinker());
             m_component.add(current.getComponent());
             m_component.layout();
 
@@ -231,6 +212,7 @@ public class ContentViews extends TopRightComponent {
         tableView.initWithLinker(linker);
         thumbView.initWithLinker(linker);
         detailedThumbView.initWithLinker(linker);
+        templateView.initWithLinker(linker);
     }
 
     public void initContextMenu() {

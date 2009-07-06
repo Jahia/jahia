@@ -150,4 +150,6 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void renameUploadedFile(String location, String tmpName, int operation, String newName)  throws GWTJahiaServiceException;
 
+    public String getRenderedContent(String path) throws GWTJahiaServiceException;
+
 }

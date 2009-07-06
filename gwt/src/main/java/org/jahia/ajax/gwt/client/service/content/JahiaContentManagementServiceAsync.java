@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.*;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import java.util.List;
 import java.util.Map;
@@ -131,4 +132,5 @@ public interface JahiaContentManagementServiceAsync {
 
     void renameUploadedFile(String location, String tmpName, int operation, String newName, AsyncCallback async);
 
+    void getRenderedContent(String path, AsyncCallback<String> async);
 }

@@ -116,12 +116,19 @@ public class ContentToolbar extends TopBar {
                     setDetailedThumbView();
                 }
             });
+
+            MenuItem templates = new MenuItem("Template view", new SelectionListener<ComponentEvent>() {
+                public void componentSelected(ComponentEvent event) {
+                    setTemplateView();
+                }
+            });
             Menu menu = new Menu() ;
             menu.add(refresh.getMenuItem()) ;
             menu.add(new SeparatorMenuItem()) ;
             menu.add(list) ;
             menu.add(thumbs) ;
             menu.add(detailedThumbs) ;
+            menu.add(templates) ;
             TextToolItem mMenu = new TextToolItem(Messages.getResource("fm_viewMenu")) ;
             mMenu.setMenu(menu);
             menus.add(mMenu) ;
@@ -143,6 +150,9 @@ public class ContentToolbar extends TopBar {
     }
 
     protected void setDetailedThumbView(){
+    }
+
+    protected void setTemplateView(){
     }
 
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelectionEl) {

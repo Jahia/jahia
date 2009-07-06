@@ -382,4 +382,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void renameUploadedFile(String location, String tmpName, int operation, String newName)  throws GWTJahiaServiceException {
         ContentManagerHelper.renameUploadedFile(location, tmpName, operation, newName, retrieveParamBean());
     }
+
+    public String getRenderedContent(String path) throws GWTJahiaServiceException {
+        return ContentManagerHelper.getRenderedContent(path, retrieveParamBean());
+    }
+
 }

@@ -148,6 +148,15 @@ public class RepositoryTab extends ContentPanel {
         binder.setCaching(false);
         binder.setDisplayProperty("displayName");
 
+//        binder.setIconProvider(new ModelStringProvider<GWTJahiaNode>() {
+//            public String getStringValue(GWTJahiaNode modelData, String s) {
+//                if ("icon-dir".equals(modelData.getExt())) {
+//                    return "tree-folder";
+//                }
+//                return modelData.getExt();
+//            }
+//        });
+//
         // tree selection listener
         m_tree.addListener(Events.SelectionChange, new Listener() {
             public void handleEvent(BaseEvent event) {

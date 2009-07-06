@@ -83,6 +83,10 @@ public class ContentManager extends TriPanelBrowserViewport {
             protected void setDetailedThumbView() {
                 filesViews.switchToDetailedThumbView();
             }
+
+            protected void setTemplateView() {
+                filesViews.switchToTemplateView();;
+            }
         };
         BottomBar statusBar = new ContentStatusBar();
 

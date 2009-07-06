@@ -55,6 +55,8 @@ import org.jahia.services.webdav.UsageEntry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.captcha.CaptchaService;
 import org.jahia.services.categories.Category;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.Resource;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
@@ -80,6 +82,7 @@ import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
 import java.util.*;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -204,7 +207,7 @@ public class ContentManagerHelper {
                 }
                 try {
                     if (f.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
-                        if (!f.getProperty("j:name").getString().equals(context.getSiteKey())) {
+                        if (!f.getName().equals(context.getSiteKey())) {
                             continue;
                         }
                     }
@@ -1881,4 +1884,26 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException("Invalid name : characters *,/,\",: cannot be used here");
         }
     }
+
+
+    public static String getRenderedContent(String path, ParamBean ctx) throws GWTJahiaServiceException {
+        String res = null;
+        try {
+            JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser());
+            JCRNodeWrapper node = session.getNode(path);
+            Resource r = new Resource(node, "html", null);
+            final HashMap<String, List<String>> listHashMap = new HashMap<String, List<String>>();
+            ctx.getRequest().setAttribute("moduleTags", listHashMap);
+            res = RenderService.getInstance().render(r, ctx.getRequest(), ctx.getResponse()).toString();
+            System.out.println("-->"+listHashMap);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return res;
+
+    }
+
+
 }

@@ -55,7 +55,7 @@ function replace(url,divID) {
 
 
 <div id="content">
-        <h2>Contenu</h2>
+        <h2>Content</h2>
         <c:forEach items="${currentNode.children}" var="child">
             <c:if test="${jcr:isNodeType(child, 'jnt:containerList')}">
                 <div id ="content${child.UUID}"></div>

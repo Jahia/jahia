@@ -23,7 +23,6 @@
         <c:if test="${jcr:isNodeType(child, 'jnt:page')}">
         <li>
             <a href="${pageContext.request.contextPath}/render/default${child.path}.html">${child.name}</a>
-
         </li>
         </c:if>
     </c:forEach>
@@ -32,7 +31,7 @@
 
 
 <div id="content">
-        <h2>Contenu</h2>
+        <h2>Content</h2>
         <c:forEach items="${currentNode.children}" var="child">
             <c:if test="${jcr:isNodeType(child, 'jnt:containerList')}">
             <template:module node="${child}"/>

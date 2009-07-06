@@ -4,4 +4,4 @@ Content type : ${currentNode.fileContent.contentType} <br>
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
 Creation date : <fmt:formatDate value="${created.time}" dateStyle="full"/> <br>
 
-<a href ="<%= request.getContextPath() %>/files${currentNode.path}"><%= request.getContextPath() %>/files${currentNode.path}</a>
+<a href ="${pageContext.request.contextPath}/files${currentNode.path}">${pageContext.request.contextPath}/files${currentNode.path}</a>

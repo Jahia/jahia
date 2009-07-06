@@ -27,4 +27,4 @@ ContentObject : ${currentNode.name}
     </ul>
 </c:forEach>
 
-<a href="<%= request.getContextPath() %>/render/default${currentNode.path}.html"><%= request.getContextPath() %>/render/default/${currentNode.path}.html</a>
+<a href="${pageContext.request.contextPath}/render/default${currentNode.path}.html">${pageContext.request.contextPath}/render/default/${currentNode.path}.html</a>

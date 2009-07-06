@@ -12,4 +12,4 @@
     </ul>
 </c:forEach>
 
-<p><a href="<%= request.getContextPath() %>/render/default${currentNode.path}.html"><%= request.getContextPath() %>/render/default/${currentNode.path}.html</a></p>
+<p><a href="${pageContext.request.contextPath}/render/default${currentNode.path}.html">${pageContext.request.contextPath}/render/default/${currentNode.path}.html</a></p>

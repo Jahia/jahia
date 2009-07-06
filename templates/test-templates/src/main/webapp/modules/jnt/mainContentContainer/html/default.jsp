@@ -6,5 +6,5 @@
                             align="${mainContentAlign}"/>
     <template:field name="mainContentBody"/>
 </p>
-URL: <a href="<%= request.getContextPath() %>/render/default${currentNode.path}.html">${currentNode.name}.html</a>
+URL: <a href="${pageContext.request.contextPath}/render/default${currentNode.path}.html">${currentNode.name}.html</a>
 <br class="clear"/>

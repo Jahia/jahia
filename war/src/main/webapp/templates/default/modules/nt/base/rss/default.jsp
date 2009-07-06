@@ -8,7 +8,7 @@
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>${currentNode.name}</title>
-        <link><%= request.getContextPath() %>/render/default${currentNode.path}.rss</link>
+        <link>${pageContext.request.contextPath}/render/default${currentNode.path}.rss</link>
         <description>${currentNode.name}</description>
         <generator>Jahia 6.0, http://www.jahia.org</generator>
             <c:forEach items="${currentNode.children}" var="child">

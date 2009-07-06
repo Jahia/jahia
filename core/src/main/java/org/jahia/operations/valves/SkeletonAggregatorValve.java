@@ -61,7 +61,9 @@ import org.jahia.services.cache.SkeletonCacheEntry;
 import org.jahia.services.events.JahiaEventGeneratorBaseService;
 import org.jahia.services.theme.ThemeService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.StringResponseWrapper;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.springframework.util.StopWatch;
 
@@ -69,9 +71,13 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -275,11 +281,7 @@ public class SkeletonAggregatorValve implements Valve {
                                     try {
                                         content = getIncludedContent(srcAtribute, (ParamBean) processingContext);
                                     } catch (Exception e) {
-                                        logger.warn(
-                                                "Error including the content of the resource '"
-                                                        + srcAtribute
-                                                        + "'. Cause: "
-                                                        + e.getMessage(), e);
+                                        content = handleIncludeError(srcAtribute, e, processingContext);
                                     }
                                     if (content != null) {
                                         outputDocument.replace(segment.getBegin(), segment.getElement()
@@ -388,7 +390,7 @@ public class SkeletonAggregatorValve implements Valve {
         return exit;
     }
 
-    private String getIncludedContent(String url, ParamBean ctx) throws ServletException, IOException {
+    private static String getIncludedContent(String url, ParamBean ctx) throws ServletException, IOException {
         if (ctx.getRequest().getAttribute("jahia") == null) {
             // expose beans into the request scope  
             EngineValve.setContentAccessBeans(ctx);
@@ -418,6 +420,77 @@ public class SkeletonAggregatorValve implements Valve {
 
     public void setEventService(JahiaEventGeneratorBaseService eventService) {
         this.eventService = eventService;
+    }
+
+    private static String handleIncludeError(String url, Exception ex,
+            ProcessingContext ctx) throws PipelineException {
+
+        String content = null;
+
+        String onError = "full";
+        try {
+            if (ctx.getSite() != null) {
+                String value = ServicesRegistry.getInstance()
+                        .getJahiaTemplateManagerService().getTemplatePackage(
+                                ctx.getSite().getTemplatePackageName())
+                        .getProperty("boxes.onError");
+                if (value == null) {
+                    // get the default property value from jahia.properties
+                    value = SettingsBean.getInstance().lookupString(
+                            "templates.boxes.onError");
+                }
+                onError = value != null ? value : "full";
+            }
+        } catch (Exception e) {
+            logger.warn("Unable to resolve error handling type. Cause: "
+                    + e.getMessage(), e);
+        }
+
+        Throwable cause = null;
+        if (ex instanceof ServletException) {
+            cause = ((ServletException) ex).getRootCause();
+        } else if (ex instanceof JspException) {
+            cause = ((JspException) ex).getRootCause();
+        }
+        cause = cause != null ? cause : ex;
+
+        if ("hide".equals(onError)) {
+            logger.warn("Error including the content of the resource '" + url
+                    + "'. Cause: " + cause.getMessage(), cause);
+        } else if ("propagate".equals(onError)) {
+            // do propagate exception to the higher level
+            throw new PipelineException(
+                    "Error including the content of the resource '" + url
+                            + "'. Cause: " + cause.getMessage(), cause);
+        } else {
+            logger.warn("Error including the content of the resource '" + url
+                    + "'. Cause: " + cause.getMessage(), cause);
+            StringBuilder out = new StringBuilder(256);
+            out.append("<div class=\"page-fragment-error\">").append(
+                    "compact".equals(onError) ? getErrorMessage(ctx)
+                            : getExceptionDetails(cause)).append("</div>");
+
+            content = out.toString();
+        }
+
+        return content;
+    }
+
+    private static Object getExceptionDetails(Throwable ex) {
+
+        StringWriter out = new StringWriter();
+        out.append(ex.getMessage()).append("\n<!--\n");
+
+        ex.printStackTrace(new PrintWriter(out));
+
+        out.append("\n-->\n");
+
+        return out.toString();
+    }
+
+    private static String getErrorMessage(ProcessingContext ctx) {
+        return JahiaResourceBundle.getString(null, "boxes.onError.message", ctx
+                .getLocale(), ctx.getSite().getTemplatePackageName());
     }
 
 }

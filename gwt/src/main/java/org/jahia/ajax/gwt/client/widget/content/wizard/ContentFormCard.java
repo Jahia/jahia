@@ -127,7 +127,7 @@ public class ContentFormCard extends ContentWizardCard {
                                 .alert(
                                         Messages
                                                 .get(
-                                                        "add_content_wizard_card_form_error_save_title",
+                                                        "add_content_wizard_card_form_error_title",
                                                         "Error"),
                                         Messages
                                                 .get(
@@ -147,7 +147,7 @@ public class ContentFormCard extends ContentWizardCard {
                                 .info(
                                         Messages
                                                 .get(
-                                                        "add_content_wizard_card_form_success_save_title",
+                                                        "add_content_wizard_card_form_success_title",
                                                         "Info"),
                                         Messages
                                                 .get(

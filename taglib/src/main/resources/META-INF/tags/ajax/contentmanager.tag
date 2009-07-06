@@ -442,5 +442,52 @@ cursor:pointer;
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.roles.any"
                             aliasResourceName="mw_no_role"/>
 
+<%-- common wizard --%>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.wizard.button.cancel"
+                            aliasResourceName="wizard_button_cancel"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.wizard.button.finish"
+                            aliasResourceName="wizard_button_finish"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.wizard.button.next"
+                            aliasResourceName="wizard_button_next"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.wizard.button.prev"
+                            aliasResourceName="wizard_button_prev"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.wizard.button.steps.of"
+                            aliasResourceName="wizard_steps_of"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.wizard.button.steps.current"
+                            aliasResourceName="wizard_steps_current"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.wizard.title"
+                            aliasResourceName="wizard_header_title"/>
 
-
+<%-- Add Content wizard --%>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.column.label"
+                            aliasResourceName="add_content_wizard_column_label"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.column.name"
+                            aliasResourceName="add_content_wizard_column_name"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.defsCard.text"
+                            aliasResourceName="add_content_wizard_card_defs_text"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.defsCard.title"
+                            aliasResourceName="add_content_wizard_card_defs_title"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.formCard.error.props"
+                            aliasResourceName="add_content_wizard_card_form_error_props"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.error.label"
+                            aliasResourceName="add_content_wizard_card_form_error_title"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.formCard.error.save"
+                            aliasResourceName="add_content_wizard_card_form_error_save"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.formCard.success"
+                            aliasResourceName="add_content_wizard_card_form_success_title"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.formCard.success.save"
+                            aliasResourceName="add_content_wizard_card_form_success_save"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.formCard.text"
+                            aliasResourceName="add_content_wizard_card_form_text"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.formCard.title"
+                            aliasResourceName="add_content_wizard_card_form_title"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.nameCard.nodeName"
+                            aliasResourceName="add_content_wizard_card_name_node_name"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.nameCard.nodeType"
+                            aliasResourceName="add_content_wizard_card_name_node_type"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.nameCard.text"
+                            aliasResourceName="add_content_wizard_card_name_text"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.nameCard.title"
+                            aliasResourceName="add_content_wizard_card_name_title"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.title"
+                            aliasResourceName="add_content_wizard_title"/>

@@ -70,12 +70,10 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
 
     protected List<Item> fields;
     protected List<Item> emptyFields;
-    protected Map<String,TranslationNodeImpl> i18n;
 
     protected JahiaContentNodeImpl(SessionImpl session, ContentObject object) {
         super(session);
         this.object = object;
-        this.i18n = new HashMap<String, TranslationNodeImpl>();
     }
 
     @Override

@@ -4,10 +4,10 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 
 <template:template>
-<template:templateHead>
+<head>
     <title>${currentNode.name}</title>
-</template:templateHead>
-<template:templateBody>
+</head>
+<body>
 <h1>Page : ${currentNode.name}</h1>
 <div id="nav">
     <h2>Navigation</h2>
@@ -67,5 +67,5 @@ function replace(url,divID) {
             </c:forEach>
         </c:forEach>
 </div>
-</template:templateBody>
+</body>
 </template:template>

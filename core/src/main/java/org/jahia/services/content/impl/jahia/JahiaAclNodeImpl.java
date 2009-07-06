@@ -67,6 +67,7 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 
     @Override
     protected void initNodes() throws RepositoryException {
+        super.initNodes();
         // todo ace
 //        try {
 //            JahiaBaseACL acl = new JahiaBaseACL(aclId);

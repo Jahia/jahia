@@ -57,6 +57,7 @@ import java.security.AccessControlException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -75,14 +76,16 @@ public class JCRSessionWrapper implements Session {
     private Credentials credentials;
     private JCRWorkspaceWrapper workspace;
     private boolean isLive = true;
+    private Locale locale;
 
     private Map<JCRStoreProvider, Session> sessions = new HashMap<JCRStoreProvider, Session>();
 
-    public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, JCRStoreService service) {
+    public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale, JCRStoreService service) {
         this.user = user;
         this.isSystem = isSystem;
         this.credentials = credentials;
         this.workspace = new JCRWorkspaceWrapper(workspace, this, service);
+        this.locale = locale;
         this.service = service;
     }
 

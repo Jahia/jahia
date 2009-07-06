@@ -62,11 +62,9 @@ import javax.security.auth.callback.*;
 import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.util.*;
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.net.MalformedURLException;
 
 /**
  *
@@ -205,6 +203,10 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     public JCRSessionWrapper getThreadSession(JahiaUser user, String workspace) throws RepositoryException {
+        return getThreadSession(user, workspace, null);
+    }
+
+    public JCRSessionWrapper getThreadSession(JahiaUser user, String workspace, Locale locale) throws RepositoryException {
         // thread user session might be inited/closed in an http filter, instead of keeping it
 
         Map<String,Map<String,JCRSessionWrapper>> smap = userSession.get();
@@ -241,17 +243,22 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             workspace = "default";
         }
 
-        JCRSessionWrapper s = wsMap.get(workspace);
+        String localeString = "default";
+        if (locale != null) {
+            localeString = locale.toString();
+        }
+
+        JCRSessionWrapper s = wsMap.get(workspace+"-"+localeString);
 
         if (s == null || !s.isLive()) {
             if (!JahiaLoginModule.GUEST.equals(username)) {
-                s = login(org.jahia.jaas.JahiaLoginModule.getCredentials(username), workspace);
+                s = login(org.jahia.jaas.JahiaLoginModule.getCredentials(username), workspace, locale);
                 // should be done somewhere else, call can be quite expensive
                 deployNewUser(username);
             } else {
-                s = login(org.jahia.jaas.JahiaLoginModule.getGuestCredentials(), workspace);
+                s = login(org.jahia.jaas.JahiaLoginModule.getGuestCredentials(), workspace, locale);
             }
-            wsMap.put(workspace, s);
+            wsMap.put(workspace+"-"+localeString, s);
         } else {
             s.refresh(true);
         }
@@ -581,6 +588,10 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     public JCRSessionWrapper login(Credentials credentials, String workspace) throws LoginException, NoSuchWorkspaceException, RepositoryException {
+        return login(credentials, workspace, null);
+    }
+
+    public JCRSessionWrapper login(Credentials credentials, String workspace, Locale locale) throws LoginException, NoSuchWorkspaceException, RepositoryException {
         if (!(credentials instanceof SimpleCredentials)) {
             throw new LoginException("Only SimpleCredentials supported in this implementation");
         }
@@ -620,7 +631,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             } else {
                 user = userService.lookupUser(jahiaPrincipal.getName());
             }
-            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, this);
+            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this);
         }
         throw  new LoginException("Can't login");
     }

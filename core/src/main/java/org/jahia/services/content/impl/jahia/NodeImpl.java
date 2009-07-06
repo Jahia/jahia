@@ -334,13 +334,13 @@ public abstract class NodeImpl extends ItemImpl implements Node {
     public boolean hasNodes() throws RepositoryException {
         initNodes();
 
-        return nodes.isEmpty();
+        return !nodes.isEmpty();
     }
 
     public boolean hasProperties() throws RepositoryException {
         initProperties();
 
-        return properties.isEmpty();
+        return !properties.isEmpty();
     }
 
     public ExtendedNodeType getPrimaryNodeType() throws RepositoryException {

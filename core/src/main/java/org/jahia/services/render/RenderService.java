@@ -1,35 +1,24 @@
 package org.jahia.services.render;
 
+import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRJahiaContentNode;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.JahiaService;
 import org.jahia.services.containers.ContentContainer;
-import org.jahia.data.beans.TemplatePathResolverBean;
-import org.jahia.data.beans.TemplatePathResolverFactory;
 import org.jahia.data.beans.ContainerBean;
 import org.jahia.data.JahiaData;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
+import org.jahia.operations.valves.EngineValve;
+import org.jahia.params.ParamBean;
 import org.jahia.content.ContentObject;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.jstl.core.Config;
-import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import javax.jcr.RepositoryException;
-import javax.jcr.PathNotFoundException;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Service to render node
@@ -38,7 +27,10 @@ import java.util.List;
  *
  */
 public class RenderService extends JahiaService {
+
     private static volatile RenderService instance;
+    
+    private static final Logger logger = Logger.getLogger(RenderService.class);
 
     public synchronized static RenderService getInstance() {
         if (instance == null) {
@@ -85,18 +77,14 @@ public class RenderService extends JahiaService {
         Object oldResource = request.getAttribute("currentResource");
         request.setAttribute("currentResource", resource);
 
-        ProcessingContext threadParamBean = Jahia.getThreadParamBean();
-        Config.set(request, Config.FMT_LOCALIZATION_CONTEXT,
-                new LocalizationContext(new JahiaResourceBundle(threadParamBean
-                        .getLocale(), threadParamBean.getSite()
-                        .getTemplatePackageName()), threadParamBean.getLocale()));
-
-        setJahiaAttributes(request, resource.getNode(), threadParamBean);
-
-        String res = script.execute();
-
-        request.setAttribute("currentNode",old);
-        request.setAttribute("currentResource",oldResource);
+        String res;
+        try {
+            setJahiaAttributes(request, resource.getNode(), (ParamBean) Jahia.getThreadParamBean());
+            res = script.execute();
+        } finally {
+            request.setAttribute("currentNode",old);
+            request.setAttribute("currentResource",oldResource);
+        }
 
         return new StringBuffer(res);
     }
@@ -132,7 +120,7 @@ public class RenderService extends JahiaService {
      * @param node Node to display
      * @param threadParamBean The "param bean"
      */
-    private void setJahiaAttributes(HttpServletRequest request, JCRNodeWrapper node, ProcessingContext threadParamBean) {
+    private void setJahiaAttributes(HttpServletRequest request, JCRNodeWrapper node, ParamBean threadParamBean) {
         try {
             if (node instanceof JCRJahiaContentNode) {
                 ContentObject obj = ((JCRJahiaContentNode)node).getContentObject();
@@ -146,8 +134,13 @@ public class RenderService extends JahiaService {
             if (request.getAttribute(JahiaData.JAHIA_DATA) == null) {
                 request.setAttribute(JahiaData.JAHIA_DATA,new JahiaData(threadParamBean, false));
             }
+            if (request.getAttribute("jahia") == null) {
+                // expose beans into the request scope  
+                EngineValve.setContentAccessBeans(threadParamBean);
+            }
+            
         } catch (JahiaException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
     }
 }

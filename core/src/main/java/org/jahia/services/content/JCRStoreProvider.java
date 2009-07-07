@@ -704,18 +704,15 @@ public class JCRStoreProvider {
         }
     }
 
-    public QueryManager getQueryManager(JahiaUser user) {
+    public QueryManager getQueryManager(JCRSessionWrapper session) {
         QueryManager queryManager = null;
-        try {
-            Session session = getThreadSession(user);
-            queryManager = session.getWorkspace().getQueryManager();
-            if (queryManager instanceof org.apache.jackrabbit.core.query.QueryManagerImpl){
-                queryManager =
-                        new JCRStoreQueryManagerAdapter((org.apache.jackrabbit.core.query.QueryManagerImpl)queryManager);
-            }            
-        } catch (RepositoryException e) {
-            logger.error("Repository error", e);
+
+        queryManager = session.getWorkspace().getQueryManager();
+        if (queryManager instanceof org.apache.jackrabbit.core.query.QueryManagerImpl){
+            queryManager =
+                    new JCRStoreQueryManagerAdapter((org.apache.jackrabbit.core.query.QueryManagerImpl)queryManager);
         }
+
         return queryManager;
     }
     

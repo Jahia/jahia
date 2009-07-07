@@ -5,7 +5,7 @@
         xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
         version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd
-                           http://hnsp.inf-bb.uni-jena.de/spec/JSR%202.0%20API/portlet-app_2_0.xsd">
+                           http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
 
     <portlet>
         <description>This portlet will render an HTML fragment</description>

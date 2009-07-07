@@ -324,7 +324,7 @@ public class FileSearchViewHandler extends AbstractSearchViewHandler {
                 }
                 if (searchFields.isFilename()) {
                     addConstraint(textSearchConstraints, "or",
-                            "jcr:contains(@j:filename, " + searchExpression
+                            "jcr:contains(@j:nodename, " + searchExpression
                                     + ")");
                 }
                 if (textSearchConstraints.length() > 0) {

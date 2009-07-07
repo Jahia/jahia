@@ -61,7 +61,7 @@ public class ContentDefinitionHelper {
     private final static Logger logger = Logger.getLogger(ContentDefinitionHelper.class) ;
 
     private static List<String> excludedItems = Arrays.asList("j:locktoken", "jcr:lockOwner", "jcr:lockIsDeep",
-            "j:filename", "j:fullpath", "j:applyAcl", "jcr:uuid", "j:fieldsinuse");
+            "j:nodename", "j:fullpath", "j:applyAcl", "jcr:uuid", "j:fieldsinuse");
     private static List<String> excludedTypes = Arrays.asList("nt:base", "");
 
 

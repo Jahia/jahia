@@ -48,7 +48,7 @@ rule "Filename"
         A new node is created
              - it has the type jmix:hierarchyNode
     then
-        Set the property j:filename of the node with the name of the node
+        Set the property j:nodename of the node with the name of the node
 end
 
 rule "Image type"

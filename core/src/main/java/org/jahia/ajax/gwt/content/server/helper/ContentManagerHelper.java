@@ -497,7 +497,7 @@ public class ContentManagerHelper {
     }
 
     private static Query createQuery(String searchString, ProcessingContext context) throws RepositoryException {
-        String s = "//element(*, jmix:hierarchyNode)[jcr:contains(@j:filename," + JCRContentUtils.stringToJCRSearchExp(searchString) + ")]";
+        String s = "//element(*, jmix:hierarchyNode)[jcr:contains(@j:nodename," + JCRContentUtils.stringToJCRSearchExp(searchString) + ")]";
         Query q = jcr.getQueryManager(context.getUser()).createQuery(s, Query.XPATH);
         return q;
     }

@@ -210,12 +210,6 @@ public class ContentDefinitionHelper {
                     definitions.putAll(nodeType.getChildNodeDefinitionsAsMap());
                 }
                 for (ExtendedNodeDefinition nodeDef : definitions.values()) {
-                    if (nodeDef.getDeclaringNodeType().getName().equals(
-                            Constants.JAHIANT_PAGE)
-                            || nodeDef.getDeclaringNodeType().getName().equals(
-                                    Constants.JAHIANT_JAHIACONTENT)) {
-                        continue;
-                    }
                     ExtendedNodeType[] requiredPrimaryTypes = nodeDef
                             .getRequiredPrimaryTypes();
 //                    if (requiredPrimaryTypes[0]
@@ -227,11 +221,13 @@ public class ContentDefinitionHelper {
 //                                .getRequiredPrimaryTypes();
 //                    }
                     for (ExtendedNodeType extendedNodeType : requiredPrimaryTypes) {
-                        if (!excludedTypes.contains(extendedNodeType.getName())) {
-                            gwtNodeTypes
-                                    .add(new GWTJahiaNodeType(extendedNodeType
-                                            .getName(), extendedNodeType
-                                            .getLabel(ctx.getLocale())));
+                        for (ExtendedNodeType nodeType : extendedNodeType.getSubtypes()) {
+                            if (!excludedTypes.contains(nodeType.getName()) && !nodeType.isMixin() && !nodeType.isAbstract()) {
+                                gwtNodeTypes
+                                        .add(new GWTJahiaNodeType(nodeType
+                                                .getName(), nodeType
+                                                .getLabel(ctx.getLocale())));
+                            }
                         }
                     }
                 }

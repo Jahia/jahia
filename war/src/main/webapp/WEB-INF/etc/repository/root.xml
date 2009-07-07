@@ -17,6 +17,7 @@
         <mashups jcr:primaryType="jnt:folder"/>
 
         <templates jcr:primaryType="jnt:folder"/>
+        <content jcr:primaryType="jnt:folder"/>
     </shared>
 
     <users jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:usersFolder" j:usersFolderSkeleton="user.xml"/>

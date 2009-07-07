@@ -40,5 +40,6 @@
     <jsp:param name="position" value="position2"/>
     <jsp:param name="mainArea" value="areas/banner_teasers_boxes.jsp"/>
     <jsp:param name="areaB" value="areas/search_login_boxes.jsp"/>
+    <jsp:param name="useGWT" value="true"/>
     <jsp:param name="footerNav" value="true"/>
 </jsp:include>

@@ -116,6 +116,10 @@ public class JCRSessionWrapper implements Session {
         return workspace;
     }
 
+    public Locale getLocale() {
+        return locale;
+    }
+
     public Session impersonate(Credentials credentials) throws LoginException, RepositoryException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }

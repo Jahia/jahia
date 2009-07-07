@@ -55,10 +55,7 @@ import org.jahia.urls.URI;
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
 import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeDefinition;
-import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.*;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
@@ -707,7 +704,42 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return null;
     }
 
+    /**
+     * Return the internationalization node, containing localized properties
+     *
+     * @param locale
+     * @return
+     */
+    private Node getI18N(Locale locale) throws RepositoryException {
+        //getSession().getLocale()
+        NodeIterator ni = objectNode.getNodes("j:translation");
+        while (ni.hasNext()) {
+            Node n = ni.nextNode();
+            if (locale.toString().equals(n.getProperty("jcr:language").getString())) {
+                return n;
+            }
+        }
+        throw new ItemNotFoundException(locale.toString());
+    }
+
+    private Node getOrCreateI18N(Locale locale) throws RepositoryException {
+        try {
+            return getI18N(locale);
+        } catch (RepositoryException e) {
+            Node t = objectNode.addNode("j:translation", "jnt:translation");
+            t.setProperty("jcr:language", locale.toString());
+            return t;
+        }
+    }
+
     public Property getProperty(String name) throws javax.jcr.PathNotFoundException, javax.jcr.RepositoryException {
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getI18N(locale).getProperty(locale.toString()+"_"+name), session, provider, getApplicablePropertyDefinition(name), name);
+            }
+        }
         return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider);
     }
 
@@ -717,6 +749,23 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         while (pi.hasNext()) {
             res.add(new JCRPropertyWrapperImpl(this, pi.nextProperty(), session, provider));
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            try {
+                pi = getI18N(locale).getProperties();
+                while (pi.hasNext()) {
+                    final Property property = pi.nextProperty();
+                    final String name = property.getName();
+                    if (name.startsWith(locale.toString()+"_")) {
+                        final String s = name.substring(locale.toString().length() + 1);
+                        res.add(new JCRPropertyWrapperImpl(this, property, session, provider, getApplicablePropertyDefinition(s), s));
+                    }
+                }
+            } catch (ItemNotFoundException e) {
+            }
+        }
+
         return new PropertyIteratorImpl(res.iterator(), res.size());
     }
 
@@ -726,6 +775,23 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         while (pi.hasNext()) {
             res.add(new JCRPropertyWrapperImpl(this, pi.nextProperty(), session, provider));
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            try {
+                pi = getI18N(locale).getProperties(s);
+                while (pi.hasNext()) {
+                    final Property property = pi.nextProperty();
+                    final String name = property.getName();
+                    if (name.startsWith(locale.toString()+"_")) {
+                        final String s1 = property.getName().substring(locale.toString().length() + 1);
+                        res.add(new JCRPropertyWrapperImpl(this, property, session, provider, getApplicablePropertyDefinition(s1), s1));
+                    }
+                }
+            } catch (ItemNotFoundException e) {
+            }
+        }
+
         return new PropertyIteratorImpl(res.iterator(), res.size());
     }
 
@@ -736,21 +802,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return null;
         }
         try {
-            if (objectNode.hasProperty(name)) {
-                Property p = objectNode.getProperty(name);
+            if (hasProperty(name)) {
+                Property p = getProperty(name);
                 return p.getString();
             }
-        } catch (RepositoryException e) {
-            logger.error("Repository error",e);
-        }
-        return null;
-    }
-
-    public String getPropertyAsString(String namespace, String name) {
-        try {
-            String pref = objectNode.getSession().getNamespacePrefix(namespace);
-            name = pref+":"+name;
-            return getPropertyAsString(name);
         } catch (RepositoryException e) {
             logger.error("Repository error",e);
         }
@@ -761,6 +816,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, s1), session, provider, getApplicablePropertyDefinition(s), s);
+            }
+        }
+
         return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,s1), session, provider);
     }
 
@@ -768,6 +832,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, value), session, provider, getApplicablePropertyDefinition(s), s);
+            }
+        }
+
         return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,value), session, provider);
     }
 
@@ -775,6 +848,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, value, i), session, provider, getApplicablePropertyDefinition(s), s);
+            }
+        }
+
         return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,i), session, provider);
     }
 
@@ -782,6 +864,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, values), session, provider, getApplicablePropertyDefinition(s), s);
+            }
+        }
+
         return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s,values), session, provider);
     }
 
@@ -789,6 +880,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, values, i), session, provider, getApplicablePropertyDefinition(s), s);
+            }
+        }
+
         return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,values,i), session, provider);
     }
 
@@ -796,6 +896,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, strings), session, provider, getApplicablePropertyDefinition(s), s);
+            }
+        }
+
         return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,strings), session, provider);
     }
 
@@ -803,6 +912,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, strings, i), session, provider, getApplicablePropertyDefinition(s), s);
+            }
+        }
+
         return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,strings, i), session, provider);
     }
 
@@ -810,6 +928,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, s1,i), session, provider, getApplicablePropertyDefinition(s), s);
+            }
+        }
+
         return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,s1), session, provider);
     }
 
@@ -817,6 +944,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, inputStream), session, provider, getApplicablePropertyDefinition(s), s);
+            }
+        }
+
         return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,inputStream), session, provider);
     }
 
@@ -824,6 +960,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, b), session, provider, getApplicablePropertyDefinition(s), s);
+            }
+        }
+
         return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,b), session, provider);
     }
 
@@ -831,6 +976,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, v), session, provider, getApplicablePropertyDefinition(s), s);
+            }
+        }
+
         return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,v), session, provider);
     }
 
@@ -838,12 +992,27 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, l), session, provider, getApplicablePropertyDefinition(s), s);
+            }
+        }
+
         return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,l), session, provider);
     }
 
     public Property setProperty(String s, Calendar calendar) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (exception != null) {
             return null;
+        }
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, calendar), session, provider, getApplicablePropertyDefinition(s), s);
+            }
         }
         return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,calendar), session, provider);
     }
@@ -855,15 +1024,42 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (node instanceof JCRNodeWrapper) {
             node = ((JCRNodeWrapper)node).getRealNode();
         }
+
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(locale.toString()+"_"+s, node), session, provider, getApplicablePropertyDefinition(s), s);
+            }
+        }
+
         return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,node), session, provider);
     }
 
     public boolean hasProperty(String s) throws RepositoryException {
-        return objectNode.hasProperty(s);
+        boolean result = objectNode.hasProperty(s);
+        if (result) return true;
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            try {
+                return getI18N(locale).hasProperty(s);
+            } catch (ItemNotFoundException e) {
+            }
+        }
+        return false;
     }
 
     public boolean hasProperties() throws RepositoryException {
-        return objectNode.hasProperties();
+        boolean result = objectNode.hasProperties();
+        if (result) return true;
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            try {
+                return getI18N(locale).hasProperties();
+            } catch (ItemNotFoundException e) {
+            }
+        }
+        return false;
     }
 
     public void setProperty(String namespace, String name, String value) throws RepositoryException {

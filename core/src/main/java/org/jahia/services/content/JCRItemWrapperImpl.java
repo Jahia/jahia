@@ -90,7 +90,7 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
         return provider.getDepth() + item.getDepth();
     }
 
-    public Session getSession() throws RepositoryException {
+    public JCRSessionWrapper getSession() throws RepositoryException {
         return session;
     }
 

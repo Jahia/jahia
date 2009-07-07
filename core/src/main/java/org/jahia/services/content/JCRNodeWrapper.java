@@ -161,8 +161,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     String getPropertyAsString(String name);
 
-    String getPropertyAsString(String namespace, String name);
-
     void setProperty(String namespace, String name, String value) throws RepositoryException;
 
     boolean renameFile(String newName);

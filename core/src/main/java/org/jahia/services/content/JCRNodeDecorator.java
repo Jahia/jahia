@@ -230,10 +230,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getPropertyAsString(name);
     }
 
-    public String getPropertyAsString(String namespace, String name) {
-        return node.getPropertyAsString(namespace, name);
-    }
-
     public void setProperty(String namespace, String name, String value) throws RepositoryException {
         node.setProperty(namespace, name, value);
     }

@@ -45,6 +45,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.version.VersionException;
 import java.io.InputStream;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -57,6 +58,8 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     private JCRNodeWrapper node;
     private Property property;
+    private String name;
+    private PropertyDefinition def;
 
     public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JCRSessionWrapper session, JCRStoreProvider provider) {
         super(session, provider);
@@ -64,13 +67,23 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         this.property = property;
         try {
             this.localPath = property.getPath();
+            def = property.getDefinition();
         } catch (RepositoryException e) {
             
         }
+    }
 
+    public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JCRSessionWrapper session, JCRStoreProvider provider, ExtendedPropertyDefinition def, String name) {
+        super(session, provider);
+        this.node = objectNode;
+        this.property = property;
+        this.name = name;
+        this.localPath = node.getPath()+"/"+name;
+        this.def = def;
     }
 
     public void setValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+
         property.setValue(value);
     }
 
@@ -111,7 +124,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public Value getValue() throws ValueFormatException, RepositoryException {
-        return new JCRValueWrapperImpl(property.getValue(),property.getDefinition());
+        return new JCRValueWrapperImpl(property.getValue(),getDefinition());
     }
 
     public Value[] getValues() throws ValueFormatException, RepositoryException {
@@ -119,7 +132,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         Value[] wrappedValues = new Value[values.length];
         for (int i = 0; i < values.length; i++) {
             Value value = values[i];
-            wrappedValues[i] = new JCRValueWrapperImpl(value,property.getDefinition());
+            wrappedValues[i] = new JCRValueWrapperImpl(value,getDefinition());
         }
         return wrappedValues;
     }
@@ -161,7 +174,6 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public ExtendedPropertyDefinition getDefinition() throws RepositoryException {
-        PropertyDefinition def = property.getDefinition();
         String name = def.getDeclaringNodeType().getName();
         if (name.equals(Constants.NT_HIERARCHYNODE) && def.getName().equals(Constants.JCR_CREATED)) {
             name = Constants.MIX_CREATED;
@@ -186,7 +198,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public String getName() throws RepositoryException {
-        return property.getName();
+        return name;
     }
 
     public Item getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
@@ -194,7 +206,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-        return property.getParent();
+        return node;
     }
 
     public int getDepth() throws RepositoryException {

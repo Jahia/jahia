@@ -1008,7 +1008,7 @@ public class ContentManagerHelper {
     public static Map<String, GWTJahiaNodeProperty> getProperties(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
         JCRNodeWrapper objectNode;
         try {
-            objectNode = jcr.getThreadSession(jParams.getUser()).getNode(path);
+            objectNode = jcr.getThreadSession(jParams.getUser(), null, jParams.getLocale()).getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -1226,7 +1226,7 @@ public class ContentManagerHelper {
         }
         JCRNodeWrapper parentNode;
         try {
-            parentNode = jcr.getThreadSession(context.getUser()).getNode(parentPath);
+            parentNode = jcr.getThreadSession(context.getUser(), null, context.getLocale()).getNode(parentPath);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());

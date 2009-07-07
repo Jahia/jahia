@@ -41,4 +41,5 @@
     <jsp:param name="mainArea" value="areas/mediaGallery.jsp"/>
     <jsp:param name="footerNav" value="true"/>
     <jsp:param name="gwtScript" value="mediagallery"/>
+    <jsp:param name="useGWT" value="true"/>    
 </jsp:include>

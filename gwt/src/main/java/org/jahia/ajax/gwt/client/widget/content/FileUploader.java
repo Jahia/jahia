@@ -92,9 +92,12 @@ public class FileUploader extends Window {
 
         setModal(true);
 
+        // upload location
         Hidden dest = new Hidden();
         dest.setName("uploadLocation");
 
+
+        // unzip parameter
         final CheckBox unzip = new CheckBox();
         unzip.setFieldLabel(Messages.getResource("fm_autoUnzip"));
         unzip.setName("unzip");
@@ -108,8 +111,14 @@ public class FileUploader extends Window {
         }
         dest.setValue(parentPath);
 
+        // create versioon
+        Hidden createVersion = new Hidden();
+        createVersion.setName("createVersion");
+        createVersion.setValue(String.valueOf(location.isVersioned()));
+
         form.add(dest);
         form.add(unzip);
+        form.add(createVersion);
 
         final ToolBar toolBar = new ToolBar();
         TextToolItem add = new TextToolItem(Messages.getResource("fm_addFile"));
@@ -157,8 +166,13 @@ public class FileUploader extends Window {
 
         form.addListener(Events.BeforeSubmit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
+                // display confirm versionning panel
+
+
                 bar.setVisible(true);
                 bar.auto();
+
+
             }
         });
         form.addListener(Events.Submit, new Listener<FormEvent>() {
@@ -179,11 +193,11 @@ public class FileUploader extends Window {
 
                     } else if (s.startsWith("EXISTS:")) {
                         int i1 = s.indexOf(' ');
-                        int i2 = s.indexOf(' ', i1+1);
-                        int i3 = s.indexOf(' ', i2+1);                                                        
-                        final String key = s.substring(i1+1,i2);
-                        final String tmp = s.substring(i2+1,i3);
-                        final String name = s.substring(i3+1);
+                        int i2 = s.indexOf(' ', i1 + 1);
+                        int i3 = s.indexOf(' ', i2 + 1);
+                        final String key = s.substring(i1 + 1, i2);
+                        final String tmp = s.substring(i2 + 1, i3);
+                        final String name = s.substring(i3 + 1);
 
                         addExistingToForm(exists, key, tmp, name);
                     }
@@ -199,10 +213,11 @@ public class FileUploader extends Window {
                             removeAll();
                             for (final Field[] exist : list) {
                                 final String tmpName = (String) exist[0].getValue();
+                                // selected index correspond to the action: ie. 3=versioning
                                 final int operation = ((SimpleComboBox) exist[1]).getSelectedIndex();
                                 final String key = exist[1].getName();
                                 final String newName = (String) exist[2].getValue();
-                                JahiaContentManagementService.App.getInstance().renameUploadedFile(location.getPath(), tmpName, operation, newName, new AsyncCallback() {
+                                JahiaContentManagementService.App.getInstance().uploadedFile(location.getPath(), tmpName, operation, newName, new AsyncCallback() {
                                     public void onFailure(Throwable caught) {
                                         addExistingToForm(exists, key, tmpName, newName);
                                         end(exist);
@@ -262,17 +277,23 @@ public class FileUploader extends Window {
         hiddenField.setName(key + "_tmp");
         hiddenField.setValue(tmp);
 
+        // warning, the index of the option is important. Indeed it corresponds to their value.
         final SimpleComboBox<String> choose = new SimpleComboBox<String>();
         choose.setEditable(false);
         choose.setName(key);
+        // 0 = rename
         choose.add(Messages.getResource("fm_rename"));
+        // 1= rename-to
         choose.add(Messages.getResource("fm_rename") + " auto");
+        // 2 = overwrite
         choose.add(Messages.getResource("fm_confOverwrite"));
+        // 4 = add new version
+        choose.add(Messages.getNotEmptyResource("fm_add_new_version","Add a new version"));
         choose.setHideLabel(true);
         choose.setValue(choose.getStore().getAt(1));
         choose.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent>() {
             public void handleEvent(SelectionChangedEvent event) {
-                if (choose.getValue().getValue().equals("Rename"))  {
+                if (choose.getValue().getValue().equals("Rename")) {
                     textField.setValue(name);
                     textField.enable();
                 } else {
@@ -289,7 +310,7 @@ public class FileUploader extends Window {
         p.add(choose);
         p.add(textField);
         add(p);
-        exists.add(new Field[] {hiddenField, choose, textField});
+        exists.add(new Field[]{hiddenField, choose, textField});
     }
 
     private void addUploadField() {
@@ -301,5 +322,6 @@ public class FileUploader extends Window {
         form.add(upload);
         form.layout();
     }
+
 
 }

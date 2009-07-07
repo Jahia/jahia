@@ -130,7 +130,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void createDefaultUsersGroupACE(List<String> permissions, boolean grand, AsyncCallback<GWTJahiaNodeACE> async);
 
-    void renameUploadedFile(String location, String tmpName, int operation, String newName, AsyncCallback async);
+    void uploadedFile(String location, String tmpName, int operation, String newName, AsyncCallback async);
 
     void getRenderedContent(String path, AsyncCallback<String> async);
 }

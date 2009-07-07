@@ -97,17 +97,20 @@ public class ContentManagerHelper {
 
     private static JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
     private static Logger logger = Logger.getLogger(ContentManagerHelper.class);
+    private static final int UPLOAD_NEW_VERSION = 3;
+    private static final int UPLOAD_AUTO_RENAME = 1;
+    private static final int UPLOAD = 0;
 
     public static String[] splitOpenPathList(String concatPaths) {
         return concatPaths.split(OPEN_PATHS_SEPARATOR);
     }
 
     public static String concatOpenPathsList(List<String> paths) {
-        if (paths == null || paths.size() == 0) {
+        if (paths == null || paths.size() == UPLOAD) {
             return null;
         }
-        StringBuilder b = new StringBuilder(paths.get(0));
-        for (int i = 1; i < paths.size(); i++) {
+        StringBuilder b = new StringBuilder(paths.get(UPLOAD));
+        for (int i = UPLOAD_AUTO_RENAME; i < paths.size(); i++) {
             b.append(OPEN_PATHS_SEPARATOR).append(paths.get(i));
         }
         return b.toString();
@@ -238,7 +241,7 @@ public class ContentManagerHelper {
         }
         String[] filtersToApply = StringUtils.isNotEmpty(filter) ? StringUtils
                 .split(filter, ',') : ArrayUtils.EMPTY_STRING_ARRAY;
-        for (int i = 0; i < filtersToApply.length; i++) {
+        for (int i = UPLOAD; i < filtersToApply.length; i++) {
             filtersToApply[i] = StringUtils.trimToNull(filtersToApply[i]);
         }
 
@@ -246,7 +249,7 @@ public class ContentManagerHelper {
     }
 
     private static boolean matchesFilters(String nodeName, String[] filters) {
-        if (nodeName == null || filters.length == 0) {
+        if (nodeName == null || filters.length == UPLOAD) {
             return true;
         }
         boolean matches = false;
@@ -261,7 +264,7 @@ public class ContentManagerHelper {
     }
 
     private static boolean matchesNodeType(Node node, String[] nodeTypes) {
-        if (nodeTypes.length == 0) {
+        if (nodeTypes.length == UPLOAD) {
             return true;
         }
         for (String nodeType : nodeTypes) {
@@ -411,7 +414,7 @@ public class ContentManagerHelper {
     public static List<GWTJahiaNode> search(String searchString, int limit, ProcessingContext context) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(JahiaGWTUtils.formatQuery(searchString), context);
-            return executeQuery(q, new String[0], new String[0], new String[0], context);
+            return executeQuery(q, new String[UPLOAD], new String[UPLOAD], new String[UPLOAD], context);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -442,7 +445,7 @@ public class ContentManagerHelper {
         while (ni.hasNext()) {
             JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
             if (matchesNodeType(n, nodeTypesToApply) && n.isVisible()) {
-                if ((filtersToApply.length == 0 && mimeTypesToMatch.length == 0)
+                if ((filtersToApply.length == UPLOAD && mimeTypesToMatch.length == UPLOAD)
                         || n.isCollection()
                         || (matchesFilters(n.getName(), filtersToApply) && matchesFilters(n.getFileContent().getContentType(), mimeTypesToMatch))) {
                     String path = n.getPath();
@@ -504,7 +507,7 @@ public class ContentManagerHelper {
         try {
             String s = "//element(*, nt:query)";
             Query q = jcr.getQueryManager(context.getUser()).createQuery(s, Query.XPATH);
-            return executeQuery(q, new String[0], new String[0], new String[0], context);
+            return executeQuery(q, new String[UPLOAD], new String[UPLOAD], new String[UPLOAD], context);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -516,7 +519,7 @@ public class ContentManagerHelper {
         try {
             String s = "//element(*, jnt:mountPoint)";
             Query q = jcr.getQueryManager(context.getUser()).createQuery(s, Query.XPATH);
-            return executeQuery(q, new String[0], new String[0], new String[0], context);
+            return executeQuery(q, new String[UPLOAD], new String[UPLOAD], new String[UPLOAD], context);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -586,7 +589,7 @@ public class ContentManagerHelper {
         }
 
         if (f.isFile() || f.isPortlet()) {
-            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), f.getNodeTypes(), inherited, aclContext, f.getFileContent().getContentLength(), new StringBuilder("icon-").append(FileUtils.getFileIcon(f.getName())).toString(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner());
+            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), f.getNodeTypes(), inherited, aclContext, f.getFileContent().getContentLength(), new StringBuilder("icon-").append(FileUtils.getFileIcon(f.getName())).toString(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
             if (f.isPortlet()) {
                 n.setPortlet(true);
                 try {
@@ -601,7 +604,7 @@ public class ContentManagerHelper {
                 }
             }
         } else {
-            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, aclContext, f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner());
+            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, aclContext, f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
             boolean hasChildren = false;
             boolean hasFolderChildren = false;
             if (f instanceof JCRMountPointNode) {
@@ -695,7 +698,7 @@ public class ContentManagerHelper {
                 }
             }
         }
-        if (missedPaths.size() > 0) {
+        if (missedPaths.size() > UPLOAD) {
             StringBuilder errors = new StringBuilder("The following files could not be ").append(locked ? "locked:" : "unlocked:");
             for (String missedPath : missedPaths) {
                 errors.append("\n").append(missedPath);
@@ -783,7 +786,7 @@ public class ContentManagerHelper {
                 }
             }
         }
-        if (missedPaths.size() > 0) {
+        if (missedPaths.size() > UPLOAD) {
             StringBuilder errors = new StringBuilder("The following files could not be deleted:");
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
@@ -835,7 +838,7 @@ public class ContentManagerHelper {
                 missedPaths.add(new StringBuilder("User ").append(user.getUsername()).append(" has no read access to ").append(node.getName()).toString());
             }
         }
-        if (missedPaths.size() > 0) {
+        if (missedPaths.size() > UPLOAD) {
             StringBuilder errors = new StringBuilder("The following files could not be copied:");
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
@@ -861,7 +864,7 @@ public class ContentManagerHelper {
                 missedPaths.add(new StringBuilder(node.getName()).append(" is locked by ").append(user.getUsername()).toString());
             }
         }
-        if (missedPaths.size() > 0) {
+        if (missedPaths.size() > UPLOAD) {
             StringBuilder errors = new StringBuilder("The following files could not be cut:");
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
@@ -912,7 +915,7 @@ public class ContentManagerHelper {
                 missedPaths.add(new StringBuilder("Source file ").append(name).append(" could not be read by ").append(user.getUsername()).append(" - ACCESS DENIED").toString());
             }
         }
-        if (missedPaths.size() > 0) {
+        if (missedPaths.size() > UPLOAD) {
             StringBuilder errors = new StringBuilder("The following files could not be pasted:");
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
@@ -922,19 +925,19 @@ public class ContentManagerHelper {
     }
 
     private static String findAvailableName(JCRNodeWrapper dest, String name, JahiaUser user) {
-        int i = 1;
+        int i = UPLOAD_AUTO_RENAME;
         JCRNodeWrapper target = jcr.getFileNode(dest.getPath() + "/" + name, user);
 
         String basename = name;
         int dot = basename.lastIndexOf('.');
         String ext = "";
-        if (dot > 0) {
+        if (dot > UPLOAD) {
             ext = basename.substring(dot);
-            basename = basename.substring(0, dot);
+            basename = basename.substring(UPLOAD, dot);
         }
         int und = basename.lastIndexOf('_');
-        if (und > -1 && basename.substring(und + 1).matches("[0-9]+")) {
-            basename = basename.substring(0, und);
+        if (und > -UPLOAD_AUTO_RENAME && basename.substring(und + UPLOAD_AUTO_RENAME).matches("[0-9]+")) {
+            basename = basename.substring(UPLOAD, und);
         }
 
         while (target.getException() == null) {
@@ -955,7 +958,8 @@ public class ContentManagerHelper {
                     name = findAvailableName(dest, name, user);
                     if (dest.isWriteable()) {
                         try {
-                            /*Property p = */dest.setProperty(node.getName(), node); // TODO what's with this property ?
+                            /*Property p = */
+                            dest.setProperty(node.getName(), node); // TODO what's with this property ?
                             dest.saveSession();
                         } catch (RepositoryException e) {
                             logger.error("Exception", e);
@@ -969,7 +973,7 @@ public class ContentManagerHelper {
                 missedPaths.add(new StringBuilder("Source file ").append(name).append(" could not be read by ").append(user.getUsername()).append(" - ACCESS DENIED").toString());
             }
         }
-        if (missedPaths.size() > 0) {
+        if (missedPaths.size() > UPLOAD) {
             StringBuilder errors = new StringBuilder("The following files could not have their reference pasted:");
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
@@ -1036,7 +1040,7 @@ public class ContentManagerHelper {
                     stringValueIsNotEmpty |= PropertyType.STRING == val
                             .getType()
                             && val.getString() != null
-                            && val.getString().length() > 0;
+                            && val.getString().length() > UPLOAD;
                 }
                 if (stringValueIsNotEmpty
                         && SelectorType.CATEGORY == JCRContentUtils
@@ -1045,7 +1049,7 @@ public class ContentManagerHelper {
                             values.length);
                     for (GWTJahiaNodePropertyValue jahiaNodePropertyValue : gwtValues) {
                         if (jahiaNodePropertyValue.getString() != null
-                                && jahiaNodePropertyValue.getString().length() > 0) {
+                                && jahiaNodePropertyValue.getString().length() > UPLOAD) {
                             adjustedGwtValues
                                     .add(new GWTJahiaNodePropertyValue(
                                             Category
@@ -1132,8 +1136,8 @@ public class ContentManagerHelper {
                         values.toArray(finalValues);
                         objectNode.setProperty(prop.getName(), finalValues);
                     } else {
-                        if (prop.getValues().size() > 0) {
-                            GWTJahiaNodePropertyValue propValue = prop.getValues().get(0);
+                        if (prop.getValues().size() > UPLOAD) {
+                            GWTJahiaNodePropertyValue propValue = prop.getValues().get(UPLOAD);
                             if (propValue.getType() == GWTJahiaNodePropertyType.ASYNC_UPLOAD) {
                                 GWTFileManagerUploadServlet.Item i = GWTFileManagerUploadServlet.getItem(propValue.getString());
                                 boolean clear = propValue.getString().equals("clear");
@@ -1149,7 +1153,7 @@ public class ContentManagerHelper {
                                         }
 
                                         if (!clear) {
-                                            String s = end.getRequiredPrimaryTypesNames()[0];
+                                            String s = end.getRequiredPrimaryTypesNames()[UPLOAD];
                                             Node content = objectNode.addNode(prop.getName(), s.equals("nt:base") ? "jnt:resource" : s);
 
                                             content.setProperty(Constants.JCR_MIMETYPE, i.contentType);
@@ -1200,7 +1204,7 @@ public class ContentManagerHelper {
     }
 
     private static List<Value> getCategoryPathValues(String value) {
-        if (value == null || value.length() == 0) {
+        if (value == null || value.length() == UPLOAD) {
             return Collections.EMPTY_LIST;
         }
         List<Value> values = new LinkedList<Value>();
@@ -1316,7 +1320,7 @@ public class ContentManagerHelper {
         for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
             String principal = iterator.next();
             GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
-            ace.setPrincipalType(principal.charAt(0));
+            ace.setPrincipalType(principal.charAt(UPLOAD));
             ace.setPrincipal(principal.substring(2));
 
             List<String[]> st = m.get(principal);
@@ -1324,11 +1328,11 @@ public class ContentManagerHelper {
             Map<String, String> inheritedPerms = new HashMap<String, String>();
             String inheritedFrom = null;
             for (String[] strings : st) {
-                if (!path.equals(strings[0])) {
-                    inheritedFrom = strings[0];
-                    inheritedPerms.put(strings[2], strings[1]);
+                if (!path.equals(strings[UPLOAD])) {
+                    inheritedFrom = strings[UPLOAD];
+                    inheritedPerms.put(strings[2], strings[UPLOAD_AUTO_RENAME]);
                 } else {
-                    perms.put(strings[2], strings[1]);
+                    perms.put(strings[2], strings[UPLOAD_AUTO_RENAME]);
                 }
             }
 
@@ -1346,7 +1350,7 @@ public class ContentManagerHelper {
             for (String s : list) {
                 String k = s;
                 if (k.contains(":")) {
-                    k = k.substring(k.indexOf(':') + 1);
+                    k = k.substring(k.indexOf(':') + UPLOAD_AUTO_RENAME);
                 }
                 labels.put(s, JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.rights.ManageRights." + k + ".label", jParams.getLocale(), k));
             }
@@ -1420,12 +1424,12 @@ public class ContentManagerHelper {
                 missedPaths.add(nodeToZip.getName());
             }
         }
-        if (nodesToZip.size() > 0) {
-            String firstPath = nodesToZip.get(0).getPath();
+        if (nodesToZip.size() > UPLOAD) {
+            String firstPath = nodesToZip.get(UPLOAD).getPath();
             int index = firstPath.lastIndexOf("/");
             String parentPath;
-            if (index > 0) {
-                parentPath = firstPath.substring(0, index);
+            if (index > UPLOAD) {
+                parentPath = firstPath.substring(UPLOAD, index);
             } else {
                 parentPath = "/";
             }
@@ -1450,7 +1454,7 @@ public class ContentManagerHelper {
                 throw new GWTJahiaServiceException("Directory " + parent.getPath() + " is not writable.");
             }
         }
-        if (missedPaths.size() > 0) {
+        if (missedPaths.size() > UPLOAD) {
             StringBuilder errors = new StringBuilder("The following files could not be zipped:");
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
@@ -1477,12 +1481,12 @@ public class ContentManagerHelper {
                 missedPaths.add(nodeToUnzip.getName());
             }
         }
-        if (nodesToUnzip.size() > 0) {
-            String firstPath = nodesToUnzip.get(0).getPath();
+        if (nodesToUnzip.size() > UPLOAD) {
+            String firstPath = nodesToUnzip.get(UPLOAD).getPath();
             int index = firstPath.lastIndexOf("/");
             String parentPath;
-            if (index > 0) {
-                parentPath = firstPath.substring(0, index);
+            if (index > UPLOAD) {
+                parentPath = firstPath.substring(UPLOAD, index);
             } else {
                 parentPath = "/";
             }
@@ -1517,7 +1521,7 @@ public class ContentManagerHelper {
                 logger.error("Could not save changes in " + parent.getPath(), e);
             }
         }
-        if (missedPaths.size() > 0) {
+        if (missedPaths.size() > UPLOAD) {
             StringBuilder errors = new StringBuilder("The following files could not be unzipped:");
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
@@ -1527,7 +1531,7 @@ public class ContentManagerHelper {
     }
 
     public static void mount(String name, String root, JahiaUser user) throws GWTJahiaServiceException {
-        if (user.isAdminMember(0)) {
+        if (user.isAdminMember(UPLOAD)) {
             JCRSessionWrapper session = null;
             try {
                 session = jcr.getSystemSession(user.getName());
@@ -1614,7 +1618,7 @@ public class ContentManagerHelper {
      */
     private static GWTJahiaPortletDefinition createGWTJahiaPortletDefinition(ProcessingContext jParams, ApplicationBean appBean, EntryPointDefinition entryPointDefinition) throws JahiaException {
         String portletType = null;
-        int expTime = 0;
+        int expTime = UPLOAD;
         String cacheScope = null;
         if (entryPointDefinition instanceof PortletEntryPointDefinition) {
             PortletEntryPointDefinition portletEntryPointDefinition = ((PortletEntryPointDefinition) entryPointDefinition);
@@ -1811,13 +1815,30 @@ public class ContentManagerHelper {
         return createPortletInstance(parentPath, name, "googlegadget", "JahiaGoogleGadget", gwtJahiaNodeProperties, context);
     }
 
-    public static void renameUploadedFile(String location, String tmpName, int operation, String newName, ProcessingContext ctx)  throws GWTJahiaServiceException {
+    /**
+     * Uploda file depending on operation (add version, auto-rename or just upload)
+     *
+     * @param location
+     * @param tmpName
+     * @param operation
+     * @param newName
+     * @param ctx
+     * @throws GWTJahiaServiceException
+     */
+    public static void uploadedFile(String location, String tmpName, int operation, String newName, ProcessingContext ctx) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper parent = jcr.getThreadSession(ctx.getUser()).getNode(location);
             switch (operation) {
-                case 1:
+                case UPLOAD_NEW_VERSION:
+                    JCRNodeWrapper node = (JCRNodeWrapper) parent.getNode(newName);
+                    if (node == null) {
+                        throw new GWTJahiaServiceException("Could'nt add a new version, file " + location + "/" + newName + "not found ");
+                    }
+                    addNewVersionFile(node, tmpName, ctx);
+                    break;
+                case UPLOAD_AUTO_RENAME:
                     newName = findAvailableName(parent, newName, ctx.getUser());
-                case 0:
+                case UPLOAD:
                     if (parent.hasNode(newName)) {
                         throw new GWTJahiaServiceException("file exists");
                     }
@@ -1831,6 +1852,33 @@ public class ContentManagerHelper {
         }
 
     }
+
+    /**
+     * Activate versioning and add a new version
+     */
+    public static void addNewVersionFile(JCRNodeWrapper node, String tmpName, ProcessingContext ctx) throws GWTJahiaServiceException {
+        try {
+            if (node != null) {
+                if (!node.isVersioned()) {
+                    node.versionFile();
+                    node.save();
+                }
+                node.checkout();
+                node.getFileContent().uploadFile(GWTFileManagerUploadServlet.getItem(tmpName).file, GWTFileManagerUploadServlet.getItem(tmpName).contentType);
+                node.save();
+                node.checkin();
+                
+                logger.debug("Number of version: " + node.getVersions().size());
+
+            } else {
+                logger.error("Could not add version to a null file.");
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+    }
+
 
     /**
      * @param appName
@@ -1879,10 +1927,10 @@ public class ContentManagerHelper {
     }
 
     public static void checkName(String name) throws GWTJahiaServiceException {
-        if (name.indexOf("*") > 0 ||
-                name.indexOf("/") > 0 ||
-                name.indexOf(":") > 0||
-                name.indexOf("\"") > 0) {
+        if (name.indexOf("*") > UPLOAD ||
+                name.indexOf("/") > UPLOAD ||
+                name.indexOf(":") > UPLOAD ||
+                name.indexOf("\"") > UPLOAD) {
             throw new GWTJahiaServiceException("Invalid name : characters *,/,\",: cannot be used here");
         }
     }

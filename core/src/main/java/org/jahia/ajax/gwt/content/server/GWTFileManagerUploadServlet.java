@@ -176,19 +176,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                     logger.error("Auto-unzipping failed", e);
                 }
             }
-            // unzip archives in another thread (do not block/interrupt post response)
-            /*new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            ContentManagerHelper.unzip(pathsToUnzip, true, user);
-                        } catch (GWTJahiaServiceException e) {
-                            logger.error("Auto-unzipping failed", e);
-                        }
-                    }
-                }.start();*/
-//            logger.debug("UPLOAD-SUCCEEDED") ;
-//            printWriter.write("OK");
+            
         } else {
             response.setContentType("text/html");
 

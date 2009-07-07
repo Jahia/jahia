@@ -379,8 +379,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return ACLHelper.createUsersGroupACE(permissions, grand, retrieveParamBean());
     }
 
-    public void renameUploadedFile(String location, String tmpName, int operation, String newName)  throws GWTJahiaServiceException {
-        ContentManagerHelper.renameUploadedFile(location, tmpName, operation, newName, retrieveParamBean());
+    public void uploadedFile(String location, String tmpName, int operation, String newName)  throws GWTJahiaServiceException {
+        ContentManagerHelper.uploadedFile(location, tmpName, operation, newName, retrieveParamBean());
     }
 
     public String getRenderedContent(String path) throws GWTJahiaServiceException {

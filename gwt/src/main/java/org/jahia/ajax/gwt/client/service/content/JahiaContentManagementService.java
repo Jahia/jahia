@@ -148,7 +148,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public GWTJahiaNodeACE createDefaultUsersGroupACE(List<String> permissions, boolean grand) throws GWTJahiaServiceException;
 
-    public void renameUploadedFile(String location, String tmpName, int operation, String newName)  throws GWTJahiaServiceException;
+    public void uploadedFile(String location, String tmpName, int operation, String newName)  throws GWTJahiaServiceException;
 
     public String getRenderedContent(String path) throws GWTJahiaServiceException;
 

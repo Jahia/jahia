@@ -59,6 +59,12 @@ public class JCRVersioningHelper {
     private static JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
     private static Logger logger = Logger.getLogger(JCRVersioningHelper.class);
 
+    /**
+     * Activate versionning
+     *
+     * @param pathes
+     * @param jParams
+     */
     public static void activateVersioning(List<String> pathes, ProcessingContext jParams) {
         for (String path : pathes) {
             try {
@@ -69,11 +75,18 @@ public class JCRVersioningHelper {
                     s.save();
                 }
             } catch (Throwable e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error(e, e);
             }
         }
     }
 
+    /**
+     * Get list of version as gwt bean list
+     *
+     * @param node
+     * @param jParams
+     * @return
+     */
     public static List<GWTJahiaNodeVersion> getVersions(JCRNodeWrapper node, ProcessingContext jParams) {
         List<GWTJahiaNodeVersion> versions = new ArrayList<GWTJahiaNodeVersion>();
         try {
@@ -84,16 +97,17 @@ public class JCRVersioningHelper {
                 if (!v.getName().equals("jcr:rootVersion")) {
                     JCRNodeWrapper orig = ((JCRVersionHistory) v.getContainingHistory()).getNode();
                     GWTJahiaNode n = ContentManagerHelper.getGWTJahiaNode(orig);
-                    n.setUrl(orig.getUrl()+"?v="+v.getName());
+                    n.setUrl(orig.getUrl() + "?v=" + v.getName());
                     GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getName(), v.getCreated().getTime());
                     jahiaNodeVersion.setNode(n);
                     versions.add(jahiaNodeVersion);
                 }
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+           logger.error(e,e);
         }
         return versions;
     }
+
 
 }

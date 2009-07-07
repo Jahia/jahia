@@ -56,6 +56,7 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
     private boolean hasFolderChildren = false;
     private boolean portlet = false;
     private String normalizedName = null;
+    private boolean versioned = false;
     private int width = 0 ;
     private int height = 0 ;
     private SortInfo sortInfo = new SortInfo("name", Style.SortDir.ASC);
@@ -65,7 +66,7 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
         setFile(Boolean.FALSE);
     }
 
-    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, boolean writeable, boolean lockable, boolean locked, String lockOwner) {
+    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, boolean writeable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
         super();
         setUUID(uuid);
         setName(name);
@@ -84,10 +85,11 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
         setLocked(locked);
         setLockOwner(lockOwner);
         setThumbnailsMap(new HashMap<String, String>());
+        setVersioned(versioned);
     }
 
-    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, Long size, String ext, boolean writeable, boolean lockable, boolean locked, String lockOwner) {
-        this(uuid, name,description, path, url, date, nodetypes, inheritedTypes, aclContext, writeable, lockable, locked, lockOwner);
+    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, Long size, String ext, boolean writeable, boolean lockable, boolean locked, String lockOwner,boolean versioned) {
+        this(uuid, name,description, path, url, date, nodetypes, inheritedTypes, aclContext, writeable, lockable, locked, lockOwner,versioned);
         setSize(size);
         setFile(Boolean.TRUE);
         setExt(ext);
@@ -285,6 +287,14 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
 
     public void setWidth(int w) {
         width = w ;
+    }
+
+    public boolean isVersioned() {
+        return versioned;
+    }
+
+    public void setVersioned(boolean versioned) {
+        this.versioned = versioned;
     }
 
     public String toString() {

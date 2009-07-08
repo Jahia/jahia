@@ -56,11 +56,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
+ * Jahia specific implementation for Jackrabbit security manager.
+ * @author Thomas Draier
  * Date: Jul 25, 2008
  * Time: 1:50:44 PM
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaSecurityManager implements JackrabbitSecurityManager {
 
@@ -102,11 +101,11 @@ public class JahiaSecurityManager implements JackrabbitSecurityManager {
         LoginModuleConfig loginModConf = config.getLoginModuleConfig();
 
         // build AuthContextProvider based on appName + optional LoginModuleConfig
-        authContextProvider = new AuthContextProvider(config.getAppName(), loginModConf);
-        if (authContextProvider.isJAAS()) {
-            log.info("init: use JAAS login-configuration for " + config.getAppName());
-        } else if (authContextProvider.isLocal()) {
+        authContextProvider = new JahiaAuthContextProvider(config.getAppName(), loginModConf);
+        if (authContextProvider.isLocal()) {
             log.info("init: use Repository Login-Configuration for " + config.getAppName());
+        } else if (authContextProvider.isJAAS()) {
+            log.info("init: use JAAS login-configuration for " + config.getAppName());
         } else {
             String msg = "Neither JAAS nor RepositoryConfig contained a valid Configuriation for " + config.getAppName();
             log.error(msg);

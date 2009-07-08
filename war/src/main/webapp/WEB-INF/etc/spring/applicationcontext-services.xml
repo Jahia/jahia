@@ -858,8 +858,6 @@ FRAG2(frag_size=60000)</value>
                         <value>ApplicationResources*</value>
                         <value>ehcache-hibernate.xml</value>
                         <value>ehcache-jahia.xml</value>
-                        <value>esi-cluster-cache.xml</value>
-                        <value>esi-local-cache.xml</value>
                         <value>jahia-cache-service.xml</value>
                         <value>JahiaInternalResources*</value>
                         <value>JahiaMessageResources*</value>

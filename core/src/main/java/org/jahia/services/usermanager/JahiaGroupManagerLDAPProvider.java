@@ -983,29 +983,37 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
         return result;
     }
 
-    private NamingEnumeration<SearchResult> getGroups(DirContext ctx, SearchControls searchCtl, StringBuffer filterString) throws NamingException {
+    private NamingEnumeration<SearchResult> getGroups(DirContext ctx,
+            SearchControls searchCtl, StringBuffer filterStringBuffer)
+            throws NamingException {
         // Search for objects that have those matching attributes
-        logger.debug ("Using filter string [" + filterString.toString () + "]...");
+        String searchName = ldapProperties.getProperty(SEARCH_NAME_PROP);
+        String filterString = filterStringBuffer.toString();
+        
+        logger.debug("Using filter string [" + filterString + "]...");
+        
         try {
-            return ctx.search (
-                    ldapProperties.getProperty (SEARCH_NAME_PROP),
-                    filterString.toString (),
-                    searchCtl);
+            return ctx.search(searchName, filterString, searchCtl);
         } catch (NoInitialContextException nice) {
             logger.debug("Reconnection required", nice);
-            return getGroups(getPublicContext(true), searchCtl, filterString);
+            return getPublicContext(true).search(searchName, filterString,
+                searchCtl);
         } catch (CannotProceedException cpe) {
             logger.debug("Reconnection required", cpe);
-            return getGroups(getPublicContext(true), searchCtl, filterString);
+            return getPublicContext(true).search(searchName, filterString,
+                searchCtl);
         } catch (ServiceUnavailableException sue) {
             logger.debug("Reconnection required", sue);
-            return getGroups(getPublicContext(true), searchCtl, filterString);
+            return getPublicContext(true).search(searchName, filterString,
+                searchCtl);
         } catch (TimeLimitExceededException tlee) {
             logger.debug("Reconnection required", tlee);
-            return getGroups(getPublicContext(true), searchCtl, filterString);
+            return getPublicContext(true).search(searchName, filterString,
+                searchCtl);
         } catch (CommunicationException ce) {
             logger.debug("Reconnection required", ce);
-            return getGroups(getPublicContext(true), searchCtl, filterString);
+            return getPublicContext(true).search(searchName, filterString,
+                searchCtl);
         }
     }
 

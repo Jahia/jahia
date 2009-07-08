@@ -34,7 +34,6 @@ package org.jahia.engines.validation;
 import org.apache.commons.validator.Field;
 import org.apache.commons.validator.Form;
 import org.apache.commons.validator.ValidatorResources;
-import org.apache.derby.diag.ErrorMessages;
 import org.apache.struts.validator.Resources;
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.containers.JahiaContainerDefinition;

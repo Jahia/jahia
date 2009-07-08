@@ -210,7 +210,7 @@ public class JahiaResourceBundle extends ResourceBundle {
                 baseName, preferredLocale, loader) : ResourceBundle.getBundle(
                 baseName, preferredLocale);
 
-        if (!SettingsBean.getInstance().isConsiderDefaultJVMLocal()) {
+        if (!SettingsBean.getInstance().isConsiderDefaultJVMLocale()) {
             Locale availableLocale = bundle.getLocale();
             if (availableLocale.equals(preferredLocale)) {
                 match = bundle;

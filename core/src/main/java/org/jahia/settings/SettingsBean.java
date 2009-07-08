@@ -280,7 +280,7 @@ public class SettingsBean {
 
     private boolean considerPreferredLanguageAfterLogin;
     
-    private boolean considerDefaultJVMLocal;
+    private boolean considerDefaultJVMLocale;
 
     // enable ACL check when displaying the current page path
     private boolean checkAclInPagePath ;
@@ -380,7 +380,7 @@ public class SettingsBean {
             File jahiaContextFolder = new File (pathResolver.resolvePath("." + File.separator));
             File parent = jahiaContextFolder.getAbsoluteFile().getParentFile ();
 
-            if (server.indexOf ("Tomcat") != -1) {      // the server is tomcat
+            if (server.toLowerCase().contains("tomcat")) {      // the server is tomcat
                 jahiaHomeDiskPath = parent.getAbsolutePath ();
                 // look in the properties file. If not found guess from jahiaContextFolder
                 jahiaWebAppsDiskPath = properties.getProperty("jahiaWebAppsDiskPath");
@@ -435,7 +435,7 @@ public class SettingsBean {
             // multi language default language code property.
             defaultLanguageCode = getString ("org.jahia.multilang.default_language_code", "en");
 
-            considerDefaultJVMLocal = getBoolean("considerDefaultJVMLocal", false);
+            considerDefaultJVMLocale = getBoolean("considerDefaultJVMLocale", false);
                 
             considerPreferredLanguageAfterLogin = getBoolean("considerPreferredLanguageAfterLogin", false);
 
@@ -1638,12 +1638,12 @@ public class SettingsBean {
         this.integrityDisp = integrityDisp;
     }
 
-    public boolean isConsiderDefaultJVMLocal() {
-        return considerDefaultJVMLocal;
+    public boolean isConsiderDefaultJVMLocale() {
+        return considerDefaultJVMLocale;
     }
 
-    public void setConsiderDefaultJVMLocal(boolean considerDefaultJVMLocal) {
-        this.considerDefaultJVMLocal = considerDefaultJVMLocal;
+    public void setConsiderDefaultJVMLocale(boolean considerDefaultJVMLocale) {
+        this.considerDefaultJVMLocale = considerDefaultJVMLocale;
     }
 
     public boolean isConsiderPreferredLanguageAfterLogin() {

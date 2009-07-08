@@ -244,7 +244,8 @@
  - j:isVisible (boolean)
 
 [jnt:portlet] > nt:base, mix:referenceable, jmix:hierarchyNode
- - j:application (reference) protected < jnt:portletDefinition
+ - j:application (string,portletdefinition) protected
+// - j:application (reference) protected < jnt:portletDefinition
  - j:cacheScope (string, choicelist) < 'portlet.private-scope','portlet.public-scope'
  - j:expirationTime (long)
 

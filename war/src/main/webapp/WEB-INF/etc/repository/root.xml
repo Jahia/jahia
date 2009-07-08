@@ -22,6 +22,8 @@
 
     <users jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:usersFolder" j:usersFolderSkeleton="user.xml"/>
 
+    <groups jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:groupsFolder"/>
+
     <sites jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:virtualsitesFolder" j:virtualsitesFolderSkeleton="site.xml"/>
 
     <imports jcr:primaryType="jnt:importDropBox" />

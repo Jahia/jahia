@@ -43,14 +43,6 @@ rule "Metadata update / property modified"
         Set the property jcr:lastModifiedBy of the node with the name of the current user
 end
 
-rule "Filename"
-    when
-        A new node is created
-             - it has the type jmix:hierarchyNode
-    then
-        Set the property j:nodename of the node with the name of the node
-end
-
 rule "Image type"
     salience 50
     no-loop

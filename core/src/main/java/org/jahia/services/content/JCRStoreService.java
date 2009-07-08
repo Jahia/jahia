@@ -633,11 +633,13 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
         Set<JahiaPrincipal> p = s.getPrincipals(JahiaPrincipal.class);
         for (JahiaPrincipal jahiaPrincipal : p) {
-            JahiaUser user;
-            if (jahiaPrincipal.isGuest()) {
-                user = userService.lookupUser(JahiaUserManagerService.GUEST_USERNAME);
-            } else {
-                user = userService.lookupUser(jahiaPrincipal.getName());
+            JahiaUser user = null;
+            if (!jahiaPrincipal.getName().equals(JahiaLoginModule.SYSTEM)) {
+                if (jahiaPrincipal.isGuest()) {
+                    user = userService.lookupUser(JahiaUserManagerService.GUEST_USERNAME);
+                } else {
+                    user = userService.lookupUser(jahiaPrincipal.getName());
+                }
             }
             return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this);
         }

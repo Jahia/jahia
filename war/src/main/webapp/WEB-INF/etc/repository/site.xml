@@ -16,8 +16,10 @@
     
     <mashups jcr:primaryType="jnt:folder"/>
 
+    <groups jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:groupsFolder"/>
+
     <content jcr:primaryType="jnt:folder"/>
 
     <home jcr:primaryType="jnt:page" />
-
+    
 </site>

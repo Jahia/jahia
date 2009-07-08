@@ -210,9 +210,17 @@ FRAG2(frag_size=60000)</value>
         <property name="cacheService" ref="JahiaCacheService"/>
         <property name="userManager" ref="org.jahia.hibernate.manager.JahiaUserManager"/>
         <property name="key" value="jahia_db"/>
-        <property name="defaultProvider" value="true"/>
+        <property name="defaultProvider" value="false"/>
         <property name="readOnly" value="false"/>
         <property name="priority" value="1"/>
+    </bean>
+
+    <bean id="JCRUserManagerProvider" class="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
+        <property name="jcrStoreService" ref="JCRStoreService"/>
+        <property name="key" value="jahia_jcr"/>
+        <property name="defaultProvider" value="true"/>
+        <property name="readOnly" value="false"/>
+        <property name="priority" value="2"/>
     </bean>
 <!--
     <bean id="JahiaUserManagerLDAPProvider" class="org.jahia.services.usermanager.JahiaUserManagerLDAPProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -242,26 +250,32 @@ FRAG2(frag_size=60000)</value>
     </bean>
 -->
 
-    <bean id="JahiaUserManagerService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.usermanager.JahiaUserManagerRoutingService" parent="jahiaServiceTemplate" factory-method="getInstance">
+    <bean id="JahiaUserManagerService" class="org.jahia.services.usermanager.JahiaUserManagerRoutingService" parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
                 <property name="providersTable">
                     <map>
                         <entry key="jahia_db" value-ref="JahiaUserManagerDBProvider"/>
+                        <entry key="jahia_jcr" value-ref="JCRUserManagerProvider"/>
                         <!--<entry key="ldap" value-ref="JahiaUserManagerLDAPProvider"/>-->
                     </map>
                 </property>
             </bean>
-        </property>
-    </bean>
 
     <bean id="JahiaGroupManagerDBProvider" class="org.jahia.services.usermanager.JahiaGroupManagerDBProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="key" value="jahia_db"/>
         <property name="userService" ref="JahiaUserManagerService"/>
         <property name="groupManager" ref="org.jahia.hibernate.manager.JahiaGroupManager"/>
+        <property name="defaultProvider" value="false"/>
+        <property name="readOnly" value="true"/>
+        <property name="priority" value="1"/>
+    </bean>
+
+    <bean id="JCRGroupManagerProvider" class="org.jahia.services.usermanager.jcr.JCRGroupManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
+        <property name="jcrStoreService" ref="JCRStoreService"/>
+        <property name="sitesService" ref="JahiaSitesService"/>
+        <property name="key" value="jahia_jcr"/>
         <property name="defaultProvider" value="true"/>
         <property name="readOnly" value="false"/>
-        <property name="priority" value="1"/>
+        <property name="priority" value="2"/>
     </bean>
 <!--
     <bean id="JahiaGroupManagerLDAPProvider" class="org.jahia.services.usermanager.JahiaGroupManagerLDAPProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -294,16 +308,14 @@ FRAG2(frag_size=60000)</value>
         </property>
     </bean>
     -->
-    <bean id="JahiaGroupManagerService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.usermanager.JahiaGroupManagerRoutingService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="providersTable">
-                    <map>
-                        <entry key="jahia_db" value-ref="JahiaGroupManagerDBProvider"/>
-                        <!--<entry key="ldap" value-ref="JahiaGroupManagerLDAPProvider"/>-->
-                    </map>
-                </property>
-            </bean>
+    <bean id="JahiaGroupManagerService" class="org.jahia.services.usermanager.JahiaGroupManagerRoutingService"
+          parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
+        <property name="providersTable">
+            <map>
+                <entry key="jahia_db" value-ref="JahiaGroupManagerDBProvider"/>
+                <entry key="jahia_jcr" value-ref="JCRGroupManagerProvider"/>
+                <!--<entry key="ldap" value-ref="JahiaGroupManagerLDAPProvider"/>-->
+            </map>
         </property>
     </bean>
 
@@ -537,17 +549,14 @@ FRAG2(frag_size=60000)</value>
             </bean>
         </property>
     </bean>
-    <bean id="JahiaSitesService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.sites.JahiaSitesBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="groupService" ref="JahiaGroupManagerService" />
-                <property name="cacheService" ref="JahiaCacheService" />
-                <property name="siteManager" ref="org.jahia.hibernate.manager.JahiaSiteManager" />
-                <property name="sitePropertyManager" ref="org.jahia.hibernate.manager.JahiaSitePropertyManager" />
-                <property name="fileWatcherService" ref="JahiaFileWatcherService" />
-                <property name="jahiaAclService" ref="JahiaACLManagerService" />
-            </bean>
-        </property>
+    <bean id="JahiaSitesService" class="org.jahia.services.sites.JahiaSitesBaseService" parent="jahiaServiceTemplate"
+          factory-method="getInstance" lazy-init="true">
+        <property name="groupService" ref="JahiaGroupManagerService"/>
+        <property name="cacheService" ref="JahiaCacheService"/>
+        <property name="siteManager" ref="org.jahia.hibernate.manager.JahiaSiteManager"/>
+        <property name="sitePropertyManager" ref="org.jahia.hibernate.manager.JahiaSitePropertyManager"/>
+        <property name="fileWatcherService" ref="JahiaFileWatcherService"/>
+        <property name="jahiaAclService" ref="JahiaACLManagerService"/>
     </bean>
     <bean id="JahiaWebdavService" parent="proxyTemplate">
         <property name="target">
@@ -780,7 +789,7 @@ FRAG2(frag_size=60000)</value>
 
     <bean id="JCRStoreService" parent="proxyTemplate">
         <property name="target">
-            <bean class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate" factory-method="getInstance">
+            <bean class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
                 <property name="userService" ref="JahiaUserManagerService"/>
                 <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
                 <property name="decorators">

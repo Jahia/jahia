@@ -62,13 +62,4 @@ public class JCRSiteListener extends JahiaEventListener {
 
     public void siteDeleted(JahiaEvent je) {
     }
-
-    @Override
-    public void userAdded(JahiaEvent je) {
-        try {
-            ServicesRegistry.getInstance().getJCRStoreService().deployNewUser(((JahiaUser) je.getObject()).getUsername());
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
 }

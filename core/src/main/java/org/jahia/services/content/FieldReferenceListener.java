@@ -186,6 +186,7 @@ public class FieldReferenceListener extends DefaultEventListener {
                 move(node.getUUID(), oldPath, node.getPath());
             }
             node.setProperty(FULLPATH, node.getPath());
+            node.setProperty("j:nodename",node.getName());
             node.save();
             if (node.isNodeType(NT_FOLDER)) {
                 for (NodeIterator ni = node.getNodes(); ni.hasNext();) {

@@ -177,4 +177,7 @@ public class Constants {
     public static final String FULLPATH = "j:fullpath";
 
     public static final String JAHIANT_VIRTUALSITES_FOLDER = "jnt:virtualsitesFolder";
+    public static final String JAHIANT_GROUP = "jnt:group";
+    public static final String JAHIANT_MEMBERS = "jnt:members";
+    public static final String JAHIANT_MEMBER = "jnt:member";
 }

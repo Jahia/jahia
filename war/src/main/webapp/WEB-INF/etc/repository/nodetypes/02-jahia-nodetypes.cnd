@@ -139,13 +139,23 @@
  - j:usersFolderSkeleton (string)
 
 [jnt:user] > jnt:folder
+ - j:password (string)
+ - * (string)
 
 [jmix:groupsFolder] mixin
  - j:groupsFolderConfig (string)
  - j:groupsFolderSkeleton (string)
 
-[jnt:group] > jnt:folder
+[jnt:member] > nt:base, jmix:hierarchyNode, mix:created
+ - j:member (weakreference) < jnt:user, jnt:group
 
+[jnt:members]  > nt:base, jmix:collection
+ + * (jnt:member)
+
+[jnt:group] > jnt:folder
+ - j:hidden (boolean)
+ - * (string)
+ + j:members (jnt:members)
 
 //---------------------------------------------------------
 // AXIS views

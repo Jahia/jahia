@@ -158,7 +158,7 @@
                                     <%=groupMessage %>
                                 </p>
                                 <% } %>
-                                <!--//predrag   --><%if (providerName.equals("jahia")) { %>
+                                <!--//predrag   --><%if (providerName.equals("jahia") || providerName.equals("jcr")) { %>
                                 <% String openWindowURL = "javascript:openUserGroupSelect('users','addMember', 'Principal|Provider, 6|Name, 15|Properties, 20');"; %>
                                 <!--//end predrag-->
                                 <div class="content-body">

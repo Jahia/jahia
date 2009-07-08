@@ -1640,13 +1640,6 @@
         <location>/error</location>
     </error-page>
 
-    <jsp-config>
-      <taglib>
-        <taglib-uri>http://java.sun.com/jsp/jstl/core</taglib-uri>
-        <taglib-location>/WEB-INF/etc/xml_dtd/c.tld</taglib-location>
-      </taglib>
-    </jsp-config>
-
     <!-- JNDI Db resource -->
     <resource-ref>
         <description>DB Connection</description>

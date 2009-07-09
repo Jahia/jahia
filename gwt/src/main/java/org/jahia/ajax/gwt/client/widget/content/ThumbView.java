@@ -31,23 +31,22 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.util.Util;
+import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.StoreFilterField;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.*;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -71,7 +70,7 @@ public class ThumbView extends TopRightComponent {
     private ListStore<GWTJahiaNode> store;
     private MyListView<GWTJahiaNode> view;
     private SimpleComboBox<String> sort;
-    private ToggleToolItem sortOrder ;
+    private ToggleButton sortOrder ;
 
     private ManagerConfiguration configuration;
 
@@ -100,13 +99,13 @@ public class ThumbView extends TopRightComponent {
             @Override
             protected void onFilter() {
                 super.onFilter();
-                view.getSelectionModel().select(0);
+//                view.getSelectionModel().select(0);
             }
         };
         field.setWidth(200);
         field.bind(store);
 
-        bar.add(new AdapterToolItem(field));
+        bar.add(field);
         bar.add(new SeparatorToolItem());
         bar.add(new LabelToolItem(Messages.getResource("fm_thumbSort")));
 
@@ -132,14 +131,14 @@ public class ThumbView extends TopRightComponent {
                 sort();
             }
         });
-        sortOrder = new ToggleToolItem(Messages.getResource("fm_invertSort"));
+        sortOrder = new ToggleButton(Messages.getResource("fm_invertSort"));
         sortOrder.addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent componentEvent) {
                 sort();
             }
         });
 
-        bar.add(new AdapterToolItem(sort));
+        bar.add(sort);
         bar.add(sortOrder);
 
         m_component.setTopComponent(bar);
@@ -148,7 +147,7 @@ public class ThumbView extends TopRightComponent {
             @Override
             protected GWTJahiaNode prepareData(GWTJahiaNode model) {
                 String s = model.getName();
-                model.set("shortName", Util.ellipse(s, 14));
+                model.set("shortName", Format.ellipse(s, 14));
                 return model;
             }
 
@@ -170,7 +169,7 @@ public class ThumbView extends TopRightComponent {
                 }
             }
         });
-        view.addListener(Event.ONDBLCLICK, new Listener<ListViewEvent>() {
+        view.addListener(Events.DoubleClick, new Listener<ListViewEvent>() {
             public void handleEvent(ListViewEvent event) {
                 List<GWTJahiaNode> selection = (List<GWTJahiaNode>) getLinker().getTableSelection();
                 if (selection != null && selection.size() > 0) {
@@ -273,7 +272,7 @@ public class ThumbView extends TopRightComponent {
         @Override
         protected T prepareData(T model) {
             String s = ((GWTJahiaNode) model).getName();
-            model.set("shortName", Util.ellipse(s, 14));
+            model.set("shortName", Format.ellipse(s, 14));
             return model;
         }
 

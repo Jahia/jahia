@@ -31,14 +31,10 @@
  */
 package org.jahia.ajax.gwt.client.widget.pagepicker;
 
-import org.jahia.ajax.gwt.client.widget.pagepicker.PagePathBar;
-import org.jahia.ajax.gwt.client.widget.pagepicker.PageStatusBar;
-import org.jahia.ajax.gwt.client.widget.pagepicker.PageExplorer;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**

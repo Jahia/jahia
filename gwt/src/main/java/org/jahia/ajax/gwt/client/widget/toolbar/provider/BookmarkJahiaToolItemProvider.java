@@ -36,8 +36,8 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.DataList;
 import com.extjs.gxt.ui.client.widget.DataListItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.DeferredCommand;
@@ -62,8 +62,8 @@ public class BookmarkJahiaToolItemProvider extends AbstractJahiaToolItemProvider
      * @param gwtToolbarItem
      * @return
      */
-    public ToolItem createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
-        return new TextToolItem();
+    public Component createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
+        return new Button();
     }
 
     /**
@@ -72,7 +72,7 @@ public class BookmarkJahiaToolItemProvider extends AbstractJahiaToolItemProvider
      * @param gwtToolbarItem
      * @return
      */
-    public SelectionListener<ComponentEvent> getSelectListener(GWTJahiaToolbarItem gwtToolbarItem) {
+    public <T extends ComponentEvent> SelectionListener<T> getSelectListener(GWTJahiaToolbarItem gwtToolbarItem) {
         return null;
     }
 
@@ -103,9 +103,8 @@ public class BookmarkJahiaToolItemProvider extends AbstractJahiaToolItemProvider
         }
 
         public void execute() {
-            JahiaService.App.getInstance().getBookmarks(JahiaPageEntryPoint.getJahiaGWTPage(), new AsyncCallback() {
-                public void onSuccess(Object o) {
-                    List<GWTJahiaBookmark> gwtJahiaBookwarks = (List) o;
+            JahiaService.App.getInstance().getBookmarks(JahiaPageEntryPoint.getJahiaGWTPage(), new AsyncCallback<List<GWTJahiaBookmark>>() {
+                public void onSuccess(List<GWTJahiaBookmark> gwtJahiaBookwarks) {
                     Log.debug("BookmarkLoaderCommand - Found " + gwtJahiaBookwarks.size() + " bookmarks.");
                     for (GWTJahiaBookmark bookmark : gwtJahiaBookwarks) {
                         DataListItem item = new DataListItem();

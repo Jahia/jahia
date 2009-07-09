@@ -1,0 +1,5 @@
+
+<module rename-to='sitemap.live'>
+    <inherits name="org.jahia.ajax.gwt.template.common.live.Live"/>
+    <entry-point class='org.jahia.ajax.gwt.template.sitemap.live.client.LiveModeEntryPoint'/>
+</module>

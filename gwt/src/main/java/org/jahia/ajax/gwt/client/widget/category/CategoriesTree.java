@@ -73,13 +73,12 @@ public class CategoriesTree extends ContentPanel {
 
         final CategoryServiceAsync service = CategoryService.App.getInstance();
         // data proxy
-        RpcProxy<GWTJahiaCategoryNode, List<GWTJahiaCategoryNode>> proxy = new RpcProxy<GWTJahiaCategoryNode, List<GWTJahiaCategoryNode>>() {
-            @Override
-            protected void load(GWTJahiaCategoryNode gwtJahiaCategoryNode, AsyncCallback<List<GWTJahiaCategoryNode>> listAsyncCallback) {
+        RpcProxy<List<GWTJahiaCategoryNode>> proxy = new RpcProxy<List<GWTJahiaCategoryNode>>() {
+            protected void load(Object gwtJahiaCategoryNode, AsyncCallback<List<GWTJahiaCategoryNode>> listAsyncCallback) {
                 if (init) {
                     service.lsInit(categoryKey, selectedCategories, categoryLocale, listAsyncCallback);
                 } else {
-                    service.ls(gwtJahiaCategoryNode,categoryLocale, listAsyncCallback);
+                    service.ls((GWTJahiaCategoryNode) gwtJahiaCategoryNode, categoryLocale, listAsyncCallback);
                 }
             }
         };
@@ -94,19 +93,19 @@ public class CategoriesTree extends ContentPanel {
                expandAllPreviousPaths();
             }
 
-            @Override
-            protected void onLoadSuccess(GWTJahiaCategoryNode gwtJahiaCategoryNode, List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
-                super.onLoadSuccess(gwtJahiaCategoryNode, gwtJahiaCategoryNodes);
-                Log.debug("Load "+gwtJahiaCategoryNodes.size()+" categories.");
-                if (init) {
-                    init = false ;
-                } else {
-                    for (GWTJahiaCategoryNode n: gwtJahiaCategoryNodes) {
-                    //    n.setParent(gwtJahiaCategoryNode);
-                    }
-                   // gwtJahiaCategoryNode.setChildren(gwtJahiaCategoryNodes);
-                }
-            }
+//            @Override
+//            protected void onLoadSuccess(Object gwtJahiaCategoryNode, List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
+//                super.onLoadSuccess(gwtJahiaCategoryNode, gwtJahiaCategoryNodes);
+//                Log.debug("Load "+gwtJahiaCategoryNodes.size()+" categories.");
+//                if (init) {
+//                    init = false ;
+//                } else {
+//                    for (GWTJahiaCategoryNode n: gwtJahiaCategoryNodes) {
+//                    //    n.setParent(gwtJahiaCategoryNode);
+//                    }
+//                   // gwtJahiaCategoryNode.setChildren(gwtJahiaCategoryNodes);
+//                }
+//            }
         };
 
         // trees store
@@ -160,13 +159,13 @@ public class CategoriesTree extends ContentPanel {
         }
         Set<GWTJahiaCategoryNode> nodes = new HashSet<GWTJahiaCategoryNode>(binder.getSelection());
         for (GWTJahiaCategoryNode n: binder.getSelection()) {
-            GWTJahiaCategoryNode parent = n.getParent();
+            GWTJahiaCategoryNode parent = (GWTJahiaCategoryNode) n.getParent();
             while (parent != null) {
                 if("root".equals(parent.getKey())) {
                     break;
                 }
                 nodes.add(parent);
-                parent = parent.getParent();
+                parent = (GWTJahiaCategoryNode) parent.getParent();
             }
         }
         return new ArrayList<GWTJahiaCategoryNode>(nodes);

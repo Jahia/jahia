@@ -66,6 +66,8 @@ import org.quartz.JobDataMap;
 
 import java.util.*;
 
+import com.extjs.gxt.ui.client.data.ModelData;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -299,7 +301,11 @@ public class WorkflowServiceHelper {
                         if (parent == null) {
                             logger.debug("parent is null") ;
                             if (previousChildren != null && lastParent != null) {
-                                lastParent.setChildren(previousChildren);
+                                List<ModelData> l = new ArrayList<ModelData>();
+                                for (GWTJahiaWorkflowElement el: previousChildren) {
+                                    l.add(el);
+                                }
+                                lastParent.setChildren(l);
                                 parentsAndSiblings.add(lastParent) ;
                             } else {
                                 logger.debug("nothing exist") ;
@@ -320,7 +326,11 @@ public class WorkflowServiceHelper {
                             logger.debug("previous children not null, trying to add them to current model") ;
                             for (GWTJahiaWorkflowElement wfEl: children) {
                                 if (wfEl.getObjectKey().equals(lastParent.getObjectKey())) {
-                                    wfEl.setChildren(previousChildren);
+                                    List<ModelData> l = new ArrayList<ModelData>();
+                                    for (GWTJahiaWorkflowElement el: previousChildren) {
+                                        l.add(el);
+                                    }
+                                    wfEl.setChildren(l);
                                     for (GWTJahiaWorkflowElement subEl: previousChildren) {
                                         subEl.setParent(wfEl);
                                     }
@@ -332,7 +342,11 @@ public class WorkflowServiceHelper {
                         lastParent = parent ;
                         if (i == 0) { // this is the last iteration
                             logger.debug("last iteration") ;
-                            parent.setChildren(children);
+                            List<ModelData> l = new ArrayList<ModelData>();
+                            for (GWTJahiaWorkflowElement el: children) {
+                                l.add(el);
+                            }
+                            parent.setChildren(l);
                             for (GWTJahiaWorkflowElement wfEl: children) {
                                 wfEl.setParent(parent);
                             }

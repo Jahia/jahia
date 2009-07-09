@@ -32,7 +32,7 @@
 package org.jahia.ajax.gwt.client.widget.tripanel;
 
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.StatusBar;
+import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -43,11 +43,11 @@ import com.allen_sauer.gwt.log.client.Log;
 */
 public class MyStatusBar extends LayoutContainer {
     
-    private StatusBar statusBar ;
+    private Status statusBar ;
     
     public MyStatusBar() {
         super(new FitLayout()) ;
-        statusBar = new StatusBar() ;
+        statusBar = new Status() ;
         add(statusBar) ;
     }
 
@@ -55,7 +55,7 @@ public class MyStatusBar extends LayoutContainer {
     * Displays the busy icon.
     */
     public void showBusy() {
-        statusBar.showBusy();
+        statusBar.setBusy("");
     }
 
     /**
@@ -65,7 +65,7 @@ public class MyStatusBar extends LayoutContainer {
     */
     public void showBusy(String message) {
         try{
-            statusBar.showBusy(message);
+            statusBar.setBusy(message);
         } catch (Exception e) {
             Log.debug(e.toString()) ;
         }
@@ -75,7 +75,7 @@ public class MyStatusBar extends LayoutContainer {
     * Clears the status content.
     */
     public void clear() {
-        statusBar.clear();
+        statusBar.clearState();
     }
 
     /**
@@ -84,7 +84,7 @@ public class MyStatusBar extends LayoutContainer {
     * @param text the message
     */
     public void setMessage(String text) {
-        statusBar.setMessage(text);
+        statusBar.setText(text);
     }
 
     /**

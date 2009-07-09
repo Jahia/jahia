@@ -31,8 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.widget.language;
 
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
 
 /**
@@ -42,7 +42,7 @@ import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
  */
 public class LanguageCodeDisplay {
 
-    public static void formatToolItem(TextToolItem item, GWTLanguageSwitcherLocaleBean localeBean, boolean displayFlag, String workflowState, boolean displayWorkflow) {
+    public static void formatToolItem(Button item, GWTLanguageSwitcherLocaleBean localeBean, boolean displayFlag, String workflowState, boolean displayWorkflow) {
         StringBuilder content = new StringBuilder(localeBean.getDisplayName()) ;
         if (displayWorkflow) {
             if (workflowState == null || workflowState.equals("")) {

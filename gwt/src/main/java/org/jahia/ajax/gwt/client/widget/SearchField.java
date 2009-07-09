@@ -33,9 +33,11 @@ package org.jahia.ajax.gwt.client.widget;
 
 import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
@@ -65,20 +67,20 @@ public abstract class SearchField extends ToolBar {
         });
 
         add(label) ;
-        add(new AdapterToolItem(field)) ;
-        TextToolItem ok = new TextToolItem() ;
+        add(field) ;
+        Button ok = new Button() ;
         ok.setIconStyle("fm-savedSearch");
-        ok.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent e) {
+        ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent e) {
                 onFieldValidation(field.getRawValue());
             }
         });
         add(ok) ;
         add(new FillToolItem()) ;
         if (saveSearchbutton) {
-            TextToolItem save = new TextToolItem(Messages.getResource("fm_saveSearch")) ;
-            save.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            Button save = new Button(Messages.getResource("fm_saveSearch")) ;
+            save.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
                     onSaveButtonClicked(field.getRawValue());
                 }
             });

@@ -64,15 +64,13 @@ public class UserCompletionItems implements CompletionItems {
         MessageBox alertMsg = new MessageBox();
         try {
             // data proxy
-            RpcProxy<PagingLoadConfig, PagingLoadResult<GWTJahiaUser>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<GWTJahiaUser>>() {
+            RpcProxy<PagingLoadResult<GWTJahiaUser>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaUser>>() {
                 @Override
-                protected void load(PagingLoadConfig pageLoaderResult,
-                                    AsyncCallback<PagingLoadResult<GWTJahiaUser>> callback) {
-                     service.searchUsers(match,pageLoaderResult.getOffset(), pageLoaderResult.getLimit(), null, callback);
+                protected void load(Object pageLoaderResult, AsyncCallback<PagingLoadResult<GWTJahiaUser>> callback) {
+                     service.searchUsers(match, ((PagingLoadConfig) pageLoaderResult).getOffset(), ((PagingLoadConfig) pageLoaderResult).getLimit(), null, callback);
                 }
             };
-            BasePagingLoader loader = new BasePagingLoader<PagingLoadConfig,
-                    PagingLoadResult<GWTJahiaUser>>(proxy);
+            BasePagingLoader loader = new BasePagingLoader<PagingLoadResult<GWTJahiaUser>>(proxy);
             result = new ListStore<GWTJahiaUser>(loader);
         } catch ( Throwable t ){
             alertMsg.setMessage(t.getMessage() + "_"  + t.toString());

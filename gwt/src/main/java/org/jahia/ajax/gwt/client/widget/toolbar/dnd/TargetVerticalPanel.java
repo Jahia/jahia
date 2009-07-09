@@ -31,8 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.dnd;
 
-
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.widget.toolbar.JahiaToolbar;
@@ -43,7 +41,6 @@ import org.jahia.ajax.gwt.client.widget.toolbar.JahiaToolbar;
  * Time: 10:58:39
  */
 public class TargetVerticalPanel extends VerticalPanel implements TargetToolbarsPanel {
-    private Label dumpLabel = new Label("");
     private int type;
 
     public TargetVerticalPanel(int type) {

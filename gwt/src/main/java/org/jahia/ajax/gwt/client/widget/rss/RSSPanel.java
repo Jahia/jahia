@@ -51,7 +51,7 @@ import org.jahia.ajax.gwt.client.service.JahiaService;
  */
 public class RSSPanel extends ContentPanel {
     private GWTJahiaRSSFeed gwtrssFeed;
-    private TextField urlTextField = new TextField();
+    private TextField<String> urlTextField = new TextField<String>();
     private NumberField nbEntriesField = new NumberField();
     private int feedEntryIndex;
     private GWTJahiaPageContext page;

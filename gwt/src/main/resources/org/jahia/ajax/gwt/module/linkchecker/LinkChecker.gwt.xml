@@ -1,5 +1,0 @@
-
-<module>
-    <inherits name="org.jahia.ajax.gwt.module.admin.Admin"/>
-    <entry-point class='org.jahia.ajax.gwt.module.linkchecker.client.LinkCheckerEntryPoint'/>
-</module>

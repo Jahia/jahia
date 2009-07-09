@@ -31,7 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.opensearch;
 
-import org.jahia.ajax.gwt.client.widget.opensearch.JahiaOpenSearchTriPanel;
 import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngine;
 import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngineGroup;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
@@ -39,17 +38,16 @@ import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 
 /**
  * Created by IntelliJ IDEA.
@@ -67,7 +65,7 @@ public class OpenSearchToolBar extends TopBar {
     private String viewType;
     private ComboBox<ViewTypeModel> viewTypeSelector;
     private CheckBox rssSearchesOnly;
-    private TextToolItem openSearchEngineStandAloneWindowButton;
+    private Button openSearchEngineStandAloneWindowButton;
 
     public OpenSearchToolBar(JahiaOpenSearchTriPanel openSearchTriPanel) {
         this.openSearchTriPanel = openSearchTriPanel;
@@ -100,34 +98,33 @@ public class OpenSearchToolBar extends TopBar {
         toolbar.setHeight(28);
 
         // refresh button
-        TextToolItem refreshItem = new TextToolItem();
+        Button refreshItem = new Button();
         refreshItem.setIconStyle("gwt-pdisplay-icons-refresh");
-        refreshItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        refreshItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 getLinker().refreshTable();
             }
         });
 
         searchField = new TextField();
-        ToolItem toolItem = new AdapterToolItem(searchField);
-        toolbar.add(toolItem);
+        toolbar.add(searchField);
 
-        TextToolItem searchButton = new TextToolItem("search");
+        Button searchButton = new Button("search");
         toolbar.add(searchButton);
-        searchButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        searchButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 onSearchClick(event);
             }
         });
 
-        toolItem = new FillToolItem();
+        FillToolItem toolItem = new FillToolItem();
         toolItem.setWidth("30px");
         toolbar.add(new SeparatorToolItem());
-        openSearchEngineStandAloneWindowButton = new TextToolItem("open");
+        openSearchEngineStandAloneWindowButton = new Button("open");
         openSearchEngineStandAloneWindowButton.setToolTip("Open selected search engine in popup");
         toolbar.add(openSearchEngineStandAloneWindowButton);
-        openSearchEngineStandAloneWindowButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        openSearchEngineStandAloneWindowButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 onOpenSearchEngineStandAloneWindowClick(event);
             }
         });
@@ -166,7 +163,7 @@ public class OpenSearchToolBar extends TopBar {
 
         toolItem = new AdapterToolItem(rssSearchesOnly);
         toolbar.add(toolItem);
-        toolItem = new TextToolItem("RSS searches only");
+        toolItem = new Button("RSS searches only");
         toolItem.setEnableState(false);
         toolbar.add(toolItem);
         */

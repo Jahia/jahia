@@ -48,7 +48,7 @@ import com.extjs.gxt.ui.client.Style;
  * @author rfelden
  * @version 19 juin 2008 - 15:57:38
  */
-public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Serializable, Comparable<GWTJahiaNode>, ListLoadConfig {
+public class GWTJahiaNode extends BaseTreeModel implements Serializable, Comparable<GWTJahiaNode>, ListLoadConfig {
 
     private boolean displayable = false;
     private String url;
@@ -343,8 +343,24 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
         set("lockOwner", lockOwner);
     }
 
+    public Style.SortDir getSortDir() {
+        return sortInfo.getSortDir();
+    }
+
+    public String getSortField() {
+        return sortInfo.getSortField();
+    }
+
     public SortInfo getSortInfo() {
         return sortInfo;
+    }
+
+    public void setSortDir(Style.SortDir sortDir) {
+        sortInfo.setSortDir(sortDir);
+    }
+
+    public void setSortField(String s) {
+        sortInfo.setSortField(s);
     }
 
     public void setSortInfo(SortInfo sortInfo) {

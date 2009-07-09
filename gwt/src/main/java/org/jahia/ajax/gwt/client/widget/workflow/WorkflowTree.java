@@ -83,9 +83,9 @@ public class WorkflowTree extends LeftComponent {
         final WorkflowServiceAsync service = WorkflowService.App.getInstance() ;
 
         // data proxy
-        RpcProxy<GWTJahiaWorkflowElement, List<GWTJahiaWorkflowElement>> proxy = new RpcProxy<GWTJahiaWorkflowElement, List<GWTJahiaWorkflowElement>>() {
-            protected void load(GWTJahiaWorkflowElement gwtJahiaFolder, AsyncCallback<List<GWTJahiaWorkflowElement>> listAsyncCallback) {
-                service.getSubElements(gwtJahiaFolder, listAsyncCallback);
+        RpcProxy<List<GWTJahiaWorkflowElement>> proxy = new RpcProxy<List<GWTJahiaWorkflowElement>>() {
+            protected void load(Object gwtJahiaFolder, AsyncCallback<List<GWTJahiaWorkflowElement>> listAsyncCallback) {
+                service.getSubElements((GWTJahiaWorkflowElement) gwtJahiaFolder, listAsyncCallback);
             }
         };
 
@@ -97,7 +97,7 @@ public class WorkflowTree extends LeftComponent {
             }
 
             @Override
-            protected void onLoadSuccess(GWTJahiaWorkflowElement parent, List<GWTJahiaWorkflowElement> children) {
+            protected void onLoadSuccess(Object parent, List<GWTJahiaWorkflowElement> children) {
                 super.onLoadSuccess(parent, children);
                 if (openPreviousPaths) {
                     openPreviousPaths = false ;

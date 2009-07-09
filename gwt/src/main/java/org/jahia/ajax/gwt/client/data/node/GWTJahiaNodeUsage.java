@@ -31,6 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.data.node;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
+
 import java.io.Serializable;
 
 /**
@@ -40,86 +42,96 @@ import java.io.Serializable;
  * Time: 2:09:18 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTJahiaNodeUsage implements Serializable {
-    private int id;
-    private int version;
-    private int workflow;
-    private String extendedWorkflow ;
-    private String lang;
-    private String pageTitle;
-    private String url;
-    private String versionName;
+public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
 
-    public GWTJahiaNodeUsage() {
-    }
+    public GWTJahiaNodeUsage() {}
 
     public GWTJahiaNodeUsage(int id, int version, int workflow, String extendedWorkflow, String lang, String pageTitle, String url) {
-        this.id = id;
-        this.version = version;
-        this.workflow = workflow;
-        this.extendedWorkflow = extendedWorkflow ;
-        this.lang = lang;
-        this.pageTitle = pageTitle;
-        this.url = url;
+        setId(id);
+        setVersion(version);
+        setWorkflow(workflow);
+        setExtendedWorkflow(extendedWorkflow);
+        setLang(lang);
+        setPageTitle(pageTitle);
+        setUrl(url);
     }
 
     public int getId() {
-        return id;
+        Integer idInt = get("id");
+        if (idInt != null) {
+            return idInt.intValue();
+        } else {
+            return -1;
+        }
     }
 
     public void setId(int id) {
-        this.id = id;
+        set("id", Integer.valueOf(id));
     }
 
     public int getVersion() {
-        return version;
+        Integer idInt = get("version");
+        if (idInt != null) {
+            return idInt.intValue();
+        } else {
+            return -1;
+        }
     }
 
     public void setVersion(int version) {
-        this.version = version;
+        set("version", Integer.valueOf(version));
     }
 
     public int getWorkflow() {
-        return workflow;
+        Integer idInt = get("workflow");
+        if (idInt != null) {
+            return idInt.intValue();
+        } else {
+            return -1;
+        }
     }
 
     public void setWorkflow(int workflow) {
-        this.workflow = workflow;
+        set("workflow", Integer.valueOf(workflow));
     }
 
     public String getExtendedWorkflow() {
-        return extendedWorkflow ;
+        return get("extendedWorkflow");
+    }
+
+    public void setExtendedWorkflow(String extendedWorkflow) {
+        set("extendedWorkflow", extendedWorkflow);
     }
 
     public String getLang() {
-        return lang;
+        return get("lang");
     }
 
     public void setLang(String lang) {
-        this.lang = lang;
+        set("lang", lang);
     }
 
     public String getPageTitle() {
-        return pageTitle;
+        return get("pageTitle");
     }
 
     public void setPageTitle(String pageTitle) {
-        this.pageTitle = pageTitle;
+        set("pageTitle", pageTitle);
     }
 
     public String getUrl() {
-        return url;
+        return get("url");
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        set("url", url);
     }
 
     public String getVersionName() {
-        return versionName;
+        return get("versionName");
     }
 
     public void setVersionName(String versionName) {
-        this.versionName = versionName;
+        set("versionName", versionName);
     }
 }

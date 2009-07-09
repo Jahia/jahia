@@ -38,8 +38,8 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.store.*;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.Style;
 
 import java.util.*;
@@ -82,8 +82,8 @@ public abstract class WorkflowBatchViewer extends Window {
         ButtonBar buttons = new ButtonBar() ;
         final Button execute = new Button("Execute") ;
         if (!viewOnly) {
-            execute.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            execute.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
                     execute();
                 }
             }) ;
@@ -91,9 +91,9 @@ public abstract class WorkflowBatchViewer extends Window {
         if (store.getModels().isEmpty()) {
             execute.setEnabled(false);
         }
-        Button close = new Button("Close", new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
-                close() ;
+        Button close = new Button("Close", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                hide() ;
             }
         }) ;
         execute.setIconStyle("wf-button_ok");
@@ -107,7 +107,7 @@ public abstract class WorkflowBatchViewer extends Window {
 
         this.add(grid, new BorderLayoutData(Style.LayoutRegion.CENTER)) ;
 
-        this.setButtonBar(buttons);
+        this.setTopComponent(buttons);
 
         if (!viewOnly) {
             store.addStoreListener(new StoreListener<ReportGrid.GWTReportElement>() {

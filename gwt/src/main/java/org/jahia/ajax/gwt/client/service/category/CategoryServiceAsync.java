@@ -65,9 +65,9 @@ public interface CategoryServiceAsync {
 
     void loadProperties(GWTJahiaCategoryNode gwtJahiaCategoryNode, AsyncCallback<GWTJahiaCategoryNode> async);
 
-    void saveProperties(GWTJahiaCategoryNode gwtJahiaCategoryNode, List<GWTJahiaNodeProperty> newProps, AsyncCallback async);
+    void saveProperties(GWTJahiaCategoryNode gwtJahiaCategoryNode, List<GWTJahiaNodeProperty> newProps, AsyncCallback<GWTJahiaCategoryNode> async);
 
-    void removeProperties(GWTJahiaCategoryNode gwtJahiaCategoryNode, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
+    void removeProperties(GWTJahiaCategoryNode gwtJahiaCategoryNode, List<GWTJahiaNodeProperty> properties, AsyncCallback<GWTJahiaCategoryNode> async);
 
     void getACL(GWTJahiaCategoryNode node, AsyncCallback<GWTJahiaNodeACL> async);
 

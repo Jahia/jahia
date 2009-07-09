@@ -39,7 +39,6 @@ import org.jahia.ajax.gwt.client.service.JahiaContentLegacyService;
 import org.jahia.ajax.gwt.client.service.JahiaContentLegacyServiceAsync;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.binder.TreeBinder;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.ModelStringProvider;
@@ -47,6 +46,8 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.TreeEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.tree.Tree;
 import com.extjs.gxt.ui.client.widget.tree.TreeItem;
@@ -62,19 +63,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class SitemapTree extends Tree {
 
-    private TreeLoader<GWTJahiaPageWrapper> loader ;
-    private TreeStore<GWTJahiaPageWrapper> store ;
-    private TreeBinder<GWTJahiaPageWrapper> binder ;
-
     private TreeItem lastSelection = null ;
 
     public SitemapTree(final GWTJahiaPageContext page) {
         final JahiaContentLegacyServiceAsync service = JahiaContentLegacyService.App.getInstance() ;
 
         // data proxy
-        RpcProxy<GWTJahiaPageWrapper, List<GWTJahiaPageWrapper>> proxy = new RpcProxy<GWTJahiaPageWrapper, List<GWTJahiaPageWrapper>>() {
+        RpcProxy<List<GWTJahiaPageWrapper>> proxy = new RpcProxy<List<GWTJahiaPageWrapper>>() {
             @Override
-            protected void load(GWTJahiaPageWrapper parentPage, final AsyncCallback<List<GWTJahiaPageWrapper>> listAsyncCallback) {
+            protected void load(Object parentPage, final AsyncCallback<List<GWTJahiaPageWrapper>> listAsyncCallback) {
                 if (parentPage == null) {
 
                     service.getHomePageForCurrentUser(page.getPid(), page.getMode(), false, new AsyncCallback<GWTJahiaPageWrapper>() {
@@ -89,23 +86,23 @@ public class SitemapTree extends Tree {
                         }
                     });
                 } else {
-                    service.getSubPagesForCurrentUser(parentPage, listAsyncCallback);
+                    service.getSubPagesForCurrentUser((GWTJahiaPageWrapper) parentPage, listAsyncCallback);
                 }
             }
         };
 
         // tree loader
-        loader = new BaseTreeLoader<GWTJahiaPageWrapper>(proxy) {
+        TreeLoader<GWTJahiaPageWrapper> loader = new BaseTreeLoader<GWTJahiaPageWrapper>(proxy) {
             @Override
             public boolean hasChildren(GWTJahiaPageWrapper parent) {
-                return parent.hasChildren() ;
+                return parent.hasChildren();
             }
         };
 
         // tree store
-        store = new TreeStore<GWTJahiaPageWrapper>(loader) ;
+        TreeStore<GWTJahiaPageWrapper> store = new TreeStore<GWTJahiaPageWrapper>(loader);
 
-        binder = new TreeBinder<GWTJahiaPageWrapper>(this, store) ;
+        TreeBinder<GWTJahiaPageWrapper> binder = new TreeBinder<GWTJahiaPageWrapper>(this, store);
         binder.init() ;
         binder.setCaching(true);
         binder.setDisplayProperty("title");
@@ -120,8 +117,8 @@ public class SitemapTree extends Tree {
             }
         });
 
-        addListener(Events.SelectionChange, new Listener() {
-            public void handleEvent(BaseEvent event) {
+        addListener(Events.SelectionChange, new Listener<TreeEvent>() {
+            public void handleEvent(TreeEvent event) {
                 TreeItem newSelection = getSelectedItem() ;
                 if (lastSelection != newSelection) {
                     lastSelection = newSelection ;

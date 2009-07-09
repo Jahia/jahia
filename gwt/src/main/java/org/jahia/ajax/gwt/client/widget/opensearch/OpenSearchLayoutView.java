@@ -32,7 +32,6 @@
 package org.jahia.ajax.gwt.client.widget.opensearch;
 
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
-import org.jahia.ajax.gwt.client.widget.opensearch.JahiaOpenSearchTriPanel;
 import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngineGroup;
 import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngine;
 

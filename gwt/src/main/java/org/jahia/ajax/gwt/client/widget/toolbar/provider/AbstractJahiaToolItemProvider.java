@@ -39,22 +39,13 @@ import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Events;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.DataListEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.TabPanelEvent;
-import com.extjs.gxt.ui.client.widget.DataList;
-import com.extjs.gxt.ui.client.widget.DataListItem;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.toolbar.SplitToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToggleToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -63,49 +54,52 @@ import com.google.gwt.user.client.ui.Widget;
  * Time: 13:32:32
  */
 public abstract class AbstractJahiaToolItemProvider extends JahiaToolItemProvider {
+
+    // TODO GXT 2
+
     public Widget createWidget(final GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, final GWTJahiaToolbarItem gwtToolbarItem) {
         return createToolItem(gwtToolbarItemsGroup, gwtToolbarItem);
     }
 
-    public ToolItem createToolItem(final GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, final GWTJahiaToolbarItem gwtToolbarItem) {
-        ToolItem toolbarItem = createNewToolItem(gwtToolbarItem);
+    public Component createToolItem(final GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, final GWTJahiaToolbarItem gwtToolbarItem) {
+        Component toolbarItem = createNewToolItem(gwtToolbarItem);
         int layout = gwtToolbarItemsGroup.getLayout();
 
         // set properties that are specific to a ToggleToolItem
-        if (toolbarItem instanceof ToggleToolItem) {
+        if (toolbarItem instanceof ToggleButton) {
             Log.debug("Toogle item");
-            ((ToggleToolItem) toolbarItem).toggle(gwtToolbarItem.isSelected());
+            ((ToggleButton) toolbarItem).toggle(gwtToolbarItem.isSelected());
             //((ToggleToolItem) toolbarItem).pressed = gwtToolbarItem.isSelected();
             // hack: toogle doesn't work
             if (gwtToolbarItem.isSelected()) {
                 toolbarItem.addStyleName("x-btn-pressed");
             }
-        } else if (toolbarItem instanceof SplitToolItem) {
+        } else if (toolbarItem instanceof SplitButton) {
             // hack: toogle split button
             if (gwtToolbarItem.isSelected()) {
                 toolbarItem.addStyleName("x-btn-pressed");
             }
         }
 
-        // set properties that are specific to a TextToolItem
-        if (toolbarItem instanceof TextToolItem) {
+        // set properties that are specific to a Button
+        if (toolbarItem instanceof Button) {
             if (layout == ToolbarConstants.ITEMSGROUP_BUTTON_LABEL || layout == ToolbarConstants.ITEMSGROUP_LABEL) {
                 if (gwtToolbarItem.isDisplayTitle()) {
-                    ((TextToolItem) toolbarItem).setText(gwtToolbarItem.getTitle());
+                    ((Button) toolbarItem).setText(gwtToolbarItem.getTitle());
                 }
             }
             if (layout == ToolbarConstants.ITEMSGROUP_BUTTON_LABEL) {
-                ((TextToolItem) toolbarItem).setIconStyle(gwtToolbarItem.getMinIconStyle());
+                ((Button) toolbarItem).setIconStyle(gwtToolbarItem.getMinIconStyle());
             }
             if (layout == ToolbarConstants.ITEMSGROUP_BUTTON) {
-                ((TextToolItem) toolbarItem).setIconStyle(gwtToolbarItem.getMediumIconStyle());
+                ((Button) toolbarItem).setIconStyle(gwtToolbarItem.getMediumIconStyle());
                 toolbarItem.setHeight("30px");
             }
 
             // add listener
-            SelectionListener<ComponentEvent> listener = getSelectListener(gwtToolbarItem);
+            SelectionListener<ButtonEvent> listener = getSelectListener(gwtToolbarItem);
             if (listener != null) {
-                ((TextToolItem) toolbarItem).addSelectionListener(listener);
+                ((Button) toolbarItem).addSelectionListener(listener);
             }
         }
 
@@ -144,7 +138,7 @@ public abstract class AbstractJahiaToolItemProvider extends JahiaToolItemProvide
 
         // selection
         menuItem.setText(gwtToolbarItem.getTitle());
-        SelectionListener listener = getSelectListener(gwtToolbarItem);
+        SelectionListener<MenuEvent> listener = getSelectListener(gwtToolbarItem);
         menuItem.addSelectionListener(listener);
         return menuItem;
     }
@@ -179,7 +173,7 @@ public abstract class AbstractJahiaToolItemProvider extends JahiaToolItemProvide
             list.addListener(Events.SelectionChange,new Listener<DataListEvent>(){
                 public void handleEvent(DataListEvent event) {
                     if(list.getSelectedItem().getText().equalsIgnoreCase(gwtToolbarItem.getTitle())){
-                       getSelectListener(gwtToolbarItem).componentSelected(event); 
+                       getSelectListener(gwtToolbarItem).componentSelected(event);
                     }
                 }
             });
@@ -217,15 +211,15 @@ public abstract class AbstractJahiaToolItemProvider extends JahiaToolItemProvide
         }
 
         // add listener
-        SelectionListener<ComponentEvent> listener = getSelectListener(gwtToolbarItem);
+        SelectionListener<ButtonEvent> listener = getSelectListener(gwtToolbarItem);
         if (listener != null) {
             tabPanel.addListener(Events.BeforeSelect, new Listener<TabPanelEvent>() {
                 public void handleEvent(TabPanelEvent event) {
-                    TabItem selectedItem = event.item;
+                    TabItem selectedItem = event.getItem();
                     if (selectedItem == item && !gwtToolbarItem.isSelected()) {
-                        SelectionListener<ComponentEvent> listener = getSelectListener(gwtToolbarItem);
+                        SelectionListener<TabPanelEvent> listener = getSelectListener(gwtToolbarItem);
                         listener.componentSelected(event);
-                        event.doit = false;
+//                        event.doit = false;
                     }
                 }
 
@@ -241,16 +235,9 @@ public abstract class AbstractJahiaToolItemProvider extends JahiaToolItemProvide
      * @param gwtToolbarItem
      * @return
      */
-    public abstract SelectionListener<ComponentEvent> getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem);
+    public abstract <T extends ComponentEvent> SelectionListener<T> getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem);
 
-    /**
-     * Create a new toolItem
-     *
-     * @param gwtToolbarItem
-     * @return
-     */
-
-    public abstract ToolItem createNewToolItem(final GWTJahiaToolbarItem gwtToolbarItem);
+    public abstract Component createNewToolItem(final GWTJahiaToolbarItem gwtToolbarItem);
 
     /**
      * Gwt GWT JahiaPage

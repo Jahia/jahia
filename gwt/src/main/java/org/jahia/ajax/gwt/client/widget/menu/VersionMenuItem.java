@@ -31,9 +31,9 @@
  */
 package org.jahia.ajax.gwt.client.widget.menu;
 
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.google.gwt.user.client.Element;

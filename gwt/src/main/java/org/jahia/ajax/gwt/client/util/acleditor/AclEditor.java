@@ -32,17 +32,15 @@
 package org.jahia.ajax.gwt.client.util.acleditor;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.table.*;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.ToggleToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -77,7 +75,7 @@ public class AclEditor {
     private Table aclTable;
     private boolean saved = false;
     private boolean canBreakInheritance = false;
-    private TextToolItem breakinheritanceItem;
+    private Button breakinheritanceItem;
     private String aclGroup;
     private boolean readOnly = false;
     private List<String> available;
@@ -269,8 +267,8 @@ public class AclEditor {
             aceMap.put(ace.getPrincipalType() + ace.getPrincipalKey(), ace);
         }
 
-        restoreButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        restoreButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 reinitAcl();
                 aclTable.removeAll();
                 items.clear();
@@ -354,30 +352,32 @@ public class AclEditor {
         };
 
         ToolBar toolBar = new ToolBar();
-        TextToolItem addUsersToolItem = new TextToolItem(getAddUsersLabel(), "um-adduser");
+        Button addUsersToolItem = new Button(getAddUsersLabel());
+        addUsersToolItem.setIconStyle("um-adduser");
         addUsersToolItem.setEnabled(!readOnly);
-        addUsersToolItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_USERS, context);
             }
         });
         toolBar.add(addUsersToolItem);
 
-        addUsersToolItem = new TextToolItem(getAddGroupsLabel(), "um-addgroup");
+        addUsersToolItem = new Button(getAddGroupsLabel());
+        addUsersToolItem.setIconStyle("um-addgroup");
         addUsersToolItem.setEnabled(!readOnly);
-        addUsersToolItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, context);
             }
         });
         toolBar.add(addUsersToolItem);
-        breakinheritanceItem = new TextToolItem();
+        breakinheritanceItem = new Button();
         if (canBreakInheritance) {
             setBreakInheritanceLabel();
 
             breakinheritanceItem.setEnabled(!readOnly);
-            breakinheritanceItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            breakinheritanceItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
                     acl.setBreakAllInheritance(!acl.isBreakAllInheritance());
                     setDirty();
                     setBreakInheritanceLabel();
@@ -411,13 +411,14 @@ public class AclEditor {
      * @param ace
      * @return
      */
-    private IconButton buildRemoveButton(final TableItem item, final GWTJahiaNodeACE ace) {
-        IconButton button = new IconButton("gwt-icons-delete");
+    private Button buildRemoveButton(final TableItem item, final GWTJahiaNodeACE ace) {
+        Button button = new Button();
+        button.setIconStyle("gwt-icons-delete");
         button.setBorders(false);
         button.setToolTip(getResource("ae_remove"));
         button.setEnabled(!readOnly);
-        button.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 setDirty();
                 String o = ace.getPrincipalType() + ace.getPrincipal();
                 items.remove(o);
@@ -462,12 +463,13 @@ public class AclEditor {
      * @param ace
      * @return
      */
-    private IconButton buildLocalRestoreButton(final TableItem item, final GWTJahiaNodeACE ace) {
-        IconButton button = new IconButton("gwt-icons-restore");
+    private Button buildLocalRestoreButton(final TableItem item, final GWTJahiaNodeACE ace) {
+        Button button = new Button();
+        button.setIconStyle("gwt-icons-restore");
         button.setToolTip(getResource("ae_restore_inheritance"));
         button.setEnabled(!readOnly);
-        button.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 setDirty();
                 Log.debug("restore" + ace.getPermissions());
                 ace.getPermissions().clear();
@@ -480,7 +482,7 @@ public class AclEditor {
                     chb.setChecked("GRANT".equals(v));
                 }
                 ace.setInherited(true);
-                event.component.removeFromParent();
+                //event.getComponent().removeFromParent(); // TODO verify
                 item.setValue(available.size() + 2, buildInheritanceLabel(ace));
             }
         });
@@ -635,7 +637,7 @@ public class AclEditor {
     /**
      * Save button, takes care of sending modified properties to server.
      */
-    private class SaveButton extends TextToolItem {
+    private class SaveButton extends Button {
         public SaveButton() {
             super(getResource("ae_save"));
             setIconStyle("gwt-icons-save");
@@ -645,7 +647,7 @@ public class AclEditor {
     /**
      * Restore the properties retrieved by the last server call.
      */
-    private class RestoreButton extends TextToolItem {
+    private class RestoreButton extends Button {
         public RestoreButton() {
             super(getResource("ae_restore"));
             setIconStyle("gwt-icons-restore");

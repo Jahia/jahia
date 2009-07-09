@@ -36,11 +36,8 @@ import org.jahia.ajax.gwt.client.widget.layoutmanager.listener.OnPortletRemoved;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.listener.OnPortletStatusChanged;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.JahiaPortalManager;
 import org.jahia.ajax.gwt.client.util.layoutmanager.JahiaPropertyHelper;
-import org.jahia.ajax.gwt.client.util.URL;
 
-import com.extjs.gxt.ui.client.Events;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Layout;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
@@ -144,9 +141,9 @@ public class JahiaPortlet extends Portlet {
         setAnimCollapse(false);
 
         if (porletConfig.hasViewMode()) {
-            viewButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+            viewButton.addSelectionListener(new SelectionListener<IconButtonEvent>() {
                 @Override
-                public void componentSelected(ComponentEvent ce) {
+                public void componentSelected(IconButtonEvent ce) {
                     doView();
                 }
 
@@ -156,9 +153,9 @@ public class JahiaPortlet extends Portlet {
 
         // change mode
         if (porletConfig.hasEditMode()) {
-            editButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+            editButton.addSelectionListener(new SelectionListener<IconButtonEvent>() {
                 @Override
-                public void componentSelected(ComponentEvent ce) {
+                public void componentSelected(IconButtonEvent ce) {
                     doEdit();
                 }
 
@@ -168,9 +165,9 @@ public class JahiaPortlet extends Portlet {
 
         // help mode
         if (porletConfig.hasHelpMode()) {
-            helpButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+            helpButton.addSelectionListener(new SelectionListener<IconButtonEvent>() {
                 @Override
-                public void componentSelected(ComponentEvent ce) {
+                public void componentSelected(IconButtonEvent ce) {
                     doHelp();
                 }
 
@@ -179,9 +176,9 @@ public class JahiaPortlet extends Portlet {
         }
 
 
-        maxButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+        maxButton.addSelectionListener(new SelectionListener<IconButtonEvent>() {
             @Override
-            public void componentSelected(ComponentEvent ce) {
+            public void componentSelected(IconButtonEvent ce) {
                 OnPortletStatusChanged onPortletStatusChanged = new OnPortletStatusChanged(JahiaPortlet.this, JahiaPropertyHelper.getStatusFullscreenValue());
                 onPortletStatusChanged.handleEvent(ce);
             }
@@ -189,9 +186,9 @@ public class JahiaPortlet extends Portlet {
         });
         getHeader().addTool(maxButton);
         // minimizebutton
-        minButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+        minButton.addSelectionListener(new SelectionListener<IconButtonEvent>() {
             @Override
-            public void componentSelected(ComponentEvent ce) {
+            public void componentSelected(IconButtonEvent ce) {
                 OnPortletStatusChanged onPortletStatusChanged = new OnPortletStatusChanged(JahiaPortlet.this, JahiaPropertyHelper.getStatusNormaleValue());
                 onPortletStatusChanged.handleEvent(ce);
             }

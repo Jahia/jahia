@@ -46,9 +46,8 @@ import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionStatus;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -56,8 +55,6 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -65,8 +62,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Sergiy Shyrkov
  */
-public class SubscriptionsJahiaToolItemProvider extends
-        AbstractJahiaToolItemProvider {
+public class SubscriptionsJahiaToolItemProvider extends AbstractJahiaToolItemProvider {
 
     private Button cancel;
 
@@ -95,15 +91,15 @@ public class SubscriptionsJahiaToolItemProvider extends
     }
 
     @Override
-    public ToolItem createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
-        return new TextToolItem();
+    public Component createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
+        return new Button();
     }
 
     @Override
-    public SelectionListener<ComponentEvent> getSelectListener(
+    public <T extends ComponentEvent> SelectionListener<T> getSelectListener(
             final GWTJahiaToolbarItem gwtToolbarItem) {
-        SelectionListener listener = new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        SelectionListener<T> listener = new SelectionListener<T>() {
+            public void componentSelected(T event) {
 
                 List<SubscriptionInfo> subscriptions = new LinkedList<SubscriptionInfo>();
                 String source = "ContentPage_" + pageContext.getPid();
@@ -192,17 +188,17 @@ public class SubscriptionsJahiaToolItemProvider extends
                 "Subscribe to following events on the current page"));
 
         save = new Button(getMessage("button.save", "Save"));
-        save.addSelectionListener(new SelectionListener<ComponentEvent>() {
+        save.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
-            public void componentSelected(ComponentEvent event) {
+            public void componentSelected(ButtonEvent event) {
                 updateSubscriptions();
             }
         });
 
         cancel = new Button(getMessage("button.cancel",
                 "Cancel"));
-        cancel.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 window.close();
             }
         });

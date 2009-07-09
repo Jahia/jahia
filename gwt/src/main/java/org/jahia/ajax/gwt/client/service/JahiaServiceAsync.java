@@ -82,7 +82,7 @@ public interface JahiaServiceAsync {
      * @param page
      * @return
      */
-    void getBookmarks(GWTJahiaPageContext page, AsyncCallback async);
+    void getBookmarks(GWTJahiaPageContext page, AsyncCallback<List<GWTJahiaBookmark>> async);
 
     void releaseLocks(String lockType, AsyncCallback async) ;
 

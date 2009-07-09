@@ -33,9 +33,9 @@ package org.jahia.ajax.gwt.client.util.tree;
 
 import com.extjs.gxt.ui.client.widget.tree.Tree;
 import com.extjs.gxt.ui.client.widget.tree.TreeItem;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
@@ -47,6 +47,8 @@ import java.util.List;
  * Date: Oct 28, 2008 - 2:32:51 PM
  */
 public class TreeOpener {
+
+    // TODO GXT 2
 
     private Tree tree;
     private String idProperty ;
@@ -86,11 +88,11 @@ public class TreeOpener {
 
             List<TreeItem> children = currentSelection.getItems() ;
             for (TreeItem item: children) {
-                String prop = (String) item.getModel().get(idProperty) ;
-                if (prop.equals(pathes[lev])) {
-                    expand(item) ;
-                    return;
-                }
+//                String prop = (String) item.getModel().get(idProperty) ;
+//                if (prop.equals(pathes[lev])) {
+//                    expand(item) ;
+//                    return;
+//                }
             }
         } else {
             Log.debug("TreeOpener out of bounds");

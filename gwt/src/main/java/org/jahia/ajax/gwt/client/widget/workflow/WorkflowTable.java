@@ -33,20 +33,18 @@ package org.jahia.ajax.gwt.client.widget.workflow;
 
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.binder.TableBinder;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.table.*;
@@ -86,7 +84,7 @@ public class WorkflowTable extends TopRightComponent {
     private Map<TableItem, GWTJahiaWorkflowElement> container = new HashMap<TableItem, GWTJahiaWorkflowElement>() ;
     private TableBinder<GWTJahiaWorkflowElement> binder = null ;
     private ListStore<GWTJahiaWorkflowElement> store ;
-    private PagingLoader<PagingLoadConfig> loader ;
+    private PagingLoader<PagingLoadResult<GWTJahiaWorkflowElement>> loader ;
     private Map<String, Set<String>> checked;
     private Map<String, Set<String>> disabledChecks;
     private Map<String, String> titleForObjectKey ;
@@ -105,25 +103,25 @@ public class WorkflowTable extends TopRightComponent {
         disabledChecks = new HashMap<String, Set<String>> ();
         availableActionsInTable = new HashSet<String>();
         // data proxy
-        RpcProxy<PagingLoadConfig, PagingLoadResult<GWTJahiaWorkflowElement>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<GWTJahiaWorkflowElement>>() {
+        RpcProxy<PagingLoadResult<GWTJahiaWorkflowElement>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaWorkflowElement>>() {
             @Override
-            protected void load(PagingLoadConfig pageConfig, AsyncCallback<PagingLoadResult<GWTJahiaWorkflowElement>> listAsyncCallback) {
+            protected void load(Object pageConfig, AsyncCallback<PagingLoadResult<GWTJahiaWorkflowElement>> listAsyncCallback) {
                 final GWTJahiaWorkflowElement selection = (GWTJahiaWorkflowElement) getLinker().getTreeSelection() ;
                 if (selection != null) {
-                    int offset = pageConfig.getOffset();
-                    String sortParameter = pageConfig.getSortInfo().getSortField() ;
+                    int offset = ((PagingLoadConfig) pageConfig).getOffset();
+                    String sortParameter = ((PagingLoadConfig) pageConfig).getSortInfo().getSortField() ;
                     int depth = getFlattenDepth() ;
                     int pageSize = pagingToolBar.getPageSize() ;
-                    boolean isAscending = pageConfig.getSortInfo().getSortDir().equals(Style.SortDir.ASC);
+                    boolean isAscending = ((PagingLoadConfig) pageConfig).getSortInfo().getSortDir().equals(Style.SortDir.ASC);
                     service.getPagedFlattenedSubElements(selection, depth, offset, pageSize, sortParameter, isAscending, listAsyncCallback);
                 }
             }
         };
 
         // tree loader
-        loader = new BasePagingLoader<PagingLoadConfig, PagingLoadResult<GWTJahiaWorkflowElement>>(proxy) {
+        loader = new BasePagingLoader<PagingLoadResult<GWTJahiaWorkflowElement>>(proxy) {
             @Override
-            protected void onLoadSuccess(PagingLoadConfig pagingLoadConfig, PagingLoadResult<GWTJahiaWorkflowElement> gwtJahiaWorkflowElementPagingLoadResult) {
+            protected void onLoadSuccess(Object pagingLoadConfig, PagingLoadResult<GWTJahiaWorkflowElement> gwtJahiaWorkflowElementPagingLoadResult) {
                 availableActionsInTable.clear();
                 for (GWTJahiaWorkflowElement wfEl: gwtJahiaWorkflowElementPagingLoadResult.getData()) {
                     for (String lang: languageCodes) {
@@ -159,10 +157,9 @@ public class WorkflowTable extends TopRightComponent {
         depthField.setAllowBlank(false);
         depthField.setValue(Integer.valueOf(depth));
         depthField.setWidth(25);
-        AdapterToolItem depthFieldBox = new AdapterToolItem(depthField) ;
-        depthFieldBox.addStyleName("item-field");
+//        depthField.addStyleName("item-field"); // TODO verify
         pagingToolBar.add(new LabelToolItem(Messages.getResource("wf_depth"))) ;
-        pagingToolBar.add(depthFieldBox) ;
+        pagingToolBar.add(depthField) ;
         depthField.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
                 if (depthField.getValue() != null) {
@@ -184,10 +181,9 @@ public class WorkflowTable extends TopRightComponent {
         pageField.setAllowBlank(false);
         pageField.setValue(Integer.valueOf(pageSize));
         pageField.setWidth(25);
-        AdapterToolItem pageFieldBox = new AdapterToolItem(pageField) ;
-        pageFieldBox.addStyleName("item-field");
+//        pageField.addStyleName("item-field"); // TODO verify
         pagingToolBar.add(new LabelToolItem(Messages.getResource("wf_itemsPerPage"))) ;
-        pagingToolBar.add(pageFieldBox) ;
+        pagingToolBar.add(pageField) ;
         pageField.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
                 if (pageField.getValue() != null) {
@@ -285,7 +281,7 @@ public class WorkflowTable extends TopRightComponent {
             @Override
             public void tableRowDoubleClick(TableEvent event) {
                 if (languageCodes != null && languageCodes.size() > 0) {
-                    TableItem tableItem = event.item ;
+                    TableItem tableItem = event.getItem() ;
                     for (int i=0; i<languageCodes.size(); i++) {
                         WorkflowCheckbox checkbox = (WorkflowCheckbox)tableItem.getValue(i+3) ;
                         if (checkbox.isEnabled() && !checkbox.isChecked()) {
@@ -324,13 +320,13 @@ public class WorkflowTable extends TopRightComponent {
             langItem.setIconStyle("flag_" + lang);
             langItem.addSelectionListener(new SelectListener(lang));
             selectMenu.add(langItem) ;
-            MenuItem previewItem = new MenuItem(lang, new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent componentEvent) {
+            MenuItem previewItem = new MenuItem(lang, new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent componentEvent) {
                     openPreviewWindow(lang, false);
                 }
             });
-            MenuItem compareItem = new MenuItem(lang, new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent componentEvent) {
+            MenuItem compareItem = new MenuItem(lang, new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent componentEvent) {
                     openPreviewWindow(lang, true);
                 }
             });

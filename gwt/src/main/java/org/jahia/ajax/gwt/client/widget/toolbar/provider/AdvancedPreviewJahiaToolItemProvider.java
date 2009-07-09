@@ -34,14 +34,14 @@ package org.jahia.ajax.gwt.client.widget.toolbar.provider;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TriggerField;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.service.SessionManagerService;
 import org.jahia.ajax.gwt.client.service.SessionManagerServiceAsync;
@@ -72,7 +72,7 @@ public class AdvancedPreviewJahiaToolItemProvider extends AbstractJahiaToolItemP
 
     private Window window = new Window();
     private CheckBox enabledCheckBox;
-    private TriggerField aliasingName;
+    private TriggerField<String> aliasingName;
     private CalendarField previewDateField;
     private FormPanel panel = new FormPanel();
     private Button save;
@@ -141,18 +141,18 @@ public class AdvancedPreviewJahiaToolItemProvider extends AbstractJahiaToolItemP
      * @param gwtToolbarItem
      * @return
      */
-    public SelectionListener<ComponentEvent> getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem) {
-        SelectionListener listener = new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+    public <T extends ComponentEvent> SelectionListener<T> getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem) {
+        SelectionListener<T> listener = new SelectionListener<T>() {
+            public void componentSelected(T event) {
 
                 window.setHeading(gwtToolbarItem.getTitle());
 
                 if (save == null){
                     save = new Button(Messages.getNotEmptyResource("save","Save"));
-                    save.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                    save.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
 
-                        public void componentSelected(ComponentEvent event) {
+                        public void componentSelected(ButtonEvent event) {
                             Log.debug("*****  advanced item clicked:" + enabledCheckBox.isEnabled() + ","
                                     +previewDateField.getRawValue() + "," + aliasingName.getRawValue());
                             Map<String, GWTJahiaProperty> properties = gwtToolbarItem.getProperties();
@@ -211,8 +211,8 @@ public class AdvancedPreviewJahiaToolItemProvider extends AbstractJahiaToolItemP
                         }
                     });
                     cancel = new Button(Messages.getNotEmptyResource("cancel","Cancel"));
-                    cancel.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                        public void componentSelected(ComponentEvent event) {
+                    cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        public void componentSelected(ButtonEvent event) {
                             window.hide();
                         }
                     });
@@ -262,8 +262,8 @@ public class AdvancedPreviewJahiaToolItemProvider extends AbstractJahiaToolItemP
      * @param gwtToolbarItem
      * @return
      */
-    public ToolItem createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
-        return new TextToolItem();
+    public Component createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
+        return new Button();
     }
 
 

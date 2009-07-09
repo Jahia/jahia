@@ -27,6 +27,10 @@
      background-image: url( ../images/treetable.png ) !important;   
 }
 
+.fm-templateview {
+     background-image: url( ../images/template.png ) !important;   
+}
+
 .fm-addFile {
     background-image: url( ../images/add-file.png ) !important;
 }

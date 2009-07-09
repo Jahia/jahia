@@ -32,7 +32,6 @@
 package org.jahia.ajax.gwt.client.widget.process;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.GroupingStore;
@@ -41,7 +40,7 @@ import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.PagingToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Command;
@@ -80,12 +79,12 @@ public class ProcessJobGrid extends TopRightComponent {
         m_columnModel = getHeaders();
         final ProcessDisplayServiceAsync processDisplayService = ProcessDisplayService.App.getInstance();
 
-        final RpcProxy<PagingLoadConfig, PagingLoadResult<GWTJahiaProcessJob>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<GWTJahiaProcessJob>>() {
+        final RpcProxy<PagingLoadResult<GWTJahiaProcessJob>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaProcessJob>>() {
             @Override
-            public void load(PagingLoadConfig pageConfig, AsyncCallback<PagingLoadResult<GWTJahiaProcessJob>> callback) {
-                int offset = pageConfig.getOffset();
-                String sortParameter = pageConfig.getSortInfo().getSortField();
-                boolean isAscending = pageConfig.getSortInfo().getSortDir().equals(Style.SortDir.ASC);
+            public void load(Object pageConfig, AsyncCallback<PagingLoadResult<GWTJahiaProcessJob>> callback) {
+                int offset = ((PagingLoadConfig) pageConfig).getOffset();
+                String sortParameter = ((PagingLoadConfig) pageConfig).getSortInfo().getSortField();
+                boolean isAscending = ((PagingLoadConfig) pageConfig).getSortInfo().getSortDir().equals(Style.SortDir.ASC);
 
                 if (sortParameter == null) {
                     sortParameter = GWTJahiaProcessJob.START;
@@ -99,7 +98,7 @@ public class ProcessJobGrid extends TopRightComponent {
         };
 
         // loader
-        loader = new BasePagingLoader<PagingLoadConfig, PagingLoadResult<GWTJahiaProcessJob>>(proxy);
+        loader = new BasePagingLoader<PagingLoadResult<GWTJahiaProcessJob>>(proxy);
         loader.setRemoteSort(true);
 
         // store
@@ -263,7 +262,7 @@ public class ProcessJobGrid extends TopRightComponent {
         String columnName = Messages.getResource("pd_column_status");
         ColumnConfig col = new ColumnConfig(GWTJahiaProcessJob.STATUS, columnName, 100);
         col.setRenderer(new GridCellRenderer<GWTJahiaProcessJob>() {
-            public String render(GWTJahiaProcessJob gwtJahiaProcessJob, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<GWTJahiaProcessJob> gwtJahiaProcessJobListStore) {
+            public String render(GWTJahiaProcessJob gwtJahiaProcessJob, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<GWTJahiaProcessJob> gwtJahiaProcessJobListStore, Grid<GWTJahiaProcessJob> g) {
 
                 String rowStyle = "gwt-pdisplay-table-row-status-" + gwtJahiaProcessJob.getJobStatus();
                 return "<span class='" + rowStyle + "'>" + gwtJahiaProcessJob.getJobStatus() + "</span>";
@@ -291,7 +290,7 @@ public class ProcessJobGrid extends TopRightComponent {
         columnName = Messages.getResource("pd_column_type");
         col = new ColumnConfig(GWTJahiaProcessJob.TYPE, columnName, 100);
         col.setRenderer(new GridCellRenderer<GWTJahiaProcessJob>() {
-            public String render(GWTJahiaProcessJob gwtJahiaProcessJob, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<GWTJahiaProcessJob> gwtJahiaProcessJobListStore) {
+            public String render(GWTJahiaProcessJob gwtJahiaProcessJob, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<GWTJahiaProcessJob> gwtJahiaProcessJobListStore, Grid<GWTJahiaProcessJob> g) {
                 String value = gwtJahiaProcessJob.getJobType();
                 for (int i = 0; i < ProcessDisplayPanel.TYPE_OPTIONS_VALUES.length; i++) {
                     if (value.equalsIgnoreCase(ProcessDisplayPanel.TYPE_OPTIONS_VALUES[i])) {

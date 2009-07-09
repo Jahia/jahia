@@ -31,8 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.data.acl;
 
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;

@@ -32,13 +32,13 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -74,7 +74,7 @@ public class TableView extends TopRightComponent {
     private LayoutContainer m_component;
     private Grid<GWTJahiaNode> m_table;
     private ListStore<GWTJahiaNode> store;
-    private ListLoader<GWTJahiaNode> loader ;
+    private ListLoader<ListLoadResult<GWTJahiaNode>> loader ;
     private ManagerConfiguration configuration;
 
     public TableView(final ManagerConfiguration config) {
@@ -84,18 +84,18 @@ public class TableView extends TopRightComponent {
         configuration = config;
 
         // data proxy
-        RpcProxy<GWTJahiaNode, ListLoadResult<GWTJahiaNode>> privateProxy = new RpcProxy<GWTJahiaNode, ListLoadResult<GWTJahiaNode>>() {
+        RpcProxy<ListLoadResult<GWTJahiaNode>> privateProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
             @Override
-            protected void load(GWTJahiaNode gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                Log.debug("retrieving children of " + gwtJahiaFolder.getName()) ;
-                JahiaContentManagementService.App.getInstance().lsLoad(gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, false, listAsyncCallback);
+            protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
+                Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName()) ;
+                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, false, listAsyncCallback);
             }
         };
 
-        loader = new BaseListLoader<GWTJahiaNode, ListLoadResult<GWTJahiaNode>>(privateProxy) {
+        loader = new BaseListLoader<ListLoadResult<GWTJahiaNode>>(privateProxy) {
             @Override
-            protected void onLoadSuccess(GWTJahiaNode gwtJahiaNode, ListLoadResult<GWTJahiaNode> gwtJahiaNodeListLoadResult) {
-                super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodeListLoadResult);
+            protected void onLoadSuccess(Object gwtJahiaNode, ListLoadResult<GWTJahiaNode> gwtJahiaNodeListLoadResult) {
+                super.onLoadSuccess((GWTJahiaNode) gwtJahiaNode, gwtJahiaNodeListLoadResult);
                 if (getLinker() != null) {
                     getLinker().loaded() ;
                 }
@@ -210,7 +210,7 @@ public class TableView extends TopRightComponent {
             col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 40);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
+                public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
                     return new StringBuilder("<img src='../images/types/gwt/").append(modelData.getExt()).append(".png'>").toString();
                 }
             });
@@ -223,7 +223,7 @@ public class TableView extends TopRightComponent {
             col = new ColumnConfig("locked", Messages.getResource("fm_column_locked"), 40);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
+                public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
                     if (modelData.isLocked().booleanValue()) {
                         String lockOwner = modelData.getLockOwner();
                         return lockOwner != null
@@ -256,7 +256,7 @@ public class TableView extends TopRightComponent {
             col.setResizable(true);
             col.setAlignment(Style.HorizontalAlignment.LEFT);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
+                public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
                     if (modelData.getSize() != null) {
                         long size = modelData.getSize().longValue();
                         return Formatter.getFormattedSize(size);
@@ -274,7 +274,7 @@ public class TableView extends TopRightComponent {
             col = new ColumnConfig("date", Messages.getResource("fm_column_date"), 100);
             col.setAlignment(Style.HorizontalAlignment.LEFT);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
+                public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
                     if (modelData.getDate() != null) {
                         return new DateTimePropertyEditor(DateTimeFormat.getFormat(CalendarField.DEFAULT_DATE_FORMAT)).
                                 getStringValue(modelData.getDate());

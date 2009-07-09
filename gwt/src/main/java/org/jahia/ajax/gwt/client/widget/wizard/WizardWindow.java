@@ -37,14 +37,14 @@ import java.util.List;
 
 import org.jahia.ajax.gwt.client.messages.Messages;
 
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.event.ButtonBarEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.ToolBarEvent;
 import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
@@ -95,7 +95,7 @@ public class WizardWindow extends Window {
      */
     public WizardWindow(List<WizardCard> cards) {
         super();
-        this.cards = cards != null ? cards : new LinkedList();
+        this.cards = cards != null ? cards : new LinkedList<WizardCard>();
         for (WizardCard card : this.cards) {
             card.setWizardWindow(this);
         }
@@ -136,7 +136,7 @@ public class WizardWindow extends Window {
             cards.get(currentStep).notifyFinishListeners();
 //            hide();
         } else {
-            WizardCard nextCard = (WizardCard) cards.get(currentStep + 1);
+            WizardCard nextCard = cards.get(currentStep + 1);
             if (!nextCard.isUiCreated()) {
                 nextCard.createUI();
                 nextCard.setUiCreated(true);
@@ -180,16 +180,16 @@ public class WizardWindow extends Window {
         nextBtn = new Button(getNextButtonText());
         cancelBtn = new Button(getCancelButtonText());
 
-        buttonBar = new ButtonBar();
+        ToolBar buttonBar = new ToolBar();
         buttonBar.add(prevBtn);
         buttonBar.add(nextBtn);
         buttonBar.add(cancelBtn);
-        buttonBar.addListener(Events.Select, new Listener<ButtonBarEvent>() {
-            public void handleEvent(ButtonBarEvent bbe) {
-                onButtonPressed(bbe.item);
+        buttonBar.addListener(Events.Select, new Listener<ToolBarEvent>() {
+            public void handleEvent(ToolBarEvent bbe) {
+                onButtonPressed((Button) bbe.getItem());
             }
         });
-        setButtonBar(buttonBar);
+        setTopComponent(buttonBar);
 
         super.onRender(parent, pos);
 
@@ -221,7 +221,7 @@ public class WizardWindow extends Window {
     /**
      * Sets the progress indicator type. Defaults to DOT
      *
-     * @param Indicator value
+     * @param value value
      */
     public void setProgressIndicator(Indicator value) {
         progressIndicator = value;

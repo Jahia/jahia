@@ -31,10 +31,9 @@
  */
 package org.jahia.ajax.gwt.client.util.content.actions;
 
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Item;
+import com.extjs.gxt.ui.client.widget.button.Button;
 
 /**
  * User: rfelden
@@ -46,8 +45,8 @@ public class ContentActionItemSeparator implements ContentActionItemItf {
 
     public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {}
 
-    public ToolItem getTextToolitem() {
-        return new SeparatorToolItem() ;
+    public Button getTextToolitem() {
+        return null ;
     }
 
     public Item getMenuItem() {

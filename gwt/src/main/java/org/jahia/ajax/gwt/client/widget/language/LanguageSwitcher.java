@@ -31,11 +31,11 @@
  */
 package org.jahia.ajax.gwt.client.widget.language;
 
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguageSwitcherBean;
 import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
@@ -72,7 +72,7 @@ public class LanguageSwitcher {
         this.languageSelectedListener = languageSelectedListener;
     }
 
-    public void init(final TextToolItem parentItem) {
+    public void init(final Button parentItem) {
         service.getAvailableLanguagesAndWorkflowStates(displayIsoCode, displayLanguage, inEngine, new AsyncCallback<GWTJahiaLanguageSwitcherBean>() {
             public void onFailure (Throwable throwable) {}
 
@@ -83,7 +83,7 @@ public class LanguageSwitcher {
         });
     }
 
-    private void generateMenu (final TextToolItem parentItem, final Map<String, GWTLanguageSwitcherLocaleBean> locales, final Map<String, String> workflowStates) {
+    private void generateMenu (final Button parentItem, final Map<String, GWTLanguageSwitcherLocaleBean> locales, final Map<String, String> workflowStates) {
         final GWTLanguageSwitcherLocaleBean localeBean = locales.get(currentLanguage);
         LanguageCodeDisplay.formatToolItem(parentItem, localeBean, displayFlag, workflowStates.get(currentLanguage), displayWorkflowStates);
         if (locales.size() > 1) {
@@ -92,8 +92,8 @@ public class LanguageSwitcher {
                 if (!locale.equals(currentLanguage)) {
                     MenuItem item = new MenuItem() ;
                     LanguageCodeDisplay.formatMenuItem(item, locales.get(locale), displayFlag, workflowStates.get(locale), displayWorkflowStates);
-                    item.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                        public void componentSelected(ComponentEvent componentEvent) {
+                    item.addSelectionListener(new SelectionListener<MenuEvent>() {
+                        public void componentSelected(MenuEvent componentEvent) {
                             languageSelectedListener.onLanguageSelected(locale);
                         }
                     });

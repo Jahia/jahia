@@ -38,7 +38,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import org.jahia.ajax.gwt.client.widget.content.ContentPicker;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.List;
@@ -80,8 +80,8 @@ public class ContentPickerField extends TriggerField<String> {
         w.setModal(true);
         w.setSize(600, 400);
         ButtonBar bar = new ButtonBar();
-        Button ok = new Button("OK", new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        Button ok = new Button("OK", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 List<GWTJahiaNode> selection = (List<GWTJahiaNode>) contentPicker.getLinker().getTableSelection();
                 if (selection != null && selection.size() > 0) {
                     StringBuilder conCat = new StringBuilder(selection.get(0).getPath());
@@ -94,7 +94,7 @@ public class ContentPickerField extends TriggerField<String> {
             }
         });
         bar.add(ok);
-        w.setButtonBar(bar);
+        w.setTopComponent(bar);
         w.add(contentPicker);
         w.show();
     }

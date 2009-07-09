@@ -62,14 +62,14 @@ public class OnPortletMovedListener implements Listener<PortalEvent> {
 
     public void handleEvent(PortalEvent event) {
         final List<GWTJahiaLayoutItem> layoutItemList = new ArrayList<GWTJahiaLayoutItem>();
-        Log.debug("OnPortletMovedListener: update old column:  " + event.startColumn);
-        Log.debug("OnPortletMovedListener: update new column:  " + event.column);
+        Log.debug("OnPortletMovedListener: update old column:  " + event.getStartColumn());
+        Log.debug("OnPortletMovedListener: update new column:  " + event.getColumn());
         // update porlet state of the new column
         int currentRowIndex = 0;
 
         // portlets of the new columns
-        LayoutContainer layoutContainer = portal.getItem(event.column);
-        int newColumnIndex = event.column;
+        LayoutContainer layoutContainer = portal.getItem(event.getColumn());
+        int newColumnIndex = event.getColumn();
         for (Component component : layoutContainer.getItems()) {
             JahiaPortlet portlet = (JahiaPortlet) component;
             // update columns
@@ -85,7 +85,7 @@ public class OnPortletMovedListener implements Listener<PortalEvent> {
         }
 
         // portlets of the old columns
-        int oldColumnIndex = event.startColumn;
+        int oldColumnIndex = event.getStartColumn();
         if (oldColumnIndex != newColumnIndex) {
             LayoutContainer oldLayoutContainer = portal.getItem(oldColumnIndex);
             currentRowIndex = 0;

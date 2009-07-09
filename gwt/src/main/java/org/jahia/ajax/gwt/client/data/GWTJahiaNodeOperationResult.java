@@ -31,8 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.data;
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResultItem;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;

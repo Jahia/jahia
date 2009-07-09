@@ -48,13 +48,13 @@ import com.extjs.gxt.ui.client.widget.table.TableColumn;
 import com.extjs.gxt.ui.client.widget.table.TableColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.binder.TableBinder;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.TabPanelEvent;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -95,8 +95,8 @@ public class WorkflowDetails extends BottomRightComponent {
         history.addStyleName("raw-content");
         tabs.add(validation) ;
         tabs.add(history) ;
-        tabs.addListener(Events.Select, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent event) {
+        tabs.addListener(Events.Select, new Listener<TabPanelEvent>() {
+            public void handleEvent(TabPanelEvent event) {
                 if (selection != null) {
                     fillCurrentTab();
                 }
@@ -200,14 +200,14 @@ public class WorkflowDetails extends BottomRightComponent {
 
 
             // data proxy
-            RpcProxy<ListLoadConfig, ListLoadResult<GWTJahiaWorkflowHistoryEntry>> proxy = new RpcProxy<ListLoadConfig, ListLoadResult<GWTJahiaWorkflowHistoryEntry>>() {
-                protected void load(ListLoadConfig listLoadConfig, AsyncCallback<ListLoadResult<GWTJahiaWorkflowHistoryEntry>> listLoadResultAsyncCallback) {
+            RpcProxy<ListLoadResult<GWTJahiaWorkflowHistoryEntry>> proxy = new RpcProxy<ListLoadResult<GWTJahiaWorkflowHistoryEntry>>() {
+                protected void load(Object listLoadConfig, AsyncCallback<ListLoadResult<GWTJahiaWorkflowHistoryEntry>> listLoadResultAsyncCallback) {
                     WorkflowService.App.getInstance().getHistory(selection, listLoadResultAsyncCallback);
                 }
             };
 
             // tree loader
-            ListLoader loader = new BaseListLoader<ListLoadConfig, ListLoadResult<GWTJahiaWorkflowHistoryEntry>>(proxy);
+            ListLoader loader = new BaseListLoader<ListLoadResult<GWTJahiaWorkflowHistoryEntry>>(proxy);
             ListStore<GWTJahiaWorkflowHistoryEntry> store = new ListStore<GWTJahiaWorkflowHistoryEntry>(loader);
             TableBinder binder = new TableBinder<GWTJahiaWorkflowHistoryEntry>(table, store) ;
             binder.init() ;

@@ -34,7 +34,7 @@ package org.jahia.ajax.gwt.client.widget.layoutmanager.portlet;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.listener.OnPortletMovedListener;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Events;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.widget.custom.Portal;
 
 /**

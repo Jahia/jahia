@@ -34,10 +34,11 @@ package org.jahia.ajax.gwt.client.widget.layoutmanager.picker;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Element;
@@ -74,10 +75,9 @@ public class JahiaPortletPicker extends ContentPanel {
     // portlet folder view
     private JahiaFolderPortletTree portletFolderView;
     // tool items
-    private TextToolItem createPortletInstance;
-    private TextToolItem goToMyPortal;
-    private TextToolItem config;
-    private ToolBar bar;
+    private Button createPortletInstance;
+    private Button goToMyPortal;
+    private Button config;
     private GWTJahiaNode selection;
 
     public JahiaPortletPicker() {
@@ -166,9 +166,9 @@ public class JahiaPortletPicker extends ContentPanel {
 
     private void initCreatePortletInstanceToolItem() {
         // add to my portal
-        createPortletInstance = new TextToolItem(Messages.getNotEmptyResource("p_mashup_create","Create mashup"));
-        createPortletInstance.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        createPortletInstance = new Button(Messages.getNotEmptyResource("p_mashup_create","Create mashup"));
+        createPortletInstance.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 PortletWizardWindow window = new PortletWizardWindow(null,selection) {
                     public void onPortletCreated() {
                         loadContent();
@@ -182,9 +182,9 @@ public class JahiaPortletPicker extends ContentPanel {
 
     private void initGoToMyPortalToolItem() {
         // add to my portal
-        goToMyPortal = new TextToolItem(Messages.getNotEmptyResource("p_my_portal","My portal"));
-        goToMyPortal.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        goToMyPortal = new Button(Messages.getNotEmptyResource("p_my_portal","My portal"));
+        goToMyPortal.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 JahiaPortalManager.getInstance().refreshPortal();
             }
         });
@@ -192,10 +192,10 @@ public class JahiaPortletPicker extends ContentPanel {
 
 
     private void initConfigToolItem() {
-        config = new TextToolItem(Messages.getNotEmptyResource("p_my_config","My config"));
-        config.addSelectionListener(new SelectionListener<ComponentEvent>() {
+        config = new Button(Messages.getNotEmptyResource("p_my_config","My config"));
+        config.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
-            public void componentSelected(ComponentEvent ce) {
+            public void componentSelected(ButtonEvent ce) {
                 JahiaPortalManager.getInstance().getPortalConfig().show();
             }
         });

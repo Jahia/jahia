@@ -32,8 +32,8 @@
 package org.jahia.ajax.gwt.client.widget.definition;
 
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 
@@ -47,16 +47,16 @@ public class ContentDefinitionToolbar extends TopBar {
 
     private ToolBar m_component ;
 
-    private TextToolItem copy ;
-    private TextToolItem cut ;
-    private TextToolItem paste ;
+    private Button copy ;
+    private Button cut ;
+    private Button paste ;
 
     public ContentDefinitionToolbar(final FormView manager) {
         m_component = new ToolBar() ;
         m_component.setHeight(28);
-        copy = new TextToolItem() ;
-        cut = new TextToolItem() ;
-        paste = new TextToolItem() ;
+        copy = new Button() ;
+        cut = new Button() ;
+        paste = new Button() ;
 
         copy.setIconStyle("copy");
         copy.setText("copy");

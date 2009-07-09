@@ -34,7 +34,7 @@ package org.jahia.ajax.gwt.client.util;
 import java.util.Date;
 
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 
@@ -84,48 +84,48 @@ public class Formatter {
     }
 
     /**
-     * Enable a TextToolItem changing the CSS style according to its state.
+     * Enable a Button changing the CSS style according to its state.
      *
      * @param ti the ToolItem
      */
-    public static void enableTextToolItem(TextToolItem ti) {
+    public static void enableButton(Button ti) {
         if (!ti.isEnabled()) {
             ti.enable();
-            String iconStyle = ti.getIconStyle();
-            if (iconStyle != null) {
-                int ind = iconStyle.indexOf("-bw");
-                if (ind != -1) {
-                    iconStyle = iconStyle.substring(0, ind);
-                    ti.setIconStyle(iconStyle);
-                }
-            }
+//            String iconStyle = ti.getIconStyle();
+//            if (iconStyle != null) {
+//                int ind = iconStyle.indexOf("-bw");
+//                if (ind != -1) {
+//                    iconStyle = iconStyle.substring(0, ind);
+//                    ti.setIconStyle(iconStyle);
+//                }
+//            }
         }
     }
 
     /**
-     * Disable a TextToolItem changing the CSS style according to its state.
+     * Disable a Button changing the CSS style according to its state.
      *
      * @param ti the ToolItem
      */
-    public static void disableTextToolItem(TextToolItem ti) {
+    public static void disableButton(Button ti) {
         if (ti.isEnabled()) {
             ti.disable();
-            String iconStyle = ti.getIconStyle();
-            if (iconStyle != null) {
-                int ind = iconStyle.indexOf("-bw");
-                if (ind == -1) {
-                    iconStyle = iconStyle + "-bw";
-                    ti.setIconStyle(iconStyle);
-                }
-            }
+//            String iconStyle = ti.getIconStyle();
+//            if (iconStyle != null) {
+//                int ind = iconStyle.indexOf("-bw");
+//                if (ind == -1) {
+//                    iconStyle = iconStyle + "-bw";
+//                    ti.setIconStyle(iconStyle);
+//                }
+//            }
         }
     }
 
-    public static void setTextToolItemEnabled(TextToolItem ti, boolean b) {
+    public static void setButtonEnabled(Button ti, boolean b) {
         if (b) {
-            Formatter.enableTextToolItem(ti);
+            Formatter.enableButton(ti);
         } else {
-            Formatter.disableTextToolItem(ti);
+            Formatter.disableButton(ti);
         }
     }
 
@@ -138,14 +138,14 @@ public class Formatter {
     public static void enableMenuItem(MenuItem mi) {
         if (!mi.isEnabled()) {
             mi.enable();
-            String iconStyle = mi.getIconStyle();
-            if (iconStyle != null) {
-                int ind = iconStyle.indexOf("-bw");
-                if (ind != -1) {
-                    iconStyle = iconStyle.substring(0, ind);
-                    mi.setIconStyle(iconStyle);
-                }
-            }
+//            String iconStyle = mi.getIconStyle();
+//            if (iconStyle != null) {
+//                int ind = iconStyle.indexOf("-bw");
+//                if (ind != -1) {
+//                    iconStyle = iconStyle.substring(0, ind);
+//                    mi.setIconStyle(iconStyle);
+//                }
+//            }
         }
     }
 
@@ -157,14 +157,14 @@ public class Formatter {
     public static void disableMenuItem(MenuItem mi) {
         if (mi.isEnabled()) {
             mi.disable();
-            String iconStyle = mi.getIconStyle();
-            if (iconStyle != null) {
-                int ind = iconStyle.indexOf("-bw");
-                if (ind == -1) {
-                    iconStyle = iconStyle + "-bw";
-                    mi.setIconStyle(iconStyle);
-                }
-            }
+//            String iconStyle = mi.getIconStyle();
+//            if (iconStyle != null) {
+//                int ind = iconStyle.indexOf("-bw");
+//                if (ind == -1) {
+//                    iconStyle = iconStyle + "-bw";
+//                    mi.setIconStyle(iconStyle);
+//                }
+//            }
         }
     }
 

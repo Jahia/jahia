@@ -43,8 +43,8 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
@@ -123,7 +123,7 @@ public class PickedCategoriesGrid extends TopRightComponent {
         //name
         ColumnConfig column = new ColumnConfig();
         column.setRenderer(new GridCellRenderer<GWTJahiaCategoryNode>() {
-            public String render(GWTJahiaCategoryNode categoryNode, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<GWTJahiaCategoryNode> categoryNodeListStore) {
+            public Object render(GWTJahiaCategoryNode categoryNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaCategoryNode> gwtJahiaCategoryNodeListStore, Grid<GWTJahiaCategoryNode> gwtJahiaCategoryNodeGrid) {
                 return "<input type=\"hidden\" name=\"category_" + categoryNode.getCategoryId() + "\"/> " + categoryNode.getExtendedName();
             }
         });
@@ -142,7 +142,7 @@ public class PickedCategoriesGrid extends TopRightComponent {
         column = new ColumnConfig();
         column.setId("path");
         column.setRenderer(new GridCellRenderer<GWTJahiaCategoryNode>() {
-            public String render(GWTJahiaCategoryNode categoryNode, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<GWTJahiaCategoryNode> categoryNodeListStore) {
+            public Object render(GWTJahiaCategoryNode categoryNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaCategoryNode> gwtJahiaCategoryNodeListStore, Grid<GWTJahiaCategoryNode> gwtJahiaCategoryNodeGrid) {
                 return categoryNode.getPath().replace("/root","");
             }
         });
@@ -246,8 +246,8 @@ public class PickedCategoriesGrid extends TopRightComponent {
         Menu m = new Menu();
         MenuItem menuItem = new MenuItem(Messages.getResource("information"));
         m.add(menuItem);
-        menuItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        menuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent event) {
                 GWTJahiaCategoryNode node = grid.getSelectionModel().getSelectedItem();
                 if (node != null) {
                     MessageBox box = new MessageBox();

@@ -40,6 +40,5 @@ package org.jahia.ajax.gwt.client.widget.versioning.comparison.dao;
  */
 public interface VersionDAO {
 
-    public void getData(String versionableUUID, String version1, String version2, String lang,
-                                         DataListener listener);
+    public void getData(String versionableUUID, String version1, String version2, String lang, DataListener listener);
 }

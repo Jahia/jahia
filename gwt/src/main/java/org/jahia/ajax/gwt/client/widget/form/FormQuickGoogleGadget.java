@@ -36,8 +36,8 @@ import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -83,8 +83,8 @@ public abstract class FormQuickGoogleGadget extends FormQuickMashup {
 
         // save properties button
         Button saveButton = new Button(Messages.getResource("fm_save"));
-        saveButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent componentEvent) {
+        saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent componentEvent) {
                 JahiaContentManagementService.App.getInstance().createGoogleGadgetPortletInstance(getFolderPath(), (String) nameField.getValue(), (String) scriptField.getValue(),new AsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                         onMashupCreated();
@@ -96,7 +96,7 @@ public abstract class FormQuickGoogleGadget extends FormQuickMashup {
                     public void onFailure(Throwable throwable) {
                         Log.error("Unable to create rss portlet", throwable);
                         if (getParent() instanceof Window) {
-                            ((Window) getParent()).close();
+                            ((Window) getParent()).hide();
                         }
                     }
                 });

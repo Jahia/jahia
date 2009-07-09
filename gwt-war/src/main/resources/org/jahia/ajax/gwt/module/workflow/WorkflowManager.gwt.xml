@@ -1,0 +1,5 @@
+
+<module rename-to='workflowmanager'>
+    <inherits name="org.jahia.ajax.gwt.JahiaGWT"/>
+    <entry-point class='org.jahia.ajax.gwt.module.workflow.client.WorkflowManagerEntryPoint'/>
+</module>

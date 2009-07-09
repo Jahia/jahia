@@ -31,13 +31,9 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.provider;
 
-import com.extjs.gxt.ui.client.widget.DataList;
-import com.extjs.gxt.ui.client.widget.DataListItem;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Item;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.service.JahiaService;
@@ -60,8 +56,8 @@ public class LanguageSwitcherProvider extends JahiaToolItemProvider {
         return null;
     }
 
-    public ToolItem createToolItem (GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, GWTJahiaToolbarItem gwtToolbarItem) {
-        TextToolItem item = new TextToolItem("loading...") ;
+    public Component createToolItem (GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, GWTJahiaToolbarItem gwtToolbarItem) {
+        Button item = new Button("loading...") ;
         item.setEnabled(false);
         new LanguageSwitcher(true, true, false,true, JahiaGWTParameters.getLanguage(), false, new LanguageSelectedListener() {
             private final JahiaServiceAsync jahiaServiceAsync = JahiaService.App.getInstance();

@@ -38,9 +38,7 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.event.*;
 import com.allen_sauer.gwt.log.client.Log;
@@ -84,7 +82,6 @@ public class PropertiesEditor extends FormPanel {
         }
         this.isMultipleEdit = isMultipleEdit;
         cloneProperties();
-        isMultipleEdit = true;
         this.viewInheritedItems = viewInheritedItems;
         renderNewFormPanel();
     }
@@ -141,7 +138,7 @@ public class PropertiesEditor extends FormPanel {
         toolBar.setVisible(false);
 
         if (nodeTypes.size() > 1) {
-            toolBar.add(new AdapterToolItem(combo));
+            toolBar.add(combo);
             toolBar.setVisible(true);
         }
 

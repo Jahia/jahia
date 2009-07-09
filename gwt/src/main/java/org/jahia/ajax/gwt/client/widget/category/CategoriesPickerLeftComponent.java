@@ -38,7 +38,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
@@ -65,13 +65,13 @@ public class CategoriesPickerLeftComponent extends LeftComponent {
         categoriesTree.setHeaderVisible(false);
         categoriesTree.setBodyBorder(false);
 
-        Button add = new Button(">>", new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent componentEvent) {
+        Button add = new Button(">>", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent componentEvent) {
                 addCategories(categoriesTree.getSelection());
             }
         });
-        Button remove = new Button("<<", new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent componentEvent) {
+        Button remove = new Button("<<", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent componentEvent) {
                 removeCategories();
             }
         });

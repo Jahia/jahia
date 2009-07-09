@@ -32,8 +32,8 @@
 package org.jahia.ajax.gwt.client.widget.workflow;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -72,13 +72,13 @@ public class WorkflowExecuteWindow extends Window {
         setModal(true);
 
         ButtonBar buttons = new ButtonBar() ;
-        Button cancel = new Button(Messages.getResource("wf_cancel"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        Button cancel = new Button(Messages.getResource("wf_cancel"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 hide() ;
             }
         }) ;
-        execute = new Button(Messages.getResource("wf_execute"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        execute = new Button(Messages.getResource("wf_execute"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 execute() ;
             }
         }) ;
@@ -87,7 +87,7 @@ public class WorkflowExecuteWindow extends Window {
         execute.setIconStyle("wf-button_ok");
         cancel.setIconStyle("wf-button_cancel");
         setButtonAlign(Style.HorizontalAlignment.CENTER);
-        setButtonBar(buttons);
+        setTopComponent(buttons);
 
         title = new TextField() ;
         title.setFieldLabel(Messages.getResource("wf_title"));
@@ -118,7 +118,7 @@ public class WorkflowExecuteWindow extends Window {
 
             public void onSuccess(Object o) {
                 ((WorkflowToolbar)linker.getTopObject()).clearBatch() ;
-                close();
+                hide();
                 WindowUtil.close() ;
             }
         });

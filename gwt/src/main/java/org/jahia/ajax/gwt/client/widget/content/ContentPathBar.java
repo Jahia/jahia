@@ -37,10 +37,11 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Command;
 
@@ -69,14 +70,14 @@ public class ContentPathBar extends TopBar {
         selectedPath.setId("file_id");
         selectedPath.setReadOnly(true);
         m_component.add(new LabelToolItem(Messages.getResource("fm_selection"))) ;
-        m_component.add(new AdapterToolItem(selectedPath)) ;
+        m_component.add(selectedPath) ;
 
         selectedPath.setWidth(500);
         m_component.add(new FillToolItem()) ;
-        TextToolItem deselect = new TextToolItem(Messages.getResource("fm_deselect")) ;
+        Button deselect = new Button(Messages.getResource("fm_deselect")) ;
         deselect.setIconStyle("gxt-button-clear");
-        deselect.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        deselect.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 getLinker().getTopRightObject().clearSelection() ;
                 selectedPath.setRawValue("");
                 if (callback != null && callback.length() > 0) {

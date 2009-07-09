@@ -32,8 +32,8 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -94,15 +94,15 @@ public class Mounter extends Window {
         barField.setVisible(false);
 
 
-        final Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        final Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 hide() ;
             }
         });
 
         final Button submit = new Button(Messages.getResource("fm_ok")) ;
-        SelectionListener<ComponentEvent> selectionListener = new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 barField.setVisible(true);
                 bar.auto() ;
                 linker.loading(Messages.getResource("fm_mounting")) ;
@@ -132,7 +132,7 @@ public class Mounter extends Window {
         buttons.add(submit) ;
         buttons.add(cancel) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);
-        setButtonBar(buttons);
+        setTopComponent(buttons);
 
         add(form);
         setScrollMode(Style.Scroll.AUTO);

@@ -37,11 +37,10 @@ import com.extjs.gxt.ui.client.widget.DataList;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.user.client.Event;
 import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngine;
 import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngineGroup;
-import org.jahia.ajax.gwt.client.widget.opensearch.JahiaOpenSearchTriPanel;
 
 import java.util.List;
 
@@ -155,7 +154,7 @@ public class SearchEngineGroupPanel extends ContentPanel {
         }
         this.add(this.searchEngines);
 
-        this.searchEngines.addListener(Event.ONDBLCLICK, new Listener<ComponentEvent>() {
+        this.searchEngines.addListener(Events.DoubleClick, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
                 SearchEngineListItem listItem = (SearchEngineListItem)searchEngines.getSelectedItem();
                 if (listItem != null){

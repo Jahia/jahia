@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import com.extjs.gxt.ui.client.widget.tree.TreeItem;
 import com.extjs.gxt.ui.client.widget.tree.Tree;
 import com.extjs.gxt.ui.client.data.TreeModel;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -44,7 +46,9 @@ import com.allen_sauer.gwt.log.client.Log;
  * User: rfelden
  * Date: 19 nov. 2008 - 14:51:50
  */
-public class PreviousPathsOpener<T extends TreeModel<T>> {
+public class PreviousPathsOpener<T extends BaseTreeModel> {
+
+    // TODO GXT 2
 
     private Tree m_tree ;
     private TreeStore<T> store ;
@@ -77,18 +81,22 @@ public class PreviousPathsOpener<T extends TreeModel<T>> {
     }
 
     private void appendChildrenNodesToStore(T node) {
-        Log.debug("Appending children of " + node.get("name")) ;
-        List<T> nodes = node.getChildren() ;
-        store.add(node, nodes, true) ;
+        Log.debug("Appending children of " + node.get("name"));
+        List nodes = node.getChildren();
+        store.add(node, nodes, true);
     }
 
     private void renderChildrenNodesRec(T node) {
         Log.debug("Rendering children of " + node.get("name")) ;
-        List<T> nodes = node.getChildren() ;
+        List<ModelData> nodes = node.getChildren() ;
         if (nodes.size() > 0) {
-            binder.renderChildren(node, nodes) ;
-            for (T aNode: nodes) {
-                renderChildrenNodesRec(aNode);
+            List<T> l = new ArrayList<T>();
+            for (ModelData aNode: nodes) {
+                l.add((T) aNode);
+            }
+            binder.renderChildren(node, l) ;
+            for (ModelData aNode: nodes) {
+                renderChildrenNodesRec((T) aNode);
             }
         }
     }

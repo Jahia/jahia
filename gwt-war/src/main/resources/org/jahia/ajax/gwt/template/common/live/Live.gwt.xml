@@ -1,0 +1,4 @@
+
+<module rename-to='common.live'>
+    <inherits name="org.jahia.ajax.gwt.JahiaGWT"/>
+</module>

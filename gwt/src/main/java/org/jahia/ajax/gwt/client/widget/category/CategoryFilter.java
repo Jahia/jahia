@@ -32,15 +32,11 @@
 package org.jahia.ajax.gwt.client.widget.category;
 
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import com.extjs.gxt.ui.client.widget.StoreFilterField;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.data.ModelData;
 
@@ -72,7 +68,7 @@ public class CategoryFilter extends TopBar {
             }
         };
 
-        m_component.add(new AdapterToolItem(filter)) ;
+        m_component.add(filter) ;
     }
 
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelection) {

@@ -31,13 +31,10 @@
  */
 package org.jahia.ajax.gwt.client.widget.versioning;
 
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.core.El;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.DatePicker;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -52,11 +49,8 @@ import com.google.gwt.user.client.Event;
 import org.jahia.ajax.gwt.client.widget.menu.VersionMenu;
 import org.jahia.ajax.gwt.client.widget.menu.CalendarMenu;
 import org.jahia.ajax.gwt.client.widget.menu.VersionMenuItem;
-import org.jahia.ajax.gwt.client.widget.calendar.CalendarPicker;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
-import org.jahia.ajax.gwt.client.widget.versioning.PageVersionMenuItem;
 import org.jahia.ajax.gwt.client.data.GWTJahiaVersion;
-import org.jahia.ajax.gwt.client.widget.versioning.PageVersionsBrowser;
 
 import java.util.Date;
 
@@ -75,7 +69,6 @@ public class VersionField extends TriggerField<Date> implements VersionsBrowserL
     private Date minValue;
     private Date maxValue;
     private VersionMenu versionMenu;
-    private VersionsBrowser versionsBrowser;
     private CalendarMenu calendarMenu;
     private DateField dateField;
     protected El versionTrigger;
@@ -171,8 +164,8 @@ public class VersionField extends TriggerField<Date> implements VersionsBrowserL
                 public void handleEvent(ComponentEvent ce) {
                     focusValue = getValue();
                     Date date = calendarMenu.getDate();
-                    date.setHours(((CalendarPicker) calendarMenu.getDatePicker()).getSelectedHour());
-                    date.setMinutes(((CalendarPicker) calendarMenu.getDatePicker()).getSelectedMinute());
+                    date.setHours(calendarMenu.getDatePicker().getSelectedHour());
+                    date.setMinutes(calendarMenu.getDatePicker().getSelectedMinute());
                     setValue(date);
                     setUseVersion(false);
                     fireChangeEvent(focusValue, getValue());
@@ -192,11 +185,11 @@ public class VersionField extends TriggerField<Date> implements VersionsBrowserL
         picker.setMinDate(minValue);
         picker.setMaxDate(maxValue);
 
-        if ("versionTrigger".equals(ce.source)){
+        if ("versionTrigger".equals(ce.getSource())){
             if (versionMenu == null){
-                versionsBrowser = new PageVersionsBrowser(startingPageID);
+                VersionsBrowser versionsBrowser = new PageVersionsBrowser(startingPageID);
                 versionsBrowser.addPageVersionsBrowserListener(this);
-                VersionMenuItem menuItem = new PageVersionMenuItem((Component)versionsBrowser);
+                VersionMenuItem menuItem = new PageVersionMenuItem((Component) versionsBrowser);
                 versionMenu = new VersionMenu(menuItem);
             }
             versionMenu.show();
@@ -284,9 +277,9 @@ public class VersionField extends TriggerField<Date> implements VersionsBrowserL
         versionTriggerListener = new EventListener() {
           public void onBrowserEvent(Event event) {
             FieldEvent ce = new FieldEvent(VersionField.this);
-            ce.event = event;
-            ce.type = DOM.eventGetType(event);
-            ce.source = "versionTrigger";
+            ce.setEvent(event);
+            ce.setType(Events.OnClick); // TODO unsure event type
+            ce.setSource("versionTrigger");
             ce.stopEvent();
             onTriggerEvent(ce);
           }
@@ -319,8 +312,8 @@ public class VersionField extends TriggerField<Date> implements VersionsBrowserL
     }
 
     protected void onTriggerEvent(ComponentEvent ce) {
-        if ( "versionTrigger".equals(ce.source)){
-            int type = ce.type;
+        if ( "versionTrigger".equals(ce.getSource())){
+            int type = ce.getEventTypeInt();
             switch (type) {
             case Event.ONMOUSEOVER:
               versionTrigger.addStyleName("x-form-trigger-over");
@@ -333,7 +326,7 @@ public class VersionField extends TriggerField<Date> implements VersionsBrowserL
               break;
             }
         } else {
-            super.onTriggerEvent(ce);
+            super.onTriggerClick(ce);
         }
     }
 

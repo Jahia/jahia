@@ -32,19 +32,14 @@
 package org.jahia.ajax.gwt.client.widget.workflow;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Events;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
-import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -77,7 +72,7 @@ public class WorkflowToolbar extends TopBar {
 
     private Map<String, Map<String, Set<String>>> batch = new HashMap<String, Map<String, Set<String>>>() ;
     private Map<String,String> actionsLabel;
-    private TextToolItem chooseAction ;
+    private Button chooseAction ;
     private Menu actionsMenu ;
 
     private ToolBar m_component ;
@@ -89,7 +84,7 @@ public class WorkflowToolbar extends TopBar {
     public WorkflowToolbar() {
         m_component = new ToolBar() ;
 
-        chooseAction = new TextToolItem(Messages.getResource("wf_chooseAction")) ;
+        chooseAction = new Button(Messages.getResource("wf_chooseAction")) ;
         chooseAction.setIconStyle("wf-action");
         actionsMenu = new Menu() ;
         chooseAction.setMenu(actionsMenu);
@@ -98,10 +93,10 @@ public class WorkflowToolbar extends TopBar {
          // this allows to align remaining items right
         m_component.add(new FillToolItem()) ;
 
-        TextToolItem addToBatch = new TextToolItem(Messages.getResource("wf_addToBatch"));
+        Button addToBatch = new Button(Messages.getResource("wf_addToBatch"));
         addToBatch.setIconStyle("wf-add");
-        addToBatch.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        addToBatch.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 if (action.length() > 0) {
                     Map<String, Set<String>> checked = ((WorkflowTable) getLinker().getTopRightObject()).getChecked() ;
                     if (checked.size() > 0) {
@@ -147,7 +142,7 @@ public class WorkflowToolbar extends TopBar {
                 });
             }
         });
-        TextToolItem item = new TextToolItem("loading...") ;
+        Button item = new Button("loading...") ;
         item.setEnabled(false);
         languageSwitcher.init(item);
         m_component.add(item);
@@ -169,8 +164,8 @@ public class WorkflowToolbar extends TopBar {
         new WorkflowBatchViewer(batch, ((WorkflowTable) getLinker().getTopRightObject()).getTitleForObjectKey(), null, false){
             public void buildContextMenu(final Grid<ReportGrid.GWTReportElement> grid) {
                 Menu contextMenu = new Menu() ;
-                final MenuItem removeAction = new MenuItem(Messages.getResource("wf_removeAction"), new SelectionListener<ComponentEvent>() {
-                    public void componentSelected(ComponentEvent event) {
+                final MenuItem removeAction = new MenuItem(Messages.getResource("wf_removeAction"), new SelectionListener<MenuEvent>() {
+                    public void componentSelected(MenuEvent event) {
                         ReportGrid.GWTReportElement elem = grid.getSelectionModel().getSelectedItem() ;
                         if (elem != null) {
                             String action = elem.getAction() ;
@@ -185,8 +180,8 @@ public class WorkflowToolbar extends TopBar {
                 });
                 removeAction.setIconStyle("wf-remove");
                 contextMenu.add(removeAction) ;
-                contextMenu.addListener(Events.BeforeShow, new Listener() {
-                    public void handleEvent(BaseEvent baseEvent) {
+                contextMenu.addListener(Events.BeforeShow, new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent baseEvent) {
                         removeAction.setEnabled(grid.getSelectionModel().getSelectedItem() != null) ;
                     }
                 }) ;
@@ -289,7 +284,7 @@ public class WorkflowToolbar extends TopBar {
                         actionsLabel.put(action.getKey(), action.getLabel());
                         CheckMenuItem actionMenuItem = new CheckMenuItem(action.getLabel()) ;
                         actionMenuItem.setGroup("step");
-                        actionMenuItem.addSelectionListener(new ActionSelectionListener<ComponentEvent>(action.getKey(), action.getLabel()));
+                        actionMenuItem.addSelectionListener(new ActionSelectionListener<MenuEvent>(action.getKey(), action.getLabel()));
                         actionsMenu.add(actionMenuItem);
                     }
                     setAvailableActions(actions);
@@ -301,14 +296,14 @@ public class WorkflowToolbar extends TopBar {
     }
 
     private void setAvailableActions(Collection<String> availableActions) {
-        List<Item> l = actionsMenu.getItems();
+        List<Component> l = actionsMenu.getItems();
 
         Set<String> s = new HashSet<String>();
         for (String availableAction : availableActions) {
             s.add(actionsLabel.get(availableAction));
         }
         boolean selectionDone = false ;
-        for (Item item : l) {
+        for (Component item : l) {
             if (item instanceof CheckMenuItem) {
                 if (!s.contains(((CheckMenuItem)item).getText())) {
                     Log.debug("disable " + ((CheckMenuItem)item).getText()) ;
@@ -332,7 +327,7 @@ public class WorkflowToolbar extends TopBar {
 
 
     public void cycleAction(Set<String> actions) {
-        List<Item> l = actionsMenu.getItems();
+        List<Component> l = actionsMenu.getItems();
 
         Set<String> s = new HashSet<String>();
         for (String availableAction : actions) {
@@ -341,7 +336,7 @@ public class WorkflowToolbar extends TopBar {
 
         boolean found = false;
         boolean set = false;
-        for (Item item : l) {
+        for (Component item : l) {
             if (item instanceof CheckMenuItem) {
                 CheckMenuItem checkMenuItem = (CheckMenuItem) item;
                 if (checkMenuItem.isChecked()) {
@@ -360,7 +355,7 @@ public class WorkflowToolbar extends TopBar {
             }
         }
         if (!set) {
-            for (Item item : l) {
+            for (Component item : l) {
                 if (item instanceof CheckMenuItem) {
                     CheckMenuItem checkMenuItem = (CheckMenuItem) item;
                     if (s.contains(checkMenuItem.getText())) {

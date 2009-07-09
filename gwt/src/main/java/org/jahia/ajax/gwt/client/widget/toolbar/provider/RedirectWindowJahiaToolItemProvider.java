@@ -33,8 +33,8 @@ package org.jahia.ajax.gwt.client.widget.toolbar.provider;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToggleToolItem;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -48,10 +48,10 @@ import java.util.Map;
  * Time: 10:45:02
  */
 public class RedirectWindowJahiaToolItemProvider extends AbstractJahiaToolItemProvider {
-    public SelectionListener<ComponentEvent> getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem) {
+    public <T extends ComponentEvent> SelectionListener<T> getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem) {
         // add listener
-        SelectionListener<ComponentEvent> listener = new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent be) {
+        SelectionListener<T> listener = new SelectionListener<T>() {
+            public void componentSelected(T be) {
                 Map preferences = gwtToolbarItem.getProperties();
                 final GWTJahiaProperty windowUrl = (GWTJahiaProperty) preferences.get(ToolbarConstants.URL);
                 if (windowUrl != null && windowUrl.getValue() != null) {
@@ -64,7 +64,7 @@ public class RedirectWindowJahiaToolItemProvider extends AbstractJahiaToolItemPr
         return listener;
     }
 
-    public ToolItem createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
-        return new ToggleToolItem();
+    public Component createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
+        return new ToggleButton();
     }
 }

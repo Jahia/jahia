@@ -39,8 +39,8 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
@@ -123,13 +123,13 @@ public class ImageCrop extends Window {
         form.add(newname);
 
         ButtonBar buttons = new ButtonBar() ;
-        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 hide() ;
             }
         });
-        Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 cropImage(n.getPath(), newname.getValue().toString(),
                         Integer.parseInt(top.getValue().toString()),
                         Integer.parseInt(left.getValue().toString()),
@@ -141,7 +141,7 @@ public class ImageCrop extends Window {
         buttons.add(submit) ;
         buttons.add(cancel) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);
-        setButtonBar(buttons);
+        setTopComponent(buttons);
 
         add(flowPanel);
         add(form);

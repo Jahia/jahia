@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.menu;
 
-import com.extjs.gxt.ui.client.util.WidgetHelper;
+//import com.extjs.gxt.ui.client.util.WidgetHelper;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.google.gwt.user.client.Element;
 
@@ -55,13 +55,13 @@ public class VersionMenu extends Menu {
     @Override
     protected void doAttachChildren() {
       super.doAttachChildren();
-      WidgetHelper.doAttach(item.getComponent());
+//      WidgetHelper.doAttach(item.getComponent());
     }
 
     @Override
     protected void doDetachChildren() {
       super.doDetachChildren();
-      WidgetHelper.doDetach(item.getComponent());
+//      WidgetHelper.doDetach(item.getComponent());
     }
 
     public void show(Element elem, String pos) {

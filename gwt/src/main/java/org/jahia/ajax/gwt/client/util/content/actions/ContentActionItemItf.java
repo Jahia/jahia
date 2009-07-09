@@ -31,8 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.util.content.actions;
 
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 import com.extjs.gxt.ui.client.widget.menu.Item;
+import com.extjs.gxt.ui.client.widget.button.Button;
 
 /**
  * User: rfelden
@@ -44,7 +44,7 @@ public interface ContentActionItemItf {
 
     public void setEnabled(boolean enabled) ;
 
-    public ToolItem getTextToolitem() ;
+    public Button getTextToolitem() ;
 
     public Item getMenuItem() ;
 

@@ -32,21 +32,21 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.binder.TreeBinder;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.dnd.TreeDragSource;
-import com.extjs.gxt.ui.client.dnd.TreeDropTarget;
+import com.extjs.gxt.ui.client.dnd.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.tree.Tree;
 import com.extjs.gxt.ui.client.widget.tree.TreeItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
@@ -68,13 +68,14 @@ import java.util.List;
  */
 public class RepositoryTab extends ContentPanel {
 
+    // TODO GXT 2 !!!
+
     private boolean init = true ;
     private String repositoryType ;
     private CustomTreeLoader<GWTJahiaNode> loader ;
     private TreeStore<GWTJahiaNode> store ;
     private FolderTree folderTreeContainer ;
-    private MyTreeBinder<GWTJahiaNode> binder ;
-    private Tree m_tree ;
+    private TreePanel<GWTJahiaNode> m_tree ;
     //private PreviousPathsOpener<GWTJahiaNode> previousPathsOpener = null ;
     private TreeItem lastSelection = null ;
     private JahiaContentManagementServiceAsync contentManagementService;
@@ -99,15 +100,15 @@ public class RepositoryTab extends ContentPanel {
         getHeader().setIconStyle("fm-" + repositoryType);
 
         // data proxy
-        RpcProxy<GWTJahiaNode, List<GWTJahiaNode>> privateProxy = new RpcProxy<GWTJahiaNode, List<GWTJahiaNode>>() {
+        RpcProxy<List<GWTJahiaNode>> privateProxy = new RpcProxy<List<GWTJahiaNode>>() {
             @Override
-            protected void load(GWTJahiaNode gwtJahiaFolder, AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
+            protected void load(Object gwtJahiaFolder, AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (init) {
                     Log.debug("retrieving root for " + repositoryType) ;
                     contentManagementService.getRoot(repositoryType, JCRClientUtils.FOLDER_NODETYPES, config.getMimeTypes(), config.getFilters(), null, listAsyncCallback);
                 } else {
-                    Log.debug("retrieving children of " + gwtJahiaFolder.getName() + " for " + repositoryType) ;
-                    contentManagementService.ls(gwtJahiaFolder, JCRClientUtils.FOLDER_NODETYPES, config.getMimeTypes(), config.getFilters(), null, false, listAsyncCallback);
+                    Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName() + " for " + repositoryType) ;
+                    contentManagementService.ls((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.FOLDER_NODETYPES, config.getMimeTypes(), config.getFilters(), null, false, listAsyncCallback);
                 }
             }
         };
@@ -119,8 +120,7 @@ public class RepositoryTab extends ContentPanel {
                 return parent.hasFolderChildren() ;
             }
 
-            @Override
-            protected void onLoadSuccess(GWTJahiaNode gwtJahiaNode, List<GWTJahiaNode> gwtJahiaNodes) {
+            protected void onLoadSuccess(Object gwtJahiaNode, List<GWTJahiaNode> gwtJahiaNodes) {
                 super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodes);
                 if (init) {
                     Log.debug("setting init to false") ;
@@ -137,16 +137,21 @@ public class RepositoryTab extends ContentPanel {
         store = new FolderTreeStore<GWTJahiaNode>(loader);
 
         // tree component
-        m_tree = new Tree();
-        m_tree.getStyle().setLeafIconStyle("tree-folder");
-        m_tree.setAnimate(false);
-        m_tree.setBorders(false);
+        m_tree = new TreePanel<GWTJahiaNode>(store);
+        m_tree.setDisplayProperty("displayName");
+        m_tree.getStyle().setLeafIcon(new AbstractImagePrototype() {
+            public void applyTo(Image image) {
+                // TODO
+            }
+            public Image createImage() {
+                return null;  // TODO
+            }
 
-        // tree binder
-        binder = new MyTreeBinder<GWTJahiaNode>(m_tree, store) ;
-        binder.init() ;
-        binder.setCaching(false);
-        binder.setDisplayProperty("displayName");
+            public String getHTML() {
+                return "<div class=\"tree-folder\">&nbsp;&nbsp;&nbsp;&nbsp;</div>";
+            }
+        });
+        m_tree.setBorders(false);
 
 //        binder.setIconProvider(new ModelStringProvider<GWTJahiaNode>() {
 //            public String getStringValue(GWTJahiaNode modelData, String s) {
@@ -158,19 +163,15 @@ public class RepositoryTab extends ContentPanel {
 //        });
 //
         // tree selection listener
-        m_tree.addListener(Events.SelectionChange, new Listener() {
-            public void handleEvent(BaseEvent event) {
-                TreeItem newSelection = m_tree.getSelectedItem() ;
-                if (lastSelection != newSelection) {
-                    lastSelection = newSelection ;
-                    getLinker().onTreeItemSelected();
-                }
+        m_tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            public void selectionChanged(SelectionChangedEvent selectionChangedEvent) {
+                getLinker().onTreeItemSelected();
             }
         });
         this.setScrollMode(Style.Scroll.AUTO);
         this.setHeading(label) ;
-        this.getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        this.getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+            public void componentSelected(IconButtonEvent event) {
                 init = true ;
                 loader.load() ;
             }
@@ -181,19 +182,19 @@ public class RepositoryTab extends ContentPanel {
     public void init() {
         loader.load() ;
 
-        TreeDragSource source = new TreeDragSource(binder);
+        TreePanelDragSource source = new TreePanelDragSource(m_tree);
         source.addDNDListener(getLinker().getDndListener());
 
-        TreeDropTarget target = new TreeDropTarget(binder) {
+        TreePanelDropTarget target = new TreePanelDropTarget(m_tree) {
             @Override
-            protected void handleInsert(DNDEvent event, TreeItem item) {
-                super.handleAppend(event, item);
+            protected void handleInsert(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
+                super.handleInsert(dndEvent, treeNode);    //To change body of overridden methods use File | Settings | File Templates.
             }
 
             @Override
-            protected void handleAppendDrop(DNDEvent event, TreeItem item) {
-                ContentActions.move(getLinker(), (List<GWTJahiaNode>) event.data, (GWTJahiaNode) item.getModel());
-                super.handleAppendDrop(event, item);
+            protected void handleAppendDrop(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
+                ContentActions.move(getLinker(), (List<GWTJahiaNode>) dndEvent.getData(), (GWTJahiaNode) treeNode.getModel());
+                super.handleAppendDrop(dndEvent, treeNode);    //To change body of overridden methods use File | Settings | File Templates.
             }
         };
         target.setFeedback(DND.Feedback.BOTH);
@@ -209,7 +210,7 @@ public class RepositoryTab extends ContentPanel {
 //    }
 
     public List<String> getOpenedPaths() {
-        List<TreeItem> expandedItems = getOpenedPaths(m_tree.getRootItem()) ;
+        List<TreeItem> expandedItems = getOpenedPaths(store.getRootItems().get(0)) ;
         List<String> expandedPaths = null ;
         if (expandedItems.size() > 0) {
             expandedPaths = new ArrayList<String>() ;
@@ -220,16 +221,17 @@ public class RepositoryTab extends ContentPanel {
         return expandedPaths ;
     }
 
-    private List<TreeItem> getOpenedPaths(TreeItem root) {
+    private List<TreeItem> getOpenedPaths(GWTJahiaNode root) {
         List<TreeItem> items = new ArrayList<TreeItem>() ;
         boolean oneHasAlreadyBeenAdded = false ;
-        for (TreeItem it: root.getItems()) {
+        for (ModelData md: root.getChildren()) {
+            GWTJahiaNode it = (GWTJahiaNode) md;
             if (it.hasChildren()) {
                 items.addAll(getOpenedPaths(it)) ;
                 oneHasAlreadyBeenAdded = true ;
-            } else if (it.getDepth() > 1 && !oneHasAlreadyBeenAdded) {
-                items.add(it) ;
-                oneHasAlreadyBeenAdded = true ;
+//            } else if (it.getDepth() > 1 && !oneHasAlreadyBeenAdded) {
+//                items.add(it) ;
+//                oneHasAlreadyBeenAdded = true ;
             }
         }
         return items ;
@@ -238,28 +240,28 @@ public class RepositoryTab extends ContentPanel {
     public void openAndSelectItem(Object item) {
         if (item != null && this.isExpanded()) {
             Log.debug("trying to expand") ;
-            new TreeOpener(m_tree, "name", reducePath(m_tree, ((GWTJahiaNode) item).getPath()));
+//            new TreeOpener(m_tree, "name", reducePath(m_tree, ((GWTJahiaNode) item).getPath()));
         }
     }
 
     public void refresh() {
-        if (this.isExpanded()) {
-            TreeItem current = m_tree.getSelectedItem() ;
-            if (current != null) {
-                if (current.isExpanded()) {
-                    loader.loadChildren(binder.getSelection().get(0)) ;
-                } else {
-                    if (repositoryType.equals(JCRClientUtils.GLOBAL_REPOSITORY)) {
-                        TreeItem parent = current.getParentItem() ;
-                        if (parent != null) {
-                            loader.loadChildren((GWTJahiaNode) parent.getModel()) ;
-                        }
-                    } else {
-                        refreshSubTree(current);
-                    }
-                }
-            }
-        }
+//        if (this.isExpanded()) {
+//            TreeItem current = m_tree.getSelectedItem() ;
+//            if (current != null) {
+//                if (current.isExpanded()) {
+//                    loader.loadChildren(binder.getSelection().get(0)) ;
+//                } else {
+//                    if (repositoryType.equals(JCRClientUtils.GLOBAL_REPOSITORY)) {
+//                        TreeItem parent = current.getParentItem() ;
+//                        if (parent != null) {
+//                            loader.loadChildren((GWTJahiaNode) parent.getModel()) ;
+//                        }
+//                    } else {
+//                        refreshSubTree(current);
+//                    }
+//                }
+//            }
+//        }
     }
 
     public String getRepositoryType() {
@@ -267,19 +269,19 @@ public class RepositoryTab extends ContentPanel {
     }
 
     private void refreshSubTree(TreeItem current) {
-        List<TreeItem> privates = m_tree.getRootItem().getItems() ;
-        if (privates.contains(current)) {
-            if (current.isExpanded()) {
-                loader.loadChildren((GWTJahiaNode) current.getModel()) ;
-            } else {
-                reloadSubTree();
-            }
-        } else {
-            TreeItem parent = current.getParentItem() ;
-            if (parent != null) {
-                loader.loadChildren((GWTJahiaNode) parent.getModel()) ;
-            }
-        }
+//        List<TreeItem> privates = m_tree.getRootItem().getItems() ;
+//        if (privates.contains(current)) {
+//            if (current.isExpanded()) {
+//                loader.loadChildren((GWTJahiaNode) current.getModel()) ;
+//            } else {
+//                reloadSubTree();
+//            }
+//        } else {
+//            TreeItem parent = current.getParentItem() ;
+//            if (parent != null) {
+//                loader.loadChildren((GWTJahiaNode) parent.getModel()) ;
+//            }
+//        }
     }
 
     private void reloadSubTree() {
@@ -287,21 +289,21 @@ public class RepositoryTab extends ContentPanel {
         loader.load() ;
     }
 
-    private String reducePath(Tree t, String path) {
-        List<TreeItem> items = t.getRootItem().getItems() ;
-        if (items.size() > 0) {
-            TreeItem privateRoot = items.get(0) ;
-            String absPath = ((GWTJahiaNode) privateRoot.getModel()).getPath() ;
-            int ind = absPath.lastIndexOf("/") ;
-            String parentPath = absPath.substring(0, ind) ;
-            return path.replace(parentPath, "") ;
-        } else {
+    private String reducePath(TreePanel t, String path) {
+//        List<TreeItem> items = store.getRootItems().get(0).getChildren() ;
+//        if (items.size() > 0) {
+//            TreeItem privateRoot = items.get(0) ;
+//            String absPath = ((GWTJahiaNode) privateRoot.getModel()).getPath() ;
+//            int ind = absPath.lastIndexOf("/") ;
+//            String parentPath = absPath.substring(0, ind) ;
+//            return path.replace(parentPath, "") ;
+//        } else {
             return path ;
-        }
+//        }
     }
 
     public GWTJahiaNode getSelectedItem() {
-        List<GWTJahiaNode> selection = binder.getSelection() ;
+        List<GWTJahiaNode> selection = m_tree.getSelectionModel().getSelection() ;
         if (selection != null && selection.size() > 0) {
             return selection.get(0) ;
         } else {
@@ -317,7 +319,7 @@ public class RepositoryTab extends ContentPanel {
      * This class extends the standard load listener to allow automated child selection once the children are retrieved.
      */
     private class FolderTreeStore<M extends ModelData> extends TreeStore<M> {
-        public FolderTreeStore(TreeLoader loader) {
+        public FolderTreeStore(TreeLoader<M> loader) {
             super(loader) ;
         }
 
@@ -339,25 +341,5 @@ public class RepositoryTab extends ContentPanel {
         }
     }
 
-    /**
-     * TreeBinder that has renderChildren public.
-     *
-     * @param <M>
-     */
-    private class MyTreeBinder<M extends BaseTreeModel> extends TreeBinder<M> implements CustomTreeBinder<M> {
-
-        public MyTreeBinder(Tree t, TreeStore<M> s) {
-            super(t, s) ;
-        }
-
-        public void renderChildren(M parent, List<M> children) {
-            try {
-                super.renderChildren(parent, children);
-            } catch (ConcurrentModificationException e) {
-                // weird harmless exception
-            }
-        }
-
-    }
 
 }

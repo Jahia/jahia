@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -56,7 +57,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.ChangeEvent;
 import com.extjs.gxt.ui.client.data.ChangeListener;
@@ -109,23 +109,20 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
     
     Map<String, String> data = new HashMap<String, String>();
 
-    public SelectionListener getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem) {
+    public <T extends ComponentEvent> SelectionListener<T> getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem) {
         // add listener
-        final SelectionListener listener = new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent ce) {
+        final SelectionListener<T> listener = new SelectionListener<T>() {
+            public void componentSelected(T ce) {
                 if (handleAddCommentProperty(gwtToolbarItem)) {
                     return;
                 }
                 
                 String prompt = getPropertyValue(gwtToolbarItem, PROMPT);
                 if (prompt != null && prompt.length() != 0) {
-                    MessageBox.prompt(gwtToolbarItem.getTitle(), prompt, new Listener<WindowEvent>() {
-                        public void handleEvent(WindowEvent be) {
-                            if (MessageBox.OK.equalsIgnoreCase(be.buttonClicked.getText())) {
-                                gwtToolbarItem
-                                        .getProperties()
-                                        .put(COMMENT,
-                                                new GWTJahiaProperty(COMMENT, (String) ((MessageBoxEvent) be).messageBox.getTextBox().getValue()));
+                    MessageBox.prompt(gwtToolbarItem.getTitle(), prompt, new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (MessageBox.OK.equalsIgnoreCase(be.getButtonClicked().getText())) {
+                                gwtToolbarItem .getProperties() .put(COMMENT, new GWTJahiaProperty(COMMENT, be.getMessageBox().getTextBox().getValue()));
                                 execute(gwtToolbarItem);
                             }
                         }
@@ -135,13 +132,13 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
 
                 String multiprompt = getPropertyValue(gwtToolbarItem, MULTIPROMPT);
                 if (multiprompt != null && multiprompt.length() != 0) {
-                    MessageBox.prompt(gwtToolbarItem.getTitle(), multiprompt, true, new Listener<WindowEvent>() {
-                        public void handleEvent(WindowEvent be) {
-                            if (MessageBox.OK.equalsIgnoreCase(be.buttonClicked.getText())) {
+                    MessageBox.prompt(gwtToolbarItem.getTitle(), multiprompt, true, new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (MessageBox.OK.equalsIgnoreCase(be.getButtonClicked().getText())) {
                                 gwtToolbarItem
                                         .getProperties()
                                         .put(COMMENT,
-                                                new GWTJahiaProperty(COMMENT, ((MessageBoxEvent) be).messageBox.getTextArea().getValue()));
+                                                new GWTJahiaProperty(COMMENT, be.getMessageBox().getTextArea().getValue()));
                                 execute(gwtToolbarItem);
                             }
                         }
@@ -151,9 +148,9 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
 
                 String confirmation = getPropertyValue(gwtToolbarItem, CONFIRMATION);
                 if (confirmation != null && confirmation.length() != 0) {
-                    MessageBox.confirm(gwtToolbarItem.getTitle(), confirmation, new Listener<WindowEvent>() {
-                        public void handleEvent(WindowEvent be) {
-                            if (Dialog.YES.equalsIgnoreCase(be.buttonClicked.getText())) {
+                    MessageBox.confirm(gwtToolbarItem.getTitle(), confirmation, new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getText())) {
                                 execute(gwtToolbarItem);
                             }
                         }
@@ -219,16 +216,16 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
      * @param gwtToolbarItem
      * @return
      */
-    public ToolItem createNewToolItem(final GWTJahiaToolbarItem gwtToolbarItem) {
+    public Component createNewToolItem(final GWTJahiaToolbarItem gwtToolbarItem) {
         GWTJahiaProperty prop = gwtToolbarItem.getProperties().get(TOGGLE);
         try {
             if (prop != null && prop.getValue() != null && Boolean.parseBoolean(prop.getValue())) {
-                return new ToggleToolItem();
+                return new ToggleButton();
             }
         } catch (Exception e) {
             Log.error("Error when parsing 'toogle' prop.", e);
         }
-        return new TextToolItem();
+        return new Button();
     }
 
 
@@ -244,16 +241,12 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         box.setModal(true);
 
         // execute action listener
-        final Listener executeActionListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                Dialog dialog = (Dialog) ce.component;
-                Button btn = dialog.getButtonPressed();
+        final Listener<MessageBoxEvent> executeActionListener = new Listener<MessageBoxEvent>() {
+            public void handleEvent(MessageBoxEvent ce) {
+                Button btn = ce.getButtonClicked();
                 if (btn.getText().equalsIgnoreCase(MessageBox.OK)) {
                     // add comment in the properties map
-                    gwtToolbarItem.getProperties().put(
-                            COMMENT,
-                            new GWTJahiaProperty(COMMENT, box.getTextArea()
-                                    .getValue()));
+                    gwtToolbarItem.getProperties().put(COMMENT, new GWTJahiaProperty(COMMENT, box.getTextArea().getValue()));
 
                     // execute ajax action
                     execute(gwtToolbarItem);
@@ -621,34 +614,28 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
 
         ToolBar toolbar = new ToolBar();
         if (siteORpage.startsWith("site")){
-            AdapterToolItem atiSiteStats = new AdapterToolItem(siteStats);
-            toolbar.add(atiSiteStats);
+            toolbar.add(siteStats);
         }
         else{//the pages part
-            AdapterToolItem atiPageStats = new AdapterToolItem(pageStats);
-            AdapterToolItem atiSiteLanguages = new AdapterToolItem(siteLanguages);
-            AdapterToolItem atiSiteLanguagesSelectionLabel = new AdapterToolItem(languageSelection_Label);
-            toolbar.add(atiPageStats);
+            toolbar.add(pageStats);
             toolbar.add(new SeparatorToolItem());
-            toolbar.add(atiSiteLanguagesSelectionLabel);
+            toolbar.add(languageSelection_Label);
             toolbar.add(new SeparatorToolItem());
-            toolbar.add(atiSiteLanguages);
+            toolbar.add(siteLanguages);
         }
-        //common part on both site and page 
-        AdapterToolItem atiBeginDate = new AdapterToolItem(begin_date_field);
-        AdapterToolItem atiEndDate = new AdapterToolItem(end_date_field);
+        //common part on both site and page
         toolbar.add(new SeparatorToolItem());
         toolbar.add(new SeparatorToolItem());
 
         toolbar.add(begin_date_Label);
         toolbar.add(new SeparatorToolItem());
-        toolbar.add(atiBeginDate);
+        toolbar.add(begin_date_field);
         toolbar.add(new SeparatorToolItem());
         toolbar.add(new SeparatorToolItem());
         toolbar.add(end_date_Label);
 
         toolbar.add(new SeparatorToolItem());
-        toolbar.add(atiEndDate);
+        toolbar.add(end_date_field);
         toolbar.add(new SeparatorToolItem());
         toolbar.add(new SeparatorToolItem());
 
@@ -716,18 +703,18 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
             charts.add(annotatedTimeLineTab);
         }
 
-        final SelectionListener executeActionListener = new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent ce) {
+        final SelectionListener<ButtonEvent> executeActionListener = new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
 
                 // get google analytics parameters from the form
                 DateTimeFormat fmt = DateTimeFormat.getFormat("yyyyMMdd");
                 if (!(fmt.format(begin_date_field.getValue()).length() < 8) && (!(fmt.format(end_date_field.getValue()).length() < 8))) {
                     String dateRange = fmt.format(begin_date_field.getValue()) + "-" + fmt.format(end_date_field.getValue());
-                    String statType = "";
+                    String statType;
                     gaParams.setDateRange(dateRange);
                     // Info.display("date range ",dateRange);
                     String chartType = "";
-                    String url = "";
+                    String url;
                     if (site_or_page.equals("siteStats")) {
                         url = "site";
                         gaParams.setSiteORpage(url);
@@ -800,7 +787,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                 }
             }
         };
-        final TextToolItem button = new TextToolItem(Messages.getResource("showData")) ;
+        final Button button = new Button(Messages.getResource("showData")) ;
 
         button.addSelectionListener(executeActionListener);
         toolbar.add(button);

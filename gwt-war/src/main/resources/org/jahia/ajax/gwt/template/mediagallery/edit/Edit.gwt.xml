@@ -1,0 +1,5 @@
+
+<module rename-to='mediagallery.edit'>
+    <inherits name="org.jahia.ajax.gwt.template.common.edit.Edit"/>
+    <entry-point class='org.jahia.ajax.gwt.template.mediagallery.edit.client.EditModeEntryPoint'/>
+</module>

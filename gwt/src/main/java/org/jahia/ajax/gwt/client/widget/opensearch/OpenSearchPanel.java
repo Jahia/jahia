@@ -35,15 +35,14 @@ import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngine;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Layout;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 import com.google.gwt.user.client.Element;
 
 /**
@@ -55,8 +54,7 @@ import com.google.gwt.user.client.Element;
  */
 public class OpenSearchPanel extends ContentPanel {
 
-    private ToolBar toolbar;
-    private TextField searchField;
+    private TextField<String> searchField;
     private OpenSearchWidgetItem openSearchWidgetItem;
     private String initialSearchTerms;
 
@@ -114,27 +112,25 @@ public class OpenSearchPanel extends ContentPanel {
         setHeading(this.openSearchWidgetItem.getName());
         setLayout(new FitLayout());
 
-        toolbar = new ToolBar() ;
+        ToolBar toolbar = new ToolBar();
         toolbar.setHeight(28);
 
-        searchField = new TextField();
+        searchField = new TextField<String>();
         if (this.initialSearchTerms != null){
             searchField.setValue(this.initialSearchTerms);
         }
 
-        ToolItem toolItem = new AdapterToolItem(searchField);
-        toolbar.add(toolItem);
+        toolbar.add(searchField);
 
-        TextToolItem searchButton = new TextToolItem("search");
+        Button searchButton = new Button("search");
         toolbar.add(searchButton);
-        searchButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        searchButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 onSearchClick(event);
             }
         });
 
-        toolItem = new FillToolItem();
-        toolbar.add(toolItem);
+        toolbar.add(new FillToolItem());
 
         setTopComponent(toolbar);
         add(openSearchWidgetItem);

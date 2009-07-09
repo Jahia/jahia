@@ -33,8 +33,8 @@ package org.jahia.ajax.gwt.client.widget.mysettings;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -166,8 +166,8 @@ public class MySettingsPanel extends AbsolutePanel {
         }
 
         // save property listener
-        SelectionListener<ComponentEvent> saveJahiaUserPropertiesListener = new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent ce) {
+        SelectionListener<ButtonEvent> saveJahiaUserPropertiesListener = new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
                 String pwd = pwdField.getRawValue();
                 String confirmPwd = confirmPwdField.getRawValue();
                 if (pwd.equalsIgnoreCase(confirmPwd)) {
@@ -192,16 +192,15 @@ public class MySettingsPanel extends AbsolutePanel {
                     }
 
                     // update user properties
-                    JahiaContentLegacyService.App.getInstance().updateJahiaUserProperties(newJahiaUserProperties, removeJahiaUserProperties, new AsyncCallback() {
+                    JahiaContentLegacyService.App.getInstance().updateJahiaUserProperties(newJahiaUserProperties, removeJahiaUserProperties, new AsyncCallback<GWTJahiaAjaxActionResult>() {
                         public void onFailure(Throwable throwable) {
                             Log.error("Can't update jahia user properties", throwable);
                             Info.display("MessageBox", "Error: Unable to save properties. See logs for details");
                         }
 
-                        public void onSuccess(Object o) {
+                        public void onSuccess(GWTJahiaAjaxActionResult o) {
                             Info.display("MessageBox", "Properties were succesfully saved");
-                            GWTJahiaAjaxActionResult gwtAjaxActionResult = (GWTJahiaAjaxActionResult) o;
-                            handleAjaxActionResult(gwtAjaxActionResult);
+                            handleAjaxActionResult(o);
                         }
                     });
                 } else {
@@ -212,8 +211,8 @@ public class MySettingsPanel extends AbsolutePanel {
 
         // add personal property button
         Button addFieldButton = new Button(getResource("button_add_personal_property"));
-        addFieldButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent ce) {
+        addFieldButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
                 createNewPropertyWindow();
             }
         });
@@ -222,8 +221,8 @@ public class MySettingsPanel extends AbsolutePanel {
         //  remove personnal property button
         Button removeFieldButton = new Button(getResource("button_remove_personal_property"));
         removeFieldButton.setEnabled(customPropertiesPresent);
-        removeFieldButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent ce) {
+        removeFieldButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
                 createRemovePropertiesWindow();
             }
         });
@@ -280,7 +279,6 @@ public class MySettingsPanel extends AbsolutePanel {
         final Window removePropertiesWindow = new Window();
         removePropertiesWindow.setHeading(getResource("title_remove_properties"));
         removePropertiesWindow.setBodyBorder(false);
-        removePropertiesWindow.setInsetBorder(false);
         removePropertiesWindow.setWidth(300);
 
 
@@ -304,8 +302,8 @@ public class MySettingsPanel extends AbsolutePanel {
 
             // save button
             Button save = new Button(getResource("button_remove"));
-            save.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            save.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
                     // update user properties
                     List<GWTJahiaUserProperty> userProperties = new ArrayList<GWTJahiaUserProperty>();
 
@@ -319,18 +317,17 @@ public class MySettingsPanel extends AbsolutePanel {
 
                     Log.debug("Number of properties to: " + userProperties.size());
                     // apply modification
-                    JahiaContentLegacyService.App.getInstance().updateJahiaUserProperties(new ArrayList<GWTJahiaUserProperty>(), userProperties, new AsyncCallback() {
+                    JahiaContentLegacyService.App.getInstance().updateJahiaUserProperties(new ArrayList<GWTJahiaUserProperty>(), userProperties, new AsyncCallback<GWTJahiaAjaxActionResult>() {
                         public void onFailure(Throwable throwable) {
                             removePropertiesWindow.hide();
                             Log.error("Can't update jahia user properties", throwable);
                             Info.display("MessageBox", "Error: Unable to save properties. See logs for details");
                         }
 
-                        public void onSuccess(Object o) {
+                        public void onSuccess(GWTJahiaAjaxActionResult o) {
                             Info.display("MessageBox", "Properties were succesfully saved");
                             removePropertiesWindow.hide();
-                            GWTJahiaAjaxActionResult gwtAjaxActionResult = (GWTJahiaAjaxActionResult) o;
-                            handleAjaxActionResult(gwtAjaxActionResult);
+                            handleAjaxActionResult(o);
                             JahiaContentLegacyService.App.getInstance().getJahiaUserProperties(true, new LoadUserPropertieyAsyncCallback(MySettingsPanel.this));
                         }
                     });
@@ -350,7 +347,6 @@ public class MySettingsPanel extends AbsolutePanel {
         final Window newFieldWindow = new Window();
         newFieldWindow.setHeading(getResource("title_new_property"));
         newFieldWindow.setBodyBorder(false);
-        newFieldWindow.setInsetBorder(false);
         newFieldWindow.setWidth(550);
 
         FormPanel f = new FormPanel();
@@ -370,8 +366,8 @@ public class MySettingsPanel extends AbsolutePanel {
 
         // save button
         Button save = new Button(getResource("button_save"));
-        save.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        save.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 // update user properties
                 List<GWTJahiaUserProperty> userProperties = new ArrayList<GWTJahiaUserProperty>();
                 GWTJahiaUserProperty jahiaUserProperty = new GWTJahiaUserProperty();
@@ -380,19 +376,18 @@ public class MySettingsPanel extends AbsolutePanel {
                 data.setValue(valueField.getRawValue());
                 jahiaUserProperty.setValue(data);
                 userProperties.add(jahiaUserProperty);
-                JahiaContentLegacyService.App.getInstance().updateJahiaUserProperties(userProperties, new ArrayList<GWTJahiaUserProperty>(), new AsyncCallback() {
+                JahiaContentLegacyService.App.getInstance().updateJahiaUserProperties(userProperties, new ArrayList<GWTJahiaUserProperty>(), new AsyncCallback<GWTJahiaAjaxActionResult>() {
                     public void onFailure(Throwable throwable) {
                         newFieldWindow.hide();
                         Log.error("Can't update jahia user properties", throwable);
                         Info.display("MessageBox", "Error: Unable to save properties. See logs for details");
                     }
 
-                    public void onSuccess(Object o) {
+                    public void onSuccess(GWTJahiaAjaxActionResult o) {
                         Log.debug("User properties updated");
                         Info.display("MessageBox", "Properties were succesfully saved");
                         newFieldWindow.hide();
-                        GWTJahiaAjaxActionResult gwtAjaxActionResult = (GWTJahiaAjaxActionResult) o;
-                        handleAjaxActionResult(gwtAjaxActionResult);
+                        handleAjaxActionResult(o);
                         JahiaContentLegacyService.App.getInstance().getJahiaUserProperties(true, new LoadUserPropertieyAsyncCallback(MySettingsPanel.this));
                     }
                 });
@@ -408,7 +403,7 @@ public class MySettingsPanel extends AbsolutePanel {
     /**
      * Asyncall that load user properties
      */
-    private class LoadUserPropertieyAsyncCallback implements AsyncCallback {
+    private class LoadUserPropertieyAsyncCallback implements AsyncCallback<List<GWTJahiaUserProperty>> {
         private MySettingsPanel mySettingsPanel;
 
         private LoadUserPropertieyAsyncCallback(MySettingsPanel mySettingsPanel) {
@@ -419,9 +414,9 @@ public class MySettingsPanel extends AbsolutePanel {
             Log.error("Can't retrieve jahia user properties", throwable);
         }
 
-        public void onSuccess(Object o) {
+        public void onSuccess(List<GWTJahiaUserProperty> o) {
             // load user properties
-            mySettingsPanel.refresh((List<GWTJahiaUserProperty>) o);
+            mySettingsPanel.refresh(o);
         }
     }
 }

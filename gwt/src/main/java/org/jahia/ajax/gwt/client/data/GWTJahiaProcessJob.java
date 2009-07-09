@@ -37,8 +37,6 @@ import java.util.Map;
 import java.util.List;
 import java.io.Serializable;
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResult;
-
 /**
  *
  *

@@ -34,8 +34,8 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.Events;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
@@ -67,8 +67,8 @@ public class ContentListContextMenu extends Menu {
             }
         }
 
-        addListener(Events.BeforeShow, new Listener() {
-            public void handleEvent(BaseEvent baseEvent) {
+        addListener(Events.BeforeShow, new Listener<MenuEvent>() {
+            public void handleEvent(MenuEvent baseEvent) {
                 GWTJahiaNode leftTreeSelection = null ;
                 List<GWTJahiaNode> topTableSelection = null ;
                 if (linker != null) {
@@ -91,7 +91,7 @@ public class ContentListContextMenu extends Menu {
                         isTreeSelection = true ;
                     }
                     if (!isTreeSelection) {
-                        GWTJahiaNode parent = topTableSelection.get(0).getParent() ;
+                        GWTJahiaNode parent = (GWTJahiaNode) topTableSelection.get(0).getParent();
                         if (parent != null) {
                             isParentWriteable = parent.isWriteable();
                         }

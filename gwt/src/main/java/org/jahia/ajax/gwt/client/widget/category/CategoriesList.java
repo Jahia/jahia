@@ -32,16 +32,16 @@
 package org.jahia.ajax.gwt.client.widget.category;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.DataList;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.binder.DataListBinder;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -85,11 +85,11 @@ public class CategoriesList extends ContentPanel {
         binder.setDisplayProperty("name");
 
         ToolBar bar = new ToolBar();
-        TextToolItem selectToolItem = new TextToolItem("");
+        Button selectToolItem = new Button("");
         selectToolItem.setToolTip(getResource("add"));
         selectToolItem.setIconStyle("gwt-categoriespiker-icon-select");
-        selectToolItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        selectToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 parentComponent.addCategories(binder.getSelection());
             }
         });
@@ -117,7 +117,7 @@ public class CategoriesList extends ContentPanel {
 
             }
         });
-        bar.add(new AdapterToolItem(filter));
+        bar.add(filter);
         bar.add(new FillToolItem());
         bar.add(selectToolItem);
 

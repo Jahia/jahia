@@ -35,9 +35,6 @@ import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomBar;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
-import org.jahia.ajax.gwt.client.widget.category.CategoriesTreeTable;
-import org.jahia.ajax.gwt.client.widget.category.CategoryDetails;
-import org.jahia.ajax.gwt.client.widget.category.CategoriesTopBar;
 
 /**
  * User: ktlili

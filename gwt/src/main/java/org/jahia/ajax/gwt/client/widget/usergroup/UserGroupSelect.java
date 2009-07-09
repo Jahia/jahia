@@ -32,7 +32,6 @@
 package org.jahia.ajax.gwt.client.widget.usergroup;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
@@ -42,6 +41,7 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -121,8 +121,8 @@ public class UserGroupSelect extends Window {
                 break;
         }
         ButtonBar buttons = new ButtonBar() ;
-        Button add = new Button("Add", new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        Button add = new Button("Add", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 if (userGrid != null) {
                     target.addUsers(userGrid.getSelectionModel().getSelectedItems());
                 }
@@ -133,39 +133,37 @@ public class UserGroupSelect extends Window {
             }
         }) ;
         buttons.add(add) ;
-        Button cancel = new Button("Cancel", new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        Button cancel = new Button("Cancel", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 hide();
             }
         });
         buttons.add(cancel) ;        
         setButtonAlign(Style.HorizontalAlignment.CENTER);
-        setButtonBar(buttons);
+        setTopComponent(buttons);
 
         show();
     }
 
     private ContentPanel getUserPanel(final UserGroupAdder target, final UserManagerServiceAsync service) {
         // data proxy
-        RpcProxy<PagingLoadConfig, PagingLoadResult<GWTJahiaUser>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<GWTJahiaUser>>() {
+        RpcProxy<PagingLoadResult<GWTJahiaUser>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaUser>>() {
             @Override
-            protected void load(PagingLoadConfig pageLoaderConfig,
-                                AsyncCallback<PagingLoadResult<GWTJahiaUser>> callback) {
+            protected void load(Object pageLoaderConfig, AsyncCallback<PagingLoadResult<GWTJahiaUser>> callback) {
                 String context = aclContext;
                 if ("siteSelector".equals(aclContext)) {
                     context = "site:"+selectedSite;
                 }
                 if (context != null) {
                     if (userSearchField.getText().length()==0)  {
-                        service.searchUsersInContext("*",pageLoaderConfig.getOffset(), pageLoaderConfig.getLimit(),context, callback);
+                        service.searchUsersInContext("*",((PagingLoadConfig) pageLoaderConfig).getOffset(), ((PagingLoadConfig) pageLoaderConfig).getLimit(),context, callback);
                     } else {
-                        service.searchUsersInContext("*"+userSearchField.getText()+"*",pageLoaderConfig.getOffset(), pageLoaderConfig.getLimit(), context, callback);
+                        service.searchUsersInContext("*"+userSearchField.getText()+"*",((PagingLoadConfig) pageLoaderConfig).getOffset(), ((PagingLoadConfig) pageLoaderConfig).getLimit(), context, callback);
                     }
                 }
             }
         };
-        final BasePagingLoader loader = new BasePagingLoader<PagingLoadConfig,
-                PagingLoadResult<GWTJahiaUser>>(proxy);
+        final BasePagingLoader loader = new BasePagingLoader<PagingLoadResult<GWTJahiaUser>>(proxy);
         userSearchField = new SearchField("Search: ", false) {
             public void onFieldValidation(String value) {
                 loader.load();
@@ -230,24 +228,22 @@ public class UserGroupSelect extends Window {
 
     private ContentPanel getGroupsPanel(final UserGroupAdder target, final UserManagerServiceAsync service) {
         // data proxy
-        RpcProxy<PagingLoadConfig, PagingLoadResult<GWTJahiaGroup>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<GWTJahiaGroup>>() {
+        RpcProxy<PagingLoadResult<GWTJahiaGroup>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaGroup>>() {
             @Override
-            protected void load(PagingLoadConfig pageLoaderConfig,
-                                AsyncCallback<PagingLoadResult<GWTJahiaGroup>> callback) {
+            protected void load(Object pageLoaderConfig, AsyncCallback<PagingLoadResult<GWTJahiaGroup>> callback) {
                 String context = aclContext;
                 if ("siteSelector".equals(aclContext)) {
                     context = "site:"+selectedSite;
                 }
 
                 if (groupSearchField.getText().length()==0)  {
-                    service.searchGroupsInContext("*",pageLoaderConfig.getOffset(), pageLoaderConfig.getLimit(),context, callback);
+                    service.searchGroupsInContext("*",((PagingLoadConfig) pageLoaderConfig).getOffset(), ((PagingLoadConfig) pageLoaderConfig).getLimit(),context, callback);
                 } else {
-                    service.searchGroupsInContext("*"+groupSearchField.getText()+"*",pageLoaderConfig.getOffset(), pageLoaderConfig.getLimit(), context, callback);
+                    service.searchGroupsInContext("*"+groupSearchField.getText()+"*",((PagingLoadConfig) pageLoaderConfig).getOffset(), ((PagingLoadConfig) pageLoaderConfig).getLimit(), context, callback);
                 }
             }
         };
-        final BasePagingLoader loader = new BasePagingLoader<PagingLoadConfig,
-                PagingLoadResult<GWTJahiaGroup>>(proxy);
+        final BasePagingLoader loader = new BasePagingLoader<PagingLoadResult<GWTJahiaGroup>>(proxy);
 
         groupSearchField = new SearchField("Search: ", false) {
             public void onFieldValidation(String value) {

@@ -33,11 +33,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
-import com.extjs.gxt.ui.client.Events;
-import com.extjs.gxt.ui.client.event.WindowEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.DOM;
 import com.allen_sauer.gwt.log.client.Log;
@@ -76,8 +72,8 @@ public class ImagePopup extends Window {
         setHeaderVisible(true);
         setAutoHide(false);
 
-        getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) { // TODO improve ratio button
+        getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+            public void componentSelected(IconButtonEvent event) { // TODO improve ratio button
                 double expectedHeight = Math.floor((getWidth())/ratio) ;
                 if (expectedHeight > getHeight()) {
                     setHeight(Double.valueOf(expectedHeight).intValue());

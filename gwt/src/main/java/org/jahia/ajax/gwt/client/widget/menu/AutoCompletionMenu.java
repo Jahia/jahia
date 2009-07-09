@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.menu;
 
-import com.extjs.gxt.ui.client.util.WidgetHelper;
+//import com.extjs.gxt.ui.client.util.WidgetHelper;
 import com.extjs.gxt.ui.client.widget.DataList;
 import com.extjs.gxt.ui.client.widget.DataListItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
@@ -76,13 +76,13 @@ public class AutoCompletionMenu extends Menu {
     @Override
     protected void doAttachChildren() {
       super.doAttachChildren();
-      WidgetHelper.doAttach(item.choices);
+//      WidgetHelper.doAttach(item.choices);
     }
 
     @Override
     protected void doDetachChildren() {
       super.doDetachChildren();
-      WidgetHelper.doDetach(item.choices);
+//      WidgetHelper.doDetach(item.choices);
     }
 
     public void focus() {

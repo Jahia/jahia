@@ -201,7 +201,7 @@ public class InfoEditor extends FormPanel {
         // general info
         final FormLayout layout = new FormLayout();
         layout.setLabelWidth(75);
-        layout.setPadding(4);
+        layout.setLabelPad(4);
         FieldSet fieldSet = new FieldSet();
         fieldSet.setLayout(layout);
         fieldSet.setStyleAttribute("padding", "4");

@@ -37,8 +37,8 @@ import org.jahia.ajax.gwt.client.service.layoutmanager.LayoutmanagerService;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -72,7 +72,7 @@ public class JahiaPortalConfig extends Window {
         FormPanel formPanel = new FormPanel();
         FormLayout layout = new FormLayout();
         layout.setLabelWidth(175);
-        layout.setPadding(4);
+        layout.setLabelPad(4);
         formPanel.setLayout(layout);
         formPanel.setBodyBorder(false);
         formPanel.setHeaderVisible(false);
@@ -105,8 +105,8 @@ public class JahiaPortalConfig extends Window {
        // formPanel.add(quickbarVisibleGroup);
 
         final Button saveButton = new Button(Messages.getNotEmptyResource("p_save","Save"));
-        saveButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig = new GWTJahiaLayoutManagerConfig();
                 gwtLayoutManagerConfig.setNbColumns(numberColumnsField.getValue().intValue());
                 gwtLayoutManagerConfig.setLiveDraggable(dndLiveMode.getValue());

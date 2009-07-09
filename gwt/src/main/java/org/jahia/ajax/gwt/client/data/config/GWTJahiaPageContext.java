@@ -56,8 +56,8 @@ public class GWTJahiaPageContext implements Serializable {
     
     /**
      * Initializes an instance of this class.
-     * @param pid
-     * @param mode
+     * @param pid the page id
+     * @param mode the current mode
      */
     public GWTJahiaPageContext(int pid, String mode) {
         this();

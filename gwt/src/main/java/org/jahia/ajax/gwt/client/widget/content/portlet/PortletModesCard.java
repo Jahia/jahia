@@ -37,10 +37,10 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.widget.button.Button;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -101,11 +101,11 @@ public class PortletModesCard extends MashupWizardCard {
         modeMappingEditor.setAclGroup(JCRClientUtils.MODES_ACL);
         modeMappingEditor.setAddUsersLabel(Messages.getNotEmptyResource("mw_modes_adduser", "Add mode-user permission"));
         modeMappingEditor.setAddGroupsLabel(Messages.getNotEmptyResource("mw_modes_addgroup", "Add mode-group permission"));
-        TextToolItem saveButton = modeMappingEditor.getSaveButton();
+        Button saveButton = modeMappingEditor.getSaveButton();
         saveButton.setVisible(false);
 
 
-        TextToolItem restoreButton = modeMappingEditor.getRestoreButton();
+        Button restoreButton = modeMappingEditor.getRestoreButton();
         restoreButton.setVisible(false);
     }
 

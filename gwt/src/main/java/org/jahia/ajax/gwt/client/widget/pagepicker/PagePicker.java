@@ -31,9 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.pagepicker;
 
-import org.jahia.ajax.gwt.client.widget.pagepicker.PagePathBar;
-import org.jahia.ajax.gwt.client.widget.pagepicker.PageStatusBar;
-import org.jahia.ajax.gwt.client.widget.pagepicker.PageExplorer;
 import org.jahia.ajax.gwt.client.widget.tripanel.TriPanelBrowserLayout;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomBar;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;

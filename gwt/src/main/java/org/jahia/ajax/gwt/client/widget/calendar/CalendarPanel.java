@@ -31,9 +31,9 @@
  */
 package org.jahia.ajax.gwt.client.widget.calendar;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.menu.DateMenu;
@@ -48,19 +48,18 @@ import com.google.gwt.i18n.client.DateTimeFormat;
  * To change this template use File | Settings | File Templates.
  */
 public class CalendarPanel extends LayoutContainer {
+
+    // TODO GXT 2
+
     public CalendarPanel(final String callback, String activeDate) {
         setLayout(new FlowLayout());
         final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("dd/MM/yyyy");
         final DateMenu menu = new DateMenu();
         if(activeDate !=null && !"".equals(activeDate.trim()))
         menu.getDatePicker().setValue(dateTimeFormat.parse(activeDate),true);
-        menu.addListener(Event.ONKEYDOWN+Event.ONKEYUP, new Listener() {
+        menu.addListener(new EventType(Event.ONKEYDOWN+Event.ONKEYUP), new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce){
                 nativeCallback(callback, dateTimeFormat.format(menu.getDate()));
-            }
-
-            public void handleEvent(BaseEvent x0) {
-                handleEvent((ComponentEvent)x0);
             }
         });
 

@@ -33,9 +33,9 @@ package org.jahia.ajax.gwt.client.widget.pagepicker;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPageWrapper;
 import org.jahia.ajax.gwt.client.service.JahiaService;
@@ -46,7 +46,6 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 
 import java.util.List;
-import java.util.Arrays;
 
 /**
  * Created by IntelliJ IDEA.
@@ -79,7 +78,7 @@ public class PagePathBar extends TopBar {
                 });
             }
         });
-        TextToolItem item = new TextToolItem("loading...") ;
+        Button item = new Button("loading...") ;
         item.setEnabled(false);
         languageSwitcher.init(item);
         m_component.add(item);

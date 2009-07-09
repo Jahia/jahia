@@ -35,9 +35,9 @@ import java.util.Date;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaRevision;
 
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.google.gwt.user.client.ui.Label;
 

@@ -33,9 +33,9 @@ package org.jahia.ajax.gwt.client.widget.toolbar;
 
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.GXT;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -61,7 +61,7 @@ public abstract class JahiaToolbar extends FocusPanel {
     protected ToolbarManager toolbarManager;
     protected GWTJahiaToolbar gwtToolbar;
     protected GWTJahiaPageContext pageContext;
-    protected FocusPanel draggableArea;
+    protected HorizontalPanel draggableArea;
     protected boolean hasTabs = false;
     protected boolean loaded = false;
 
@@ -120,7 +120,7 @@ public abstract class JahiaToolbar extends FocusPanel {
         this.parentContainer = parentContainer;
     }
 
-    public FocusPanel getDraggableArea() {
+    public HorizontalPanel getDraggableArea() {
         return draggableArea;
     }
 
@@ -164,8 +164,8 @@ public abstract class JahiaToolbar extends FocusPanel {
      *
      * @return
      */
-    protected ToolItem createDragSeparator() {
-        ToolItem separator = new SeparatorToolItem();
+    protected SeparatorToolItem createDragSeparator() {
+        SeparatorToolItem separator = new SeparatorToolItem();
         separator.addStyleName("gwt-draggable");
         return separator;
     }

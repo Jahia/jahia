@@ -52,6 +52,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.Style;
 
 import java.util.List;
@@ -107,8 +108,8 @@ public class FormJahiaModule extends JahiaModule {
                         captchaImages.add(captchaImage);
                     }
                     final Button save = new Button("Save");
-                    save.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                        public void componentSelected(ComponentEvent event) {
+                    save.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        public void componentSelected(ButtonEvent event) {
                             save.disable();
                             if (action.equals("createNode")) {
                                 String captchaValue = null;

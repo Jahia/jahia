@@ -34,8 +34,8 @@ package org.jahia.ajax.gwt.client.widget.category;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormHandler;
@@ -72,13 +72,13 @@ public class ImportFile extends Window {
         panel.add(upload);
 
         HorizontalPanel bPanel = new HorizontalPanel();
-        com.extjs.gxt.ui.client.widget.button.Button cancel = new com.extjs.gxt.ui.client.widget.button.Button("Cancel", new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        com.extjs.gxt.ui.client.widget.button.Button cancel = new com.extjs.gxt.ui.client.widget.button.Button("Cancel", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 hide();
             }
         });
-        com.extjs.gxt.ui.client.widget.button.Button submit = new com.extjs.gxt.ui.client.widget.button.Button("OK", new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        com.extjs.gxt.ui.client.widget.button.Button submit = new com.extjs.gxt.ui.client.widget.button.Button("OK", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 form.submit();
             }
         });

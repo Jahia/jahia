@@ -34,7 +34,7 @@ package org.jahia.ajax.gwt.client.widget.layoutmanager.picker;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.util.Util;
+import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.store.ListStore;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public class JahiaPortletInstanceListView extends ListView<GWTJahiaNode> {
 
     @Override
     protected GWTJahiaNode prepareData(GWTJahiaNode model) {
-        model.set("shortName", Util.ellipse(model.getName(), 14));
+        model.set("shortName", Format.ellipse(model.getName(), 14));
         if (model.getPreview() == null || model.getPreview().equalsIgnoreCase("")) {
             model.set("preview", "/css/images/portlets/window_application.png");
         }

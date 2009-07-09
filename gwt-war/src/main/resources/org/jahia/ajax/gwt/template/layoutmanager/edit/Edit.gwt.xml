@@ -1,0 +1,5 @@
+
+<module rename-to='layoutmanager.edit'>
+    <inherits name="org.jahia.ajax.gwt.template.common.edit.Edit"/>
+    <entry-point class='org.jahia.ajax.gwt.template.layoutmanager.edit.client.EditModeEntryPoint'/>
+</module>

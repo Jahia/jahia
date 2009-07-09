@@ -71,7 +71,7 @@ public class ToggleButtonsWidget extends Composite implements ClickListener {
 
     public void onClick(Widget sender){
         Iterator<IndexedToggleButton> iterator = buttons.iterator();
-        IndexedToggleButton button = null;
+        IndexedToggleButton button;
         while(iterator.hasNext()){
             button = iterator.next();
             if (button != sender && button.isDown()){

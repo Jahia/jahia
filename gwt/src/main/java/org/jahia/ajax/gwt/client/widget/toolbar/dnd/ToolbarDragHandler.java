@@ -37,6 +37,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.widget.toolbar.JahiaToolbar;
@@ -78,7 +79,7 @@ public class ToolbarDragHandler implements DragHandler {
             final JahiaToolbar draggableJahiaToolbar = (JahiaToolbar) dragContext.draggable;
             final int previousState = draggableJahiaToolbar.getGwtToolbar().getState().getValue();
             Log.debug("previous state: " + previousState);
-            final List toolbarList = new ArrayList();
+            final List<GWTJahiaToolbar> toolbarList = new ArrayList<GWTJahiaToolbar>();
 
             if (nextParent instanceof TargetVerticalPanel) {
                 // preferences toolbars of the new column
@@ -147,7 +148,7 @@ public class ToolbarDragHandler implements DragHandler {
         }
     }
 
-    private void saveState(List toolbarList) {
+    private void saveState(List<GWTJahiaToolbar> toolbarList) {
         Log.debug("ToolbarDropController: saveState");
         // update
         ToolbarService.App.getInstance().updateToolbars(page, toolbarList, new AsyncCallback() {

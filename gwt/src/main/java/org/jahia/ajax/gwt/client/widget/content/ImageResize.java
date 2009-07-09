@@ -38,11 +38,8 @@ import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.Events;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -135,20 +132,20 @@ public class ImageResize extends Window {
         newname.setFieldLabel(Messages.getResource("fm_newname"));
         form.add(newname);
 
-        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 hide() ;
             }
         });
-        Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 resizeImage(n.getPath(), newname.getValue(), wf.getValue().intValue(), hf.getValue().intValue(), false) ;
             }
         }) ;
         buttons.add(submit) ;
         buttons.add(cancel) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);
-        setButtonBar(buttons);
+        setTopComponent(buttons);
 
         add(form);
     }

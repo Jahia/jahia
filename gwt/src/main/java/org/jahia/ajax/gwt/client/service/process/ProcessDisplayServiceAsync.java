@@ -35,6 +35,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJob;
 import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobPreference;
+import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobStat;
 
 
 /**
@@ -46,7 +47,7 @@ import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobPreference;
  */
 public interface ProcessDisplayServiceAsync {
 
-    void getGWTProcessJobStat(int mode,AsyncCallback async);
+    void getGWTProcessJobStat(int mode, AsyncCallback<GWTJahiaProcessJobStat> async);
 
     public void savePreferences(GWTJahiaProcessJobPreference gwtJahiaProcessJobPreferences,AsyncCallback async);
 

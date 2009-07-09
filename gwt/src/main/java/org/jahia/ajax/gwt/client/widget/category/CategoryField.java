@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.category;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
@@ -89,8 +90,8 @@ public class CategoryField extends TriggerField<String> {
         w.setModal(true);
         w.setSize(600, 400);
         ButtonBar bar = new ButtonBar();
-        Button ok = new Button("OK", new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        Button ok = new Button("OK", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 List<GWTJahiaCategoryNode> selection = ((PickedCategoriesGrid)catPicker.getLinker().getTopRightObject()).getCategories();
                 if (selection != null && selection.size() > 0) {
                     StringBuilder conCat = new StringBuilder(selection.get(0).getKey());
@@ -103,7 +104,7 @@ public class CategoryField extends TriggerField<String> {
             }
         });
         bar.add(ok);
-        w.setButtonBar(bar);
+        w.setTopComponent(bar);
         w.add(catPicker);
         w.show();
     }

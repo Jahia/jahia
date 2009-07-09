@@ -38,8 +38,8 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
 
@@ -66,14 +66,14 @@ public class TimebasedPublishingDetailsPopup extends Window {
         add(layout);
 
         Button item = new Button("Edit") ;
-        item.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent componentEvent) {
+        item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent componentEvent) {
                 EngineOpener.openEngine(details.getUrl());
             }
         }) ;
         ButtonBar bar = new ButtonBar() ;
         bar.add(item) ;
-        setButtonBar(bar);
+        setTopComponent(bar);
 
         setIconStyle(iconStyle);
         setHeading(details.getTitle());

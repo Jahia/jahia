@@ -1,6 +1,0 @@
-
-<module>
-    <inherits name="org.jahia.ajax.gwt.template.common.edit.Edit"/>
-    <stylesheet src='css/sitemap.css'/>
-    <entry-point class='org.jahia.ajax.gwt.template.sitemap.edit.client.EditModeEntryPoint'/>
-</module>

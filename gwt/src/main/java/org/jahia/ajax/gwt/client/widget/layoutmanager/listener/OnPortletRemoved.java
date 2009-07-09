@@ -31,11 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.widget.layoutmanager.listener;
 
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
@@ -50,19 +47,18 @@ import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
  * Date: 17 nov. 2008
  * Time: 21:35:05
  */
-public class OnPortletRemoved extends SelectionListener<ComponentEvent> {
+public class OnPortletRemoved extends SelectionListener<IconButtonEvent> {
     private JahiaPortlet jahiaPortlet;
 
     public OnPortletRemoved(JahiaPortlet jahiaPortlet) {
         this.jahiaPortlet = jahiaPortlet;
     }
 
-    public void componentSelected(ComponentEvent event) {
+    public void componentSelected(IconButtonEvent event) {
         final MessageBox box = new MessageBox();
-        final Listener confirmBoxListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                Dialog dialog = (Dialog) ce.component;
-                Button btn = dialog.getButtonPressed();
+        final Listener<MessageBoxEvent> confirmBoxListener = new Listener<MessageBoxEvent>() {
+            public void handleEvent(MessageBoxEvent ce) {
+                Button btn = ce.getButtonClicked();
                 Log.debug("Clicked button: "+btn.getText());
                 if (btn.getText().equalsIgnoreCase(MessageBox.OK)) {
                     close();

@@ -38,15 +38,15 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 
 import java.util.List;
 
@@ -83,7 +83,13 @@ public class ContentToolbar extends TopBar {
         };
 
         for (ContentActionItemItf item: config.getItems()) {
-            shortcuts.add(item.getTextToolitem()) ;
+            Button b = item.getTextToolitem();
+            if (b != null) {
+                shortcuts.add(b);
+            } else {
+                shortcuts.add(new SeparatorToolItem());
+            }
+
         }
         shortcuts.add(new SeparatorToolItem()) ;
         shortcuts.add(refresh.getTextToolitem()) ;
@@ -94,42 +100,43 @@ public class ContentToolbar extends TopBar {
                 for (ContentActionItemItf item: group.getItems()) {
                     menu.add(item.getMenuItem()) ;
                 }
-                TextToolItem mMenu = new TextToolItem(group.getGroupLabel()) ;
+                Button mMenu = new Button(group.getGroupLabel()) ;
                 mMenu.setMenu(menu);
                 menus.add(mMenu) ;
             }
 
             // add the views menu (not part of the config)
-            MenuItem list = new MenuItem(Messages.getResource("fm_list"), "fm-tableview", new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            MenuItem list = new MenuItem(Messages.getResource("fm_list"), new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent event) {
                     setListView();
                 }
             });
-            MenuItem thumbs = new MenuItem(Messages.getResource("fm_thumbs"), "fm-iconview", new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            list.setIconStyle("fm-tableview");
+            MenuItem thumbs = new MenuItem(Messages.getResource("fm_thumbs"), new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent event) {
                     setThumbView();
                 }
             });
-
-            MenuItem detailedThumbs = new MenuItem(Messages.getResource("fm_icons_detailed"), "fm-iconview-detailed", new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            thumbs.setIconStyle("fm-iconview");
+            MenuItem detailedThumbs = new MenuItem(Messages.getResource("fm_icons_detailed"), new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent event) {
                     setDetailedThumbView();
                 }
             });
-
-            MenuItem templates = new MenuItem("Template view", new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            detailedThumbs.setIconStyle("fm-iconview-detailed");
+            MenuItem templates = new MenuItem("Template view", new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent event) {
                     setTemplateView();
                 }
             });
+            templates.setIconStyle("fm-templateview");
             Menu menu = new Menu() ;
             menu.add(refresh.getMenuItem()) ;
             menu.add(new SeparatorMenuItem()) ;
             menu.add(list) ;
             menu.add(thumbs) ;
-            menu.add(detailedThumbs) ;
+            Button mMenu = new Button(Messages.getResource("fm_viewMenu")) ;
             menu.add(templates) ;
-            TextToolItem mMenu = new TextToolItem(Messages.getResource("fm_viewMenu")) ;
             mMenu.setMenu(menu);
             menus.add(mMenu) ;
             m_component.add(menus) ;
@@ -140,7 +147,7 @@ public class ContentToolbar extends TopBar {
     }
 
     // override to handle view switching
-   /* protected void switchView(TextToolItem switchView) {
+   /* protected void switchView(Button switchView) {
     }*/
 
     protected void setListView() {
@@ -174,7 +181,7 @@ public class ContentToolbar extends TopBar {
                 isTreeSelection = true ;
             }
             if (!isTreeSelection) {
-                GWTJahiaNode parent = topTableSelection.get(0).getParent() ;
+                GWTJahiaNode parent = (GWTJahiaNode) topTableSelection.get(0).getParent() ;
                 if (parent != null) {
                     isParentWriteable = parent.isWriteable();
                 }
@@ -197,7 +204,7 @@ public class ContentToolbar extends TopBar {
                 if (isSingleFolder) {
                     isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo(topTableSelection.get(0)) ;
                 } else {
-                    isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo(topTableSelection.get(0).getParent()) ;
+                    isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo((GWTJahiaNode) topTableSelection.get(0).getParent()) ;
                 }
             }
             int extIndex = topTableSelection.get(0).getName().lastIndexOf(".") ;

@@ -38,7 +38,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.Style;
 
 /**
@@ -56,20 +56,20 @@ import com.extjs.gxt.ui.client.Style;
         m_component = new ButtonBar() ;
 
         Button batch = new Button(Messages.getResource("wf_showBatch")) ;
-        batch.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent e) {
+        batch.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent e) {
                 ((WorkflowToolbar) getLinker().getTopObject()).showBatchReport();
             }
         });
         Button ok = new Button(Messages.getResource("wf_ok")) ;
-        ok.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent e) {
+        ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent e) {
                 showExecuteWindow();
             }
         });
         Button cancel = new Button(Messages.getResource("wf_cancel")) ;
-        cancel.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent e) {
+        cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent e) {
                 WindowUtil.close();
             }
         });
@@ -79,7 +79,7 @@ import com.extjs.gxt.ui.client.Style;
         m_component.add(batch) ;
         m_component.add(ok) ;
         m_component.add(cancel) ;
-        m_component.setButtonAlign(Style.HorizontalAlignment.CENTER);
+        m_component.setAlignment(Style.HorizontalAlignment.CENTER);
     }
 
     public void showExecuteWindow() {

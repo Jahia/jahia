@@ -33,8 +33,7 @@ package org.jahia.ajax.gwt.client.service;
 
 import java.util.List;
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaPageWrapper;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUserProperty;
+import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -48,23 +47,23 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface JahiaContentLegacyServiceAsync {
 
-    void loadContainerList(GWTJahiaPageContext page, String containerListName, AsyncCallback async);
+    void loadContainerList(GWTJahiaPageContext page, String containerListName, AsyncCallback<GWTJahiaContainerList> async);
 
-    void insertAddContainerHref(GWTJahiaPageContext page, AsyncCallback async);
+    void insertAddContainerHref(GWTJahiaPageContext page, AsyncCallback<String> async);
 
     void saveContainerProperty(GWTJahiaPageContext page, int containerId, String propertyName, String propertyValue, AsyncCallback async);
 
-    void getContent(GWTJahiaPageContext page, int containerId, AsyncCallback async);
+    void getContent(GWTJahiaPageContext page, int containerId, AsyncCallback<String> async);
 
-    void getFieldValues(int containerId, String field, AsyncCallback async);
+    void getFieldValues(int containerId, String field, AsyncCallback<String> async);
 
-    void loadContainer(int containerId, AsyncCallback async);
+    void loadContainer(int containerId, AsyncCallback<GWTJahiaContainer> async);
 
-    void getPagePropertyValue(GWTJahiaPageContext page, String propertyName, AsyncCallback async);
+    void getPagePropertyValue(GWTJahiaPageContext page, String propertyName, AsyncCallback<String> async);
 
-    void getJahiaUserProperties(boolean onlyMySettings,AsyncCallback async);
+    void getJahiaUserProperties(boolean onlyMySettings,AsyncCallback<List<GWTJahiaUserProperty>> async);
 
-    void updateJahiaUserProperties(List<GWTJahiaUserProperty> newJahiaUserProperties, List<GWTJahiaUserProperty> removeJahiaUserProperties,AsyncCallback async);
+    void updateJahiaUserProperties(List<GWTJahiaUserProperty> newJahiaUserProperties, List<GWTJahiaUserProperty> removeJahiaUserProperties,AsyncCallback<GWTJahiaAjaxActionResult> async);
 
     void updatePagePropertyValue(GWTJahiaPageContext page, String propertyName, String propertyValue, AsyncCallback async);
 

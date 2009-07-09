@@ -43,9 +43,9 @@ import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Element;
 import com.allen_sauer.gwt.log.client.Log;
@@ -83,15 +83,10 @@ public class HorizontalJahiaToolbar extends JahiaToolbar {
         if (!loaded) {
             super.createToolBarUI();
             // add drag area
-            HorizontalPanel draggablePane = new HorizontalPanel();
-            draggablePane.add(createDragSeparator());
-            draggablePane.add(createDragSeparator());
-
-            draggableArea = new FocusPanel();
-
-            draggableArea.add(draggablePane);
-            ToolItem item = new AdapterToolItem(draggableArea);
-            toolBar.add(item);
+            draggableArea = new HorizontalPanel();
+            draggableArea.add(createDragSeparator());
+            draggableArea.add(createDragSeparator());
+            toolBar.add(draggableArea);
 
             // deal with diplay title
             Log.debug("---- is display title: " + gwtToolbar.isDisplayTitle());            
@@ -152,7 +147,7 @@ public class HorizontalJahiaToolbar extends JahiaToolbar {
             JahiaToolItemProvider toolbarItemWidgetProvider = jahiaProviderHelper.getJahiaToolItemProvider(gwtToolbarItem.getType());
             if (toolbarItemWidgetProvider == null && !isSeparator(gwtToolbarItem)) {
                 printProviderNotFoundError(gwtToolbarItem);
-            } else {
+            } else if (toolbarItemWidgetProvider != null) {
                 Log.debug(gwtToolbarItem.getType()+" - items group layout =" + gwtToolbarItemsGroup.getLayout());
                 if (gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_MENU || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_MENU_RADIO || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_MENU_CHECKBOX) {
                     // handle case of menuSeparator
@@ -202,8 +197,7 @@ public class HorizontalJahiaToolbar extends JahiaToolbar {
                     if (isSeparator(gwtToolbarItem)) {
                         toolBar.add(new SeparatorToolItem());
                     } else {
-                        ToolItem toolbarItem = toolbarItemWidgetProvider.createToolItem(gwtToolbarItemsGroup, gwtToolbarItem);
-                        toolBar.add(toolbarItem);
+                        toolBar.add(toolbarItemWidgetProvider.createToolItem(gwtToolbarItemsGroup, gwtToolbarItem));
                     }
                 } else if (gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_TABS) {
                     if (!isSeparator(gwtToolbarItem)) {
@@ -221,8 +215,7 @@ public class HorizontalJahiaToolbar extends JahiaToolbar {
                     if (isSeparator(gwtToolbarItem)) {
                         toolBar.add(new SeparatorToolItem());
                     } else {
-                        ToolItem toolbarItem = toolbarItemWidgetProvider.createToolItem(gwtToolbarItemsGroup, gwtToolbarItem);
-                        toolBar.add(toolbarItem);
+                        toolBar.add(toolbarItemWidgetProvider.createToolItem(gwtToolbarItemsGroup, gwtToolbarItem));
                     }
                 }
 
@@ -235,7 +228,7 @@ public class HorizontalJahiaToolbar extends JahiaToolbar {
 
         // add menu
         if (addMenu) {
-            TextToolItem menuToolItem = new TextToolItem(gwtToolbarItemsGroup.getItemsGroupTitle());
+            Button menuToolItem = new Button(gwtToolbarItemsGroup.getItemsGroupTitle());
             String minIconStyle = gwtToolbarItemsGroup.getMinIconStyle();
             if (minIconStyle != null) {
                 menuToolItem.setIconStyle(minIconStyle);

@@ -37,8 +37,8 @@ import java.util.List;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -124,8 +124,8 @@ public class FileUploadField extends AdapterField {
             form.setEncoding(FormPanel.ENCODING_MULTIPART);
             form.setMethod(FormPanel.METHOD_POST);
 
-            clear = new Button("Stop", new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            clear = new Button("Stop", new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
                     setValue(null,"clear");
                 }
 

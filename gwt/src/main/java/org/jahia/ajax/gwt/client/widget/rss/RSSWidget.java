@@ -37,7 +37,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.Layout;
-import com.extjs.gxt.ui.client.widget.PagingToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -126,24 +126,23 @@ public class RSSWidget extends ContentPanel {
             }
         };
 
-        final RpcProxy proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<GWTJahiaRSSEntry>>() {
+        final RpcProxy proxy = new RpcProxy<PagingLoadResult<GWTJahiaRSSEntry>>() {
             @Override
-            public void load(PagingLoadConfig pageConfig, AsyncCallback<PagingLoadResult<GWTJahiaRSSEntry>> callback) {
+            public void load(Object pageConfig, AsyncCallback<PagingLoadResult<GWTJahiaRSSEntry>> callback) {
                 //int offset = pageConfig.getOffset();
                 //String sortParameter = pageConfig.getSortInfo().getSortField();
                 //boolean isAscending = pageConfig.getSortInfo().getSortDir().equals(Style.SortDir.ASC);
                 if(gwtrssFeed != null && gwtrssFeed.getEntries() != null){
                     List<GWTJahiaRSSEntry> entries = new ArrayList<GWTJahiaRSSEntry>();
-                    int offset = pageConfig.getOffset();
-                    for (int i = offset; i < offset + pageConfig.getLimit(); i++) {
+                    int offset = ((PagingLoadConfig) pageConfig).getOffset();
+                    for (int i = offset; i < offset + ((PagingLoadConfig) pageConfig).getLimit(); i++) {
                         if (i < gwtrssFeed.getEntries().size()) {
                             entries.add(gwtrssFeed.getEntries().get(i));
                         } else {
                             break;
                         }
                     }
-                    callback.onSuccess(new  BasePagingLoadResult<GWTJahiaRSSEntry>(entries,
-                            pageConfig.getOffset(),gwtrssFeed.getEntries().size()));
+                    callback.onSuccess(new  BasePagingLoadResult<GWTJahiaRSSEntry>(entries, ((PagingLoadConfig) pageConfig).getOffset(),gwtrssFeed.getEntries().size()));
                     view.refresh();
                 } else {
                     callback.onSuccess(new  BasePagingLoadResult<GWTJahiaRSSEntry>(new ArrayList<GWTJahiaRSSEntry>()));
@@ -152,7 +151,7 @@ public class RSSWidget extends ContentPanel {
             }
         };
 
-        loader = new BasePagingLoader<PagingLoadConfig, BasePagingLoadResult>(proxy);
+        loader = new BasePagingLoader<BasePagingLoadResult<GWTJahiaPageContext>>(proxy);
 
         // bottom component
         pagingToolBar = new PagingToolBar(maxEntriesPerPage);

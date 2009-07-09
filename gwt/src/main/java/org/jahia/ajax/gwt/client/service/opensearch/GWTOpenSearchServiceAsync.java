@@ -32,6 +32,10 @@
 package org.jahia.ajax.gwt.client.service.opensearch;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngineGroup;
+import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngine;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,19 +46,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface GWTOpenSearchServiceAsync {
 
-    /**
-     * Returns the list of search engines
-     *
-     * @return
-     */
-    public void getSearchEngines(AsyncCallback callBack);
+    public void getSearchEngines(AsyncCallback<List<GWTJahiaOpenSearchEngine>> callBack);
 
-    /**
-     * Returns the list of search engine Groups
-     *
-     * @return
-     */
-    public void getSearchEngineGroups(AsyncCallback callBack);
+    public void getSearchEngineGroups(AsyncCallback<List<GWTJahiaOpenSearchEngineGroup>> callBack);
 
 
 }

@@ -67,7 +67,7 @@ public class StateDisplay extends FlexTable {
                         .getAclDiffState(), page));
             }
             if (globalState.hasIntegrityState()) {
-                setWidget(0, row++, new StateIcon(globalState
+                setWidget(0, row, new StateIcon(globalState
                         .getIntegrityState(), globalState.getIntegrityState()
                         .isBlocker() ? "integrity_blocker" : "integrity", true));
             }

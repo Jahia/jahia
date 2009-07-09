@@ -66,14 +66,14 @@ public class RPCDataFactory implements DataFactory {
             GWTJahiaPageContext page = new GWTJahiaPageContext();
             page.setPid(JahiaGWTParameters.getPID());
             page.setMode(JahiaGWTParameters.getOperationMode());
-            serv.getData(page,versionableUUID,version1,version2,lang,new AsyncCallback(){
+            serv.getData(page,versionableUUID,version1,version2,lang,new AsyncCallback<GWTJahiaVersionComparisonData>(){
 
                 public void onFailure(java.lang.Throwable throwable) {
                     listener.onDataLoaded(null);
                 }
 
-                public void onSuccess(java.lang.Object o) {
-                    listener.onDataLoaded((GWTJahiaVersionComparisonData)o);
+                public void onSuccess(GWTJahiaVersionComparisonData data) {
+                    listener.onDataLoaded(data);
                 }
             });
         }

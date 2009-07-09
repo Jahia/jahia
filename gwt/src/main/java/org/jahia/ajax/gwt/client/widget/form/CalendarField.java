@@ -31,11 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.widget.form;
 
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.util.BaseEventPreview;
 import com.extjs.gxt.ui.client.util.KeyNav;
@@ -252,8 +249,8 @@ public class CalendarField extends TriggerField<Date> {
         }
         if (menu == null) {
             menu = displayTime ? new CalendarMenu() : new DateMenu();
-            menu.addListener(Events.Select, new Listener<ComponentEvent>() {
-                public void handleEvent(ComponentEvent ce) {
+            menu.addListener(Events.Select, new Listener<MenuEvent>() {
+                public void handleEvent(MenuEvent ce) {
                     focusValue = getValue();
                     Date date = getDate();
                     if (displayTime) {
@@ -368,7 +365,7 @@ public class CalendarField extends TriggerField<Date> {
     @Override
     protected void onKeyPress(FieldEvent fe) {
         super.onKeyPress(fe);
-        int code = fe.event.getKeyCode();
+        int code = fe.getEvent().getKeyCode();
         if (code == 8 || code == 9) {
             if (menu != null && menu.isAttached()) {
                 menu.hide();
@@ -384,6 +381,10 @@ public class CalendarField extends TriggerField<Date> {
         new KeyNav<FieldEvent>(this) {
             public void onDown(FieldEvent fe) {
                 CalendarField.this.onDown(fe);
+            }
+
+            public void handleEvent(FieldEvent fieldEvent) {
+                onDown(fieldEvent);
             }
         };
     }

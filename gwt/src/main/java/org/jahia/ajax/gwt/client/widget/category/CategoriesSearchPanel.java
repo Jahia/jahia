@@ -32,19 +32,19 @@
 package org.jahia.ajax.gwt.client.widget.category;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.ListViewSelectionModel;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -95,27 +95,27 @@ public class CategoriesSearchPanel extends ContentPanel {
         FormLayout layout = new FormLayout();
         layout.setLabelAlign(FormPanel.LabelAlign.TOP);
         layout.setLabelWidth(75);
-        layout.setPadding(2);
+        layout.setLabelPad(2);
         fieldSet.setCollapsible(true);
         fieldSet.setLayout(layout);
         fieldSet.setHeading(getResource("properties"));
         fieldSet.add(propertyNameField);
         fieldSet.add(propertyValueField);
 
-        final TextToolItem selectToolItem = new TextToolItem("");
+        final Button selectToolItem = new Button("");
         selectToolItem.setToolTip(getResource("add"));        
         selectToolItem.setIconStyle("gwt-categoriespiker-icon-select");
-        selectToolItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        selectToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 parentComponent.addCategories(list.getSelectionModel().getSelectedItems());
             }
         });
         getHeader().insertTool(selectToolItem, 0);
 
-        final TextToolItem searchButton = new TextToolItem("Search");
+        final Button searchButton = new Button("Search");
         searchButton.setIconStyle("gwt-categoriespiker-icon-search");        
-        searchButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        searchButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 listStore.removeAll();
                 GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
                 if (propertyNameField.getValue() != null && propertyValueField.getValue() != null) {

@@ -33,6 +33,8 @@ package org.jahia.ajax.gwt.client.widget.menu;
 
 import com.extjs.gxt.ui.client.widget.ComponentHelper;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.widget.calendar.CalendarPicker;
 

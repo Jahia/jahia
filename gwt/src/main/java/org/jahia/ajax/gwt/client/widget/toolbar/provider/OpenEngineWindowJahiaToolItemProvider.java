@@ -50,10 +50,10 @@ public class OpenEngineWindowJahiaToolItemProvider extends
         OpenWindowJahiaToolItemProvider {
 
     @Override
-    public SelectionListener<ComponentEvent> getSelectListener(
+    public <T extends ComponentEvent> SelectionListener<T> getSelectListener(
             final GWTJahiaToolbarItem gwtToolbarItem) {
-        return new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        return new SelectionListener<T>() {
+            public void componentSelected(T event) {
                 Map<String, GWTJahiaProperty> preferences = gwtToolbarItem
                         .getProperties();
 

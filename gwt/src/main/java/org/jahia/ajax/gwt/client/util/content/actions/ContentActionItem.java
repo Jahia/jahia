@@ -31,12 +31,12 @@
  */
 package org.jahia.ajax.gwt.client.util.content.actions;
 
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Item;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import org.jahia.ajax.gwt.client.util.Formatter;
 
 /**
@@ -48,31 +48,37 @@ import org.jahia.ajax.gwt.client.util.Formatter;
  */
 public abstract class ContentActionItem implements ContentActionItemItf {
 
-    private TextToolItem textToolitem = null ;
+    private Button textToolitem = null ;
     private MenuItem menuItem = null ;
     private MenuItem contextMenuItem = null ;
 
     public ContentActionItem(String text, String style) {
-        textToolitem = new TextToolItem();
+        textToolitem = new Button();
         textToolitem.setIconStyle(style);
         textToolitem.setToolTip(text);
-        SelectionListener<ComponentEvent> selectionListener = new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        textToolitem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                onSelection();
+            }
+        });
+        SelectionListener<MenuEvent> selectionListener = new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent event) {
                 onSelection();
             }
         };
-        textToolitem.addSelectionListener(selectionListener);
-        menuItem = new MenuItem(text, style, selectionListener);
-        contextMenuItem = new MenuItem(text, style, selectionListener);
+        menuItem = new MenuItem(text, selectionListener);
+        menuItem.setIconStyle(style);
+        contextMenuItem = new MenuItem(text, selectionListener);
+        contextMenuItem.setIconStyle(style);
     }
 
     public void setEnabled(boolean enabled) {
-        Formatter.setTextToolItemEnabled(textToolitem, enabled);
+        Formatter.setButtonEnabled(textToolitem, enabled);
         Formatter.setMenuItemEnabled(menuItem, enabled);
         Formatter.setMenuItemEnabled(contextMenuItem, enabled);
     }
 
-    public ToolItem getTextToolitem() {
+    public Button getTextToolitem() {
         return textToolitem;
     }
 

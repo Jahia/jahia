@@ -31,7 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.tripanel;
 
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 

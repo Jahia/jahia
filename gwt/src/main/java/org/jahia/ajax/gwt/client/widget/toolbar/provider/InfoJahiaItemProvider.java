@@ -34,8 +34,8 @@ package org.jahia.ajax.gwt.client.widget.toolbar.provider;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 import com.extjs.gxt.ui.client.widget.ComponentHelper;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -49,13 +49,13 @@ import java.util.Map;
  * Time: 10:52:59
  */
 public class InfoJahiaItemProvider extends AbstractJahiaToolItemProvider {
-    public SelectionListener<ComponentEvent> getSelectListener(GWTJahiaToolbarItem gwtToolbarItem) {
+    public <T extends ComponentEvent> SelectionListener<T> getSelectListener(GWTJahiaToolbarItem gwtToolbarItem) {
         return null;
     }
 
-    public ToolItem createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
+    public Component createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
         // TO DO: find a better implementation of this item. The current one is ....
-        JahiaTextToolItem item = new JahiaTextToolItem();
+        JahiaButton item = new JahiaButton();
         item.setIconStyle(gwtToolbarItem.getMinIconStyle());
         Map preferences = gwtToolbarItem.getProperties();
         if (preferences != null) {
@@ -68,10 +68,10 @@ public class InfoJahiaItemProvider extends AbstractJahiaToolItemProvider {
     }
     
 
-    private class JahiaTextToolItem extends ToolItem {
+    private class JahiaButton extends Button {
         JahiaTextButton button;
 
-        private JahiaTextToolItem() {
+        private JahiaButton() {
             button = new JahiaTextButton();
         }
 
@@ -86,8 +86,8 @@ public class InfoJahiaItemProvider extends AbstractJahiaToolItemProvider {
         }
 
         @Override
-        public void setEnableState(boolean b) {
-            button.setEnableState(b);
+        public void setEnabled(boolean b) {
+            button.setEnabled(b);
         }
 
         public void setText(String text) {
@@ -119,10 +119,6 @@ public class InfoJahiaItemProvider extends AbstractJahiaToolItemProvider {
     }
 
     private class JahiaTextButton extends Button {
-        @Override
-        protected void onMouseEnter(ComponentEvent componentEvent) {
-//            super.onMouseEnter(componentEvent);    //To change body of overridden methods use File | Settings | File Templates.
-        }
 
         @Override
         protected void onClick(ComponentEvent componentEvent) {
@@ -149,10 +145,6 @@ public class InfoJahiaItemProvider extends AbstractJahiaToolItemProvider {
 //            super.onMenuShow(componentEvent);    //To change body of overridden methods use File | Settings | File Templates.
         }
 
-        @Override
-        protected void onMouseLeave(ComponentEvent componentEvent) {
-//            super.onMouseLeave(componentEvent);    //To change body of overridden methods use File | Settings | File Templates.
-        }
 
         @Override
         protected void onMouseOut(ComponentEvent componentEvent) {

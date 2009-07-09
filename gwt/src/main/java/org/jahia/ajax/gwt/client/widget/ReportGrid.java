@@ -146,7 +146,7 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
 
         RowExpander expander = new RowExpander();
         expander.setRenderer(new GridCellRenderer<ReportGrid.GWTReportElement>() {
-            public String render(ReportGrid.GWTReportElement model, String property, ColumnData d, int rowIndex, int colIndex, ListStore store) {
+            public String render(ReportGrid.GWTReportElement model, String property, ColumnData d, int rowIndex, int colIndex, ListStore<ReportGrid.GWTReportElement> store, Grid<ReportGrid.GWTReportElement> g) {
                 if (errorsAndWarnings != null) {
                     Map<String, GWTJahiaNodeOperationResult> stringSetMap = errorsAndWarnings.get(model.getKey());
                     if (stringSetMap != null && !stringSetMap.isEmpty()) {
@@ -167,7 +167,7 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
         }
         ColumnConfig title = new ColumnConfig("title", "Title", 200) ;
         title.setRenderer(new GridCellRenderer<ReportGrid.GWTReportElement>() {
-            public String render(ReportGrid.GWTReportElement model, String property, ColumnData d, int rowIndex, int colIndex, ListStore store) {
+            public String render(ReportGrid.GWTReportElement model, String property, ColumnData d, int rowIndex, int colIndex, ListStore<ReportGrid.GWTReportElement> store, Grid<ReportGrid.GWTReportElement> g) {
                 if (errorsAndWarnings != null) {
                     Map<String, GWTJahiaNodeOperationResult> stringSetMap = errorsAndWarnings.get(model.getKey());
                     if (stringSetMap != null && !stringSetMap.isEmpty()) {
@@ -189,7 +189,7 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
         if (enableWorkflowStates) {
             ColumnConfig wfCol = new ColumnConfig("workflow", "Workflow", 60);
             wfCol.setRenderer(new GridCellRenderer<ReportGrid.GWTReportElement>() {
-                public String render(ReportGrid.GWTReportElement modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
+                public String render(ReportGrid.GWTReportElement modelData, String s, ColumnData columnData, int i, int i1, ListStore<ReportGrid.GWTReportElement> store, Grid<ReportGrid.GWTReportElement> g) {
                     String state = modelData.getWorkflowState() ;
                     if (state != null) {
                         return "<div class='workflow-" + modelData.getWorkflowState() + "'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>" ;

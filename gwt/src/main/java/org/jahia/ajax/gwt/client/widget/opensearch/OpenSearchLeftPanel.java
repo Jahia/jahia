@@ -38,7 +38,6 @@ import java.util.List;
 
 import org.jahia.ajax.gwt.client.service.opensearch.GWTOpenSearchService;
 import org.jahia.ajax.gwt.client.service.opensearch.GWTOpenSearchServiceAsync;
-import org.jahia.ajax.gwt.client.widget.opensearch.JahiaOpenSearchTriPanel;
 import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngine;
 import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngineGroup;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
@@ -117,15 +116,14 @@ public class OpenSearchLeftPanel extends LeftComponent {
     private void loadSearchGroups (){
         final GWTOpenSearchServiceAsync service = GWTOpenSearchService.App.getInstance() ;
 
-        service.getSearchEngineGroups(new AsyncCallback(){
+        service.getSearchEngineGroups(new AsyncCallback<List<GWTJahiaOpenSearchEngineGroup>>(){
             public void onFailure(java.lang.Throwable throwable) {
                 Log.debug("Exception occured loading search engines groups", throwable);
             }
 
-            public void onSuccess(java.lang.Object result) {
-                List<GWTJahiaOpenSearchEngineGroup>groups = (List<GWTJahiaOpenSearchEngineGroup>)result;
+            public void onSuccess(List<GWTJahiaOpenSearchEngineGroup> groups) {
                 if (groups != null){
-                    GWTJahiaOpenSearchEngineGroup group = null;
+                    GWTJahiaOpenSearchEngineGroup group;
                     Iterator<GWTJahiaOpenSearchEngineGroup> iterator = groups.iterator();
                     while(iterator.hasNext()){
                         group = iterator.next();

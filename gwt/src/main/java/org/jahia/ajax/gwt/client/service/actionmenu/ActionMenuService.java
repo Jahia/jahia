@@ -92,7 +92,7 @@ public interface ActionMenuService extends RemoteService {
      * given objects.
      *
      * @param page the current page
-     * @param key list of object keys
+     * @param keys list of object keys
      * @return a list of wrappers containing all needed states
      */
     public List<GWTJahiaGlobalState> getGlobalStateForObject(GWTJahiaPageContext page, List<GWTJahiaGlobalStateKey> keys) ;
@@ -163,7 +163,6 @@ public interface ActionMenuService extends RemoteService {
      * @param objectKey the objectkey to retrieve the actions
      * @param bundleName the custom bundle to use
      * @param namePostFix the postfix to add to action labels
-     * @param enableAddItem true to include the container list 'add' item
      * @return a list of actions
      */
     public List<GWTJahiaAction> getAvailableActions(GWTJahiaPageContext page, String objectKey, String bundleName, String namePostFix) ;

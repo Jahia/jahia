@@ -31,11 +31,11 @@
  */
 package org.jahia.ajax.gwt.client.widget.form;
 
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.LoadListener;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
@@ -85,7 +85,7 @@ public class AutoCompletionField extends TriggerField<String> {
         menu.getChoices().addListener(Events.SelectionChange, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
                 focusValue = getValue();
-                DataList l = (DataList) ce.component;
+                DataList l = (DataList) ce.getComponent();
                 DataListItem data = l.getSelectedItem();
                 if (data != null){
                     setValue(data.getText());
@@ -119,7 +119,7 @@ public class AutoCompletionField extends TriggerField<String> {
 
                 }
             });
-            datas.addStoreListener(new StoreListener(){
+            datas.addStoreListener(new StoreListener<GWTJahiaValueDisplayBean>(){
                 public void storeDataChanged(StoreEvent event){
                     Iterator<GWTJahiaValueDisplayBean> it = datas.getModels().iterator();
                     GWTJahiaValueDisplayBean data;

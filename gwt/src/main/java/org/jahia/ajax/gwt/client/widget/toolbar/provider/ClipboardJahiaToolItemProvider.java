@@ -33,9 +33,8 @@ package org.jahia.ajax.gwt.client.widget.toolbar.provider;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
-import com.google.gwt.user.client.ui.HTML;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Html;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 
 /**
@@ -44,11 +43,12 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
  * Time: 13:41:08
  */
 public class ClipboardJahiaToolItemProvider extends AbstractJahiaToolItemProvider {
-    public SelectionListener<ComponentEvent> getSelectListener(GWTJahiaToolbarItem gwtToolbarItem) {
+
+    public <T extends ComponentEvent> SelectionListener<T> getSelectListener(GWTJahiaToolbarItem gwtToolbarItem) {
         return null;
     }
 
-    public ToolItem createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
-        return new AdapterToolItem(new HTML("<div id='clipboard-display'/>"));
+    public Component createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
+        return new Html("<div id='clipboard-display'/>");
     }
 }

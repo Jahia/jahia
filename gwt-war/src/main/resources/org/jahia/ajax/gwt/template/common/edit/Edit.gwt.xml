@@ -1,0 +1,4 @@
+
+<module rename-to='common.edit'>
+    <inherits name="org.jahia.ajax.gwt.JahiaGWT"/>
+</module>

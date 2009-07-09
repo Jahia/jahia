@@ -114,7 +114,7 @@ public class CategoryServiceImpl extends JahiaRemoteService implements CategoryS
         }
     }
 
-    /**
+    /*
      * Add children to categories
      * @param node
      * @param pathsToAdd
@@ -122,19 +122,19 @@ public class CategoryServiceImpl extends JahiaRemoteService implements CategoryS
      * @param locale
      * @throws JahiaException
      */
-    private void addChildrenToCategory(final GWTJahiaCategoryNode node, final List<String> pathsToAdd, final JahiaUser currentUser, final String locale) throws JahiaException {
-        Category cat = Category.getCategory(node.getKey(), currentUser);
-        final TreeSet<Category> childrenCategories = new TreeSet<Category>(new NumericStringComparator<Category>());
-        childrenCategories.addAll(cat.getChildCategories());
-        for (Category childCategory : childrenCategories) {
-//            if (pathsToAdd.contains(childCategory.getCategoryPath((Principal) null))) {
-                GWTJahiaCategoryNode childNode = createGWTJahiaCategoryNode(node.getKey(), childCategory, false, locale);
-                addChildrenToCategory(childNode, pathsToAdd, currentUser, locale);
-                node.add(childNode);
-                childNode.setParent(node);
-//            }
-        }
-    }
+//    private void addChildrenToCategory(final GWTJahiaCategoryNode node, final List<String> pathsToAdd, final JahiaUser currentUser, final String locale) throws JahiaException {
+//        Category cat = Category.getCategory(node.getKey(), currentUser);
+//        final TreeSet<Category> childrenCategories = new TreeSet<Category>(new NumericStringComparator<Category>());
+//        childrenCategories.addAll(cat.getChildCategories());
+//        for (Category childCategory : childrenCategories) {
+////            if (pathsToAdd.contains(childCategory.getCategoryPath((Principal) null))) {
+//                GWTJahiaCategoryNode childNode = createGWTJahiaCategoryNode(node.getKey(), childCategory, false, locale);
+//                addChildrenToCategory(childNode, pathsToAdd, currentUser, locale);
+//                node.add(childNode);
+//                childNode.setParent(node);
+////            }
+//        }
+//    }
 
     public List<GWTJahiaCategoryNode> ls(GWTJahiaCategoryNode gwtJahiaCategoryNode, String categoryLocale) throws GWTJahiaServiceException {
         List<GWTJahiaCategoryNode> gwtJahiaNodes = new ArrayList<GWTJahiaCategoryNode>();

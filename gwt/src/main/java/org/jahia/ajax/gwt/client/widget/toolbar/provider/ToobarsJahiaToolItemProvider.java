@@ -39,15 +39,11 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
 import org.jahia.ajax.gwt.client.widget.toolbar.ToolbarManager;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.menu.Item;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
 
 /**
  * Item provider for creating a list of toolbars to have a possibility to
@@ -71,13 +67,15 @@ public class ToobarsJahiaToolItemProvider extends
     @Override
     public MenuItem createMenuItem(GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup,GWTJahiaToolbarItem gwtToolbarItem) {
         final MenuItem thisItem = new MenuItem(gwtToolbarItem.getTitle());
-        toolbarManager.addContextMenuReadyListener(new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                Menu ctxMenu = ((Menu) be.source);
-                List<Item> items = new ArrayList<Item>(ctxMenu.getItems());
-                for (Item ctxMenuItem : items) {
-                    ctxMenu.remove(ctxMenuItem);
-                    thisItem.getParentMenu().add(ctxMenuItem);
+        toolbarManager.addContextMenuReadyListener(new Listener<MenuEvent>() {
+            public void handleEvent(MenuEvent be) {
+                Menu ctxMenu = ((Menu) be.getSource());
+                List<Component> items = new ArrayList<Component>(ctxMenu.getItems());
+                for (Component ctxMenuItem : items) {
+                    if (ctxMenuItem instanceof MenuItem) {
+                        ctxMenu.remove(ctxMenuItem);
+                        thisItem.getParentMenu().add(ctxMenuItem);
+                    }
                 }
             }
         });
@@ -85,12 +83,12 @@ public class ToobarsJahiaToolItemProvider extends
     }
 
     @Override
-    public ToolItem createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
-        return new TextToolItem();
+    public Component createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
+        return new Button();
     }
 
     @Override
-    public SelectionListener<ComponentEvent> getSelectListener(
+    public <T extends ComponentEvent> SelectionListener<T> getSelectListener(
             final GWTJahiaToolbarItem gwtToolbarItem) {
         return null;
     }

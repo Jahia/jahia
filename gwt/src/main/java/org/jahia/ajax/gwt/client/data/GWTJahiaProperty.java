@@ -50,8 +50,8 @@ public class GWTJahiaProperty implements Serializable {
 
     /**
      * Initializes an instance of this class.
-     * @param name
-     * @param value
+     * @param name the property name
+     * @param value property value
      */
     public GWTJahiaProperty(String name, String value) {
         this();

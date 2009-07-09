@@ -51,7 +51,6 @@ import com.extjs.gxt.ui.client.widget.treetable.TreeTableColumn;
 import com.extjs.gxt.ui.client.widget.treetable.TreeTableItem;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.binder.TreeTableBinder;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.event.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -67,6 +66,8 @@ import java.util.ArrayList;
  */
 public class CategoriesTreeTable extends TopRightComponent {
 
+    // TODO GXT 2
+
     private LayoutContainer m_component;
     private TreeLoader<GWTJahiaCategoryNode> loader;
     private TreeTable m_treeTable;
@@ -80,10 +81,10 @@ public class CategoriesTreeTable extends TopRightComponent {
         final CategoryServiceAsync service = CategoryService.App.getInstance();
 
         // data proxy
-        RpcProxy<GWTJahiaCategoryNode, List<GWTJahiaCategoryNode>> proxy = new RpcProxy<GWTJahiaCategoryNode, List<GWTJahiaCategoryNode>>() {
+        RpcProxy<List<GWTJahiaCategoryNode>> proxy = new RpcProxy<List<GWTJahiaCategoryNode>>() {
             @Override
-            protected void load(GWTJahiaCategoryNode gwtJahiaCategoryNode, AsyncCallback<List<GWTJahiaCategoryNode>> listAsyncCallback) {
-                service.ls(gwtJahiaCategoryNode, null, listAsyncCallback);
+            protected void load(Object gwtJahiaCategoryNode, AsyncCallback<List<GWTJahiaCategoryNode>> listAsyncCallback) {
+                service.ls((GWTJahiaCategoryNode) gwtJahiaCategoryNode, null, listAsyncCallback);
             }
         };
 
@@ -96,22 +97,22 @@ public class CategoriesTreeTable extends TopRightComponent {
 
 
             public boolean load(GWTJahiaCategoryNode gwtJahiaCategoryNode, int depth) {
-                List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes = gwtJahiaCategoryNode.getChildren();
-                for (GWTJahiaCategoryNode currentNode : gwtJahiaCategoryNodes) {
-                    loadChildren(currentNode);
+                List<ModelData> gwtJahiaCategoryNodes = gwtJahiaCategoryNode.getChildren();
+                for (ModelData currentNode : gwtJahiaCategoryNodes) {
+                    loadChildren((GWTJahiaCategoryNode) currentNode);
                 }
                 return super.load(gwtJahiaCategoryNode);
             }
 
             @Override
-            protected void onLoadSuccess(GWTJahiaCategoryNode gwtJahiaCategoryNode, List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
+            protected void onLoadSuccess(Object gwtJahiaCategoryNode, List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
                 super.onLoadSuccess(gwtJahiaCategoryNode, gwtJahiaCategoryNodes);
                 if (gwtJahiaCategoryNode == null) {
                     for (GWTJahiaCategoryNode currentNode : gwtJahiaCategoryNodes) {
                         loadChildren(currentNode);
                     }
                 } else {
-                    TreeTableItem item = (TreeTableItem) treeTableBinder.findItem(gwtJahiaCategoryNode);
+                    TreeTableItem item = (TreeTableItem) treeTableBinder.findItem((GWTJahiaCategoryNode) gwtJahiaCategoryNode);
                     item.setExpanded(true);
                 }
             }
@@ -129,8 +130,8 @@ public class CategoriesTreeTable extends TopRightComponent {
         treeTableBinder.setCaching(true);
         treeTableBinder.setDisplayProperty("name");
 
-        m_treeTable.addListener(Events.CellClick, new Listener() {
-            public void handleEvent(BaseEvent baseEvent) {
+        m_treeTable.addListener(Events.CellClick, new Listener<TreeTableEvent>() {
+            public void handleEvent(TreeTableEvent baseEvent) {
                 TreeItem newSelection = m_treeTable.getSelectedItem();
                 /*if (lastSelection == newSelection && m_treeTable.getSelectedItem() != null) {
                     lastSelection = null;
@@ -367,32 +368,32 @@ public class CategoriesTreeTable extends TopRightComponent {
 
             newCategory.setText(getResource("cat_create"));
             newCategory.setIconStyle("fm-newfolder");
-            newCategory.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent ce) {
+            newCategory.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
                     CategoriesManagerActions.createCategory(linker);
                 }
             });
 
             updateInfo.setText(getResource("cat_update"));
             updateInfo.setIconStyle("fm-rename");
-            updateInfo.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent ce) {
+            updateInfo.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
                     CategoriesManagerActions.updateInfo(linker);
                 }
             });
 
             updateACL.setText(getResource("cat_update_acl"));
             updateACL.setIconStyle("fm-rename");
-            updateACL.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent ce) {
+            updateACL.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
                     CategoriesManagerActions.openUpdateACL(linker);
                 }
             });
 
             cut.setText(getResource("cat_cut"));
             cut.setIconStyle("fm-cut");
-            cut.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent ce) {
+            cut.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
                     CategoriesManagerActions.cut(linker);
                 }
             });
@@ -400,15 +401,15 @@ public class CategoriesTreeTable extends TopRightComponent {
 
             remove.setText(getResource("cat_remove"));
             remove.setIconStyle("fm-remove");
-            remove.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent ce) {
+            remove.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
                     CategoriesManagerActions.remove(linker);
                 }
             });
 
             // handle visibility of each item
-            addListener(Events.BeforeShow, new Listener() {
-                public void handleEvent(BaseEvent baseEvent) {
+            addListener(Events.BeforeShow, new Listener<MenuEvent>() {
+                public void handleEvent(MenuEvent baseEvent) {
                     GWTJahiaCategoryNode leftTreeSelection = null;
                     List<GWTJahiaCategoryNode> topTableSelection = null;
                     if (linker != null) {

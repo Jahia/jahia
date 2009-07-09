@@ -81,8 +81,8 @@ public class OnPortletStatusChanged implements Listener<ComponentEvent> {
         gwtJahiaLayoutItem.setStatus(status);
 
         // make a call ajax
-        LayoutmanagerService.App.getInstance().saveLayoutItem(JahiaPageEntryPoint.getJahiaGWTPage(), gwtJahiaLayoutItem, new AsyncCallback() {
-            public void onSuccess(Object o) {
+        LayoutmanagerService.App.getInstance().saveLayoutItem(JahiaPageEntryPoint.getJahiaGWTPage(), gwtJahiaLayoutItem, new AsyncCallback<String>() {
+            public void onSuccess(String o) {
                 Log.debug("old status: "+oldStatus);
                 if (JahiaPropertyHelper.isStatusFullScreen(oldStatus)) {
                    JahiaPortalManager.getInstance().refreshPortal();

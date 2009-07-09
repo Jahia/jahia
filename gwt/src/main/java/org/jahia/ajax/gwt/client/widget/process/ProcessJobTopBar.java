@@ -35,13 +35,13 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -59,8 +59,8 @@ import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 public class ProcessJobTopBar extends TopBar {
     private GWTJahiaProcessJob selectedGWTJahiaProcessJob;
     private ToolBar m_compent;
-    private TextToolItem infoItem;
-    private TextToolItem deleteItem;
+    private Button infoItem;
+    private Button deleteItem;
 
     public ProcessJobTopBar() {
     }
@@ -70,20 +70,20 @@ public class ProcessJobTopBar extends TopBar {
         m_compent = new ToolBar();
         m_compent.setHeight(21);
         // refresh button
-        TextToolItem refreshItem = new TextToolItem();
+        Button refreshItem = new Button();
         refreshItem.setIconStyle("gwt-pdisplay-icons-refresh");
-        refreshItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        refreshItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 getLinker().refreshTable();
             }
         });
 
         // refresh button
-        deleteItem = new TextToolItem("Delete waiting job");
+        deleteItem = new Button("Delete waiting job");
         deleteItem.setEnabled(false);
         deleteItem.setIconStyle("gwt-pdisplay-icons-delete");
-        deleteItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        deleteItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 ProcessDisplayService.App.getInstance().deleteJob(selectedGWTJahiaProcessJob, new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
                         Log.error("Unable to delete waiting job");
@@ -96,11 +96,11 @@ public class ProcessJobTopBar extends TopBar {
             }
         });
         // preference
-        TextToolItem prefItem = new TextToolItem();
+        Button prefItem = new Button();
         prefItem.setText("Preferences");
         prefItem.setIconStyle("gwt-pdisplay-icons-preferences");
-        prefItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        prefItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 final Window preferenceWindow = new Window();
                 preferenceWindow.setHeading("Preferences");
                 preferenceWindow.setBodyBorder(false);
@@ -112,7 +112,7 @@ public class ProcessJobTopBar extends TopBar {
         });
 
         //info
-        infoItem = new TextToolItem();
+        infoItem = new Button();
         infoItem.setIconStyle("gwt-pdisplay-icons-info");
         infoItem.setText("...");
 
@@ -207,8 +207,8 @@ public class ProcessJobTopBar extends TopBar {
                                 } else {
                                     infoItem.setIconStyle("gwt-pdisplay-icons-warning");
                                     infoItem.setToolTip("Need refresh");
-                                    infoItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                                        public void componentSelected(ComponentEvent event) {
+                                    infoItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                        public void componentSelected(ButtonEvent event) {
                                             getLinker().refreshTable();
                                         }
                                     });
@@ -270,8 +270,8 @@ public class ProcessJobTopBar extends TopBar {
 
 
         final Button saveButton = new Button("Save");
-        saveButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 Log.debug(" save pdisplay pref.");
 
                 boolean autoRefresh = autoRefreshField.getValue().booleanValue();

@@ -48,6 +48,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -57,7 +58,6 @@ import com.extjs.gxt.ui.client.widget.table.Table;
 import com.extjs.gxt.ui.client.widget.table.TableColumn;
 import com.extjs.gxt.ui.client.widget.table.TableColumnModel;
 import com.extjs.gxt.ui.client.widget.table.TableItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -162,8 +162,8 @@ public class AclNameEditor {
                 Button button = new Button(getMessage("ae_remove"));
                 button.setEnabled(!readonly);
                 if (!readonly) {
-                    button.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                        public void componentSelected(ComponentEvent event) {
+                    button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        public void componentSelected(ButtonEvent event) {
                             String o = ace.getPrincipalType() + ace.getPrincipal();
                             items.remove(o);
                             updateField();
@@ -199,10 +199,12 @@ public class AclNameEditor {
         panel.add(tbl);
 
         ToolBar toolBar = new ToolBar();
-        TextToolItem addUser = new TextToolItem(getMessage("um_adduser"), "um-adduser");
+        Button addUser = new Button(getMessage("um_adduser"));
+        addUser.setIconStyle("um-adduser");
         addUser.setEnabled(!readonly);
         toolBar.add(addUser);
-        TextToolItem addGroup = new TextToolItem(getMessage("um_addgroup"), "um-addgroup");
+        Button addGroup = new Button(getMessage("um_addgroup"));
+        addGroup.setIconStyle("um-addgroup");
         addGroup.setEnabled(!readonly);
         toolBar.add(addGroup);
         
@@ -234,13 +236,13 @@ public class AclNameEditor {
                     }
                 }
             };
-            addUser.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            addUser.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
                     new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_USERS, aclContext);
                 }
             });
-            addGroup.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            addGroup.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
                     new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, aclContext);
                 }
             });

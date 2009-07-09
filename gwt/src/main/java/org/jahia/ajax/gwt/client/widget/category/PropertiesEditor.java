@@ -36,7 +36,7 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -45,9 +45,7 @@ import java.util.ArrayList;
 
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
@@ -79,6 +77,7 @@ public class PropertiesEditor extends AbsolutePanel {
 
     /**
      * Refresh my Settings panel
+     * @return the form
      */
     public FormPanel createForm() {
         final FormPanel formPanel = new FormPanel();
@@ -105,7 +104,7 @@ public class PropertiesEditor extends AbsolutePanel {
                 if (gwtJahiaNodeProperties != null) {
                     for (GWTJahiaNodeProperty gwtJahiaNodeProperty : gwtJahiaNodeProperties) {
                         // create a text field
-                        TextField textField = new TextField();
+                        TextField<String> textField = new TextField<String>();
                         if (gwtJahiaNodeProperty.getName() != null) {
                             textField.setName(gwtJahiaNodeProperty.getName());
                         }
@@ -119,8 +118,8 @@ public class PropertiesEditor extends AbsolutePanel {
             }
 
             // save property listener
-            SelectionListener saveJahiaUserPropertiesListener = new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent ce) {
+            SelectionListener<ButtonEvent> saveJahiaUserPropertiesListener = new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
                     List<GWTJahiaNodeProperty> newJahiaUserProperties = new ArrayList<GWTJahiaNodeProperty>();
                     for (Field field : formPanel.getFields()) {
                         GWTJahiaNodeProperty jahiaUserProperty = new GWTJahiaNodeProperty();
@@ -130,12 +129,12 @@ public class PropertiesEditor extends AbsolutePanel {
                     }
 
                     // update user properties
-                    CategoryService.App.getInstance().saveProperties(gwtJahiaCategoryNode, newJahiaUserProperties, new AsyncCallback() {
+                    CategoryService.App.getInstance().saveProperties(gwtJahiaCategoryNode, newJahiaUserProperties, new AsyncCallback<GWTJahiaCategoryNode>() {
                         public void onFailure(Throwable throwable) {
                             Log.error("Can't update jahia user properties", throwable);
                         }
 
-                        public void onSuccess(Object o) {
+                        public void onSuccess(GWTJahiaCategoryNode o) {
 
                         }
                     });
@@ -144,27 +143,30 @@ public class PropertiesEditor extends AbsolutePanel {
 
 
             ToolBar toolBar = new ToolBar();
-            TextToolItem item = new TextToolItem(getResource("cat_prop_add"), "cat-prop-add");
-            item.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent ce) {
+            Button item = new Button(Messages.getResource("cat_prop_add"));
+            item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
                     createAddPropertyWindow();
                 }
             });
+            item.setIconStyle("cat-prop-add");
             toolBar.add(item);
-            item = new TextToolItem(getResource("cat_prop_remove"), "cat-prop-remove");
+            item = new Button(Messages.getResource("cat_prop_remove"));
+            item.setIconStyle("cat-prop-remove");
             if (gwtJahiaNodeProperties != null) {
                 item.setEnabled(!gwtJahiaNodeProperties.isEmpty());
             } else {
                 item.setEnabled(false);
             }
-            item.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent ce) {
+            item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent ce) {
                     createRemovePropertiesWindow();
                 }
             });
             toolBar.add(item);
 
-            item = new TextToolItem(getResource("button_save"), "cate-save");
+            item = new Button(Messages.getResource("button_save"));
+            item.setIconStyle("cate-save");
             if (gwtJahiaNodeProperties != null) {
                 item.setEnabled(!gwtJahiaNodeProperties.isEmpty());
             } else {
@@ -184,16 +186,6 @@ public class PropertiesEditor extends AbsolutePanel {
         return formPanel;
     }
 
-    /**
-     * Get resources
-     *
-     * @param key
-     * @return
-     */
-    private String getResource(String key) {
-        return Messages.getResource(key);
-    }
-
 
     /**
      * Create 'add new property' window
@@ -203,9 +195,8 @@ public class PropertiesEditor extends AbsolutePanel {
         removePropertiesWindow.setLayout(new FitLayout());
         removePropertiesWindow.setModal(true);
         removePropertiesWindow.setResizable(false);
-        removePropertiesWindow.setHeading(getResource("cat_prop_remove"));
+        removePropertiesWindow.setHeading(Messages.getResource("cat_prop_remove"));
         removePropertiesWindow.setBodyBorder(false);
-        removePropertiesWindow.setInsetBorder(false);
         removePropertiesWindow.setWidth(310);
 
 
@@ -226,9 +217,9 @@ public class PropertiesEditor extends AbsolutePanel {
             removePropertiesWindow.add(list);
 
             // save button
-            Button save = new Button(getResource("button_remove"));
-            save.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            Button save = new Button(Messages.getResource("button_remove"));
+            save.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
                     // update user properties
                     List<GWTJahiaNodeProperty> categoryProperties = new ArrayList<GWTJahiaNodeProperty>();
 
@@ -241,8 +232,8 @@ public class PropertiesEditor extends AbsolutePanel {
                     }
                     Log.debug("Number of properties to remove: " + categoryProperties.size());
                     // apply modification
-                    CategoryService.App.getInstance().removeProperties(gwtJahiaCategoryNode, categoryProperties, new LoadCategoryAsyncCallback(PropertiesEditor.this));
-                    removePropertiesWindow.close();
+                    CategoryService.App.getInstance().removeProperties(gwtJahiaCategoryNode, categoryProperties, new LoadCategoryAsyncCallback());
+                    removePropertiesWindow.hide();
 
                 }
             });
@@ -260,9 +251,8 @@ public class PropertiesEditor extends AbsolutePanel {
         final com.extjs.gxt.ui.client.widget.Window newFieldWindow = new com.extjs.gxt.ui.client.widget.Window();
         newFieldWindow.setModal(true);
         newFieldWindow.setResizable(false);
-        newFieldWindow.setHeading(getResource("cat_prop_add"));
+        newFieldWindow.setHeading(Messages.getResource("cat_prop_add"));
         newFieldWindow.setBodyBorder(false);
-        newFieldWindow.setInsetBorder(false);
         newFieldWindow.setLayout(new FitLayout());
 
         FormPanel formPanel = new FormPanel();
@@ -271,30 +261,30 @@ public class PropertiesEditor extends AbsolutePanel {
         formPanel.setHeaderVisible(false);
         formPanel.setBodyBorder(false);
         // label fiels
-        final TextField<String> labelField = new TextField();
-        labelField.setFieldLabel(getResource("cat_prop_name"));
+        final TextField<String> labelField = new TextField<String>();
+        labelField.setFieldLabel(Messages.getResource("cat_prop_name"));
         formPanel.add(labelField);
 
         // value field
-        final TextField<String> valueField = new TextField();
-        valueField.setFieldLabel(getResource("cat_prop_value"));
+        final TextField<String> valueField = new TextField<String>();
+        valueField.setFieldLabel(Messages.getResource("cat_prop_value"));
         formPanel.add(valueField);
 
         // apply button
-        Button apply = new Button(getResource("button_apply"));
-        apply.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
-                savePropertyAsync(labelField, valueField, newFieldWindow);
+        Button apply = new Button(Messages.getResource("button_apply"));
+        apply.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                savePropertyAsync(labelField, valueField);
             }
         });
         formPanel.addButton(apply);
 
         // save button
-        Button save = new Button(getResource("button_save"));
-        save.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
-                savePropertyAsync(labelField, valueField, newFieldWindow);
-                newFieldWindow.close();
+        Button save = new Button(Messages.getResource("button_save"));
+        save.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                savePropertyAsync(labelField, valueField);
+                newFieldWindow.hide();
 
             }
         });
@@ -308,11 +298,10 @@ public class PropertiesEditor extends AbsolutePanel {
     }
 
     /**
-     * @param labelField
-     * @param valueField
-     * @param newFieldWindow
+     * @param labelField the label
+     * @param valueField the value
      */
-    private void savePropertyAsync(TextField<String> labelField, TextField<String> valueField, Window newFieldWindow) {
+    private void savePropertyAsync(TextField<String> labelField, TextField<String> valueField) {
         // update user properties
         List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = new ArrayList<GWTJahiaNodeProperty>();
         GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
@@ -321,33 +310,26 @@ public class PropertiesEditor extends AbsolutePanel {
         gwtJahiaNodeProperties.add(gwtJahiaNodeProperty);
 
         // save propertiey
-        CategoryService.App.getInstance().saveProperties(gwtJahiaCategoryNode, gwtJahiaNodeProperties, new LoadCategoryAsyncCallback(this));
+        CategoryService.App.getInstance().saveProperties(gwtJahiaCategoryNode, gwtJahiaNodeProperties, new LoadCategoryAsyncCallback());
     }
 
-
-    /**
-     * Asyncall that load user properties
-     */
-    private class LoadCategoryAsyncCallback implements AsyncCallback {
-        private PropertiesEditor propertiesEditor;
-
-        private LoadCategoryAsyncCallback(PropertiesEditor propertiesEditor) {
-            this.propertiesEditor = propertiesEditor;
-        }
+    private class LoadCategoryAsyncCallback implements AsyncCallback<GWTJahiaCategoryNode> {
 
         public void onFailure(Throwable throwable) {
-            Log.error("Can't retrieve jahia user properties", throwable);
-        }
-
-        public void onSuccess(Object o) {
-            // load user properties
-            if (o == null) {
-                Log.error("categroy nod is null.");
+                Log.error("Can't retrieve jahia user properties", throwable);
             }
-            Log.error("nb properties after update" + ((GWTJahiaCategoryNode) o).getCategoryProperties().size());
-            categoryDetails.updatePropertiesTab((GWTJahiaCategoryNode) o);
-        }
 
+            public void onSuccess(GWTJahiaCategoryNode o) {
+                // load user properties
+                if (o == null) {
+                    Log.error("categroy nod is null.");
+                } else {
+                    Log.error("nb properties after update" + o.getCategoryProperties().size());
+                    categoryDetails.updatePropertiesTab(o);
+                }
+
+            }
 
     }
+
 }

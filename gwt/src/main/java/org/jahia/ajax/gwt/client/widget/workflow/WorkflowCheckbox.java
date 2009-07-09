@@ -37,8 +37,8 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Widget;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.Events;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.Set;
@@ -66,8 +66,8 @@ public class WorkflowCheckbox extends HorizontalPanel {
         super() ;
         checkbox = new CheckBox() ;
         checkbox.addStyleName("checkbox-space");
-        checkbox.addListener(Events.Change, new Listener() {
-            public void handleEvent(BaseEvent event) {
+        checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent event) {
                 if (checkbox.getValue()) {
                     if (!checked.containsKey(key)) {
                         Log.debug("add "+key);

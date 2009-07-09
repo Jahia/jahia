@@ -39,13 +39,12 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.category.CategoriesManagerActions;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 
 /**
@@ -58,28 +57,28 @@ public class CategoriesTopBar extends TopBar {
     private ToolBar m_component;
 
 
-    private List<TextToolItem> topTableSingleSelectionButtons = new ArrayList<TextToolItem>();
-    private List<TextToolItem> topTableMultipleSelectionButtons = new ArrayList<TextToolItem>();
-    private TextToolItem paste;
+    private List<Button> topTableSingleSelectionButtons = new ArrayList<Button>();
+    private List<Button> topTableMultipleSelectionButtons = new ArrayList<Button>();
+    private Button paste;
 
     public CategoriesTopBar(final String exportUrl, final String importUrl) {
         m_component = new ToolBar();
         m_component.setHeight(21);
-        TextToolItem cut = new TextToolItem();
-        TextToolItem remove = new TextToolItem();
-        paste = new TextToolItem();
-        Formatter.disableTextToolItem(paste);
-        TextToolItem exportCategories = new TextToolItem();
-        TextToolItem importCategories = new TextToolItem();
-        TextToolItem newCategory = new TextToolItem();
-        TextToolItem updateInfo = new TextToolItem();
-        TextToolItem updateACL = new TextToolItem();
+        Button cut = new Button();
+        Button remove = new Button();
+        paste = new Button();
+        Formatter.disableButton(paste);
+        Button exportCategories = new Button();
+        Button importCategories = new Button();
+        Button newCategory = new Button();
+        Button updateInfo = new Button();
+        Button updateACL = new Button();
 
         // new category
         newCategory.setIconStyle("fm-newfolder");
         newCategory.setText(getResource("cat_create"));
-        newCategory.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        newCategory.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 CategoriesManagerActions.createCategory(getLinker());
             }
         });
@@ -88,8 +87,8 @@ public class CategoriesTopBar extends TopBar {
         // remove
         remove.setIconStyle("fm-remove");
         remove.setText(getResource("cat_remove"));
-        remove.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        remove.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 CategoriesManagerActions.remove(getLinker());
             }
         });
@@ -98,8 +97,8 @@ public class CategoriesTopBar extends TopBar {
         // update
         updateInfo.setIconStyle("fm-rename");
         updateInfo.setText(getResource("cat_update"));
-        updateInfo.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        updateInfo.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 CategoriesManagerActions.updateInfo(getLinker());
             }
         });
@@ -109,8 +108,8 @@ public class CategoriesTopBar extends TopBar {
         // cut
         cut.setIconStyle("fm-cut");
         cut.setText(getResource("cat_cut"));
-        cut.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        cut.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 CategoriesManagerActions.cut(getLinker());
                 paste.setEnabled(true);
             }
@@ -120,8 +119,8 @@ public class CategoriesTopBar extends TopBar {
         // paste
         paste.setIconStyle("fm-paste");
         paste.setText(getResource("cat_paste"));
-        paste.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        paste.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 CategoriesManagerActions.paste(getLinker());
             }
         });
@@ -130,8 +129,8 @@ public class CategoriesTopBar extends TopBar {
         if (exportUrl != null) {
             exportCategories.setIconStyle("fm-download");
             exportCategories.setText(getResource("cat_export"));
-            exportCategories.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            exportCategories.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
                     CategoriesManagerActions.exportCategories(getLinker(), exportUrl);
                 }
             });
@@ -140,8 +139,8 @@ public class CategoriesTopBar extends TopBar {
         if (importUrl != null) {
             importCategories.setIconStyle("fm-upload");
             importCategories.setText(getResource("cat_import"));
-            importCategories.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            importCategories.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
                     CategoriesManagerActions.importCategories(getLinker(), importUrl);
                 }
             });
@@ -168,63 +167,63 @@ public class CategoriesTopBar extends TopBar {
         List<GWTJahiaCategoryNode> topTableSelection = (List<GWTJahiaCategoryNode>) topTableSelectionEl;
         if (topTableSelection != null) {
             // first activate all buttons
-            for (TextToolItem ti : topTableSingleSelectionButtons) {
-                Formatter.enableTextToolItem(ti);
+            for (Button ti : topTableSingleSelectionButtons) {
+                Formatter.enableButton(ti);
             }
-            for (TextToolItem ti : topTableMultipleSelectionButtons) {
-                Formatter.enableTextToolItem(ti);
+            for (Button ti : topTableMultipleSelectionButtons) {
+                Formatter.enableButton(ti);
             }
 
             // handle multiple selection
             if (topTableSelection.size() > 1) {
-                for (TextToolItem ti : topTableMultipleSelectionButtons) {
-                    Formatter.enableTextToolItem(ti);
+                for (Button ti : topTableMultipleSelectionButtons) {
+                    Formatter.enableButton(ti);
                 }
 
-                for (TextToolItem ti : topTableSingleSelectionButtons) {
-                    Formatter.disableTextToolItem(ti);
+                for (Button ti : topTableSingleSelectionButtons) {
+                    Formatter.disableButton(ti);
                 }
             }
             // handle single selection
             else if (topTableSelection.size() == 1) {
-                for (TextToolItem ti : topTableMultipleSelectionButtons) {
-                    Formatter.enableTextToolItem(ti);
+                for (Button ti : topTableMultipleSelectionButtons) {
+                    Formatter.enableButton(ti);
                 }
-                for (TextToolItem ti : topTableSingleSelectionButtons) {
-                    Formatter.enableTextToolItem(ti);
+                for (Button ti : topTableSingleSelectionButtons) {
+                    Formatter.enableButton(ti);
                 }
             }
 
             // check if one of the selected categories is only read access
             for (GWTJahiaCategoryNode gwtJahiaCategoryNode : topTableSelection) {
                 if (!gwtJahiaCategoryNode.isWriteable()) {
-                    for (TextToolItem ti : topTableSingleSelectionButtons) {
-                        Formatter.disableTextToolItem(ti);
+                    for (Button ti : topTableSingleSelectionButtons) {
+                        Formatter.disableButton(ti);
                     }
-                    for (TextToolItem ti : topTableMultipleSelectionButtons) {
-                        Formatter.disableTextToolItem(ti);
+                    for (Button ti : topTableMultipleSelectionButtons) {
+                        Formatter.disableButton(ti);
                     }
                     break;
                 }
             }
 
         } else if (leftTreeSelection != null) {
-            for (TextToolItem ti : topTableMultipleSelectionButtons) {
-                Formatter.disableTextToolItem(ti);
+            for (Button ti : topTableMultipleSelectionButtons) {
+                Formatter.disableButton(ti);
             }
 
-            for (TextToolItem ti : topTableSingleSelectionButtons) {
-                Formatter.disableTextToolItem(ti);
+            for (Button ti : topTableSingleSelectionButtons) {
+                Formatter.disableButton(ti);
             }
 
             // nothing is selected
         } else {
-            for (TextToolItem ti : topTableMultipleSelectionButtons) {
-                Formatter.disableTextToolItem(ti);
+            for (Button ti : topTableMultipleSelectionButtons) {
+                Formatter.disableButton(ti);
             }
 
-            for (TextToolItem ti : topTableSingleSelectionButtons) {
-                Formatter.disableTextToolItem(ti);
+            for (Button ti : topTableSingleSelectionButtons) {
+                Formatter.disableButton(ti);
             }
         }
     }

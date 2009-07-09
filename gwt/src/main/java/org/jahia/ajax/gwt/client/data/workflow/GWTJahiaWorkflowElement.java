@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.client.data.workflow;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
+import com.extjs.gxt.ui.client.data.ModelData;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -45,7 +46,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResult;
  * @author rfelden
  * @version 16 juil. 2008 - 16:10:16
  */
-public class GWTJahiaWorkflowElement extends BaseTreeModel<GWTJahiaWorkflowElement> implements Serializable {
+public class GWTJahiaWorkflowElement extends BaseTreeModel implements Serializable, ModelData {
 
     public final static String PAGE_TYPE = "ContentPage" ;
     public final static String CONTAINER_TYPE = "ContentContainer" ;

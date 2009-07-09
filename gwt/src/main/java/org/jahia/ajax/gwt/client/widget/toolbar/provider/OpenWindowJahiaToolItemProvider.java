@@ -34,8 +34,8 @@ package org.jahia.ajax.gwt.client.widget.toolbar.provider;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -55,10 +55,10 @@ public class OpenWindowJahiaToolItemProvider extends AbstractJahiaToolItemProvid
      * @param gwtToolbarItem
      * @return
      */
-    public SelectionListener<ComponentEvent> getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem) {
+    public <T extends ComponentEvent> SelectionListener<T> getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem) {
         // add listener
-        SelectionListener<ComponentEvent> listener = new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        SelectionListener<T> listener = new SelectionListener<T>() {
+            public void componentSelected(T event) {
                 Map preferences = gwtToolbarItem.getProperties();
                 final GWTJahiaProperty windowUrl = (GWTJahiaProperty) preferences.get(ToolbarConstants.URL);
                 if (Log.isDebugEnabled()) {
@@ -99,8 +99,8 @@ public class OpenWindowJahiaToolItemProvider extends AbstractJahiaToolItemProvid
      * @param gwtToolbarItem
      * @return
      */
-    public ToolItem createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
-        return new TextToolItem();
+    public Component createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
+        return new Button();
     }
 
 }

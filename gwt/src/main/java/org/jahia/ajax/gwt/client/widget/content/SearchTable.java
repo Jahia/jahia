@@ -46,9 +46,9 @@ import com.extjs.gxt.ui.client.widget.form.DateTimePropertyEditor;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.Events;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
@@ -168,7 +168,7 @@ public class SearchTable extends TopRightComponent {
         ColumnConfig col = new ColumnConfig("ext", "Type", 32) ;
         col.setAlignment(Style.HorizontalAlignment.CENTER);
         col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
+            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
                 return "<span class=\"" + modelData.getExt() + "\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>" ;
             }
         });
@@ -187,7 +187,7 @@ public class SearchTable extends TopRightComponent {
         col.setResizable(true);
         col.setAlignment(Style.HorizontalAlignment.LEFT);
         col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
+            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
                 if (modelData.getSize() != null) {
                     long size = modelData.getSize() ;
                     return Formatter.getFormattedSize(size) ;
@@ -202,7 +202,7 @@ public class SearchTable extends TopRightComponent {
         col = new ColumnConfig("date", "Date", 60) ;
         col.setAlignment(Style.HorizontalAlignment.LEFT);
         col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
+            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
                 if (modelData.getDate() != null) {
                     return new DateTimePropertyEditor(DateTimeFormat.getFormat(CalendarField.DEFAULT_DATE_FORMAT)).
                             getStringValue(modelData.getDate()) ;

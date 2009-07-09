@@ -71,7 +71,6 @@ public class VersionComparisonView extends Composite implements DataListener, Cl
     private String version2;
     private String lang;
     private GWTJahiaVersionComparisonData data;
-    private DataFactory dataFactory;
 
     private VerticalPanel mainPanel;
     private HTML titleAssertHTML;
@@ -90,7 +89,7 @@ public class VersionComparisonView extends Composite implements DataListener, Cl
                                  String version1,
                                  String version2,
                                      String lang) {
-        this.dataFactory = dataFactory;
+        DataFactory dataFactory1 = dataFactory;
         this.versionableUUID = versionableUUID;
         this.version1 = version1;
         this.version2 = version2;
@@ -98,7 +97,7 @@ public class VersionComparisonView extends Composite implements DataListener, Cl
         this.fieldGroupPanels = new HashMap<String, VerticalPanel>();
         this.versionButtons = new HashMap<String, VersionCompareButtons>();
         initWidget();
-        this.dataFactory.getVersionDAO().getData(versionableUUID,version1,version2,lang,this);
+        dataFactory1.getVersionDAO().getData(versionableUUID,version1,version2,lang,this);
     }
 
     public void onDataLoaded(GWTJahiaVersionComparisonData data) {
@@ -299,7 +298,7 @@ public class VersionComparisonView extends Composite implements DataListener, Cl
         this.comparisonTabPanel.clear();
         this.fieldGroupPanels.clear();
         this.versionButtons.clear();
-        VersionCompareButtons versionCompareButtons = null;
+        VersionCompareButtons versionCompareButtons;
         List<GWTJahiaFieldGroup> fieldsGroup = data.getFieldGroups();
         if (fieldsGroup !=null && !fieldsGroup.isEmpty()){
             for (GWTJahiaFieldGroup fieldGroup : fieldsGroup) {
@@ -358,7 +357,7 @@ public class VersionComparisonView extends Composite implements DataListener, Cl
 
         public void updateFieldViewContent(String valueType){
             Iterator<FieldView> iterator = fieldViews.iterator();
-            FieldView fieldView = null;
+            FieldView fieldView;
             while (iterator.hasNext()){
                 fieldView = iterator.next();
                 if (OLD_VERSION.equals(valueType)) {

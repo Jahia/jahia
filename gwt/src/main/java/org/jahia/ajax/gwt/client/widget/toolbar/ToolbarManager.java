@@ -56,10 +56,7 @@ import org.jahia.ajax.gwt.client.widget.toolbar.dnd.ToolbarIndexedDropController
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
@@ -109,7 +106,7 @@ public class ToolbarManager {
     // number of displayed toolbar
     private int displayedToolbars = 0;
 
-    private List<Listener<BaseEvent>> contextMenuReadyListeners = new ArrayList<Listener<BaseEvent>>(
+    private List<Listener<MenuEvent>> contextMenuReadyListeners = new ArrayList<Listener<MenuEvent>>(
             1);
 
     public ToolbarManager() {
@@ -292,8 +289,8 @@ public class ToolbarManager {
         hideToolbarsButton = new Button("");
         hideToolbarsButton.setIconStyle("gwt-toolbar-ItemsGroup-icons-admin-min");
         hideToolbarsButton.setToolTip(getResource("display"));
-        hideToolbarsButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        hideToolbarsButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 JahiaService.App.getInstance().saveJahiaPreference(new GWTJahiaPreference(TOOLBARS_DISPLAYED_PREF, "true"), createShowHideAsyncCall(true));
             }
         });
@@ -348,8 +345,8 @@ public class ToolbarManager {
                     item.setChecked(jahiaToolbar.getGwtToolbar().getState().isDisplay());
                     item.setEnabled(!jahiaToolbar.getGwtToolbar().isMandatory());
                     item.setText(jahiaToolbar.getGwtToolbar().getTitle());
-                    item.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                        public void componentSelected(ComponentEvent event) {
+                    item.addSelectionListener(new SelectionListener<MenuEvent>() {
+                        public void componentSelected(MenuEvent event) {
                             // check if there are more that 2 toolbar diplsay
                             Log.debug("Displayed toolabr: " + displayedToolbars);
                             if (!item.isChecked() && displayedToolbars == 1) {
@@ -365,26 +362,26 @@ public class ToolbarManager {
             }
             // reset position
             MenuItem resetPosition = new MenuItem(getResource("reset"));
-            resetPosition.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            resetPosition.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent event) {
                     loadToolbars(true);
                 }
             });
             toolbarContextMenu.add(resetPosition);
-            BaseEvent evt = new BaseEvent(toolbarContextMenu);
+            MenuEvent evt = new MenuEvent(toolbarContextMenu);
 
             toolbarContextMenu.add(new SeparatorMenuItem());
 
             // hide all
             MenuItem hideAllMenu = new MenuItem(getResource("hide_all"));
-            hideAllMenu.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            hideAllMenu.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent event) {
                     JahiaService.App.getInstance().saveJahiaPreference(new GWTJahiaPreference(TOOLBARS_DISPLAYED_PREF, "false"), createShowHideAsyncCall(false));
                 }
             });
             toolbarContextMenu.add(hideAllMenu);
 
-            for (Listener<BaseEvent> listener : contextMenuReadyListeners) {
+            for (Listener<MenuEvent> listener : contextMenuReadyListeners) {
                 listener.handleEvent(evt);
             }
 
@@ -515,7 +512,7 @@ public class ToolbarManager {
         return Messages.getResource(key);
     }
 
-    public void addContextMenuReadyListener(Listener<BaseEvent> listener) {
+    public void addContextMenuReadyListener(Listener<MenuEvent> listener) {
         contextMenuReadyListeners.add(listener);
     }
 }

@@ -32,7 +32,6 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -40,8 +39,6 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
@@ -121,25 +118,25 @@ public class FileUploader extends Window {
         form.add(createVersion);
 
         final ToolBar toolBar = new ToolBar();
-        TextToolItem add = new TextToolItem(Messages.getResource("fm_addFile"));
+        Button add = new Button(Messages.getResource("fm_addFile"));
         add.setIconStyle("fm-addFile");
-        add.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        add.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 addUploadField();
             }
         });
         toolBar.add(add);
         bar.setVisible(false);
         toolBar.add(new FillToolItem());
-        toolBar.add(new AdapterToolItem(bar));
+        toolBar.add(bar);
 
-        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 hide();
             }
         });
-        final Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        final Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 try {
                     form.submit();
                 } catch (Exception e) {
@@ -153,7 +150,7 @@ public class FileUploader extends Window {
         buttons.add(submit);
         buttons.add(cancel);
         setButtonAlign(Style.HorizontalAlignment.CENTER);
-        setButtonBar(buttons);
+        setTopComponent(buttons);
 
         setTopComponent(toolBar);
 
@@ -180,7 +177,7 @@ public class FileUploader extends Window {
                 bar.reset();
                 linker.setSelectPathAfterDataUpdate(location.getPath() + "/" + upload.getFilename());
 
-                String result = formEvent.resultHtml;
+                String result = formEvent.getResultHtml();
                 toolBar.removeAll();
                 removeAll();
                 String[] results = result.split("\n");
@@ -204,8 +201,8 @@ public class FileUploader extends Window {
                 }
                 if (!exists.isEmpty()) {
                     submit.removeAllListeners();
-                    submit.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                        public void componentSelected(ComponentEvent event) {
+                    submit.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        public void componentSelected(ButtonEvent event) {
                             submit.setEnabled(false);
                             final List<Field[]> list = new ArrayList<Field[]>(exists);
                             final List<Field[]> list2 = new ArrayList<Field[]>(exists);
@@ -268,12 +265,12 @@ public class FileUploader extends Window {
     }
 
     private void addExistingToForm(List<Field[]> exists, String key, String tmp, final String name) {
-        final TextField textField = new TextField();
+        final TextField<String> textField = new TextField<String>();
         textField.setFieldLabel("rename");
         textField.setName(key + "_name");
         textField.setValue(name);
 
-        final HiddenField hiddenField = new HiddenField();
+        final HiddenField<String> hiddenField = new HiddenField<String>();
         hiddenField.setName(key + "_tmp");
         hiddenField.setValue(tmp);
 

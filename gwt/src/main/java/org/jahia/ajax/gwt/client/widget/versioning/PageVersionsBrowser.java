@@ -35,12 +35,9 @@ import org.jahia.ajax.gwt.client.widget.tripanel.TriPanelBrowserWindow;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.GWTJahiaVersion;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.widget.versioning.VersionsBrowserListener;
-import org.jahia.ajax.gwt.client.widget.versioning.VersionsBrowser;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.Events;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 
 import java.util.List;
 import java.util.Iterator;
@@ -92,41 +89,41 @@ public class PageVersionsBrowser extends TriPanelBrowserWindow implements Versio
         // linker initializations
         versionsTable.initContextMenu();
 
-        saveButton = new Button("Save");
-        saveButton.addListener(Events.OnClick, new Listener<ComponentEvent>() {
-          public void handleEvent(ComponentEvent ce) {
-            onClick(ce);
-          }
+        saveButton = new Button("Save", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                onClick(buttonEvent);
+            }
         });
 
-        cancelButton = new Button("Cancel");
-        cancelButton.addListener(Events.OnClick, new Listener<ComponentEvent>() {
-          public void handleEvent(ComponentEvent ce) {
-            onClick(ce);
-          }
+        cancelButton = new Button("Cancel", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                onCancelClick();
+            }
         });
         this.addButton(this.saveButton);
         this.addButton(this.cancelButton);
     }
 
-    protected void onClick(ComponentEvent ce){
+    protected void onClick(ButtonEvent ce){
         Iterator<VersionsBrowserListener> iterator = this.listeners.iterator();
-        VersionsBrowserListener listener = null;
+        VersionsBrowserListener listener;
         while (iterator.hasNext()){
             listener = iterator.next();
-            if (ce.component == this.saveButton){
+            if (ce.getComponent() == this.saveButton){
                 listener.onSave(getSelectedVersion());
                 this.hide();
-            } else if (ce.component == this.cancelButton){
+            } else if (ce.getComponent() == this.cancelButton){
                 //
                 this.hide();
             }
         }
     }
 
-    protected void onCancelClick(ComponentEvent ce){
+    protected void onCancelClick(){
         Iterator<VersionsBrowserListener> iterator = this.listeners.iterator();
-        VersionsBrowserListener listener = null;
+        VersionsBrowserListener listener;
         while (iterator.hasNext()){
             listener = iterator.next();
             listener.onSave(getSelectedVersion());

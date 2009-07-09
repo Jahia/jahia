@@ -61,10 +61,9 @@ public class LayoutManagerJahiaModule extends JahiaModule {
     public void onModuleLoad(final GWTJahiaPageContext jahiaPageContext, final List<RootPanel> rootPanels) {
         if (rootPanels != null && rootPanels.size() == 1) {
             // get Root element attributes
-            LayoutmanagerService.App.getInstance().getLayoutmanagerConfig(new AsyncCallback() {
-                public void onSuccess(Object o) {
-                    GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig = (GWTJahiaLayoutManagerConfig) o;
-                    if (o == null || gwtLayoutManagerConfig.getNbColumns() < 1) {
+            LayoutmanagerService.App.getInstance().getLayoutmanagerConfig(new AsyncCallback<GWTJahiaLayoutManagerConfig>() {
+                public void onSuccess(GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig) {
+                    if (gwtLayoutManagerConfig == null || gwtLayoutManagerConfig.getNbColumns() < 1) {
                         gwtLayoutManagerConfig = new GWTJahiaLayoutManagerConfig();
                         gwtLayoutManagerConfig.setNbColumns(3);
                         gwtLayoutManagerConfig.setLiveQuickbarVisible(true);

@@ -39,8 +39,8 @@ import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
@@ -86,18 +86,18 @@ public class ImageRotate extends Window {
         newname.setFieldLabel(Messages.getResource("fm_newname"));
         form.add(newname);
 
-        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 hide() ;
             }
         });
-        Button left = new Button(Messages.getResource("fm_rotateLeft"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        Button left = new Button(Messages.getResource("fm_rotateLeft"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 rotateImage(n.getPath(), newname.getValue(), false, false) ;
             }
         }) ;
-        Button right = new Button(Messages.getResource("fm_rotateRight"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        Button right = new Button(Messages.getResource("fm_rotateRight"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 rotateImage(n.getPath(), newname.getValue(), true, false) ;
             }
         }) ;
@@ -105,7 +105,7 @@ public class ImageRotate extends Window {
         buttons.add(right) ;
         buttons.add(cancel) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);
-        setButtonBar(buttons);
+        setTopComponent(buttons);
 
         add(form);
     }

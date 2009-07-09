@@ -44,9 +44,6 @@ import org.jahia.ajax.gwt.client.data.versioning.GWTJahiaRawField;
 public class FieldView extends Composite {
 
     private GWTJahiaRawField field;
-    private VerticalPanel fieldPanel;
-    private HorizontalPanel titleBar;
-    private Label fieldTitleLabel;
     private HTML fieldContent;
     private VersionComparisonView versionComparison;
 
@@ -71,25 +68,25 @@ public class FieldView extends Composite {
     }
 
     private void initWidget(){
-        this.fieldPanel = new VerticalPanel();
-        this.fieldPanel.setStyleName("gwt-versionComparison-fieldPanel");
-        this.fieldPanel.setWidth("100%");
-        this.initWidget(this.fieldPanel);
+        VerticalPanel fieldPanel = new VerticalPanel();
+        fieldPanel.setStyleName("gwt-versionComparison-fieldPanel");
+        fieldPanel.setWidth("100%");
+        this.initWidget(fieldPanel);
 
         // init the title bar
-        this.titleBar = new HorizontalPanel();
-        this.titleBar.addStyleName("gwt-versionComparison-fieldTitleBar");
-        this.fieldPanel.add(this.titleBar);
+        HorizontalPanel titleBar = new HorizontalPanel();
+        titleBar.addStyleName("gwt-versionComparison-fieldTitleBar");
+        fieldPanel.add(titleBar);
 
-        this.fieldTitleLabel = new Label(this.field.getTitle());
-        this.fieldTitleLabel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+        Label fieldTitleLabel = new Label(this.field.getTitle());
+        fieldTitleLabel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
         String labelStyleName = "gwt-versionComparison-fieldLabel";
         if (this.field.getIcon() != null && !"".equals(this.field.getIcon().trim())){
             labelStyleName += "-" + this.field.getIcon();
         }
-        this.fieldTitleLabel.setStyleName(labelStyleName);
+        fieldTitleLabel.setStyleName(labelStyleName);
 
-        this.titleBar.add(this.fieldTitleLabel);
+        titleBar.add(fieldTitleLabel);
 
         // init the field content
         this.fieldContent = new HTML(this.field.getMergedDiffValue());
@@ -97,10 +94,10 @@ public class FieldView extends Composite {
         this.fieldContent.setStyleName("gwt-versionComparison-fieldContent");
         if (this.field.isBigText()){
             ScrollPanel scrollPanel = new ScrollPanel(this.fieldContent);
-            this.fieldPanel.add(scrollPanel);
+            fieldPanel.add(scrollPanel);
             this.fieldContent.setHeight(this.versionComparison.getBigTextFieldContentHeight());
         } else {
-            this.fieldPanel.add(this.fieldContent);
+            fieldPanel.add(this.fieldContent);
             this.fieldContent.setHeight(this.versionComparison.getFieldContentHeight());
         }
     }

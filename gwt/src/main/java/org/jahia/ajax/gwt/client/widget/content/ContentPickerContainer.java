@@ -42,9 +42,9 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.Events;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.TabPanelEvent;
 
 import java.util.List;
 
@@ -96,13 +96,13 @@ public class ContentPickerContainer extends TopRightComponent {
         thumbs.add(m_thumbs.getComponent()) ;
         tabs.add(thumbs) ;
 
-        thumbs.addListener(Events.Select, new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent componentEvent) {
+        thumbs.addListener(Events.Select, new SelectionListener<TabPanelEvent>() {
+            public void componentSelected(TabPanelEvent componentEvent) {
                 if (m_treeTable.getSelection() != null) {
                     List<GWTJahiaNode> selection = (List<GWTJahiaNode>) m_treeTable.getSelection() ;
                     if (selection.size() > 0) {
                         GWTJahiaNode selectedItem = selection.get(0) ;
-                        GWTJahiaNode parent = selectedItem.getParent() ;
+                        GWTJahiaNode parent = (GWTJahiaNode) selectedItem.getParent() ;
                         if (selection.size() == 1) {
                             if (selectedItem.isFile()) {
                                 if (parent != null) {

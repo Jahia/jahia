@@ -31,11 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.widget.definition;
 
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.DataList;
@@ -83,8 +80,8 @@ public class LeftPanel extends LeftComponent {
         typesList.setFlatStyle(true);
         typesList.setScrollMode(Style.Scroll.AUTO);
         typesList.setSelectionMode(Style.SelectionMode.SINGLE);
-        availableTypesPanel.getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        availableTypesPanel.getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+            public void componentSelected(IconButtonEvent event) {
                 retrieveTypes() ;
             }
         }));

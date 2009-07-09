@@ -39,9 +39,9 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.TreeEvent;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -74,13 +74,13 @@ public class JahiaFolderPortletTree extends LayoutContainer {
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
         // data proxy
-        RpcProxy<GWTJahiaNode, List<GWTJahiaNode>> proxy = new RpcProxy<GWTJahiaNode, List<GWTJahiaNode>>() {
+        RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
             @Override
-            protected void load(GWTJahiaNode gwtJahiaFolder, AsyncCallback<List<GWTJahiaNode>> callback) {
+            protected void load(Object gwtJahiaFolder, AsyncCallback<List<GWTJahiaNode>> callback) {
                 if (gwtJahiaFolder == null) {
                     service.getRoot(JCRClientUtils.ALL_MASHUPS, JCRClientUtils.FOLDER_NODETYPES, null, null, null, callback);
                 } else {
-                    service.ls(gwtJahiaFolder, JCRClientUtils.FOLDER_NODETYPES, null, null, null, false, callback);
+                    service.ls((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.FOLDER_NODETYPES, null, null, null, false, callback);
                 }
 
             }
@@ -137,8 +137,8 @@ public class JahiaFolderPortletTree extends LayoutContainer {
             }
 
         });
-        tree.addListener(Events.SelectionChange, new Listener() {
-            public void handleEvent(BaseEvent event) {
+        tree.addListener(Events.SelectionChange, new Listener<TreeEvent>() {
+            public void handleEvent(TreeEvent event) {
                 List<GWTJahiaNode> gwtJahiaNodes = binder.getSelection();
                 if (gwtJahiaNodes != null && gwtJahiaNodes.size() > 0) {
                     JahiaPortalManager.getInstance().getPortletPicker().loadContent(gwtJahiaNodes.get(0));

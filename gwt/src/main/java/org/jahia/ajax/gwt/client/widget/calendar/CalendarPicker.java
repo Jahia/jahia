@@ -33,13 +33,9 @@ package org.jahia.ajax.gwt.client.widget.calendar;
 
 import java.util.Date;
 
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseModel;
-import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.DateWrapper;
 import com.extjs.gxt.ui.client.widget.ComponentHelper;
@@ -194,7 +190,7 @@ public class CalendarPicker extends DatePicker {
 
         hours.addListener(Events.Change, new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent be) {
-                HourModel hourModel = (HourModel)be.value;
+                HourModel hourModel = (HourModel)be.getValue();
                 if (hourModel!=null){
                     hour = new HourModel(Integer.parseInt(hourModel.getValue()));
                 }
@@ -222,7 +218,7 @@ public class CalendarPicker extends DatePicker {
         });
         minutes.addListener(Events.Change, new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent be) {
-                MinuteModel minuteModel = (MinuteModel)be.value;
+                MinuteModel minuteModel = (MinuteModel)be.getValue();
                 if (minuteModel!=null){
                     minute = new MinuteModel(Integer.parseInt(minuteModel.getValue()));
                 }

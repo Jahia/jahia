@@ -45,7 +45,7 @@ import java.util.List;
  */
 public interface LayoutmanagerServiceAsync {
 
-    public void saveLayoutItem(GWTJahiaPageContext pageContext, GWTJahiaLayoutItem gwtLayoutItem, AsyncCallback async);
+    public void saveLayoutItem(GWTJahiaPageContext pageContext, GWTJahiaLayoutItem gwtLayoutItem, AsyncCallback<String> async);
 
     public void saveAsDefault(GWTJahiaPageContext pageContext, AsyncCallback async);
 
@@ -59,7 +59,7 @@ public interface LayoutmanagerServiceAsync {
 
     public void saveLayoutmanagerConfig(GWTJahiaPageContext pageContext, GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig, AsyncCallback async);
 
-    public void getLayoutmanagerConfig(AsyncCallback async);
+    public void getLayoutmanagerConfig(AsyncCallback<GWTJahiaLayoutManagerConfig> async);
 
     public void getLayoutItems(GWTJahiaPageContext pageContext, AsyncCallback<List<GWTJahiaLayoutItem>> async);
 

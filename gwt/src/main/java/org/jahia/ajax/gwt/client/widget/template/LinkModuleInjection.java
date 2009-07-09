@@ -33,7 +33,7 @@ package org.jahia.ajax.gwt.client.widget.template;
 
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
 
 /**
@@ -43,8 +43,8 @@ import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
  */
 public class LinkModuleInjection extends Button {
     public LinkModuleInjection(final String module) {
-        addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 TemplatesDOMUtil.moduleInjection("/gwt/" + module + "/" + module + "nocache.js");
             }
         });

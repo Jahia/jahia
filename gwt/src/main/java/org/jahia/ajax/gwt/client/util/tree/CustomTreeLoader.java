@@ -50,7 +50,7 @@ public abstract class CustomTreeLoader<M extends BaseTreeModel> extends BaseTree
      *
      * @param proxy the data proxy
      */
-    public CustomTreeLoader(DataProxy<M, List<M>> proxy) {
+    public CustomTreeLoader(DataProxy<List<M>> proxy) {
         super(proxy) ;
     }
 
@@ -60,7 +60,7 @@ public abstract class CustomTreeLoader<M extends BaseTreeModel> extends BaseTree
      * @param proxy the data proxy
      * @param openPreviousPaths false to deactivate last state restore
      */
-    public CustomTreeLoader(DataProxy<M, List<M>> proxy, boolean openPreviousPaths) {
+    public CustomTreeLoader(DataProxy<List<M>> proxy, boolean openPreviousPaths) {
         this(proxy) ;
         this.openPreviousPaths = openPreviousPaths ;
     }

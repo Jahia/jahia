@@ -1,6 +1,0 @@
-
-<module>
-    <inherits name="org.jahia.ajax.gwt.template.common.edit.Edit"/>
-    <stylesheet src='css/opensearch.css'/>
-    <entry-point class='org.jahia.ajax.gwt.template.opensearch.edit.client.EditModeEntryPoint'/>
-</module>

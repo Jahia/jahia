@@ -33,10 +33,10 @@ package org.jahia.ajax.gwt.client.widget.toolbar.provider;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.Style;
@@ -55,9 +55,9 @@ import java.util.Map;
  */
 public class QuickWorkflowJahiaToolItemProvider extends AbstractJahiaToolItemProvider {
 
-    public SelectionListener<ComponentEvent> getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem) {
-        return new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+    public <T extends ComponentEvent> SelectionListener<T> getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem) {
+        return new SelectionListener<T>() {
+            public void componentSelected(T event) {
                 Map<String, GWTJahiaProperty> props = gwtToolbarItem.getProperties() ;
                 if (!props.containsKey("mode") || props.get("mode").getValue().equals("quick")) {
                     new QuickWorkflowDialog(gwtToolbarItem).show();
@@ -79,9 +79,9 @@ public class QuickWorkflowJahiaToolItemProvider extends AbstractJahiaToolItemPro
         };
     }
 
-    public ToolItem createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
+    public Component createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
         Log.debug("Workflow toolitem: "+gwtToolbarItem.getTitle()+","+gwtToolbarItem.isDisplayTitle());
-        return new TextToolItem();
+        return new Button();
     }
 
     private class QuickWorkflowDialog extends Window {
@@ -112,13 +112,13 @@ public class QuickWorkflowJahiaToolItemProvider extends AbstractJahiaToolItemPro
             add(comments);
 
             ButtonBar buttons = new ButtonBar() ;
-            Button cancel = new Button("Cancel", new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            Button cancel = new Button("Cancel", new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
                     hide() ;
                 }
             }) ;
-            execute = new Button("OK", new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
+            execute = new Button("OK", new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
                     if (action.equalsIgnoreCase("publishAll")) {
                         ToolbarService.App.getInstance().publishAll(comments.getRawValue(), new AsyncCallback() {
                             public void onFailure(Throwable throwable) {
@@ -147,7 +147,7 @@ public class QuickWorkflowJahiaToolItemProvider extends AbstractJahiaToolItemPro
             execute.setIconStyle("wf-button_ok");
             cancel.setIconStyle("wf-button_cancel");
             setButtonAlign(Style.HorizontalAlignment.CENTER);
-            setButtonBar(buttons);
+            setTopComponent(buttons);
         }
 
         public void show() {

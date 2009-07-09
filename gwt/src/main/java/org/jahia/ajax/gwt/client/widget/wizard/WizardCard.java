@@ -99,7 +99,7 @@ public abstract class WizardCard extends LayoutContainer {
     /**
      * Returns the currently set title.
      *
-     * @returns the current title of this card
+     * @return the current title of this card
      */
     public String getCardTitle() {
         return cardtitle;
@@ -141,7 +141,7 @@ public abstract class WizardCard extends LayoutContainer {
     /**
      * Calls the isValid of the form (if set) and returns the result.
      *
-     * @returns the result of the form isValid(), or true if no form set
+     * @return the result of the form isValid(), or true if no form set
      */
     public boolean isValid() {
         if (panel == null) {

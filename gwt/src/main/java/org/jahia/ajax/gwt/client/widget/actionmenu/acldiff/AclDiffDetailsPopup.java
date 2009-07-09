@@ -41,8 +41,8 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffDetails;
 import org.jahia.ajax.gwt.client.util.EngineOpener;
 
@@ -76,8 +76,8 @@ public class AclDiffDetailsPopup extends Window {
         add(rights);
         Button item = new Button("Open engine") ;
         if (details.getUrl() != null) {
-            item.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent componentEvent) {
+            item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent componentEvent) {
                     EngineOpener.openEngine(details.getUrl());
                 }
             }) ;
@@ -86,7 +86,7 @@ public class AclDiffDetailsPopup extends Window {
         }
         ButtonBar bar = new ButtonBar() ;
         bar.add(item) ;
-        setButtonBar(bar);
+        setTopComponent(bar);
         setIconStyle(iconStyle);
         setHeading("ACL");
         setSize(270,230);

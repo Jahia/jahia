@@ -32,36 +32,20 @@
 package org.jahia.ajax.gwt.client.service.versioning;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.versioning.GWTJahiaVersionComparisonData;
+import org.jahia.ajax.gwt.client.data.GWTJahiaVersion;
 
 /**
  *
  */
 public interface RPCVersioningServiceAsync {
 
-    void getData(GWTJahiaPageContext page,String versionableUUID, String version1, String version2, String lang,
-                 AsyncCallback async);
+    void getData(GWTJahiaPageContext page,String versionableUUID, String version1, String version2, String lang, AsyncCallback<GWTJahiaVersionComparisonData> async);
 
-    /**
-     * Returns revisions entries with or without staging entry
-     *
-     * @param page
-     * @param versionableUUID
-     * @param lang
-     * @param withStagingRevision if true, return staging revision too
-     * @param withDeletedRevision if true, return deleted revision too
-     * @param applyLanguageFiltering
-     * @param skipNotAvailablePageRevisions
-     * @param offset
-     * @param sortParameter
-     * @param isAscending
-     * @param versionPerPage
-     * @return
-     */
-    void getRevisions(GWTJahiaPageContext page,String versionableUUID,
-                                        String lang, boolean withStagingRevision, boolean withDeletedRevision,
-                                        boolean applyLanguageFiltering, boolean skipNotAvailablePageRevisions,
-                                        int offset, String sortParameter, boolean isAscending, int versionPerPage,
-                                        AsyncCallback async);
+    void getRevisions(GWTJahiaPageContext page,String versionableUUID, String lang, boolean withStagingRevision, boolean withDeletedRevision,
+                      boolean applyLanguageFiltering, boolean skipNotAvailablePageRevisions, int offset, String sortParameter, boolean isAscending,
+                      int versionPerPage, AsyncCallback<PagingLoadResult<GWTJahiaVersion>> async);
 
 }

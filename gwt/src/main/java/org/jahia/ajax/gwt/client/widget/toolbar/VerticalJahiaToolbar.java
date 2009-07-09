@@ -40,14 +40,11 @@ import org.jahia.ajax.gwt.client.widget.toolbar.provider.JahiaToolItemProvider;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.DataList;
 import com.extjs.gxt.ui.client.widget.DataListItem;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
 
 import java.util.List;
 
@@ -91,15 +88,11 @@ public class VerticalJahiaToolbar extends JahiaToolbar {
             toolbarAccordion.setHeaderVisible(false);
 
             // add drag area
-            HorizontalPanel draggablePane = new HorizontalPanel();
-            draggablePane.add(createDragSeparator());
-            draggablePane.add(createDragSeparator());
-            draggableArea = new FocusPanel();
-            draggableArea.add(draggablePane);
-            ToolItem item = new AdapterToolItem(draggableArea);
-            item.setToolTip(gwtToolbar.getTitle());
+            draggableArea = new HorizontalPanel();
+            draggableArea.add(createDragSeparator());
+            draggableArea.add(createDragSeparator());
             ToolBar toolBar = new ToolBar();
-            toolBar.add(item);
+            toolBar.add(draggableArea);
             toolbarAccordion.setTopComponent(toolBar);
 
             // add items
@@ -146,7 +139,7 @@ public class VerticalJahiaToolbar extends JahiaToolbar {
             JahiaToolItemProvider toolbarItemWidgetProvider = jahiaProviderHelper.getJahiaToolItemProvider(gwtToolbarItem.getType());
             if (toolbarItemWidgetProvider == null && !isSeparator(gwtToolbarItem)) {
                 printProviderNotFoundError(gwtToolbarItem);
-            } else {
+            } else if (toolbarItemWidgetProvider != null) {
                 if (!isSeparator(gwtToolbarItem)) {
                     int layout = gwtToolbarItemsGroup.getLayout();
 

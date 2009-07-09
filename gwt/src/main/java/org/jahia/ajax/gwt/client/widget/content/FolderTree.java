@@ -49,7 +49,6 @@ import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.event.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
@@ -112,8 +111,8 @@ public class FolderTree extends LeftComponent {
             }
         });
         Menu queryMenu = new Menu() ;
-        final MenuItem removeQuery = new MenuItem(Messages.getResource("fm_remove"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        final MenuItem removeQuery = new MenuItem(Messages.getResource("fm_remove"), new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent event) {
                 final DataListItem item = queryList.getSelectedItem() ;
                 if (item != null) {
                     List<String> queryNode = new ArrayList<String>() ;
@@ -132,8 +131,8 @@ public class FolderTree extends LeftComponent {
         }) ;
         removeQuery.setIconStyle("fm_remove");
 
-        final MenuItem renameQuery = new MenuItem(Messages.getResource("fm_rename"), new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        final MenuItem renameQuery = new MenuItem(Messages.getResource("fm_rename"), new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent event) {
                 final DataListItem item = queryList.getSelectedItem() ;
                 if (item != null) {
                     renameSearch(((GWTJahiaNode) item.getData("query")));
@@ -142,22 +141,22 @@ public class FolderTree extends LeftComponent {
         }) ;
         removeQuery.setIconStyle("fm_rename");
 
-        queryMenu.addListener(Events.BeforeShow, new Listener() {
-            public void handleEvent(BaseEvent baseEvent) {
+        queryMenu.addListener(Events.BeforeShow, new Listener<MenuEvent>() {
+            public void handleEvent(MenuEvent baseEvent) {
                 removeQuery.setEnabled(queryList.getSelectedItem() != null) ;
             }
         }) ;
         queryMenu.add(removeQuery) ;
         queryMenu.add(renameQuery) ;
         queryList.setContextMenu(queryMenu);
-        searchPanel.getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+        searchPanel.getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+            public void componentSelected(IconButtonEvent event) {
                 retrieveSavedSearch() ;
             }
         }));
 
         // init main panel and add accordions
-        ChangeAccordionListener accordionListener =  new ChangeAccordionListener<ComponentEvent>() ;
+        ChangeAccordionListener<ComponentEvent> accordionListener =  new ChangeAccordionListener<ComponentEvent>() ;
         m_component = new ContentPanel(new AccordionLayout()) ;
         m_component.setScrollMode(Style.Scroll.AUTO);
         m_component.getHeader().setBorders(false);

@@ -34,18 +34,13 @@ package org.jahia.ajax.gwt.client.widget.layoutmanager;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
@@ -54,7 +49,6 @@ import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
 import org.jahia.ajax.gwt.client.service.layoutmanager.LayoutmanagerService;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutManagerConfig;
-import org.jahia.ajax.gwt.client.widget.layoutmanager.listener.OnPortletMovedListener;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.picker.JahiaPortletPicker;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.picker.JahiaPortletPickerDialog;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.portlet.JahiaPortal;
@@ -77,10 +71,6 @@ public class JahiaPortalManager extends ContentPanel {
     private JahiaPortletPicker portletPicker;
     private JahiaPortletPickerDialog portletSelectorDialog;
     private JahiaPortalConfig portalConfig;
-    private TextToolItem portletPickerButton;
-    private TextToolItem saveAsDefaultButton;
-    private TextToolItem restoreDefaultButton;
-    private TextToolItem configPortalButton;
     private static JahiaPortletFactory portletFactory = new JahiaPortletFactory();
     private GWTJahiaLayoutManagerConfig gwtPortalConfig;
     private static boolean isLiveMode = !JahiaPageEntryPoint.getJahiaGWTPage().getMode().equalsIgnoreCase("edit");
@@ -129,23 +119,22 @@ public class JahiaPortalManager extends ContentPanel {
         }
 
 
-        portletPickerButton = new TextToolItem(Messages.getNotEmptyResource("p_add_mashups", "Add mashups"));
-        portletPickerButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+        Button portletPickerButton = new Button(Messages.getNotEmptyResource("p_add_mashups", "Add mashups"));
+        portletPickerButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
-            public void componentSelected(ComponentEvent ce) {
+            public void componentSelected(ButtonEvent ce) {
                 goToPortelSelector();
             }
         });
 
-        saveAsDefaultButton = new TextToolItem(Messages.getNotEmptyResource("p_save_default", "Save as default"));
-        saveAsDefaultButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+        Button saveAsDefaultButton = new Button(Messages.getNotEmptyResource("p_save_default", "Save as default"));
+        saveAsDefaultButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
-            public void componentSelected(ComponentEvent ce) {
+            public void componentSelected(ButtonEvent ce) {
                 final MessageBox box = new MessageBox();
-                final Listener confirmBoxListener = new Listener<ComponentEvent>() {
-                    public void handleEvent(ComponentEvent ce) {
-                        Dialog dialog = (Dialog) ce.component;
-                        Button btn = dialog.getButtonPressed();
+                final Listener<MessageBoxEvent> confirmBoxListener = new Listener<MessageBoxEvent>() {
+                    public void handleEvent(MessageBoxEvent ce) {
+                        Button btn = ce.getButtonClicked();
                         if (btn.getText().equalsIgnoreCase(MessageBox.OK)) {
                             LayoutmanagerService.App.getInstance().saveAsDefault(JahiaPageEntryPoint.getJahiaGWTPage(), new AsyncCallback() {
                                 public void onSuccess(Object o) {
@@ -170,15 +159,14 @@ public class JahiaPortalManager extends ContentPanel {
             }
         });
 
-        restoreDefaultButton = new TextToolItem(Messages.getNotEmptyResource("p_restore_default", "Restore default"));
-        restoreDefaultButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+        Button restoreDefaultButton = new Button(Messages.getNotEmptyResource("p_restore_default", "Restore default"));
+        restoreDefaultButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
-            public void componentSelected(ComponentEvent ce) {
+            public void componentSelected(ButtonEvent ce) {
                 final MessageBox box = new MessageBox();
-                final Listener confirmBoxListener = new Listener<ComponentEvent>() {
-                    public void handleEvent(ComponentEvent ce) {
-                        Dialog dialog = (Dialog) ce.component;
-                        Button btn = dialog.getButtonPressed();
+                final Listener<MessageBoxEvent> confirmBoxListener = new Listener<MessageBoxEvent>() {
+                    public void handleEvent(MessageBoxEvent ce) {
+                        Button btn = ce.getButtonClicked();
                         if (btn.getText().equalsIgnoreCase(MessageBox.OK)) {
                             LayoutmanagerService.App.getInstance().restoreDefault(JahiaPageEntryPoint.getJahiaGWTPage(), new AsyncCallback() {
                                 public void onSuccess(Object o) {
@@ -203,12 +191,10 @@ public class JahiaPortalManager extends ContentPanel {
             }
         });
 
-        configPortalButton = new TextToolItem(Messages.getNotEmptyResource("p_my_config", "My config"));
-        configPortalButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-
-
+        Button configPortalButton = new Button(Messages.getNotEmptyResource("p_my_config", "My config"));
+        configPortalButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
-            public void componentSelected(ComponentEvent ce) {
+            public void componentSelected(ButtonEvent ce) {
                 portalConfig.show();
             }
         });

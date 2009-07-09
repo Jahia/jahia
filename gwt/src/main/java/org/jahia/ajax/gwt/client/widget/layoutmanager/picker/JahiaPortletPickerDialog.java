@@ -31,7 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.layoutmanager.picker;
 
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -61,7 +60,7 @@ public class JahiaPortletPickerDialog extends Dialog {
         addListener(Events.Hide, new Listener<WindowEvent>() {
             public void handleEvent(WindowEvent be) {
                // List<GWTJahiaNode> gwtJahiaNodes = portletPicker.getSelections();
-                if (be.buttonClicked == getButtonById("ok")) {
+                if (be.getButtonClicked() == getButtonById("ok")) {
                   /*  for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
                         GWTJahiaLayoutItem gwtJahiaDraggableWidget = new GWTJahiaLayoutItem();
                         gwtJahiaDraggableWidget.setColumn(0);

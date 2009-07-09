@@ -73,7 +73,7 @@ public class ActionMenuDisplay extends FlexTable {
                 setWidget(0, row++, new AclDiffIcon(globalState.getAclDiffState(), page)) ;
             }
             if (globalState.hasIntegrityState()) {
-                setWidget(0, row++, new StateIcon(globalState.getIntegrityState(), globalState.getIntegrityState().isBlocker() ? "integrity_blocker" : "integrity", true)) ;
+                setWidget(0, row, new StateIcon(globalState.getIntegrityState(), globalState.getIntegrityState().isBlocker() ? "integrity_blocker" : "integrity", true)) ;
             }
         }
     }

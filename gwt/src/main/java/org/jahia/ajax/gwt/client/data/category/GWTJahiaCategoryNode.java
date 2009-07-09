@@ -44,7 +44,7 @@ import java.util.List;
  * @author rfelden
  * @version 19 juin 2008 - 15:57:38
  */
-public class GWTJahiaCategoryNode extends BaseTreeModel<GWTJahiaCategoryNode> implements Serializable {
+public class GWTJahiaCategoryNode extends BaseTreeModel implements Serializable {
     private List<GWTJahiaCategoryTitle> categoryTitles;
 
     public GWTJahiaCategoryNode() {
@@ -183,16 +183,6 @@ public class GWTJahiaCategoryNode extends BaseTreeModel<GWTJahiaCategoryNode> im
 
     public void setCategoryId(String id) {
         set("categoryId", id);
-    }
-
-    @Override
-    public void setParent(GWTJahiaCategoryNode gwtJahiaCategoryNode) {
-        super.setParent(gwtJahiaCategoryNode);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void setChildren(List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
-        super.setChildren(gwtJahiaCategoryNodes);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     public String toString() {

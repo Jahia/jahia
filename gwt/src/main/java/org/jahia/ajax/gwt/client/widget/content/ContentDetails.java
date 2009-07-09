@@ -32,21 +32,18 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.table.Table;
-import com.extjs.gxt.ui.client.widget.table.TableColumn;
-import com.extjs.gxt.ui.client.widget.table.TableColumnModel;
-import com.extjs.gxt.ui.client.widget.table.TableItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -373,12 +370,11 @@ public class ContentDetails extends BottomRightComponent {
                         final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, list, null);
 
                         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
-                        TextToolItem item = new TextToolItem(Messages.getResource("fm_save"), "fm-save");
+                        Button item = new Button(Messages.getResource("fm_save"));
                         item.setIconStyle("gwt-icons-save");
                         item.setEnabled( selectedNode.isWriteable() && !selectedNode.isLocked() );
-
-                        item.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                            public void componentSelected(ComponentEvent event) {
+                        item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                            public void componentSelected(ButtonEvent event) {
                                 JahiaContentManagementService.App.getInstance().saveProperties(elements, propertiesEditor.getProperties(), new AsyncCallback() {
                                     public void onFailure(Throwable throwable) {
                                         Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
@@ -394,12 +390,12 @@ public class ContentDetails extends BottomRightComponent {
                         });
                         toolBar.add(new FillToolItem());
                         toolBar.add(item);
-                        item = new TextToolItem(Messages.getResource("fm_restore"), "fm-restore");
+                        item = new Button(Messages.getResource("fm_restore"));
                         item.setIconStyle("gwt-icons-restore");
                         item.setEnabled( selectedNode.isWriteable() && !selectedNode.isLocked() );
 
-                        item.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                            public void componentSelected(ComponentEvent event) {
+                        item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                            public void componentSelected(ButtonEvent event) {
                                 propertiesEditor.resetForm();
                             }
                         });
@@ -440,10 +436,11 @@ public class ContentDetails extends BottomRightComponent {
                         final PropertiesEditor propertiesEditor = new PropertiesEditor(gwtJahiaNodeTypes, true, false);
 
                         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
-                        TextToolItem item = new TextToolItem(Messages.getResource("fm_save"), "fm-save");
+                        Button item = new Button(Messages.getResource("fm_save"));
                         item.setEnabled(w);
-                        item.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                            public void componentSelected(ComponentEvent event) {
+                        item.setIconStyle("fm-save");
+                        item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                            public void componentSelected(ButtonEvent event) {
                                 JahiaContentManagementService.App.getInstance().saveProperties(selectedNodes, propertiesEditor.getProperties(), new AsyncCallback() {
                                     public void onFailure(Throwable throwable) {
                                         Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
@@ -458,10 +455,11 @@ public class ContentDetails extends BottomRightComponent {
                             }
                         });
                         toolBar.add(item);
-                        item = new TextToolItem(Messages.getResource("fm_restore"), "fm-restore");
+                        item = new Button(Messages.getResource("fm_restore"));
                         item.setEnabled(w);
-                        item.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                            public void componentSelected(ComponentEvent event) {
+                        item.setIconStyle("fm-restore");
+                        item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                            public void componentSelected(ButtonEvent event) {
                                 propertiesEditor.resetForm();
                             }
                         });
@@ -549,7 +547,7 @@ public class ContentDetails extends BottomRightComponent {
                         roleAclEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
                         roleAclEditor.setCanBreakInheritance(false);
                         roleAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
-                        TextToolItem saveButton = roleAclEditor.getSaveButton();
+                        Button saveButton = roleAclEditor.getSaveButton();
                         saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, ROLES_TAB_ITEM));
                         renderRoles();
                         rolesTabItem.setProcessed(true);
@@ -592,7 +590,7 @@ public class ContentDetails extends BottomRightComponent {
                         modeAclEditor.setAclGroup(JCRClientUtils.MODES_ACL);
                         modeAclEditor.setCanBreakInheritance(false);
                         modeAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
-                        TextToolItem saveButton = modeAclEditor.getSaveButton();
+                        Button saveButton = modeAclEditor.getSaveButton();
                         saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, MODES_TAB_ITEM));
                         renderModes();
                         modesTabItem.setProcessed(true);
@@ -634,7 +632,7 @@ public class ContentDetails extends BottomRightComponent {
                         authAclEditor.setAclGroup(JCRClientUtils.AUTHORIZATIONS_ACL);
                         authAclEditor.setCanBreakInheritance(false);
                         authAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
-                        TextToolItem saveButton = authAclEditor.getSaveButton();
+                        Button saveButton = authAclEditor.getSaveButton();
                         saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, AUTH_TAB_ITEM));
                         renderAuthorization();
                         authorizationsTabItem.setProcessed(true);
@@ -661,24 +659,32 @@ public class ContentDetails extends BottomRightComponent {
     public void displayFileUsages() {
         if (!usagesTabItem.isProcessed()) {
 
-            List<TableColumn> columns = new ArrayList<TableColumn>();
+            List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-            TableColumn col = new TableColumn(Messages.getResource("fm_page"), .30f);
+            ColumnConfig col = new ColumnConfig("pageTitle", Messages.getResource("fm_page"), 100);
             columns.add(col);
-            col = new TableColumn("URL", .50f);
+            col = new ColumnConfig("url", "URL", 150);
             columns.add(col);
-            col = new TableColumn(Messages.getResource("fm_language"), .10f);
+            col = new ColumnConfig("lang", Messages.getResource("fm_language"), 30);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             columns.add(col);
-            col = new TableColumn(Messages.getResource("fm_workflow"), .10f);
+            col = new ColumnConfig(Messages.getResource("fm_workflow"), 30);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
+            col.setRenderer(new GridCellRenderer<GWTJahiaNodeUsage>() {
+                public Object render(GWTJahiaNodeUsage gwtJahiaNodeUsage, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNodeUsage> gwtJahiaNodeUsageListStore, com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage> gwtJahiaNodeUsageGrid) {
+                    String[] ws = new String[]{Messages.getResource("fm_versioned"), Messages.getResource("fm_live"), Messages.getResource("fm_staging"), Messages.getResource("fm_notify")};
+                    String[] images = new String[]{"600", "111", "121", "130"};
+                    return "<img src=\"../images/icons/workflow/" + images[gwtJahiaNodeUsage.getWorkflow()] + ".png\">&nbsp;" + ws[gwtJahiaNodeUsage.getWorkflow()];
+                }
+            });
             columns.add(col);
-            col = new TableColumn(Messages.getResource("fm_version"), .10f);
+            col = new ColumnConfig("versionName", Messages.getResource("fm_version"), 30);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             columns.add(col);
 
-            TableColumnModel cm = new TableColumnModel(columns);
-            final Table tbl = new Table(cm);
+            ColumnModel cm = new ColumnModel(columns);
+            final ListStore<GWTJahiaNodeUsage> usageStore = new ListStore<GWTJahiaNodeUsage>();
+            final com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage> tbl = new com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage>(usageStore, cm);
             usagesTabItem.add(tbl);
             usagesTabItem.setProcessed(true);
             usagesTabItem.layout();
@@ -692,23 +698,10 @@ public class ContentDetails extends BottomRightComponent {
                     }
 
                     public void onSuccess(List<GWTJahiaNodeUsage> gwtJahiaNodeUsages) {
-
-                        for (final GWTJahiaNodeUsage gwtJahiaNodeUsage : gwtJahiaNodeUsages) {
-                            Object[] values = new Object[5];
-                            values[0] = gwtJahiaNodeUsage.getPageTitle();
-                            values[1] = gwtJahiaNodeUsage.getUrl();
-                            values[2] = gwtJahiaNodeUsage.getLang();
-                            String[] ws = new String[]{Messages.getResource("fm_versioned"), Messages.getResource("fm_live"), Messages.getResource("fm_staging"), Messages.getResource("fm_notify")};
-                            String[] images = new String[]{"600", "111", "121", "130"};
-                            values[3] = "<img src=\"../images/icons/workflow/" + images[gwtJahiaNodeUsage.getWorkflow()] + ".png\">&nbsp;" + ws[gwtJahiaNodeUsage.getWorkflow()];
-                            values[4] = gwtJahiaNodeUsage.getVersionName();
-                            TableItem item = new TableItem(values);
-                            tbl.add(item);
-                        }
-                        tbl.addTableListener(new TableListener() {
-                            @Override
-                            public void tableRowDoubleClick(TableEvent tableEvent) {
-                                Object url = tableEvent.item.getValue(1);
+                        usageStore.add(gwtJahiaNodeUsages);
+                        tbl.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
+                            public void handleEvent(GridEvent tableEvent) {
+                                Object url = tableEvent.getModel().get("url");
                                 if (url != null && url instanceof String) {
                                     Window.open((String) url, "_blank", "");
                                 }
@@ -720,7 +713,7 @@ public class ContentDetails extends BottomRightComponent {
         }
     }
 
-    protected class SaveAclSelectionListener extends SelectionListener<ComponentEvent> {
+    protected class SaveAclSelectionListener extends SelectionListener<ButtonEvent> {
         private GWTJahiaNode selectedNode;
         private GWTJahiaNodeACL acl;
         private int flag;
@@ -737,7 +730,7 @@ public class ContentDetails extends BottomRightComponent {
             }
         }
 
-        public void componentSelected(ComponentEvent event) {
+        public void componentSelected(ButtonEvent event) {
             JahiaContentManagementService.App.getInstance().setACL(selectedNode.getPath(), acl, new AsyncCallback() {
                 public void onSuccess(Object o) {
                     if (flag == ROLES_TAB_ITEM) {
@@ -775,7 +768,7 @@ public class ContentDetails extends BottomRightComponent {
                     final ListStore<GWTJahiaNodeVersion> store = new ListStore<GWTJahiaNodeVersion>();
                     
                     ColumnModel cm = new ColumnModel(columns);
-                    final com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeVersion> grid = new com.extjs.gxt.ui.client.widget.grid.Grid(store, cm);
+                    final com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeVersion> grid = new com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeVersion>(store, cm);
                     versioningTabItem.add(grid);
 
                     grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
@@ -808,9 +801,9 @@ public class ContentDetails extends BottomRightComponent {
                     versioningTabItem.add(new Text("File is not versioned yet"));
                     com.extjs.gxt.ui.client.widget.button.Button button = new com.extjs.gxt.ui.client.widget.button.Button("Activate versioning");
 
-                    button.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                        public void componentSelected(ComponentEvent event) {
-                            List list = new ArrayList<String>();
+                    button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        public void componentSelected(ButtonEvent event) {
+                            List<String> list = new ArrayList<String>();
                             list.add(selectedNode.getPath());
                             service.activateVersioning(list, new AsyncCallback() {
                                 public void onFailure(Throwable caught) {

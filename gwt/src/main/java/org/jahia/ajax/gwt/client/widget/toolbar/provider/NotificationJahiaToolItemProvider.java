@@ -38,8 +38,9 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.InfoConfig;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.GXT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -63,8 +64,8 @@ public class NotificationJahiaToolItemProvider extends AbstractJahiaToolItemProv
     private int attempts = 0;
 
 
-    public ToolItem createNewToolItem(final GWTJahiaToolbarItem gwtToolbarItem) {
-        final TextToolItem toolbarItem = new TextToolItem();
+    public Component createNewToolItem(final GWTJahiaToolbarItem gwtToolbarItem) {
+        final Button toolbarItem = new Button();
         toolbarItem.setEnabled(false);
         final Map preferences = gwtToolbarItem.getProperties();
 
@@ -88,7 +89,7 @@ public class NotificationJahiaToolItemProvider extends AbstractJahiaToolItemProv
         return toolbarItem;
     }
 
-    private Timer createStateInfoTimer(final TextToolItem toolbarItem) {
+    private Timer createStateInfoTimer(final Button toolbarItem) {
         Log.debug("create notification Info timer");
         final Timer timer = new Timer() {
             public void run() {
@@ -173,9 +174,9 @@ public class NotificationJahiaToolItemProvider extends AbstractJahiaToolItemProv
      * @param gwtToolbarItem
      * @return
      */
-    public SelectionListener<ComponentEvent> getSelectListener(GWTJahiaToolbarItem gwtToolbarItem) {
-        return new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
+    public <T extends ComponentEvent> SelectionListener<T> getSelectListener(GWTJahiaToolbarItem gwtToolbarItem) {
+        return new SelectionListener<T>() {
+            public void componentSelected(T event) {
                 ToolbarService.App.getInstance().updateGWTJahiaStateInfo(getJahiaGWTPageContext(), gwtJahiaStateInfo, new AsyncCallback<GWTJahiaStateInfo>() {
                     public void onFailure(Throwable throwable) {
                         Log.error("Unable to update pdisplay info timer", throwable);

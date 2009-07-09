@@ -38,7 +38,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.PagingToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.table.*;
 import com.google.gwt.user.client.Command;
@@ -88,12 +88,12 @@ public class VersionsTable extends TopRightComponent {
         //m_table.setAutoWidth(true);
         final RPCVersioningServiceAsync service = RPCVersioningService.App.getInstance();
 
-        final RpcProxy proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<GWTJahiaVersion>>() {
+        final RpcProxy proxy = new RpcProxy<PagingLoadResult<GWTJahiaVersion>>() {
             @Override
-            public void load(PagingLoadConfig pageConfig, AsyncCallback<PagingLoadResult<GWTJahiaVersion>> callback) {
-                int offset = pageConfig.getOffset();
-                String sortParameter = pageConfig.getSortInfo().getSortField();
-                boolean isAscending = pageConfig.getSortInfo().getSortDir().equals(Style.SortDir.ASC);
+            public void load(Object pageConfig, AsyncCallback<PagingLoadResult<GWTJahiaVersion>> callback) {
+                int offset = ((PagingLoadConfig) pageConfig).getOffset();
+                String sortParameter = ((PagingLoadConfig) pageConfig).getSortInfo().getSortField();
+                boolean isAscending = ((PagingLoadConfig) pageConfig).getSortInfo().getSortDir().equals(Style.SortDir.ASC);
 
                 if (sortParameter == null) {
                     sortParameter = GWTJahiaVersion.VERSION_LABEL;
@@ -110,7 +110,7 @@ public class VersionsTable extends TopRightComponent {
         };
 
         // loader
-        loader = new BasePagingLoader<PagingLoadConfig, BasePagingLoadResult>(proxy);
+        loader = new BasePagingLoader<BasePagingLoadResult<GWTJahiaVersion>>(proxy);
         loader.setRemoteSort(true);
 
         // store

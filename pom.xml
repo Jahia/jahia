@@ -69,6 +69,12 @@
               <module>package</module>
           </modules>
       </profile>
+      <profile>
+          <id>jboss-qa</id>
+          <modules>
+              <module>package</module>
+          </modules>
+      </profile>
 
       <profile>
           <id>code-coverage</id>

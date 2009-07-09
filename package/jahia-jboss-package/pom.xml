@@ -22,6 +22,16 @@
             
         <profile>
             <id>jboss-deployment</id>
+            <properties>
+                <distant.hosts.ip>10.8.37.252</distant.hosts.ip>
+                <distant.hosts.username>jahia</distant.hosts.username>
+                <distant.hosts.password>jahia</distant.hosts.password>
+                <install.dir>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}</install.dir>
+                <db.host>10.8.37.252</db.host>
+                <db.schema>jahia</db.schema>
+                <db.user>jahia</db.user>
+                <db.password>jahia</db.password>
+            </properties>            
             <build>
                 <plugins>
                     <plugin>
@@ -74,6 +84,8 @@
                         <artifactId>maven-jahia-plugin</artifactId>
                         <configuration>
                             <targetServerDirectory>${project.build.directory}/jboss-${jahia.jboss.version}</targetServerDirectory>
+                            <targetServerType>jboss</targetServerType>
+                            <targetServerVersion>4.2.x</targetServerVersion>
                             <siteImportLocation>
                                 <param>/home/bamboo/bin/siteImport_testSite.zip</param>
                                 <param>/home/bamboo/bin/siteImport_DemoSite.zip</param>
@@ -81,12 +93,13 @@
                             <cluster_activated>false</cluster_activated>
                             <processingServer>true</processingServer>
                             <databaseType>mysql</databaseType>
-                            <databaseUrl>jdbc:mysql://10.8.37.8/jahia6_jboss423?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
-                            <databaseUsername>root</databaseUsername>
-                            <databasePassword>rootroot</databasePassword>
+                            <databaseUrl>jdbc:mysql://${db.host}/${db.schema}?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
+                            <databaseUsername>${db.user}</databaseUsername>
+                            <databasePassword>${db.password}</databasePassword>
                             <overwritedb>true</overwritedb>
                             <storeFilesInDB>true</storeFilesInDB>
-                            <localIp>10.8.37.252</localIp>
+                            <localIp>${distant.hosts.ip}</localIp>
+                            <jahiaRootPassword>rootroot</jahiaRootPassword>
                         </configuration>
                         <executions>
                             <execution>
@@ -156,12 +169,8 @@
                                 <phase>install</phase>
                                 <configuration>
                                     <tasks>
-                                        <property name="distant.hosts.ip" value="10.8.37.252"/>
-                                        <property name="distant.hosts.username" value="jahia"/>
-                                        <property name="distant.hosts.password" value="jahia"/>
-                                        <property name="install.dir" value="Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                                 command="export JAVA_HOME=/usr/java;/home/jahia/install/${install.dir}/bin/shutdown.sh -S -s jnp://${distant.hosts.ip}:1099"
+                                                 command="export JAVA_HOME=/usr/local/latest;/home/jahia/install/${install.dir}/bin/shutdown.sh -S -s jnp://${distant.hosts.ip}:1099"
                                                  trust="true" failonerror="false"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
                                                  command="rm -Rf /home/jahia/install/${install.dir}" trust="true"
@@ -179,7 +188,7 @@
                                                  command="chmod 755 /home/jahia/install/${install.dir}/bin/*.sh" trust="true"
                                                  failonerror="false"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                                 command="export JAVA_HOME=/usr/java;export LAUNCH_JBOSS_IN_BACKGROUND=1;/home/jahia/install/${install.dir}/bin/run.sh -b ${distant.hosts.ip} &amp;"
+                                                 command="export JAVA_HOME=/usr/local/latest;export LAUNCH_JBOSS_IN_BACKGROUND=1;/home/jahia/install/${install.dir}/bin/run.sh -b ${distant.hosts.ip} &amp;"
                                                  trust="true" failonerror="false"/>
                                     </tasks>
                                 </configuration>

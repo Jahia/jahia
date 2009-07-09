@@ -36,6 +36,12 @@
         </profile>
         <profile>
             <id>jboss-deployment</id>
+            <activation>
+                <property>
+                    <name>jahia.deploy.targetServerType</name>
+                    <value>jboss</value>
+                </property>
+            </activation>
             <properties>
                 <driverDependenciesScope>compile</driverDependenciesScope>
                 <excludeDriversFromEar>false</excludeDriversFromEar>

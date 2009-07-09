@@ -22,6 +22,12 @@
             
         <profile>
             <id>jboss-deployment</id>
+            <activation>
+                <property>
+                    <name>jahia.deploy.targetServerType</name>
+                    <value>jboss</value>
+                </property>
+            </activation>
             <properties>
                 <distant.hosts.ip>10.8.37.252</distant.hosts.ip>
                 <distant.hosts.username>jahia</distant.hosts.username>

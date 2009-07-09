@@ -260,7 +260,7 @@ public abstract class NodeImpl extends ItemImpl implements Node {
 
         List<Node> l = nodes.get(name);
         if (l == null) {
-            throw new PathNotFoundException(name);
+            return new NodeIteratorImpl(Collections.EMPTY_LIST.iterator(), 0);
         }
 
         try {

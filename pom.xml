@@ -196,7 +196,6 @@
     <module>core</module>
     <module>test</module>
     <module>gwt</module>
-    <module>gwt-war</module>
     <module>templates</module>
     <module>prepackagedSites</module>
     <module>war</module>

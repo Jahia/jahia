@@ -43,7 +43,7 @@ if (usrProviders == null) {
 usrProviders = new ArrayList();
 }
 stretcherToOpen   = 0; %>
-<internal:gwtInit modules="org.jahia.ajax.gwt.module.engines.Engines"/>
+<internal:gwtInit modules="engines"/>
 <div id="topTitle">
   <h1>Jahia</h1>
   <h2 class="edit"><fmt:message key="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/></h2>

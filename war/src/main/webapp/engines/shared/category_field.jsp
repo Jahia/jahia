@@ -60,6 +60,6 @@
     boolean readOnly = false;
 
 %>
-<internal:gwtImport module="org.jahia.ajax.gwt.module.categorypicker.CategoryPicker"/>
+<internal:gwtImport module="categorypicker"/>
 <internal:categorySelector startCategoryKey="<%=startCategory%>" multiple="<%=theField.getDefinition().getPropertyDefinition().isMultiple()%>" selectedCategories="<%=selectedCategories%>" readonly="<%=readOnly%>" locale="<%=elh.getCurrentLanguageCode()%>" autoSelectParent='<%=theField.getDefinition().getItemDefinition().getSelectorOptions().get("autoSelectParent")%>'/>
 

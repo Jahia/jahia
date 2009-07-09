@@ -39,7 +39,7 @@
 	<head>
 		<title><internal:message key="button.workflow"/></title>
 		<internal:gwtInit standalone="true"/>
-		<internal:gwtImport module="org.jahia.ajax.gwt.module.workflow.WorkflowManager" />
+		<internal:gwtImport module="workflowmanager" />
 	</head>
 	<body>
     <%

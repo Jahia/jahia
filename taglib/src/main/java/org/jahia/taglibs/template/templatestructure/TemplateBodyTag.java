@@ -186,7 +186,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                     gwtScript = "general";
                 }
                 if (isLiveMode()) {
-                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".live.Live").toString())).append("\n");
+                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder(gwtScript).append(".live").toString())).append("\n");
                 } else {
 
                     if (checkGAprofilePresent(jData)) {
@@ -198,7 +198,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                         buf.append(gviz);
                     }
 
-                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".edit.Edit").toString())).append("\n");
+                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder(gwtScript).append(".edit").toString())).append("\n");
                 }
 
                 if (isLogged()) {

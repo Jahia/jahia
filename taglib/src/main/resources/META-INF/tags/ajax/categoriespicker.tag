@@ -35,7 +35,6 @@
 <%@ tag import="java.util.Iterator" %>
 <%@ tag import="org.jahia.services.categories.Category" %>
 <%@ tag import="org.jahia.services.usermanager.JahiaUser" %>
-<%@ tag import="org.jahia.ajax.gwt.module.categorypicker.client.CategoryPickerEntryPoint" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
@@ -88,7 +87,7 @@
 </logic:present>
 <input id="removedCategories" type="hidden" name="removedCategories" value=""/>
 
-<template:gwtJahiaModule id="<%=CategoryPickerEntryPoint.ID%>" jahiaType="<%=CategoryPickerEntryPoint.ID%>"
+<template:gwtJahiaModule id="categories_picker" jahiaType="categories_picker"
                          rootKey="${startCategoryKey}" readonly="${readonly}" multiple="${multiple}"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.categories.categories"
                             aliasResourceName="categories"/>

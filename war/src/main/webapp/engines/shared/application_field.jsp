@@ -46,7 +46,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<internal:gwtImport module="org.jahia.ajax.gwt.module.contentpicker.ContentPicker" />
+<internal:gwtImport module="contentpicker" />
 <c:set var="jahia.engines.gwtModuleIncluded" value="true" scope="request"/>
 <%!
     private final static org.apache.log4j.Logger logger =

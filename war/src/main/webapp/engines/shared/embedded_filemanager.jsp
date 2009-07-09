@@ -44,7 +44,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 
-<internal:gwtImport module="org.jahia.ajax.gwt.module.contentpicker.ContentPicker" />
+<internal:gwtImport module="contentpicker" />
 <c:set var="jahia.engines.gwtModuleIncluded" value="true" scope="request"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%

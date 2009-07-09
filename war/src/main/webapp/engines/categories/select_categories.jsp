@@ -56,7 +56,7 @@
             <b><fmt:message key="org.jahia.engines.categories.noCategoriesAvailable.label"/></b>
         </p>
         <% } else { %>
-        <internal:gwtImport module="org.jahia.ajax.gwt.module.categorypicker.CategoryPicker"/>
+        <internal:gwtImport module="categorypicker"/>
         <internal:categorySelector selectedCategories="<%=selectedCategories%>" startCategoryKey="<%= categoryPropertyName %>" autoSelectParent="${param.autoSelectParent}"/>
         <% } %>
 

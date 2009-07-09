@@ -17,4 +17,13 @@
         <module>jahia-tgz-package</module>        
 		<module>jahia-qa-package</module>
     </modules>
+    <profiles>
+        <profile>
+            <id>jboss-qa</id>
+            <modules>
+                <module>jahia-jboss-package</module>
+            </modules>
+        </profile>
+    </profiles>
+    
 </project>

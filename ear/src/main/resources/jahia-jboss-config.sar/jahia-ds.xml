@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<datasources>
+  <no-tx-datasource>
+    <jndi-name>jahiaDS</jndi-name>
+    <connection-url>@URL@</connection-url>
+    <driver-class>@DRIVER@</driver-class>
+    <user-name>@USERNAME@</user-name>
+    <password>@PASSWORD@</password>
+    <metadata>
+       <type-mapping>@TYPE_MAPPING@</type-mapping>
+    </metadata>
+  </no-tx-datasource>
+</datasources>

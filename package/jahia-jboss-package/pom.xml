@@ -11,100 +11,23 @@
     <packaging>pom</packaging>
     <dependencies>
         <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jbossas</artifactId>
-            <version>4.2.3.GA-jdk6</version>
-            <type>zip</type>
-        </dependency>
-        <dependency>
-            <groupId>lambdaprobe</groupId>
-            <artifactId>lambdaprobe</artifactId>
-            <version>jahia-version</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>testsuite-jahia</groupId>
-            <artifactId>testsuite-jahia</artifactId>
-            <version>1.0</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-ear</artifactId>
             <version>${jahia.package.version}</version>
-            <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.server</groupId>
-            <artifactId>jahia-test</artifactId>
-            <version>${jahia.package.version}</version>
-            <type>jar</type>
+            <type>ear</type>
         </dependency>
     </dependencies>
 
     <profiles>
+            
         <profile>
-            <id>jboss</id>
+            <id>jboss-deployment</id>
             <build>
                 <plugins>
-                    <!-- first QA server processing -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
-                            <execution>
-                                <id>copy</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>lambdaprobe</groupId>
-                                            <artifactId>lambdaprobe</artifactId>
-                                            <version>jahia-version</version>
-                                            <type>war</type>
-                                            <overWrite>true</overWrite>
-                                            <outputDirectory>${project.build.directory}/jboss-4.2.3.GA/server/default/deploy</outputDirectory>
-                                            <destFileName>probe.war</destFileName>
-                                        </artifactItem>
-                                        <artifactItem>
-                                            <groupId>testsuite-jahia</groupId>
-                                            <artifactId>testsuite-jahia</artifactId>
-                                            <version>1.0</version>
-                                            <type>war</type>
-                                            <overWrite>true</overWrite>
-                                            <outputDirectory>${project.build.directory}/jboss-4.2.3.GA/server/default/deploy</outputDirectory>
-                                            <destFileName>testsuite-jahia.war</destFileName>
-                                        </artifactItem>
-
-                                    </artifactItems>
-                                    <outputDirectory>${project.build.directory}/jboss-4.2.3.GA/server/default/deploy</outputDirectory>
-                                    <overWriteReleases>true</overWriteReleases>
-                                    <overWriteSnapshots>true</overWriteSnapshots>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>copy-testjar</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.jahia.server</groupId>
-                                            <artifactId>jahia-test</artifactId>
-                                            <version>${jahia.package.version}</version>
-                                            <type>jar</type>
-                                        </artifactItem>
-                                    </artifactItems>
-                                    <outputDirectory>${project.build.directory}/jboss-4.2.3.GA/server/default/deploy/${jahia.deploy.war.dirName}/WEB-INF/lib</outputDirectory>
-                                    <overWriteReleases>true</overWriteReleases>
-                                    <overWriteSnapshots>true</overWriteSnapshots>
-                                </configuration>
-                            </execution>
                             <execution>
                                 <id>unpack</id>
                                 <phase>package</phase>
@@ -116,11 +39,11 @@
                                         <artifactItem>
                                             <groupId>org.jboss</groupId>
                                             <artifactId>jbossas</artifactId>
-                                            <version>4.2.3.GA-jdk6</version>
+                                            <version>${jahia.jboss.version}-jdk6</version>
                                             <type>zip</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}</outputDirectory>
-                                            <excludes>**/docs/**,**/server/minimal/**,**/lib/jaxb*</excludes>
+                                            <excludes>**/docs/**,**/server/all/**,**/server/minimal/**,**/ROOT.war/**</excludes>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>
@@ -134,7 +57,7 @@
                         <configuration>
                             <targetServerType>jboss</targetServerType>
                             <targetServerVersion>4.2.x</targetServerVersion>
-                            <targetServerDirectory>${project.build.directory}/jboss-4.2.3.GA</targetServerDirectory>
+                            <targetServerDirectory>${project.build.directory}/jboss-${jahia.jboss.version}</targetServerDirectory>
                         </configuration>
                         <executions>
                             <execution>
@@ -150,19 +73,20 @@
                         <groupId>org.jahia.server</groupId>
                         <artifactId>maven-jahia-plugin</artifactId>
                         <configuration>
-                            <targetServerDirectory>${project.build.directory}/jboss-4.2.3.GA</targetServerDirectory>
+                            <targetServerDirectory>${project.build.directory}/jboss-${jahia.jboss.version}</targetServerDirectory>
                             <siteImportLocation>
                                 <param>/home/bamboo/bin/siteImport_testSite.zip</param>
                                 <param>/home/bamboo/bin/siteImport_DemoSite.zip</param>
                             </siteImportLocation>
                             <cluster_activated>false</cluster_activated>
                             <processingServer>true</processingServer>
+                            <databaseType>mysql</databaseType>
                             <databaseUrl>jdbc:mysql://10.8.37.8/jahia6_jboss423?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
                             <databaseUsername>root</databaseUsername>
                             <databasePassword>rootroot</databasePassword>
                             <overwritedb>true</overwritedb>
                             <storeFilesInDB>true</storeFilesInDB>
-                            <localIp>10.8.37.152</localIp>
+                            <localIp>10.8.37.252</localIp>
                         </configuration>
                         <executions>
                             <execution>
@@ -173,9 +97,11 @@
                             </execution>
                         </executions>
                     </plugin>
+
                     <plugin>
                         <artifactId>maven-assembly-plugin</artifactId>
                         <configuration>
+                            <finalName>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}</finalName>
                             <descriptors>
                                 <descriptor>src/main/assembly/src.xml</descriptor>
                             </descriptors>
@@ -191,6 +117,7 @@
                             </execution>
                         </executions>
                     </plugin>
+                     
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
@@ -214,23 +141,10 @@
                                 <phase>package</phase>
                                 <configuration>
                                     <tasks>
-                                        <copy file="./src/main/resources/run.conf" tofile="${project.build.directory}/jboss-4.2.3.GA/bin/run.conf" overwrite="true"/>
-                                        <copy file="./src/main/resources/run.bat" tofile="${project.build.directory}/jboss-4.2.3.GA/bin/run.bat" overwrite="true"/>                                        
-                                        <copy file="./src/main/resources/conf/jahia-ds.xml" tofile="${project.build.directory}/jboss-4.2.3.GA/server/default/deploy/jahia-ds.xml" overwrite="true"/>                                        
-                                        <copy file="./src/main/resources/conf/server.xml" tofile="${project.build.directory}/jboss-4.2.3.GA/server/default/deploy/jboss-web.deployer/server.xml" overwrite="true"/>
-                                        <copy file="./src/main/resources/conf/web.xml" tofile="${project.build.directory}/jboss-4.2.3.GA/server/default/deploy/jboss-web.deployer/conf/web.xml" overwrite="true"/>
-                                        <copy file="./src/main/resources/conf/login-config.xml" tofile="${project.build.directory}/jboss-4.2.3.GA/server/default/conf/login-config.xml" overwrite="true"/>
-                                        <copy file="./src/main/resources/conf/roles.properties" tofile="${project.build.directory}/jboss-4.2.3.GA/server/default/conf/roles.properties" overwrite="true"/>                                        
-                                        <copy file="./src/main/resources/conf/users.properties" tofile="${project.build.directory}/jboss-4.2.3.GA/server/default/conf/users.properties" overwrite="true"/>                                        
-                                        <copy file="./src/main/resources/portlet.xml" tofile="${project.build.directory}/jboss-4.2.3.GA/server/default/deploy/${jahia.deploy.war.dirName}/WEB-INF/portlet.xml" overwrite="true"/>                                        
-                                        <copy file="./src/main/resources/fragments/googlegadget/portlet.xml" tofile="${project.build.directory}/jboss-4.2.3.GA/server/default/deploy/${jahia.deploy.war.dirName}/WEB-INF/fragments/googlegadget/portlet.xml" overwrite="true"/>
-                                        <copy file="./src/main/resources/fragments/html/portlet.xml" tofile="${project.build.directory}/jboss-4.2.3.GA/server/default/deploy/${jahia.deploy.war.dirName}/WEB-INF/fragments/html/portlet.xml" overwrite="true"/>
-                                        <copy file="./src/main/resources/fragments/rss/portlet.xml" tofile="${project.build.directory}/jboss-4.2.3.GA/server/default/deploy/${jahia.deploy.war.dirName}/WEB-INF/fragments/rss/portlet.xml" overwrite="true"/>                                                                                                                                                                
-                                        <copy file="./src/main/resources/esi-local-cache.xml" tofile="${project.build.directory}/jboss-4.2.3.GA/server/default/deploy/${jahia.deploy.war.dirName}/WEB-INF/classes/esi-local-cache.xml" overwrite="true"/>                                        
-                                        <copy file="./src/main/resources/esi-cluster-cache.xml" tofile="${project.build.directory}/jboss-4.2.3.GA/server/default/deploy/${jahia.deploy.war.dirName}/WEB-INF/classes/esi-cluster-cache.xml" overwrite="true"/>                                        
-                                        <copy file="${project.build.directory}/jboss-4.2.3.GA/server/default/deploy/${jahia.deploy.war.dirName}/WEB-INF/lib/mysql-connector-java-5.1.6.jar" tofile="${project.build.directory}/jboss-4.2.3.GA/server/default/lib/mysql-connector-java-5.1.6.jar" overwrite="true"/>
-                                        <copy file="${project.build.directory}/jboss-4.2.3.GA/server/default/lib/jaxb-api-2.1.jar" tofile="${project.build.directory}/jboss-4.2.3.GA/lib/jaxb-api-2.1.jar" overwrite="true"/>                                        
-                                        <copy file="${project.build.directory}/jboss-4.2.3.GA/server/default/lib/jaxb-impl-2.1.7.jar" tofile="${project.build.directory}/jboss-4.2.3.GA/lib/jaxb-impl-2.1.7.jar" overwrite="true"/>                                        
+                                        <copy file="./src/main/resources/run.conf" tofile="${project.build.directory}/jboss-${jahia.jboss.version}/bin/run.conf" overwrite="true"/>
+                                        <copy file="./src/main/resources/run.bat" tofile="${project.build.directory}/jboss-${jahia.jboss.version}/bin/run.bat" overwrite="true"/>                                        
+                                        <copy file="./src/main/resources/conf/server.xml" tofile="${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy/jboss-web.deployer/server.xml" overwrite="true"/>
+                                        <copy file="./src/main/resources/conf/web.xml" tofile="${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy/jboss-web.deployer/conf/web.xml" overwrite="true"/>
                                     </tasks>
                                 </configuration>
                                 <goals>
@@ -242,29 +156,30 @@
                                 <phase>install</phase>
                                 <configuration>
                                     <tasks>
-                                        <property name="distant.hosts.ip" value="10.8.37.152"/>
+                                        <property name="distant.hosts.ip" value="10.8.37.252"/>
                                         <property name="distant.hosts.username" value="jahia"/>
                                         <property name="distant.hosts.password" value="jahia"/>
+                                        <property name="install.dir" value="Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                                 command="export JAVA_HOME=/usr/local/java;/home/jahia/install/jahia/bin/shutdown.sh --shutdown"
+                                                 command="export JAVA_HOME=/usr/java;/home/jahia/install/${install.dir}/bin/shutdown.sh -S -s jnp://${distant.hosts.ip}:1099"
                                                  trust="true" failonerror="false"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                                 command="rm -Rf /home/jahia/install/jahia" trust="true"
+                                                 command="rm -Rf /home/jahia/install/${install.dir}" trust="true"
                                                  failonerror="false"/>
-                                        <scp file="${project.build.directory}/${project.build.finalName}-jahia.tar.gz"
+                                        <scp file="${project.build.directory}/${install.dir}-jahia.tar.gz"
                                              todir="${distant.hosts.username}@${distant.hosts.ip}:/home/jahia/install" password="${distant.hosts.password}"
                                              trust="true"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                                 command="tar xfz /home/jahia/install/${project.build.finalName}-jahia.tar.gz --directory /home/jahia/install"
+                                                 command="tar xfz /home/jahia/install/${install.dir}-jahia.tar.gz --directory /home/jahia/install"
                                                  trust="true" failonerror="false"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                                 command="rm /home/jahia/install/${project.build.finalName}-jahia.tar.gz "
+                                                 command="rm /home/jahia/install/${install.dir}-jahia.tar.gz "
                                                  trust="true" failonerror="false"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                                 command="chmod 755 /home/jahia/install/jahia/bin/*.sh" trust="true"
+                                                 command="chmod 755 /home/jahia/install/${install.dir}/bin/*.sh" trust="true"
                                                  failonerror="false"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                                 command="export JAVA_HOME=/usr/local/java;/home/jahia/install/jahia/bin/run.sh -b 0.0.0.0"
+                                                 command="export JAVA_HOME=/usr/java;export LAUNCH_JBOSS_IN_BACKGROUND=1;/home/jahia/install/${install.dir}/bin/run.sh -b ${distant.hosts.ip} &amp;"
                                                  trust="true" failonerror="false"/>
                                     </tasks>
                                 </configuration>
@@ -274,8 +189,77 @@
                             </execution>                            
                         </executions>
                     </plugin>
+                    
                 </plugins>
             </build>
         </profile>
+            
+        <profile>
+            <id>jboss-qa</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>lambdaprobe</groupId>
+                                            <artifactId>lambdaprobe</artifactId>
+                                            <version>jahia-version</version>
+                                            <type>war</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy</outputDirectory>
+                                            <destFileName>probe.war</destFileName>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>testsuite-jahia</groupId>
+                                            <artifactId>testsuite-jahia</artifactId>
+                                            <version>1.0</version>
+                                            <type>war</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy</outputDirectory>
+                                            <destFileName>testsuite-jahia.war</destFileName>
+                                        </artifactItem>
+
+                                    </artifactItems>
+                                    <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy</outputDirectory>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-testjar</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.jahia.server</groupId>
+                                            <artifactId>jahia-test</artifactId>
+                                            <version>${jahia.package.version}</version>
+                                            <type>jar</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy/jahia.ear/${jahia.deploy.war.dirName}/WEB-INF/lib</outputDirectory>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
     </profiles>
 </project>

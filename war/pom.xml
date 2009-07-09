@@ -28,86 +28,6 @@
 
     <profiles>
         <profile>
-            <id>jboss-deployment</id>
-            <activation>
-                <property>
-                    <name>jahia.deploy.targetServerType</name>
-                    <value>jboss</value>
-                </property>
-            </activation>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>jboss</groupId>
-                        <artifactId>jboss-cache</artifactId>
-                        <version>1.4.1.GA</version>
-                        <scope>provided</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>jboss</groupId>
-                        <artifactId>jboss-common</artifactId>
-                        <version>4.2.2.GA</version>
-                        <scope>provided</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>jboss</groupId>
-                        <artifactId>jboss-system</artifactId>
-                        <version>4.2.2.GA</version>
-                        <scope>provided</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>jboss</groupId>
-                        <artifactId>jboss-jmx</artifactId>
-                        <version>4.2.2.GA</version>
-                        <scope>provided</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>jboss</groupId>
-                        <artifactId>jboss-serialization</artifactId>
-                        <version>1.0.3.GA</version>
-                        <scope>provided</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>jboss.jbossas.core-libs</groupId>
-                        <artifactId>jboss</artifactId>
-                        <version>4.2.2.GA</version>
-                        <scope>provided</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>trove</groupId>
-                        <artifactId>trove</artifactId>
-                        <version>1.0.2</version>
-                        <scope>provided</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>jsf</groupId>
-                        <artifactId>jsf-api</artifactId>
-                        <version>1.1</version>
-                        <scope>provided</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>jsf</groupId>
-                        <artifactId>jsf-impl</artifactId>
-                        <version>1.1</version>
-                        <scope>provided</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>jstl</artifactId>
-                        <version>1.1.2</version>
-                        <scope>provided</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>taglibs</groupId>
-                        <artifactId>standard</artifactId>
-                        <version>1.1.2</version>
-                        <scope>provided</scope>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-        </profile>
-
-        <profile>
             <id>eclipse-integration</id>
             <build>
                 <plugins>
@@ -581,6 +501,65 @@
             <artifactId>xmlParserAPIs</artifactId>
             <version>2.9.1</version>
         </dependency>
+        
+        <!-- Database drivers -->
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc5</artifactId>
+            <version>${driver.oracle.version}</version>
+            <scope>${drivers.libs.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>orai18n</artifactId>
+            <version>${driver.oracle.version}</version>
+            <scope>${drivers.libs.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>microsoft</groupId>
+            <artifactId>sqljdbc</artifactId>
+            <version>${driver.mssql.version}</version>
+            <scope>${drivers.libs.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${driver.mysql.version}</version>
+            <scope>${drivers.libs.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>${driver.derby.version}</version>
+            <scope>${drivers.libs.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+            <version>${driver.derby.version}</version>
+            <scope>${drivers.libs.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${driver.postgresql.version}</version>
+            <scope>${drivers.libs.scope}</scope>
+        </dependency>
+        
+        <!-- JSTL -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.1.2</version>
+            <scope>${jboss.libs.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
+            <scope>${jboss.libs.scope}</scope>
+        </dependency>
+        
     </dependencies>
 
     <build>
@@ -718,14 +697,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.0</version>
-                <configuration>
-                    <dependentWarExcludes>**</dependentWarExcludes>
-                </configuration>
             </plugin>
 
             <plugin>

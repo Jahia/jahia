@@ -6,8 +6,8 @@
   </formats>
   <fileSets>
     <fileSet>
-      <directory>${project.build.directory}/jboss-4.2.3.GA</directory>
-      <outputDirectory>jahia</outputDirectory>
+      <directory>${project.build.directory}/jboss-${jahia.jboss.version}</directory>
+      <outputDirectory>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}</outputDirectory>
     </fileSet>
   </fileSets>
 </assembly>

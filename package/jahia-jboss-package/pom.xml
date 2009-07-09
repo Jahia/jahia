@@ -195,7 +195,8 @@
                                                  failonerror="false"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
                                                  command="export JAVA_HOME=/usr/local/latest;export LAUNCH_JBOSS_IN_BACKGROUND=1;/home/jahia/install/${install.dir}/bin/run.sh -b ${distant.hosts.ip} &amp;"
-                                                 trust="true" failonerror="false"/>
+                                                 trust="true" failonerror="false"
+                                                 timeout="120000"/>
                                     </tasks>
                                 </configuration>
                                 <goals>

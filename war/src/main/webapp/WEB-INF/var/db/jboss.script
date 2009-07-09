@@ -20,3 +20,4 @@ jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.bundle.Bun
 jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DbFileSystem
 jahia.jackrabbit.journal = org.apache.jackrabbit.core.journal.DatabaseJournal
 jahia.jackrabbit.schema = default
+jahia.jboss.datasource.typeMapping = Hypersonic SQL

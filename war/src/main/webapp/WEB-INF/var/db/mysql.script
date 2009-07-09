@@ -30,3 +30,4 @@ jahia.nested_transaction_allowed = true
 #jahia.database.hibernate.dialect = org.hibernate.dialect.MySQLInnoDBDialect
 #jahia.transaction_isolation_level = ISOLATION_DEFAULT
 #jahia.nested_transaction_allowed = false
+jahia.jboss.datasource.typeMapping = mySQL

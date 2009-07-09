@@ -41,6 +41,7 @@ import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.jaas.JahiaLoginModule;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -104,6 +105,7 @@ public class JCRStoreProvider {
 
     private boolean isMainStorage = false;
     private boolean isDynamicallyMounted = false;
+    private boolean initialized = false;
 
     public String getKey() {
         return key;
@@ -257,8 +259,8 @@ public class JCRStoreProvider {
         try {
             getService().addProvider(getKey(), getMountPoint(), this);
             repo = getRepository();
-            JahiaUser root = getGroupManagerService().getAdminUser(0);
-            Session session = getSystemSession(root.getUsername());
+            loginModuleActivated = false;
+            Session session = getSystemSession();
             try {
                 Workspace workspace = session.getWorkspace();
 
@@ -277,12 +279,21 @@ public class JCRStoreProvider {
 
                 if ("/".equals(mountPoint) && !rootNode.hasNode(Constants.CONTENT)) {
                     session.importXML("/", new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/root.xml"),ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
-                }                              
-
+                    Node userNode = (Node) session.getItem("/"+Constants.CONTENT+"/users");
+                    NodeIterator nodeIterator = userNode.getNodes();
+                    while (nodeIterator.hasNext()) {
+                        Node node = (Node) nodeIterator.next();
+                        if(!"guest".equals(node.getName())) {
+                            JCRNodeWrapperImpl.changePermissions(node, "u:" + node.getName(), "rw");
+                        }
+                    }
+                }
                 session.save();
             } finally {
+                initialized = true;
                 session.logout();
             }
+            loginModuleActivated = true;
         } catch (Exception e){
             logger.error("Repository init error",e);
             throw  new JahiaInitializationException("Repository init error",e) ;
@@ -413,9 +424,15 @@ public class JCRStoreProvider {
     public Session getSession(Credentials credentials, String workspace) throws RepositoryException {
         Session s;
         if (loginModuleActivated) {
-            s = repo.login(credentials,workspace);
+            s = repo.login(credentials, workspace);
         } else {
-            s = repo.login(new SimpleCredentials(user, password.toCharArray()),workspace);
+            if (user != null) {
+                s = repo.login(new SimpleCredentials(user, password.toCharArray()), workspace);
+            } else if(!initialized){
+                s = repo.login(JahiaLoginModule.getSystemCredentials());
+            } else {
+                s = repo.login();
+            }
         }
         registerNamespaces(s.getWorkspace());
         return s;

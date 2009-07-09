@@ -36,6 +36,8 @@ import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.cache.Cache;
+import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
@@ -69,6 +71,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     private transient JCRStoreService jcrStoreService;
     private static JCRGroupManagerProvider mGroupManagerProvider;
     private transient JahiaSitesService sitesService;
+    private transient CacheService cacheService;
+    private transient Cache cache;
 
     /**
      * Create an new instance of the User Manager Service if the instance do not
@@ -89,6 +93,10 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
 
     public void setSitesService(JahiaSitesService sitesService) {
         this.sitesService = sitesService;
+    }
+
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     /**
@@ -340,7 +348,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      * @return Return the instance of the users group. Return null on any failure
      */
     public JahiaGroup getUsersGroup(int siteID) {
-        return lookupGroup(siteID, USERS_GROUPNAME);
+        return lookupGroup(0, USERS_GROUPNAME);
     }
 
     /**
@@ -384,7 +392,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      */
     public JahiaGroup lookupGroup(String groupKey) {
         try {
-            JCRSessionWrapper session = jcrStoreService.getSystemSession();
+            if (cache == null) {
+                start();
+            }
             Node usersFolderNode;
             int siteID = 0;
             String name;
@@ -392,16 +402,26 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 String[] splittedGroupKey = groupKey.split(":");
                 siteID = Integer.valueOf(splittedGroupKey[1]);
                 name = splittedGroupKey[0];
+                if (GUEST_GROUPNAME.equals(name) || USERS_GROUPNAME.equals(name)) {
+                    siteID = 0;
+                }
             } else {
                 name = groupKey;
             }
+            String trueGroupKey = name + ":" + siteID;
+            if (cache.containsKey(trueGroupKey)) {
+                return (JahiaGroup) cache.get(trueGroupKey);
+            }
+            JCRSessionWrapper session = jcrStoreService.getSystemSession();
             if (siteID == 0) {
                 usersFolderNode = session.getNode("/" + Constants.CONTENT + "/groups/" + name.trim());
             } else {
                 String siteName = sitesService.getSite(siteID).getSiteKey();
                 usersFolderNode = session.getNode("/" + Constants.CONTENT + "/sites/" + siteName + "/groups/" + name.trim());
             }
-            return new JCRGroup(usersFolderNode.getUUID(), jcrStoreService, siteID);
+            JCRGroup group = new JCRGroup(usersFolderNode.getUUID(), jcrStoreService, siteID);
+            cache.put(trueGroupKey, group);
+            return group;
         } catch (PathNotFoundException e) {
             logger.debug(e);
         } catch (RepositoryException e) {
@@ -424,15 +444,27 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      */
     public JahiaGroup lookupGroup(int siteID, String name) {
         try {
+            if (cache == null) {
+                start();
+            }
+            if (name.equals(GUEST_GROUPNAME) || name.equals(USERS_GROUPNAME)) {
+                siteID = 0;
+            }
+            String trueGroupKey = name + ":" + siteID;
+            if (cache.containsKey(trueGroupKey)) {
+                return (JahiaGroup) cache.get(trueGroupKey);
+            }
             JCRSessionWrapper session = jcrStoreService.getSystemSession();
             Node usersFolderNode;
-            if (siteID == 0) {
+            if (siteID <= 0) {
                 usersFolderNode = session.getNode("/" + Constants.CONTENT + "/groups/" + name.trim());
             } else {
                 String siteName = sitesService.getSite(siteID).getSiteKey();
                 usersFolderNode = session.getNode("/" + Constants.CONTENT + "/sites/" + siteName + "/groups/" + name.trim());
             }
-            return new JCRGroup(usersFolderNode.getUUID(), jcrStoreService, siteID);
+            JCRGroup group = new JCRGroup(usersFolderNode.getUUID(), jcrStoreService, siteID);
+            cache.put(trueGroupKey, group);
+            return group;
         } catch (PathNotFoundException e) {
             logger.debug(e);
         } catch (RepositoryException e) {
@@ -499,7 +531,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             if ("*".equals(propertyKey)) {
                                 query.append("CONTAINS(*,'" + propertyValue + "')");
                             } else {
-                                query.append(propertyKey.replaceAll("\\.", "___")).append(" LIKE '").append(propertyValue).append("'");
+                                query.append(propertyKey.replaceAll("\\.", "\\\\.")).append(" LIKE '").append(propertyValue).append("'");
                             }
                             if (objectIterator.hasNext()) {
                                 query.append(" AND ");
@@ -537,7 +569,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     }
 
     public void start() throws JahiaInitializationException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        if (cacheService != null) {
+            cache = cacheService.createCacheInstance("JCR_GROUP_CACHE");
+        }
     }
 
     public void stop() throws JahiaException {

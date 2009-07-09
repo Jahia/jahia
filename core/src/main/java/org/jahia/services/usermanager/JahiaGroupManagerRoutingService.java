@@ -185,13 +185,13 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
     }
 
     public synchronized JahiaUser getAdminUser(int siteId) {
-        JahiaUser user = adminUser.get(new Integer(siteId));
+        JahiaUser user = adminUser.get(siteId);
         if ( user == null ){
             JahiaGroup adminGroup = lookupGroup(siteId, JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
             Set<Principal> members = adminGroup.getRecursiveUserMembers();
             if ( members.iterator().hasNext() ){
                 user = (JahiaUser)members.iterator().next();
-                adminUser.put(new Integer(siteId), user);
+                adminUser.put(siteId, user);
             }
         }
         return user;

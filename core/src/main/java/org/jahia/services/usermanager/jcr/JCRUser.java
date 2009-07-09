@@ -33,9 +33,9 @@
 package org.jahia.services.usermanager.jcr;
 
 import org.apache.log4j.Logger;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.*;
-import org.jahia.registries.ServicesRegistry;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -53,10 +53,14 @@ import java.util.Properties;
  */
 public class JCRUser implements JahiaUser {
     private transient static Logger logger = Logger.getLogger(JCRUser.class);
+    private static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
     private static final String PROVIDER_NAME = "jcr";
     private final String nodeUuid;
     private final JCRStoreService jcrStoreService;
     static final String J_PASSWORD = "j:password";
+    private String name;
+    private Properties properties;
+    private UserProperties userProperties;
 
     public JCRUser(String nodeUuid, JCRStoreService jcrStoreService) {
         this.nodeUuid = nodeUuid;
@@ -72,7 +76,10 @@ public class JCRUser implements JahiaUser {
      */
     public String getName() {
         try {
-            return getNode().getName();
+            if (name == null) {
+                name = getNode().getName();
+            }
+            return name;
         } catch (RepositoryException e) {
             return "";
         }
@@ -88,11 +95,7 @@ public class JCRUser implements JahiaUser {
      * @return Return the username.
      */
     public String getUsername() {
-        try {
-            return getNode().getName();
-        } catch (RepositoryException e) {
-            return "";
-        }
+        return getName();
     }
 
     /**
@@ -101,11 +104,7 @@ public class JCRUser implements JahiaUser {
      * @return the unique String identifier of this user.
      */
     public String getUserKey() {
-        try {
-            return "{jcr}" + getNode().getName();
-        } catch (RepositoryException e) {
-            return "";
-        }
+        return "{jcr}" + getName();
     }
 
     /**
@@ -138,15 +137,17 @@ public class JCRUser implements JahiaUser {
      *         property is present.
      */
     public Properties getProperties() {
-        Properties properties = new Properties();
-        try {
-            PropertyIterator iterator = getNode().getProperties();
-            for (; iterator.hasNext();) {
-                Property property = iterator.nextProperty();
-                properties.put(property.getName(), property.getString());
+        if (properties == null) {
+            properties = new Properties();
+            try {
+                PropertyIterator iterator = getNode().getProperties();
+                for (; iterator.hasNext();) {
+                    Property property = iterator.nextProperty();
+                    properties.put(property.getName(), property.getString());
+                }
+            } catch (RepositoryException e) {
+                logger.error(e);
             }
-        } catch (RepositoryException e) {
-            logger.error(e);
         }
         return properties;
     }
@@ -161,17 +162,19 @@ public class JCRUser implements JahiaUser {
      * @return UserProperties
      */
     public UserProperties getUserProperties() {
-        UserProperties properties = new UserProperties();
-        try {
-            PropertyIterator iterator = getNode().getProperties();
-            for (; iterator.hasNext();) {
-                Property property = iterator.nextProperty();
-                properties.setUserProperty(property.getName(), new UserProperty(property.getName(), property.getString(), false));
+        if (userProperties == null) {
+            userProperties = new UserProperties();
+            try {
+                PropertyIterator iterator = getNode().getProperties();
+                for (; iterator.hasNext();) {
+                    Property property = iterator.nextProperty();
+                    userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(), property.getString(), false));
+                }
+            } catch (RepositoryException e) {
+                logger.error(e);
             }
-        } catch (RepositoryException e) {
-            logger.error(e);
         }
-        return properties;
+        return userProperties;
     }
 
     /**
@@ -182,11 +185,7 @@ public class JCRUser implements JahiaUser {
      *         property does not exist.
      */
     public String getProperty(String key) {
-        try {
-            return getNode().getProperty(key).getString();
-        } catch (RepositoryException e) {
-            return null;
-        }
+        return getProperties().getProperty(key);
     }
 
     /**
@@ -197,12 +196,7 @@ public class JCRUser implements JahiaUser {
      * @return UserProperty
      */
     public UserProperty getUserProperty(String key) {
-        try {
-            Property property = getNode().getProperty(key);
-            return new UserProperty(property.getName(), property.getString(), false);
-        } catch (RepositoryException e) {
-            return null;
-        }
+        return getUserProperties().getUserProperty(key);
     }
 
     /**
@@ -215,9 +209,13 @@ public class JCRUser implements JahiaUser {
      */
     public boolean removeProperty(String key) {
         try {
-            Property property = getNode().getProperty(key);
+            Node node = getNode();
+            Property property = node.getProperty(key);
             if (property != null) {
                 property.remove();
+                node.save();
+                properties = null;
+                userProperties = null;
                 return true;
             }
         } catch (RepositoryException e) {
@@ -238,7 +236,11 @@ public class JCRUser implements JahiaUser {
      */
     public boolean setProperty(String key, String value) {
         try {
-            getNode().setProperty(key, value);
+            Node node = getNode();
+            node.setProperty(key, value);
+            node.save();
+            properties = null;
+            userProperties = null;
             return true;
         } catch (RepositoryException e) {
             logger.warn(e);
@@ -263,7 +265,7 @@ public class JCRUser implements JahiaUser {
      *         otherwise
      */
     public boolean setPassword(String password) {
-        return setProperty(J_PASSWORD,password);
+        return setProperty(J_PASSWORD, password);
     }
 
     /**
@@ -275,6 +277,12 @@ public class JCRUser implements JahiaUser {
      *         false on any error.
      */
     public boolean isMemberOfGroup(int siteID, String name) {
+        if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(name)) {
+            return true;
+        }
+        if (JahiaGroupManagerService.USERS_GROUPNAME.equals(name)) {
+            return !JahiaUserManagerService.GUEST_USERNAME.equals(getName());
+        }
         // Get the services registry
         ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
         if (servicesRegistry != null) {
@@ -300,7 +308,7 @@ public class JCRUser implements JahiaUser {
      */
     public boolean isAdminMember(int siteID) {
         return isMemberOfGroup(siteID,
-                JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
+                               JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
     }
 
     /**
@@ -310,7 +318,7 @@ public class JCRUser implements JahiaUser {
      *         false on any error.
      */
     public boolean isRoot() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return nodeUuid.equals(ROOT_USER_UUID);
     }
 
     /**

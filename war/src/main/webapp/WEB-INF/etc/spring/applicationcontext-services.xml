@@ -205,7 +205,7 @@ FRAG2(frag_size=60000)</value>
         </property>
     </bean>
 
-    <bean id="JahiaUserManagerDBProvider" class="org.jahia.services.usermanager.JahiaUserManagerDBProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
+    <!--<bean id="JahiaUserManagerDBProvider" class="org.jahia.services.usermanager.JahiaUserManagerDBProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="aclService" ref="JahiaACLManagerService"/>
         <property name="cacheService" ref="JahiaCacheService"/>
         <property name="userManager" ref="org.jahia.hibernate.manager.JahiaUserManager"/>
@@ -213,14 +213,14 @@ FRAG2(frag_size=60000)</value>
         <property name="defaultProvider" value="false"/>
         <property name="readOnly" value="false"/>
         <property name="priority" value="1"/>
-    </bean>
+    </bean>-->
 
     <bean id="JCRUserManagerProvider" class="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
         <property name="jcrStoreService" ref="JCRStoreService"/>
         <property name="key" value="jahia_jcr"/>
         <property name="defaultProvider" value="true"/>
         <property name="readOnly" value="false"/>
-        <property name="priority" value="2"/>
+        <property name="priority" value="1"/>
     </bean>
 <!--
     <bean id="JahiaUserManagerLDAPProvider" class="org.jahia.services.usermanager.JahiaUserManagerLDAPProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -253,29 +253,30 @@ FRAG2(frag_size=60000)</value>
     <bean id="JahiaUserManagerService" class="org.jahia.services.usermanager.JahiaUserManagerRoutingService" parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
                 <property name="providersTable">
                     <map>
-                        <entry key="jahia_db" value-ref="JahiaUserManagerDBProvider"/>
+                        <!--<entry key="jahia_db" value-ref="JahiaUserManagerDBProvider"/>-->
                         <entry key="jahia_jcr" value-ref="JCRUserManagerProvider"/>
                         <!--<entry key="ldap" value-ref="JahiaUserManagerLDAPProvider"/>-->
                     </map>
                 </property>
             </bean>
 
-    <bean id="JahiaGroupManagerDBProvider" class="org.jahia.services.usermanager.JahiaGroupManagerDBProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
+    <!--<bean id="JahiaGroupManagerDBProvider" class="org.jahia.services.usermanager.JahiaGroupManagerDBProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="key" value="jahia_db"/>
         <property name="userService" ref="JahiaUserManagerService"/>
         <property name="groupManager" ref="org.jahia.hibernate.manager.JahiaGroupManager"/>
         <property name="defaultProvider" value="false"/>
         <property name="readOnly" value="true"/>
         <property name="priority" value="1"/>
-    </bean>
+    </bean>-->
 
     <bean id="JCRGroupManagerProvider" class="org.jahia.services.usermanager.jcr.JCRGroupManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
         <property name="jcrStoreService" ref="JCRStoreService"/>
         <property name="sitesService" ref="JahiaSitesService"/>
+        <property name="cacheService" ref="JahiaCacheService"/>
         <property name="key" value="jahia_jcr"/>
         <property name="defaultProvider" value="true"/>
         <property name="readOnly" value="false"/>
-        <property name="priority" value="2"/>
+        <property name="priority" value="1"/>
     </bean>
 <!--
     <bean id="JahiaGroupManagerLDAPProvider" class="org.jahia.services.usermanager.JahiaGroupManagerLDAPProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -312,7 +313,7 @@ FRAG2(frag_size=60000)</value>
           parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
         <property name="providersTable">
             <map>
-                <entry key="jahia_db" value-ref="JahiaGroupManagerDBProvider"/>
+                <!--<entry key="jahia_db" value-ref="JahiaGroupManagerDBProvider"/>-->
                 <entry key="jahia_jcr" value-ref="JCRGroupManagerProvider"/>
                 <!--<entry key="ldap" value-ref="JahiaGroupManagerLDAPProvider"/>-->
             </map>
@@ -691,14 +692,14 @@ FRAG2(frag_size=60000)</value>
         </property>
     </bean>
 
-    <bean id="AbstractJCRStoreProvider" class="org.jahia.services.content.JCRStoreProvider" abstract="true" init-method="start" destroy-method="stop">
+    <bean id="AbstractJCRStoreProvider" class="org.jahia.services.content.JCRStoreProvider" abstract="true" init-method="start" destroy-method="stop" >
         <property name="userManagerService" ref="JahiaUserManagerService"/>
         <property name="groupManagerService" ref="JahiaGroupManagerService"/>
         <property name="sitesService" ref="JahiaSitesService"/>
         <property name="service" ref="JCRStoreService"/>
     </bean>
 
-    <bean id="jackrabbit" class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" init-method="start" destroy-method="stop">
+    <bean id="jackrabbit" class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" init-method="start" destroy-method="stop" >
         <property name="configFile" value="WEB-INF/etc/repository/jackrabbit/repository.xml"/>
         <property name="homeDir" value="WEB-INF/var/repository"/>
         <property name="userService" ref="JahiaUserManagerService"/>
@@ -787,33 +788,34 @@ FRAG2(frag_size=60000)</value>
 
     -->
 
-    <bean id="JCRStoreService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
-                <property name="userService" ref="JahiaUserManagerService"/>
-                <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
-                <property name="decorators">
-                    <map>
-                        <entry key="nt:file" value="org.jahia.services.content.JCRFileNode"/>
-                        <entry key="nt:folder" value="org.jahia.services.content.JCRFileNode"/>
-                        <entry key="jnt:portlet" value="org.jahia.services.content.JCRPortletNode"/>
-                        <entry key="nt:query" value="org.jahia.services.content.JCRQueryNode"/>
-                        <entry key="jnt:mountPoint" value="org.jahia.services.content.JCRMountPointNode"/>
-                        <entry key="jnt:jahiacontent" value="org.jahia.services.content.JCRJahiaContentNode"/>
-                        <entry key="jnt:layout" value="org.jahia.services.content.JCRLayoutNode"/>
-                        <entry key="nt:version" value="org.jahia.services.content.JCRVersion"/>
-                        <entry key="nt:versionHistory" value="org.jahia.services.content.JCRVersionHistory"/>
-                        <entry key="nt:frozenNode" value="org.jahia.services.content.JCRFrozenNode"/>
-                        <entry key="jnt:simplePreference" value="org.jahia.services.preferences.generic.GenericJahiaPreference"/>
-                        <entry key="jnt:pagePreference" value="org.jahia.services.preferences.page.PageJahiaPreference"/>
-                        <entry key="jnt:toolbarPreference" value="org.jahia.services.preferences.toolbar.ToolbarJahiaPreference"/>                        
-                        <entry key="jnt:bookmarkPreference" value="org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference"/>
-                        <entry key="jnt:portletPreference" value="org.jahia.services.applications.pluto.JahiaPortletPreference"/>
-                    </map>
-                </property>
-                <property name="servletContextAttributeName" value="jcrStoreService"/>
-            </bean>
+    <bean id="JCRStoreService" class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate"
+          factory-method="getInstance" lazy-init="true">
+        <property name="userService" ref="JahiaUserManagerService"/>
+        <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
+        <property name="decorators">
+            <map>
+                <entry key="nt:file" value="org.jahia.services.content.JCRFileNode"/>
+                <entry key="nt:folder" value="org.jahia.services.content.JCRFileNode"/>
+                <entry key="jnt:portlet" value="org.jahia.services.content.JCRPortletNode"/>
+                <entry key="nt:query" value="org.jahia.services.content.JCRQueryNode"/>
+                <entry key="jnt:mountPoint" value="org.jahia.services.content.JCRMountPointNode"/>
+                <entry key="jnt:jahiacontent" value="org.jahia.services.content.JCRJahiaContentNode"/>
+                <entry key="jnt:layout" value="org.jahia.services.content.JCRLayoutNode"/>
+                <entry key="nt:version" value="org.jahia.services.content.JCRVersion"/>
+                <entry key="nt:versionHistory" value="org.jahia.services.content.JCRVersionHistory"/>
+                <entry key="nt:frozenNode" value="org.jahia.services.content.JCRFrozenNode"/>
+                <entry key="jnt:simplePreference"
+                       value="org.jahia.services.preferences.generic.GenericJahiaPreference"/>
+                <entry key="jnt:pagePreference" value="org.jahia.services.preferences.page.PageJahiaPreference"/>
+                <entry key="jnt:toolbarPreference"
+                       value="org.jahia.services.preferences.toolbar.ToolbarJahiaPreference"/>
+                <entry key="jnt:bookmarkPreference"
+                       value="org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference"/>
+                <entry key="jnt:portletPreference"
+                       value="org.jahia.services.applications.pluto.JahiaPortletPreference"/>
+            </map>
         </property>
+        <property name="servletContextAttributeName" value="jcrStoreService"/>
     </bean>
 
     <bean id="CasService" parent="proxyTemplate">

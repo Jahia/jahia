@@ -117,9 +117,11 @@ public class JCRGroup extends JahiaGroup {
      */
     public boolean removeProperty(String key) {
         try {
-            Property property = getNode().getProperty(key);
+            Node node = getNode();
+            Property property = node.getProperty(key);
             if (property != null) {
                 property.remove();
+                node.save();
                 return true;
             }
         } catch (RepositoryException e) {
@@ -137,7 +139,9 @@ public class JCRGroup extends JahiaGroup {
      */
     public boolean setProperty(String key, String value) {
         try {
-            getNode().setProperty(key, value);
+            Node node = getNode();
+            node.setProperty(key, value);
+            node.save();
             return true;
         } catch (RepositoryException e) {
             logger.warn(e);

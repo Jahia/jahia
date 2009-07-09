@@ -1,15 +1,16 @@
-
 <content jcr:primaryType="jnt:systemfolder"
 
-           xmlns:jcr="http://www.jcp.org/jcr/1.0"
-           xmlns:j="http://www.jahia.org/jahia/1.0"
-           xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+         xmlns:jcr="http://www.jcp.org/jcr/1.0"
+         xmlns:j="http://www.jahia.org/jahia/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
 
     <shared jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
 
         <j:acl jcr:primaryType="jnt:acl">
-            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"/>
-            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"/>
+            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
+                                    j:privileges="jcr:read" j:aceType="GRANT"/>
+            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
+                                     j:privileges="jcr:write" j:aceType="GRANT"/>
             <!--<DENY_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="" j:aceType="DENY"/>-->
         </j:acl>
 
@@ -20,28 +21,70 @@
         <content jcr:primaryType="jnt:folder"/>
     </shared>
 
-    <users jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:usersFolder" j:usersFolderSkeleton="user.xml"/>
+    <users jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:usersFolder" j:usersFolderSkeleton="user.xml">
+        <root jcr:primaryType="jnt:user" j:password="root1234" jcr:uuid="b32d306a-6c74-11de-b3ef-001e4fead50b">
+            <files jcr:primaryType="jnt:folder">
+                <private jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
+                    <j:acl jcr:primaryType="jnt:acl">
+                        <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
+                                               j:privileges="jcr:read" j:aceType="DENY"/>
+                        <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
+                                                j:privileges="jcr:write" j:aceType="DENY"/>
+                    </j:acl>
 
-    <groups jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:groupsFolder"/>
+                    <imports jcr:primaryType="jnt:importDropBox"/>
+                </private>
+            </files>
 
-    <sites jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:virtualsitesFolder" j:virtualsitesFolderSkeleton="site.xml"/>
+            <mashups jcr:primaryType="jnt:folder"/>
 
-    <imports jcr:primaryType="jnt:importDropBox" />
+            <preferences jcr:primaryType="jnt:preferences" jcr:mixinTypes="jmix:accessControlled">
+                <j:acl jcr:primaryType="jnt:acl">
+                    <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
+                                           j:privileges="jcr:read" j:aceType="DENY"/>
+                    <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
+                                            j:privileges="jcr:write" j:aceType="DENY"/>
+                </j:acl>
+            </preferences>
+        </root>
+        <guest jcr:primaryType="jnt:user" j:password=""/>
+    </users>
+
+    <groups jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:groupsFolder">
+        <guest jcr:primaryType="jnt:group" j:hidden="false">
+            <j:members jcr:primaryType="jnt:members"/>
+        </guest>
+        <users jcr:primaryType="jnt:group" j:hidden="false">
+            <j:members jcr:primaryType="jnt:members"/>
+        </users>
+        <administrators jcr:primaryType="jnt:group" j:hidden="false">
+            <j:members jcr:primaryType="jnt:members">
+                <root jcr:primaryType="jnt:member" j:member="b32d306a-6c74-11de-b3ef-001e4fead50b"/>
+            </j:members>
+        </administrators>
+    </groups>
+
+    <sites jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:virtualsitesFolder"
+           j:virtualsitesFolderSkeleton="site.xml"/>
+
+    <imports jcr:primaryType="jnt:importDropBox"/>
 
     <!--<layoutmanager jcr:primaryType="jnt:layoutManager" >-->
-        <!--<j:acl jcr:primaryType="jnt:acl">-->
-            <!--<GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"/>-->
-            <!--<GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"/>-->
-            <!--<DENY_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="" j:aceType="DENY"/>-->
-        <!--</j:acl>-->
+    <!--<j:acl jcr:primaryType="jnt:acl">-->
+    <!--<GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"/>-->
+    <!--<GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"/>-->
+    <!--<DENY_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="" j:aceType="DENY"/>-->
+    <!--</j:acl>-->
     <!--</layoutmanager>-->
 
-    <referencesKeeper jcr:primaryType="jnt:referencesKeeper" />
+    <referencesKeeper jcr:primaryType="jnt:referencesKeeper"/>
 
-    <mounts jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:accessControlled" >
+    <mounts jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:accessControlled">
         <j:acl jcr:primaryType="jnt:acl">
-            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"/>
-            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"/>
+            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
+                                    j:privileges="jcr:read" j:aceType="GRANT"/>
+            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
+                                     j:privileges="jcr:write" j:aceType="GRANT"/>
         </j:acl>
     </mounts>
 

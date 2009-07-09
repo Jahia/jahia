@@ -8,18 +8,6 @@
     </server>
   </servers>
   <profiles>
-       <!-- GWT settings -->
-     <profile>
-       <id>gwt-1.5.2</id>
-       <properties>
-         <google.webtoolkit.home>C:/devel_zone/gwt/gwt-windows-1.5.2</google.webtoolkit.home>
-         <!-- for those who are compiling on linux box without X server, you have to add these parameters
-         You also need to be sure that DISPLAY variable is not defined on your server
-         <google.webtoolkit.extrajvmargs>-Djava.awt.headless=true</google.webtoolkit.extrajvmargs>
-         -->
-       </properties>
-     </profile>
-
      <profile>
        <id>configure</id>
        <properties>
@@ -119,7 +107,6 @@
   </profiles>
   
   <activeProfiles>
-    <activeProfile>gwt-1.5.2</activeProfile>
     <activeProfile>andromeda-deployment-tomcat5-dev</activeProfile>
     <activeProfile>configure</activeProfile>
     <!-- <activeProfile>jboss-deployment</activeProfile> -->

@@ -39,9 +39,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.ToolBarEvent;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -180,16 +178,20 @@ public class WizardWindow extends Window {
         nextBtn = new Button(getNextButtonText());
         cancelBtn = new Button(getCancelButtonText());
 
+        SelectionListener<ButtonEvent> listener = new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent buttonEvent) {
+                onButtonPressed(buttonEvent.getButton());
+            }
+        };
+
+        prevBtn.addSelectionListener(listener);
+        nextBtn.addSelectionListener(listener);
+
         ToolBar buttonBar = new ToolBar();
         buttonBar.add(prevBtn);
         buttonBar.add(nextBtn);
         buttonBar.add(cancelBtn);
-        buttonBar.addListener(Events.Select, new Listener<ToolBarEvent>() {
-            public void handleEvent(ToolBarEvent bbe) {
-                onButtonPressed((Button) bbe.getItem());
-            }
-        });
-        setTopComponent(buttonBar);
+        setBottomComponent(buttonBar);
 
         super.onRender(parent, pos);
 

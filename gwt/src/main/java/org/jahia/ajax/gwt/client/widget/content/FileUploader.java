@@ -145,7 +145,7 @@ public class FileUploader extends Window {
         buttons.add(submit);
         buttons.add(cancel);
         setButtonAlign(Style.HorizontalAlignment.CENTER);
-        setTopComponent(buttons);
+        setBottomComponent(buttons);
 
         setTopComponent(toolBar);
 

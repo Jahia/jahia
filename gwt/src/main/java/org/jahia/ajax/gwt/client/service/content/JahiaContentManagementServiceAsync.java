@@ -132,5 +132,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void uploadedFile(String location, String tmpName, int operation, String newName, AsyncCallback async);
 
+    void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion,AsyncCallback async);    
+
     void getRenderedContent(String path, AsyncCallback<String> async);
 }

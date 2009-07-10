@@ -379,9 +379,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return ACLHelper.createUsersGroupACE(permissions, grand, retrieveParamBean());
     }
 
+    public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion) throws GWTJahiaServiceException {
+        String nodeUuid = gwtJahiaNodeVersion.getNode().getUUID();
+        String versiOnUuid = gwtJahiaNodeVersion.getUUID();
+        ContentManagerHelper.restoreNode(nodeUuid,versiOnUuid,retrieveParamBean());
+    }
+
     public void uploadedFile(String location, String tmpName, int operation, String newName)  throws GWTJahiaServiceException {
         ContentManagerHelper.uploadedFile(location, tmpName, operation, newName, retrieveParamBean());
     }
+
+    
 
     public String getRenderedContent(String path) throws GWTJahiaServiceException {
         return ContentManagerHelper.getRenderedContent(path, retrieveParamBean());

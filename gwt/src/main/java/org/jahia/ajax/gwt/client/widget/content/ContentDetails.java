@@ -68,6 +68,7 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.widget.content.versioning.VersioningPanel;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
@@ -208,8 +209,8 @@ public class ContentDetails extends BottomRightComponent {
         clear();
         if (selectedItem != null) {
             if (selectedItem instanceof GWTJahiaNode) {
-                selectedNodes = new ArrayList<GWTJahiaNode>() ;
-                selectedNodes.add((GWTJahiaNode) selectedItem) ;
+                selectedNodes = new ArrayList<GWTJahiaNode>();
+                selectedNodes.add((GWTJahiaNode) selectedItem);
             } else {
                 selectedNodes = (List<GWTJahiaNode>) selectedItem;
             }
@@ -372,7 +373,7 @@ public class ContentDetails extends BottomRightComponent {
                         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
                         Button item = new Button(Messages.getResource("fm_save"));
                         item.setIconStyle("gwt-icons-save");
-                        item.setEnabled( selectedNode.isWriteable() && !selectedNode.isLocked() );
+                        item.setEnabled(selectedNode.isWriteable() && !selectedNode.isLocked());
                         item.addSelectionListener(new SelectionListener<ButtonEvent>() {
                             public void componentSelected(ButtonEvent event) {
                                 JahiaContentManagementService.App.getInstance().saveProperties(elements, propertiesEditor.getProperties(), new AsyncCallback() {
@@ -392,7 +393,7 @@ public class ContentDetails extends BottomRightComponent {
                         toolBar.add(item);
                         item = new Button(Messages.getResource("fm_restore"));
                         item.setIconStyle("gwt-icons-restore");
-                        item.setEnabled( selectedNode.isWriteable() && !selectedNode.isLocked() );
+                        item.setEnabled(selectedNode.isWriteable() && !selectedNode.isLocked());
 
                         item.addSelectionListener(new SelectionListener<ButtonEvent>() {
                             public void componentSelected(ButtonEvent event) {
@@ -424,7 +425,7 @@ public class ContentDetails extends BottomRightComponent {
                             nodeTypes.add(nodeType);
                         }
                     }
-                    writeable &= selectedNode.isWriteable() && !selectedNode.isLocked() ;
+                    writeable &= selectedNode.isWriteable() && !selectedNode.isLocked();
                 }
                 final boolean w = writeable;
                 cDefService.getNodeTypes(nodeTypes, new AsyncCallback<List<GWTJahiaNodeType>>() {
@@ -753,49 +754,34 @@ public class ContentDetails extends BottomRightComponent {
         }
     }
 
+    /**
+     * Display versioning
+     */
     public void displayVersioning() {
         if (selectedNodes.size() == 1) {
             final GWTJahiaNode selectedNode = selectedNodes.get(0);
             if (!versioningTabItem.isProcessed()) {
                 if (selectedNode.getNodeTypes().contains("mix:versionable") || selectedNode.getNodeTypes().contains("mix:simpleVersionable")) {
-                    List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-
-                    ColumnConfig col = new ColumnConfig("versionNumber","version number", 100);
-                    columns.add(col);
-                    col = new ColumnConfig("date","date", 200);
-                    columns.add(col);
-
-                    final ListStore<GWTJahiaNodeVersion> store = new ListStore<GWTJahiaNodeVersion>();
-                    
-                    ColumnModel cm = new ColumnModel(columns);
-                    final com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeVersion> grid = new com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeVersion>(store, cm);
-                    versioningTabItem.add(grid);
-
-                    grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
-                        public void handleEvent(GridEvent event) {
-                            List<GWTJahiaNodeVersion> sel = grid.getSelectionModel().getSelectedItems();
-                            if (sel != null && sel.size() == 1) {
-                                GWTJahiaNodeVersion el = sel.get(0);
-                                if (config.isEnableFileDoubleClick()) {
-                                    if (selectedNode.isDisplayable()) {
-                                        ImagePopup.popImage(el.getNode());
-                                    } else {
-                                        ContentActions.download(getLinker(),el.getNode(), el.getNode().getUrl());
-                                    }
+                    VersioningPanel versionPanel = new VersioningPanel(selectedNode, config.isEnableFileDoubleClick()) {
+                        @Override
+                        public void onRowDoubleClick(GWTJahiaNodeVersion version) {
+                            if (config.isEnableFileDoubleClick()) {
+                                if (getSelectedNode().isDisplayable()) {
+                                    ImagePopup.popImage(version.getNode());
+                                } else {
+                                    ContentActions.download(getLinker(), version.getNode(), version.getNode().getUrl());
                                 }
                             }
                         }
-                    });
 
-                    service.getVersions(selectedNode.getPath(), new AsyncCallback<List<GWTJahiaNodeVersion>>() {
-                        public void onFailure(Throwable caught) {
-                            Window.alert("failure");
-                        }
 
-                        public void onSuccess(List<GWTJahiaNodeVersion> result) {
-                            store.add(result);
+                        @Override
+                        public void afterRestore() {
+                            getLinker().refreshTable();
                         }
-                    });
+                    };
+
+                    versioningTabItem.add(versionPanel);
                 } else {
                     versioningTabItem.setLayout(new FlowLayout());
                     versioningTabItem.add(new Text("File is not versioned yet"));

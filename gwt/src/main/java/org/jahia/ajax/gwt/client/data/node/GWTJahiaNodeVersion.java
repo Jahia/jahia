@@ -43,10 +43,13 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class GWTJahiaNodeVersion extends BaseModel {
+    private String uuid;
+
     public GWTJahiaNodeVersion() {
     }
 
-    public GWTJahiaNodeVersion(String version, Date date) {
+    public GWTJahiaNodeVersion(String uuid, String version, Date date) {
+        setUUID(uuid);
         setVersionNumber(version);
         setDate(date);
     }
@@ -76,5 +79,11 @@ public class GWTJahiaNodeVersion extends BaseModel {
         set("node", node);
     }
 
+    public String getUUID() {
+        return uuid;
+    }
 
+    public void setUUID(String uuid) {
+        this.uuid = uuid;
+    }
 }

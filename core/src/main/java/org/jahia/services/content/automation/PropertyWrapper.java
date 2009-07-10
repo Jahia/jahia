@@ -37,6 +37,8 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.SelectorType;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.api.Constants;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
@@ -55,9 +57,9 @@ import java.lang.reflect.Array;
  * Time: 17:27:10
  * To change this template use File | Settings | File Templates.
  */
-public class PropertyWrapper implements Updateable  {
+public class PropertyWrapper implements Updateable {
     private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(PropertyWrapper.class);
+            org.apache.log4j.Logger.getLogger(PropertyWrapper.class);
 
     private String path;
     private Property property;
@@ -106,7 +108,7 @@ public class PropertyWrapper implements Updateable  {
                 setProperty(node, name, value);
             }
         } catch (PathNotFoundException e) {
-            logger.warn("Node does not exist "+nodePath);
+            logger.warn("Node does not exist " + nodePath);
         }
     }
 
@@ -116,6 +118,12 @@ public class PropertyWrapper implements Updateable  {
         NodeTypeRegistry reg = NodeTypeRegistry.getInstance();
         ExtendedNodeType nt = null;
         try {
+            // deal with versioning. this method is called at restore(...)
+            if (node.isNodeType(Constants.MIX_VERSIONABLE)) {
+                node.checkout();
+            }
+
+
             nt = reg.getNodeType(node.getPrimaryNodeType().getName());
             defs.putAll(nt.getPropertyDefinitionsAsMap());
             NodeType[] p = node.getMixinNodeTypes();
@@ -124,7 +132,7 @@ public class PropertyWrapper implements Updateable  {
             }
             ExtendedPropertyDefinition propDef = defs.get(name);
             if (propDef == null) {
-                logger.error("Property "+name +" does not exist in " +node.getPath() + " !");
+                logger.error("Property " + name + " does not exist in " + node.getPath() + " !");
                 return;
             }
             ValueFactory factory = node.getSession().getValueFactory();
@@ -132,20 +140,20 @@ public class PropertyWrapper implements Updateable  {
             Value[] values = null;
             if (objectValue.getClass().isArray()) {
                 values = new Value[Array.getLength(objectValue)];
-                for (int i=0; i<Array.getLength(objectValue); i++) {
+                for (int i = 0; i < Array.getLength(objectValue); i++) {
                     values[i] = createValue(Array.get(objectValue, i), propDef, factory);
                 }
             } else {
-                values = new Value[] {createValue(objectValue, propDef, factory)};
+                values = new Value[]{createValue(objectValue, propDef, factory)};
             }
 
-            if (values != null && values.length>0) {
+            if (values != null && values.length > 0) {
                 if (!propDef.isMultiple()) {
                     property = node.setProperty(name, values[0]);
                 } else {
                     if (node.hasProperty(name)) {
                         Value[] oldValues = property.getValues();
-                        Value[] newValues = new Value[oldValues.length+values.length];
+                        Value[] newValues = new Value[oldValues.length + values.length];
                         System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
                         System.arraycopy(values, oldValues.length, newValues, 0, values.length);
                         property.setValue(newValues);
@@ -154,16 +162,16 @@ public class PropertyWrapper implements Updateable  {
                     }
                 }
 
-                logger.debug("Property set" + nodePath +" / " +name);
+                logger.debug("Property set" + nodePath + " / " + name);
                 if (property != null) {
                     path = property.getPath();
                 }
                 if (objectValue instanceof File) {
-                    ((File)objectValue).delete();
+                    ((File) objectValue).delete();
                 }
             }
         } catch (NoSuchNodeTypeException e) {
-            logger.debug("Nodetype not supported",e);
+            logger.debug("Nodetype not supported", e);
         }
     }
 
@@ -171,30 +179,30 @@ public class PropertyWrapper implements Updateable  {
         if (objectValue instanceof String) {
             if (propDef.getSelector() == SelectorType.CATEGORY) {
                 try {
-                    return factory.createValue(Category.getCategoryPath((String) objectValue)) ;
+                    return factory.createValue(Category.getCategoryPath((String) objectValue));
                 } catch (Exception e) {
-                    logger.warn("Can't get category "+objectValue + ", cause " + e.getMessage());
+                    logger.warn("Can't get category " + objectValue + ", cause " + e.getMessage());
                 }
             } else {
-                return factory.createValue((String) objectValue) ;
+                return factory.createValue((String) objectValue);
             }
         } else if (objectValue instanceof Long) {
-            return factory.createValue((Long) objectValue) ;
+            return factory.createValue((Long) objectValue);
         } else if (objectValue instanceof Integer) {
-            return factory.createValue(((Integer) objectValue).longValue()) ;
+            return factory.createValue(((Integer) objectValue).longValue());
         } else if (objectValue instanceof Calendar) {
-            return factory.createValue((Calendar) objectValue) ;
+            return factory.createValue((Calendar) objectValue);
         } else if (objectValue instanceof Date) {
             Calendar c = new GregorianCalendar();
             c.setTime((Date) objectValue);
-            return factory.createValue(c) ;
+            return factory.createValue(c);
         } else if (objectValue instanceof byte[]) {
-            return factory.createValue(new ByteArrayInputStream((byte[]) objectValue)) ;
+            return factory.createValue(new ByteArrayInputStream((byte[]) objectValue));
         } else if (objectValue instanceof File) {
             try {
-                return factory.createValue(new FileInputStream((File) objectValue)) ;
+                return factory.createValue(new FileInputStream((File) objectValue));
             } catch (FileNotFoundException e) {
-                logger.error("File not found ",e);
+                logger.error("File not found ", e);
             }
         }
         return null;
@@ -220,7 +228,7 @@ public class PropertyWrapper implements Updateable  {
     public List<String> getStringValues() throws RepositoryException {
         List<String> r = new ArrayList<String>();
         if (property != null) {
-            Value[] vs =  property.getValues();
+            Value[] vs = property.getValues();
             for (int i = 0; i < vs.length; i++) {
                 Value v = vs[i];
                 r.add(v.getString());
@@ -231,7 +239,7 @@ public class PropertyWrapper implements Updateable  {
 
     public Object getValue() throws RepositoryException {
         if (property != null) {
-            return  property.getValues();
+            return property.getValues();
         }
         return null;
     }

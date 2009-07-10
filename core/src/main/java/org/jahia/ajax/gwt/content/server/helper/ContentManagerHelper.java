@@ -76,6 +76,7 @@ import org.apache.jackrabbit.value.StringValue;
 import org.apache.log4j.Logger;
 
 import javax.jcr.*;
+import javax.jcr.version.Version;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.nodetype.PropertyDefinition;
@@ -1020,50 +1021,55 @@ public class ContentManagerHelper {
             while (it.hasNext()) {
                 Property prop = it.nextProperty();
                 PropertyDefinition def = prop.getDefinition();
-                propName = def.getName();
-                // create the corresponding GWT bean
-                GWTJahiaNodeProperty nodeProp = new GWTJahiaNodeProperty();
-                nodeProp.setName(propName);
-                nodeProp.setMultiple(def.isMultiple());
-                Value[] values;
-                if (!def.isMultiple()) {
-                    Value oneValue = prop.getValue();
-                    values = new Value[]{oneValue};
-                } else {
-                    values = prop.getValues();
-                }
-                List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>(values.length);
-
-                boolean stringValueIsNotEmpty = false;
-                for (Value val : values) {
-                    gwtValues.add(Utils.convertValue(val));
-                    stringValueIsNotEmpty |= PropertyType.STRING == val
-                            .getType()
-                            && val.getString() != null
-                            && val.getString().length() > UPLOAD;
-                }
-                if (stringValueIsNotEmpty
-                        && SelectorType.CATEGORY == JCRContentUtils
-                        .getPropertyDefSelector(def)) {
-                    List<GWTJahiaNodePropertyValue> adjustedGwtValues = new ArrayList<GWTJahiaNodePropertyValue>(
-                            values.length);
-                    for (GWTJahiaNodePropertyValue jahiaNodePropertyValue : gwtValues) {
-                        if (jahiaNodePropertyValue.getString() != null
-                                && jahiaNodePropertyValue.getString().length() > UPLOAD) {
-                            adjustedGwtValues
-                                    .add(new GWTJahiaNodePropertyValue(
-                                            Category
-                                                    .getCategoryKey(jahiaNodePropertyValue
-                                                    .getString()),
-                                            jahiaNodePropertyValue.getType()));
-                        } else {
-                            adjustedGwtValues.add(jahiaNodePropertyValue);
-                        }
+                // definition can be null if the file is versionned
+                if (def != null) {
+                    propName = def.getName();
+                    // create the corresponding GWT bean
+                    GWTJahiaNodeProperty nodeProp = new GWTJahiaNodeProperty();
+                    nodeProp.setName(propName);
+                    nodeProp.setMultiple(def.isMultiple());
+                    Value[] values;
+                    if (!def.isMultiple()) {
+                        Value oneValue = prop.getValue();
+                        values = new Value[]{oneValue};
+                    } else {
+                        values = prop.getValues();
                     }
-                    gwtValues = adjustedGwtValues;
+                    List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>(values.length);
+
+                    boolean stringValueIsNotEmpty = false;
+                    for (Value val : values) {
+                        gwtValues.add(Utils.convertValue(val));
+                        stringValueIsNotEmpty |= PropertyType.STRING == val
+                                .getType()
+                                && val.getString() != null
+                                && val.getString().length() > UPLOAD;
+                    }
+                    if (stringValueIsNotEmpty
+                            && SelectorType.CATEGORY == JCRContentUtils
+                            .getPropertyDefSelector(def)) {
+                        List<GWTJahiaNodePropertyValue> adjustedGwtValues = new ArrayList<GWTJahiaNodePropertyValue>(
+                                values.length);
+                        for (GWTJahiaNodePropertyValue jahiaNodePropertyValue : gwtValues) {
+                            if (jahiaNodePropertyValue.getString() != null
+                                    && jahiaNodePropertyValue.getString().length() > UPLOAD) {
+                                adjustedGwtValues
+                                        .add(new GWTJahiaNodePropertyValue(
+                                                Category
+                                                        .getCategoryKey(jahiaNodePropertyValue
+                                                        .getString()),
+                                                jahiaNodePropertyValue.getType()));
+                            } else {
+                                adjustedGwtValues.add(jahiaNodePropertyValue);
+                            }
+                        }
+                        gwtValues = adjustedGwtValues;
+                    }
+                    nodeProp.setValues(gwtValues);
+                    props.put(nodeProp.getName(), nodeProp);
+                } else {
+                    logger.debug("The following property has been ignored "+prop.getName()+","+prop.getPath());
                 }
-                nodeProp.setValues(gwtValues);
-                props.put(nodeProp.getName(), nodeProp);
             }
             NodeIterator ni = objectNode.getNodes();
             while (ni.hasNext()) {
@@ -1795,6 +1801,16 @@ public class ContentManagerHelper {
         return createPortletInstance(parentPath, name, "rss", "JahiaRSSPortlet", gwtJahiaNodeProperties, context);
     }
 
+    /**
+     * Create a google gadget node
+     *
+     * @param parentPath
+     * @param name
+     * @param script
+     * @param context
+     * @return
+     * @throws GWTJahiaServiceException
+     */
     public static GWTJahiaNode createGoogleGadgetPortletInstance(String parentPath, String name, String script, ProcessingContext context) throws GWTJahiaServiceException {
         GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
 
@@ -1854,7 +1870,12 @@ public class ContentManagerHelper {
     }
 
     /**
-     * Activate versioning and add a new version
+     * Activate versioning if nested and add a new version
+     *
+     * @param node
+     * @param tmpName
+     * @param ctx
+     * @throws GWTJahiaServiceException
      */
     public static void addNewVersionFile(JCRNodeWrapper node, String tmpName, ProcessingContext ctx) throws GWTJahiaServiceException {
         try {
@@ -1866,8 +1887,8 @@ public class ContentManagerHelper {
                 node.checkout();
                 node.getFileContent().uploadFile(GWTFileManagerUploadServlet.getItem(tmpName).file, GWTFileManagerUploadServlet.getItem(tmpName).contentType);
                 node.save();
-                node.checkin();
-                
+                node.checkpoint();
+
                 logger.debug("Number of version: " + node.getVersions().size());
 
             } else {
@@ -1877,6 +1898,30 @@ public class ContentManagerHelper {
             logger.error(e.getMessage(), e);
         }
 
+    }
+
+    /**
+     * Restore node version
+     *
+     * @param nodeUuid
+     * @param versionUuid
+     * @param ctx
+     */
+    public static void restoreNode(String nodeUuid, String versionUuid, ProcessingContext ctx) {
+        try {
+            JCRNodeWrapper node = (JCRNodeWrapper) jcr.getThreadSession(ctx.getUser()).getNodeByUUID(nodeUuid);
+            Version version = (Version) jcr.getThreadSession(ctx.getUser()).getNodeByUUID(versionUuid);
+            node.checkout();
+            node.restore(version, true);
+            node.checkpoint();
+
+            // fluch caches: To do: flush only the nested cache
+            ServicesRegistry.getInstance().getCacheService().flushAllCaches();
+
+
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
 
@@ -1912,6 +1957,13 @@ public class ContentManagerHelper {
         return null;
     }
 
+    /**
+     * Check captcha
+     *
+     * @param context
+     * @param captcha
+     * @return
+     */
     public static boolean checkCaptcha(ParamBean context, String captcha) {
         final String captchaId = context.getSessionState().getId();
         if (logger.isDebugEnabled()) logger.debug("j_captcha_response: " + captcha);
@@ -1926,6 +1978,12 @@ public class ContentManagerHelper {
         return isResponseCorrect;
     }
 
+    /**
+     * Check name
+     *
+     * @param name
+     * @throws GWTJahiaServiceException
+     */
     public static void checkName(String name) throws GWTJahiaServiceException {
         if (name.indexOf("*") > UPLOAD ||
                 name.indexOf("/") > UPLOAD ||
@@ -1936,6 +1994,14 @@ public class ContentManagerHelper {
     }
 
 
+    /**
+     * Get rendered content
+     *
+     * @param path
+     * @param ctx
+     * @return
+     * @throws GWTJahiaServiceException
+     */
     public static String getRenderedContent(String path, ParamBean ctx) throws GWTJahiaServiceException {
         String res = null;
         try {
@@ -1945,7 +2011,7 @@ public class ContentManagerHelper {
             final HashMap<String, List<String>> listHashMap = new HashMap<String, List<String>>();
             ctx.getRequest().setAttribute("moduleTags", listHashMap);
             res = RenderService.getInstance().render(r, ctx.getRequest(), ctx.getResponse()).toString();
-            System.out.println("-->"+listHashMap);
+            System.out.println("-->" + listHashMap);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {

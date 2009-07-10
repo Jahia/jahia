@@ -125,7 +125,7 @@ import java.io.IOException;
 public class TemplateHeaderTag extends AbstractJahiaTag {
 
     private final static Logger logger = Logger.getLogger(TemplateHeaderTag.class);
-    
+
     private boolean gwtForGuest;
 
     public int doStartTag() throws JspException {
@@ -133,18 +133,21 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
         ServletRequest request = pageContext.getRequest();
         JahiaData jData = getJahiaData();
         JahiaPage page = jData.page();
-        String title = page.getTitle();
-        if (title == null) {
-            PageProperty prop = null;
-            try {
-                prop = page.getPageLocalProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
-            } catch (JahiaException e) {
-                logger.error("Cannot access current page properties", e);
-            }
-            if (prop != null) {
-                title = prop.getValue();
-            } else {
-                title = String.valueOf(page.getID());
+        String title = "";
+        if (page != null) {
+            page.getTitle();
+            if (title == null) {
+                PageProperty prop = null;
+                try {
+                    prop = page.getPageLocalProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
+                } catch (JahiaException e) {
+                    logger.error("Cannot access current page properties", e);
+                }
+                if (prop != null) {
+                    title = prop.getValue();
+                } else {
+                    title = String.valueOf(page.getID());
+                }
             }
         }
 
@@ -159,11 +162,11 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
         }
 
         if (AdvPreviewSettings.isInUserAliasingMode() || isLogged() || gwtForGuest) {
-            buf.append(("<!-- cache:vars var=\""+ SkeletonAggregatorValve.GWT_VARIABLE+"\" -->"));
+            buf.append(("<!-- cache:vars var=\"" + SkeletonAggregatorValve.GWT_VARIABLE + "\" -->"));
             buf.append(GWTInitializer.getInitString(pageContext)).append("\n");
             buf.append("<!-- /cache:vars -->\n");
         }
-        
+
         buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         buf.append(((HttpServletRequest) request).getContextPath());
         buf.append("/css/styles.css\"/>");

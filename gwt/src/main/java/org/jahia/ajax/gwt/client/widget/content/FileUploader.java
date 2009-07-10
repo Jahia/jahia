@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
@@ -108,14 +109,8 @@ public class FileUploader extends Window {
         }
         dest.setValue(parentPath);
 
-        // create versioon
-        Hidden createVersion = new Hidden();
-        createVersion.setName("createVersion");
-        createVersion.setValue(String.valueOf(location.isVersioned()));
-
         form.add(dest);
         form.add(unzip);
-        form.add(createVersion);
 
         final ToolBar toolBar = new ToolBar();
         Button add = new Button(Messages.getResource("fm_addFile"));
@@ -163,9 +158,6 @@ public class FileUploader extends Window {
 
         form.addListener(Events.BeforeSubmit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
-                // display confirm versionning panel
-
-
                 bar.setVisible(true);
                 bar.auto();
 
@@ -178,6 +170,7 @@ public class FileUploader extends Window {
                 linker.setSelectPathAfterDataUpdate(location.getPath() + "/" + upload.getFilename());
 
                 String result = formEvent.getResultHtml();
+           
                 toolBar.removeAll();
                 removeAll();
                 String[] results = result.split("\n");

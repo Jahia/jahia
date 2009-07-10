@@ -237,7 +237,7 @@ class TemplatePackageRegistry {
                 for (String name : templatePackage.getDefinitionsFiles()) {
                     NodeTypeRegistry.getInstance().addDefinitionsFile(
                             new File(new File(settingsBean.getJahiaTemplatesDiskPath(),templatePackage.getRootFolder()), name),
-                            templatePackage.getName(), false);
+                            templatePackage.getName(), true);
                 }
             } catch (Exception e) {
                 logger.warn("Cannot parse definitions for "+templatePackage.getName(),e);

@@ -65,7 +65,7 @@
  smallText mainContentTitle primary
  bigText mainContentBody
  file mainContentImage
- sharedSmallText mainContentAlign (choicelist) = resourceKey(left) indexed=no < resourceKey(left), resourceKey(right), resourceKey(default)
+ sharedSmallText mainContentAlign (choicelist[resourceBundle]) = left indexed=no < left,right,default
 
 [jnt:mainContentsBox] > jnt:box
  containerList mainContentContainer (jnt:mainContentContainer)
@@ -89,7 +89,7 @@
 [jnt:savedSearchContainer] > jnt:container
  smallText boxSavedSearchTitle
  sharedSmallText boxSavedSearchQuery indexed=no
- sharedSmallText boxSavedSearchView (choicelist) = resourceKey(list) indexed=no < resourceKey(list),resourceKey(table)
+ sharedSmallText boxSavedSearchView (choicelist[resourceBundle]) = list indexed=no < list,table
  integer boxSavedSearchMaxs (choicelist) = 10 indexed=no < 1,5,10,20,50,100,200,500
 
 [jnt:savedSearchBox] > jnt:box

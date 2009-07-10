@@ -31,12 +31,10 @@
  */
 package org.jahia.services.content.nodetypes;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.jcr.nodetype.ItemDefinition;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.OnParentVersionAction;
 
 import org.apache.log4j.Logger;
@@ -170,5 +168,34 @@ public class ExtendedItemDefinition implements ItemDefinition {
         }
         return getName().replace(':','_');
     }
+
+
+
+    public boolean isSystemItem() {
+        ExtendedNodeType dnt = getDeclaringNodeType();
+        final boolean b = dnt.getName().startsWith("mix:") || dnt.getName().startsWith("nt:");
+        return b;
+    }
+
+    public boolean isMetadataItem() {
+        ExtendedNodeType dnt = getDeclaringNodeType();
+        try {
+            boolean b = Arrays.asList(NodeTypeRegistry.getInstance().getNodeType("jmix:hierarchyNode").getSupertypes()).contains(dnt);
+            b |= dnt.getName().equals("jmix:hierarchyNode");
+
+            return b;
+        } catch (NoSuchNodeTypeException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return false;
+    }
+
+    public boolean isJahiaContentItem() {
+        boolean b = true;
+        b &= !isSystemItem();
+        b &= !isMetadataItem();
+        return b;
+    }
+
 
 }

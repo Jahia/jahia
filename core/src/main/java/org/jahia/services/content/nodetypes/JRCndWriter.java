@@ -221,6 +221,9 @@ public class JRCndWriter {
         if (pd.isMultiple()) {
             out.write(" multiple");
         }
+        if (pd.isAutoCreated()) {
+            out.write(" autocreated");
+        }
         if (pd.getOnParentVersion() != OnParentVersionAction.COPY) {
             out.write(" ");
             out.write(OnParentVersionAction.nameFromValue(pd.getOnParentVersion()).toLowerCase());

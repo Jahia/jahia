@@ -950,18 +950,18 @@ public class ContentManagerHelper {
 
     public static void pasteReference(final List<GWTJahiaNode> pathsToCopy, final String destinationPath, JahiaUser user) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
+        JCRNodeWrapper dest = jcr.getFileNode(destinationPath, user);
         for (GWTJahiaNode aNode : pathsToCopy) {
             JCRNodeWrapper node = jcr.getFileNode(aNode.getPath(), user);
             String name = node.getName();
             if (node.hasPermission(JCRNodeWrapper.READ)) {
-                JCRNodeWrapper dest = jcr.getFileNode(destinationPath, user);
                 if (dest.isCollection()) {
                     name = findAvailableName(dest, name, user);
                     if (dest.isWriteable()) {
                         try {
                             /*Property p = */
-                            dest.setProperty(node.getName(), node); // TODO what's with this property ?
-                            dest.saveSession();
+                            Node reference = dest.addNode(name, "jnt:nodeReference");
+                            reference.setProperty("j:node", aNode.getUUID());
                         } catch (RepositoryException e) {
                             logger.error("Exception", e);
                             missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(dest.getPath()).toString());
@@ -973,6 +973,12 @@ public class ContentManagerHelper {
             } else {
                 missedPaths.add(new StringBuilder("Source file ").append(name).append(" could not be read by ").append(user.getUsername()).append(" - ACCESS DENIED").toString());
             }
+        }
+        try {
+            dest.save();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
         }
         if (missedPaths.size() > UPLOAD) {
             StringBuilder errors = new StringBuilder("The following files could not have their reference pasted:");

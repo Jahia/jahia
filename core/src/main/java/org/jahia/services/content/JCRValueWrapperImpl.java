@@ -34,15 +34,14 @@ package org.jahia.services.content;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.categories.Category;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.bin.Jahia;
 
-import javax.jcr.ValueFormatException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.PropertyType;
+import javax.jcr.*;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.util.Calendar;
 import java.util.Date;
@@ -57,11 +56,13 @@ import java.io.InputStream;
 public class JCRValueWrapperImpl implements JCRValueWrapper {
     private transient static Logger logger = Logger.getLogger(JCRValueWrapperImpl.class);
     private Value value;
-    private final PropertyDefinition definition;
+    private final ExtendedPropertyDefinition definition;
+    private final JCRSessionWrapper session;
 
-    public JCRValueWrapperImpl(Value value,PropertyDefinition definition) {
+    public JCRValueWrapperImpl(Value value, ExtendedPropertyDefinition definition, JCRSessionWrapper session) {
         this.value = value;
         this.definition = definition;
+        this.session = session;
     }
 
     /**
@@ -115,6 +116,15 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
 
     public boolean getBoolean() throws ValueFormatException, IllegalStateException, RepositoryException {
         return value.getBoolean();
+    }
+
+    public Node getNode() throws ValueFormatException, IllegalStateException, RepositoryException {
+        if (definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
+            return session.getNodeByUUID(value.getString());
+        } else {
+            // TODO: The specification suggests using value conversion
+            throw new ValueFormatException("property must be of type REFERENCE");
+        }
     }
 
     public int getType() {

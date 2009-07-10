@@ -78,7 +78,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
                 File f = new File(cnddir);
                 SortedSet<File> cndfiles = new TreeSet<File>(Arrays.asList(f.listFiles()));
                 for (File file : cndfiles) {
-                    addDefinitionsFile(file, SYSTEM + "-" + file.getName().split("-")[1], false);
+                    addDefinitionsFile(file, SYSTEM + "-" + file.getName().split("-")[1], true);
                 }
             } catch (ParseException e) {
                 logger.error(e.getMessage(), e);

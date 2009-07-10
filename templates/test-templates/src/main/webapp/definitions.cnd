@@ -39,7 +39,7 @@
 [test_templates:textFields] >jnt:container
  sharedSmallText smallText
  sharedSmallText smallTextWithDefault = 'default value'
- sharedSmallText smallTextWithDefaultAsResource = resourceKey(defaultValue) internationalized
+ sharedSmallText smallTextWithDefaultAsResource = defaultValue internationalized
  sharedSmallText smallTextWithDefaultAsFunction = useClass('org.jahia.testtemplate.initializer.UsernameValueInitializer')
  sharedSmallText smallTextWithDefaultAsFunctionReadOnly = useClass('org.jahia.testtemplate.initializer.UsernameValueInitializer') protected
  sharedSmallText smallTextWithDefaultAsExpression = eval(currentUser.username)
@@ -50,14 +50,14 @@
  sharedSmallText smallTextMultiline (text[multiline])
  sharedSmallText smallTextMultilineWithDefault (text[multiline]) = 'multiline default value'
  smallText smallTextMultilineMultiLang (text[multiline])
- smallText smallTextMultilineMultiLangWithDefault (text[multiline]) = resourceKey(defaultValue)
+ smallText smallTextMultilineMultiLangWithDefault (text[multiline]) = defaultValue
  bigText richText
- sharedSmallText dropDown (choicelist) = 'option2' < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
- sharedSmallText selectBox (choicelist) = option1,option2 multiple < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
- sharedSmallText dropDownMultiLang (choicelist) = resourceKey(resourceOption2) internationalized < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
- sharedSmallText selectBoxMultiLang (choicelist) = 'option1', resourceKey(resourceOption2) multiple internationalized < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
- sharedSmallText dropDownSorted (choicelist[sort='alpha']) = 'option2' < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
- sharedSmallText selectBoxSorted (choicelist[sort='alpha']) = resourceKey(resourceOption1),option2 multiple < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
+ sharedSmallText dropDown (choicelist) = 'option2' < 'option1', 'option2', 'option3'
+ sharedSmallText selectBox (choicelist) = option1,option2 multiple < 'option1', 'option2', 'option3'
+ sharedSmallText dropDownMultiLang (choicelist[resourceBundle]) = resourceOption2  < resourceOption1, resourceOption2
+ sharedSmallText selectBoxMultiLang (choicelist[resourceBundle]) = resourceOption2 multiple  < resourceOption1, resourceOption2
+ sharedSmallText dropDownSorted (choicelist[sort='alpha']) = 'option2' < 'option1', 'option2', 'option3'
+ sharedSmallText selectBoxSorted (choicelist[sort='alpha']) = option2 multiple < 'option1', 'option2', 'option3'
  category category
  category categoryWithDefault = cat1,cat2 multiple
  category categoryWithRoot (category[root='cat1']) multiple
@@ -80,13 +80,12 @@
 [test_templates:numberFields] > jnt:container
  integer long
  integer longWithDefault = 10
- integer longWithDefaultAsResource = resourceKey(defaultValue)
  integer longWithDefaultAsExpression = eval(currentPage.ID)
  integer longBetween1and10 < '[1,10]'
  integer longDropdown (choicelist) = 3 < '[1,10]', '[21,30]'
  float double
  float doubleWithDefault = 0.1
- float doubleWithDefaultAsResource = resourceKey(defaultValue)
+ float doubleWithDefaultAsResource = defaultValue
  float doubleWithDefaultAsExpression = eval(currentSite.id * 10 + 2.5)
  float doubleBetween1and10 < '[1,10]'
  float doubleDropdown (choicelist) = '2.5' < '1.5','2','2.5','3','3.5'
@@ -206,7 +205,7 @@
   
 [test_templates:inherit] > test_templates:generic
  containerList columnC_box (jnt:box)
- containerList news (core_template:commentableNews)
+ containerList news (core_templates:commentableNews)
 
 [test_templates:generic_full] > jnt:page
  containerList navLink (jnt:navLink)

@@ -89,7 +89,7 @@
         </fieldset>
         <template:containerList name="news${param.id}" id="newsList" windowSize="10" displayActionMenu="false">
             <query:containerQuery>
-                <query:selector nodeTypeName="core_template:commentableNews" selectorName="newsList"/>
+                <query:selector nodeTypeName="core_templates:commentableNews" selectorName="newsList"/>
                 <query:descendantNode selectorName="newsList" path="${currentSite.JCRPath}"/>
                 <c:if test="${!empty listCategories}">
                     <query:equalTo propertyName="${queryConstants.CATEGORY_LINKS}" value="${listCategories}"

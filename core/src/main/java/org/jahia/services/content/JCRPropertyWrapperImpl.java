@@ -45,7 +45,6 @@ import javax.jcr.lock.LockException;
 import javax.jcr.version.VersionException;
 import java.io.InputStream;
 import java.util.Calendar;
-import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -125,7 +124,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public Value getValue() throws ValueFormatException, RepositoryException {
-        return new JCRValueWrapperImpl(property.getValue(),getDefinition());
+        return new JCRValueWrapperImpl(property.getValue(),getDefinition(), getSession());
     }
 
     public Value[] getValues() throws ValueFormatException, RepositoryException {
@@ -133,7 +132,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         Value[] wrappedValues = new Value[values.length];
         for (int i = 0; i < values.length; i++) {
             Value value = values[i];
-            wrappedValues[i] = new JCRValueWrapperImpl(value,getDefinition());
+            wrappedValues[i] = new JCRValueWrapperImpl(value,getDefinition(), getSession());
         }
         return wrappedValues;
     }

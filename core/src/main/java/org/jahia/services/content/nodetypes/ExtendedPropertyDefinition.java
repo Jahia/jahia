@@ -31,6 +31,8 @@
  */
 package org.jahia.services.content.nodetypes;
 
+import org.apache.log4j.Logger;
+
 import javax.jcr.Value;
 import javax.jcr.RepositoryException;
 import javax.jcr.PropertyType;
@@ -45,6 +47,8 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class ExtendedPropertyDefinition extends ExtendedItemDefinition implements PropertyDefinition {
+    private static Logger logger = Logger.getLogger(ExtendedPropertyDefinition.class);
+
     private NodeTypeRegistry registry;
 
     private int requiredType = 0;

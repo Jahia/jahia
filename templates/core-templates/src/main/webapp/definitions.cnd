@@ -27,13 +27,13 @@
 [core_templates:headerModule] mixin
   + imageLink (core_templates:imageLink) *
 
-[core_template:commentableNews] > jnt:newsContainer, jmix:rssable, jmix:commentable
+[core_templates:commentableNews] > jnt:newsContainer, jmix:rssable, jmix:commentable
 
 [core_templates:home] > jnt:page, core_templates:headerModule, core_templates:footerModule
   + navLink (jnt:navLink) *
   + columnA_box (jnt:filesBox,jnt:textsBox) *
   + columnC_box (jnt:linksBox,jnt:textsBox) *
-  + news (core_template:commentableNews) *
+  + news (core_templates:commentableNews) *
   + footer (core_templates:footer)
 
 [core_templates:double] > jnt:page, core_templates:headerModule, core_templates:footerModule
@@ -62,7 +62,7 @@
 
 [core_templates:news] > jnt:page, core_templates:headerModule, core_templates:footerModule
   + navLink (jnt:navLink) *
-  + news (core_template:commentableNews) *
+  + news (core_templates:commentableNews) *
   + columnA_box (jnt:filesBox,jnt:textsBox,jnt:linksBox) *
   + note (core_templates:note) *
 

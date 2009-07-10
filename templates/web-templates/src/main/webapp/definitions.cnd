@@ -61,12 +61,12 @@ bigText        footer = "&copy; Copyright 2002-2009 - Jahia Solutions" i15d inde
  sharedSmallText peopleFirstname
  sharedSmallText peopleLastname primary sortable
  smallText peopleFunction sortable
- sharedSmallText peopleBusinessUnit (choicelist) analyzer='keyword' facetable <
-    resourceKey(sales),
-    resourceKey(marketing),
-    resourceKey(GA),
-    resourceKey(production),
-    resourceKey(humanressources)
+ sharedSmallText peopleBusinessUnit (choicelist[resourceBundle]) analyzer='keyword' facetable <
+    sales,
+    marketing,
+    GA,
+    production,
+    humanressources
  sharedSmallText peopleTelephone
  sharedSmallText peopleCellular
  sharedSmallText peopleFax
@@ -98,10 +98,10 @@ bigText         text
 smallText       reference
 smallText       businessUnit facetable sortable
 sharedSmallText contract (choicelist) facetable sortable <
-    resourceKey(contract1),
-    resourceKey(contract2),
-    resourceKey(contract3),
-    resourceKey(contract4)
+    contract1,
+    contract2,
+    contract3,
+    contract4
 smallText       town sortable
 smallText       country (choicelist) facetable sortable < country()
 smallText       educationLevel analyzer='keyword' sortable
@@ -141,8 +141,8 @@ file pictFolder (file[folder])
 
 [web_templates:paragraphContainer] > jnt:mainContentContainer
 bigText         insertText
-sharedSmallText insertType (choicelist) = resourceKey(quote) indexed=no < resourceKey(quote), resourceKey(exergue)
-sharedSmallText insertPosition (choicelist) = resourceKey(left) indexed=no < resourceKey(left), resourceKey(right)
+sharedSmallText insertType (choicelist[resourceBundle]) = quote indexed=no < quote, exergue
+sharedSmallText insertPosition (choicelist[resourceBundle]) = left indexed=no < left, right
 integer         insertWidth = "150" indexed=no
 
 [web_templates:articleContainer] > jnt:container, web_templates:title

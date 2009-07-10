@@ -7,7 +7,18 @@
 <h2>Container : ${currentNode.name}</h2>
 <ul>
 <c:forEach items="${currentNode.properties}" var="property">
-    <li>${property.name} ${property.string} ${property.definition.declaringNodeType.name}</li>
+    <c:if test="${property.definition.jahiaContentItem}">
+        <li>${property.name} ${property.string}</li>
+    </c:if>
 </c:forEach>
 </ul>
-<p><a href="${pageContext.request.contextPath}/render/default${currentNode.path}.html">${pageContext.request.contextPath}/render/default/${currentNode.path}.html</a></p>
+
+Metadata :
+<ul>
+<c:forEach items="${currentNode.properties}" var="property">
+    <c:if test="${property.definition.metadataItem}">
+        <li>${property.name} ${property.string}</li>
+    </c:if>
+</c:forEach>
+</ul>
+

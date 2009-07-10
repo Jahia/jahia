@@ -34,7 +34,9 @@
         <h2>Content</h2>
         <c:forEach items="${currentNode.children}" var="child">
             <c:if test="${jcr:isNodeType(child, 'jnt:containerList')}">
-            <template:module node="${child}"/>
+            <c:if test="${!jcr:isNodeType(child, 'jnt:navLinkList')}">
+            <template:module node="${child}"/>            
+            </c:if>
             </c:if>
         </c:forEach>
 </div>

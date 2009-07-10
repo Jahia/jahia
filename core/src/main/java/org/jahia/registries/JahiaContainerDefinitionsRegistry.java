@@ -326,7 +326,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
 
             for (ExtendedNodeDefinition nodeDef : nodes) {
                 final ExtendedNodeType dnt = nodeDef.getDeclaringNodeType();
-                if (dnt.getName().equals(Constants.JAHIANT_PAGE) || dnt.getName().equals(Constants.JAHIANT_JAHIACONTENT) || !isJahiaContentItem(dnt) ) {
+                if (dnt.getName().equals(Constants.JAHIANT_PAGE) || dnt.getName().equals(Constants.JAHIANT_JAHIACONTENT) || !nodeDef.isJahiaContentItem() ) {
                     continue;
                 }
                 String parentCtnType = dnt.getName() + " " + nodeDef.getName();
@@ -469,8 +469,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
         }        
         
         for (ExtendedItemDefinition ext : items) {
-            NodeType dnt = ext.getDeclaringNodeType();
-            if (!isJahiaContentItem(dnt)) {
+            if (!ext.isJahiaContentItem()) {
                 continue;
             }
 
@@ -489,29 +488,6 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
         
         return declareContainerDefinition(parentCtnType, containerName, containerFields,
                 baseType.getName(), containerDefProp, siteId, pageDefID, theSet);
-    }
-
-    public static boolean isSystemItem(NodeType dnt) {
-        final boolean b = dnt.getName().startsWith("mix:") || dnt.getName().startsWith("nt:");
-        return b;
-    }
-
-    public static boolean isMetadataItem(NodeType dnt) {
-        try {
-            boolean b = Arrays.asList(NodeTypeRegistry.getInstance().getNodeType("jmix:hierarchyNode").getSupertypes()).contains(dnt);
-            b |= dnt.getName().equals("jmix:hierarchyNode");
-
-            return b;
-        } catch (NoSuchNodeTypeException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return false;
-    }
-    public static boolean isJahiaContentItem(NodeType dnt) {
-        boolean b = true;
-        b &= !isSystemItem(dnt);
-        b &= !isMetadataItem(dnt);
-        return b;
     }
 
     private void declareField(String containerName, String name, ExtendedItemDefinition itemDef,
@@ -999,7 +975,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
                 declareField(containerName, name, ext, containerFields, declaredFieldDefProps, siteId, pageDefId, theSet);
             } else if (defTypes.length() == 0) {
                 logger.error("Definition for subcontainer "+ nodeDef.getName() + " not found, skip it");
-            } else if (isJahiaContentItem(nodeDef.getDeclaringNodeType())) {
+            } else if (nodeDef.isJahiaContentItem()) {
                 String subContainerName = containerName + "_"+ nodeDef.getName();
                 String defTypesStr = defTypes.substring(0,defTypes.length()-1);
                 declareContainerDefinition(ext.getDeclaringNodeType().getName() + " " + ext.getName(), subContainerName, defTypesStr, nodeDef.getSelectorOptions(), siteId, pageDefId, theSet);

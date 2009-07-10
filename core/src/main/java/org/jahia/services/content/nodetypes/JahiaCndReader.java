@@ -343,7 +343,7 @@ public class JahiaCndReader {
                 nextToken();
                 doChildNodeDefinition(listNodeDef, ntd);
                 ExtendedNodeType[] ctnTypes = listNodeDef.getRequiredPrimaryTypes();
-                String ctnListTypeName = ctnTypes[0].getNameObject().getPrefix()+":";
+                String ctnListTypeName = ntd.getNameObject().getPrefix()+":";
                 for (ExtendedNodeType ctnType : ctnTypes) {
                     ctnListTypeName += ctnType.getNameObject().getLocalName();                    
                 }
@@ -392,8 +392,8 @@ public class JahiaCndReader {
                     def.setSelectorOptions(listNodeDef.getSelectorOptions());
                     registry.addNodeType(listType.getNameObject(),listType);
                 }
-                listNodeDef.setAutoCreated(true);
-                listNodeDef.setMandatory(true);
+//                listNodeDef.setAutoCreated(true);
+//                listNodeDef.setMandatory(true);
                 listNodeDef.setDeclaringNodeType(ntd);
             } else if (currentTokenEquals(Lexer.JAHIA_SINGLECONTAINER)) {
                 ExtendedNodeDefinition listNodeDef = new ExtendedNodeDefinition(registry);

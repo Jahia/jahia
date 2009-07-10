@@ -72,7 +72,11 @@ public class GWTJahiaToolbarItem implements Serializable {
     }
 
     public String getMinIconStyle() {
-        return minIconStyle;
+        if (minIconStyle != null) {
+            return minIconStyle;
+        } else {
+            return "";
+        }
     }
 
     public void setMinIconStyle(String minIconStyle) {
@@ -80,7 +84,11 @@ public class GWTJahiaToolbarItem implements Serializable {
     }
 
     public String getMediumIconStyle() {
-        return mediumIconStyle;
+        if (mediumIconStyle != null) {
+            return mediumIconStyle;
+        } else {
+            return "";
+        }
     }
 
     public void setMediumIconStyle(String mediumIconStyle) {

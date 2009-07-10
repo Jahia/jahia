@@ -71,7 +71,7 @@
                         <version>1.1</version>
                         <configuration>
                             <localWorkers>5</localWorkers>
-                            <extraJvmArgs>-Xmx1536m -Xss1000000 -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
+                            <extraJvmArgs>-Xmx1024m -Xss700000 -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
                             <modules>
                                 <module>org.jahia.ajax.gwt.template.general.edit.Edit</module>
                                 <module>org.jahia.ajax.gwt.template.general.live.Live</module>

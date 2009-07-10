@@ -181,6 +181,7 @@
  - j:virtualsitesFolderSkeleton (string)
 
 [jnt:virtualsite] > nt:base, jmix:hierarchyNode, jmix:collection
+ - j:title (string) protected
  - j:serverName (string) protected
  - j:description (string) protected
  + * (jmix:hierarchyNode)

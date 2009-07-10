@@ -78,6 +78,9 @@ public class JahiaSiteNodeImpl extends NodeImpl {
             super.initProperties();
 
             initProperty(new PropertyImpl(getSession(), this,
+                            nodetype.getDeclaredPropertyDefinitionsAsMap().get("j:title"),
+                            new ValueImpl(jahiaSite.getTitle(), PropertyType.STRING)));
+            initProperty(new PropertyImpl(getSession(), this,
                             nodetype.getDeclaredPropertyDefinitionsAsMap().get("j:serverName"),
                             new ValueImpl(jahiaSite.getServerName(), PropertyType.STRING)));
             initProperty(new PropertyImpl(getSession(), this,

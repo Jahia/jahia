@@ -347,6 +347,7 @@ public class ContentTreeTable extends TopRightComponent {
         for (String s1 : s) {
             if (s1.equals("name")) {
                 ColumnConfig col = new ColumnConfig("displayName", Messages.getResource("fm_column_name"), 500) ;
+                col.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
                 headerList.add(col) ;
             } else if (s1.equals("size")) {
                 ColumnConfig col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 70) ;

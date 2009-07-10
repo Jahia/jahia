@@ -42,6 +42,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
+import org.jahia.utils.Base64;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -52,6 +53,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -105,7 +108,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
                 JCRNodeWrapperImpl.changePermissions(userNode, "u:" + name, "rw");
             }
-            userNode.setProperty(JCRUser.J_PASSWORD, password);
+            userNode.setProperty(JCRUser.J_PASSWORD, encryptPassword(password));
             for (Map.Entry<Object, Object> entry : properties.entrySet()) {
                 userNode.setProperty((String) entry.getKey(), (String) entry.getValue());
             }
@@ -368,5 +371,31 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
     }
 
     public void stop() throws JahiaException {
+    }
+
+    public static String encryptPassword (String password) {
+        if (password == null) {
+            return null;
+        }
+
+        if (password.length () == 0) {
+            return null;
+        }
+
+        String result = null;
+
+        try {
+            MessageDigest md = MessageDigest.getInstance ("SHA-1");
+            if (md != null) {
+                md.reset ();
+                md.update (password.getBytes ());
+                result = new String (Base64.encode (md.digest ()));
+            }
+            md = null;
+        } catch (NoSuchAlgorithmException ex) {
+            result = null;
+        }
+
+        return result;
     }
 }

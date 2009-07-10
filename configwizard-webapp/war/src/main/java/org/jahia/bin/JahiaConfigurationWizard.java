@@ -1403,6 +1403,8 @@ public class JahiaConfigurationWizard extends HttpServlet {
             QuartzConfigurator.updateDataSourceConfiguration(pathToQuartzFile, dbProperties);
             String pathToJRFile = pathResolver.resolvePath("WEB-INF/jahia/WEB-INF/etc/repository/jackrabbit/repository.xml");
             JackrabbitConfigurator.updateDataSourceConfiguration(pathToJRFile, dbProperties);
+            String pathToRootJRFile = pathResolver.resolvePath("WEB-INF/jahia/WEB-INF/etc/repository/root.xml");
+            RootUserConfigurator.updateRootUserConfiguration(pathToRootJRFile,values);
 // Copy slide files to default site
             final ServletContext context = config.getServletContext();
 //final PathResolver pathResolver = new WebAppPathResolver(context);
@@ -1819,46 +1821,8 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
      * @throws Exception an exception occured during the process.
      */
     private void insertDBCustomContent() throws Exception {
-
-
-// get two keys...
-        final String rootName = (String) values.get("root_user");
-        final int siteID0 = 0;
-        final String rootKey = rootName + ":" + siteID0;
-        final String grpKey0 = ADMINISTRATORS_GROUPNAME + ":" + siteID0;
-
-// query insert root user...
-        db.queryPreparedStatement("INSERT INTO jahia_users(id_jahia_users, name_jahia_users, password_jahia_users, key_jahia_users) VALUES(0,?,?,?)",
-                new Object[] { rootName, encryptPassword((String) values.get("root_pwd")), rootKey } );
-
-// query insert root first name...
-        db.queryPreparedStatement("INSERT INTO jahia_user_prop(id_jahia_users, name_jahia_user_prop, value_jahia_user_prop, provider_jahia_user_prop, userkey_jahia_user_prop) VALUES(0, 'firstname', ?, 'jahia',?)",
-                new Object[] { (String) values.get("root_firstname"), rootKey } );
-
-// query insert root last name...
-        db.queryPreparedStatement("INSERT INTO jahia_user_prop(id_jahia_users, name_jahia_user_prop, value_jahia_user_prop, provider_jahia_user_prop, userkey_jahia_user_prop) VALUES(0, 'lastname', ?, 'jahia',?)",
-                new Object[] { (String) values.get("root_lastname"), rootKey } );
-
-// query insert root e-mail address...
-        db.queryPreparedStatement("INSERT INTO jahia_user_prop(id_jahia_users, name_jahia_user_prop, value_jahia_user_prop, provider_jahia_user_prop, userkey_jahia_user_prop) VALUES(0, 'email', ?, 'jahia',?)",
-                new Object[] { (String) values.get("root_mail"), rootKey } );
-
-// query insert administrators group...
-        db.queryPreparedStatement("INSERT INTO jahia_grps(id_jahia_grps, name_jahia_grps, key_jahia_grps, siteid_jahia_grps) VALUES(?,?,?,null)",
-                new Object[] { new Integer(siteID0), ADMINISTRATORS_GROUPNAME, grpKey0 } );
-
-// query insert administrators group access...
-        db.queryPreparedStatement("INSERT INTO jahia_grp_access(id_jahia_member, id_jahia_grps, membertype_grp_access) VALUES(?,?,1)",
-                new Object[] { rootKey,grpKey0 } );
-
-// create guest user
-        db.queryPreparedStatement("INSERT INTO jahia_users(id_jahia_users, name_jahia_users, password_jahia_users, key_jahia_users) VALUES(1,?,?,?)",
-                new Object[] {GUEST_GROUPNAME, "*", "guest:0" } );
-
         db.queryPreparedStatement("INSERT INTO jahia_version(install_number, build, release_number, install_date) VALUES(0, ?,?,?)",
                 new Object[] { new Integer("12346789"), "132456" + "." + "123456", new Timestamp(System.currentTimeMillis()) } );
-
-
     }
     // end insertDBCustomContent()
     /**

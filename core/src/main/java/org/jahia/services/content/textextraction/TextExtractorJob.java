@@ -125,6 +125,10 @@ public class TextExtractorJob extends BackgroundJob {
                                         temp = new String(cb).getBytes("UTF-8");
                                         i = 0;
                                     }
+                                    if (temp[0] >= 0 &&  temp[0] <= 31) {
+ 	 	                                i++;
+ 	 		                            return 32; // if char is 31 or less (0 generates an error) it is replace with space (32)
+ 	 	                            }
                                     return temp[i++];
                                 }
                             });

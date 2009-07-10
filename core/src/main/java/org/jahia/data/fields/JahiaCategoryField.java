@@ -53,10 +53,10 @@ import org.jahia.engines.shared.Category_Field;
 import java.util.*;
 
 /**
- * User: Serge Huber
+ * Jahia field of type Category.
+ * @author Serge Huber
  * Date: 23 ao�t 2005
  * Time: 09:30:06
- * Copyright (C) Jahia Inc.
  */
 public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyChangeToAllLangField {
 
@@ -147,7 +147,6 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
         }
 
         jParams.getSessionState().setAttribute("FireContainerUpdated", "true");
-        logger.debug("InvalidateEsiInvalidateEsiInvalidateEsiInvalidateEsiInvalidateEsiInvalidateEsi");
 
         /*
         if (contentField.hasActiveEntries() && getValue() != null && getValue().equals(contentField.getValue(jParams))) {

@@ -110,7 +110,9 @@ public class JahiaEventGeneratorBaseService extends JahiaEventGeneratorService {
     }
 
     public void fireAggregatedEvents() {
-        logger.debug("Firing aggregated events ..");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Firing aggregated events ..");
+        }
         List<MethodWithEvent> events = tlevents.get();
         if (events != null) {
             for (; !events.isEmpty(); ) {
@@ -135,7 +137,9 @@ public class JahiaEventGeneratorBaseService extends JahiaEventGeneratorService {
                 }
             }
         }
-        logger.debug("Flushing events ..");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Flushing events ..");
+        }
         if ( events != null ){
             JahiaEvent event = new JahiaEvent(this,null,events);
             fireAggregatedEventsFlush(event);

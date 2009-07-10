@@ -33,7 +33,6 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -55,7 +54,6 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.tree.PreviousPathsOpener;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
@@ -78,8 +76,8 @@ public class ContentTreeTable extends TopRightComponent {
     protected TreeGrid<GWTJahiaNode> m_treeTable ;
     protected TreeTableStore<GWTJahiaNode> store ;
 
-    private PreviousPathsOpener<GWTJahiaNode> previousPathsOpener = null ;
-    private Listener<TreeEvent> tempListener = null ;
+//    private PreviousPathsOpener<GWTJahiaNode> previousPathsOpener = null ;
+//    private Listener<TreeEvent> tempListener = null ;
     
     private String rootPath;
 

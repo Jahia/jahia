@@ -55,8 +55,6 @@ import com.google.gwt.user.client.Window;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -204,20 +202,20 @@ public class FolderTree extends LeftComponent {
         }
     }
 
-    private void saveOpenedPaths() {
-        Map<String, List<String>> openPathsForRepositoryType = new HashMap<String, List<String>>() ;
-        for (RepositoryTab tab: repositories) {
-            openPathsForRepositoryType.put(tab.getRepositoryType(), tab.getOpenedPaths());
-        }
-        service.saveOpenPaths(openPathsForRepositoryType, new AsyncCallback() {
-            public void onSuccess(Object o) {
-                // nothing here...
-            }
-            public void onFailure(Throwable throwable) {
-                Window.alert("Could not save expanded paths into user preferences:\n\n" + throwable.getLocalizedMessage()) ;
-            }
-        });
-    }
+//    private void saveOpenedPaths() {
+//        Map<String, List<String>> openPathsForRepositoryType = new HashMap<String, List<String>>() ;
+//        for (RepositoryTab tab: repositories) {
+//            openPathsForRepositoryType.put(tab.getRepositoryType(), tab.getOpenedPaths());
+//        }
+//        service.saveOpenPaths(openPathsForRepositoryType, new AsyncCallback() {
+//            public void onSuccess(Object o) {
+//                // nothing here...
+//            }
+//            public void onFailure(Throwable throwable) {
+//                Window.alert("Could not save expanded paths into user preferences:\n\n" + throwable.getLocalizedMessage()) ;
+//            }
+//        });
+//    }
 
     private class ChangeAccordionListener<T extends ComponentEvent> implements Listener<T> {
         public void handleEvent(T t) {

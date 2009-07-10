@@ -33,7 +33,6 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.binder.TreeBinder;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.dnd.*;
 import com.extjs.gxt.ui.client.event.*;
@@ -42,7 +41,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.tree.Tree;
 import com.extjs.gxt.ui.client.widget.tree.TreeItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -52,9 +50,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.tree.CustomTreeBinder;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
-//import org.jahia.ajax.gwt.client.util.tree.PreviousPathsOpener;
 import org.jahia.ajax.gwt.client.util.tree.TreeOpener;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
@@ -77,7 +73,7 @@ public class RepositoryTab extends ContentPanel {
     private FolderTree folderTreeContainer ;
     private TreePanel<GWTJahiaNode> m_tree ;
     //private PreviousPathsOpener<GWTJahiaNode> previousPathsOpener = null ;
-    private TreeItem lastSelection = null ;
+//    private TreeItem lastSelection = null ;
     private JahiaContentManagementServiceAsync contentManagementService;
 
     /**
@@ -209,33 +205,33 @@ public class RepositoryTab extends ContentPanel {
 //        previousPathsOpener.expandPreviousPaths();
 //    }
 
-    public List<String> getOpenedPaths() {
-        List<TreeItem> expandedItems = getOpenedPaths(store.getRootItems().get(0)) ;
-        List<String> expandedPaths = null ;
-        if (expandedItems.size() > 0) {
-            expandedPaths = new ArrayList<String>() ;
-            for (TreeItem item: expandedItems) {
-                expandedPaths.add(((GWTJahiaNode) item.getModel()).getPath()) ;
-            }
-        }
-        return expandedPaths ;
-    }
+//    public List<String> getOpenedPaths() {
+//        List<TreeItem> expandedItems = getOpenedPaths(store.getRootItems().get(0)) ;
+//        List<String> expandedPaths = null ;
+//        if (expandedItems.size() > 0) {
+//            expandedPaths = new ArrayList<String>() ;
+//            for (TreeItem item: expandedItems) {
+//                expandedPaths.add(((GWTJahiaNode) item.getModel()).getPath()) ;
+//            }
+//        }
+//        return expandedPaths ;
+//    }
 
-    private List<TreeItem> getOpenedPaths(GWTJahiaNode root) {
-        List<TreeItem> items = new ArrayList<TreeItem>() ;
-        boolean oneHasAlreadyBeenAdded = false ;
-        for (ModelData md: root.getChildren()) {
-            GWTJahiaNode it = (GWTJahiaNode) md;
-            if (it.hasChildren()) {
-                items.addAll(getOpenedPaths(it)) ;
-                oneHasAlreadyBeenAdded = true ;
-//            } else if (it.getDepth() > 1 && !oneHasAlreadyBeenAdded) {
-//                items.add(it) ;
+//    private List<TreeItem> getOpenedPaths(GWTJahiaNode root) {
+//        List<TreeItem> items = new ArrayList<TreeItem>() ;
+//        boolean oneHasAlreadyBeenAdded = false ;
+//        for (ModelData md: root.getChildren()) {
+//            GWTJahiaNode it = (GWTJahiaNode) md;
+//            if (it.hasChildren()) {
+//                items.addAll(getOpenedPaths(it)) ;
 //                oneHasAlreadyBeenAdded = true ;
-            }
-        }
-        return items ;
-    }
+////            } else if (it.getDepth() > 1 && !oneHasAlreadyBeenAdded) {
+////                items.add(it) ;
+////                oneHasAlreadyBeenAdded = true ;
+//            }
+//        }
+//        return items ;
+//    }
 
     public void openAndSelectItem(Object item) {
         if (item != null && this.isExpanded()) {

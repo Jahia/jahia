@@ -106,6 +106,7 @@ public class Constants {
     public static final String MIX_CREATED = "mix:created";
     public static final String MIX_CREATED_BY = "mix:createdBy";
     public static final String MIX_LAST_MODIFIED = "mix:lastModified";
+    public static final String MIX_TITLE = "mix:title";
     public static final String NT_BASE = "nt:base";
     public static final String NT_CHILDNODEDEFINITION = "nt:childNodeDefinition";
     public static final String NT_FILE = "nt:file";
@@ -131,7 +132,6 @@ public class Constants {
     public static final String JAHIANT_PREF = "jnt";
     public static final String JAHIAMIX_PREF = "jmix";
 
-    public static final String JAHIAMIX_DESCRIPTION = "jmix:description";
     public static final String JAHIAMIX_CATEGORIZED = "jmix:categorized";
     public static final String JAHIAMIX_LASTPUBLISHED = "jmix:lastPublished";
 

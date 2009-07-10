@@ -4,6 +4,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 
 <h1>Site: ${currentNode.name}</h1>
+<p>Title: <jcr:nodeProperty node="${currentNode}" name="j:title"/></p>
 <p>Server name: <jcr:nodeProperty node="${currentNode}" name="j:serverName"/></p>
 <p>Description: <jcr:nodeProperty node="${currentNode}" name="j:description"/></p>
 <p>Nodes:</p>

@@ -1,5 +1,5 @@
 
-<module rename-to='jobreport'>
+<module>
     <inherits name="org.jahia.ajax.gwt.JahiaGWT"/>
     <entry-point class='org.jahia.ajax.gwt.module.jobreport.client.JobReportEntryPoint'/>
 </module>

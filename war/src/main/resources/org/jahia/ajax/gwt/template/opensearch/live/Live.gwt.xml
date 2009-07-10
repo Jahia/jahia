@@ -1,5 +1,5 @@
 
-<module rename-to='opensearch.live'>
+<module>
     <inherits name="org.jahia.ajax.gwt.template.common.live.Live"/>
     <entry-point class='org.jahia.ajax.gwt.template.opensearch.live.client.LiveModeEntryPoint'/>
 </module>

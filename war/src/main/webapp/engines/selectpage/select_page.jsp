@@ -42,7 +42,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 
 <internal:gwtInit />
-<internal:gwtImport module="pagepicker" />
+<internal:gwtImport module="org.jahia.ajax.gwt.module.pagepicker.PagePicker" />
 <internal:gwtGenerateDictionary/>
 <%
 

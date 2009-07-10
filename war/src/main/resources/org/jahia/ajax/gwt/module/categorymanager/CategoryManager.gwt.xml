@@ -1,5 +1,5 @@
 
-<module rename-to='categorymanager'>
+<module>
     <inherits name="org.jahia.ajax.gwt.JahiaGWT"/>
     <entry-point class='org.jahia.ajax.gwt.module.categorymanager.client.CategoryManagerEntryPoint'/>
 </module>

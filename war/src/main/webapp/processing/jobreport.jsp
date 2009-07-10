@@ -41,7 +41,7 @@
     <title><internal:message key="org.jahia.engines.processDisplay.jobresult.label"/></title>
 </head>
 <body>
-<internal:gwtImport module="jobreport"/>
+<internal:gwtImport module="org.jahia.ajax.gwt.module.jobreport.JobReport"/>
 <internal:jobReport name="<%= request.getParameter(\"name\")%>" groupName="<%= request.getParameter(\"groupName\")%>"/>
 <internal:gwtGenerateDictionary/>
 </body>

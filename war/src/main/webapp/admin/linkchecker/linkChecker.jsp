@@ -34,7 +34,7 @@
 <%@include file="../include/header.inc" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <internal:gwtInit standalone="true"/>
-<internal:gwtImport module="linkchecker" />
+<internal:gwtImport module="org.jahia.ajax.gwt.module.linkchecker.LinkChecker" />
 <internal:gwtResourceBundle
     resourceName="org.jahia.admin.linkChecker.checkLinks.label"
     aliasResourceName="lc_checkLinks" />

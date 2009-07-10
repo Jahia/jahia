@@ -43,7 +43,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<internal:gwtImport module="usergroupselect" />
+<internal:gwtImport module="org.jahia.ajax.gwt.module.usergroup.UserGroupSelect" />
 
 
 <%

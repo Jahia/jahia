@@ -38,7 +38,7 @@
 <head>
     <title><internal:message key="org.jahia.engines.processDisplay.engine.title"/></title>
     <internal:gwtInit standalone="true"/>
-    <internal:gwtImport module="processdisplay"/>
+    <internal:gwtImport module="org.jahia.ajax.gwt.module.pdisplay.ProcessDisplay"/>
 </head>
 <body>
 <internal:processDisplay state="max" windowHeight="450px" windowWidth="550px"/>

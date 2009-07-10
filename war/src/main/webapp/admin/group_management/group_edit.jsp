@@ -341,4 +341,4 @@
 </div>
 </div>
 
-<internal:gwtImport module="usergroupselect" />
+<internal:gwtImport module="org.jahia.ajax.gwt.module.usergroup.UserGroupSelect" />

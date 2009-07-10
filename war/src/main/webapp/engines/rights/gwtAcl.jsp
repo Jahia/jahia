@@ -168,7 +168,7 @@
                 }
             }
         </script>
-        <internal:gwtImport module="acleditor" />
+        <internal:gwtImport module="org.jahia.ajax.gwt.module.acleditor.ACLEditor" />
         <internal:aclEditor aclId="<%= aclId %>" newAcl="<%= newAcl %>" sessionIdentifier="<%= sessionId %>" readOnly="<%= readOnly %>" aclContext="<%=aclContext%>" />
 
     </div>

@@ -70,6 +70,7 @@
                         <artifactId>gwt-maven-plugin</artifactId>
                         <version>1.1</version>
                         <configuration>
+                            <localWorkers>5</localWorkers>
                             <extraJvmArgs>-Xmx1536m -Xss1000000 -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
                             <modules>
                                 <module>org.jahia.ajax.gwt.template.general.edit.Edit</module>
@@ -129,6 +130,7 @@
                         <artifactId>gwt-maven-plugin</artifactId>
                         <version>1.1</version>
                         <configuration>
+                            <localWorkers>5</localWorkers>
                             <buildOutputDirectory>${project.build.directory}/jahia/gwt</buildOutputDirectory>
                             <extraJvmArgs>-Xmx1536m -Xss1000000 -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
                             <modules>
@@ -305,17 +307,6 @@
             <artifactId>jsp-api</artifactId>
             <version>2.0</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-            <version>1.5.3</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-servlet</artifactId>
-            <version>1.5.3</version>
         </dependency>
         <!-- workaround for gwt-plugin-->
         <dependency>

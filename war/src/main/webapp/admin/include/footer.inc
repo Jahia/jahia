@@ -40,7 +40,7 @@
 <br/>
 <br/>
  <c:if test="${empty requestScope['jahia.engines.gwtModuleIncluded']}">
-<internal:gwtImport module="admin"/>
+<internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin"/>
 </c:if>
 <internal:gwtGenerateDictionary/>        
 </body>

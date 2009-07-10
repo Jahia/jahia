@@ -31,13 +31,14 @@
  */
 package org.jahia.services.content.impl.jahia;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.fields.ContentField;
-import org.jahia.services.fields.ContentFieldTypes;
 import org.jahia.services.version.JahiaSaveVersion;
-import org.jahia.services.webdav.JahiaWebdavBaseService;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaFieldDefinition;
@@ -53,15 +54,12 @@ import org.apache.commons.lang.StringUtils;
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.version.VersionException;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
+ * JCR property implementation for Jahia field.
+ * @author Thomas Draier
  * Date: Oct 16, 2008
  * Time: 6:47:12 PM
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaFieldPropertyImpl extends PropertyImpl {
     private ContentField field;
@@ -81,19 +79,19 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
 
 
     @Override
-    public void setValue(Value value) throws ValueFormatException, VersionException, LockException, RepositoryException {
-        values = new Value[] { value };
+    public void setValue(Value[] values) throws ValueFormatException,
+            VersionException, LockException, RepositoryException {
+        this.values = values;
         setModified();
     }
 
     public void save() throws RepositoryException {
         if (isModified() || isNew()) {
-            Value value = values[0];
             try {
                 if (field != null) {
                     JahiaField jahiaField = field.getJahiaField(getEntryLoadRequest());
 
-                    String v = getValue(value, jahiaField.getType());
+                    String v = getValue(values, jahiaField.getType());
                     updateField(v, jahiaField);
                     ServicesRegistry.getInstance().getJahiaFieldService().saveField(jahiaField, parent.getAclID(), getProcessingContext());
                 } else {
@@ -103,7 +101,7 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
                         // new metadata
                         JahiaFieldDefinition contentDefinition = JahiaFieldDefinitionsRegistry.getInstance().getDefinition(0, StringUtils.substringAfter(def.getName(),":"));
 
-                        String v = getValue(value, contentDefinition.getType());
+                        String v = getValue(values, contentDefinition.getType());
                         JahiaSaveVersion saveVersion = new JahiaSaveVersion(false, false);
 
                         JahiaField field = ServicesRegistry.getInstance().getJahiaFieldService().createJahiaField(0, parent.getSiteID(), 0,
@@ -121,7 +119,7 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
                         ContentDefinition parentdef = (ContentDefinition) ContentDefinition.getInstance(((JahiaContentNodeImpl)getParent()).getContentObject().getDefinitionKey(null));
                         JahiaFieldDefinition contentDefinition = JahiaFieldDefinitionsRegistry.getInstance().getDefinition(parent.getSiteID(), parentdef.getName()+"_"+def.getName());
 
-                        String v = getValue(value, contentDefinition.getType());
+                        String v = getValue(values, contentDefinition.getType());
                         JahiaSaveVersion saveVersion = new JahiaSaveVersion(false, false);
 
                         int pid = parent.getPageID();
@@ -148,12 +146,11 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
     private void updateField(String v, JahiaField field) throws RepositoryException {
         int fieldType = field.getType();
         if (fieldType == FieldTypes.FILE) {
-            JCRNodeWrapper object = JCRStoreService.getInstance().getFileNode(v, getProcessingContext().getUser());
+            JCRNodeWrapper object = JCRStoreService.getInstance().getThreadSession(getProcessingContext().getUser()).getNode(v);
             JahiaFileField fField = object.getJahiaFileField();
             field.setValue(v);
             field.setObject(fField);
         } else if(fieldType == FieldTypes.BIGTEXT) {
-            int i = -1;
             String rawv = JahiaBigTextField.rewriteURLs(v, getProcessingContext());
             field.setValue(rawv);
             field.setRawValue(rawv);
@@ -165,14 +162,40 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
         }
     }
 
-    private String getValue(Value value, int type) throws RepositoryException {
-        switch (type) {
-            case FieldTypes.DATE:
-                return Long.toString(value.getDate().getTime().getTime());
-            default:
-                return value.getString();
-        }
-    }
+    /**
+     * Returns a string representation of the JCR property values, considering
+     * also multiple value case.
+     * 
+     * @param values
+     *            the property values array
+     * @param type
+     *            the type of the corresponding Jahia field
+     * @return a string representation of the JCR property values, considering
+     *         also multiple value case
+     * @throws RepositoryException
+     *             in case of value conversion problems
+     */
+    private static String getValue(Value[] values, int type)
+            throws RepositoryException {
 
+        List<String> textValues = new LinkedList<String>();
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                Value val = values[i];
+                String text = null;
+                switch (type) {
+                case FieldTypes.DATE:
+                    text = val != null ? Long.toString(val.getDate().getTime()
+                            .getTime()) : null;
+                default:
+                    text = val.getString();
+                }
+                if (StringUtils.isNotEmpty(text)) {
+                    textValues.add(text);
+                }
+            }
+        }
+        return StringUtils.join(textValues, JahiaField.MULTIPLE_VALUES_SEP);
+    }
 
 }

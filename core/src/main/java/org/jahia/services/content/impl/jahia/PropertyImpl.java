@@ -42,11 +42,10 @@ import java.io.InputStream;
 import java.util.Calendar;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Serge Huber
+ * Represents a single JCR property.
+ * @author Serge Huber
  * Date: 17 d�c. 2007
  * Time: 16:54:47
- * To change this template use File | Settings | File Templates.
  */
 public class PropertyImpl extends ItemImpl implements Property {
 
@@ -77,7 +76,7 @@ public class PropertyImpl extends ItemImpl implements Property {
     }
 
     public void setValue(Value value) throws ValueFormatException, VersionException, LockException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        setValue(new Value[] { value });
     }
 
     public void setValue(Value[] values) throws ValueFormatException, VersionException, LockException, RepositoryException {
@@ -88,8 +87,13 @@ public class PropertyImpl extends ItemImpl implements Property {
         setValue(new ValueImpl(s, PropertyType.STRING));
     }
 
-    public void setValue(String[] strings) throws ValueFormatException, VersionException, LockException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+    public void setValue(String[] strings) throws ValueFormatException,
+            VersionException, LockException, RepositoryException {
+        Value[] values = new Value[strings.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = new ValueImpl(strings[i], PropertyType.STRING);
+        }
+        setValue(values);
     }
 
     public void setValue(InputStream inputStream) throws ValueFormatException, VersionException, LockException, RepositoryException {
@@ -97,19 +101,19 @@ public class PropertyImpl extends ItemImpl implements Property {
     }
 
     public void setValue(long l) throws ValueFormatException, VersionException, LockException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        setValue(new ValueImpl(l));
     }
 
     public void setValue(double v) throws ValueFormatException, VersionException, LockException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        setValue(new ValueImpl(v));
     }
 
     public void setValue(Calendar calendar) throws ValueFormatException, VersionException, LockException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        setValue(new ValueImpl(calendar));
     }
 
     public void setValue(boolean b) throws ValueFormatException, VersionException, LockException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        setValue(new ValueImpl(b));
     }
 
     public void setValue(Node node) throws ValueFormatException, VersionException, LockException, RepositoryException {

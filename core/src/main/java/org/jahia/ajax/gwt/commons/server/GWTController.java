@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.registries.ServicesRegistry;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -60,7 +61,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
     private String remoteServiceName;
 
     private ServletContext servletContext;
-
+    
     @Override
     public ServletContext getServletContext() {
         return servletContext;
@@ -74,7 +75,13 @@ public class GWTController extends RemoteServiceServlet implements Controller,
      */
     public ModelAndView handleRequest(HttpServletRequest request,
             HttpServletResponse response) throws Exception {
+        long startTime = System.currentTimeMillis();
         doPost(request, response);
+        if (logger.isDebugEnabled()) {
+            logger.info("Handled request to GWT service '" + remoteServiceName
+                    + "' in " + (System.currentTimeMillis() - startTime)
+                    + " ms");
+        }
         return null;
     }
 
@@ -93,12 +100,19 @@ public class GWTController extends RemoteServiceServlet implements Controller,
                     .getMethod(), rpcRequest.getParameters(), rpcRequest
                     .getSerializationPolicy());
         } catch (Exception e) {
-            logger.error("An error occured calling the service " + remoteServiceName, e);
+            logger.error("An error occured calling the GWT service " + remoteServiceName + ". Cause: " + e.getMessage(), e);
             return RPC.encodeResponseForFailure(null, e);
         } finally {
+            try {
+                ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
+            } catch (Exception e) {
+                logger.warn("Unable to fire aggregated events. Cause: "
+                        + e.getMessage(), e);
+            }
             if (remoteService != null) {
                 setServiceData(remoteService, true);
             }
+            
         }
     }
 

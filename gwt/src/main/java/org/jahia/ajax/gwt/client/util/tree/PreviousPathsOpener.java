@@ -36,6 +36,7 @@ import java.util.ArrayList;
 
 import com.extjs.gxt.ui.client.widget.tree.TreeItem;
 import com.extjs.gxt.ui.client.widget.tree.Tree;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.data.TreeModel;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
@@ -46,18 +47,16 @@ import com.allen_sauer.gwt.log.client.Log;
  * User: rfelden
  * Date: 19 nov. 2008 - 14:51:50
  */
-public class PreviousPathsOpener<T extends BaseTreeModel> {
+public class PreviousPathsOpener<T extends ModelData> {
 
     // TODO GXT 2
 
-    private Tree m_tree ;
+    private TreePanel m_tree ;
     private TreeStore<T> store ;
-    private CustomTreeBinder<T> binder ;
 
-    public PreviousPathsOpener(Tree t, TreeStore<T> s, CustomTreeBinder<T> b) {
+    public PreviousPathsOpener(TreePanel t, TreeStore<T> s) {
         m_tree = t ;
         store = s ;
-        binder = b ;
     }
 
     public void expandPreviousPaths() {
@@ -67,47 +66,45 @@ public class PreviousPathsOpener<T extends BaseTreeModel> {
         }
         // check if sublevels are available
         for (T root : nodes) {
-            if (root.getChildren().size() > 0) {
+            if (store.getChildren(root).size() > 0) {
                 for (T node: nodes) {
                     appendChildrenNodesToStore(node);
                 }
                 for (T node: nodes) {
                     renderChildrenNodesRec(node);
                 }
-                expandAllExistingChildrenRec(m_tree.getRootItem());
+                expandAllExistingChildrenRec(store.getRootItems());
             }
         }
-        binder.setCaching(false);
+        m_tree.setCaching(false);
     }
 
     private void appendChildrenNodesToStore(T node) {
         Log.debug("Appending children of " + node.get("name"));
-        List nodes = node.getChildren();
+        List<T> nodes = store.getChildren(node);
         store.add(node, nodes, true);
     }
 
     private void renderChildrenNodesRec(T node) {
         Log.debug("Rendering children of " + node.get("name")) ;
-        List<ModelData> nodes = node.getChildren() ;
+        List<T> nodes = store.getChildren(node);
         if (nodes.size() > 0) {
             List<T> l = new ArrayList<T>();
             for (ModelData aNode: nodes) {
                 l.add((T) aNode);
             }
-            binder.renderChildren(node, l) ;
             for (ModelData aNode: nodes) {
                 renderChildrenNodesRec((T) aNode);
             }
         }
     }
 
-    private void expandAllExistingChildrenRec(TreeItem item) {
-        if (item != null) {
-            Log.debug("Expanding children of " + item.getText()) ;
-            for (TreeItem it: item.getItems()) {
-                if (it.getItemCount() > 0 && !it.isExpanded()) {
-                    it.setExpanded(true);
-                    expandAllExistingChildrenRec(it);
+    private void expandAllExistingChildrenRec(List<T> items) {
+        if (items != null) {
+            for (T item : items) {
+                if (store.getChildCount(item) > 0 && !m_tree.isExpanded(item)) {
+                    m_tree.setExpanded(item,true);
+                    expandAllExistingChildrenRec(store.getChildren(item));
                 }
             }
         }

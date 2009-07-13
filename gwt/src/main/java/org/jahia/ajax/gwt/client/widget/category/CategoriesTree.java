@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.binder.TreeBinder;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.tree.Tree;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -60,7 +61,7 @@ public class CategoriesTree extends ContentPanel {
     private CustomTreeLoader<GWTJahiaCategoryNode> loader;
     private TreeStore<GWTJahiaCategoryNode> store;
     private PreviousPathsOpener<GWTJahiaCategoryNode> previousPathsOpener = null ;
-    private Tree tree ;
+    private TreePanel<GWTJahiaCategoryNode> tree ;
     private boolean init = true ;
     private boolean autoSelectParent = true ;
 
@@ -93,19 +94,14 @@ public class CategoriesTree extends ContentPanel {
                expandAllPreviousPaths();
             }
 
-//            @Override
-//            protected void onLoadSuccess(Object gwtJahiaCategoryNode, List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
-//                super.onLoadSuccess(gwtJahiaCategoryNode, gwtJahiaCategoryNodes);
-//                Log.debug("Load "+gwtJahiaCategoryNodes.size()+" categories.");
-//                if (init) {
-//                    init = false ;
-//                } else {
-//                    for (GWTJahiaCategoryNode n: gwtJahiaCategoryNodes) {
-//                    //    n.setParent(gwtJahiaCategoryNode);
-//                    }
-//                   // gwtJahiaCategoryNode.setChildren(gwtJahiaCategoryNodes);
-//                }
-//            }
+            @Override
+            protected void onLoadSuccess(Object gwtJahiaCategoryNode, List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
+                super.onLoadSuccess(gwtJahiaCategoryNode, gwtJahiaCategoryNodes);
+                Log.debug("Load "+gwtJahiaCategoryNodes.size()+" categories.");
+                if (init) {
+                    init = false ;
+                }
+           }
         };
 
         // trees store
@@ -116,13 +112,8 @@ public class CategoriesTree extends ContentPanel {
             }
         });
         // tree
-        tree = new Tree();
-        if (multiple) {
-            tree.setSelectionMode(Style.SelectionMode.MULTI);
-        }
-
-        binder = new MyTreeBinder<GWTJahiaCategoryNode>(tree, store);
-        binder.setDisplayProperty("extendedName");
+        tree = new TreePanel<GWTJahiaCategoryNode>(store);
+        tree.setDisplayProperty("extendedName");
 
         add(tree);
     }
@@ -144,7 +135,7 @@ public class CategoriesTree extends ContentPanel {
 
     private void expandAllPreviousPaths() {
         if (previousPathsOpener == null) {
-            previousPathsOpener = new PreviousPathsOpener<GWTJahiaCategoryNode>(tree, store, binder) ;
+            previousPathsOpener = new PreviousPathsOpener<GWTJahiaCategoryNode>(tree, store) ;
         }
         previousPathsOpener.expandPreviousPaths();
     }
@@ -155,9 +146,9 @@ public class CategoriesTree extends ContentPanel {
      */
     public List<GWTJahiaCategoryNode> getSelection() {
         if (!autoSelectParent) {
-            return binder.getSelection() ;
+            return tree.getSelectionModel().getSelection();
         }
-        Set<GWTJahiaCategoryNode> nodes = new HashSet<GWTJahiaCategoryNode>(binder.getSelection());
+        Set<GWTJahiaCategoryNode> nodes = new HashSet<GWTJahiaCategoryNode>(tree.getSelectionModel().getSelection());
         for (GWTJahiaCategoryNode n: binder.getSelection()) {
             GWTJahiaCategoryNode parent = (GWTJahiaCategoryNode) n.getParent();
             while (parent != null) {

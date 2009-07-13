@@ -84,7 +84,6 @@ public class TranslationNodeImpl extends NodeImpl {
 
         for (PropertyImpl i18nProperty : parentI18nProperties) {
             if (locale.equals(i18nProperty.getLocale())) {
-                System.out.println("-------"+i18nProperty);
                 properties.put(i18nProperty.getName(), i18nProperty);
             }
         }

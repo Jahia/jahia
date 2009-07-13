@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.tree.TreeItem;
+import com.extjs.gxt.ui.client.widget.treepanel.TreeStyle;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Image;
@@ -65,7 +66,6 @@ import java.util.List;
 public class RepositoryTab extends ContentPanel {
 
     // TODO GXT 2 !!!
-
     private boolean init = true ;
     private String repositoryType ;
     private CustomTreeLoader<GWTJahiaNode> loader ;
@@ -134,8 +134,10 @@ public class RepositoryTab extends ContentPanel {
 
         // tree component
         m_tree = new TreePanel<GWTJahiaNode>(store);
+        TreeStyle treeStyle = new TreeStyle();
+        m_tree.setStyle(treeStyle);
         m_tree.setDisplayProperty("displayName");
-        m_tree.getStyle().setLeafIcon(new AbstractImagePrototype() {
+        treeStyle.setLeafIcon(new AbstractImagePrototype() {
             public void applyTo(Image image) {
                 // TODO
             }
@@ -144,7 +146,8 @@ public class RepositoryTab extends ContentPanel {
             }
 
             public String getHTML() {
-                return "<div class=\"tree-folder\">&nbsp;&nbsp;&nbsp;&nbsp;</div>";
+                // find a better image
+                return new TreeStyle().getNodeOpenIcon().getHTML();
             }
         });
         m_tree.setBorders(false);

@@ -428,8 +428,8 @@ public class JahiaCndReader {
                     def.setMandatory(listNodeDef.isMandatory());
                     registry.addNodeType(listType.getNameObject(),listType);
                 }
-                listNodeDef.setAutoCreated(true);
-                listNodeDef.setMandatory(true);
+//                listNodeDef.setAutoCreated(true);
+//                listNodeDef.setMandatory(true);
                 listNodeDef.setDeclaringNodeType(ntd);
             } else if (currentTokenEquals(Lexer.JAHIA_SMALLTEXTFIELD)) {
                 ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);

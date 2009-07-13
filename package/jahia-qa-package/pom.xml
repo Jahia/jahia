@@ -51,6 +51,12 @@
                 <module>qa-5</module>
             </modules>
         </profile>
+        <profile>
+            <id>qa-jboss</id>
+            <modules>
+                <module>qa-jboss</module>
+            </modules>
+        </profile>
     </profiles>
 
 </project>

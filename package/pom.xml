@@ -13,13 +13,22 @@
         <jahia.tomcat.version>6.0.20</jahia.tomcat.version>
         <jahia.jboss.version>4.2.3.GA</jahia.jboss.version>
     </properties>
-    <modules>
-        <module>jahia-tgz-package</module>        
-		<module>jahia-qa-package</module>
-    </modules>
     <profiles>
         <profile>
-            <id>jboss-qa</id>
+              <id>qa-build</id>
+              <modules>
+                  <module>jahia-tgz-package</module>        
+                  <module>jahia-qa-package</module>
+              </modules>
+        </profile>
+        <profile>
+            <id>jboss-deployment</id>
+            <activation>
+                <property>
+                    <name>jahia.deploy.targetServerType</name>
+                    <value>jboss</value>
+                </property>
+            </activation>
             <modules>
                 <module>jahia-jboss-package</module>
             </modules>

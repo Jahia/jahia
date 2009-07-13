@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <parent>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-jboss-package</artifactId>
+        <version>7.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jahia-jboss-config</artifactId>
+    <name>Jahia JBoss Configuration</name>
+    <packaging>jboss-sar</packaging>
+    <dependencies>
+        <!-- Pluto 2.0 -->
+        <dependency>
+            <groupId>org.apache.portals</groupId>
+            <artifactId>portlet-api_2.0_spec</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-container-api</artifactId>
+            <version>${pluto.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-container-driver-api</artifactId>
+            <version>${pluto.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-taglib</artifactId>
+            <version>${pluto.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.ccpp</groupId>
+            <artifactId>ccpp</artifactId>
+            <version>1.0</version>
+        </dependency>
+        
+        <!-- Portal Bridges Dependencies -->
+        <dependency>
+            <groupId>org.apache.portals.bridges</groupId>
+            <artifactId>portals-bridges-common</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
+        <!-- DB drivers -->
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc5</artifactId>
+            <version>${driver.oracle.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>orai18n</artifactId>
+            <version>${driver.oracle.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>microsoft</groupId>
+            <artifactId>sqljdbc</artifactId>
+            <version>${driver.mssql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${driver.mysql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>${driver.derby.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+            <version>${driver.derby.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${driver.postgresql.version}</version>
+        </dependency>
+        
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jboss-packaging-maven-plugin</artifactId>
+                <version>2.0</version>
+                <extensions>true</extensions>
+                <executions>
+                   <execution>
+                        <id>package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>sar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

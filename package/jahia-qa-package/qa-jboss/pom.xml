@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <parent>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-qa-package</artifactId>
+        <version>7.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jahia-qa-jboss</artifactId>
+    <name>Jahia JBoss QA Package</name>
+    <packaging>pom</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-war</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-jboss-config</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>sar</type>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <distant.hosts.ip>10.8.37.252</distant.hosts.ip>
+        <distant.hosts.username>jahia</distant.hosts.username>
+        <distant.hosts.password>jahia</distant.hosts.password>
+        <install.dir>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}</install.dir>
+        <db.host>10.8.37.252</db.host>
+        <db.schema>jahia</db.schema>
+        <db.user>jahia</db.user>
+        <db.password>jahia</db.password>
+    </properties>            
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jboss</groupId>
+                                    <artifactId>jbossas</artifactId>
+                                    <version>${jahia.jboss.version}-jdk6</version>
+                                    <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <excludes>**/docs/**,**/server/all/**,**/server/minimal/**,**/ROOT.war/**</excludes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>lambdaprobe</groupId>
+                                    <artifactId>lambdaprobe</artifactId>
+                                    <version>jahia-version</version>
+                                    <type>war</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy</outputDirectory>
+                                    <destFileName>probe.war</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>testsuite-jahia</groupId>
+                                    <artifactId>testsuite-jahia</artifactId>
+                                    <version>1.0</version>
+                                    <type>war</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy</outputDirectory>
+                                    <destFileName>testsuite-jahia.war</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy</outputDirectory>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-testjar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jahia.server</groupId>
+                                    <artifactId>jahia-test</artifactId>
+                                    <version>${jahia.package.version}</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy/${jahia.deploy.war.dirName}/WEB-INF/lib</outputDirectory>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>maven-jahia-plugin</artifactId>
+                <configuration>
+                    <targetServerType>jboss</targetServerType>
+                    <targetServerVersion>4.2.x</targetServerVersion>
+                    <targetServerDirectory>${project.build.directory}/jboss-${jahia.jboss.version}</targetServerDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>maven-jahia-plugin</artifactId>
+                <configuration>
+                    <targetServerDirectory>${project.build.directory}/jboss-${jahia.jboss.version}</targetServerDirectory>
+                    <targetServerType>jboss</targetServerType>
+                    <targetServerVersion>4.2.x</targetServerVersion>
+                    <siteImportLocation>
+                        <param>/home/bamboo/bin/siteImport_testSite.zip</param>
+                        <param>/home/bamboo/bin/siteImport_DemoSite.zip</param>
+                    </siteImportLocation>
+                    <cluster_activated>false</cluster_activated>
+                    <processingServer>true</processingServer>
+                    <databaseType>mysql</databaseType>
+                    <databaseUrl>jdbc:mysql://${db.host}/${db.schema}?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
+                    <databaseUsername>${db.user}</databaseUsername>
+                    <databasePassword>${db.password}</databasePassword>
+                    <overwritedb>true</overwritedb>
+                    <storeFilesInDB>true</storeFilesInDB>
+                    <localIp>${distant.hosts.ip}</localIp>
+                    <jahiaRootPassword>rootroot</jahiaRootPassword>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>configure</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <finalName>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}</finalName>
+                    <descriptors>
+                        <descriptor>src/main/assembly/src.xml</descriptor>
+                    </descriptors>
+                    <tarLongFileMode>gnu</tarLongFileMode>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+             
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.3</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>1.7.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.38</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>deploying</id>
+                        <phase>install</phase>
+                        <configuration>
+                            <tasks>
+                                <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
+                                         command="export JAVA_HOME=/usr/local/latest;/home/jahia/install/${install.dir}/bin/shutdown.sh -S --server=${distant.hosts.ip}:1099"
+                                         trust="true" failonerror="false"/>
+                                <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
+                                         command="rm -Rf /home/jahia/install/${install.dir}" trust="true"
+                                         failonerror="false"/>
+                                <scp file="${project.build.directory}/${install.dir}-jahia.tar.gz"
+                                         todir="${distant.hosts.username}@${distant.hosts.ip}:/home/jahia/install" password="${distant.hosts.password}"
+                                         trust="true"/>
+                                <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
+                                         command="tar xfz /home/jahia/install/${install.dir}-jahia.tar.gz --directory /home/jahia/install"
+                                         trust="true" failonerror="false"/>
+                                <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
+                                         command="rm /home/jahia/install/${install.dir}-jahia.tar.gz "
+                                         trust="true" failonerror="false"/>
+                                <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
+                                         command="chmod 755 /home/jahia/install/${install.dir}/bin/*.sh" trust="true"
+                                         failonerror="false"/>
+                                <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
+                                         command="export JAVA_HOME=/usr/local/latest;export LAUNCH_JBOSS_IN_BACKGROUND=1;/home/jahia/install/${install.dir}/bin/run.sh -b ${distant.hosts.ip} &amp;"
+                                         trust="true" failonerror="false"
+                                         timeout="120000"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>                    
+                </executions>
+            </plugin>
+            
+        </plugins>
+    </build>
+</project>

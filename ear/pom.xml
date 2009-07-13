@@ -10,13 +10,6 @@
     <name>Jahia EAR</name>
     <packaging>ear</packaging>
 
-    <properties>
-        <driverDependenciesScope>provided</driverDependenciesScope>
-        <excludeDriversFromEar>true</excludeDriversFromEar>
-        <includeDriversInApplicationXml>false</includeDriversInApplicationXml>
-        <earExcludedResources>**/jahia-jboss-config.sar/**</earExcludedResources>
-    </properties>
-  
     <profiles>
         <profile>
             <id>code-coverage</id>
@@ -43,10 +36,7 @@
                 </property>
             </activation>
             <properties>
-                <driverDependenciesScope>compile</driverDependenciesScope>
-                <excludeDriversFromEar>false</excludeDriversFromEar>
-                <includeDriversInApplicationXml>true</includeDriversInApplicationXml>
-                <earExcludedResources></earExcludedResources>
+                <jahia.deploy.skip>true</jahia.deploy.skip>
             </properties>
         </profile>
     </profiles>
@@ -58,6 +48,14 @@
             <version>${jahia.package.version}</version>
             <type>war</type>
         </dependency>
+        <!-- We will to deploy the RAR inside the EAR for JEE app servers.
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jackrabbit-rar</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>rar</type>
+        </dependency>
+        -->
 
         <!-- Pluto 2.0 -->
         <dependency>
@@ -93,49 +91,6 @@
             <version>1.0.4</version>
         </dependency>
 
-        <!-- DB drivers -->
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc5</artifactId>
-            <version>${driver.oracle.version}</version>
-            <scope>${driverDependenciesScope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>orai18n</artifactId>
-            <version>${driver.oracle.version}</version>
-            <scope>${driverDependenciesScope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>microsoft</groupId>
-            <artifactId>sqljdbc</artifactId>
-            <version>${driver.mssql.version}</version>
-            <scope>${driverDependenciesScope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${driver.mysql.version}</version>
-            <scope>${driverDependenciesScope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>${driver.derby.version}</version>
-            <scope>${driverDependenciesScope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derbyclient</artifactId>
-            <version>${driver.derby.version}</version>
-            <scope>${driverDependenciesScope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${driver.postgresql.version}</version>
-            <scope>${driverDependenciesScope}</scope>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -154,93 +109,97 @@
                       <!--manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile-->
                     </archive>
                     <earSourceDirectory>src/main/resources</earSourceDirectory>
-                    <earSourceExcludes>${earExcludedResources}</earSourceExcludes>
 
                     <modules>
-                        <!-- Pluto modules -->
+                        <webModule>
+                            <groupId>org.jahia.server</groupId>
+                            <artifactId>jahia-war</artifactId>
+                            <contextRoot>${jahia.deploy.war.contextPath}</contextRoot>
+                            <bundleFileName>jahia.war</bundleFileName>
+                        </webModule>
+                        <!--
+                        <jarModule>
+                            <groupId>javax.portlet</groupId>
+                            <artifactId>portlet-api</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>org.apache.pluto</groupId>
+                            <artifactId>pluto-container</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>org.apache.pluto</groupId>
+                            <artifactId>pluto-descriptor-api</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>org.apache.pluto</groupId>
+                            <artifactId>pluto-descriptor-impl</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>org.apache.pluto</groupId>
+                            <artifactId>pluto-taglib</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+
+                        <jarModule>
+                            <groupId>javax.activation</groupId>
+                            <artifactId>activation</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>org.codehaus.castor</groupId>
+                            <artifactId>castor</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
                         <jarModule>
                             <groupId>javax.ccpp</groupId>
                             <artifactId>ccpp</artifactId>
                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <jarModule>
-                            <groupId>org.apache.portals</groupId>
-                            <artifactId>portlet-api_2.0_spec</artifactId>
+                            <groupId>javax.xml.bind</groupId>
+                            <artifactId>jaxb-api</artifactId>
                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <jarModule>
-                            <groupId>org.apache.portals.pluto</groupId>
-                            <artifactId>pluto-container-api</artifactId>
+                            <groupId>com.sun.xml.bind</groupId>
+                            <artifactId>jaxb-impl</artifactId>
                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <jarModule>
-                            <groupId>org.apache.portals.pluto</groupId>
-                            <artifactId>pluto-container-driver-api</artifactId>
+                            <groupId>stax</groupId>
+                            <artifactId>stax</artifactId>
                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <jarModule>
-                            <groupId>org.apache.portals.pluto</groupId>
-                            <artifactId>pluto-taglib</artifactId>
+                            <groupId>stax</groupId>
+                            <artifactId>stax-api</artifactId>
                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <jarModule>
-                            <groupId>org.apache.portals.bridges</groupId>
-                            <artifactId>portals-bridges-common</artifactId>
+                            <groupId>xerces</groupId>
+                            <artifactId>xercesImpl</artifactId>
                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
-                        
-                        <!-- DB drivers -->
                         <jarModule>
-                            <groupId>com.oracle</groupId>
-                            <artifactId>ojdbc5</artifactId>
-                            <excluded>${excludeDriversFromEar}</excluded>
-                            <includeInApplicationXml>${includeDriversInApplicationXml}</includeInApplicationXml>
+                            <groupId>xerces</groupId>
+                            <artifactId>xmlParserAPIs</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <jarModule>
-                            <groupId>com.oracle</groupId>
-                            <artifactId>orai18n</artifactId>
-                            <excluded>${excludeDriversFromEar}</excluded>
-                            <includeInApplicationXml>${includeDriversInApplicationXml}</includeInApplicationXml>
+                            <groupId>commons-logging</groupId>
+                            <artifactId>commons-logging</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <jarModule>
-                            <groupId>microsoft</groupId>
-                            <artifactId>sqljdbc</artifactId>
-                            <excluded>${excludeDriversFromEar}</excluded>
-                            <includeInApplicationXml>${includeDriversInApplicationXml}</includeInApplicationXml>
+                            <groupId>log4j</groupId>
+                            <artifactId>log4j</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
-                        <jarModule>
-                            <groupId>mysql</groupId>
-                            <artifactId>mysql-connector-java</artifactId>
-                            <excluded>${excludeDriversFromEar}</excluded>
-                            <includeInApplicationXml>${includeDriversInApplicationXml}</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>org.apache.derby</groupId>
-                            <artifactId>derby</artifactId>
-                            <excluded>${excludeDriversFromEar}</excluded>
-                            <includeInApplicationXml>${includeDriversInApplicationXml}</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>org.apache.derby</groupId>
-                            <artifactId>derbyclient</artifactId>
-                            <excluded>${excludeDriversFromEar}</excluded>
-                            <includeInApplicationXml>${includeDriversInApplicationXml}</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>postgresql</groupId>
-                            <artifactId>postgresql</artifactId>
-                            <excluded>${excludeDriversFromEar}</excluded>
-                            <includeInApplicationXml>${includeDriversInApplicationXml}</includeInApplicationXml>
-                        </jarModule>
-
-                        <!-- Jahia Web module -->
-                        <webModule>
-                            <groupId>org.jahia.server</groupId>
-                            <artifactId>jahia-war</artifactId>
-                            <contextRoot>${jahia.deploy.war.contextPath}</contextRoot>
-                            <bundleFileName>jahia.war</bundleFileName>
-                            <unpack>true</unpack>
-                        </webModule>
+                        -->
                     </modules>
                 </configuration>
             </plugin>

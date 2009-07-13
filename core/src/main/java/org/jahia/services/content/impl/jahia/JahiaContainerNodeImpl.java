@@ -144,7 +144,8 @@ public class JahiaContainerNodeImpl extends JahiaContentNodeImpl {
     public ExtendedNodeType[] getMixinNodeTypes() throws RepositoryException {
         try {
             JahiaContainerDefinition def = (JahiaContainerDefinition) ContentDefinition.getContentDefinitionInstance(object.getDefinitionKey(EntryLoadRequest.STAGED));
-            List<ExtendedNodeType> list = def.getMixinNodeTypes();
+            List<ExtendedNodeType> list = new ArrayList<ExtendedNodeType>(mixin);
+            list.addAll(def.getMixinNodeTypes());
             return list.toArray(new ExtendedNodeType[list.size()]);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

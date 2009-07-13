@@ -32,6 +32,8 @@
 package org.jahia.services.content.impl.jahia;
 
 import java.util.Set;
+import java.util.Locale;
+import java.util.List;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.ItemNotFoundException;
@@ -126,17 +128,29 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
 
             ExtendedNodeType pageType = NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_PAGE);
 
-            initProperty(new PropertyImpl(getSession(),this,
-                    pageType.getPropertyDefinition("j:pageTitle"),
-                    new ValueImpl(contentPage.getTitle(getProcessingContext()), PropertyType.STRING)));
+            try {
+                List<Locale> locales = getProcessingContext().getSite().getLanguageSettingsAsLocales(true);
+                for (Locale locale : locales) {
+                    EntryLoadRequest elr = getProcessingContext().getEntryLoadRequest();
+                    if (locale != null) {
+                        elr = new EntryLoadRequest(elr);
+                        elr.setFirstLocale(locale.toString());
+                    }
+                    initProperty(new PropertyImpl(getSession(),this,
+                            pageType.getPropertyDefinitionsAsMap().get("jcr:title"),locale,
+                            new ValueImpl(contentPage.getTitle(elr), PropertyType.STRING)));
+                }
+            } catch (JahiaException e) {
+                logger.error(e.getMessage(), e);
+            }
 
             initProperty(new PropertyImpl(getSession(),this,
-                    pageType.getPropertyDefinition("j:template"),
+                pageType.getPropertyDefinitionsAsMap().get("j:defaultTemplate"),null,
                     new ValueImpl(contentPage.getPageTemplate(getProcessingContext()).getName(), PropertyType.STRING)));
 
-            initProperty(new PropertyImpl(getSession(),this,
-                    pageType.getPropertyDefinition("j:pid"),
-                    new ValueImpl(""+contentPage.getID(), PropertyType.LONG)));
+//            initProperty(new PropertyImpl(getSession(),this,
+//                    pageType.getPropertyDefinition("j:pid"),null,
+//                    new ValueImpl(""+contentPage.getID(), PropertyType.LONG)));
 
         }
     }

@@ -40,6 +40,7 @@ import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.VersionException;
 import java.io.InputStream;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Represents a single JCR property.
@@ -54,25 +55,28 @@ public class PropertyImpl extends ItemImpl implements Property {
     protected ExtendedPropertyDefinition def;
     protected String name;
     protected boolean i18n;
+    protected Locale locale;
 
-    public PropertyImpl(SessionImpl session, Node node, ExtendedPropertyDefinition def, Value value) {
-        this(session, node, def, new Value[] {value});
+    public PropertyImpl(SessionImpl session, Node node, ExtendedPropertyDefinition def, Locale locale, Value value) {
+        this(session, node, def, locale, new Value[] {value});
     }
 
-    public PropertyImpl(SessionImpl session, Node node, String name, ExtendedPropertyDefinition def, Value value) {
-        this(session, node, name, def, new Value[] {value});
+    public PropertyImpl(SessionImpl session, Node node, String name, ExtendedPropertyDefinition def, Locale locale, Value value) {
+        this(session, node, name, def, locale, new Value[] {value});
     }
 
-    public PropertyImpl(SessionImpl session, Node node, ExtendedPropertyDefinition def, Value[] values) {
-        this(session, node, null, def, values);
+    public PropertyImpl(SessionImpl session, Node node, ExtendedPropertyDefinition def, Locale locale, Value[] values) {
+        this(session, node, null, def, locale, values);
     }
 
-    public PropertyImpl(SessionImpl session, Node node, String name, ExtendedPropertyDefinition def, Value[] values) {
+    public PropertyImpl(SessionImpl session, Node node, String name, ExtendedPropertyDefinition def, Locale locale, Value[] values) {
         super(session);
         this.node = node;
         this.values = values;
         this.name = name;
         this.def = def;
+        this.i18n = locale != null;
+        this.locale = locale;
     }
 
     public void setValue(Value value) throws ValueFormatException, VersionException, LockException, RepositoryException {
@@ -174,6 +178,10 @@ public class PropertyImpl extends ItemImpl implements Property {
         this.i18n = i18n;
     }
 
+    public Locale getLocale() {
+        return locale;
+    }
+
     public PropertyDefinition getDefinition() throws RepositoryException {
         return def;
     }
@@ -187,9 +195,15 @@ public class PropertyImpl extends ItemImpl implements Property {
 
     public String getName() throws RepositoryException {
         if (name != null) {
+            if (locale != null) {
+                return name + "_"+locale;
+            }
             return name;
         }
         if (def != null) {
+            if (locale != null) {
+                return def.getName() + "_"+locale;
+            }
             return def.getName();
         }
         return null;

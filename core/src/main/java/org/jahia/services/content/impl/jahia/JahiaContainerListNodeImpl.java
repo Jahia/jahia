@@ -34,6 +34,7 @@ package org.jahia.services.content.impl.jahia;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -168,7 +169,8 @@ public class JahiaContainerListNodeImpl extends JahiaContentNodeImpl {
     public ExtendedNodeType[] getMixinNodeTypes() throws RepositoryException {
         try {
             JahiaContainerDefinition def = (JahiaContainerDefinition) ContentDefinition.getContentDefinitionInstance(object.getDefinitionKey(EntryLoadRequest.STAGED));
-            List<ExtendedNodeType> list = def.getContainerListMixinNodeTypes();
+            List<ExtendedNodeType> list = new ArrayList<ExtendedNodeType>(mixin);
+            list.addAll(def.getContainerListMixinNodeTypes());
             return list.toArray(new ExtendedNodeType[list.size()]);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

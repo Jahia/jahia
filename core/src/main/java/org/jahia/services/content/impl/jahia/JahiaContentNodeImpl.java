@@ -35,11 +35,11 @@ import java.util.*;
 
 import javax.jcr.Item;
 import javax.jcr.ItemNotFoundException;
-import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 import org.jahia.content.ContentDefinition;
 import org.jahia.content.ContentObject;
@@ -56,6 +56,9 @@ import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.params.ProcessingContext;
 
 /**
  * Created by IntelliJ IDEA.
@@ -74,6 +77,11 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
     protected JahiaContentNodeImpl(SessionImpl session, ContentObject object) {
         super(session);
         this.object = object;
+        try {
+            addMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:workflowed"));
+        } catch (NoSuchNodeTypeException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -85,8 +93,66 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             ExtendedNodeType ref = NodeTypeRegistry.getInstance().getNodeType("mix:referenceable");
             String uuid = getUUID();
             initProperty(new PropertyImpl(getSession(), this,
-                    ref.getDeclaredPropertyDefinitionsAsMap().get("jcr:uuid"),
+                    ref.getDeclaredPropertyDefinitionsAsMap().get("jcr:uuid"), null,
                     new ValueImpl(uuid, PropertyType.STRING)));
+
+            /// workflow
+            try {
+                List<Locale> locales = getProcessingContext().getSite().getLanguageSettingsAsLocales(true);
+                for (Locale locale : locales) {
+                    String lang = locale.toString();
+                    String v = "";
+                    String loc = (object.isShared()) ? "shared" : lang;
+                    Map<String, Integer> states = object.getLanguagesStates();
+                    if (states.containsKey(loc)) {
+                        int state = states.get(loc);
+                        if (object instanceof ContentContainer) {
+                            List<? extends ContentObject> l = object.getChilds(getProcessingContext().getUser(), getEntryLoadRequest());
+                            for (Iterator<? extends ContentObject> contentObjectIterator = l.iterator(); contentObjectIterator.hasNext();) {
+                                ContentObject child = contentObjectIterator.next();
+                                if (child instanceof ContentField) {
+                                    loc = (child.isShared()) ? "shared" : lang;
+                                    states = child.getLanguagesStates();
+                                    if (!states.containsKey(loc)) {
+                                        continue;
+                                    }
+                                    state = Math.max(state,states.get(loc));
+                                }
+                            }
+                        }
+                        if (state == 1) {
+                            v = "active";
+                        } else {
+                            String extState = WorkflowService.getInstance().getExtendedWorkflowState(object, lang);
+                            char c = extState.charAt(1);
+                            String quickEdit = "";
+                            if (extState.charAt(2) == '1') {
+                                quickEdit = "-quickEdit";
+                            }
+                            switch (c) {
+                                case '1':
+                                    v = "active"; break;
+                                case '2':
+                                    v = "staging"; break;
+                                case '3':
+                                    v = "validationStep1"+quickEdit; break;
+                                case '4':
+                                    v = "validationStep2"+quickEdit; break;
+                                case '5':
+                                    v = "validationStep3"+quickEdit; break;
+                            }
+                        }
+
+                        initProperty(new PropertyImpl(getSession(), this, "j:workflowState",
+                                NodeTypeRegistry.getInstance().getNodeType("jmix:workflowed").getPropertyDefinitionsAsMap().get("j:workflowState"),
+                                locale,new ValueImpl(v, PropertyType.STRING)));
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
 
 
             initFields();
@@ -97,7 +163,9 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             }
             for (Item item : emptyFields) {
                 if (item instanceof PropertyImpl) {
-                    emptyProperties.put(item.getName(), (Property) item);
+                    if (!((PropertyImpl)item).isI18n()) {
+                        emptyProperties.put(item.getName(), (PropertyImpl) item);
+                    }
                 }
             }
         }
@@ -113,12 +181,21 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                 initNode(new JahiaAclNodeImpl(getSession(), object.getAclID(), this));
             }
 
-            // workflow mode todo
-            //initNode(new WorkflowStateNodeImpl(getSession(), this));
+            initFields();
+
+            try {
+                List<Locale> locales = getProcessingContext().getSite().getLanguageSettingsAsLocales(true);
+                for (Locale locale : locales) {
+                    TranslationNodeImpl t = new TranslationNodeImpl(getSession(), this, i18nProperties, locale);
+                    translationNodes.put(locale.toString(), t);
+                    initNode(t);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             // jahialinks todo
 
-            initFields();
             for (Item item : fields) {
                 if (item instanceof NodeImpl) {
                     initNode((NodeImpl) item);
@@ -147,60 +224,78 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
 
     protected void initFieldItem(ContentField contentField) throws RepositoryException {
         try {
-            String value = contentField.getValue(getProcessingContext());
-            JahiaFieldDefinition def = (JahiaFieldDefinition) ContentDefinition.getContentDefinitionInstance(contentField.getDefinitionKey(EntryLoadRequest.STAGED));
-            switch (contentField.getType()) {
-                case FieldTypes.DATE: {
-                    if (value == null || value.length()==0 || value.equals("<empty>")) {
-                        emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField, !contentField.isShared()));
-                    } else {
-                        GregorianCalendar cal = new GregorianCalendar();
-                        cal.setTime(new Date(Long.parseLong(value)));
-                        fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new ValueImpl(cal),contentField));
-                    }
-                    break;
-                }
-                case FieldTypes.PAGE: {
-                    if (value == null || value.length()==0 || value.equals("<empty>")) {
-                        //emptyFields.add(new JahiaPageLinkNodeImpl(getSession(), this, def.getNodeDefinition(), null));
-                    } else {
-                        ContentPage p = ((ContentPageField)contentField).getContentPage(getProcessingContext());
-                        if (p != null) {
-                            fields.add(new JahiaPageLinkNodeImpl(getSession(), this, def.getNodeDefinition(), p));
-                        }
-                    }
-                    break;
-                }
-                case FieldTypes.BIGTEXT: {
-                    if (value == null || value.length()==0 || value.equals("<empty>")) {
-                        emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField, !contentField.isShared()));
-                    } else {
-                        Value v = new ValueImpl(contentField.getValue(getProcessingContext()), PropertyType.STRING);
-                        fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField));
-                    }
-                    break;
-                }
-                default : {
-                    if (def.getCtnType().equals(definition.getName()+" jcr_primaryType")) {
-                        return;
-                    }
-                    if (value == null || value.length()==0 || value.equals("<empty>")) {
-                        emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField, !contentField.isShared()));
-                    } else {
-                        Value v = new ValueImpl(contentField.getValue(getProcessingContext()), PropertyType.STRING);
-                        ExtendedPropertyDefinition propertyDefinition = def.getPropertyDefinition();
-                        if (propertyDefinition != null) {
-                            fields.add(new JahiaFieldPropertyImpl(getSession(), this, propertyDefinition, v, contentField));
-                        }
-                    }
-                    break;
-                }
 
+            List<Locale> locales = getProcessingContext().getSite().getLanguageSettingsAsLocales(true);
+            if (contentField.isShared()) {
+                initFieldItem(contentField, null);
+            } else {
+                for (Locale locale : locales) {
+                    initFieldItem(contentField, locale);
+                }
             }
         } catch (JahiaException e) {
             throw new RepositoryException(e);
         } catch (ClassNotFoundException e) {
             throw new RepositoryException(e);
+        }
+    }
+
+    private void initFieldItem(ContentField contentField, Locale locale) throws JahiaException, RepositoryException, ClassNotFoundException {
+        final ProcessingContext processingContext = getProcessingContext();
+        EntryLoadRequest elr = processingContext.getEntryLoadRequest();
+        if (locale != null) {
+            elr = new EntryLoadRequest(elr);
+            elr.setFirstLocale(locale.toString());
+        }
+        String value = contentField.getValue(processingContext, elr);
+        JahiaFieldDefinition def = (JahiaFieldDefinition) ContentDefinition.getContentDefinitionInstance(contentField.getDefinitionKey(EntryLoadRequest.STAGED));
+        switch (contentField.getType()) {
+            case FieldTypes.DATE: {
+                if (value == null || value.length()==0 || value.equals("<empty>")) {
+                    emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField, locale));
+                } else {
+                    GregorianCalendar cal = new GregorianCalendar();
+                    cal.setTime(new Date(Long.parseLong(value)));
+                    fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new ValueImpl(cal),contentField, locale));
+                }
+                break;
+            }
+            case FieldTypes.PAGE: {
+                if (value == null || value.length()==0 || value.equals("<empty>")) {
+                    //emptyFields.add(new JahiaPageLinkNodeImpl(getSession(), this, def.getNodeDefinition(), null));
+                } else {
+                    ContentPage p = ((ContentPageField)contentField).getContentPage(processingContext);
+                    if (p != null) {
+                        fields.add(new JahiaPageLinkNodeImpl(getSession(), this, def.getNodeDefinition(), p));
+                    }
+                }
+                break;
+            }
+            case FieldTypes.BIGTEXT: {
+                if (value == null || value.length()==0 || value.equals("<empty>")) {
+                    emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField, locale));
+                } else {
+                    Value v = new ValueImpl(value, PropertyType.STRING);
+                    fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
+                }
+                break;
+            }
+            default : {
+                if (def.getCtnType().equals(definition.getName()+" jcr_primaryType")) {
+                    return;
+                }
+                if (value == null || value.length()==0 || value.equals("<empty>")) {
+                    emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField, locale));
+                } else {
+                    Value v = new ValueImpl(value, PropertyType.STRING);
+                    ExtendedPropertyDefinition propertyDefinition = def.getPropertyDefinition();
+                    if (propertyDefinition != null) {
+                        fields.add(new JahiaFieldPropertyImpl(getSession(), this, propertyDefinition, v, contentField, locale));
+                    }
+                }
+                break;
+            }
+
         }
     }
 
@@ -217,12 +312,12 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
     }
 
     @Override
-    protected Property getPropertyForSet(String s) throws RepositoryException {
-        Property p = super.getPropertyForSet(s);
+    protected PropertyImpl getPropertyForSet(String s) throws RepositoryException {
+        PropertyImpl p = super.getPropertyForSet(s);
         if (p == null) {
             ExtendedPropertyDefinition def = nodetype.getPropertyDefinitionsAsMap().get(s);
-            if (def != null) {
-                p = new JahiaFieldPropertyImpl(getSession(), this, def, new Value[0], null, def.isInternationalized());
+            if (def != null && !def.isInternationalized()) {
+                p = new JahiaFieldPropertyImpl(getSession(), this, def, new Value[0], null, null);
                 properties.put(s,p);
                 return p;
             }

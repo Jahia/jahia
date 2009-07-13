@@ -33,12 +33,14 @@ package org.jahia.services.content.impl.jahia;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.version.JahiaSaveVersion;
+import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaFieldDefinition;
@@ -64,15 +66,17 @@ import javax.jcr.version.VersionException;
 public class JahiaFieldPropertyImpl extends PropertyImpl {
     private ContentField field;
     private ContentObject parent;
+    private Locale locale;
 
-    public JahiaFieldPropertyImpl(SessionImpl session, JahiaContentNodeImpl node, ExtendedPropertyDefinition def, Value value, ContentField field) {
-        super(session, node, def, value);
+    public JahiaFieldPropertyImpl(SessionImpl session, JahiaContentNodeImpl node, ExtendedPropertyDefinition def, Value value, ContentField field, Locale locale) {
+        super(session, node, def, locale, value);
         this.field = field;
         this.parent = node.getContentObject();
+        this.locale = this.locale;
     }
 
-    public JahiaFieldPropertyImpl(SessionImpl session, JahiaContentNodeImpl node, ExtendedPropertyDefinition def, Value[] values, ContentField field, boolean i18n) {
-        super(session, node, def, values);
+    public JahiaFieldPropertyImpl(SessionImpl session, JahiaContentNodeImpl node, ExtendedPropertyDefinition def, Value[] values, ContentField field, Locale locale) {
+        super(session, node, def, locale, values);
         this.field = field;
         this.parent = node.getContentObject();
     }
@@ -196,6 +200,14 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
             }
         }
         return StringUtils.join(textValues, JahiaField.MULTIPLE_VALUES_SEP);
+    }
+
+    protected EntryLoadRequest getEntryLoadRequest() throws RepositoryException {
+        if (locale != null) {
+            EntryLoadRequest elr = new EntryLoadRequest(super.getEntryLoadRequest());
+            elr.setFirstLocale(locale.toString());
+        }
+        return super.getEntryLoadRequest();
     }
 
 }

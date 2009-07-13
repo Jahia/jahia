@@ -66,13 +66,14 @@ import java.util.Map;
  */
 public abstract class NodeImpl extends ItemImpl implements Node {
     protected ExtendedNodeType nodetype;
-    protected ExtendedNodeType[] mixin = new ExtendedNodeType[0];
+    protected List<ExtendedNodeType> mixin = new ArrayList<ExtendedNodeType>();
     protected ExtendedNodeDefinition definition;
 
-    protected Map<String, Property> properties;
+    protected Map<String, PropertyImpl> properties;
+    protected List<PropertyImpl> i18nProperties;
     protected Map<String, List<Node>> nodes;
-
-    protected Map<String, Property> emptyProperties;
+    protected Map<String, TranslationNodeImpl> translationNodes;
+    protected Map<String, PropertyImpl> emptyProperties;
 
     public NodeImpl(SessionImpl session) {
         super(session);
@@ -86,17 +87,18 @@ public abstract class NodeImpl extends ItemImpl implements Node {
         this.nodetype = nodetype;
     }
 
-    protected void setMixin(ExtendedNodeType[] mixin) {
-        this.mixin = mixin;
+    protected void addMixin(ExtendedNodeType mixin) {
+        this.mixin.add(mixin);
     }
 
     protected void initProperties() throws RepositoryException {
         if (properties == null) {
-            properties = new HashMap<String, Property>();
-            emptyProperties = new HashMap<String, Property>();
+            properties = new HashMap<String, PropertyImpl>();
+            emptyProperties = new HashMap<String, PropertyImpl>();
+            i18nProperties = new ArrayList<PropertyImpl>();
 
             initProperty(new PropertyImpl(session,this,
-                    NodeTypeRegistry.getInstance().getNodeType(Constants.NT_BASE).getPropertyDefinition(Constants.JCR_PRIMARYTYPE),
+                    NodeTypeRegistry.getInstance().getNodeType(Constants.NT_BASE).getPropertyDefinition(Constants.JCR_PRIMARYTYPE),null,
                     new ValueImpl(nodetype.getName(), PropertyType.NAME)));
         }
     }
@@ -104,11 +106,19 @@ public abstract class NodeImpl extends ItemImpl implements Node {
     protected void initNodes() throws RepositoryException {
         if (nodes == null) {
             nodes = new ListOrderedMap();
+            translationNodes = new HashMap<String, TranslationNodeImpl>();
         }
     }
 
     protected void initProperty(PropertyImpl p) throws RepositoryException {
-        properties.put(p.getName(), p);
+        if (!p.isI18n()) {
+            properties.put(p.getName(), p);
+            if (p.getName()== null) {
+                System.out.println("xx");
+            }
+        } else {
+            i18nProperties.add(p);
+        }
     }
 
     protected void initNode(NodeImpl n) throws RepositoryException  {
@@ -210,9 +220,9 @@ public abstract class NodeImpl extends ItemImpl implements Node {
         throw new UnsupportedRepositoryOperationException();
     }
 
-    protected Property getPropertyForSet(String s) throws RepositoryException {
+    protected PropertyImpl getPropertyForSet(String s) throws RepositoryException {
         initProperties();
-        Property p = properties.get(s);
+        PropertyImpl p = properties.get(s);
         if (p == null) {
             if (emptyProperties.containsKey(s)) {
                 p = emptyProperties.remove(s);
@@ -348,7 +358,7 @@ public abstract class NodeImpl extends ItemImpl implements Node {
     }
 
     public ExtendedNodeType[] getMixinNodeTypes() throws RepositoryException {
-        return mixin;
+        return mixin.toArray(new ExtendedNodeType[mixin.size()]);
     }
 
     public boolean isNodeType(String s) throws RepositoryException {

@@ -31,72 +31,62 @@
  */
 package org.jahia.services.content.impl.jahia;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-
-import org.jahia.exceptions.JahiaException;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.fields.ContentField;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.content.ContentObject;
+
+import javax.jcr.*;
+import java.util.Map;
+import java.util.List;
+import java.util.Iterator;
+import java.util.Locale;
 
 /**
- * Created by IntelliJ IDEA.
-  * User: toto
-  * Date: Jul 3, 2008
-  * Time: 11:22:59 AM
-  * To change this template use File | Settings | File Templates.
-  */
- public class JahiaAclNodeImpl extends NodeImpl {
-    private int aclId;
-    private NodeImpl parent;
+ * TODO Comment me
+ *
+ * @author toto
+ */
+public class TranslationNodeImpl extends NodeImpl {
+    private JahiaContentNodeImpl parent;
 
-    public JahiaAclNodeImpl(SessionImpl session, int aclId, NodeImpl parent) throws RepositoryException {
+    protected ContentObject object;
+    protected Locale locale;
+    protected List<PropertyImpl> parentI18nProperties;
+
+    public TranslationNodeImpl(SessionImpl session, JahiaContentNodeImpl parent, List<PropertyImpl> parentI18nProperties, Locale locale) throws RepositoryException {
         super(session);
-        setDefinition(NodeTypeRegistry.getInstance().getNodeType("jmix:accessControlled").getChildNodeDefinitionsAsMap().get("j:acl"));
-        setNodetype(NodeTypeRegistry.getInstance().getNodeType("jnt:acl"));
-        this.aclId = aclId;
+        setDefinition(NodeTypeRegistry.getInstance().getNodeType("jmix:i18n").getChildNodeDefinitionsAsMap().get("j:translation"));
+        setNodetype(NodeTypeRegistry.getInstance().getNodeType("jnt:translation"));
         this.parent = parent;
+        this.object = parent.getContentObject();
+        this.locale = locale;
+        this.parentI18nProperties = parentI18nProperties;
     }
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         return parent;
     }
 
-    @Override
-    protected void initNodes() throws RepositoryException {
-        super.initNodes();
-        // todo ace
-//        try {
-//            JahiaBaseACL acl = new JahiaBaseACL(aclId);
-//            Collection c = acl.getACL().getEntries();
-//            for (Iterator iterator = c.iterator(); iterator.hasNext();) {
-//                JahiaAclEntry jahiaAclEntry = (JahiaAclEntry) iterator.next();
-//            }
-//        } catch (JahiaException e) {
-//
-//        }
-    }
-
 
     @Override
     protected void initProperties() throws RepositoryException {
-        if (properties == null) {
-            super.initProperties();
-            try {
-                JahiaBaseACL acl = new JahiaBaseACL(aclId);
-                boolean inherit = acl.getInheritance()==1;
+        super.initProperties();
 
-                initProperty(new PropertyImpl(getSession(), this,
-                        nodetype.getDeclaredPropertyDefinitionsAsMap().get("j:inherit"),null,
-                        new ValueImpl(Boolean.toString(inherit),PropertyType.BOOLEAN)));
+        initProperty(new PropertyImpl(getSession(), this,
+                nodetype.getPropertyDefinitionsAsMap().get("jcr:language"),null,
+                new ValueImpl(locale.toString(),PropertyType.STRING)));
 
-            } catch (JahiaException e) {
-                throw new RepositoryException(e);
+        parent.initProperties();
+
+
+        for (PropertyImpl i18nProperty : parentI18nProperties) {
+            if (locale.equals(i18nProperty.getLocale())) {
+                System.out.println("-------"+i18nProperty);
+                properties.put(i18nProperty.getName(), i18nProperty);
             }
-
         }
 
     }

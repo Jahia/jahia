@@ -87,18 +87,18 @@ public class JahiaPageLinkNodeImpl extends NodeImpl {
                 switch (page.getPageType(getEntryLoadRequest())) {
                     case JahiaPage.TYPE_DIRECT:
                         initProperty(new PropertyImpl(getSession(),this,
-                                nodetype.getPropertyDefinition("j:link"),
+                                nodetype.getPropertyDefinition("j:link"),null,
                                 new ValueImpl(page.getProperty("uuid"), PropertyType.REFERENCE)));
                         break;
                     case JahiaPage.TYPE_LINK:
                         ContentPage linked = ContentPage.getPage(page.getPageLinkID(getProcessingContext()));
                         initProperty(new PropertyImpl(getSession(),this,
-                                nodetype.getPropertyDefinition("j:link"),
+                                nodetype.getPropertyDefinition("j:link"),null,
                                 new ValueImpl(linked.getProperty("uuid"), PropertyType.REFERENCE)));
                         break;
                     case JahiaPage.TYPE_URL:
                         initProperty(new PropertyImpl(getSession(),this,
-                                nodetype.getPropertyDefinition("j:url"),
+                                nodetype.getPropertyDefinition("j:url"),null,
                                 new ValueImpl(page.getURL(getProcessingContext()), PropertyType.STRING)));
                         break;
                 }

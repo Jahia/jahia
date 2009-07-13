@@ -232,7 +232,7 @@ public class PropertiesEditor extends FormPanel {
                     if (f != null && f.isDirty()) {
                         Log.debug("Set value for " + prop.getName());
                         if (!definition.isNode()) {
-                            prop.setValue(new GWTJahiaNodePropertyValue(f.getValue().toString(), ((GWTJahiaPropertyDefinition) definition).getRequiredType()));
+                            prop.setValue(new GWTJahiaNodePropertyValue(getPropertyValue(f), ((GWTJahiaPropertyDefinition) definition).getRequiredType()));
                         } else {
                             prop.setValue(new GWTJahiaNodePropertyValue(f.getValue().toString(), GWTJahiaNodePropertyType.ASYNC_UPLOAD));
                         }
@@ -248,5 +248,23 @@ public class PropertiesEditor extends FormPanel {
         cloneProperties();
         renderForm();
         layout();
+    }
+    
+    /**
+     * Returns string representation of the field value, depending on its type.
+     * 
+     * @param fld
+     *            the form field, holding the value
+     * @return string representation of the field value, depending on its type
+     */
+    private String getPropertyValue(Field fld) {
+        String value = null;
+        if (fld.getValue() != null && fld.getValue() instanceof Date) {
+            value = String.valueOf(((Date) fld.getValue()).getTime());
+        } else {
+            value = fld.getValue().toString();
+        }
+
+        return value;
     }
 }

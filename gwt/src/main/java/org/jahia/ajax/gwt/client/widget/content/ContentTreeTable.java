@@ -37,10 +37,7 @@ import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -350,8 +347,7 @@ public class ContentTreeTable extends TopRightComponent {
             } else if (s1.equals("size")) {
                 ColumnConfig col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 70) ;
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
-                col.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>() {
-                    @Override
+                col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                         if (gwtJahiaNode != null) {
                             long size = gwtJahiaNode.getSize().longValue() ;
@@ -365,8 +361,7 @@ public class ContentTreeTable extends TopRightComponent {
             } else if (s1.equals("date")) {
                 ColumnConfig col = new ColumnConfig("date", Messages.getResource("fm_column_date"), 80) ;
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
-                col.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>() {
-                    @Override
+                col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                         Date d = gwtJahiaNode.getDate();
                         if (d != null) {

@@ -90,7 +90,7 @@ public class Formatter {
      */
     public static void enableButton(Button ti) {
         if (!ti.isEnabled()) {
-            ti.enable();
+            ti.setEnabled(true);
 //            String iconStyle = ti.getIconStyle();
 //            if (iconStyle != null) {
 //                int ind = iconStyle.indexOf("-bw");

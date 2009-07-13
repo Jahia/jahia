@@ -115,6 +115,10 @@
         <from>^(.*?)/gwt/(.*?)/(.*?).css</from>
         <to last="true">$1/gwt/resources/$3.css</to>
     </rule>
+    <rule>
+        <from>^(.*?)/gwt/(.*?)/(.*?).gif</from>
+        <to last="true">$1/gwt/resources/$3.gif</to>
+    </rule>
 
     <!-- rule for any gwt page-->
     <rule>

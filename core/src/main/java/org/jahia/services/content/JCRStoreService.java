@@ -254,7 +254,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             if (!JahiaLoginModule.GUEST.equals(username)) {
                 s = login(org.jahia.jaas.JahiaLoginModule.getCredentials(username), workspace, locale);
                 // should be done somewhere else, call can be quite expensive
-                deployNewUser(username);
+                deployExternalUser(username,user.getProviderName());
             } else {
                 s = login(org.jahia.jaas.JahiaLoginModule.getGuestCredentials(), workspace, locale);
             }
@@ -283,9 +283,9 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         }
     }
 
-    public void deployNewUser(String username) throws RepositoryException {
+    public void deployExternalUser(String username, String providerName) throws RepositoryException {
         for (JCRStoreProvider provider : providers.values()) {
-            provider.deployNewUser(username);
+            provider.deployExternalUser(username,providerName);
         }
     }
 

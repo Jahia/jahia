@@ -36,6 +36,8 @@ package org.jahia.services.usermanager;
 import org.jahia.hibernate.manager.JahiaUserManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.services.usermanager.jcr.JCRUser;
 
 import java.io.Serializable;
 import java.util.*;
@@ -202,7 +204,7 @@ public class JahiaLDAPUser implements JahiaUser, Serializable {
      */
     public UserProperties getUserProperties() {
         if (!propLoaded ) {
-            provider.mapDBToJahiaProperties(mProperties, mUserKey);
+            provider.mapDBToJahiaProperties(mProperties, getName());
             propLoaded = true;
         }
         return mProperties;
@@ -312,12 +314,11 @@ public class JahiaLDAPUser implements JahiaUser, Serializable {
 
         if ((key != null) && (value != null) && (!mProperties.isReadOnly(key))) {
             // Remove these lines if LDAP problem --------------------
-            JahiaUserManager userManager = (JahiaUserManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaUserManager.class.getName());
-
-            if (getProperty(key) == null) {
-                result = userManager.addProperty(key, value, -1, getProviderName(), getUserKey());
-            } else {
-                result = userManager.updateProperty(key, value, -1, getProviderName(), getUserKey());
+            JCRUserManagerProvider userManager = (JCRUserManagerProvider) SpringContextSingleton.getInstance().getContext().getBean("JCRUserManagerProvider");
+            JCRUser jcrUser = (JCRUser) userManager.lookupExternalUser(getName());
+            if(jcrUser!=null) {
+                jcrUser.setProperty(key, value);
+                result = true;
             }
 
             // End remove --------------------

@@ -140,6 +140,8 @@
 
 [jnt:user] > jnt:folder
  - j:password (string)
+ - j:external (boolean)=false
+ - j:externalSource (string) 
  - * (string)
 
 [jmix:groupsFolder] mixin

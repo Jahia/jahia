@@ -66,6 +66,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.utils.JahiaTools;
 
 /**
@@ -133,6 +134,7 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
 
     //(-PredragV-) private JahiaGroupManagerDBService    groupService = null;
     private CacheService cacheService = null;
+    private JCRUserManagerProvider jcrUserManagerProvider;
 
 // -------------------------- STATIC METHODS --------------------------
 
@@ -172,6 +174,10 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
+    }
+
+    public void setJcrUserManagerProvider(JCRUserManagerProvider jcrUserManagerProvider) {
+        this.jcrUserManagerProvider = jcrUserManagerProvider;
     }
 
     public void setLdapProperties(Properties ldapProperties) {
@@ -1041,9 +1047,10 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
      */
     public void mapDBToJahiaProperties (UserProperties userProps,
                                          String usingUserKey) {
-        JahiaUserManager userManager = (JahiaUserManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaUserManager.class.getName());
-        UserProperties dbProperties = userManager.getUserProperties(-1, PROVIDER_NAME, usingUserKey);
-        userProps.putAll(dbProperties);
+        JahiaUser jahiaUser = jcrUserManagerProvider.lookupExternalUser(usingUserKey);
+        if(jahiaUser!=null) {
+            userProps.putAll(jahiaUser.getUserProperties());
+        }
     }
 
     /**

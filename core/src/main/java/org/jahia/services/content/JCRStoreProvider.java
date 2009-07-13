@@ -41,6 +41,7 @@ import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.jaas.JahiaLoginModule;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -535,7 +536,7 @@ public class JCRStoreProvider {
         }
     }
 
-    public void deployNewUser(String username) throws RepositoryException {
+    public void deployExternalUser(String username, String providerName) throws RepositoryException {
         Session session = getSystemSession(username);
         try {
             if (session.getWorkspace().getQueryManager() != null) {
@@ -564,6 +565,8 @@ public class JCRStoreProvider {
                                         session.importXML(f.getPath(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                                         session.move(f.getPath()+"/user", f.getPath()+"/"+username);
                                         Node userNode = f.getNode(username);
+                                        userNode.setProperty(JCRUser.J_EXTERNAL,true);
+                                        userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE,providerName);
                                         JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
                                     } else {
                                         Node userNode = f.addNode(username, Constants.JAHIANT_USER);

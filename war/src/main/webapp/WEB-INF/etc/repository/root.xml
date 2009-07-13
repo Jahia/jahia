@@ -22,7 +22,7 @@
     </shared>
 
     <users jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:usersFolder" j:usersFolderSkeleton="user.xml">
-        <ROOT_NAME_PLACEHOLDER jcr:primaryType="jnt:user" j:password="@ROOT_PASSWORD@" jcr:uuid="b32d306a-6c74-11de-b3ef-001e4fead50b" root_user_properties="">
+        <ROOT_NAME_PLACEHOLDER jcr:primaryType="jnt:user" j:password="@ROOT_PASSWORD@" j:external="false" jcr:uuid="b32d306a-6c74-11de-b3ef-001e4fead50b" root_user_properties="">
             <files jcr:primaryType="jnt:folder">
                 <private jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
                     <j:acl jcr:primaryType="jnt:acl">
@@ -47,7 +47,7 @@
                 </j:acl>
             </preferences>
         </ROOT_NAME_PLACEHOLDER>
-        <guest jcr:primaryType="jnt:user" j:password=""/>
+        <guest jcr:primaryType="jnt:user" j:password="" j:external="false"/>
     </users>
 
     <groups jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:groupsFolder">

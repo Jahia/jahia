@@ -229,6 +229,7 @@ FRAG2(frag_size=60000)</value>
         <property name="defaultProvider" value="false"/>
         <property name="readOnly" value="true"/>
         <property name="priority" value="2"/>
+        <property name="jcrUserManagerProvider" ref="JCRUserManagerProvider"/>
         <property name="ldapProperties">
             <map>
                 <entry key="context.factory" value="com.sun.jndi.ldap.LdapCtxFactory"/>

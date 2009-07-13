@@ -109,6 +109,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 JCRNodeWrapperImpl.changePermissions(userNode, "u:" + name, "rw");
             }
             userNode.setProperty(JCRUser.J_PASSWORD, encryptPassword(password));
+            userNode.setProperty(JCRUser.J_EXTERNAL, false);
             for (Map.Entry<Object, Object> entry : properties.entrySet()) {
                 userNode.setProperty((String) entry.getKey(), (String) entry.getValue());
             }
@@ -234,7 +235,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
     public JahiaUser lookupUserByKey(String userKey) {
         try {
             JCRSessionWrapper session = jcrStoreService.getSystemSession();
-            Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + userKey.substring(5));
+            Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + userKey.split("}")[1]);
+            if(!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean())
             return new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
         } catch (RepositoryException e) {
             logger.error(e);
@@ -252,6 +254,21 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
         try {
             JCRSessionWrapper session = jcrStoreService.getSystemSession();
             Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name.trim());
+            if(!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean())
+            return new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
+        } catch (PathNotFoundException e) {
+            logger.debug(e);
+        } catch (RepositoryException e) {
+            logger.warn(e);
+        }
+        return null;
+    }
+
+    public JahiaUser lookupExternalUser(String name) {
+        try {
+            JCRSessionWrapper session = jcrStoreService.getSystemSession();
+            Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name.trim());
+            if(usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean())
             return new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
         } catch (PathNotFoundException e) {
             logger.debug(e);

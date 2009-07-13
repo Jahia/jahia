@@ -58,6 +58,8 @@ public class JCRUser implements JahiaUser {
     private final String nodeUuid;
     private final JCRStoreService jcrStoreService;
     static final String J_PASSWORD = "j:password";
+    public static final String J_EXTERNAL = "j:external";
+    public static final String J_EXTERNAL_SOURCE = "j:externalSource";
     private String name;
     private Properties properties;
     private UserProperties userProperties;
@@ -143,7 +145,9 @@ public class JCRUser implements JahiaUser {
                 PropertyIterator iterator = getNode().getProperties();
                 for (; iterator.hasNext();) {
                     Property property = iterator.nextProperty();
-                    properties.put(property.getName(), property.getString());
+                    if (!property.getDefinition().isMultiple()) {
+                        properties.put(property.getName(), property.getString());
+                    }
                 }
             } catch (RepositoryException e) {
                 logger.error(e);
@@ -168,7 +172,9 @@ public class JCRUser implements JahiaUser {
                 PropertyIterator iterator = getNode().getProperties();
                 for (; iterator.hasNext();) {
                     Property property = iterator.nextProperty();
-                    userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(), property.getString(), false));
+                    if (!property.getDefinition().isMultiple()) {
+                        userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(), property.getString(), false));
+                    }
                 }
             } catch (RepositoryException e) {
                 logger.error(e);

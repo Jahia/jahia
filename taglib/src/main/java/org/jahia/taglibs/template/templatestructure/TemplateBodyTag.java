@@ -173,7 +173,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                 buf.append(" ").append(param).append("=\"").append(attributes.get(param)).append("\"");
             }
             buf.append(">");
-            if (jData.page().getContentPage().isMarkedForDelete()) {
+            if (jData.page() != null && jData.page().getContentPage().isMarkedForDelete()) {
                 buf.append("<div class=\"markedForDelete\">");
             }
             if (useGwt) {
@@ -286,7 +286,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         ServletRequest request = pageContext.getRequest();
         try {
             JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            if (jData.page().getContentPage().isMarkedForDelete()) {
+            if (jData.page() != null && jData.page().getContentPage().isMarkedForDelete()) {
                 buf.append("</div>");
             }
 

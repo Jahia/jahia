@@ -208,7 +208,8 @@ public class OperationModeVisibilityResolver implements VisibilityResolver {
         }
 
         final JahiaUser jahiaUser = processingContext.getUser();
-        boolean writeAccess = jData.page().checkWriteAccess(jahiaUser, true);
+
+        boolean writeAccess = jData.page() != null && jData.page().checkWriteAccess(jahiaUser, true);
 
         setBooleanAttribute(processingContext, attr, writeAccess);
         return writeAccess;

@@ -154,8 +154,9 @@ public class URLPropertyResolver implements PropertyResolver {
                 } else if (input.equalsIgnoreCase(CONTENTMANAGER)) {
                     value = jData.getProcessingContext().getContextPath() + "/engines/contentmanager/contentmanager.jsp";
                 } else if (input.equalsIgnoreCase(GWT_WORKFLOWMANAGER)) {
-                    value = jData.getProcessingContext().getContextPath() + "/engines/gwtworkflow/workflow.jsp?startpage=" + jData.getProcessingContext().getContentPage().getObjectKey().getKey();
-                } else if (input.equalsIgnoreCase(GWT_MASHUPMANAGER)) {      
+                    value = jData.getProcessingContext().getContextPath() + "/engines/gwtworkflow/workflow.jsp";
+//                    value = jData.getProcessingContext().getContextPath() + "/engines/gwtworkflow/workflow.jsp?startpage=" + jData.getProcessingContext().getContentPage() != null ? jData.getProcessingContext().getContentPage().getObjectKey().getKey() : "";
+                } else if (input.equalsIgnoreCase(GWT_MASHUPMANAGER)) {
                     value = jData.getProcessingContext().getContextPath() + "/engines/gwtmashupmanager/mashup.jsp";
                 } else if (input.equalsIgnoreCase(PAGE_PROPERTIES)) {
                     value = jData.gui().drawPagePropertiesUrl();

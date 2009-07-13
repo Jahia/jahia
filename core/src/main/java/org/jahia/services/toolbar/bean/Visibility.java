@@ -200,8 +200,10 @@ public class Visibility {
                             acl = JahiaBaseACL.READ_RIGHTS;
                         }
                         if (acl != JahiaBaseACL.ALL_RIGHTS) {
-                            JahiaBaseACL jahiaBaseACL = jData.getProcessingContext().getPage().getACL();
-                            isAllowedPageACL = jahiaBaseACL.getPermission(jahiaUser, acl);
+                            if (jData.getProcessingContext().getPage() != null) {
+                                JahiaBaseACL jahiaBaseACL = jData.getProcessingContext().getPage().getACL();
+                                isAllowedPageACL = jahiaBaseACL.getPermission(jahiaUser, acl);
+                            }
                         }
                     }
                     if (!isAllowedPageACL) {

@@ -25,7 +25,7 @@
    Linux install a subversion client from your package repository). Basically,
    you need to have an "svn" command available in your PATH so that the build
    system can calculate the build number
- - (Optional) JetBrains Intellij IDEA 7.0.3 or later
+ - (Optional) JetBrains IntelliJ IDEA 7.0.3 or later
 
  Here is quick start steps to use this source code :
  
@@ -33,15 +33,9 @@
        client !
 
     2. Code to checkout:
-       http://svn.jahia.org/svn/jahia/branches/JAHIA-MAVEN2-ANDROMEDA-BRANCH
+       http://subversion.jahia.org/svn/jahia/trunk/
       
-       If you plan to work alongside on the "dark" template side, you probably 
-       need to get the following additional code, for the current releases of 
-       our templates sets, as starting point:
-       http://svn.jahia.org/svn/corporate_portal_templates
-       http://svn.jahia.org/svn/corporate_portal_templates_v2
-       
-       For more information, please check the template developper guide.
+       For more information, please check the template developer guide.
 
     3. Download and Install Maven 2.x (http://maven.apache.org), and set an
        M2_HOME environment variable pointing at the installation
@@ -69,18 +63,15 @@
            Basically the same as under Linux, set the environement variable
            JAVA_HOME to point to your JDK installation.
 
-    5. Download and Install GWT 1.5 from http://code.google.com/webtoolkit/download.html. 
-           
-    6. Copy the settings.xml.example file into ${USER_HOME}/.m2 directory and 
-       modify it to your environment. About GWT configurations, you can find more informations:
-        http://gwt-maven.googlecode.com/svn/docs/maven-googlewebtoolkit2-plugin/index.html
+    5. Copy the settings.xml.example file into ${USER_HOME}/.m2 directory, renaming
+       it to settings.xml, and modify it to your environment.
        As there are problems with JSP compilation on path with spaces on Windows environments, it is 
        recommended you specify a default location for your local repository 
        that DOESN'T CONTAIN ANY SPACES IN THE PATH, for example : 
          C:/java/m2repository
 
-    7. In the main directory, type : 
-       mvn install jahia:configure
+    6. In the main directory, type : 
+       mvn install jahia:deploy jahia:configure
      
        This should compile and deploy into your local repository all of Jahia, deploy and install everything in the
        application server configured in your settings.xml file.
@@ -90,18 +81,18 @@
        machine takes 2 minutes 40 seconds. These times do not include JSP or 
        GWT compilation.
 
-    8. Point your browser to http://localhost:8080/cms (in case you have not chosen option 10 ).
+    7. Point your browser to http://localhost:8080/cms (in case you have not chosen option 10 ).
     	 Default root password is root1234
 
-    9. Create your first virtual site and enjoy.
+    8. Create your first virtual site and enjoy.
        
-    10.Alternatively if you want to test Jahia's configuration from scratch, simply add the 
+    9.Alternatively if you want to test Jahia's configuration from scratch, simply add the 
        configwizard-webapp module in your root pom.xml, in order to have something like
 			 
 			 <module>configwizard-webapp</module> 
 			 
 			 and then simply do 
-			 mvn install
+			 mvn install jahia:deploy
 			 
 			 in this case you will have to point your browser to http://localhost:8080/config
 			 the first time then afterwards just head to  http://localhost:8080/cms as usual
@@ -175,17 +166,17 @@
         b) Manually: in Eclipse open 
              Window / Preferences -> Java -> Build Path -> Classpath Variables. 
            Click on 'New...'
-           and enter M2_REPO as a name of teh variable and full path to your 
+           and enter M2_REPO as a name of the variable and full path to your 
            Maven 2 repository as path value
            
     2. In the Jahia root folder execute the following command:
           mvn eclipse:eclipse
        This will generate '.project' and '.classpath' files for the seven 
        projects in Jahia (jackrabbit-core-ext, jackrabbit-server-ext,
-       jahia-api, jahia-ear, jahia-impl, jahia-war, maven-jahia-plugin, etc.)
+       jahia-api, jahia-ear, jahia-impl, jahia-war, etc.)
        
     3. Open Eclipse and use import 'Existing Projects into Workspace'. 
-       Using 'Browse...' selecte the Jahia root folder. A list of  available 
+       Using 'Browse...' select the Jahia root folder. A list of  available 
        projects will be shown. Import projects into the workspace.
 
  Deploying new JARs to maven.jahia.org

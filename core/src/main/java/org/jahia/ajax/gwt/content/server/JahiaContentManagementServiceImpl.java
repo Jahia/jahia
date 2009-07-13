@@ -76,11 +76,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private static final transient Logger logger = Logger.getLogger(JahiaContentManagementServiceImpl.class);
 
     public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
-        return ContentManagerHelper.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, retrieveParamBean());
+        return ContentManagerHelper.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, true, retrieveParamBean());
     }
 
     public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
-        return new BaseListLoadResult<GWTJahiaNode>(ContentManagerHelper.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, retrieveParamBean())) ;
+        return new BaseListLoadResult<GWTJahiaNode>(ContentManagerHelper.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, true, retrieveParamBean())) ;
     }
 
     public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, String openPaths) throws GWTJahiaServiceException {

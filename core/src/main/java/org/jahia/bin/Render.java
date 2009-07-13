@@ -9,6 +9,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.utils.LanguageCodeConverters;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -21,6 +22,7 @@ import javax.jcr.Node;
 import javax.jcr.ItemNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Locale;
 
 /**
  * Rendering servlet. Resolves the node and the template, and renders it by executing the appropriate script
@@ -45,9 +47,14 @@ public class Render extends HttpServlet {
             String workspace = path.substring(1, index);
             path = path.substring(index);
 
-            StringBuffer out = render(workspace, path, ctx, req, resp);
+            index = path.indexOf('/', 1);
+            String lang = path.substring(1, index);
+            path = path.substring(index);
+
+            StringBuffer out = render(workspace, lang, path, ctx, req, resp);
 
             resp.setContentType("text/html");
+            resp.setCharacterEncoding("UTF-8");
             resp.setContentLength(out.length());
 
             PrintWriter writer = resp.getWriter();
@@ -78,7 +85,7 @@ public class Render extends HttpServlet {
 
     }
 
-    public StringBuffer render(String workspace, String path, ProcessingContext ctx, HttpServletRequest request, HttpServletResponse response) throws RepositoryException, IOException {
+    public StringBuffer render(String workspace, String lang, String path, ProcessingContext ctx, HttpServletRequest request, HttpServletResponse response) throws RepositoryException, IOException {
         try {
             if (workspace.equals("default")) {
                 ctx.setOperationMode("edit");
@@ -86,7 +93,10 @@ public class Render extends HttpServlet {
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);
         }
-        Resource r = resolveResource(workspace, path, ctx.getUser());
+        Locale locale = LanguageCodeConverters.languageCodeToLocale(lang);
+        ctx.setCurrentLocale(locale);
+        
+        Resource r = resolveResource(workspace, locale, path, ctx.getUser());
         Node current = r.getNode();
         try {
             while (true) {
@@ -95,6 +105,8 @@ public class Render extends HttpServlet {
                     try {
                         JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitename);
                         ctx.setSite(site);
+                        ctx.setContentPage(site.getHomeContentPage());
+                        ctx.setThePage(site.getHomePage());
                     } catch (JahiaException e) {
                         logger.error(e.getMessage(), e);
                     }
@@ -125,8 +137,8 @@ public class Render extends HttpServlet {
      * @throws PathNotFoundException if the resource cannot be resolved
      * @throws RepositoryException
      */
-    private Resource resolveResource(String workspace, String path, JahiaUser user) throws RepositoryException {
-        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(user, workspace);
+    private Resource resolveResource(String workspace, Locale locale, String path, JahiaUser user) throws RepositoryException {
+        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(user, workspace, locale);
 
         JCRNodeWrapper node = null;
 
@@ -138,8 +150,10 @@ public class Render extends HttpServlet {
             if (i > path.lastIndexOf('/')) {
                 if (ext == null) {
                     ext = path.substring(i+1);
-                } else {
+                } else if (tpl == null){
                     tpl = path.substring(i+1);
+                } else {
+                    tpl = path.substring(i+1) + "." + tpl;
                 }
                 path = path.substring(0,i);
             } else {
@@ -151,7 +165,7 @@ public class Render extends HttpServlet {
             } catch (PathNotFoundException e) {
             }
         }
-        Resource r = new Resource(node, ext, tpl);
+        Resource r = new Resource(node, workspace, locale, ext, tpl);
         return r;
     }
 

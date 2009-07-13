@@ -40,6 +40,10 @@ public class ModuleTag extends BodyTagSupport {
 
     private String templateType = "html";
 
+    private String workspace = null;
+
+    private Locale locale = null;
+
     public void setPath(String path) {
         this.path = path;
     }
@@ -76,6 +80,18 @@ public class ModuleTag extends BodyTagSupport {
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
             if (currentResource != null) {
                 templateType = currentResource.getTemplateType();
+                workspace = currentResource.getWorkspace();
+                locale = currentResource.getLocale();
+            }
+            if (locale == null) {
+                locale = Jahia.getThreadParamBean().getCurrentLocale();
+            }
+            if (workspace == null) {
+                if (Jahia.getThreadParamBean().getOperationMode().equals("normal")) {
+                    workspace = "live";
+                } else {
+                    workspace = "default";
+                }
             }
             if (nodeName != null) {
                 node = (JCRNodeWrapper) pageContext.findAttribute(nodeName);
@@ -109,7 +125,7 @@ public class ModuleTag extends BodyTagSupport {
                 }
             }
             if (node != null) {
-                Resource resource = new Resource(node, templateType, template);
+                Resource resource = new Resource(node, workspace , locale, templateType, template);
 
                 try {
                     StringBuffer buffer = RenderService.getInstance().render(resource, (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
@@ -125,6 +141,7 @@ public class ModuleTag extends BodyTagSupport {
             node = null;
             template = null;
             templateType = "html";
+            workspace = null;
         } catch (IOException ex) {
             ex.printStackTrace();
         }

@@ -74,6 +74,9 @@ public class RenderService extends JahiaService {
         Object old = request.getAttribute("currentNode");
         request.setAttribute("currentNode", resource.getNode());
 
+        request.setAttribute("workspace", resource.getNode().getSession().getWorkspace().getName());
+        request.setAttribute("locale", resource.getNode().getSession().getWorkspace().getName());
+
         Object oldResource = request.getAttribute("currentResource");
         request.setAttribute("currentResource", resource);
 

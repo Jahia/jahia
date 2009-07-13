@@ -32,6 +32,10 @@
 package org.jahia.services.render;
 
 import org.jahia.services.content.JCRNodeWrapper;
+import org.apache.log4j.Logger;
+
+import javax.jcr.RepositoryException;
+import java.util.Locale;
 
 /**
  * A resource is the aggregation of a node and a specific template
@@ -40,8 +44,10 @@ import org.jahia.services.content.JCRNodeWrapper;
  * @author toto
  */
 public class Resource {
-
+    private static Logger logger = Logger.getLogger(Resource.class);
     private JCRNodeWrapper node;
+    private String workspace;
+    private Locale locale;
     private String templateType;
     private String template;
 
@@ -51,10 +57,12 @@ public class Resource {
      * @param templateType template type
      * @param template the template name, null if default
      */
-    public Resource(JCRNodeWrapper node, String templateType, String template) {
+    public Resource(JCRNodeWrapper node, String workspace, Locale locale, String templateType, String template) {
         this.node = node;
         this.templateType = templateType;
         this.template = template;
+        this.locale = locale;
+        this.workspace = workspace;
     }
 
     public JCRNodeWrapper getNode() {
@@ -65,8 +73,23 @@ public class Resource {
         return templateType;
     }
 
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
     public String getTemplate() {
         if (template == null) {
+            try {
+                if (node.isNodeType("jmix:renderable") && node.hasProperty("j:defaultTemplate")) {
+                    return node.getProperty("j:defaultTemplate").getString();
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
             return "default";
         }
         return template;

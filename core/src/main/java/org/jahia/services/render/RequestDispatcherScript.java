@@ -116,7 +116,7 @@ public class RequestDispatcherScript implements Script {
         return templatePathResolver.lookup("modules/" +
                 nt.getAlias().replace(':','/') +
                 "/" + resource.getTemplateType() +
-                "/" + resource.getTemplate() + ".jsp");
+                "/" + resource.getTemplate().replace('.','/') + ".jsp");
     }
 
     /**

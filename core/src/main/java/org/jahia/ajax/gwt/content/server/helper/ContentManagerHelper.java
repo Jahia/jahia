@@ -172,11 +172,14 @@ public class ContentManagerHelper {
         }
     }*/
 
-    public static List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders, ProcessingContext context) throws GWTJahiaServiceException {
+    public static List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders, boolean viewTemplateAreas, ProcessingContext context) throws GWTJahiaServiceException {
+        Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
+
+        String workspace = "default";
         JahiaUser user = context.getUser();
         JCRNodeWrapper node = null;
         try {
-            node = jcr.getThreadSession(user).getNode(folder != null ? folder.getPath() : "/");
+            node = jcr.getThreadSession(user, workspace, locale).getNode(folder != null ? folder.getPath() : "/");
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
         }
@@ -232,6 +235,28 @@ public class ContentManagerHelper {
                 }
             }
         }
+
+        if (viewTemplateAreas) {
+            try {
+                Resource r = new Resource(node, workspace, locale, "html", null);
+                final HashMap<String, List<String>> listHashMap = new HashMap<String, List<String>>();
+                ((ParamBean)context).getRequest().setAttribute("moduleTags", listHashMap);
+                RenderService.getInstance().render(r, ((ParamBean)context).getRequest(), ((ParamBean)context).getResponse()).toString();
+                List<String> l = listHashMap.get(node.getPath());
+                if (l != null) {
+                    for (String s : l) {
+                        if (!node.hasNode(s)) {
+                            result.add(new GWTJahiaNode(null, s, "placeholder "+s, node.getProvider().decodeInternalName(node.getPath())+"/"+s, null, null, null, null, null, null, "icon-placeholder", node.isWriteable(), false, false, null, false));
+                        }
+                    }
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
         Collections.sort(result);
         return result;
     }
@@ -2011,9 +2036,9 @@ public class ContentManagerHelper {
     public static String getRenderedContent(String path, ParamBean ctx) throws GWTJahiaServiceException {
         String res = null;
         try {
-            JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser());
+            JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser(), "default", ctx.getCurrentLocale());
             JCRNodeWrapper node = session.getNode(path);
-            Resource r = new Resource(node, "html", null);
+            Resource r = new Resource(node, "default", ctx.getCurrentLocale(), "html", null);
             final HashMap<String, List<String>> listHashMap = new HashMap<String, List<String>>();
             ctx.getRequest().setAttribute("moduleTags", listHashMap);
             res = RenderService.getInstance().render(r, ctx.getRequest(), ctx.getResponse()).toString();

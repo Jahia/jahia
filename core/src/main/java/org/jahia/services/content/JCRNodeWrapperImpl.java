@@ -1074,6 +1074,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         setProperty(key, value);
     }
 
+    public List<Item> getAncestors() throws RepositoryException {
+        List<Item> ancestors = new ArrayList<Item>();
+        for (int i  = 0; i < getDepth(); i++) {
+            ancestors.add(getAncestor(i));
+        }
+        return ancestors;
+    }
+
     public boolean renameFile(String newName) {
         if (exception != null) {
             return false;
@@ -1170,14 +1178,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (copy != null) {
-            Map<String, String> props = getPropertiesAsString();
-            for (String s : props.keySet()) {
+            PropertyIterator props = getProperties();
+            while (props.hasNext()) {
+                Property property = props.nextProperty();
                 try {
-                    if (!copy.hasProperty(s) || !copy.getProperty(s).getDefinition().isProtected()) {
-                        copy.setProperty(s, (String) props.get(s));
+                    if (!copy.hasProperty(property.getName()) || !copy.getProperty(property.getName()).getDefinition().isProtected()) {
+                        if (property.getDefinition().isMultiple()) {
+                            copy.setProperty(property.getName(), property.getValues());
+                        } else {
+                            copy.setProperty(property.getName(), property.getValue());
+                        }
                     }
                 } catch (Exception e) {
-                    logger.warn("Unable to copy property '" + s + "'. Skipping.", e);
+                    logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
                 }
             }
         }

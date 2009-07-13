@@ -145,7 +145,10 @@ public class JCRStoreProvider {
     }
 
     public int getDepth() {
-        return mountPoint.split("/").length;
+        if (mountPoint.equals("/")) {
+            return 0;
+        }
+        return mountPoint.split("/").length - 1;
     }
 
     public void setWebdavPath(String webdavPath) {

@@ -234,6 +234,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         node.setProperty(namespace, name, value);
     }
 
+    public List<Item> getAncestors() throws RepositoryException {
+        return node.getAncestors();
+    }
+
     public boolean renameFile(String newName) {
         return node.renameFile(newName);
     }

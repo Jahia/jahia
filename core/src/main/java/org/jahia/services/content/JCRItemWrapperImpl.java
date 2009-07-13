@@ -31,6 +31,8 @@
  */
 package org.jahia.services.content;
 
+import org.apache.commons.lang.StringUtils;
+
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -76,7 +78,10 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
     }
 
     public Item getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-        throw new UnsupportedOperationException();
+        if (i >= provider.getDepth()) {
+            return provider.getNodeWrapper((Node) item.getAncestor(i-provider.getDepth()), getSession());
+        }
+        return session.getItem(StringUtils.substringBeforeLast(provider.getMountPoint(),"/")).getAncestor(i);
     }
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {

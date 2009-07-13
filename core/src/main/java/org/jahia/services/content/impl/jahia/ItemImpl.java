@@ -76,7 +76,15 @@ public abstract class ItemImpl implements Item {
     }
 
     public Item getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        if (i<0 || i > getDepth() ) {
+            throw new ItemNotFoundException();
+        }
+        String[] nodes = getPath().split("/");
+        Node res = session.getRootNode();
+        for (int j=0; j<i; j++) {
+            res = res.getNode(nodes[j+1]);
+        }
+        return res;
     }
 
     public int getDepth() throws RepositoryException {

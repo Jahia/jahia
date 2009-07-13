@@ -40,10 +40,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
 
-import javax.jcr.ItemExistsException;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -162,6 +159,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     String getPropertyAsString(String name);
 
     void setProperty(String namespace, String name, String value) throws RepositoryException;
+
+    public List<Item> getAncestors() throws RepositoryException;
 
     boolean renameFile(String newName);
 

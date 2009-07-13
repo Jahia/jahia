@@ -36,7 +36,7 @@
 <%-- This file only describe the template --%>
 
 <%-- Define layout file --%>
-<c:url var="rssUrl" value="${currentPage.url}" context="/">
+<c:url var="rssUrl" value="${currentNode.url}" context="/">
     <c:param name="template" value="news.rss"/>
     <c:param name="definitionName" value="web_templates_news_news"/>
 </c:url>

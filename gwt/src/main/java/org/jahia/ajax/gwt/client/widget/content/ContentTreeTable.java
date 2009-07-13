@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.treepanel.TreeStyle;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
@@ -159,7 +160,7 @@ public class ContentTreeTable extends TopRightComponent {
             }
 
             public String getHTML() {
-                return "<div class=\"tree-folder\">&nbsp;&nbsp;&nbsp;&nbsp;</div>";
+                return new TreeStyle().getNodeOpenIcon().getHTML();
             }
         });
 //        m_treeTable.setHorizontalScroll(true);
@@ -349,7 +350,7 @@ public class ContentTreeTable extends TopRightComponent {
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                        if (gwtJahiaNode != null) {
+                        if (gwtJahiaNode != null && gwtJahiaNode.getSize() != null) {
                             long size = gwtJahiaNode.getSize().longValue() ;
                             return Formatter.getFormattedSize(size) ;
                         } else {

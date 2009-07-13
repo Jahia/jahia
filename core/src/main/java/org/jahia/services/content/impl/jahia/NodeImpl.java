@@ -70,7 +70,7 @@ public abstract class NodeImpl extends ItemImpl implements Node {
     protected ExtendedNodeDefinition definition;
 
     protected Map<String, PropertyImpl> properties;
-    protected List<PropertyImpl> i18nProperties;
+    protected List<PropertyImpl> i18nProperties = new ArrayList<PropertyImpl>();
     protected Map<String, List<Node>> nodes;
     protected Map<String, TranslationNodeImpl> translationNodes;
     protected Map<String, PropertyImpl> emptyProperties;
@@ -95,7 +95,6 @@ public abstract class NodeImpl extends ItemImpl implements Node {
         if (properties == null) {
             properties = new HashMap<String, PropertyImpl>();
             emptyProperties = new HashMap<String, PropertyImpl>();
-            i18nProperties = new ArrayList<PropertyImpl>();
 
             initProperty(new PropertyImpl(session,this,
                     NodeTypeRegistry.getInstance().getNodeType(Constants.NT_BASE).getPropertyDefinition(Constants.JCR_PRIMARYTYPE),null,

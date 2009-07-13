@@ -36,10 +36,13 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.api.Constants;
 
 import javax.jcr.*;
+import java.util.Locale;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -83,22 +86,35 @@ public class JahiaPageLinkNodeImpl extends NodeImpl {
         if (properties == null) {
             super.initProperties();
 
+
             try {
+                List<Locale> locales = getProcessingContext().getSite().getLanguageSettingsAsLocales(true);
+                for (Locale locale : locales) {
+                    EntryLoadRequest elr = getProcessingContext().getEntryLoadRequest();
+                    if (locale != null) {
+                        elr = new EntryLoadRequest(elr);
+                        elr.setFirstLocale(locale.toString());
+                    }
+                    initProperty(new PropertyImpl(getSession(), this,
+                            nodetype.getPropertyDefinitionsAsMap().get("jcr:title"), locale,
+                            new ValueImpl(page.getTitle(elr), PropertyType.STRING)));
+                }
+
                 switch (page.getPageType(getEntryLoadRequest())) {
                     case JahiaPage.TYPE_DIRECT:
-                        initProperty(new PropertyImpl(getSession(),this,
-                                nodetype.getPropertyDefinition("j:link"),null,
+                        initProperty(new PropertyImpl(getSession(), this,
+                                nodetype.getPropertyDefinitionsAsMap().get("j:node"), null,
                                 new ValueImpl(page.getProperty("uuid"), PropertyType.REFERENCE)));
                         break;
                     case JahiaPage.TYPE_LINK:
                         ContentPage linked = ContentPage.getPage(page.getPageLinkID(getProcessingContext()));
-                        initProperty(new PropertyImpl(getSession(),this,
-                                nodetype.getPropertyDefinition("j:link"),null,
+                        initProperty(new PropertyImpl(getSession(), this,
+                                nodetype.getPropertyDefinitionsAsMap().get("j:node"), null,
                                 new ValueImpl(linked.getProperty("uuid"), PropertyType.REFERENCE)));
                         break;
                     case JahiaPage.TYPE_URL:
-                        initProperty(new PropertyImpl(getSession(),this,
-                                nodetype.getPropertyDefinition("j:url"),null,
+                        initProperty(new PropertyImpl(getSession(), this,
+                                nodetype.getPropertyDefinitionsAsMap().get("j:url"), null,
                                 new ValueImpl(page.getURL(getProcessingContext()), PropertyType.STRING)));
                         break;
                 }

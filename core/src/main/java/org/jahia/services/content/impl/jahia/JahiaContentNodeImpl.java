@@ -131,9 +131,9 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                             }
                             switch (c) {
                                 case '1':
-                                    v = "active"; break;
+                                    v = "validated"; break;
                                 case '2':
-                                    v = "staging"; break;
+                                    v = "inValidation"; break;
                                 case '3':
                                     v = "validationStep1"+quickEdit; break;
                                 case '4':

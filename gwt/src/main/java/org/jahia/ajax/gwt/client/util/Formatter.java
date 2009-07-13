@@ -91,14 +91,6 @@ public class Formatter {
     public static void enableButton(Button ti) {
         if (!ti.isEnabled()) {
             ti.setEnabled(true);
-//            String iconStyle = ti.getIconStyle();
-//            if (iconStyle != null) {
-//                int ind = iconStyle.indexOf("-bw");
-//                if (ind != -1) {
-//                    iconStyle = iconStyle.substring(0, ind);
-//                    ti.setIconStyle(iconStyle);
-//                }
-//            }
         }
     }
 
@@ -110,14 +102,6 @@ public class Formatter {
     public static void disableButton(Button ti) {
         if (ti.isEnabled()) {
             ti.disable();
-//            String iconStyle = ti.getIconStyle();
-//            if (iconStyle != null) {
-//                int ind = iconStyle.indexOf("-bw");
-//                if (ind == -1) {
-//                    iconStyle = iconStyle + "-bw";
-//                    ti.setIconStyle(iconStyle);
-//                }
-//            }
         }
     }
 
@@ -138,14 +122,6 @@ public class Formatter {
     public static void enableMenuItem(MenuItem mi) {
         if (!mi.isEnabled()) {
             mi.enable();
-//            String iconStyle = mi.getIconStyle();
-//            if (iconStyle != null) {
-//                int ind = iconStyle.indexOf("-bw");
-//                if (ind != -1) {
-//                    iconStyle = iconStyle.substring(0, ind);
-//                    mi.setIconStyle(iconStyle);
-//                }
-//            }
         }
     }
 
@@ -157,14 +133,6 @@ public class Formatter {
     public static void disableMenuItem(MenuItem mi) {
         if (mi.isEnabled()) {
             mi.disable();
-//            String iconStyle = mi.getIconStyle();
-//            if (iconStyle != null) {
-//                int ind = iconStyle.indexOf("-bw");
-//                if (ind == -1) {
-//                    iconStyle = iconStyle + "-bw";
-//                    mi.setIconStyle(iconStyle);
-//                }
-//            }
         }
     }
 

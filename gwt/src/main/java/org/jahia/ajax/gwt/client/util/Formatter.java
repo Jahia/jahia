@@ -71,7 +71,7 @@ public class Formatter {
         return dispSize.toString();
     }
 
-    /**
+    /**                                                                aa
      * Get a human readable date formatted according to a given pattern.
      *
      * @param date    the date to format

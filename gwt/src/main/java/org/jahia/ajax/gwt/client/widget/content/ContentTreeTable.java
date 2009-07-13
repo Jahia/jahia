@@ -37,17 +37,15 @@ import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.treepanel.TreeStyle;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.util.Formatter;
+import org.jahia.ajax.gwt.client.util.icons.Util;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -125,6 +123,8 @@ public class ContentTreeTable extends TopRightComponent {
             protected void expandPreviousPaths() {
                 expandAllPreviousPaths(startPath);
             }
+
+            
         };
     }
     
@@ -151,18 +151,8 @@ public class ContentTreeTable extends TopRightComponent {
         }
         m_treeTable = new TreeGrid<GWTJahiaNode>(store, getHeaders(columns));
         m_treeTable.setBorders(false);
-        m_treeTable.getStyle().setLeafIcon(new AbstractImagePrototype() {
-            public void applyTo(Image image) {
-                // TODO
-            }
-            public Image createImage() {
-                return null;  // TODO
-            }
 
-            public String getHTML() {
-                return new TreeStyle().getNodeOpenIcon().getHTML();
-            }
-        });
+        m_treeTable.getStyle().setLeafIcon(Util.getContentIcons("extension"));
 //        m_treeTable.setHorizontalScroll(true);
 //        m_treeTable.setAnimate(false);
 //        m_treeTable.getStyle().setLeafIconStyle("tree-folder");

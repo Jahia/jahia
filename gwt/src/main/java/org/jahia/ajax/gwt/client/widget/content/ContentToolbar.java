@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
 
@@ -163,6 +164,8 @@ public class ContentToolbar extends TopBar {
     }
 
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelectionEl) {
+        Log.debug("ContentToolbar: handleNdewSelection() ");
+
         List<GWTJahiaNode> topTableSelection = (List<GWTJahiaNode>) topTableSelectionEl;
 
         boolean isTreeSelection = leftTreeSelection != null ;
@@ -213,6 +216,7 @@ public class ContentToolbar extends TopBar {
             }
             isImage = topTableSelection.get(0).getNodeTypes().contains("jmix:image") ;
         }
+        
         for (ContentActionItemGroup group: configuration.getGroupedItems()) {
             for (ContentActionItemItf item: group.getItems()) {
                 item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isZip, isImage, isMount);

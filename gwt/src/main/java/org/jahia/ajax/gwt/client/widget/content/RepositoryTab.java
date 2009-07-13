@@ -44,7 +44,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.tree.TreeItem;
 import com.extjs.gxt.ui.client.widget.treepanel.TreeStyle;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -53,6 +52,7 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
 import org.jahia.ajax.gwt.client.util.tree.TreeOpener;
+import org.jahia.ajax.gwt.client.util.icons.Util;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
 import java.util.ArrayList;
@@ -137,19 +137,7 @@ public class RepositoryTab extends ContentPanel {
         TreeStyle treeStyle = new TreeStyle();
         m_tree.setStyle(treeStyle);
         m_tree.setDisplayProperty("displayName");
-        treeStyle.setLeafIcon(new AbstractImagePrototype() {
-            public void applyTo(Image image) {
-                // TODO
-            }
-            public Image createImage() {
-                return null;  // TODO
-            }
-
-            public String getHTML() {
-                // find a better image
-                return new TreeStyle().getNodeOpenIcon().getHTML();
-            }
-        });
+        treeStyle.setLeafIcon(Util.getContentIcons("extension"));
         m_tree.setBorders(false);
 
 //        binder.setIconProvider(new ModelStringProvider<GWTJahiaNode>() {
@@ -167,15 +155,16 @@ public class RepositoryTab extends ContentPanel {
                 getLinker().onTreeItemSelected();
             }
         });
-        this.setScrollMode(Style.Scroll.AUTO);
-        this.setHeading(label) ;
-        this.getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+
+        setScrollMode(Style.Scroll.AUTO);
+        setHeading(label) ;
+        getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
                 init = true ;
                 loader.load() ;
             }
         }));
-        this.add(m_tree) ;
+        add(m_tree) ;
     }
 
     public void init() {

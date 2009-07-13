@@ -71,7 +71,8 @@
                         <version>1.1</version>
                         <configuration>
                             <localWorkers>5</localWorkers>
-                            <extraJvmArgs>-Xmx1024m -Xss700000 -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
+                            <extraJvmArgs>-Xmx1024m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
+                            <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
                             <modules>
                                 <module>org.jahia.ajax.gwt.template.general.edit.Edit</module>
                                 <module>org.jahia.ajax.gwt.template.general.live.Live</module>
@@ -101,8 +102,6 @@
 
                                 <module>org.jahia.ajax.gwt.module.linkchecker.LinkChecker</module>
                             </modules>
-                            <gwtVersion>1.6.4</gwtVersion>
-                            <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
                         </configuration>
                         <executions>
                             <execution>
@@ -131,12 +130,9 @@
                         <version>1.1</version>
                         <configuration>
                             <localWorkers>5</localWorkers>
-                            <buildOutputDirectory>${project.build.directory}/jahia/gwt</buildOutputDirectory>
-                            <extraJvmArgs>-Xmx1536m -Xss1000000 -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
-                            <modules>
-                                <module>${singleModuleName}</module>
-                            </modules>
-                            <gwtVersion>1.6.4</gwtVersion>
+                            <extraJvmArgs>-Xmx1024m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
+                            <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
+                            <module>${singleModuleName}</module>
                         </configuration>
                         <executions>
                             <execution>

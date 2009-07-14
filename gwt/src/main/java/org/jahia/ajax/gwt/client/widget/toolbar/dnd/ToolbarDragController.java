@@ -46,8 +46,4 @@ public class ToolbarDragController extends PickupDragController {
         setConstrainWidgetToBoundaryPanel(false);
 
     }
-
-    public void dragStart(DragContext dragContext) {
-        super.dragStart(dragContext.draggable);
-    }
 }

@@ -1687,6 +1687,7 @@
         </attribute>
         <dynamic-attributes>true</dynamic-attributes>
     </tag>
+   
 
     <!-- layout manager -->
     <tag>

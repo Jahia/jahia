@@ -128,6 +128,32 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+
+     <!-- mashup -->
+    <tag>
+        <description>render a portlet node.</description>
+        <name>portletRender</name>
+        <tag-class>org.jahia.taglibs.uicomponents.portlets.PortletRenderTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>mashupNode</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>org.jahia.services.content.JCRNodeWrapper</type>
+        </attribute>
+        <attribute>
+            <name>ajaxRendering</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <name>windowId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
     <tag>
         <description>Displays the GUI interface for window state changes, as well
             as the currently selected state.

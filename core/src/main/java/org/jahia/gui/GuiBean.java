@@ -42,8 +42,11 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.jcr.RepositoryException;
 
 import org.apache.log4j.Logger;
+import org.apache.regexp.RE;
+import org.apache.regexp.RESyntaxException;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.data.applications.ApplicationBean;
@@ -57,6 +60,7 @@ import org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ProcessingContext;
+import org.jahia.params.ParamBean;
 import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLResource;
@@ -73,7 +77,9 @@ import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.content.JCRPortletNode;
 import org.jahia.utils.JahiaTools;
+import org.jahia.ajax.gwt.client.core.JahiaType;
 
 /**
  * Modified and cleaned by Xavier Lawrence
@@ -82,11 +88,11 @@ public class GuiBean {
 
     private static final transient Logger logger = Logger.getLogger(GuiBean.class);
 
-    private final ProcessingContext jParams;
+    private final ProcessingContext processingContext;
     private final HTMLToolBox html;
 
     protected GuiBean() {
-        jParams = null;
+        processingContext = null;
         html = null;
     }
 
@@ -95,8 +101,8 @@ public class GuiBean {
      * EV    03.11.2000
      */
     public GuiBean(final ProcessingContext jContext) {
-        this.jParams = jContext;
-        this.html = new HTMLToolBox(this, jParams);
+        this.processingContext = jContext;
+        this.html = new HTMLToolBox(this, processingContext);
     } // end constructor
 
     public HTMLToolBox html() {
@@ -104,7 +110,7 @@ public class GuiBean {
     }
 
     public ProcessingContext params() {
-        return jParams;
+        return processingContext;
     }
 
     /**
@@ -112,8 +118,8 @@ public class GuiBean {
      * EV    21.11.2000
      */
     public String drawHttpPath() {
-        if (jParams != null) {
-            return jParams.settings().getJahiaTemplatesHttpPath();
+        if (processingContext != null) {
+            return processingContext.settings().getJahiaTemplatesHttpPath();
         } else {
             return "";
         }
@@ -125,9 +131,9 @@ public class GuiBean {
      * JB    25.04.2001
      */
     public String drawHttpPath(final String theTemplateFolderName) {
-        if (jParams != null) {
+        if (processingContext != null) {
             final StringBuffer buff = new StringBuffer();
-            buff.append(jParams.settings().getJahiaTemplatesHttpPath()).
+            buff.append(processingContext.settings().getJahiaTemplatesHttpPath()).
                     append(theTemplateFolderName);
             return buff.toString();
         } else {
@@ -152,11 +158,11 @@ public class GuiBean {
             throws JahiaException {
         String result = "";
 
-        if (jParams != null) {
+        if (processingContext != null) {
             // Get the current page
-            final JahiaPage currentPage = jParams.getPage();
+            final JahiaPage currentPage = processingContext.getPage();
             if (currentPage != null) {
-                result = jParams.composePageUrl(thePageID);
+                result = processingContext.composePageUrl(thePageID);
             }
         }
         return result;
@@ -170,8 +176,8 @@ public class GuiBean {
      */
     public String getPageActionURL() throws JahiaException {
         String actionURL = "";
-        if (jParams != null) {
-            actionURL = jParams.composePageUrl(jParams.getPage().getID());
+        if (processingContext != null) {
+            actionURL = processingContext.composePageUrl(processingContext.getPage().getID());
         }
         return actionURL;
     }
@@ -183,17 +189,17 @@ public class GuiBean {
     public String drawSwitchModeLink() throws JahiaException {
         String result = "";
 
-        if (jParams != null) {
+        if (processingContext != null) {
             // Get the current page
-            final JahiaPage currentPage = jParams.getPage();
+            final JahiaPage currentPage = processingContext.getPage();
             if (currentPage != null) {
                 // Check the write permission on the page
-                if (currentPage.checkWriteAccess(jParams.getUser())) {
-                    if (jParams.getOperationMode().equals(ProcessingContext.NORMAL)
-                            || jParams.getOperationMode().equals(ProcessingContext.COMPARE)) {
-                        result = jParams.composeOperationUrl(ProcessingContext.EDIT, "");
+                if (currentPage.checkWriteAccess(processingContext.getUser())) {
+                    if (processingContext.getOperationMode().equals(ProcessingContext.NORMAL)
+                            || processingContext.getOperationMode().equals(ProcessingContext.COMPARE)) {
+                        result = processingContext.composeOperationUrl(ProcessingContext.EDIT, "");
                     } else {
-                        result = jParams.composeOperationUrl(ProcessingContext.NORMAL, "");
+                        result = processingContext.composeOperationUrl(ProcessingContext.NORMAL, "");
                     }
                 }
             }
@@ -210,12 +216,12 @@ public class GuiBean {
     public String drawNormalModeLink() throws JahiaException {
         String result = "";
 
-        if (jParams != null) {
+        if (processingContext != null) {
             // Get the current page
-            final JahiaPage currentPage = jParams.getPage();
+            final JahiaPage currentPage = processingContext.getPage();
             if (currentPage != null) {
                 // Check the write permission on the page
-                result = jParams.composeOperationUrl(ProcessingContext.NORMAL, "");
+                result = processingContext.composeOperationUrl(ProcessingContext.NORMAL, "");
             }
         }
         return result;
@@ -233,7 +239,6 @@ public class GuiBean {
     }
 
     /**
-     *
      * @param userAliasingMode
      * @return
      * @throws JahiaException
@@ -241,21 +246,21 @@ public class GuiBean {
     public String drawEditModeLink(String userAliasingMode) throws JahiaException {
         String result = "";
 
-        if (jParams != null) {
+        if (processingContext != null) {
             // Get the current page
-            final JahiaPage currentPage = jParams.getPage();
+            final JahiaPage currentPage = processingContext.getPage();
             if (currentPage != null) {
-                if (currentPage.checkWriteAccess(jParams.getUser(), true)) {
+                if (currentPage.checkWriteAccess(processingContext.getUser(), true)) {
                     boolean isInUserAliasingMode = AdvPreviewSettings.isInUserAliasingMode();
                     String params = "";
-                    if (isInUserAliasingMode && userAliasingMode != null){
+                    if (isInUserAliasingMode && userAliasingMode != null) {
                         params = ProcessingContext.USERALIASING_MODE_PARAMETER + "=" + userAliasingMode;
                     }
-                    result = jParams.composeOperationUrl(ProcessingContext.EDIT, params);
+                    result = processingContext.composeOperationUrl(ProcessingContext.EDIT, params);
                 } else {
                     result = "";
                 }
-                //result = jParams.composeOperationUrl( ProcessingContext.EDIT, "" );
+                //result = processingContext.composeOperationUrl( ProcessingContext.EDIT, "" );
             }
         }
         return result;
@@ -274,19 +279,19 @@ public class GuiBean {
                                             final String operationMode) throws JahiaException {
         String result = "";
 
-        if (jParams != null) {
+        if (processingContext != null) {
             // Get the current page
-            final JahiaPage currentPage = jParams.getPage();
+            final JahiaPage currentPage = processingContext.getPage();
             if (currentPage != null) {
                 /* NK : EDIT_MODE_PAGE_ACCESS_ISSUE */
                 // Check the write permission on the page
-                if (currentPage.checkWriteAccess(jParams.getUser(), true)
-                        || currentPage.checkAdminAccess(jParams.getUser(), true)) {
-                    result = jParams.composeRevDifferenceUrl(revisionDiffID, operationMode, "");
+                if (currentPage.checkWriteAccess(processingContext.getUser(), true)
+                        || currentPage.checkAdminAccess(processingContext.getUser(), true)) {
+                    result = processingContext.composeRevDifferenceUrl(revisionDiffID, operationMode, "");
                 } else {
                     result = "";
                 }
-                //result = jParams.composeRevDifferenceUrl(revisionDiffID,operationMode,"");
+                //result = processingContext.composeRevDifferenceUrl(revisionDiffID,operationMode,"");
             }
         }
         return result;
@@ -303,17 +308,17 @@ public class GuiBean {
      * @throws JahiaException
      */
     public String drawRevDifferenceModeLink(final int entryStateVersion,
-                                          final int revisionDiffVersion, final String operationMode,
-                                          final String params) throws JahiaException {
+                                            final int revisionDiffVersion, final String operationMode,
+                                            final String params) throws JahiaException {
         String result = "";
 
-        if (jParams != null) {
+        if (processingContext != null) {
             // Get the current page
-            final JahiaPage currentPage = jParams.getPage();
+            final JahiaPage currentPage = processingContext.getPage();
             if (currentPage != null) {
-                if (currentPage.checkWriteAccess(jParams.getUser(), true)
-                        || currentPage.checkAdminAccess(jParams.getUser(), true)) {
-                    result = jParams.composeRevDifferenceUrl(entryStateVersion,revisionDiffVersion, operationMode, params);
+                if (currentPage.checkWriteAccess(processingContext.getUser(), true)
+                        || currentPage.checkAdminAccess(processingContext.getUser(), true)) {
+                    result = processingContext.composeRevDifferenceUrl(entryStateVersion, revisionDiffVersion, operationMode, params);
                 } else {
                     result = "";
                 }
@@ -343,23 +348,23 @@ public class GuiBean {
     public String drawPreviewModeLink(String userAliasingMode) throws JahiaException {
         String result = "";
 
-        if (jParams != null) {
+        if (processingContext != null) {
             // Get the current page
-            final JahiaPage currentPage = jParams.getPage();
+            final JahiaPage currentPage = processingContext.getPage();
             if (currentPage != null) {
-                if (currentPage.checkWriteAccess(jParams.getUser(), true)
-                        || currentPage.checkAdminAccess(jParams.getUser(), true)) {
+                if (currentPage.checkWriteAccess(processingContext.getUser(), true)
+                        || currentPage.checkAdminAccess(processingContext.getUser(), true)) {
                     String params = "";
                     AdvPreviewSettings advPreviewSettings = AdvPreviewSettings.getThreadLocaleInstance();
                     boolean appendUserAliasingMode = advPreviewSettings != null && advPreviewSettings.isEnabled();
-                    if (appendUserAliasingMode){
+                    if (appendUserAliasingMode) {
                         params = ProcessingContext.USERALIASING_MODE_PARAMETER + "=" + userAliasingMode;
                     }
-                    result = jParams.composeOperationUrl(ProcessingContext.PREVIEW, params);
+                    result = processingContext.composeOperationUrl(ProcessingContext.PREVIEW, params);
                 } else {
                     result = "";
                 }
-                //result = jParams.composeOperationUrl( ProcessingContext.PREVIEW, "" );
+                //result = processingContext.composeOperationUrl( ProcessingContext.PREVIEW, "" );
             }
         }
         return result;
@@ -375,11 +380,11 @@ public class GuiBean {
      */
     public String drawPageLanguageSwitch(final String code) throws JahiaException {
         String result = "";
-        if (jParams != null) {
+        if (processingContext != null) {
             // Get the current page
-            final JahiaPage currentPage = jParams.getPage();
+            final JahiaPage currentPage = processingContext.getPage();
             if (currentPage != null) {
-                result = jParams.composeLanguageURL(code);
+                result = processingContext.composeLanguageURL(code);
             }
         }
         return result;
@@ -395,15 +400,15 @@ public class GuiBean {
      */
     public String drawPageLanguageSwitch(final String code, final int pid) throws JahiaException {
         String result = "";
-        if (jParams != null) {
-            result = jParams.composeLanguageURL(code, pid);
+        if (processingContext != null) {
+            result = processingContext.composeLanguageURL(code, pid);
         }
         return result;
     }
 
     public String drawPopupLoginUrl() throws JahiaException {
         final StringBuffer buff = new StringBuffer();
-        return drawUrl("login", buff.append("/pid/").append(jParams.getPageID()).toString());
+        return drawUrl("login", buff.append("/pid/").append(processingContext.getPageID()).toString());
     }
 
     public String drawPopupLoginUrl(final int destinationPageID)
@@ -414,7 +419,7 @@ public class GuiBean {
 
     public String drawLoginUrl() throws JahiaException {
         final StringBuffer buff = new StringBuffer();
-        return drawUrl("login", buff.append("/pid/").append(jParams.getPageID()).
+        return drawUrl("login", buff.append("/pid/").append(processingContext.getPageID()).
                 append("?screen=save").toString());
     }
 
@@ -430,7 +435,7 @@ public class GuiBean {
 
     public String drawPopupLogoutUrl(final int destinationPageID)
             throws JahiaException {
-        if (!jParams.getUser().getUsername().equals("guest")) {
+        if (!processingContext.getUser().getUsername().equals("guest")) {
             return drawUrl("logout", new Integer(destinationPageID));
         } else {
             return "";
@@ -438,7 +443,7 @@ public class GuiBean {
     }
 
     public String drawPopupLogoutUrl() throws JahiaException {
-        return drawPopupLogoutUrl(jParams.getPageID());
+        return drawPopupLogoutUrl(processingContext.getPageID());
     }
 
     public String drawLogoutUrl(final int destinationPageID)
@@ -447,7 +452,7 @@ public class GuiBean {
     }
 
     public String drawLogoutUrl() throws JahiaException {
-        return drawPopupLogoutUrl(jParams.getPageID());
+        return drawPopupLogoutUrl(processingContext.getPageID());
     }
 
     /**
@@ -460,12 +465,12 @@ public class GuiBean {
             throws JahiaException {
         final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
         if (aclService.getSiteActionPermission("engines.actions.update",
-                jParams.getUser(), JahiaBaseACL.READ_RIGHTS,
-                jParams.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + jParams.getLocale().toString(),
-                        jParams.getUser(),
+                processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
+                processingContext.getSiteID()) > 0 &&
+                aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
+                        processingContext.getUser(),
                         JahiaBaseACL.READ_RIGHTS,
-                        jParams.getSiteID()) > 0) {
+                        processingContext.getSiteID()) > 0) {
             final ContentField contentField = theField.getContentField();
             return drawUrlCheckWriteAccess("updatefield", contentField);
         } else {
@@ -482,12 +487,12 @@ public class GuiBean {
             throws JahiaException {
         final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
         if (aclService.getSiteActionPermission("engines.actions.update",
-                jParams.getUser(), JahiaBaseACL.READ_RIGHTS,
-                jParams.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + jParams.getLocale().toString(),
-                        jParams.getUser(),
+                processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
+                processingContext.getSiteID()) > 0 &&
+                aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
+                        processingContext.getUser(),
                         JahiaBaseACL.READ_RIGHTS,
-                        jParams.getSiteID()) > 0) {
+                        processingContext.getSiteID()) > 0) {
             return drawUrlCheckWriteAccess("updatefield", contentField);
         } else {
             return "";
@@ -504,12 +509,12 @@ public class GuiBean {
         if (jahiaContainerList != null) {
             final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
             if (aclService.getSiteActionPermission("engines.actions.add",
-                    jParams.getUser(), JahiaBaseACL.READ_RIGHTS,
-                    jParams.getSiteID()) > 0 &&
-                    aclService.getSiteActionPermission("engines.languages." + jParams.getLocale().toString(),
-                            jParams.getUser(),
+                    processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
+                    processingContext.getSiteID()) > 0 &&
+                    aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
+                            processingContext.getUser(),
                             JahiaBaseACL.READ_RIGHTS,
-                            jParams.getSiteID()) > 0) {
+                            processingContext.getSiteID()) > 0) {
                 return drawUrlCheckWriteAccess("addcontainer", jahiaContainerList);
             } else {
                 return "";
@@ -534,12 +539,12 @@ public class GuiBean {
         final ContentContainer contentContainer = theContainer.getContentContainer();
         final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
         if (aclService.getSiteActionPermission("engines.actions.update",
-                jParams.getUser(), JahiaBaseACL.READ_RIGHTS,
-                jParams.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + jParams.getLocale().toString(),
-                        jParams.getUser(),
+                processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
+                processingContext.getSiteID()) > 0 &&
+                aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
+                        processingContext.getUser(),
                         JahiaBaseACL.READ_RIGHTS,
-                        jParams.getSiteID()) > 0) {
+                        processingContext.getSiteID()) > 0) {
             return drawUrlCheckWriteAccess("updatecontainer", contentContainer);
         } else {
             return "";
@@ -567,12 +572,12 @@ public class GuiBean {
         final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
         String url = "";
         if (aclService.getSiteActionPermission("engines.actions.update",
-                jParams.getUser(), JahiaBaseACL.READ_RIGHTS,
-                jParams.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + jParams.getLocale().toString(),
-                        jParams.getUser(),
+                processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
+                processingContext.getSiteID()) > 0 &&
+                aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
+                        processingContext.getUser(),
                         JahiaBaseACL.READ_RIGHTS,
-                        jParams.getSiteID()) > 0) {
+                        processingContext.getSiteID()) > 0) {
             url = drawUrlCheckWriteAccess("updatecontainer", contentContainer);
         }
         if (focusedFieldId > 0 && url.length() > 0) {
@@ -605,8 +610,8 @@ public class GuiBean {
             throws JahiaException {
         if (ServicesRegistry.getInstance().getJahiaACLManagerService().
                 getSiteActionPermission("engines.actions.delete",
-                        jParams.getUser(), JahiaBaseACL.READ_RIGHTS,
-                        jParams.getSiteID()) > 0) {
+                        processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
+                        processingContext.getSiteID()) > 0) {
             /** todo we removed this version of the action check because it was dreadfully
              * slow to check the rights on the whole sub tree, which could be very large.
              * We might want to do this check when opening the engine instead, or use AJAX
@@ -633,13 +638,13 @@ public class GuiBean {
     public String drawPagePropertiesUrl() throws JahiaException {
         final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
         if (aclService.getSiteActionPermission("engines.actions.update",
-                jParams.getUser(), JahiaBaseACL.READ_RIGHTS,
-                jParams.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + jParams.getLocale().toString(),
-                        jParams.getUser(),
+                processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
+                processingContext.getSiteID()) > 0 &&
+                aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
+                        processingContext.getUser(),
                         JahiaBaseACL.READ_RIGHTS,
-                        jParams.getSiteID()) > 0) {
-            return drawUrlCheckWriteAccess("pageproperties", jParams.getPage());
+                        processingContext.getSiteID()) > 0) {
+            return drawUrlCheckWriteAccess("pageproperties", processingContext.getPage());
         } else {
             return "";
         }
@@ -650,22 +655,22 @@ public class GuiBean {
     }
 
     public String drawPagePropertiesUrl(final int pageID) throws JahiaException {
-        final int oldPageID = jParams.getPageID();
-        if (oldPageID != pageID) jParams.changePage(pageID);
+        final int oldPageID = processingContext.getPageID();
+        if (oldPageID != pageID) processingContext.changePage(pageID);
         final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
         final String result;
         if (aclService.getSiteActionPermission("engines.actions.update",
-                jParams.getUser(), JahiaBaseACL.READ_RIGHTS,
-                jParams.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + jParams.getLocale().toString(),
-                        jParams.getUser(),
+                processingContext.getUser(), JahiaBaseACL.READ_RIGHTS,
+                processingContext.getSiteID()) > 0 &&
+                aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
+                        processingContext.getUser(),
                         JahiaBaseACL.READ_RIGHTS,
-                        jParams.getSiteID()) > 0) {
-            result = drawUrlCheckWriteAccess("pageproperties", jParams.getPage());
+                        processingContext.getSiteID()) > 0) {
+            result = drawUrlCheckWriteAccess("pageproperties", processingContext.getPage());
         } else {
             result = "";
         }
-        if (oldPageID != pageID) jParams.changePage(oldPageID);
+        if (oldPageID != pageID) processingContext.changePage(oldPageID);
         return result;
     }
 
@@ -798,7 +803,7 @@ public class GuiBean {
 
         JahiaContainerListPagination cListPagination = theContainerList.getCtnListPagination();
         if (cListPagination == null || (newWindowSize != -1 && (cListPagination.getWindowSize() != newWindowSize))) {
-            cListPagination = new JahiaContainerListPagination(theContainerList, jParams, newWindowSize);
+            cListPagination = new JahiaContainerListPagination(theContainerList, processingContext, newWindowSize);
             theContainerList.setCtnListPagination(cListPagination);
         }
 
@@ -829,8 +834,8 @@ public class GuiBean {
 
         final StringBuffer paramName = new StringBuffer();
         paramName.append(ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER)
-                 .append(listViewId != null ? listViewId + "_" : "")
-                 .append(theContainerList.getDefinition().getName());
+                .append(listViewId != null ? listViewId + "_" : "")
+                .append(theContainerList.getDefinition().getName());
         final StringBuffer paramValue = new StringBuffer();
         paramValue.append(Integer.toString(windowSize)).append("_").
                 append(Integer.toString(windowOffset));
@@ -839,7 +844,7 @@ public class GuiBean {
             return paramValue.toString();
         }
         final StringBuffer curPageURL = new StringBuffer();
-        curPageURL.append(jParams.composePageUrl(jParams.getPageID()));
+        curPageURL.append(processingContext.composePageUrl(processingContext.getPageID()));
         curPageURL.append("?").append(paramName).append("=").append(paramValue);
         // curPageURL.append("/").append(paramName).append("/").append(paramValue);
         return curPageURL.toString();
@@ -881,7 +886,7 @@ public class GuiBean {
             return paramValue.toString();
         }
         final StringBuffer curPageURL = new StringBuffer();
-        curPageURL.append(jParams.composePageUrl(jParams.getPageID()));
+        curPageURL.append(processingContext.composePageUrl(processingContext.getPageID()));
         curPageURL.append("?").append(paramName).append("=").append(paramValue);
         // curPageURL.append("/").append(paramName).append("/").append(paramValue);
         return curPageURL.toString();
@@ -919,7 +924,7 @@ public class GuiBean {
      */
     public String drawAdministrationLauncher() throws JahiaException {
         final StringBuffer url = new StringBuffer();
-        url.append(jParams.getContextPath()).append(Jahia.getInitAdminServletPath()).
+        url.append(processingContext.getContextPath()).append(Jahia.getInitAdminServletPath()).
                 append("?do=passthru");
         return url.toString();
     }
@@ -935,8 +940,8 @@ public class GuiBean {
         String htmlResult = "";
         final JahiaEngine theEngine = (JahiaEngine) EnginesRegistry.getInstance().
                 getEngine(engineName);
-        if (theEngine.authoriseRender(jParams)) {
-            htmlResult = theEngine.renderLink(jParams, theObj);
+        if (theEngine.authoriseRender(processingContext)) {
+            htmlResult = theEngine.renderLink(processingContext, theObj);
         }
         return htmlResult;
     }
@@ -950,7 +955,7 @@ public class GuiBean {
     private String drawUrlCheckWriteAccess(final String engineName, final Object anObject, boolean checkChilds, boolean forceChilds)
             throws JahiaException {
         final JahiaEngine theEngine = (JahiaEngine) EnginesRegistry.getInstance().getEngine(engineName);
-        if (theEngine.authoriseRender(jParams)) {
+        if (theEngine.authoriseRender(processingContext)) {
             if (anObject instanceof ContentObject) {
                 final ContentObject contentObject = (ContentObject) anObject;
                 final ContentObject parent = contentObject.getParent(null);
@@ -958,7 +963,7 @@ public class GuiBean {
                     return "";
                 }
                 if (contentObject.checkWriteAccess(getUser(), checkChilds, forceChilds)) {
-                    return theEngine.renderLink(jParams, anObject);
+                    return theEngine.renderLink(processingContext, anObject);
                 }
             } else if (anObject instanceof ACLResourceInterface) {
                 if (anObject instanceof JahiaField) {
@@ -972,7 +977,7 @@ public class GuiBean {
                             return "";
                         }
                     }
-                    return theEngine.renderLink(jParams, anObject);
+                    return theEngine.renderLink(processingContext, anObject);
                 }
             } else if (anObject instanceof JahiaContainerList) {
                 // this is mostly used to generate the add container URL when
@@ -980,7 +985,7 @@ public class GuiBean {
                 // as the first container).
                 final JahiaContainerList containerList = (JahiaContainerList) anObject;
                 if (containerList.getID() == 0) {
-                    if (ServicesRegistry.getInstance().getImportExportService().isPicker(jParams.getPage().getContentPage())) {
+                    if (ServicesRegistry.getInstance().getImportExportService().isPicker(processingContext.getPage().getContentPage())) {
                         return "";
                     }
                 } else {
@@ -990,17 +995,17 @@ public class GuiBean {
                 }
 
                 if (engineName.equals(ContainerListProperties_Engine.ENGINE_NAME)) {
-                    if (containerList.getID() == 0 && jParams.getPage().checkAdminAccess(getUser())
+                    if (containerList.getID() == 0 && processingContext.getPage().checkAdminAccess(getUser())
                             || containerList.getID() != 0 && containerList.checkWriteAccess(getUser())) {
-                        return theEngine.renderLink(jParams, anObject);
+                        return theEngine.renderLink(processingContext, anObject);
                     }
                 } else {
                     // Add Container
                     if (containerList.getID() == 0 &&
-                            jParams.getPage().checkWriteAccess(getUser(), true) ||
+                            processingContext.getPage().checkWriteAccess(getUser(), true) ||
                             containerList.getID() != 0 &&
                                     containerList.checkWriteAccess(getUser())) {
-                        return theEngine.renderLink(jParams, anObject);
+                        return theEngine.renderLink(processingContext, anObject);
                     }
                 }
             }
@@ -1018,19 +1023,18 @@ public class GuiBean {
     } // end drawUsername
 
     /**
-     *
      * @param allowUserAliasing if true, return the username of the aliased user when applicable ( in preview mode and
-     * aliased user enabled )
+     *                          aliased user enabled )
      * @return
      */
     public String drawUsername(boolean allowUserAliasing) {
-        if (jParams != null) {
-            if (!allowUserAliasing){
+        if (processingContext != null) {
+            if (!allowUserAliasing) {
                 return getUser().getUsername();
             } else {
                 JahiaUser user = AdvPreviewSettings.getAliasedUser(getUser());
                 String s = getUser().getUsername();
-                if(!s.equals(user.getUsername()))s=s +" ( "+user.getUsername()+" )";
+                if (!s.equals(user.getUsername())) s = s + " ( " + user.getUsername() + " )";
                 return s;
             }
         } else {
@@ -1043,32 +1047,32 @@ public class GuiBean {
      * JB   25.04.2001
      */
     public boolean isEditMode() {
-        if (jParams != null) {
-            return jParams.getOperationMode().equals(ProcessingContext.EDIT);
+        if (processingContext != null) {
+            return processingContext.getOperationMode().equals(ProcessingContext.EDIT);
         } else {
             return false;
         }
     } // end isEditMode
 
     public boolean isNormalMode() {
-        if (jParams != null) {
-            return jParams.getOperationMode().equals(ProcessingContext.NORMAL);
+        if (processingContext != null) {
+            return processingContext.getOperationMode().equals(ProcessingContext.NORMAL);
         } else {
             return false;
         }
     }
 
     public boolean isCompareMode() {
-        if (jParams != null) {
-            return jParams.getOperationMode().equals(ProcessingContext.COMPARE);
+        if (processingContext != null) {
+            return processingContext.getOperationMode().equals(ProcessingContext.COMPARE);
         } else {
             return false;
         }
     }
 
     public boolean isPreviewMode() {
-        if (jParams != null) {
-            return jParams.getOperationMode().equals(ProcessingContext.PREVIEW);
+        if (processingContext != null) {
+            return processingContext.getOperationMode().equals(ProcessingContext.PREVIEW);
         } else {
             return false;
         }
@@ -1079,7 +1083,7 @@ public class GuiBean {
      * JB   25.04.2001
      */
     public boolean isLogged() {
-        if (jParams != null) {
+        if (processingContext != null) {
             final String theUserName = getUser().getUsername();
             if (!theUserName.equals("guest")) {
                 return true;
@@ -1095,10 +1099,10 @@ public class GuiBean {
      */
     public boolean isPageInPath(final int destPageID)
             throws JahiaException {
-        if (jParams != null) {
+        if (processingContext != null) {
 
             final Iterator<ContentPage> thePath = getContentPage().getContentPagePath(
-                    jParams.getEntryLoadRequest(), jParams.getOperationMode(), getUser());
+                    processingContext.getEntryLoadRequest(), processingContext.getOperationMode(), getUser());
             boolean foundTarget = false;
             while (thePath.hasNext()) {
                 final ContentPage aPage = thePath.next();
@@ -1122,10 +1126,10 @@ public class GuiBean {
      */
     public boolean isPageInPath(final int destPageID, final int levels)
             throws JahiaException {
-        if (jParams != null) {
+        if (processingContext != null) {
             final Iterator<ContentPage> thePath = getContentPage()
-                    .getContentPagePath(levels, jParams.getEntryLoadRequest(),
-                            jParams.getOperationMode(), getUser(),
+                    .getContentPagePath(levels, processingContext.getEntryLoadRequest(),
+                            processingContext.getOperationMode(), getUser(),
                             JahiaPageService.PAGEPATH_SHOW_ALL);
             boolean foundTarget = false;
             while (thePath.hasNext()) {
@@ -1150,7 +1154,7 @@ public class GuiBean {
      * JB   16.05.2001
      */
     public boolean isNS() {
-        final String userAgent = jParams.getUserAgent();
+        final String userAgent = processingContext.getUserAgent();
         if (userAgent != null) {
             if (userAgent.indexOf("Mozilla") != -1) {
                 if (userAgent.indexOf("MSIE") == -1) {
@@ -1167,7 +1171,7 @@ public class GuiBean {
      * JB   16.05.2001
      */
     public boolean isNS4() {
-        final String userAgent = jParams.getUserAgent();
+        final String userAgent = processingContext.getUserAgent();
         if (userAgent != null) {
             if (userAgent.indexOf("Mozilla/4") != -1) {
                 if (userAgent.indexOf("MSIE") == -1) {
@@ -1184,7 +1188,7 @@ public class GuiBean {
      * JB   16.05.2001
      */
     public boolean isNS6() {
-        final String userAgent = jParams.getUserAgent();
+        final String userAgent = processingContext.getUserAgent();
         if (userAgent != null) {
             if (userAgent.indexOf("Mozilla/5") != -1) {
                 return true;
@@ -1198,7 +1202,7 @@ public class GuiBean {
      * JB   16.05.2001
      */
     public boolean isIE() {
-        final String userAgent = jParams.getUserAgent();
+        final String userAgent = processingContext.getUserAgent();
         if (userAgent != null) {
             if (userAgent.indexOf("MSIE") != -1) {
                 return true;
@@ -1235,7 +1239,7 @@ public class GuiBean {
      * JB   16.05.2001
      */
     public boolean isIE4() {
-        final String userAgent = jParams.getUserAgent();
+        final String userAgent = processingContext.getUserAgent();
         if (userAgent != null) {
             if (userAgent.indexOf("MSIE 4") != -1) {
                 return true;
@@ -1250,7 +1254,7 @@ public class GuiBean {
      * JB   16.05.2001
      */
     public boolean isIE5() {
-        final String userAgent = jParams.getUserAgent();
+        final String userAgent = processingContext.getUserAgent();
         if (userAgent != null) {
             if (userAgent.indexOf("MSIE 5") != -1) {
                 return true;
@@ -1265,7 +1269,7 @@ public class GuiBean {
      * JB   16.05.2001
      */
     public boolean isIE6() {
-        final String userAgent = jParams.getUserAgent();
+        final String userAgent = processingContext.getUserAgent();
         if (userAgent != null) {
             if (userAgent.indexOf("MSIE 6") != -1) {
                 return true;
@@ -1275,7 +1279,7 @@ public class GuiBean {
     } // end isIE6
 
     public boolean isIE7() {
-        final String userAgent = jParams.getUserAgent();
+        final String userAgent = processingContext.getUserAgent();
         if (userAgent != null) {
             if (userAgent.indexOf("MSIE 7") != -1) {
                 return true;
@@ -1288,7 +1292,7 @@ public class GuiBean {
      * isOpera
      */
     public boolean isOpera() {
-        String userAgent = jParams.getUserAgent();
+        String userAgent = processingContext.getUserAgent();
         if (userAgent != null) {
             userAgent = userAgent.toLowerCase();
             if (userAgent.indexOf("opera") != -1) {
@@ -1303,7 +1307,7 @@ public class GuiBean {
      * JB   13.11.2001
      */
     public boolean isWindow() {
-        final String userAgent = jParams.getUserAgent();
+        final String userAgent = processingContext.getUserAgent();
         if (userAgent != null) {
             if (userAgent.indexOf("Win") != -1) {
                 return true;
@@ -1318,7 +1322,7 @@ public class GuiBean {
      * JB   13.11.2001
      */
     public boolean isUnix() {
-        final String userAgent = jParams.getUserAgent();
+        final String userAgent = processingContext.getUserAgent();
         if (userAgent != null) {
             if (userAgent.indexOf("X11") != -1) {
                 return true;
@@ -1333,7 +1337,7 @@ public class GuiBean {
      * JB   13.11.2001
      */
     public boolean isMac() {
-        final String userAgent = jParams.getUserAgent();
+        final String userAgent = processingContext.getUserAgent();
         if (userAgent != null) {
             if (userAgent.indexOf("Mac") != -1) {
                 return true;
@@ -1396,7 +1400,7 @@ public class GuiBean {
     public int getLevelID(final int level)
             throws JahiaException {
         final Iterator<ContentPage> thePath = getContentPage().getContentPagePath(
-                jParams.getEntryLoadRequest(), jParams.getOperationMode(), getUser());
+                processingContext.getEntryLoadRequest(), processingContext.getOperationMode(), getUser());
         int count_loop = 0;
         while (thePath.hasNext()) {
             final ContentPage aPage = (ContentPage) thePath.next();
@@ -1419,7 +1423,7 @@ public class GuiBean {
      */
     public int getLevel() throws JahiaException {
         final Iterator<ContentPage> thePath = getContentPage().getContentPagePath(
-                jParams.getEntryLoadRequest(), jParams.getOperationMode(), getUser());
+                processingContext.getEntryLoadRequest(), processingContext.getOperationMode(), getUser());
         int count_loop = 0;
         while (thePath.hasNext()) {
             final ContentPage aPage = (ContentPage) thePath.next();
@@ -1438,15 +1442,15 @@ public class GuiBean {
      * @deprecated, use getContentHomePage
      */
     public JahiaPage getHomePage() throws JahiaException {
-        if (jParams.getSite() == null)
+        if (processingContext.getSite() == null)
             return null;
 
         final JahiaPageService pageService = ServicesRegistry.getInstance().
                 getJahiaPageService();
 
         // finds origin page
-        return pageService.lookupPage(jParams.getSite().getHomePageID(),
-                jParams.getEntryLoadRequest(), jParams.getOperationMode(), jParams.getUser(), false);
+        return pageService.lookupPage(processingContext.getSite().getHomePageID(),
+                processingContext.getEntryLoadRequest(), processingContext.getOperationMode(), processingContext.getUser(), false);
 
     } // end getHomePage
 
@@ -1454,9 +1458,9 @@ public class GuiBean {
      * getHomePage, return the site's home page as ContentPage
      */
     public ContentPage getContentHomePage() throws JahiaException {
-        if (jParams.getSite() == null)
+        if (processingContext.getSite() == null)
             return null;
-        return ContentPage.getPage(jParams.getSite().getHomePageID());
+        return ContentPage.getPage(processingContext.getSite().getHomePageID());
 
     } // end getHomePage
 
@@ -1474,15 +1478,17 @@ public class GuiBean {
         return drawUrlCheckWriteAccess(RestoreLiveContainer_Engine.ENGINE_NAME, contentContainer);
     }
 
+    
+
     private JahiaUser getUser() {
-        return jParams != null ? jParams.getUser() : null;
+        return processingContext != null ? processingContext.getUser() : null;
     }
 
     private JahiaPage getPage() {
-        return jParams != null ? jParams.getPage() : null;
+        return processingContext != null ? processingContext.getPage() : null;
     }
-    
+
     private ContentPage getContentPage() {
-        return jParams != null ? jParams.getContentPage() : null;
+        return processingContext != null ? processingContext.getContentPage() : null;
     }
 }

@@ -43,6 +43,8 @@ package org.jahia.gui;
 
 import org.apache.log4j.Logger;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.regexp.RE;
+import org.apache.regexp.RESyntaxException;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentPageKey;
@@ -80,12 +82,15 @@ import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.PageInfoInterface;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.content.JCRPortletNode;
 import org.jahia.settings.SettingsBean;
 import org.jahia.hibernate.manager.JahiaObjectDelegate;
 import org.jahia.hibernate.manager.JahiaObjectManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.ajax.gwt.client.core.JahiaType;
 
 import javax.servlet.jsp.JspWriter;
+import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -109,7 +114,7 @@ public class HTMLToolBox {
     private static String previousSessionID = "";
     private static String previousCleanSessionID = "";
 
-    private final ProcessingContext jParams;
+    private final ProcessingContext processingContext;
     private final GuiBean gui;
 
     /**
@@ -124,19 +129,19 @@ public class HTMLToolBox {
      * constructor
      * EV    15.12.2000
      */
-    public HTMLToolBox(final GuiBean gui, final ProcessingContext jParams) {
+    public HTMLToolBox(final GuiBean gui, final ProcessingContext processingContext) {
         this.gui = gui;
-        this.jParams = jParams;
+        this.processingContext = processingContext;
     } // end constructor
 
     public HTMLToolBox(final GuiBean gui) {
         this.gui = gui;
-        this.jParams = gui.params();
+        this.processingContext = gui.params();
     }
 
     protected HTMLToolBox() {
         this.gui = null;
-        this.jParams = null;
+        this.processingContext = null;
     }
 
     /**
@@ -180,7 +185,7 @@ public class HTMLToolBox {
         // BEGIN [for CAS authentication]
         final StringBuffer buff = new StringBuffer();
         if (Jahia.usesSso()) {
-            String loginUrl = Jahia.getSsoValve().getRedirectUrl(jParams);
+            String loginUrl = Jahia.getSsoValve().getRedirectUrl(processingContext);
             if (loginUrl != null) {
                 return buff.append("window.location = '").append(loginUrl).append("'").toString();
             }
@@ -201,7 +206,7 @@ public class HTMLToolBox {
         // BEGIN [for CAS authentication]
         final StringBuffer buff = new StringBuffer();
         if (Jahia.usesSso()) {
-            String loginUrl = Jahia.getSsoValve().getRedirectUrl(jParams);
+            String loginUrl = Jahia.getSsoValve().getRedirectUrl(processingContext);
             if (loginUrl != null) {
                 return buff.append("window.location = '").append(loginUrl).append("'").toString();
             }
@@ -278,7 +283,7 @@ public class HTMLToolBox {
         if (contentField != null) {
             name.append(contentField.getID());
         }
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         return drawLauncher(gui.drawUpdateFieldUrl(contentField), name.toString());
     }
 
@@ -294,7 +299,7 @@ public class HTMLToolBox {
         if (contentField != null) {
             name.append(contentField.getID());
         }
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         return drawLauncher(gui.drawUpdateFieldUrl(contentField), name.toString());
     }
 
@@ -310,7 +315,7 @@ public class HTMLToolBox {
         if (contentField != null) {
             name.append(contentField.getID());
         }
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         final StringBuffer buffer = new StringBuffer();
         buffer.append(gui.drawUpdateFieldUrl(contentField));
         buffer.append("&gotoscreen=");
@@ -380,7 +385,7 @@ public class HTMLToolBox {
         try {
             final StringBuffer name = new StringBuffer("addContainer_");
             name.append(jahiaContainerList.getID());
-            name.append(cleanSessionID(jParams.getSessionID()));
+            name.append(cleanSessionID(processingContext.getSessionID()));
             final String addContainerURL = gui.drawAddContainerUrl(jahiaContainerList);
             final StringBuffer buff = new StringBuffer();
             launcher = addContainerURL.equals("") ? "" :
@@ -391,7 +396,7 @@ public class HTMLToolBox {
             if (checkLock) {
                 final LockService lockRegistry = ServicesRegistry.getInstance().getLockService();
                 final LockKey lockKey = LockKey.composeLockKey(LockKey.ADD_CONTAINER_TYPE, jahiaContainerList.getID());
-                final JahiaUser user = jParams.getUser();
+                final JahiaUser user = processingContext.getUser();
                 if (!lockRegistry.canRelease(lockKey, user, user.getUserKey())) {
                     launcher = "";
                 }
@@ -584,7 +589,7 @@ public class HTMLToolBox {
         final StringBuffer name = new StringBuffer();
         name.append("updateContainer_");
         name.append(containerID);
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         String updateContainerURL = gui.drawUpdateContainerUrl(contentContainer);
         if (updateContainerURL.length() > 0) {
             if (focusedFieldId > 0) {
@@ -610,7 +615,7 @@ public class HTMLToolBox {
         if (checkLock) {
             final LockService lockRegistry = ServicesRegistry.getInstance().getLockService();
             final LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_CONTAINER_TYPE, containerID);
-            final JahiaUser user = jParams.getUser();
+            final JahiaUser user = processingContext.getUser();
             if (!lockRegistry.canRelease(lockKey, user, user.getUserKey())) {
                 return "";
             }
@@ -682,7 +687,7 @@ public class HTMLToolBox {
             throws JahiaException {
 
         if (contentContainer == null) return "";
-        final JahiaUser user = jParams.getUser();
+        final JahiaUser user = processingContext.getUser();
 
         /** todo we removed this version of the action check because it was dreadfully
          * slow to check the rights on the whole sub tree, which could be very large.
@@ -697,7 +702,7 @@ public class HTMLToolBox {
         name.append("deleteContainer_");
 
         name.append(containerID);
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         String deleteContainerURL = gui.drawDeleteContainerUrl(contentContainer);
         if (!"".endsWith(deleteContainerURL) && contextualContainerListId != 0) {
             deleteContainerURL += "&contextualContainerListId=" + String.valueOf(contextualContainerListId);
@@ -771,7 +776,7 @@ public class HTMLToolBox {
         name.append("containerListProperties_");
         name.append(listID);
 
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         final String containerListPropertiesURL = gui.drawContainerListPropertiesUrl(
                 contentContainerList);
         String out = "";
@@ -785,7 +790,7 @@ public class HTMLToolBox {
         /*
          * We allow to display the properties buttons even there arent' any childs
          * to set rights
-                 if (contentContainerList.getChilds(jParams.getUser(), jParams.getEntryLoadRequest(), jParams.EDIT).size() == 0) {
+                 if (contentContainerList.getChilds(processingContext.getUser(), processingContext.getEntryLoadRequest(), processingContext.EDIT).size() == 0) {
             out = "";
                  }*/
 
@@ -793,7 +798,7 @@ public class HTMLToolBox {
         if (checkLock) {
             final LockService lockRegistry = ServicesRegistry.getInstance().getLockService();
             final LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_CONTAINERLIST_TYPE, listID);
-            final JahiaUser user = jParams.getUser();
+            final JahiaUser user = processingContext.getUser();
             if (!lockRegistry.canRelease(lockKey, user, user.getUserKey())) {
                 out = "";
             }
@@ -808,7 +813,7 @@ public class HTMLToolBox {
     public String drawWorkflowLauncher() throws JahiaException {
         final StringBuffer buff = new StringBuffer();
         buff.append(ContentPageKey.PAGE_TYPE).append("_").
-                append(jParams.getPage().getID());
+                append(processingContext.getPage().getID());
         return drawWorkflowLauncher(buff.toString());
     }
 
@@ -830,10 +835,10 @@ public class HTMLToolBox {
         final StringBuffer buff = new StringBuffer();
         final StringBuffer name = new StringBuffer();
         name.append("workflow_");
-        if (jParams.getPage() != null) {
-            name.append(jParams.getPage().getID());
+        if (processingContext.getPage() != null) {
+            name.append(processingContext.getPage().getID());
         }
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         final String workflowURL = gui.drawWorkflowUrl(key);
         return ("".equals(workflowURL)) ? "" :
                 buff.append("javascript:OpenJahiaScrollableWindow('").append(workflowURL).
@@ -858,8 +863,8 @@ public class HTMLToolBox {
         return workflowURL.length() == 0 ? "" : new StringBuffer(64).append(
                 "OpenJahiaScrollableWindow('").append(workflowURL)
                 .append(engineUrlParams).append("','").append("workflow_").append(
-                basePage).append(cleanSessionID(jParams.getSessionID())).append(
-                "'," + JS_WINDOW_WIDTH + "," + JS_WINDOW_HEIGHT + ")").toString();
+                        basePage).append(cleanSessionID(processingContext.getSessionID())).append(
+                        "'," + JS_WINDOW_WIDTH + "," + JS_WINDOW_HEIGHT + ")").toString();
     }
 
     /**
@@ -869,11 +874,11 @@ public class HTMLToolBox {
         final StringBuffer buff = new StringBuffer();
         final StringBuffer name = new StringBuffer();
         name.append("workflow_showReport_");
-        if (jParams.getPage() != null) {
-            name.append(jParams.getPage().getID());
+        if (processingContext.getPage() != null) {
+            name.append(processingContext.getPage().getID());
         }
-        final String workflowURL = jParams.composeEngineUrl("workflow", "?screen=showReport&objectkey=" + key);
-        name.append(cleanSessionID(jParams.getSessionID()));
+        final String workflowURL = processingContext.composeEngineUrl("workflow", "?screen=showReport&objectkey=" + key);
+        name.append(cleanSessionID(processingContext.getSessionID()));
         return ("".equals(workflowURL)) ? "" :
                 buff.append("javascript:OpenJahiaScrollableWindow('").append(workflowURL).
                         append("','").append(name.toString()).append("',").
@@ -890,7 +895,7 @@ public class HTMLToolBox {
      * @throws JahiaException
      */
     public String drawPagePropertiesLauncher() throws JahiaException {
-        return drawPagePropertiesLauncher(false, jParams.getPageID(), null);
+        return drawPagePropertiesLauncher(false, processingContext.getPageID(), null);
     }
 
     /**
@@ -925,7 +930,7 @@ public class HTMLToolBox {
         if (pageId > 0) {
             name.append(pageId);
         }
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         String url = gui.drawPagePropertiesUrl(pageId);
         if (url != null && url.length() > 0 && screen != null && screen.length() > 0) {
             url = new StringBuffer(url.length() + 25).append(url).append("&gotoscreen=").append(screen).toString();
@@ -937,8 +942,8 @@ public class HTMLToolBox {
         // #ifdef LOCK
         if (checkLock) {
             final LockService lockRegistry = ServicesRegistry.getInstance().getLockService();
-            final LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_PAGE_TYPE, jParams.getPageID());
-            final JahiaUser user = jParams.getUser();
+            final LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_PAGE_TYPE, processingContext.getPageID());
+            final JahiaUser user = processingContext.getUser();
             if (!lockRegistry.canRelease(lockKey, user, user.getUserKey())) {
                 return "";
             }
@@ -962,7 +967,7 @@ public class HTMLToolBox {
         if (theTemplate != null) {
             name.append(theTemplate.getID());
         }
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         return drawLauncher(gui.drawUpdateTemplateUrl(theTemplate),
                 name.toString());
     }
@@ -973,7 +978,7 @@ public class HTMLToolBox {
         if (category != null) {
             name.append(category.getObjectKey().getIDInType());
         }
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         return drawLauncher(gui.drawUpdateCategoryUrl(category),
                 name.toString());
     }
@@ -984,7 +989,7 @@ public class HTMLToolBox {
         if (parentCategoryKey != null) {
             name.append(parentCategoryKey);
         }
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         return drawLauncher(gui.drawAddSubCategoryUrl(parentCategoryKey),
                 name.toString());
     }
@@ -1007,10 +1012,10 @@ public class HTMLToolBox {
                                          final int pageID, String callback)
             throws JahiaException {
         return drawSelectPageLauncher(operation, parentPageID, pageID,
-                callback, jParams.getSiteID(), jParams.getSite()
+                callback, processingContext.getSiteID(), processingContext.getSite()
                         .getHomePageID(), null);
     }
-    
+
     /**
      * Construct the select page URL.
      *
@@ -1022,7 +1027,7 @@ public class HTMLToolBox {
      *                     self page. Set to -1 for page creation.
      * @param callback
      * @param siteID
-     *@param homepageID @return The select page URL.
+     * @param homepageID   @return The select page URL.
      * @throws JahiaException
      */
     public String drawSelectPageLauncher(final String operation,
@@ -1030,8 +1035,8 @@ public class HTMLToolBox {
                                          final int pageID, String callback, int siteID, int homepageID, String templates)
             throws JahiaException {
         final StringBuffer name = new StringBuffer("selectPage_");
-        if (jParams.getPage() != null) {
-            name.append(jParams.getPage().getID());
+        if (processingContext.getPage() != null) {
+            name.append(processingContext.getPage().getID());
         }
         final Map params = new HashMap();
         params.put(SelectPage_Engine.OPERATION, operation);
@@ -1039,13 +1044,13 @@ public class HTMLToolBox {
         params.put(SelectPage_Engine.PAGE_ID, new Integer(pageID));
         params.put(SelectPage_Engine.SITE_ID, new Integer(siteID));
         params.put(SelectPage_Engine.HOMEPAGE_ID, new Integer(homepageID));
-        if (templates != null)  {
+        if (templates != null) {
             params.put("templates", templates);
         }
         params.put("callback", callback);
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         final String selectPageURL = EnginesRegistry.getInstance().getEngineByBeanName("selectPageEngine").renderLink(
-                jParams, params);
+                processingContext, params);
         final StringBuffer buff = new StringBuffer();
         return "".equals(selectPageURL) ? "" :
                 buff.append("OpenJahiaScrollableWindow('").append(selectPageURL).
@@ -1152,7 +1157,7 @@ public class HTMLToolBox {
             throws JahiaException {
         // #ifdef LOCK
         String launcher = "";
-        if (!ProcessingContext.EDIT.equals(jParams.getOperationMode())) {
+        if (!ProcessingContext.EDIT.equals(processingContext.getOperationMode())) {
             return null;
         }
         // Draw launcher without controling the lock.
@@ -1162,7 +1167,7 @@ public class HTMLToolBox {
                 final ContentContainerList contentContainerList = (
                         ContentContainerList) contentObject;
                 final JahiaContainerList jahiaContainerList = contentContainerList.
-                        getJahiaContainerList(jParams, jParams.getEntryLoadRequest());
+                        getJahiaContainerList(processingContext, processingContext.getEntryLoadRequest());
                 launcher = drawAddContainerLauncher(jahiaContainerList,
                         JS_WINDOW_WIDTH, JS_WINDOW_HEIGHT, false);
             } else if (LockKey.UPDATE_CONTAINERLIST_TYPE.equals(lockKey.getType())) {
@@ -1184,15 +1189,15 @@ public class HTMLToolBox {
             }
         } else if (objectClass == ContentPage.class) {
             if (LockKey.UPDATE_PAGE_TYPE.equals(lockKey.getType())) {
-                launcher = drawPagePropertiesLauncher(false, jParams.getPageID(), null);
+                launcher = drawPagePropertiesLauncher(false, processingContext.getPageID(), null);
             }
         }
         final LockService lockRegistry = ServicesRegistry.getInstance().
                 getLockService();
         if (lockRegistry.isAlreadyAcquired(lockKey)) {
-            final JahiaUser user = jParams.getUser();
+            final JahiaUser user = processingContext.getUser();
             if (lockRegistry.canRelease(lockKey, user, user.getUserKey())) {
-                return jParams.composeReleaseLockURL(lockKey);
+                return processingContext.composeReleaseLockURL(lockKey);
             } else {
                 return "javascript:" + launcher;
             }
@@ -1208,10 +1213,10 @@ public class HTMLToolBox {
         String out;
         // #ifdef LOCK
         final StringBuffer name = new StringBuffer("lock_");
-        if (jParams.getPage() != null) {
-            name.append(jParams.getPage().getID());
+        if (processingContext.getPage() != null) {
+            name.append(processingContext.getPage().getID());
         }
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         final String lockURL = gui.drawLockUrl(lockKey);
         final StringBuffer buff = new StringBuffer();
         out = "".equals(lockURL) ? "" :
@@ -1481,7 +1486,7 @@ public class HTMLToolBox {
      * Checks whether we must draw the action menu or not
      */
     private boolean drawingChecks(final ContentBean contentObject) {
-        if (!ProcessingContext.EDIT.equals(jParams.getOperationMode())) {
+        if (!ProcessingContext.EDIT.equals(processingContext.getOperationMode())) {
             // if we are not in edit mode we don't display the GUI
             return false;
         }
@@ -1492,7 +1497,7 @@ public class HTMLToolBox {
         }
 
         try {
-            if (jParams.getContentPage().isMarkedForDelete() &&
+            if (processingContext.getContentPage().isMarkedForDelete() &&
                     !org.jahia.settings.SettingsBean.getInstance().isDisplayMarkedForDeletedContentObjects()) {
                 return false;
             }
@@ -1504,7 +1509,7 @@ public class HTMLToolBox {
             }
 
             if (contentObject.getID() > 0 &&
-                    !contentObject.getACL().getPermission(jParams.getUser(),
+                    !contentObject.getACL().getPermission(processingContext.getUser(),
                             JahiaBaseACL.WRITE_RIGHTS)) {
                 // if the user doesn't have Write access on the object, don't display the GUI
                 return false;
@@ -1588,12 +1593,12 @@ public class HTMLToolBox {
         final ContentBean parent = contentObject.getParent();
         final int parentID = (parent == null) ? 0 : parent.getID();
         final int definitionID = contentObject.getDefinitionID();
-        final int pageID = jParams.getPageID();
+        final int pageID = processingContext.getPageID();
 
         // to get flags to enable workflow and tbpublishing and checks
-        Boolean displayWorkflowStates = UserPreferencesHelper.isDisplayWorkflowState(jParams.getUser());
-        Boolean displayTimeBasedPublishing = UserPreferencesHelper.isDisplayTbpState(jParams.getUser());
-        Boolean aclDifferenceParam = UserPreferencesHelper.isDisplayAclDiffState(jParams.getUser());
+        Boolean displayWorkflowStates = UserPreferencesHelper.isDisplayWorkflowState(processingContext.getUser());
+        Boolean displayTimeBasedPublishing = UserPreferencesHelper.isDisplayTbpState(processingContext.getUser());
+        Boolean aclDifferenceParam = UserPreferencesHelper.isDisplayAclDiffState(processingContext.getUser());
 
         final StringBuilder buff = new StringBuilder(100);
 
@@ -1628,8 +1633,8 @@ public class HTMLToolBox {
                         .getContentObject();
                 tbpCheckForPageLink = true;
                 try {
-                    final Iterator en = cont.getJahiaContainer(jParams,
-                            jParams.getEntryLoadRequest()).getFields();
+                    final Iterator en = cont.getJahiaContainer(processingContext,
+                            processingContext.getEntryLoadRequest()).getFields();
                     while (en.hasNext()) {
                         final JahiaField field = (JahiaField) en.next();
                         if (field.getType() == FieldTypes.PAGE) {
@@ -1667,23 +1672,23 @@ public class HTMLToolBox {
             buff.append(objectKey);
 
             try {
-                    out.append("<a href=\"javascript:");
-                    out.append(drawWorkflowLauncher(buff.toString()));
-                    out.append("\"");
-                    out.append("\">\n");
-                    buff.delete(0, buff.length());
+                out.append("<a href=\"javascript:");
+                out.append(drawWorkflowLauncher(buff.toString()));
+                out.append("\"");
+                out.append("\">\n");
+                buff.delete(0, buff.length());
 
-                    out.append("<img id=\"");
-                    out.append("tbpState_");
-                    out.append(realObjectKey);
-                    out.append("\" border=\"0\" src=\"");
-                    out.append(jParams.getContextPath());
-                    out.append("/ajaxaction/GetWorkflowState?params=/op/edit/pid/");
-                    out.append(jParams.getPageID());
-                    out.append("&key=");
-                    out.append(objectKey);
-                    out.append("\" />");
-                    out.append("</a>\n");
+                out.append("<img id=\"");
+                out.append("tbpState_");
+                out.append(realObjectKey);
+                out.append("\" border=\"0\" src=\"");
+                out.append(processingContext.getContextPath());
+                out.append("/ajaxaction/GetWorkflowState?params=/op/edit/pid/");
+                out.append(processingContext.getPageID());
+                out.append("&key=");
+                out.append(objectKey);
+                out.append("\" />");
+                out.append("</a>\n");
             } catch (JahiaException je) {
                 logger.error(je.getMessage(), je);
             }
@@ -1706,7 +1711,7 @@ public class HTMLToolBox {
                         if (jahiaObjectDelegate.getRule() == null
                                 || jahiaObjectDelegate.getRule().getInherited().booleanValue()) {
                             int jahiaPageID = -1;
-                            final Iterator en = cont.getJahiaContainer(jParams, jParams.getEntryLoadRequest()).getFields();
+                            final Iterator en = cont.getJahiaContainer(processingContext, processingContext.getEntryLoadRequest()).getFields();
                             while (en.hasNext()) {
                                 final JahiaField field = (JahiaField) en.next();
                                 if (field.getType() == FieldTypes.PAGE) {
@@ -1734,8 +1739,8 @@ public class HTMLToolBox {
                     if (PageBean.TYPE.equals(objKey.getType())) {
                         ContentPage contentPage = (ContentPage)
                                 ContentPage.getContentObjectInstance(objKey);
-                        if (contentPage.getPageType(jParams.getEntryLoadRequest()) == JahiaPage.TYPE_LINK) {
-                            int pageLinkId = contentPage.getPageLinkID(jParams);
+                        if (contentPage.getPageType(processingContext.getEntryLoadRequest()) == JahiaPage.TYPE_LINK) {
+                            int pageLinkId = contentPage.getPageLinkID(processingContext);
                             if (pageLinkId > 0) {
                                 ContentPage pageLink = ContentPage.getPage(pageLinkId);
                                 if (pageLink != null) {
@@ -1759,16 +1764,16 @@ public class HTMLToolBox {
             //logger.debug("displaying TBP state");
 
             //todo port the code in ajax action here
-            final String actionURL = jParams.getContextPath() + "/ajaxaction/GetTimeBasedPublishingState?params=/op/edit/pid/" +
-                    jParams.getPageID() + "&key=" + tbpObjectKey;
+            final String actionURL = processingContext.getContextPath() + "/ajaxaction/GetTimeBasedPublishingState?params=/op/edit/pid/" +
+                    processingContext.getPageID() + "&key=" + tbpObjectKey;
 
             String serverURL = actionURL + "&displayDialog=true";
             String dialogTitle = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.dialogTitle",
-                    jParams.getLocale(), "Informational");
+                    processingContext.getLocale(), "Informational");
             StringBuffer cmdBuffer = new StringBuffer("handleTimeBasedPublishing(event,'");
             cmdBuffer.append(serverURL).append("','");
             cmdBuffer.append(tbpObjectKey).append("',").append("'/op/edit/pid/")
-                    .append(jParams.getPageID()).append("','").append(dialogTitle).append("')");
+                    .append(processingContext.getPageID()).append("','").append(dialogTitle).append("')");
             out.append("<img class=\"timeBasedPublishingState\" id=\"");
             out.append("img_");
             out.append(realObjectKey);
@@ -1780,7 +1785,7 @@ public class HTMLToolBox {
         }
         final ContentObject obj = contentObject.getContentObject();
         if (aclDifferenceParam.booleanValue() && !
-                obj.getObjectKey().toString().equals("ContentPage_" + jParams.getSite().getHomePageID()) &&
+                obj.getObjectKey().toString().equals("ContentPage_" + processingContext.getSite().getHomePageID()) &&
                 (!obj.isAclSameAsParent() && obj.getACL().getACL().getEntries().size() > 0)) {
             String title = getResource(resourceBundle, "differentACLTitle");
             if (title == null || title.length() == 0) {
@@ -1831,7 +1836,7 @@ public class HTMLToolBox {
             }
         }
         final String ajaxFunction = buildAjaxCall(objectType, objectID, definitionID, parentID, pageID, uniqueID,
-                jParams.getLocale().toString(), contextualContainerListId);
+                processingContext.getLocale().toString(), contextualContainerListId);
         out.append("  <a id=\"button_");
         out.append(uniqueID);
         out.append("\" href=\"");
@@ -1940,7 +1945,7 @@ public class HTMLToolBox {
                                    final int contextualContainerListId) {
         final StringBuffer buff = new StringBuffer();
         buff.append("javascript:getActionMenu('");
-        buff.append(((ParamBean) jParams).getRequest().getContextPath()).append("', '");
+        buff.append(((ParamBean) processingContext).getRequest().getContextPath()).append("', '");
         buff.append(objectType).append("', ");
         buff.append(objectKey).append(", ");
         buff.append(definitionID).append(", ");
@@ -1961,7 +1966,7 @@ public class HTMLToolBox {
         ResourceBundle res;
         String resValue = null;
 
-        final Locale locale = jParams.getLocale();
+        final Locale locale = processingContext.getLocale();
         try {
             res = ResourceBundle.getBundle(resourceBundle, locale);
             resValue = res.getString(resourceName);
@@ -1977,7 +1982,7 @@ public class HTMLToolBox {
      *
      */
     public String getURLImageContext() {
-        return jParams.getContextPath() + IMAGE_DIRECTORY;
+        return processingContext.getContextPath() + IMAGE_DIRECTORY;
     }
 
     protected String buildUniqueContentID(final String typeName,
@@ -2133,7 +2138,7 @@ public class HTMLToolBox {
         if (applicationBean != null) {
             name.append(applicationBean.getID());
         }
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         return drawLauncher(gui.drawUpdateAppplicationUrl(applicationBean), name.toString());
     }
 
@@ -2144,7 +2149,7 @@ public class HTMLToolBox {
             throws JahiaException {
 
         if (contentContainer == null) return "";
-        final JahiaUser user = jParams.getUser();
+        final JahiaUser user = processingContext.getUser();
 
         if (!contentContainer.checkWriteAccess(user, false, false)) return "";
 
@@ -2153,12 +2158,63 @@ public class HTMLToolBox {
         name.append("restoreContainer_");
 
         name.append(containerID);
-        name.append(cleanSessionID(jParams.getSessionID()));
+        name.append(cleanSessionID(processingContext.getSessionID()));
         final String restoreContainerURL = gui.drawRestoreContainerUrl(contentContainer);
         final StringBuffer buff = new StringBuffer();
         return restoreContainerURL.equals("") ? "" :
                 buff.append("OpenJahiaScrollableWindow('").append(restoreContainerURL).
                         append("','").append(name.toString()).append("',").
                         append(790).append(",").append(340).append(")").toString();
+    }
+
+    /**
+     * draw mashup node
+     *
+     * @param jcrPortletNode
+     * @param ajaxRendering
+     * @return
+     */
+    public void drawMashup(JCRPortletNode jcrPortletNode, boolean ajaxRendering, int windowId, final JspWriter out) throws JahiaException, IOException {
+        if (!(processingContext instanceof ParamBean)) {
+            logger.error("ProcessingContext is not instanceof ParamBean. Mashup can't be rendered");
+            return;
+        }
+        ParamBean jParam = (ParamBean) processingContext;
+
+        boolean computedAjaxRendering = ajaxRendering || processingContext.settings().isPortletAJAXRenderingActivated();
+
+        String appID = null;
+        try {
+            appID = jcrPortletNode.getUUID();
+        } catch (RepositoryException e) {
+            throw new JahiaException("Error rendering mashup", "Error rendering mashup",
+                    JahiaException.APPLICATION_ERROR, JahiaException.ERROR_SEVERITY, e);
+        }
+
+        logger.debug("Dispatching to portlet for appID=" + appID + "...");
+
+        String portletOutput = "";
+        if (computedAjaxRendering) {
+            portletOutput = "<div id=\"" + windowId + "\" windowID=\"" + windowId +
+                    "\" entryPointInstanceID=\"" + appID + "\" " +
+                    JahiaType.JAHIA_TYPE + "=\"" + JahiaType.PORTLET_RENDER +
+                    "\" pathInfo=\"" + processingContext.getPathInfo() +
+                    "\" queryString=\"" + processingContext.getQueryString() +
+                    "\"></div>";
+        } else {
+            portletOutput = ServicesRegistry.getInstance().getApplicationsDispatchService().getAppOutput(windowId, appID, jParam);
+        }
+
+        // remove <html> tags that can break the page
+        if (portletOutput != null) {
+            try {
+                portletOutput = (new RE("</?html>", RE.MATCH_CASEINDEPENDENT)).subst(portletOutput, "");
+            } catch (RESyntaxException e) {
+                logger.debug(".getValue, exception : " + e.toString());
+            }
+        } else {
+            portletOutput = "";
+        }
+        out.print(portletOutput);
     }
 }

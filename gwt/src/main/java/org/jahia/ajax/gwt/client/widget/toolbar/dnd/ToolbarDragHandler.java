@@ -58,7 +58,7 @@ public class ToolbarDragHandler implements DragHandler {
     }
 
     public void onDragEnd(DragEndEvent event) {
-        updateToolbarState(event.getContext(), event.getDropTarget());
+        updateToolbarState(event.getContext());
     }
 
     public void onDragStart(DragStartEvent event) {
@@ -74,13 +74,13 @@ public class ToolbarDragHandler implements DragHandler {
 
     }
 
-    private void updateToolbarState(DragContext dragContext, Widget nextParent) {
+    private void updateToolbarState(DragContext dragContext) {
         if (dragContext.draggable instanceof JahiaToolbar) {
             final JahiaToolbar draggableJahiaToolbar = (JahiaToolbar) dragContext.draggable;
             final int previousState = draggableJahiaToolbar.getGwtToolbar().getState().getValue();
             Log.debug("previous state: " + previousState);
             final List<GWTJahiaToolbar> toolbarList = new ArrayList<GWTJahiaToolbar>();
-
+            final Widget nextParent = dragContext.dropController.getDropTarget();            
             if (nextParent instanceof TargetVerticalPanel) {
                 // preferences toolbars of the new column
                 TargetVerticalPanel targetVerticalPanel = (TargetVerticalPanel) nextParent;

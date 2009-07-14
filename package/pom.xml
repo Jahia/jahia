@@ -33,6 +33,12 @@
                 <module>jahia-jboss-package</module>
             </modules>
         </profile>
+        <profile>
+              <id>qa-jboss</id>
+              <modules>
+                  <module>jahia-qa-package</module>
+              </modules>
+        </profile>
     </profiles>
     
 </project>

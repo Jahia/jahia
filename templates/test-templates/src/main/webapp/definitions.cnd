@@ -85,7 +85,8 @@
  integer longDropdown (choicelist) = 3 < '[1,10]', '[21,30]'
  float double
  float doubleWithDefault = 0.1
- float doubleWithDefaultAsResource = defaultValue
+ /* float doubleWithDefaultAsResource = resourceBundle(defaultValue) deactivated temporarily */
+ float doubleWithDefaultAsResource = 33.3
  float doubleWithDefaultAsExpression = eval(currentSite.id * 10 + 2.5)
  float doubleBetween1and10 < '[1,10]'
  float doubleDropdown (choicelist) = '2.5' < '1.5','2','2.5','3','3.5'
@@ -276,7 +277,6 @@
 [test_templates:rules] > test_templates:generic
 
 [test_templates:form] > test_templates:generic
- containerList maincontent (jnt:mainContentContainer)
 
 [test_templates:cache] > test_templates:generic
  containerList cachecontent (jnt:mainContentContainer)

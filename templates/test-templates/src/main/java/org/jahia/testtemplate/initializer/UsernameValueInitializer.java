@@ -51,7 +51,11 @@ import java.util.List;
  */
 public class UsernameValueInitializer implements ValueInitializer {
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
-        return new Value[] { new ValueImpl(jParams.getUser().getUsername() + new SimpleDateFormat("hh:mm:ss").format(new Date()),
+        if (jParams != null) {
+            return new Value[] { new ValueImpl(jParams.getUser().getUsername() + new SimpleDateFormat("hh:mm:ss").format(new Date()),
                 PropertyType.STRING,false) };
+        } else {
+            return new Value[] { new ValueImpl("Username not available" + new SimpleDateFormat("hh:mm:ss").format(new Date()), PropertyType.STRING, false) };
+        }
     }
 }

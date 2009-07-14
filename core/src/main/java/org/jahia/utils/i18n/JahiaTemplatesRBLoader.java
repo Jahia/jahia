@@ -104,7 +104,11 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
     private JahiaTemplatesRBLoader(ClassLoader loader, String templatePackageName) {
         super();
         templateManagerService =  ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-        aPackage = templateManagerService.getTemplatePackage(templatePackageName);
+        if (templateManagerService != null) {
+            // This case is possible upon Jahia startup, when accessing resources while starting up the template
+            // manager service.
+            aPackage = templateManagerService.getTemplatePackage(templatePackageName);
+        }
         if (loader != null) {
             this.loader = loader;
         }

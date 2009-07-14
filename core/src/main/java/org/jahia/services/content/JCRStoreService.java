@@ -78,6 +78,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
     private Map<String,String> descriptors = new HashMap<String,String>();
     private Map<String,JCRStoreProvider> providers = new HashMap<String,JCRStoreProvider>();
+    private List<JCRStoreProvider> providerList = new ArrayList<JCRStoreProvider>();
     private SortedMap<String,JCRStoreProvider> mountPoints = new TreeMap<String,JCRStoreProvider>();
     private SortedMap<String,JCRStoreProvider> dynamicMountPoints = new TreeMap<String,JCRStoreProvider>();
     private JahiaFieldXRefManager fieldXRefManager = null;
@@ -291,6 +292,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
     public void addProvider(String key, String mountPoint, JCRStoreProvider p) {
         providers.put(key, p);
+        providerList.add(p);
 
         if (mountPoint != null) {
             if (p.isDynamicallyMounted()) {
@@ -303,6 +305,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
     public void removeProvider(String key) {
         JCRStoreProvider p = providers.remove(key);
+        providerList.remove(p);
         if (p != null && p.getMountPoint() != null) {
             mountPoints.remove(p.getMountPoint());
             dynamicMountPoints.remove(p.getMountPoint());
@@ -361,6 +364,15 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
     public Map<String, JCRStoreProvider> getProviders() {
         return providers;
+    }
+
+    /**
+     * Returns a list of providers ordered by registration order. This is important because some providers
+     * are more "low-level" than others.
+     * @return an ORDERED list of providers
+     */
+    public List<JCRStoreProvider> getProviderList() {
+        return providerList;
     }
 
     public JCRStoreProvider getProvider(String path) {

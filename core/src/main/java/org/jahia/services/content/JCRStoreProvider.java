@@ -783,4 +783,8 @@ public class JCRStoreProvider {
         return service.getSystemSession(user, workspace).getProviderSession(this);
     }
 
+    public boolean isInitialized() {
+        return initialized;
+    }
+
 }

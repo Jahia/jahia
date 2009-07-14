@@ -125,14 +125,15 @@ public class JCRSessionWrapper implements Session {
     }
 
     public Node getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
-        Map<String,JCRStoreProvider> providers = service.getProviders();
-
-        for (JCRStoreProvider provider : providers.values()) {
+        for (JCRStoreProvider provider : service.getProviderList()) {
+            if (!provider.isInitialized()) {
+                logger.debug("Provider " + provider.getKey() + " / " + provider.getClass().getName() + " is not yet initialized, skipping...");
+                continue;
+            }
             try {
                 Session session = getProviderSession(provider);
                 Node n = session.getNodeByUUID(uuid);
                 return provider.getNodeWrapper(n, this);
-            } catch (ItemNotFoundException ee) {
             } catch (UnsupportedRepositoryOperationException uso) {
                 logger.debug("getNodeByUUID unsupported by : "+provider.getKey() + " / " + provider.getClass().getName());
             }

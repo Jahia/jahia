@@ -324,7 +324,7 @@
         <init-param>
            <description>Portlet taglibs</description>
            <param-name>tagLibJar2</param-name>
-           <param-value>../jahia.ear/pluto-taglib-2.0.0.jar</param-value>
+           <param-value>../jahia-jboss-config.sar/lib/pluto-taglib-2.0.0.jar</param-value>
         </init-param>
 
         <load-on-startup>3</load-on-startup>

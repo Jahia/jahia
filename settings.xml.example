@@ -22,33 +22,6 @@
        </properties>
      </profile>
 
-     <!-- Deployment settings for Andromeda -->
-     <profile>
-       <!-- Tomcat 5.5 development -->
-       <id>andromeda-deployment-tomcat5-dev</id>
-       <properties>
-         <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
-         <jahia.deploy.targetServerVersion>5.5</jahia.deploy.targetServerVersion>
-         <jahia.deploy.targetServerDirectory>C:/jahia/apache-tomcat-5.5.26</jahia.deploy.targetServerDirectory>
-         <jahia.deploy.war.dirName>jahia</jahia.deploy.war.dirName>
-         <jahia.deploy.war.contextPath>/jahia</jahia.deploy.war.contextPath>
-         <jahia.deploy.war.servletPath>/Jahia</jahia.deploy.war.servletPath>
-         <jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
-       </properties>
-     </profile>
-     <profile>
-       <!-- Tomcat 5.5 production -->
-       <id>andromeda-deployment-tomcat5-prod</id>
-       <properties>
-         <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
-         <jahia.deploy.targetServerVersion>5.5</jahia.deploy.targetServerVersion>
-         <jahia.deploy.targetServerDirectory>C:/jahia/apache-tomcat-5.5.26</jahia.deploy.targetServerDirectory>
-         <jahia.deploy.war.dirName>ROOT</jahia.deploy.war.dirName>
-         <jahia.deploy.war.contextPath>/</jahia.deploy.war.contextPath>
-         <jahia.deploy.war.servletPath>/cms</jahia.deploy.war.servletPath>
-         <jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
-       </properties>
-     </profile>
      <profile>
        <!-- Tomcat 6.0 development -->
        <id>andromeda-deployment-tomcat6-dev</id>
@@ -107,7 +80,7 @@
   </profiles>
   
   <activeProfiles>
-    <activeProfile>andromeda-deployment-tomcat5-dev</activeProfile>
+    <activeProfile>andromeda-deployment-tomcat6-prod</activeProfile>
     <activeProfile>configure</activeProfile>
     <!-- <activeProfile>jboss-deployment</activeProfile> -->
     <!-- <activeProfile>eclipse-integration</activeProfile> -->

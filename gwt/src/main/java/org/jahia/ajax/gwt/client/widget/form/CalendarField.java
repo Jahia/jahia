@@ -31,37 +31,36 @@
  */
 package org.jahia.ajax.gwt.client.widget.form;
 
-import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.util.Format;
-import com.extjs.gxt.ui.client.util.BaseEventPreview;
-import com.extjs.gxt.ui.client.util.KeyNav;
-import com.extjs.gxt.ui.client.util.Rectangle;
-import com.extjs.gxt.ui.client.widget.DatePicker;
-import com.extjs.gxt.ui.client.widget.form.DateTimePropertyEditor;
-import com.extjs.gxt.ui.client.widget.form.TriggerField;
-import com.extjs.gxt.ui.client.widget.menu.DateMenu;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.Element;
+import java.util.Date;
 
 import org.jahia.ajax.gwt.client.widget.calendar.CalendarPicker;
 import org.jahia.ajax.gwt.client.widget.menu.CalendarMenu;
 
-import java.util.Date;
+import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.DomEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.util.DateWrapper;
+import com.extjs.gxt.ui.client.util.Format;
+import com.extjs.gxt.ui.client.util.KeyNav;
+import com.extjs.gxt.ui.client.widget.DatePicker;
+import com.extjs.gxt.ui.client.widget.form.DateTimePropertyEditor;
+import com.extjs.gxt.ui.client.widget.form.TriggerField;
+import com.extjs.gxt.ui.client.widget.menu.DateMenu;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Element;
 
 /**
- * Provides a calendar input field with a {@link com.extjs.gxt.ui.client.widget.DatePicker} dropdown and automatic
- * date validation.
- * <p/>
- * User: hollis
- * Date: 17 juil. 2008
- * Time: 14:34:36
+ * Provides an input field with a date and time picker.
+ * 
+ * @author Sergiy Shyrkov
  */
 public class CalendarField extends TriggerField<Date> {
 
     public static final String DEFAULT_DATE_FORMAT = "dd.MM.yyyy HH:mm";
-    
+
     /**
      * DateField error messages.
      */
@@ -132,57 +131,15 @@ public class CalendarField extends TriggerField<Date> {
       }
 
     }
-    
 
     private Date minValue;
     private Date maxValue;
-    private Menu menu;
-    private BaseEventPreview focusPreview;
+    private DateMenu menu;
+    private boolean formatValue;
     private boolean displayTime;
 
     /**
      * Initializes an instance of this class.
-     * @param datePattern
-     * @param displayTime
-     * @param readOnly
-     * @param fieldName
-     * @param shadow
-     * @param value
-     */
-    public CalendarField(String datePattern,
-            boolean displayTime,
-            boolean readOnly,
-            final String fieldName,
-            boolean shadow,
-            Date value) {
-        
-        this.displayTime = displayTime; 
-        autoValidate = false;
-        propertyEditor = new DateTimePropertyEditor(datePattern);
-        
-//        dateField = new DateField();
-//        messages = dateField.getMessages();
-        messages = new DateFieldMessages();
-        
-        setTriggerStyle("x-form-date-trigger");
-        
-        if (value != null) {
-//            dateField.setValue(value);
-            setValue(value);
-        }
-        
-        if (fieldName != null && fieldName.length() > 0) {
-            setName(fieldName);
-            setItemId(fieldName);
-        }
-        
-        setReadOnly(readOnly);
-        setHideTrigger(readOnly);
-        setShadow(shadow);
-    }
-
-    /**
-     * Creates a new date field.
      */
     public CalendarField() {
         this(DEFAULT_DATE_FORMAT, true, false, null, false, null);
@@ -196,214 +153,77 @@ public class CalendarField extends TriggerField<Date> {
     }
 
     /**
+     * Initializes an instance of this class.
+     * 
+     * @param datePattern
+     * @param displayTime
+     * @param readOnly
+     * @param fieldName
+     * @param shadow
+     * @param value
+     */
+    public CalendarField(String datePattern, boolean displayTime,
+            boolean readOnly, final String fieldName, boolean shadow, Date value) {
+        super();
+        autoValidate = false;
+        propertyEditor = new DateTimePropertyEditor(datePattern);
+        messages = new DateFieldMessages();
+        setTriggerStyle("x-form-date-trigger");
+        this.displayTime = displayTime; 
+
+        if (value != null) {
+            // dateField.setValue(value);
+            setValue(value);
+        }
+
+        if (fieldName != null && fieldName.length() > 0) {
+            setName(fieldName);
+            setItemId(fieldName);
+        }
+
+        setReadOnly(readOnly);
+        setHideTrigger(readOnly);
+        setShadow(shadow);
+    }
+
+    /**
+     * Returns the field's date picker.
+     * 
+     * @return the date picker
+     */
+    public DatePicker getDatePicker() {
+      if (menu == null) {
+        menu = displayTime ? new CalendarMenu() : new DateMenu();
+
+        menu.getDatePicker().addListener(Events.Select, new Listener<ComponentEvent>() {
+          public void handleEvent(ComponentEvent ce) {
+            focusValue = getValue();
+            Date date = menu.getDate();
+            if (displayTime) {
+                date.setHours(((CalendarPicker) menu.getDatePicker()).getSelectedHour());
+                date.setMinutes(((CalendarPicker) menu.getDatePicker()).getSelectedMinute());
+            }
+            setValue(date);
+            menu.hide();
+            el().blur();
+          }
+        });
+        menu.addListener(Events.Hide, new Listener<ComponentEvent>() {
+          public void handleEvent(ComponentEvent be) {
+            focus();
+          }
+        });
+      }
+      return menu.getDatePicker();
+    }
+
+    /**
      * Returns the field's max value.
-     *
+     * 
      * @return the max value
      */
     public Date getMaxValue() {
-        return maxValue;
-    }
-
-    /**
-     * Returns the field's min value.
-     *
-     * @return the min value
-     */
-    public Date getMinValue() {
-        return minValue;
-    }
-
-    @Override
-    public DateTimePropertyEditor getPropertyEditor() {
-        return (DateTimePropertyEditor) propertyEditor;
-    }
-
-    /**
-     * Sets the field's max value.
-     *
-     * @param maxValue the max value
-     */
-    public void setMaxValue(Date maxValue) {
-        this.maxValue = maxValue;
-    }
-
-    /**
-     * The maximum date allowed.
-     *
-     * @param minValue the max value
-     */
-    public void setMinValue(Date minValue) {
-        this.minValue = minValue;
-    }
-
-    @Override
-    public void setRawValue(String value) {
-        super.setRawValue(value);
-    }
-
-    @Override
-    protected void onTriggerClick(ComponentEvent ce) {
-        super.onTriggerClick(ce);
-        if (disabled || isReadOnly()) {
-            return;
-        }
-        if (menu == null) {
-            menu = displayTime ? new CalendarMenu() : new DateMenu();
-            menu.addListener(Events.Select, new Listener<MenuEvent>() {
-                public void handleEvent(MenuEvent ce) {
-                    focusValue = getValue();
-                    Date date = getDate();
-                    if (displayTime) {
-                        date.setHours(((CalendarPicker) getDatePicker()).getSelectedHour());
-                        date.setMinutes(((CalendarPicker) getDatePicker()).getSelectedMinute());
-                    }
-                    setValue(date);
-                    fireChangeEvent(focusValue, getValue());
-                }
-            });
-        }
-        expand();
-    }
-
-    @Override
-    protected boolean validateValue(String value) {
-        if (!super.validateValue(value)) {
-            return false;
-        }
-        if (value.length() < 1) { // if it's blank and textfield didn't flag it then
-            // it's valid
-            return true;
-        }
-
-        DateTimeFormat format = getPropertyEditor().getFormat();
-
-        Date date = null;
-
-        try {
-            date = getPropertyEditor().convertStringValue(value);
-        } catch (Exception e) {
-
-        }
-
-        if (date == null) {
-            String error = null;
-            if (getMessages().getInvalidText() != null) {
-                error = Format.substitute(getMessages().getInvalidText(), 0);
-            } else {
-                error = GXT.MESSAGES.dateField_invalidText(value, format.getPattern());
-            }
-            forceInvalid(error);
-            return false;
-        }
-
-        if (minValue != null && date.before(minValue)) {
-
-            String error = null;
-            if (getMessages().getMinText() != null) {
-                error = Format.substitute(getMessages().getMinText(), format.format(minValue));
-            } else {
-                error = GXT.MESSAGES.dateField_minText(format.format(minValue));
-            }
-            forceInvalid(error);
-            return false;
-        }
-        if (maxValue != null && date.after(maxValue)) {
-            String error = null;
-            if (getMessages() != null) {
-                error = Format.substitute(getMessages().getMaxText(), format.format(maxValue));
-            } else {
-                error = GXT.MESSAGES.dateField_minText(format.format(maxValue));
-            }
-            forceInvalid(error);
-            return false;
-        }
-
-        return true;
-    }
-
-    private void doBlur(ComponentEvent ce) {
-        if (menu != null && menu.isVisible()) {
-            menu.hide();
-        }
-        super.onBlur(ce);
-        focusPreview.remove();
-    }
-
-    @Override
-    protected void onBlur(final ComponentEvent ce) {
-        String v = getRawValue();
-        try {
-            setValue(getPropertyEditor().convertStringValue(v));
-        } catch (Exception e) {
-
-        }
-        Rectangle rec = trigger.getBounds();
-        if (rec.contains(BaseEventPreview.getLastClientX(), BaseEventPreview.getLastClientY())) {
-            ce.stopEvent();
-            return;
-        }
-        if (menu != null && menu.isVisible()) {
-            return;
-        }
-        hasFocus = false;
-        doBlur(ce);
-    }
-
-    protected void onDown(FieldEvent fe) {
-        fe.cancelBubble();
-        if (menu == null || !menu.isAttached()) {
-            expand();
-        }
-    }
-
-    @Override
-    protected void onFocus(ComponentEvent ce) {
-        super.onFocus(ce);
-        focusPreview.add();
-    }
-
-    @Override
-    protected void onKeyPress(FieldEvent fe) {
-        super.onKeyPress(fe);
-        int code = fe.getEvent().getKeyCode();
-        if (code == 8 || code == 9) {
-            if (menu != null && menu.isAttached()) {
-                menu.hide();
-            }
-        }
-    }
-
-    @Override
-    protected void onRender(Element target, int index) {
-        super.onRender(target, index);
-        focusPreview = new BaseEventPreview();
-
-        new KeyNav<FieldEvent>(this) {
-            public void onDown(FieldEvent fe) {
-                CalendarField.this.onDown(fe);
-            }
-
-            public void handleEvent(FieldEvent fieldEvent) {
-                onDown(fieldEvent);
-            }
-        };
-    }
-
-    protected void expand() {
-        DatePicker picker = getDatePicker();
-
-        Object v = getValue();
-        final Date d;
-        if (v instanceof Date) {
-            d = (Date) v;
-        } else {
-            d = new Date();
-        }
-        picker.setValue(d, true);
-        picker.setMinDate(minValue);
-        picker.setMaxDate(maxValue);
-        menu.show(wrap.dom, "tl-bl?");
-        menu.focus();
+      return maxValue;
     }
 
     @Override
@@ -411,14 +231,189 @@ public class CalendarField extends TriggerField<Date> {
       return (DateFieldMessages) messages;
     }
 
-    private DatePicker getDatePicker() {
-        return menu instanceof DateMenu ? ((DateMenu) menu).getDatePicker()
-                : ((CalendarMenu) menu).getDatePicker();
+    /**
+     * Returns the field's min value.
+     * 
+     * @return the min value
+     */
+    public Date getMinValue() {
+      return minValue;
+    }
+    
+    @Override
+    public DateTimePropertyEditor getPropertyEditor() {
+      return (DateTimePropertyEditor) propertyEditor;
     }
 
-    private Date getDate() {
-        return menu instanceof DateMenu ? ((DateMenu) menu).getDate()
-                : ((CalendarMenu) menu).getDate();
+    /**
+     * Returns true if formatting is enabled.
+     * 
+     * @return the format value state
+     */
+    public boolean isFormatValue() {
+      return formatValue;
+    }
+
+    /**
+     * True to format the user entered value using the field's property editor
+     * after passing validation (defaults to false). Format value should not be
+     * enabled when auto validating.
+     * 
+     * @param formatValue true to format the user value
+     */
+    public void setFormatValue(boolean formatValue) {
+      this.formatValue = formatValue;
+    }
+
+    /**
+     * Sets the field's max value.
+     * 
+     * @param maxValue the max value
+     */
+    public void setMaxValue(Date maxValue) {
+      if (maxValue != null) {
+        maxValue = new DateWrapper(maxValue).clearTime().asDate();
+      }
+      this.maxValue = maxValue;
+    }
+
+    /**
+     * The maximum date allowed.
+     * 
+     * @param minValue the max value
+     */
+    public void setMinValue(Date minValue) {
+      if (minValue != null) {
+        minValue = new DateWrapper(minValue).clearTime().asDate();
+      }
+      this.minValue = minValue;
+    }
+    
+    @Override
+    public void setRawValue(String value) {
+      super.setRawValue(value);
+    }
+
+    protected void expand() {
+      DatePicker picker = getDatePicker();
+
+      Object v = getValue();
+      Date d = null;
+      if (v instanceof Date) {
+        d = (Date) v;
+      } else {
+        d = new Date();
+      }
+      picker.setValue(d, true);
+      picker.setMinDate(minValue);
+      picker.setMaxDate(maxValue);
+
+      menu.show(wrap.dom, "tl-bl?");
+      menu.focus();
+    }
+
+    protected void onDown(FieldEvent fe) {
+      fe.cancelBubble();
+      if (menu == null || !menu.isAttached()) {
+        expand();
+      }
+    }
+
+    @Override
+    protected void onKeyPress(FieldEvent fe) {
+      super.onKeyPress(fe);
+      int code = fe.getKeyCode();
+      if (code == 8 || code == 9) {
+        if (menu != null && menu.isAttached()) {
+          menu.hide();
+        }
+      }
+    }
+
+    @Override
+    protected void onRender(Element target, int index) {
+      super.onRender(target, index);
+
+      new KeyNav<FieldEvent>(this) {
+        public void onDown(FieldEvent fe) {
+          CalendarField.this.onDown(fe);
+        }
+      };
+    }
+
+    @Override
+    protected void onTriggerClick(ComponentEvent ce) {
+      super.onTriggerClick(ce);
+      if (isReadOnly()) {
+        return;
+      }
+
+      expand();
+      
+      getInputEl().focus();
+    }
+
+    protected boolean validateBlur(DomEvent e,Element target){
+        return menu == null|| (menu != null && !menu.isVisible());
+    }
+
+    @Override
+    protected boolean validateValue(String value) {
+      if (!super.validateValue(value)) {
+        return false;
+      }
+      if (value.length() < 1) { // if it's blank and textfield didn't flag it then
+        // it's valid
+        return true;
+      }
+
+      DateTimeFormat format = getPropertyEditor().getFormat();
+
+      Date date = null;
+
+      try {
+        date = getPropertyEditor().convertStringValue(value);
+      } catch (Exception e) {
+
+      }
+
+      if (date == null) {
+        String error = null;
+        if (getMessages().getInvalidText() != null) {
+          error = Format.substitute(getMessages().getInvalidText(), 0);
+        } else {
+          error = GXT.MESSAGES.dateField_invalidText(value, format.getPattern().toUpperCase());
+        }
+        markInvalid(error);
+        return false;
+      }
+
+      if (minValue != null && date.before(minValue)) {
+        String error = null;
+        if (getMessages().getMinText() != null) {
+          error = Format.substitute(getMessages().getMinText(), format.format(minValue));
+        } else {
+          error = GXT.MESSAGES.dateField_minText(format.format(minValue));
+        }
+        markInvalid(error);
+        return false;
+      }
+      if (maxValue != null && date.after(maxValue)) {
+        String error = null;
+        if (getMessages().getMaxText() != null) {
+          error = Format.substitute(getMessages().getMaxText(), format.format(maxValue));
+        } else {
+          error = GXT.MESSAGES.dateField_maxText(format.format(maxValue));
+        }
+        markInvalid(error);
+        return false;
+      }
+
+      if (formatValue && getPropertyEditor().getFormat() != null) {
+        setRawValue(getPropertyEditor().getFormat().format(date));
+      }
+
+      return true;
     }
 
 }

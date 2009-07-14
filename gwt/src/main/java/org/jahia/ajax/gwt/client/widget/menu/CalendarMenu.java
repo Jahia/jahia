@@ -31,91 +31,36 @@
  */
 package org.jahia.ajax.gwt.client.widget.menu;
 
-import com.extjs.gxt.ui.client.widget.ComponentHelper;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.google.gwt.user.client.Element;
+import java.util.Date;
+
 import org.jahia.ajax.gwt.client.widget.calendar.CalendarPicker;
 
-import java.util.Date;
+import com.extjs.gxt.ui.client.widget.menu.DateMenu;
 
 /**
  * @author Khue NGuyen
  */
-public class CalendarMenu extends Menu {
-
-    /**
-     * The internal date picker.
-     */
-    protected CalendarPicker picker;
-
-    private CalendarMenuItem item;
-
-    public CalendarMenu(Date date) {
-        item = new CalendarMenuItem(date);
-        picker = item.picker;
-        add(item);
-        baseStyle = "x-date-menu";
-        setAutoHeight(true);
-    }
+public class CalendarMenu extends DateMenu {
 
     public CalendarMenu() {
-        item = new CalendarMenuItem();
-        picker = item.picker;
-        add(item);
-        baseStyle = "x-date-menu";
-        setAutoHeight(true);
+        this(null);
     }
 
-    /**
-     * Returns the selected date.
-     *
-     * @return the date
-     */
-    public Date getDate() {
-        return item.picker.getValue();
+    public CalendarMenu(Date date) {
+        super();
+        remove(picker);
+        picker = new CalendarPicker(date);
+        add(picker);
+    }
+
+    @Override
+    public CalendarPicker getDatePicker() {
+        return (CalendarPicker) super.getDatePicker();
     }
 
     public void setDate(Date date) {
-        if (date == null || this.picker == null) {
-            return;
+        if (date != null && this.picker != null) {
+            this.picker.setValue(date);
         }
-        this.picker.setValue(date);
     }
-
-    /**
-     * Displays this menu relative to another element.
-     *
-     * @param elem the element to align to
-     * @param pos the {@link El#alignTo} anchor position to use in aligning to the
-     *          element (defaults to defaultAlign)
-     */
-    public void show(Element elem, String pos) {
-        this.picker.hide();
-        super.show(elem, pos);
-        this.picker.show();
-    }
-
-    /**
-     * Returns the date picker.
-     *
-     * @return the date picker
-     */
-    public CalendarPicker getDatePicker() {
-        return picker;
-    }
-
-    @Override
-    protected void doAttachChildren() {
-        super.doAttachChildren();
-        ComponentHelper.doAttach(item.picker);
-    }
-
-    @Override
-    protected void doDetachChildren() {
-        super.doDetachChildren();
-        ComponentHelper.doDetach(item.picker);
-    }
-
 }

@@ -35,16 +35,16 @@ package org.jahia.taglibs.uicomponents.portlets;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.gui.HTMLToolBox;
 import org.jahia.gui.GuiBean;
-import org.jahia.data.beans.RequestBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRPortletNode;
 import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.Node;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 
 /**
- * Created by IntelliJ IDEA.
+ * Custom tag for rendering a specified portlet.
  * User: ktlili
  * Date: Jul 10, 2009
  * Time: 10:46:15 AM
@@ -56,23 +56,26 @@ public class PortletRenderTag extends AbstractJahiaTag {
     private boolean ajaxRendering = true;
     private int windowId;
 
-    private GuiBean guiBean = null;
-    private ProcessingContext processingContext = null;
-
-    private HTMLToolBox htmlToolBox = null;
-    private RequestBean requestBean = null;
-
-
     public int doStartTag() {
         try {
             if(!(mashupNode instanceof JCRNodeWrapper)){
                 logger.error("mashupNode must be an instance of JCRNodeWrapper");
                 return SKIP_BODY;               
             }
-            requestBean = (RequestBean) pageContext.findAttribute("currentRequest");
-            processingContext = requestBean.getProcessingContext();
-            guiBean = new GuiBean(processingContext);
-            htmlToolBox = new HTMLToolBox(guiBean, processingContext);
+            if (windowId <= 0) {
+                Integer globalId = (Integer) pageContext.getAttribute(this
+                        .getClass().getName(), PageContext.REQUEST_SCOPE);
+                if (globalId != null) {
+                    globalId++;
+                } else {
+                    globalId = 1;
+                }
+                pageContext.setAttribute(this.getClass().getName(), globalId,
+                        PageContext.REQUEST_SCOPE);
+                windowId = globalId;
+            }
+            ProcessingContext processingContext = getProcessingContext();
+            HTMLToolBox htmlToolBox = new HTMLToolBox(new GuiBean(processingContext), processingContext);
             htmlToolBox.drawMashup(new JCRPortletNode((JCRNodeWrapper) mashupNode), ajaxRendering, windowId, pageContext.getOut());
 
         } catch (Exception e) {
@@ -86,12 +89,8 @@ public class PortletRenderTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         super.doEndTag();
         mashupNode = null;
-        ajaxRendering = false;
+        ajaxRendering = true;
         windowId=-1;
-        processingContext = null;
-        requestBean = null;
-        guiBean = null;
-        htmlToolBox = null;
         return EVAL_PAGE;
     }
 

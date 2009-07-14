@@ -2181,7 +2181,7 @@ public class HTMLToolBox {
         }
         ParamBean jParam = (ParamBean) processingContext;
 
-        boolean computedAjaxRendering = ajaxRendering || processingContext.settings().isPortletAJAXRenderingActivated();
+        boolean computedAjaxRendering = ajaxRendering && processingContext.settings().isPortletAJAXRenderingActivated();
 
         String appID = null;
         try {

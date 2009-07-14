@@ -108,7 +108,7 @@
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy/${jahia.deploy.war.dirName}/WEB-INF/lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy/${jahia.deploy.war.dirName}.war/WEB-INF/lib</outputDirectory>
                             <overWriteReleases>true</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>

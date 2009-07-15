@@ -36,9 +36,12 @@ import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.NodeIteratorImpl;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.render.Resource;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.bin.Jahia;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -49,6 +52,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.security.Principal;
 import java.util.Collections;
+import java.util.Locale;
 
 /**
  * Tag implementation for exposing a result of XPath JCR query into the template scope.
@@ -99,7 +103,16 @@ public class JCRXPathTag extends AbstractJahiaTag {
             logger.warn("method not implemented for JahiaGroup");
         } else {
             try {
-                QueryManager queryManager = ServicesRegistry.getInstance().getJCRStoreService().getQueryManager((JahiaUser) p);
+                String workspace = null;
+                Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
+                Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
+                if (currentResource != null) {
+                    workspace = currentResource.getWorkspace();
+                    locale = currentResource.getLocale();
+                }
+                JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession((JahiaUser) p, workspace, locale);
+                QueryManager queryManager = session.getWorkspace().getQueryManager();
+
                 if (queryManager != null) {
                     Query q = queryManager.createQuery(path, Query.XPATH);
                     // execute query

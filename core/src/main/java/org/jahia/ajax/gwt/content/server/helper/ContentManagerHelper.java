@@ -985,9 +985,27 @@ public class ContentManagerHelper {
                     if (dest.isWriteable()) {
                         try {
                             /*Property p = */
-                            Node reference = dest.addNode(name, "jnt:nodeReference");
-                            reference.setProperty("j:node", aNode.getUUID());
+                            if (dest.getPrimaryNodeTypeName().equals("jnt:members")) {
+                                if(node.getPrimaryNodeTypeName().equals("jnt:user")){
+                                    Node member = dest.addNode(name, Constants.JAHIANT_MEMBER);
+                                    member.setProperty("j:member", aNode.getUUID());
+                                } else if(node.getPrimaryNodeTypeName().equals("jnt:group")){
+                                    Node node1 = node.getParent().getParent();
+                                    int id = 0;
+                                    if(node1!=null && node1.getPrimaryNodeType().getName().equals(Constants.JAHIANT_VIRTUALSITE)) {
+                                        id = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(node1.getName()).getID();
+                                    }
+                                    Node member = dest.addNode(name+"___"+ id, Constants.JAHIANT_MEMBER);
+                                    member.setProperty("j:member", aNode.getUUID());
+                                }
+                            } else {
+                                Node reference = dest.addNode(name, "jnt:nodeReference");
+                                reference.setProperty("j:node", aNode.getUUID());
+                            }
                         } catch (RepositoryException e) {
+                            logger.error("Exception", e);
+                            missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(dest.getPath()).toString());
+                        } catch (JahiaException e) {
                             logger.error("Exception", e);
                             missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(dest.getPath()).toString());
                         }

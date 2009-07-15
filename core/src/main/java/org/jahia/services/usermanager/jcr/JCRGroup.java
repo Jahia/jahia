@@ -232,7 +232,12 @@ public class JCRGroup extends JahiaGroup {
                 Node member = (Node) iterator.next();
                 if (member.isNodeType(Constants.JAHIANT_MEMBER)) {
                     JahiaUser jahiaUser = JahiaUserManagerRoutingService.getInstance().lookupUser(member.getName());
-                    principalMap.put(member.getName(), jahiaUser);
+                    if(jahiaUser!=null) {
+                        principalMap.put(member.getName(), jahiaUser);
+                    } else {
+                        String s = member.getName().replace("___",":");
+                        principalMap.put(s, JahiaGroupManagerRoutingService.getInstance().lookupGroup(s));
+                    }
                 }
             }
         } catch (RepositoryException e) {

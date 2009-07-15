@@ -75,7 +75,7 @@ public class MyStatusBar extends LayoutContainer {
     * Clears the status content.
     */
     public void clear() {
-        statusBar.clearState();
+        statusBar.clearStatus("");
     }
 
     /**

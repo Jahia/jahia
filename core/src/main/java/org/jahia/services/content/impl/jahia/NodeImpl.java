@@ -87,7 +87,7 @@ public abstract class NodeImpl extends ItemImpl implements Node {
         this.nodetype = nodetype;
     }
 
-    protected void addMixin(ExtendedNodeType mixin) {
+    protected void initMixin(ExtendedNodeType mixin) {
         this.mixin.add(mixin);
     }
 

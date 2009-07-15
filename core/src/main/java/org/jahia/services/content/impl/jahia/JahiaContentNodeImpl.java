@@ -66,7 +66,7 @@ import org.jahia.params.ProcessingContext;
  * Date: Oct 16, 2008
  * Time: 2:39:58 PM
  * To change this template use File | Settings | File Templates.
- */
+ */                                             
 public abstract class JahiaContentNodeImpl extends NodeImpl {
 
     protected ContentObject object;
@@ -78,7 +78,10 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
         super(session);
         this.object = object;
         try {
-            addMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:workflowed"));
+            initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:workflowed"));
+            if (!object.isAclSameAsParent()) {
+                initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:accessControlled"));
+            }
         } catch (NoSuchNodeTypeException e) {
             e.printStackTrace();
         }
@@ -178,7 +181,6 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
 
             // acl
             if (!object.isAclSameAsParent()) {
-                addMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:accessControlled"));
                 initNode(new JahiaAclNodeImpl(getSession(), object.getAclID(), this));
             }
 

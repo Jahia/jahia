@@ -93,7 +93,8 @@ public class FormFieldCreator {
                     }
                     break;
                 case GWTJahiaNodeSelectorType.RICHTEXT:
-                    field = new TextArea();
+                    field = new HtmlEditor();
+                    field.setHeight(150);
                     break;
                 case GWTJahiaNodeSelectorType.DATETIMEPICKER:
                     field = new CalendarField();

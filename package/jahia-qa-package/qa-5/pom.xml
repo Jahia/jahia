@@ -11,24 +11,6 @@
     <packaging>pom</packaging>
     <dependencies>
         <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>apache-tomcat</artifactId>
-            <version>${jahia.tomcat.version}</version>
-            <type>tar.gz</type>
-        </dependency>
-        <dependency>
-            <groupId>lambdaprobe</groupId>
-            <artifactId>lambdaprobe</artifactId>
-            <version>jahia-version</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>testsuite-jahia</groupId>
-            <artifactId>testsuite-jahia</artifactId>
-            <version>1.0</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-ear</artifactId>
             <version>${jahia.package.version}</version>
@@ -70,9 +52,9 @@
                                             <destFileName>probe.war</destFileName>
                                         </artifactItem>
                                         <artifactItem>
-                                            <groupId>testsuite-jahia</groupId>
-                                            <artifactId>testsuite-jahia</artifactId>
-                                            <version>1.0</version>
+                                            <groupId>org.jahia.server</groupId>
+                                            <artifactId>pluto-testsuite</artifactId>
+                                            <version>2.0.0</version>
                                             <type>war</type>
                                             <overWrite>true</overWrite>
                                             <outputDirectory>${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/webapps</outputDirectory>

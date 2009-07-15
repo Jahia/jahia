@@ -215,7 +215,7 @@ public class JRCndWriter {
         out.write(")");
         writeDefaultValues(pd.getDefaultValues());
         out.write(ntd.getPrimaryItemName() != null && ntd.getPrimaryItemName().equals(pd.getName()) ? " primary" : "");
-        if (pd.isMandatory()) {
+        if (pd.isMandatory() && !pd.isInternationalized()) {
             out.write(" mandatory");
         }
         if (pd.isMultiple()) {

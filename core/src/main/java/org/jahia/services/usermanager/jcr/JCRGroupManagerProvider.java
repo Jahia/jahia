@@ -124,7 +124,6 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     nodeWrapper.setProperty((String) entry.getKey(), (String) entry.getValue());
                 }
             }
-            nodeWrapper.addNode("j:members", Constants.JAHIANT_MEMBERS);
             jcrSessionWrapper.save();
             return new JCRGroup(nodeWrapper.getUUID(), jcrStoreService, siteID);
         } catch (RepositoryException e) {

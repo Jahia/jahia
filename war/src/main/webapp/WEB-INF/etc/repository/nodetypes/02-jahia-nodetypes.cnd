@@ -157,7 +157,7 @@
 [jnt:group] > jnt:folder
  - j:hidden (boolean)
  - * (string)
- + j:members (jnt:members)
+ + j:members (jnt:members) = jnt:members mandatory autocreated
 
 //---------------------------------------------------------
 // AXIS views

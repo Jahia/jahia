@@ -290,10 +290,14 @@ public class JahiaFieldDefinition extends ContentDefinition implements Serializa
                     return FieldTypes.DATE;
                 case PropertyType.BOOLEAN :
                     return FieldTypes.BOOLEAN;
+                case ExtendedPropertyType.WEAKREFERENCE :
                 case PropertyType.REFERENCE :
                     switch (propDef.getSelector()) {
                         case SelectorType.PORTLET:
                             return FieldTypes.APPLICATION;
+                        case SelectorType.FILEPICKER:
+                        case SelectorType.FILEUPLOAD:
+                            return FieldTypes.FILE;
                     }
             }
         } else {

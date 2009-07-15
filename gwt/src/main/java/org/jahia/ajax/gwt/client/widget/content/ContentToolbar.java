@@ -32,10 +32,15 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
+import org.jahia.ajax.gwt.client.widget.language.LanguageSwitcher;
+import org.jahia.ajax.gwt.client.widget.language.LanguageSelectedListener;
 import org.jahia.ajax.gwt.client.util.content.actions.*;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.service.JahiaServiceAsync;
+import org.jahia.ajax.gwt.client.service.JahiaService;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -48,6 +53,8 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.List;
 
@@ -140,6 +147,28 @@ public class ContentToolbar extends TopBar {
             menu.add(templates) ;
             mMenu.setMenu(menu);
             menus.add(mMenu) ;
+
+            LanguageSwitcher languageSwitcher = new LanguageSwitcher(true, true, false, false, JahiaGWTParameters.getLanguage(), false, new LanguageSelectedListener() {
+                private final JahiaServiceAsync jahiaServiceAsync = JahiaService.App.getInstance();
+
+                public void onLanguageSelected(String languageSelected) {
+                    jahiaServiceAsync.changeLocaleForAllPagesAndEngines(languageSelected, new AsyncCallback() {
+                        public void onFailure(Throwable throwable) {
+                        }
+
+                        public void onSuccess(Object o) { // TODO chained rpc calls are ugly... well, not so bad after all
+                            Window.Location.reload();
+                        }
+                    });
+                }
+            });
+            Button item = new Button("loading...") ;
+            item.setEnabled(false);
+            languageSwitcher.init(item);
+
+            menus.add(item);
+ 
+
             m_component.add(menus) ;
         }
 

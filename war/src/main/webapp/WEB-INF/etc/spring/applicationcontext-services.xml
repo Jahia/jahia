@@ -217,6 +217,7 @@ FRAG2(frag_size=60000)</value>
 
     <bean id="JCRUserManagerProvider" class="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
         <property name="jcrStoreService" ref="JCRStoreService"/>
+        <property name="cacheService" ref="JahiaCacheService"/>
         <property name="key" value="jahia_jcr"/>
         <property name="defaultProvider" value="true"/>
         <property name="readOnly" value="false"/>

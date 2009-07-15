@@ -36,6 +36,8 @@ import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.cache.Cache;
+import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRNodeWrapperImpl;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -50,11 +52,10 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -67,7 +68,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
     private transient static Logger logger = Logger.getLogger(JCRUserManagerProvider.class);
     private transient JCRStoreService jcrStoreService;
     private static JCRUserManagerProvider mUserManagerService;
-
+    private transient CacheService cacheService;
+    private transient Cache cache;
 
     /**
      * Create an new instance of the User Manager Service if the instance do not
@@ -84,6 +86,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
 
     public void setJcrStoreService(JCRStoreService jcrStoreService) {
         this.jcrStoreService = jcrStoreService;
+    }
+
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     /**
@@ -234,11 +240,23 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      */
     public JahiaUser lookupUserByKey(String userKey) {
         try {
+            String name = userKey.split("}")[1];
+            if (cache == null) {
+                start();
+            }
+            if (cache.containsKey(name)) {
+                return (JahiaUser) cache.get(name);
+            }
             JCRSessionWrapper session = jcrStoreService.getSystemSession();
-            Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + userKey.split("}")[1]);
-            if(!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean())
-            return new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
+            Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name);
+            if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
+                JCRUser user = new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
+                cache.put(name,user);
+                return user;
+            }
         } catch (RepositoryException e) {
+            logger.error(e);
+        } catch (JahiaInitializationException e) {
             logger.error(e);
         }
         return null;
@@ -252,28 +270,50 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      */
     public JahiaUser lookupUser(String name) {
         try {
+            if (cache == null) {
+                start();
+            }
+            if (cache.containsKey(name)) {
+                return (JahiaUser) cache.get(name);
+            }
             JCRSessionWrapper session = jcrStoreService.getSystemSession();
             Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name.trim());
-            if(!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean())
-            return new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
+            if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
+                JCRUser user = new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
+                cache.put(name,user);
+                return user;
+            }
         } catch (PathNotFoundException e) {
             logger.debug(e);
         } catch (RepositoryException e) {
             logger.warn(e);
+        } catch (JahiaInitializationException e) {
+            logger.error(e);
         }
         return null;
     }
 
     public JahiaUser lookupExternalUser(String name) {
         try {
+            if (cache == null) {
+                start();
+            }
+            if (cache.containsKey(name)) {
+                return (JahiaUser) cache.get(name);
+            }
             JCRSessionWrapper session = jcrStoreService.getSystemSession();
             Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name.trim());
-            if(usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean())
-            return new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
+            if (usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
+                JCRUser user = new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
+                cache.put(name,user);
+                return user;
+            }
         } catch (PathNotFoundException e) {
             logger.debug(e);
         } catch (RepositoryException e) {
             logger.warn(e);
+        } catch (JahiaInitializationException e) {
+            logger.error(e);
         }
         return null;
     }
@@ -304,8 +344,11 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 if (searchCriterias != null && searchCriterias.size() > 0) {
                     // Avoid wildcard attribute
                     if (!(searchCriterias.containsKey("*") && searchCriterias.size() == 1 && searchCriterias.getProperty("*").equals("*"))) {
-                        query.append(" WHERE ");
+                        query.append(" WHERE "+JCRUser.J_EXTERNAL+" = 'false' ");
                         Iterator<Map.Entry<Object, Object>> objectIterator = searchCriterias.entrySet().iterator();
+                        if (objectIterator.hasNext()) {
+                                query.append(" AND ");
+                            }
                         while (objectIterator.hasNext()) {
                             Map.Entry<Object, Object> entry = objectIterator.next();
                             String propertyKey = (String) entry.getKey();
@@ -359,6 +402,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      * @param jahiaGroup JahiaGroup the group to be updated in the cache.
      */
     public void updateCache(JahiaUser jahiaUser) {
+        cache.remove(jahiaUser.getName());
     }
 
     /**
@@ -385,28 +429,31 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
     }
 
     public void start() throws JahiaInitializationException {
+        if (cacheService != null) {
+            cache = cacheService.createCacheInstance("JCR_USER_CACHE");
+        }
     }
 
     public void stop() throws JahiaException {
     }
 
-    public static String encryptPassword (String password) {
+    public static String encryptPassword(String password) {
         if (password == null) {
             return null;
         }
 
-        if (password.length () == 0) {
+        if (password.length() == 0) {
             return null;
         }
 
         String result = null;
 
         try {
-            MessageDigest md = MessageDigest.getInstance ("SHA-1");
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
             if (md != null) {
-                md.reset ();
-                md.update (password.getBytes ());
-                result = new String (Base64.encode (md.digest ()));
+                md.reset();
+                md.update(password.getBytes());
+                result = new String(Base64.encode(md.digest()));
             }
             md = null;
         } catch (NoSuchAlgorithmException ex) {

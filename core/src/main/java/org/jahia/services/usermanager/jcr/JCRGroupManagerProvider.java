@@ -565,7 +565,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      * @param jahiaGroup JahiaGroup the group to be updated in the cache.
      */
     public void updateCache(JahiaGroup jahiaGroup) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        cache.remove(jahiaGroup.getGroupKey());
     }
 
     public void start() throws JahiaInitializationException {

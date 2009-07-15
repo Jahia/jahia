@@ -739,7 +739,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (locale != null) {
             ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
             if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getI18N(locale).getProperty(name+"_"+locale.toString()), session, provider, getApplicablePropertyDefinition(name), name);
+                try {
+                    return new JCRPropertyWrapperImpl(this, getI18N(locale).getProperty(name+"_"+locale.toString()), session, provider, getApplicablePropertyDefinition(name), name);
+                } catch (ItemNotFoundException e) {
+                    throw new PathNotFoundException(name);
+                }
             }
         }
         return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider);
@@ -1157,7 +1161,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         } catch (PathNotFoundException ex) {
             // node does not exist
         }
-        if (copy == null || !copy.isValid()) {
+        if (copy == null || !copy.isValid() || copy.getDefinition().allowsSameNameSiblings()) {
             copy = dest.addNode(name, getPrimaryNodeTypeName());
         }
         if (isFile()) {
@@ -1197,7 +1201,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
 
-        if (isCollection()) {
+        if (!isFile()) {
             for (JCRNodeWrapper source : getChildren()) {
                 source.copyFile(copy, source.getName());
             }

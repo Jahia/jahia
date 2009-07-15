@@ -306,6 +306,9 @@ public class JRCndWriter {
         if (nd.isProtected()) {
             out.write(" protected");
         }
+        if (nd.isAutoCreated()) {
+            out.write(" autocreated");
+        }
         if (nd.allowsSameNameSiblings()) {
             out.write(" multiple");
         }

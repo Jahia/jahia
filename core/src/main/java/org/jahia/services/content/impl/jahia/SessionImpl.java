@@ -104,6 +104,10 @@ public class SessionImpl implements Session {
         return userId;
     }
 
+    public JahiaUser getJahiaUser() {
+        return jahiaUser;
+    }
+
     public Object getAttribute(String s) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }

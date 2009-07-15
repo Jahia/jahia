@@ -51,6 +51,8 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.pages.ContentPage;
@@ -269,7 +271,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                 } else {
                     ContentPage p = ((ContentPageField)contentField).getContentPage(processingContext);
                     if (p != null) {
-                        fields.add(new JahiaPageLinkNodeImpl(getSession(), this, def.getNodeDefinition(), p));
+                        fields.add(new JahiaPageLinkNodeImpl(getSession(), this, def.getNodeDefinition(), ((ContentPageField)contentField), p));
                     }
                 }
                 break;
@@ -280,6 +282,18 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                 } else {
                     Value v = new ValueImpl(value, PropertyType.STRING);
                     fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
+                }
+                break;
+            }
+            case FieldTypes.FILE: {
+                try {
+                    JCRNodeWrapper file = JCRStoreService.getInstance().getFileNode(value, getSession().getJahiaUser());
+                    if (file.isValid()) {
+                        Value v = new ValueImpl(file.getUUID(), PropertyType.REFERENCE);
+                        fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
+                    }
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
                 }
                 break;
             }

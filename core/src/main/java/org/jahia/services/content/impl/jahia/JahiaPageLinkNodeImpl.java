@@ -37,6 +37,7 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.fields.ContentPageField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.api.Constants;
 
@@ -51,14 +52,14 @@ import java.util.List;
  * Time: 1:43:59 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JahiaPageLinkNodeImpl extends NodeImpl {
+public class JahiaPageLinkNodeImpl extends JahiaContentNodeImpl {
 
 
     private Node node;
     private ContentPage page;
 
-    public JahiaPageLinkNodeImpl(SessionImpl session, Node node, ExtendedNodeDefinition def, ContentPage page) throws RepositoryException {
-        super(session);
+    public JahiaPageLinkNodeImpl(SessionImpl session, Node node, ExtendedNodeDefinition def, ContentPageField field, ContentPage page) throws RepositoryException {
+        super(session, field);
         this.node = node;
         this.page = page;
 
@@ -82,10 +83,9 @@ public class JahiaPageLinkNodeImpl extends NodeImpl {
     }
 
     @Override
-    protected void initProperties() throws RepositoryException {
-        if (properties == null) {
-            super.initProperties();
-
+    protected void initFields() throws RepositoryException {
+        if (fields == null) {
+            super.initFields();
 
             try {
                 List<Locale> locales = getProcessingContext().getSite().getLanguageSettingsAsLocales(true);
@@ -95,25 +95,25 @@ public class JahiaPageLinkNodeImpl extends NodeImpl {
                         elr = new EntryLoadRequest(elr);
                         elr.setFirstLocale(locale.toString());
                     }
-                    initProperty(new PropertyImpl(getSession(), this,
+                    fields.add(new PropertyImpl(getSession(), this,
                             nodetype.getPropertyDefinitionsAsMap().get("jcr:title"), locale,
                             new ValueImpl(page.getTitle(elr), PropertyType.STRING)));
                 }
 
                 switch (page.getPageType(getEntryLoadRequest())) {
                     case JahiaPage.TYPE_DIRECT:
-                        initProperty(new PropertyImpl(getSession(), this,
+                        fields.add(new PropertyImpl(getSession(), this,
                                 nodetype.getPropertyDefinitionsAsMap().get("j:node"), null,
                                 new ValueImpl(page.getProperty("uuid"), PropertyType.REFERENCE)));
                         break;
                     case JahiaPage.TYPE_LINK:
                         ContentPage linked = ContentPage.getPage(page.getPageLinkID(getProcessingContext()));
-                        initProperty(new PropertyImpl(getSession(), this,
+                        fields.add(new PropertyImpl(getSession(), this,
                                 nodetype.getPropertyDefinitionsAsMap().get("j:node"), null,
                                 new ValueImpl(linked.getProperty("uuid"), PropertyType.REFERENCE)));
                         break;
                     case JahiaPage.TYPE_URL:
-                        initProperty(new PropertyImpl(getSession(), this,
+                        fields.add(new PropertyImpl(getSession(), this,
                                 nodetype.getPropertyDefinitionsAsMap().get("j:url"), null,
                                 new ValueImpl(page.getURL(getProcessingContext()), PropertyType.STRING)));
                         break;

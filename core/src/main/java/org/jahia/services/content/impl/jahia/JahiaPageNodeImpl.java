@@ -122,12 +122,10 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
     }
 
     @Override
-    protected void initProperties() throws RepositoryException {
-        if (properties == null) {
-            super.initProperties();
-
+    protected void initFields() throws RepositoryException {
+        if (fields == null) {
+            super.initFields();
             ExtendedNodeType pageType = NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_PAGE);
-
             try {
                 List<Locale> locales = getProcessingContext().getSite().getLanguageSettingsAsLocales(true);
                 for (Locale locale : locales) {
@@ -136,22 +134,18 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
                         elr = new EntryLoadRequest(elr);
                         elr.setFirstLocale(locale.toString());
                     }
-                    initProperty(new PropertyImpl(getSession(),this,
+                    fields.add(new PropertyImpl(getSession(),this,
                             pageType.getPropertyDefinitionsAsMap().get("jcr:title"),locale,
                             new ValueImpl(contentPage.getTitle(elr), PropertyType.STRING)));
                 }
+
             } catch (JahiaException e) {
                 logger.error(e.getMessage(), e);
             }
 
-            initProperty(new PropertyImpl(getSession(),this,
+            fields.add(new PropertyImpl(getSession(),this,
                 pageType.getPropertyDefinitionsAsMap().get("j:defaultTemplate"),null,
                     new ValueImpl(contentPage.getPageTemplate(getProcessingContext()).getName(), PropertyType.STRING)));
-
-//            initProperty(new PropertyImpl(getSession(),this,
-//                    pageType.getPropertyDefinition("j:pid"),null,
-//                    new ValueImpl(""+contentPage.getID(), PropertyType.LONG)));
-
         }
     }
 

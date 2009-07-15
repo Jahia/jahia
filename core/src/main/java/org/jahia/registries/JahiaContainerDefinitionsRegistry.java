@@ -48,12 +48,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.cache.CacheListener;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.containers.JahiaContainersService;
-import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.SelectorType;
+import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.metadata.MetadataBaseService;
 import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.JahiaPageTemplateService;
@@ -736,8 +731,12 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
                     return FieldTypes.DATE;
                 case PropertyType.BOOLEAN :
                     return FieldTypes.BOOLEAN;
+                case ExtendedPropertyType.WEAKREFERENCE :
                 case PropertyType.REFERENCE :
                     switch (propDef.getSelector()) {
+                        case SelectorType.FILEPICKER:
+                        case SelectorType.FILEUPLOAD:
+                            return FieldTypes.FILE;
                         case SelectorType.PORTLET:
                             return FieldTypes.APPLICATION;
                     }

@@ -470,7 +470,7 @@ public class JahiaCndReader {
                 ndi.setDeclaringNodeType(ntd);
             } else if (currentTokenEquals(Lexer.JAHIA_FILEFIELD)) {
                 ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
-                pdi.setRequiredType(PropertyType.STRING);
+                pdi.setRequiredType(ExtendedPropertyType.WEAKREFERENCE);
                 pdi.setSelector(SelectorType.FILEPICKER);
                 pdi.setInternationalized(true);
                 nextToken();

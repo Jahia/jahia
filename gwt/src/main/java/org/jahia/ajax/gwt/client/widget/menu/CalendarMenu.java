@@ -35,12 +35,19 @@ import java.util.Date;
 
 import org.jahia.ajax.gwt.client.widget.calendar.CalendarPicker;
 
-import com.extjs.gxt.ui.client.widget.menu.DateMenu;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.PreviewEvent;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
 
 /**
  * @author Khue NGuyen
  */
-public class CalendarMenu extends DateMenu {
+public class CalendarMenu extends Menu {
+
+    /**
+     * The internal date picker.
+     */
+    protected CalendarPicker picker;
 
     public CalendarMenu() {
         this(null);
@@ -48,14 +55,30 @@ public class CalendarMenu extends DateMenu {
 
     public CalendarMenu(Date date) {
         super();
-        remove(picker);
         picker = new CalendarPicker(date);
         add(picker);
+        addStyleName("x-date-menu");
+        setAutoHeight(true);
+        plain = true;
+        showSeparator = false;
+        setEnableScrolling(false);
     }
 
-    @Override
+    /**
+     * Returns the selected date.
+     * 
+     * @return the date
+     */
+    public Date getDate() {
+        return picker.getValue();
+    }
+
     public CalendarPicker getDatePicker() {
-        return (CalendarPicker) super.getDatePicker();
+        return picker;
+    }
+
+    protected void onClick(ComponentEvent ce) {
+        hide(true);
     }
 
     public void setDate(Date date) {
@@ -63,4 +86,10 @@ public class CalendarMenu extends DateMenu {
             this.picker.setValue(date);
         }
     }
+
+    @Override
+    protected boolean onAutoHide(PreviewEvent pe) {
+        return pe.getTarget(".x-datetime-selector", 5) == null ? super.onAutoHide(pe) : false;
+    }
+    
 }

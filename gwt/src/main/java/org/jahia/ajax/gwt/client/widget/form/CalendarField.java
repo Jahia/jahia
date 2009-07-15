@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.widget.DatePicker;
 import com.extjs.gxt.ui.client.widget.form.DateTimePropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.TriggerField;
 import com.extjs.gxt.ui.client.widget.menu.DateMenu;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 
@@ -134,7 +135,7 @@ public class CalendarField extends TriggerField<Date> {
 
     private Date minValue;
     private Date maxValue;
-    private DateMenu menu;
+    private Menu menu;
     private boolean formatValue;
     private boolean displayTime;
 
@@ -195,13 +196,13 @@ public class CalendarField extends TriggerField<Date> {
       if (menu == null) {
         menu = displayTime ? new CalendarMenu() : new DateMenu();
 
-        menu.getDatePicker().addListener(Events.Select, new Listener<ComponentEvent>() {
+        getMenuDatePicker().addListener(Events.Select, new Listener<ComponentEvent>() {
           public void handleEvent(ComponentEvent ce) {
             focusValue = getValue();
-            Date date = menu.getDate();
+            Date date = menu instanceof DateMenu ? ((DateMenu)menu).getDate() : ((CalendarMenu)menu).getDate();
             if (displayTime) {
-                date.setHours(((CalendarPicker) menu.getDatePicker()).getSelectedHour());
-                date.setMinutes(((CalendarPicker) menu.getDatePicker()).getSelectedMinute());
+                date.setHours(((CalendarPicker) getMenuDatePicker()).getSelectedHour());
+                date.setMinutes(((CalendarPicker) getMenuDatePicker()).getSelectedMinute());
             }
             setValue(date);
             menu.hide();
@@ -214,7 +215,7 @@ public class CalendarField extends TriggerField<Date> {
           }
         });
       }
-      return menu.getDatePicker();
+      return getMenuDatePicker();
     }
 
     /**
@@ -416,4 +417,7 @@ public class CalendarField extends TriggerField<Date> {
       return true;
     }
 
+    private DatePicker getMenuDatePicker() {
+        return menu instanceof DateMenu ? ((DateMenu)menu).getDatePicker() : ((CalendarMenu)menu).getDatePicker();
+    }
 }

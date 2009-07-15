@@ -33,7 +33,10 @@ package org.jahia.ajax.gwt.client.widget.calendar;
 
 import java.util.Date;
 
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -41,11 +44,10 @@ import com.extjs.gxt.ui.client.util.DateWrapper;
 import com.extjs.gxt.ui.client.widget.ComponentHelper;
 import com.extjs.gxt.ui.client.widget.DatePicker;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
@@ -58,7 +60,7 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public class CalendarPicker extends DatePicker {
 
-    private LayoutContainer hoursPanel;
+    private HorizontalPanel hoursPanel;
 
     /**
      * The date time format used to format each entry (defaults to
@@ -163,22 +165,34 @@ public class CalendarPicker extends DatePicker {
             dateWrapper = new DateWrapper(date);
         }
 
-        // hours input
-        hoursPanel = new LayoutContainer(new TableLayout());
-        //hoursPanel.setWidth(175);
+        hoursPanel = new HorizontalPanel();
+        hoursPanel.setTableWidth("100%");
+        hoursPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
         hoursPanel.setStyleName("x-date-hours-panel");
+        hoursPanel.sinkEvents(Event.ONCHANGE);
+        if (GXT.isIE) {
+            hoursPanel.setWidth(175);
+        }
+        
         HorizontalPanel hPanel = new HorizontalPanel();
         hPanel.setLayout(new FitLayout());
         hPanel.setHorizontalAlign(Style.HorizontalAlignment.LEFT);
         hPanel.setStyleName("x-date-hours-panel-inner");
-        hoursPanel.add(hPanel,new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE));
 
-        hours = new ComboBox();
+        hours = new ComboBox() {
+          @Override
+            protected void onRender(Element parent, int index) {
+                super.onRender(parent, index);
+                getListView().addStyleName("x-datetime-selector");
+            }  
+        };
         hours.setDisplayField("display");
         hours.setMinListWidth(40);
         hours.setWidth(40);
         hours.setStore(getHours(0,23));
         hours.setValue(hour != null ? hour : new HourModel(dateWrapper.getHours()));
+        hours.setForceSelection(true);
+        hours.setTriggerAction(TriggerAction.ALL);
         hours.addSelectionChangedListener(new SelectionChangedListener<HourModel>() {
             public void selectionChanged(SelectionChangedEvent se) {
                 HourModel hourModel = (HourModel) se.getSelection().get(0);
@@ -190,7 +204,7 @@ public class CalendarPicker extends DatePicker {
 
         hours.addListener(Events.Change, new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent be) {
-                HourModel hourModel = (HourModel)be.getValue();
+                HourModel hourModel = (HourModel) be.getValue();
                 if (hourModel!=null){
                     hour = new HourModel(Integer.parseInt(hourModel.getValue()));
                 }
@@ -200,14 +214,24 @@ public class CalendarPicker extends DatePicker {
 
         HTML sep = new HTML(":");
         sep.setStyleName("x-date-hours-separator");
-        hPanel.add(sep);
+        hPanel.add(sep, new TableData(HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE));
 
-        minutes = new ComboBox();
+        minutes = new ComboBox() {
+          @Override
+            protected void onRender(Element parent, int index) {
+                super.onRender(parent, index);
+                getListView().addStyleName("x-datetime-selector");
+            }  
+        };
         minutes.setDisplayField("display");
         minutes.setMinListWidth(40);
         minutes.setWidth(40);
         minutes.setStore(getMinutes(0,59));
         minutes.setValue(minute != null ? minute : new MinuteModel(dateWrapper.getMinutes()));
+        minutes.setForceSelection(true);
+        minutes.setTriggerAction(TriggerAction.ALL);
+        minutes.getListView().addStyleName("x-datetime-selector");
+
         minutes.addSelectionChangedListener(new SelectionChangedListener<MinuteModel>() {
             public void selectionChanged(SelectionChangedEvent se) {
                 MinuteModel minuteModel = (MinuteModel) se.getSelection().get(0);
@@ -218,13 +242,16 @@ public class CalendarPicker extends DatePicker {
         });
         minutes.addListener(Events.Change, new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent be) {
-                MinuteModel minuteModel = (MinuteModel)be.getValue();
+                MinuteModel minuteModel = (MinuteModel) be.getValue();
                 if (minuteModel!=null){
                     minute = new MinuteModel(Integer.parseInt(minuteModel.getValue()));
                 }
             }
         });
+        
         hPanel.add(minutes);
+        
+        hoursPanel.add(hPanel, new TableData(HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE));
     }
 
     @Override
@@ -233,9 +260,7 @@ public class CalendarPicker extends DatePicker {
         initHours();
         Node lastChild = DOM.getChild(getElement(), 3);
         getElement().insertBefore(hoursPanel.getElement(),lastChild);
-        DOM.sinkEvents(hoursPanel.getElement(), Event.ONCHANGE);
-        DOM.sinkEvents(hours.getElement(), Event.ONCHANGE);
-        DOM.sinkEvents(minutes.getElement(), Event.ONCHANGE);
+        el().addEventsSunk(Event.ONCLICK | Event.MOUSEEVENTS);
     }
 
     @Override
@@ -317,4 +342,14 @@ public class CalendarPicker extends DatePicker {
         return minutes;
     }
 
+    @Override
+    protected void onClick(ComponentEvent be) {
+        super.onClick(be);
+    }
+
+    @Override
+    protected void onHide() {
+        super.onHide();
+    }
+    
 }

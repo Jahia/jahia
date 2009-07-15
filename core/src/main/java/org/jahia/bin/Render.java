@@ -56,7 +56,7 @@ public class Render extends HttpServlet {
 
             resp.setContentType("text/html");
             resp.setCharacterEncoding("UTF-8");
-            resp.setContentLength(out.length());
+            resp.setContentLength(out.toString().getBytes("UTF-8").length);
 
             PrintWriter writer = resp.getWriter();
             writer.print(out.toString());

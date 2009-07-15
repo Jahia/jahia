@@ -266,7 +266,7 @@ public class RulesListener extends DefaultEventListener {
                         if (!event.getUserID().equals(JahiaLoginModule.SYSTEM)) {
                             if (event.getType() == Event.NODE_ADDED) {
                                 Node n = (Node) s.getItem(event.getPath());
-                                if (n.isNodeType(Constants.NT_HIERARCHYNODE) || n.isNodeType(Constants.JAHIANT_JAHIACONTENT)) {
+                                if (n.isNodeType(Constants.JAHIAMIX_HIERARCHYNODE)) {
                                     NodeWrapper rn = eventsMap.get(n.getUUID());
                                     if (rn == null) {
                                         rn = new NodeWrapper(n);
@@ -282,7 +282,7 @@ public class RulesListener extends DefaultEventListener {
                                     Property p = (Property) s.getItem(path);
 
                                     Node parent = p.getParent();
-                                    if (parent.isNodeType(Constants.NT_HIERARCHYNODE) || parent.isNodeType(Constants.JAHIANT_JAHIACONTENT) || parent.isNodeType(Constants.NT_RESOURCE) || parent.isNodeType("jnt:workflowState")) {
+                                    if (parent.isNodeType(Constants.JAHIAMIX_HIERARCHYNODE) || parent.isNodeType(Constants.NT_RESOURCE) || parent.isNodeType("jnt:workflowState")) {
                                         NodeWrapper rn;
                                         if (parent .isNodeType(Constants.MIX_REFERENCEABLE)) {
                                             rn = eventsMap.get(parent.getUUID());

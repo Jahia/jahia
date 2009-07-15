@@ -180,7 +180,7 @@ public class FieldReferenceListener extends DefaultEventListener {
     }
 
     private void updateFullPath(Node node) throws RepositoryException {
-        if (node.isNodeType(NT_HIERARCHYNODE)) {
+        if (node.isNodeType(JAHIAMIX_HIERARCHYNODE)) {
             if (node.hasProperty(FULLPATH)) {
                 String oldPath = node.getProperty(FULLPATH).getString();
                 move(node.getUUID(), oldPath, node.getPath());

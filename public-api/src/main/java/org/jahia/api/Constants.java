@@ -134,6 +134,7 @@ public class Constants {
 
     public static final String JAHIAMIX_CATEGORIZED = "jmix:categorized";
     public static final String JAHIAMIX_LASTPUBLISHED = "jmix:lastPublished";
+    public static final String JAHIAMIX_HIERARCHYNODE = "jmix:hierarchyNode";
 
     public final static String JAHIAMIX_IMAGE = "jmix:image" ;
 

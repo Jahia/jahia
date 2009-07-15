@@ -313,12 +313,15 @@ public class ContentManagerHelper {
             nodeTypes = JCRClientUtils.FILE_NODETYPES;
         }
         logger.debug("open paths for getRoot : " + openPaths);
+
+        String workspace = "default";
+
         if (key.startsWith("/")) {
-            GWTJahiaNode root = getNode(key, jParams.getUser());
+            GWTJahiaNode root = getNode(key, workspace, jParams);
             if (root != null) userNodes.add(root);
         } else if (key.equals(JCRClientUtils.MY_REPOSITORY)) {
             for (JCRNodeWrapper node : jcr.getUserFolders(null, jParams.getUser())) {
-                GWTJahiaNode root = getNode(node.getPath() + "/files", jParams.getUser());
+                GWTJahiaNode root = getNode(node.getPath() + "/files", workspace, jParams);
                 if (root != null) {
                     root.setDisplayName(jParams.getUser().getName());
                     userNodes.add(root);
@@ -327,7 +330,7 @@ public class ContentManagerHelper {
             }
         } else if (key.equals(JCRClientUtils.USERS_REPOSITORY)) {
             try {
-                NodeIterator ni = jcr.getThreadSession(jParams.getUser()).getNode("/content/users").getNodes();
+                NodeIterator ni = jcr.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode("/content/users").getNodes();
                 while (ni.hasNext()) {
                     Node node = (Node) ni.next();
                     GWTJahiaNode jahiaNode = getGWTJahiaNode((JCRNodeWrapper) node.getNode("files"));
@@ -343,25 +346,25 @@ public class ContentManagerHelper {
                 }
             });
         } else if (key.equals(JCRClientUtils.MY_EXTERNAL_REPOSITORY)) {
-            GWTJahiaNode root = getNode("/content/mounts", jParams.getUser());
+            GWTJahiaNode root = getNode("/content/mounts", workspace, jParams);
             if (root != null) {
                 userNodes.add(root);
             }
         } else if (key.equals(JCRClientUtils.SHARED_REPOSITORY)) {
-            GWTJahiaNode root = getNode("/content/shared/files", jParams.getUser());
+            GWTJahiaNode root = getNode("/content/shared/files", workspace, jParams);
             if (root != null) {
                 root.setDisplayName("shared");
                 userNodes.add(root);
             }
         } else if (key.equals(JCRClientUtils.WEBSITE_REPOSITORY)) {
-            GWTJahiaNode root = getNode("/content/sites/" + jParams.getSite().getSiteKey() + "/files", jParams.getUser());
+            GWTJahiaNode root = getNode("/content/sites/" + jParams.getSite().getSiteKey() + "/files", workspace, jParams);
             if (root != null) {
                 root.setDisplayName(jParams.getSite().getSiteKey());
                 userNodes.add(root);
             }
         } else if (key.equals(JCRClientUtils.MY_MASHUP_REPOSITORY)) {
             for (JCRNodeWrapper node : jcr.getUserFolders(null, jParams.getUser())) {
-                GWTJahiaNode root = getNode(node.getPath() + "/mashups", jParams.getUser());
+                GWTJahiaNode root = getNode(node.getPath() + "/mashups", workspace, jParams);
                 if (root != null) {
                     root.setDisplayName(jParams.getUser().getName());
                     userNodes.add(root);
@@ -369,32 +372,32 @@ public class ContentManagerHelper {
                 break; // one node should be enough
             }
         } else if (key.equals(JCRClientUtils.SHARED_MASHUP_REPOSITORY)) {
-            GWTJahiaNode root = getNode("/content/shared/mashups", jParams.getUser());
+            GWTJahiaNode root = getNode("/content/shared/mashups", workspace, jParams);
             if (root != null) {
                 root.setDisplayName("shared");
                 userNodes.add(root);
             }
         } else if (key.equals(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY)) {
-            GWTJahiaNode root = getNode("/content/sites/" + jParams.getSite().getSiteKey() + "/mashups", jParams.getUser());
+            GWTJahiaNode root = getNode("/content/sites/" + jParams.getSite().getSiteKey() + "/mashups", workspace, jParams);
             if (root != null) {
                 root.setDisplayName(jParams.getSite().getSiteKey());
                 userNodes.add(root);
             }
         } else if (key.equals(JCRClientUtils.ALL_FILES)) {
-            GWTJahiaNode root = getNode("/content/shared/files", jParams.getUser());
+            GWTJahiaNode root = getNode("/content/shared/files", workspace, jParams);
             if (root != null) {
                 root.setDisplayName("shared");
                 userNodes.add(root);
             }
 
-            root = getNode("/content/sites/" + jParams.getSite().getSiteKey() + "/files", jParams.getUser());
+            root = getNode("/content/sites/" + jParams.getSite().getSiteKey() + "/files", workspace, jParams);
             if (root != null) {
                 root.setDisplayName(jParams.getSite().getSiteKey());
                 userNodes.add(root);
             }
 
             for (JCRNodeWrapper node : jcr.getUserFolders(null, jParams.getUser())) {
-                root = getNode(node.getPath() + "/files", jParams.getUser());
+                root = getNode(node.getPath() + "/files", workspace, jParams);
                 if (root != null) {
                     root.setDisplayName(jParams.getUser().getName());
                     userNodes.add(root);
@@ -402,21 +405,21 @@ public class ContentManagerHelper {
                 break; // one node should be enough
             }
 
-            root = getNode("/content/mounts", jParams.getUser());
+            root = getNode("/content/mounts", workspace, jParams);
             if (root != null) userNodes.add(root);
         } else if (key.equals(JCRClientUtils.ALL_MASHUPS)) {
-            GWTJahiaNode root = getNode("/content/shared/mashups", jParams.getUser());
+            GWTJahiaNode root = getNode("/content/shared/mashups", workspace, jParams);
             if (root != null) {
                 root.setDisplayName("shared");
                 userNodes.add(root);
             }
-            root = getNode("/content/sites/" + jParams.getSite().getSiteKey() + "/mashups", jParams.getUser());
+            root = getNode("/content/sites/" + jParams.getSite().getSiteKey() + "/mashups", workspace, jParams);
             if (root != null) {
                 root.setDisplayName(jParams.getSite().getSiteKey());
                 userNodes.add(root);
             }
             for (JCRNodeWrapper node : jcr.getUserFolders(null, jParams.getUser())) {
-                root = getNode(node.getPath() + "/mashups", jParams.getUser());
+                root = getNode(node.getPath() + "/mashups", workspace, jParams);
                 if (root != null) {
                     root.setDisplayName(jParams.getUser().getName());
                     userNodes.add(root);
@@ -424,7 +427,7 @@ public class ContentManagerHelper {
                 break; // one node should be enough
             }
         } else if (key.equals(JCRClientUtils.GLOBAL_REPOSITORY)) {
-            GWTJahiaNode root = getNode("/content/", jParams.getUser());
+            GWTJahiaNode root = getNode("/content/", workspace, jParams);
             if (root != null) {
                 userNodes.add(root);
             }
@@ -489,6 +492,7 @@ public class ContentManagerHelper {
 
     public static GWTJahiaNode saveSearch(String searchString, String name, ProcessingContext context) throws GWTJahiaServiceException {
         try {
+            String workspace = "default";
             if (name == null) {
                 throw new GWTJahiaServiceException("Could not store query with null name");
             }
@@ -505,7 +509,7 @@ public class ContentManagerHelper {
                 queryStore = user.createCollection("savedSearch");
                 createdSearchFolder = true;
             } else {
-                queryStore = jcr.getThreadSession(context.getUser()).getNode(user.getPath() + "/savedSearch");
+                queryStore = jcr.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(user.getPath() + "/savedSearch");
             }
             String path = queryStore.getPath() + "/" + name;
             q.storeAsNode(path);
@@ -514,7 +518,7 @@ public class ContentManagerHelper {
             } else {
                 queryStore.save();
             }
-            return getGWTJahiaNode(jcr.getThreadSession(context.getUser()).getNode(path));
+            return getGWTJahiaNode(jcr.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(path));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not store query");
@@ -554,18 +558,13 @@ public class ContentManagerHelper {
         return result;
     }
 
-    public static GWTJahiaNode getNode(String path, JahiaUser user) throws GWTJahiaServiceException {
+    public static GWTJahiaNode getNode(String path, String workspace, ProcessingContext jParams) throws GWTJahiaServiceException {
         try {
-            return getGWTJahiaNode(jcr.getThreadSession(user).getNode(path));
+            return getGWTJahiaNode(jcr.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode(path));
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
-    }
-
-    public static GWTJahiaNode getNodeByUUID(String uuid, JahiaUser user) throws RepositoryException {
-        JCRNodeWrapper f = jcr.getNodeByUUID(uuid, user);
-        return getGWTJahiaNode(f);
     }
 
     public static GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper f) {
@@ -923,43 +922,49 @@ public class ContentManagerHelper {
     public static void paste(final List<GWTJahiaNode> pathsToCopy, final String destinationPath, boolean cut, JahiaUser user) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         for (GWTJahiaNode aNode : pathsToCopy) {
-            JCRNodeWrapper node = jcr.getFileNode(aNode.getPath(), user);
-            String name = node.getName();
-            if (node.hasPermission(JCRNodeWrapper.READ)) {
-                JCRNodeWrapper dest = jcr.getFileNode(destinationPath, user);
-                if (dest.isCollection()) {
-                    String destPath = dest.getPath();
-                    name = findAvailableName(dest, name, user);
-                    if (dest.isWriteable()) {
-                        if (cut) {
-                            try {
-                                if (!node.moveFile(destPath, name)) {
+            try {
+                final JCRSessionWrapper session = jcr.getThreadSession(user);
+                JCRNodeWrapper node = session.getNode(aNode.getPath());
+
+                String name = node.getName();
+                if (node.hasPermission(JCRNodeWrapper.READ)) {
+                    JCRNodeWrapper dest = session.getNode(destinationPath);
+                    if (dest.isCollection()) {
+                        String destPath = dest.getPath();
+                        name = findAvailableName(dest, name, user);
+                        if (dest.isWriteable()) {
+                            if (cut) {
+                                try {
+                                    if (!node.moveFile(destPath, name)) {
+                                        missedPaths.add(new StringBuilder("File ").append(name).append(" could not be moved in ").append(dest.getPath()).toString());
+                                        continue;
+                                    }
+                                    dest.saveSession();
+                                } catch (RepositoryException e) {
+                                    logger.error("Exception", e);
                                     missedPaths.add(new StringBuilder("File ").append(name).append(" could not be moved in ").append(dest.getPath()).toString());
-                                    continue;
                                 }
-                                dest.saveSession();
-                            } catch (RepositoryException e) {
-                                logger.error("Exception", e);
-                                missedPaths.add(new StringBuilder("File ").append(name).append(" could not be moved in ").append(dest.getPath()).toString());
+                            } else {
+                                try {
+                                    if (!node.copyFile(destPath, name)) {
+                                        missedPaths.add(new StringBuilder("File ").append(name).append(" could not be copied in ").append(dest.getPath()).toString());
+                                        continue;
+                                    }
+                                    dest.saveSession();
+                                } catch (RepositoryException e) {
+                                    logger.error("Exception", e);
+                                    missedPaths.add(new StringBuilder("File ").append(name).append(" could not be copied in ").append(dest.getPath()).toString());
+                                }
                             }
                         } else {
-                            try {
-                                if (!node.copyFile(destPath, name)) {
-                                    missedPaths.add(new StringBuilder("File ").append(name).append(" could not be copied in ").append(dest.getPath()).toString());
-                                    continue;
-                                }
-                                dest.saveSession();
-                            } catch (RepositoryException e) {
-                                logger.error("Exception", e);
-                                missedPaths.add(new StringBuilder("File ").append(name).append(" could not be copied in ").append(dest.getPath()).toString());
-                            }
+                            missedPaths.add(new StringBuilder("File ").append(name).append(" could not be copied in ").append(dest.getPath()).toString());
                         }
-                    } else {
-                        missedPaths.add(new StringBuilder("File ").append(name).append(" could not be copied in ").append(dest.getPath()).toString());
                     }
+                } else {
+                    missedPaths.add(new StringBuilder("Source file ").append(name).append(" could not be read by ").append(user.getUsername()).append(" - ACCESS DENIED").toString());
                 }
-            } else {
-                missedPaths.add(new StringBuilder("Source file ").append(name).append(" could not be read by ").append(user.getUsername()).append(" - ACCESS DENIED").toString());
+            } catch (RepositoryException e) {
+                missedPaths.add(new StringBuilder("File cannot be read").toString());
             }
         }
         if (missedPaths.size() > UPLOAD) {

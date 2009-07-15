@@ -188,7 +188,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public GWTJahiaGetPropertiesResult getProperties(String path) throws GWTJahiaServiceException {
         ParamBean jParams = retrieveParamBean();
-        GWTJahiaNode node = ContentManagerHelper.getNode(path, jParams.getUser());
+        GWTJahiaNode node = ContentManagerHelper.getNode(path, "default", jParams);
         List<GWTJahiaNodeType> nodeTypes = ContentDefinitionHelper.getNodeTypes(node.getNodeTypes(), jParams);
         Map<String, GWTJahiaNodeProperty> props = ContentManagerHelper.getProperties(path, jParams);
         return new GWTJahiaGetPropertiesResult(nodeTypes, props);

@@ -7,9 +7,7 @@
 
  <jcr:nodeProperty node="${currentNode}" name="title" var="title"/>
  <jcr:nodeProperty node="${currentNode}" name="abstract" var="abstract"/>
-<%--
  <jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
- --%>
 
 
             <div class="column-item">
@@ -19,7 +17,7 @@
 
                         <div class="box2-topright"></div><div class="box2-topleft"></div>
                         <h3 class="box2-header"><span>${title.string}</span></h3>
-                        <div class="box2-illustration" style="background-image:url(<%--${image.file.downloadUrl}--%>)"></div>
+                        <div class="box2-illustration" style="background-image:url(${image.node.url})"></div>
 
                         <div class="box2-text">
                         ${abstract.string}

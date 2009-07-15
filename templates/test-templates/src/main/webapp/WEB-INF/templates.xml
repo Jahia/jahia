@@ -101,6 +101,8 @@
                   page-type="test_templates:form" description="description.template.form"/>
         <template name="JCR Tags" display-name="template.name.jcr.tags" filename="jcr/tags.jsp"
                   page-type="test_templates:generic" description="description.template.jcr.tags"/>
+        <template name="Create Content " display-name="template.name.jcr.create.content" filename="jcr/createContent.jsp"
+                  page-type="test_templates:generic" description="description.template.jcr.create.content"/>
         <template name="Render engine tests" display-name="template.name.render" filename="render/render.jsp"
                   page-type="test_templates:render" description="description.template.render"/>
 

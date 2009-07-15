@@ -7,10 +7,10 @@
 <c:forEach items="${currentNode.children}" var="subchild">
 <c:if test="${jcr:isNodeType(subchild, 'jnt:container')}">
 <p>
-    ${currentNode.name}&nbsp;<a href="${pageContext.request.contextPath}/render/default${subchild.path}.html">link</a>
+    ${currentNode.name}&nbsp;<a href="${baseUrl}${subchild.path}.html">link</a>
     <div id ="content${subchild.UUID}"></div>
     <script type="text/javascript">
-        replace("${pageContext.request.contextPath}/render/default${subchild.path}.html","content${subchild.UUID}");
+        replace("${baseUrl}${subchild.path}.html","content${subchild.UUID}");
     </script>
 </p>
 </c:if>

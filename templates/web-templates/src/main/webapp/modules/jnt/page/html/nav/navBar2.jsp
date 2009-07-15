@@ -9,7 +9,7 @@
         <c:if test="${jcr:isNodeType(child, 'jnt:page')}">
             <li class="">
                 <jcr:nodeProperty node="${child}" name="jcr:title" var="title"/>
-                <a href="${pageContext.request.contextPath}/render/${currentResource.workspace}/${currentResource.locale}${child.path}.html">${title.string}</a>
+                <a href="${baseUrl}${child.path}.html">${title.string}</a>
             </li>
         </c:if>
     </c:forEach>

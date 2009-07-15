@@ -74,6 +74,9 @@ public class RenderService extends JahiaService {
         Object old = request.getAttribute("currentNode");
         request.setAttribute("currentNode", resource.getNode());
 
+        // temporary variable to build urls - should be replace with a jstl function ?
+        request.setAttribute("baseUrl", request.getContextPath()+"/render/"+ resource.getWorkspace() +"/"+ resource.getLocale());
+
         request.setAttribute("workspace", resource.getNode().getSession().getWorkspace().getName());
         request.setAttribute("locale", resource.getNode().getSession().getWorkspace().getName());
 

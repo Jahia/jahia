@@ -14,14 +14,14 @@
 <c:if test="${savedSearchIterator.size != 0}">
     <p>${savedSearchIterator.size}&nbsp;results found:</p>
     <c:set var="itemsPerPage" value="10"/>
-    <pg:pager maxPageItems="${itemsPerPage}" url="${pageContext.request.contextPath}/render/default${currentNode.path}.html" export="currentPageNumber=pageNumber">
+    <pg:pager maxPageItems="${itemsPerPage}" url="${baseUrl}${currentNode.path}.html" export="currentPageNumber=pageNumber">
         <c:forEach var="aParam" items="${paramValues}">
             <c:if test="${not fn:startsWith(aParam.key, 'pager.')}"><pg:param name="${aParam.key}"/></c:if>
         </c:forEach>
         <ol start="${itemsPerPage * (currentPageNumber - 1) + 1}">
         <c:forEach items="${savedSearchIterator}" var="hit">
             <pg:item>
-                <li><a href="${pageContext.request.contextPath}/render/default${hit.path}.html">${hit.name}</a></li>
+                <li><a href="${baseUrl}${hit.path}.html">${hit.name}</a></li>
             </pg:item>
         </c:forEach>
         </ol>

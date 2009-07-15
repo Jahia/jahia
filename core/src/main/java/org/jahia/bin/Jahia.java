@@ -195,8 +195,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
     static private boolean runInstaller;
     static private boolean maintenance = false;
 
-    public static final String VERSION = "6.1";
-
     static protected final String JDK_REQUIRED = "1.5";
 
     private static SettingsBean jSettings;
@@ -238,7 +236,9 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
     private static int BUILD_NUMBER = -1;
 
     /** Jahia server release number */
-    private static double RELEASE_NUMBER = 6.1;
+    private static double RELEASE_NUMBER = 7.0;
+
+    public static final String VERSION = String.valueOf(RELEASE_NUMBER);
 
     /** Jahia server patch number */
     private static int PATCH_NUMBER = 0;

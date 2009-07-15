@@ -186,6 +186,7 @@ public class WizardWindow extends Window {
 
         prevBtn.addSelectionListener(listener);
         nextBtn.addSelectionListener(listener);
+        cancelBtn.addSelectionListener(listener);
 
         ToolBar buttonBar = new ToolBar();
         buttonBar.add(prevBtn);

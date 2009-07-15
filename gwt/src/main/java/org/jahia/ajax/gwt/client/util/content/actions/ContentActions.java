@@ -185,39 +185,68 @@ public class ContentActions {
      * @param linker
      */
     public static void pasteReference(final BrowserLinker linker) {
-        GWTJahiaNode m = (GWTJahiaNode) linker.getTreeSelection();
-        if (m == null) {
-            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
-            if (selectedItems != null && selectedItems.size() == 1) {
-                m = selectedItems.get(0);
-            }
-        }
-        if (m != null && !m.isFile()) {
-            linker.loading(Messages.getResource("fm_pastingref"));
-            final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-            service.pasteReference(copyPasteEngine.getCopiedPaths(), m.getPath(), new AsyncCallback() {
-                public void onFailure(Throwable throwable) {
-                    Window.alert(Messages.getResource("fm_failPasteref") + "\n" + throwable.getLocalizedMessage());
-                    linker.loaded();
-                }
+        GWTJahiaNode m = null;
 
-                public void onSuccess(Object o) {
-                    boolean refreshAll = false;
-                    for (GWTJahiaNode n : copyPasteEngine.getCopiedPaths()) {
-                        if (!n.isFile()) {
-                            refreshAll = true;
-                            break;
+        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+        if (selectedItems != null && selectedItems.size() == 1 && selectedItems.get(0) != null && !selectedItems.get(0).isFile()) {
+            m = selectedItems.get(0);
+            if (m != null && !m.isFile()) {
+                linker.loading(Messages.getResource("fm_pastingref"));
+                final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
+                if (copyPasteEngine.getCopiedPaths().size() == 1) {
+                    service.pasteReference(copyPasteEngine.getCopiedPaths().iterator().next(), m.getPath().substring(0,m.getPath().lastIndexOf('/')), m.getName(), new AsyncCallback() {
+                        public void onFailure(Throwable throwable) {
+                            Window.alert(Messages.getResource("fm_failPasteref") + "\n" + throwable.getLocalizedMessage());
+                            linker.loaded();
+                        }
+
+                        public void onSuccess(Object o) {
+                            boolean refreshAll = false;
+                            for (GWTJahiaNode n : copyPasteEngine.getCopiedPaths()) {
+                                if (!n.isFile()) {
+                                    refreshAll = true;
+                                    break;
+                                }
+                            }
+                            copyPasteEngine.onPastedPath();
+                            linker.loaded();
+                            if (refreshAll) {
+                                linker.refreshAll();
+                            } else {
+                                linker.refreshTable();
+                            }
+                        }
+                    });
+                }
+            }
+        } else {
+            if (m != null && !m.isFile()) {
+                linker.loading(Messages.getResource("fm_pastingref"));
+                final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
+                service.pasteReferences(copyPasteEngine.getCopiedPaths(), m.getPath(), new AsyncCallback() {
+                    public void onFailure(Throwable throwable) {
+                        Window.alert(Messages.getResource("fm_failPasteref") + "\n" + throwable.getLocalizedMessage());
+                        linker.loaded();
+                    }
+
+                    public void onSuccess(Object o) {
+                        boolean refreshAll = false;
+                        for (GWTJahiaNode n : copyPasteEngine.getCopiedPaths()) {
+                            if (!n.isFile()) {
+                                refreshAll = true;
+                                break;
+                            }
+                        }
+                        copyPasteEngine.onPastedPath();
+                        linker.loaded();
+                        if (refreshAll) {
+                            linker.refreshAll();
+                        } else {
+                            linker.refreshTable();
                         }
                     }
-                    copyPasteEngine.onPastedPath();
-                    linker.loaded();
-                    if (refreshAll) {
-                        linker.refreshAll();
-                    } else {
-                        linker.refreshTable();
-                    }
-                }
-            });
+                });
+            }
         }
     }
 

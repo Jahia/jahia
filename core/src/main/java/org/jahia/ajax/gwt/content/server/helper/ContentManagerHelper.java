@@ -994,7 +994,28 @@ public class ContentManagerHelper {
         return name;
     }
 
-    public static void pasteReference(final List<GWTJahiaNode> pathsToCopy, final String destinationPath, JahiaUser user) throws GWTJahiaServiceException {
+    public static void pasteReference(GWTJahiaNode aNode, String destinationPath, String name, JahiaUser user) throws GWTJahiaServiceException {
+        JCRNodeWrapper dest = jcr.getFileNode(destinationPath, user);
+        if (dest.isCollection() && dest.isWriteable()) {
+            JCRNodeWrapper node = jcr.getFileNode(aNode.getPath(), user);
+            if (node.hasPermission(JCRNodeWrapper.READ)) {
+                try {
+                    doPasteReference(dest, node, name);
+                    dest.save();
+                } catch (RepositoryException e) {
+                    logger.error("Exception", e);
+                    throw new GWTJahiaServiceException(e.getMessage());
+                } catch (JahiaException e) {
+                    logger.error("Exception", e);
+                    throw new GWTJahiaServiceException(e.getMessage());
+                }
+            }
+        }
+
+    }
+
+
+    public static void pasteReferences(final List<GWTJahiaNode> pathsToCopy, String destinationPath, JahiaUser user) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         JCRNodeWrapper dest = jcr.getFileNode(destinationPath, user);
         for (GWTJahiaNode aNode : pathsToCopy) {
@@ -1005,24 +1026,7 @@ public class ContentManagerHelper {
                     name = findAvailableName(dest, name, user);
                     if (dest.isWriteable()) {
                         try {
-                            /*Property p = */
-                            if (dest.getPrimaryNodeTypeName().equals("jnt:members")) {
-                                if(node.getPrimaryNodeTypeName().equals("jnt:user")){
-                                    Node member = dest.addNode(name, Constants.JAHIANT_MEMBER);
-                                    member.setProperty("j:member", aNode.getUUID());
-                                } else if(node.getPrimaryNodeTypeName().equals("jnt:group")){
-                                    Node node1 = node.getParent().getParent();
-                                    int id = 0;
-                                    if(node1!=null && node1.getPrimaryNodeType().getName().equals(Constants.JAHIANT_VIRTUALSITE)) {
-                                        id = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(node1.getName()).getID();
-                                    }
-                                    Node member = dest.addNode(name+"___"+ id, Constants.JAHIANT_MEMBER);
-                                    member.setProperty("j:member", aNode.getUUID());
-                                }
-                            } else {
-                                Node reference = dest.addNode(name, "jnt:nodeReference");
-                                reference.setProperty("j:node", aNode.getUUID());
-                            }
+                            doPasteReference(dest, node, name);
                         } catch (RepositoryException e) {
                             logger.error("Exception", e);
                             missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(dest.getPath()).toString());
@@ -1050,6 +1054,27 @@ public class ContentManagerHelper {
                 errors.append("\n").append(err);
             }
             throw new GWTJahiaServiceException(errors.toString());
+        }
+    }
+
+    private static void doPasteReference(JCRNodeWrapper dest, JCRNodeWrapper node, String name) throws RepositoryException, JahiaException {
+        /*Property p = */
+        if (dest.getPrimaryNodeTypeName().equals("jnt:members")) {
+            if(node.getPrimaryNodeTypeName().equals("jnt:user")){
+                Node member = dest.addNode(name, Constants.JAHIANT_MEMBER);
+                member.setProperty("j:member", node.getUUID());
+            } else if(node.getPrimaryNodeTypeName().equals("jnt:group")){
+                Node node1 = node.getParent().getParent();
+                int id = 0;
+                if(node1!=null && node1.getPrimaryNodeType().getName().equals(Constants.JAHIANT_VIRTUALSITE)) {
+                    id = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(node1.getName()).getID();
+                }
+                Node member = dest.addNode(name+"___"+ id, Constants.JAHIANT_MEMBER);
+                member.setProperty("j:member", node.getUUID());
+            }
+        } else {
+            Node reference = dest.addNode(name, "jnt:nodeReference");
+            reference.setProperty("j:node", node.getUUID());
         }
     }
 

@@ -755,7 +755,7 @@ FRAG2(frag_size=60000)</value>
         <property name="key" value="jahia"/>
         <property name="rmibind" value="jahia"/>
         <property name="processingContextFactory" ref="org.jahia.params.ProcessingContextFactory"/>
-        <property name="workspace" value="default"/>
+
         <property name="listeners">
             <map>
                 <entry key="default">

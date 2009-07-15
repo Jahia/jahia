@@ -124,14 +124,6 @@ public class JCRStoreProvider {
         this.mountPoint = mountPoint;
     }
 
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public void setWorkspace(String workspace) {
-        this.workspace = workspace;
-    }
-
     public String getWebdavPath() {
         return webdavPath;
     }
@@ -433,9 +425,9 @@ public class JCRStoreProvider {
             if (user != null) {
                 s = repo.login(new SimpleCredentials(user, password.toCharArray()), workspace);
             } else if(!initialized){
-                s = repo.login(JahiaLoginModule.getSystemCredentials());
+                s = repo.login(JahiaLoginModule.getSystemCredentials(), workspace);
             } else {
-                s = repo.login();
+                s = repo.login(workspace);
             }
         }
         registerNamespaces(s.getWorkspace());

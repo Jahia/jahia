@@ -367,8 +367,9 @@ public class ObservationManagerImpl implements ObservationManager {
                         int type = Event.PROPERTY_CHANGED;
                         for (String s : event.getLanguageCodes()) {
                             if (!"shared".equals(s)) {
-                                Event e = new EventImpl(type, path+"/j:workflowState/"+s, event.getUser().getUsername());
-                                jcrEvents.add(e);
+                                Event e = new EventImpl(type, path+"/j:workflowState", event.getUser().getUsername());
+                                System.out.println("----> "+workspace.getName() + " : "+ e);
+//                                jcrEvents.add(e);
                             }
                         }
                     } else {

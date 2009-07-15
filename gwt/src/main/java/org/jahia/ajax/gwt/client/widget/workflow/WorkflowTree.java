@@ -48,7 +48,13 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.binder.TreeBinder;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.util.IconHelper;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.CheckChangedListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
 
@@ -60,24 +66,23 @@ import java.util.List;
  */
 public class WorkflowTree extends LeftComponent {
 
-    private ContentPanel m_component ;
+    private ContentPanel m_component;
 
-    private TreePanel<GWTJahiaWorkflowElement> m_tree ;
-    private TreeLoader<GWTJahiaWorkflowElement> loader ;
-    private MyTreeBinder<GWTJahiaWorkflowElement> binder ;
-    private TreeStore<GWTJahiaWorkflowElement> store ;
+    private TreePanel<GWTJahiaWorkflowElement> m_tree;
+    private TreeLoader<GWTJahiaWorkflowElement> loader;
+    private TreeStore<GWTJahiaWorkflowElement> store;
 
-    private PreviousPathsOpener<GWTJahiaWorkflowElement> previousPathsOpener = null ;
-    private ModelData lastSelection = null ;
-    private String rootPage ;
+    private PreviousPathsOpener<GWTJahiaWorkflowElement> previousPathsOpener = null;
+    private ModelData lastSelection = null;
+    private String rootPage;
 
     public WorkflowTree(String siteKey, String startPage) {
-        m_component = new ContentPanel(new FitLayout()) ;
+        m_component = new ContentPanel(new FitLayout());
         m_component.setHeading(siteKey);
         m_component.setScrollMode(Style.Scroll.AUTO);
 
-        rootPage = startPage ;
-        final WorkflowServiceAsync service = WorkflowService.App.getInstance() ;
+        rootPage = startPage;
+        final WorkflowServiceAsync service = WorkflowService.App.getInstance();
 
         // data proxy
         RpcProxy<List<GWTJahiaWorkflowElement>> proxy = new RpcProxy<List<GWTJahiaWorkflowElement>>() {
@@ -90,61 +95,69 @@ public class WorkflowTree extends LeftComponent {
         loader = new CustomTreeLoader<GWTJahiaWorkflowElement>(proxy) {
             @Override
             public boolean hasChildren(GWTJahiaWorkflowElement parent) {
-                return parent.hasChildren() ;
+                return parent.hasChildren();
             }
 
             @Override
             protected void onLoadSuccess(Object parent, List<GWTJahiaWorkflowElement> children) {
                 super.onLoadSuccess(parent, children);
                 if (openPreviousPaths) {
-                    openPreviousPaths = false ;
-                    expandPreviousPaths();
+                    openPreviousPaths = false;
+                    // expandPreviousPaths();
                 }
             }
 
             protected void expandPreviousPaths() {
-                expandWorkflowPreviousPaths() ;
+                //expandWorkflowPreviousPaths() ;
             }
         };
 
         // tree store
         store = new TreeStore<GWTJahiaWorkflowElement>(loader);
 
+        // tree panel
         m_tree = new TreePanel<GWTJahiaWorkflowElement>(store);
-//        m_tree.setAnimate(false);
+        m_tree.setCaching(true);
+        m_tree.setDisplayProperty("title");
 
-        /*binder = new MyTreeBinder<GWTJahiaWorkflowElement>(m_tree, store) ;
-        binder.init() ;
-        binder.setCaching(true);
-        binder.setDisplayProperty("title");
-        binder.setIconProvider(new ModelStringProvider<GWTJahiaWorkflowElement>() {
-            public String getStringValue(GWTJahiaWorkflowElement modelData, String s) {
-                return "icon-" + modelData.getObjectType() ;
+
+        /*
+        GXT 2.0: To do - add icon provider
+        m_tree.setIconProvider(new ModelIconProvider<GWTJahiaWorkflowElement>() {
+            public AbstractImagePrototype getIcon(GWTJahiaWorkflowElement gwtJahiaWorkflowElement) {
+                // TO DO: replaced by ImageBubdle impl
+                return IconHelper.create(getStringValue(gwtJahiaWorkflowElement));
             }
-        });
 
-        binder.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaWorkflowElement>() {
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaWorkflowElement> event) {
-                ModelData newSelection = m_tree.getSelectionModel().getSelectedItem();
-                if (lastSelection != newSelection) {
-                    lastSelection = newSelection ;
-                    getLinker().onTreeItemSelected();
-                }
+
+            private String getStringValue(GWTJahiaWorkflowElement modelData) {
+                return "/images/icons/icon-" + modelData.getObjectType();
             }
         });*/
 
-        m_component.add(m_tree) ;
+        m_tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaWorkflowElement>() {
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaWorkflowElement> event) {
+                Log.debug("selection change listener");
+                ModelData newSelection = m_tree.getSelectionModel().getSelectedItem();
+                if (lastSelection != newSelection) {
+                    lastSelection = newSelection;
+                    getLinker().onTreeItemSelected();
+                }
+            }
+        });
+
+        m_component.add(m_tree);
     }
 
     @Override
     public void initWithLinker(BrowserLinker linker) {
         super.initWithLinker(linker);
-        loader.load(new GWTJahiaWorkflowElement(rootPage)) ;
+        loader.load(new GWTJahiaWorkflowElement(rootPage));
     }
 
     private void expandWorkflowPreviousPaths() {
         if (previousPathsOpener == null) {
-            previousPathsOpener = new PreviousPathsOpener<GWTJahiaWorkflowElement>(m_tree, store) ;
+            previousPathsOpener = new PreviousPathsOpener<GWTJahiaWorkflowElement>(m_tree, store);
         }
         previousPathsOpener.expandPreviousPaths();
     }
@@ -154,36 +167,24 @@ public class WorkflowTree extends LeftComponent {
     }
 
     public void refresh() {
-        List<GWTJahiaWorkflowElement> selection = binder.getSelection() ;
+        List<GWTJahiaWorkflowElement> selection = m_tree.getSelectionModel().getSelection();
         if (selection != null && selection.size() > 0) {
-            loader.loadChildren(selection.get(0)) ;
+            loader.loadChildren(selection.get(0));
         }
 
     }
 
     public Object getSelectedItem() {
-        List<GWTJahiaWorkflowElement> selection = binder.getSelection() ;
+        List<GWTJahiaWorkflowElement> selection = m_tree.getSelectionModel().getSelection();
         if (selection != null && selection.size() > 0) {
-            return selection.get(0) ;
+            return selection.get(0);
         } else {
-            return null ;
+            return null;
         }
     }
 
     public Component getComponent() {
-        return m_component ;
-    }
-
-    private class MyTreeBinder<M extends BaseTreeModel> extends TreeBinder<M> implements CustomTreeBinder<M> {
-
-        public MyTreeBinder(Tree t, TreeStore<M> s) {
-            super(t, s) ;
-        }
-
-        public void renderChildren(M parent, List<M> children) {
-            super.renderChildren(parent, children);
-        }
-
+        return m_component;
     }
 
 }

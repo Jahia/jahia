@@ -440,9 +440,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             while (ni.hasNext()) {
                 Node node = ni.nextNode();
-                JCRNodeWrapper child = provider.getNodeWrapper(node, session);
-                if (child.getException () == null) {
-                    list.add (child);
+                if (session.getLocale() == null || !node.getName().equals("j:translation")) {
+                    JCRNodeWrapper child = provider.getNodeWrapper(node, session);
+                    if (child.getException () == null) {
+                        list.add (child);
+                    }
                 }
             }
         } catch (RepositoryException e) {

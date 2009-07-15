@@ -236,8 +236,8 @@ public class ContentManagerHelper {
             }
         }
 
-        if (viewTemplateAreas) {
-            try {
+        try {
+            if (viewTemplateAreas && node.isNodeType("jmix:renderable") && node.hasProperty("j:defaultTemplate")) {
                 Resource r = new Resource(node, workspace, locale, "html", null);
                 final HashMap<String, List<String>> listHashMap = new HashMap<String, List<String>>();
                 ((ParamBean)context).getRequest().setAttribute("moduleTags", listHashMap);
@@ -250,11 +250,11 @@ public class ContentManagerHelper {
                         }
                     }
                 }
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
             }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
         }
 
         Collections.sort(result);

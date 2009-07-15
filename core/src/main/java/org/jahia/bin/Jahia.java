@@ -238,7 +238,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
     private static int BUILD_NUMBER = -1;
 
     /** Jahia server release number */
-    private static double RELEASE_NUMBER = 7.0;
+    private static double RELEASE_NUMBER = 6.1;
 
     /** Jahia server patch number */
     private static int PATCH_NUMBER = 0;

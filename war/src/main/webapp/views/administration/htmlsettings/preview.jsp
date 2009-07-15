@@ -30,8 +30,8 @@
     between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 
---%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+--%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>FCKeditor - Toolbar - Preview</title>
@@ -47,6 +47,9 @@ var oFCKeditor = new FCKeditor( 'FCKeditor1' ) ;
 oFCKeditor.BasePath = '${pageContext.request.contextPath}/htmleditors/fckeditor/' ;
 oFCKeditor.Height   = 150 ;
 oFCKeditor.Value    = '<p>This is some <strong>sample text<\/strong>.<\/p>' ;
+oFCKeditor.Config.ImageBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url'><c:param name='filters' value='*.bmp,*.gif,*.jpe,*.jpeg,*.jpg,*.png,*.tif,*.tiff'/></c:url>";
+oFCKeditor.Config.FileBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url'/>";
+oFCKeditor.Config.FlashBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url&filters=*.swf'/>";
 oFCKeditor.Config["CustomConfigurationsPath"] = "${pageContext.request.contextPath}/htmleditors/fckeditor/fckconfig_jahia.js"
 oFCKeditor.ToolbarSet = "${not empty param.toolbar ? param.toolbar : 'Basic'}";
 oFCKeditor.Create() ;

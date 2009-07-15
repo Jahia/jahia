@@ -178,7 +178,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
 
             // acl
             if (!object.isAclSameAsParent()) {
-                addMixin("jmix:accessControlled");
+                addMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:accessControlled"));
                 initNode(new JahiaAclNodeImpl(getSession(), object.getAclID(), this));
             }
 

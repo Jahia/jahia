@@ -35,7 +35,11 @@ import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import com.extjs.gxt.ui.client.GXT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * User: rfelden
@@ -81,6 +85,10 @@ public class ManagerConfigurationFactory {
         completeManagerConfig.addItem(newFolder);
         ContentActionItem newContent = ItemCreator.createNewContentItem(linker);
         file.addItem(newContent);
+
+        ContentActionItem newPageContent = ItemCreator.createNewPageContentItem(linker);
+        file.addItem(newPageContent);
+
         completeManagerConfig.addItem(newContent);
         ContentActionItem newMashup = ItemCreator.createNewMashupItem(linker);
         file.addItem(newMashup);
@@ -726,6 +734,11 @@ public class ManagerConfigurationFactory {
             return upload;
         }
 
+        /**
+         * Item that creates a new mashup
+         * @param linker
+         * @return
+         */
         private static ContentActionItem createNewMashupItem(final BrowserLinker linker) {
             ContentActionItem newMashup = new ContentActionItem(Messages.getResource("fm_newmashup"), "fm-newmashup") {
                 public void onSelection() {
@@ -739,6 +752,11 @@ public class ManagerConfigurationFactory {
             return newMashup;
         }
 
+        /**
+         * Item that creates a new RSS item
+         * @param linker
+         * @return
+         */
         private static ContentActionItem createNewRSSItem(final BrowserLinker linker) {
             ContentActionItem newMashup = new ContentActionItem(Messages.getResource("fm_newrssmashup"), "fm-newrssmashup") {
                 public void onSelection() {
@@ -752,6 +770,11 @@ public class ManagerConfigurationFactory {
             return newMashup;
         }
 
+        /**
+         * Item that creates a new Google Gadget item
+         * @param linker
+         * @return
+         */
         private static ContentActionItem createNewGadgetItem(final BrowserLinker linker) {
             ContentActionItem newMashup = new ContentActionItem(Messages.getResource("fm_newgadgetmashup"), "fm-newgooglegadgetmashup") {
                 public void onSelection() {
@@ -765,6 +788,11 @@ public class ManagerConfigurationFactory {
             return newMashup;
         }
 
+        /**
+         * Item that creates a new content item action
+         * @param linker
+         * @return
+         */
         private static ContentActionItem createNewContentItem(final BrowserLinker linker) {
             ContentActionItem newContent = new ContentActionItem(Messages.getResource("fm_newcontent"), "fm-newcontent") {
                 public void onSelection() {
@@ -776,6 +804,25 @@ public class ManagerConfigurationFactory {
                 }
             };
             return newContent;
+        }
+
+        /**
+         * Item that  loows creating a new page
+         * @param linker
+         * @return
+         */
+        private static ContentActionItem createNewPageContentItem(final BrowserLinker linker) {
+
+            ContentActionItem newMashup = new ContentActionItem(Messages.getResource("fm_newpagecontent"), "fm-newpagecontent") {
+                public void onSelection() {
+                    ContentActions.showContentWizard(linker,"jnt:page");
+                }
+
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+                }
+            };
+            return newMashup;
         }
 
     }

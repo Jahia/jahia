@@ -39,12 +39,15 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
@@ -67,6 +70,11 @@ public class ContentActions {
 
     final static JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
+    /**
+     * Copy
+     *
+     * @param linker
+     */
     public static void copy(final BrowserLinker linker) {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
@@ -86,6 +94,11 @@ public class ContentActions {
         }
     }
 
+    /**
+     * Cut
+     *
+     * @param linker
+     */
     public static void cut(final BrowserLinker linker) {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
@@ -124,6 +137,11 @@ public class ContentActions {
         }
     }
 
+    /**
+     * Paste
+     *
+     * @param linker
+     */
     public static void paste(final BrowserLinker linker) {
         GWTJahiaNode m = (GWTJahiaNode) linker.getTreeSelection();
         if (m == null) {
@@ -161,6 +179,11 @@ public class ContentActions {
         }
     }
 
+    /**
+     * Pste as reference
+     *
+     * @param linker
+     */
     public static void pasteReference(final BrowserLinker linker) {
         GWTJahiaNode m = (GWTJahiaNode) linker.getTreeSelection();
         if (m == null) {
@@ -199,6 +222,13 @@ public class ContentActions {
     }
 
 
+    /**
+     * Move a file
+     *
+     * @param linker
+     * @param sources
+     * @param target
+     */
     public static void move(final BrowserLinker linker, final List<GWTJahiaNode> sources, GWTJahiaNode target) {
         service.paste(sources, target.getPath(), true, new AsyncCallback() {
             public void onFailure(Throwable throwable) {
@@ -225,6 +255,11 @@ public class ContentActions {
         });
     }
 
+    /**
+     * Upload a file
+     *
+     * @param linker
+     */
     public static void upload(final BrowserLinker linker) {
         GWTJahiaNode m = (GWTJahiaNode) linker.getTreeSelection();
         if (m == null) {
@@ -238,6 +273,11 @@ public class ContentActions {
         }
     }
 
+    /**
+     * Display download link
+     *
+     * @param linker
+     */
     public static void download(final BrowserLinker linker) {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() == 1) {
@@ -246,6 +286,13 @@ public class ContentActions {
         }
     }
 
+    /**
+     * Display download link
+     *
+     * @param linker
+     * @param selection
+     * @param url
+     */
     public static void download(BrowserLinker linker, GWTJahiaNode selection, String url) {
         if (selection != null && selection.isFile().booleanValue()) {
             linker.loading(Messages.getResource("fm_downloading"));
@@ -266,6 +313,11 @@ public class ContentActions {
         }
     }
 
+    /**
+     * Display node preview
+     *
+     * @param linker
+     */
     public static void preview(final BrowserLinker linker) {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() == 1) {
@@ -276,6 +328,11 @@ public class ContentActions {
         }
     }
 
+    /**
+     * Open a webfolder
+     *
+     * @param linker
+     */
     public static void openWebFolder(final BrowserLinker linker) {
         List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
         final GWTJahiaNode selection;
@@ -311,6 +368,11 @@ public class ContentActions {
         }
     }
 
+    /**
+     * Create a folder
+     *
+     * @param linker
+     */
     public static void createFolder(final BrowserLinker linker) {
         GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
         if (parent == null) {
@@ -338,6 +400,11 @@ public class ContentActions {
         }
     }
 
+    /**
+     * Show mashup wizard form
+     *
+     * @param linker
+     */
     public static void showMashupWizard(final BrowserLinker linker) {
         GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
         if (parent == null) {
@@ -352,6 +419,11 @@ public class ContentActions {
         }
     }
 
+    /**
+     * Showw rss from
+     *
+     * @param linker
+     */
     public static void showRSSForm(final BrowserLinker linker) {
         GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
         if (parent == null) {
@@ -368,7 +440,7 @@ public class ContentActions {
             w.setBodyBorder(false);
             w.setLayout(new FillLayout());
             w.setWidth(350);
-            w.add(new FormQuickRSS(parent.getPath()){
+            w.add(new FormQuickRSS(parent.getPath()) {
                 public void onMashupCreated() {
                     linker.refreshTable();
                 }
@@ -379,6 +451,11 @@ public class ContentActions {
         }
     }
 
+    /**
+     * Display google gadget form
+     *
+     * @param linker
+     */
     public static void showGoogleGadgetForm(final BrowserLinker linker) {
         GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
         if (parent == null) {
@@ -407,7 +484,53 @@ public class ContentActions {
         }
     }
 
+    /**
+     * Show the content wizard
+     *
+     * @param linker
+     */
     public static void showContentWizard(final BrowserLinker linker) {
+        showContentWizard(linker, null);
+    }
+
+
+    /**
+     * Show content wizard with a selected node type
+     *
+     * @param linker
+     * @param nodeType
+     */
+    public static void showContentWizard(final BrowserLinker linker, final String nodeType) {
+        if(nodeType ==  null){
+            showContentWizardByNodeType(linker, null);
+            return;
+        }
+
+        // retrieve the jahiaNodeType and display the wizard
+        JahiaContentDefinitionService.App.getInstance().getNodeType(nodeType, new AsyncCallback<GWTJahiaNodeType>() {
+            public void onSuccess(GWTJahiaNodeType jahiaNodeType) {
+                if (jahiaNodeType != null) {
+                    Log.debug("jahia node type found" + jahiaNodeType.getLabel() + "," + jahiaNodeType.getName());
+                    showContentWizardByNodeType(linker, jahiaNodeType);
+                }else{
+                    Log.error("Error while triing to get GWTNodetype with type[" + nodeType + "]");                    
+                }
+            }
+
+            public void onFailure(Throwable throwable) {
+                MessageBox.alert("Alert", "Unable to display 'Add content page wizard' ", null);
+                Log.error("Error while triing to get GWTNodetype with type[" + nodeType + "]", throwable);
+            }
+        });
+    }
+
+    /**
+     * Show content wizard with a pre-seleected node Type
+     *
+     * @param linker
+     * @param nodeType
+     */
+    public static void showContentWizardByNodeType(final BrowserLinker linker, final GWTJahiaNodeType nodeType) {
         GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
         if (parent == null) {
             final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
@@ -416,10 +539,15 @@ public class ContentActions {
             }
         }
         if (parent != null && !parent.isFile()) {
-            new AddContentWizardWindow(linker, parent).show();
+            new AddContentWizardWindow(linker, parent, nodeType).show();
         }
     }
 
+    /**
+     * Mount a folder
+     *
+     * @param linker
+     */
     public static void mountFolder(final BrowserLinker linker) {
 //        GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection() ;
 //        if (parent == null) {
@@ -433,6 +561,11 @@ public class ContentActions {
 //        }
     }
 
+    /**
+     * Unmount a folder
+     *
+     * @param linker
+     */
     public static void unmountFolder(final BrowserLinker linker) {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() == 1) {
@@ -581,13 +714,14 @@ public class ContentActions {
                         public void onFailure(Throwable throwable) {
                             if (throwable instanceof ExistingFileException) {
                                 if (com.google.gwt.user.client.Window.confirm(Messages.getResource("fm_alreadyExists") + "\n" + Messages.getResource("fm_confOverwrite"))) {
-                                     forceZip(selectedItems, archName, linker);
-                                 }
+                                    forceZip(selectedItems, archName, linker);
+                                }
                             } else {
                                 Window.alert(Messages.getResource("fm_failZip") + "\n" + throwable.getLocalizedMessage());
                                 linker.loaded();
                             }
                         }
+
                         public void onSuccess(Boolean aBoolean) {
                             forceZip(selectedItems, archName, linker);
                         }

@@ -37,24 +37,28 @@ import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow.Co
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * Wizard card responsible for displaying a form for entering content data.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ContentNameCard extends ContentWizardCard {
 
     private TextField<String> nameField;
 
+
+
     /**
-     * Initializes an instance of this class.
+     * Initialize instnce of this class
      */
     public ContentNameCard() {
         super(Messages
                 .get("add_content_wizard_card_name_title", "Content name"),
                 Messages.get("add_content_wizard_card_name_text",
                         "Provide a name for the new content:"));
+
     }
 
     /*
@@ -66,10 +70,8 @@ public class ContentNameCard extends ContentWizardCard {
         FormPanel simple = new FormPanel();
         simple.setHeaderVisible(false);
         simple.setBorders(false);
-
         LabelField selectedType = new LabelField();
-        selectedType.setFieldLabel(Messages.get(
-                "add_content_wizard_card_name_node_type", "Selected type"));
+        selectedType.setFieldLabel(Messages.get("add_content_wizard_card_name_node_type", "Selected type"));
         selectedType.setValue(getWizardData().getNodeType().getLabel() + " ("
                 + getWizardData().getNodeType().getName() + ")");
         simple.add(selectedType);

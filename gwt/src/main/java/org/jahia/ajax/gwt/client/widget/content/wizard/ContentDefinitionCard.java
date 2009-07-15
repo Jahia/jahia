@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -116,13 +117,12 @@ public class ContentDefinitionCard extends ContentWizardCard {
                 baseType, parentNode,
                 new AsyncCallback<List<GWTJahiaNodeType>>() {
                     public void onFailure(Throwable caught) {
-                        Window
-                                .alert("Unable to load content definitions for base type '"
+                        MessageBox.alert("Alert","Unable to load content definitions for base type '"
                                         + baseType
                                         + "' and parent node '"
                                         + parentNode.getPath()
                                         + "'. Cause: "
-                                        + caught.getLocalizedMessage());
+                                        + caught.getLocalizedMessage(),null);
                     }
 
                     public void onSuccess(List<GWTJahiaNodeType> result) {

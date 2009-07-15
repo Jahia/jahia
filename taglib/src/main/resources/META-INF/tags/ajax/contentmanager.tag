@@ -68,6 +68,8 @@ cursor:pointer;
                             aliasResourceName="fm_newdirname"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newContent.label"
                             aliasResourceName="fm_newcontent"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newPage.label"
+                            aliasResourceName="fm_newpage"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newMashup.label"
                             aliasResourceName="fm_newmashup"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newRssMashup.label"

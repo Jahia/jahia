@@ -246,7 +246,9 @@ public class ContentManagerHelper {
                 if (l != null) {
                     for (String s : l) {
                         if (!node.hasNode(s)) {
-                            result.add(new GWTJahiaNode(null, s, "placeholder "+s, node.getProvider().decodeInternalName(node.getPath())+"/"+s, null, null, null, null, null, null, "icon-placeholder", node.isWriteable(), false, false, null, false));
+                            final GWTJahiaNode o = new GWTJahiaNode(null, s, "placeholder " + s, node.getProvider().decodeInternalName(node.getPath()) + "/" + s, null, null, null, null, null, node.isWriteable(), false, false, null, false);
+                            o.setExt("icon-placeholder");
+                            result.add(o);
                         }
                     }
                 }
@@ -615,20 +617,7 @@ public class ContentManagerHelper {
         }
 
         if (f.isFile() || f.isPortlet()) {
-            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), f.getNodeTypes(), inherited, aclContext, f.getFileContent().getContentLength(), new StringBuilder("icon-").append(FileUtils.getFileIcon(f.getName())).toString(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
-            if (f.isPortlet()) {
-                n.setPortlet(true);
-                try {
-                    JCRPortletNode portletNode = new JCRPortletNode(f);
-                    if (portletNode.getContextName().equalsIgnoreCase("/rss")) {
-                        n.setExt("icon-rss");
-                    } else {
-                        n.setExt("icon-portlet");
-                    }
-                } catch (RepositoryException e) {
-                    n.setExt("icon-portlet");
-                }
-            }
+            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), f.getNodeTypes(), inherited, aclContext, f.getFileContent().getContentLength(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
         } else {
             n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, aclContext, f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
             boolean hasChildren = false;
@@ -652,7 +641,7 @@ public class ContentManagerHelper {
             n.setHasChildren(hasChildren);
             n.setHasFolderChildren(hasFolderChildren);
         }
-
+        setIcon(f, n);
 
         List<String> names = f.getThumbnails();
         if (names.contains("thumbnail")) {
@@ -681,6 +670,38 @@ public class ContentManagerHelper {
         }
         n.setNormalizedName(JCRStoreService.removeDiacritics(n.getName()));
         return n;
+    }
+
+    private static void setIcon(JCRNodeWrapper f, GWTJahiaNode n) {
+        try {
+            if (f.isFile()) {
+                n.setExt(new StringBuilder("icon-").append(FileUtils.getFileIcon(f.getName())).toString());
+            } else if (f.isPortlet()) {
+                n.setPortlet(true);
+                try {
+                    JCRPortletNode portletNode = new JCRPortletNode(f);
+                    if (portletNode.getContextName().equalsIgnoreCase("/rss")) {
+                        n.setExt("icon-rss");
+                    } else {
+                        n.setExt("icon-portlet");
+                    }
+                } catch (RepositoryException e) {
+                    n.setExt("icon-portlet");
+                }
+            } else if (f.isNodeType("jnt:page")) {
+                n.setExt("icon-page");
+            } else if (f.isNodeType("jnt:user")) {
+                n.setExt("icon-user");
+            } else if (f.isNodeType("jnt:group")) {
+                n.setExt("icon-user-group");
+            } else if (f.isCollection()) {
+                n.setExt("icon-dir");
+            } else {
+                n.setExt("icon-list");
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     public static void setLock(List<String> paths, boolean locked, JahiaUser user) throws GWTJahiaServiceException {

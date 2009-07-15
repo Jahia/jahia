@@ -88,11 +88,10 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         setVersioned(versioned);
     }
 
-    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, Long size, String ext, boolean writeable, boolean lockable, boolean locked, String lockOwner,boolean versioned) {
+    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, Long size, boolean writeable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
         this(uuid, name,description, path, url, date, nodetypes, inheritedTypes, aclContext, writeable, lockable, locked, lockOwner,versioned);
         setSize(size);
         setFile(Boolean.TRUE);
-        setExt(ext);
         //setPreview("../images/types/gwt/large/icon-file.png");
     }
 

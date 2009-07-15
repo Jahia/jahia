@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.util.Formatter;
-import org.jahia.ajax.gwt.client.util.icons.Util;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -150,9 +150,8 @@ public class ContentTreeTable extends TopRightComponent {
             columns = cols.toString() ;
         }
         m_treeTable = new TreeGrid<GWTJahiaNode>(store, getHeaders(columns));
+        m_treeTable.setIconProvider(new ContentModelIconProvider());
         m_treeTable.setBorders(false);
-
-        m_treeTable.getStyle().setLeafIcon(Util.getContentIcons("extension"));
 //        m_treeTable.setHorizontalScroll(true);
 //        m_treeTable.setAnimate(false);
 //        m_treeTable.getStyle().setLeafIconStyle("tree-folder");

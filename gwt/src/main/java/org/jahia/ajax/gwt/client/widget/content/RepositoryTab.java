@@ -42,21 +42,16 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.tree.TreeItem;
-import com.extjs.gxt.ui.client.widget.treepanel.TreeStyle;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
-import org.jahia.ajax.gwt.client.util.tree.TreeOpener;
-import org.jahia.ajax.gwt.client.util.icons.Util;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 /**
@@ -134,10 +129,8 @@ public class RepositoryTab extends ContentPanel {
 
         // tree component
         m_tree = new TreePanel<GWTJahiaNode>(store);
-        TreeStyle treeStyle = new TreeStyle();
-        m_tree.setStyle(treeStyle);
+        m_tree.setIconProvider(new ContentModelIconProvider());
         m_tree.setDisplayProperty("displayName");
-        treeStyle.setLeafIcon(Util.getContentIcons("extension"));
         m_tree.setBorders(false);
 
 //        binder.setIconProvider(new ModelStringProvider<GWTJahiaNode>() {

@@ -39,7 +39,7 @@
             <h2><c:out value="${requestScope.currentPage.highLightDiffTitle}" escapeXml="false"/></h2>
         </a>
         <template:include page="modules/introduction/introductionDisplay.jsp"/>
-        <template:layoutManagerArea/>
+        <template:layoutManagerArea node=""/>
         <div>
             <a class="bottomanchor" href="#"><fmt:message
                     key='pageTop'/></a>

@@ -101,6 +101,7 @@ public class WizardWindow extends Window {
         setClosable(true);
         setResizable(true);
         setModal(true);
+        setMaximizable(true);
         setHeading(getHeaderTitle());
     }
 

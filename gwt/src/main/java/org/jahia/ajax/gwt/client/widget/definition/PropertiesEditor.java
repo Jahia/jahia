@@ -261,8 +261,10 @@ public class PropertiesEditor extends FormPanel {
         String value = null;
         if (fld.getValue() != null && fld.getValue() instanceof Date) {
             value = String.valueOf(((Date) fld.getValue()).getTime());
-        } else {
+        } else if (fld.getValue() != null){
             value = fld.getValue().toString();
+        } else {
+            value = "";
         }
 
         return value;

@@ -37,4 +37,5 @@
                            actionMenuNameLabelKey="news" windowSize="10" sortByField="newsDate" sortOrder="descending">
         <%@ include file="newsDisplay.jspf" %>
     </template:containerList>
+    <template:category/>
 </div>

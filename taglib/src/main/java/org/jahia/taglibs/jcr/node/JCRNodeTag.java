@@ -39,6 +39,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.bin.Jahia;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -79,7 +80,7 @@ public class JCRNodeTag extends AbstractJahiaTag {
                 JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
                 JCRNodeWrapper n = service.checkExistence(path, user);
                 if (n != null) {
-                    JCRNodeWrapper node = service.getThreadSession(user).getNode(path);
+                    JCRNodeWrapper node = service.getThreadSession(user,null, Jahia.getThreadParamBean().getLocale()).getNode(path);
                     pageContext.setAttribute(var, node, scope);
                 } else {
                     logger.error("The path '" + path + "' does not exist");

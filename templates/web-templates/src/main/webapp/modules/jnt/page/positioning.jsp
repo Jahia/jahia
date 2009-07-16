@@ -53,29 +53,28 @@
         <div id="bodywrapper">
             <div id="contentArea">
                 <div id="toplinks">
-
-
+                <c:forEach items="${currentNode.ancestors}" var="page">
+                    <c:if test="${jcr:isNodeType(page, 'jnt:page')}">
+                        <c:if test="${rootPage == null}">
+                            <c:set var="rootPage" value="${page}"/>
+                        </c:if>
+                    </c:if>
+                </c:forEach>
+                <c:if test="${jcr:isNodeType(currentNode, 'jnt:page')}">
+                    <c:if test="${rootPage == null}">
+                        <c:set var="rootPage" value="${currentNode}"/>
+                    </c:if>
+                </c:if>
                 </div>
                 <div id="page">
                     <div id="pageHeader">
                         <div id="logotop">
-template:include page="modules/logo.jsp"
+                        <jcr:node var="logo" path="${rootPage.path}/logo"/>
+                        <template:module node="${logo}"/>
                         </div>
                         <h1 class="hide">${currentSite.title} : ${currentPage.title}</h1>
                         
-                        <c:forEach items="${currentNode.ancestors}" var="page">
-                            <c:if test="${jcr:isNodeType(page, 'jnt:page')}">
-                                <c:if test="${rootPage == null}">
-                                    <c:set var="rootPage" value="${page}"/>
-                                </c:if>
-                            </c:if>
-                        </c:forEach>
 
-                        <c:if test="${jcr:isNodeType(currentNode, 'jnt:page')}">
-                            <c:if test="${rootPage == null}">
-                                <c:set var="rootPage" value="${currentNode}"/>
-                            </c:if>
-                        </c:if>
                         <template:module node="${rootPage}" template="nav.navBar" />
                     </div>
 
@@ -85,7 +84,7 @@ template:include page="modules/logo.jsp"
                             <c:if test="${ !empty param.mainArea }">
                                 <div id="${param.position}">
                                     <div class="spacer">
-<jsp:include page="${param.mainArea}"/>
+                                        <jsp:include page="${param.mainArea}"/>
                                     </div>
                                 </div>
                             </c:if>

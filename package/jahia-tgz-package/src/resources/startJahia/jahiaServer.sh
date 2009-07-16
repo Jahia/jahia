@@ -1,5 +1,5 @@
 #!/bin/sh
-echo -- JAHIA Edition 4 Startup Script --------------------
+echo -- Jahia Startup Script --------------------
 echo Verifying environment...
 echo Current directory is $PWD
 BINDIR=$PWD
@@ -10,7 +10,7 @@ if [ -f "../jre/jre/bin/java" ] ; then
   echo Detected JRE, setting JAVA_HOME to $JAVA_HOME and PATH to $PATH
 fi
 if [ -z "$JAVA_HOME" ] ; then
-  echo Please set your JAVA_HOME variable to the location where your JDK is installed before running JAHIA Edition 4...
+  echo Please set your JAVA_HOME variable to the location where your JDK is installed before running Jahia...
   exit 0
 else
   if [ -f "$JAVA_HOME/lib/tools.jar" ] ; then
@@ -40,7 +40,7 @@ else
   echo TOMCAT_HOME environment variable must NOT be set !
   exit 0
 fi
-echo Starting JAHIA Edition Database and Web Server...
+echo Starting Jahia Database and Web Server...
 #cd ../hsqldb/demo
 #./runServer
 #cd ../..

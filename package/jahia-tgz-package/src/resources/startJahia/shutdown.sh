@@ -1,5 +1,5 @@
 #!/bin/sh
-echo -- JAHIA Edition 4 Shutdown script ----------------
+echo -- Jahia Shutdown script ----------------
 if [ -f "../jre/jre/bin/java" ] ; then
   export JAVA_HOME=$PWD/../jre/jre
   echo Detected JRE, setting JAVA_HOME to $JAVA_HOME and PATH to $PATH

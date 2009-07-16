@@ -62,7 +62,7 @@ public class ContentDefinitionHelper {
     private static final List<String> excludedItems = Arrays.asList("j:locktoken", "jcr:lockOwner", "jcr:lockIsDeep",
             "j:nodename", "j:fullpath", "j:applyAcl", "jcr:uuid", "j:fieldsinuse");
     
-    private static final List<String> excludedTypes = Arrays.asList("nt:base", "");
+    private static final List<String> excludedTypes = Arrays.asList("nt:base", "jnt:workflow", "jnt:extraResource");
     
     private static final Comparator<GWTJahiaNodeType> gwtJahiaNodeTypeNameComparator = new Comparator<GWTJahiaNodeType>() {
         public int compare(GWTJahiaNodeType o1, GWTJahiaNodeType o2) {
@@ -222,7 +222,9 @@ public class ContentDefinitionHelper {
 //                                .getRequiredPrimaryTypes();
 //                    }
                     for (ExtendedNodeType extendedNodeType : requiredPrimaryTypes) {
-                        for (ExtendedNodeType nodeType : extendedNodeType.getSubtypes()) {
+                        List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>(Arrays.asList(extendedNodeType.getSubtypes()));
+                        types.add(extendedNodeType);
+                        for (ExtendedNodeType nodeType : types) {
                             if (!excludedTypes.contains(nodeType.getName()) && !nodeType.isMixin() && !nodeType.isAbstract()) {
                                 gwtNodeTypes
                                         .add(new GWTJahiaNodeType(nodeType

@@ -170,6 +170,8 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                 if (item instanceof PropertyImpl) {
                     if (!((PropertyImpl)item).isI18n()) {
                         emptyProperties.put(item.getName(), (PropertyImpl) item);
+                    } else {
+                        i18nEmptyProperties.add((PropertyImpl) item);
                     }
                 }
             }
@@ -191,7 +193,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             try {
                 List<Locale> locales = getProcessingContext().getSite().getLanguageSettingsAsLocales(true);
                 for (Locale locale : locales) {
-                    TranslationNodeImpl t = new TranslationNodeImpl(getSession(), this, i18nProperties, locale);
+                    TranslationNodeImpl t = new TranslationNodeImpl(getSession(), this, i18nProperties, i18nEmptyProperties, locale);
                     translationNodes.put(locale.toString(), t);
                     initNode(t);
                 }

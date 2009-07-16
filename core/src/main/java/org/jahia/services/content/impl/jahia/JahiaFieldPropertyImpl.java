@@ -99,8 +99,7 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
                     updateField(v, jahiaField);
                     ServicesRegistry.getInstance().getJahiaFieldService().saveField(jahiaField, parent.getAclID(), getProcessingContext());
                 } else {
-                    if (def.getDeclaringNodeType().isMixin() && (def.getDeclaringNodeType().isNodeType("jmix:contentmetadata") || def.getDeclaringNodeType().isNodeType("mix:created") ||
-                            def.getDeclaringNodeType().isNodeType("mix:createdBy") || def.getDeclaringNodeType().isNodeType("jmix:lastPublished") || def.getDeclaringNodeType().isNodeType("jmix:categorized") || def.getDeclaringNodeType().isNodeType("mix:lastModified"))) {
+                    if (def.isMetadataItem()) {
 
                         // new metadata
                         JahiaFieldDefinition contentDefinition = JahiaFieldDefinitionsRegistry.getInstance().getDefinition(0, StringUtils.substringAfter(def.getName(),":"));
@@ -150,7 +149,7 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
     private void updateField(String v, JahiaField field) throws RepositoryException {
         int fieldType = field.getType();
         if (fieldType == FieldTypes.FILE) {
-            JCRNodeWrapper object = JCRStoreService.getInstance().getThreadSession(getProcessingContext().getUser()).getNode(v);
+            JCRNodeWrapper object = (JCRNodeWrapper) JCRStoreService.getInstance().getThreadSession(getProcessingContext().getUser()).getNodeByUUID(v);
             JahiaFileField fField = object.getJahiaFileField();
             field.setValue(v);
             field.setObject(fField);

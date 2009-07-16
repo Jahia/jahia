@@ -71,6 +71,7 @@ public abstract class NodeImpl extends ItemImpl implements Node {
 
     protected Map<String, PropertyImpl> properties;
     protected List<PropertyImpl> i18nProperties = new ArrayList<PropertyImpl>();
+    protected List<PropertyImpl> i18nEmptyProperties = new ArrayList<PropertyImpl>();
     protected Map<String, List<Node>> nodes;
     protected Map<String, TranslationNodeImpl> translationNodes;
     protected Map<String, PropertyImpl> emptyProperties;

@@ -84,7 +84,7 @@ public class PropertyImpl extends ItemImpl implements Property {
     }
 
     public void setValue(Value[] values) throws ValueFormatException, VersionException, LockException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        
     }
 
     public void setValue(String s) throws ValueFormatException, VersionException, LockException, RepositoryException {

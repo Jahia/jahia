@@ -33,6 +33,7 @@ package org.jahia.services.content.impl.jahia;
 
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.workflow.WorkflowService;
@@ -55,8 +56,9 @@ public class TranslationNodeImpl extends NodeImpl {
     protected ContentObject object;
     protected Locale locale;
     protected List<PropertyImpl> parentI18nProperties;
+    protected List<PropertyImpl> parentI18nEmptyProperties;
 
-    public TranslationNodeImpl(SessionImpl session, JahiaContentNodeImpl parent, List<PropertyImpl> parentI18nProperties, Locale locale) throws RepositoryException {
+    public TranslationNodeImpl(SessionImpl session, JahiaContentNodeImpl parent, List<PropertyImpl> parentI18nProperties, List<PropertyImpl> parentI18nEmptyProperties, Locale locale) throws RepositoryException {
         super(session);
         setDefinition(NodeTypeRegistry.getInstance().getNodeType("jmix:i18n").getChildNodeDefinitionsAsMap().get("j:translation"));
         setNodetype(NodeTypeRegistry.getInstance().getNodeType("jnt:translation"));
@@ -64,12 +66,29 @@ public class TranslationNodeImpl extends NodeImpl {
         this.object = parent.getContentObject();
         this.locale = locale;
         this.parentI18nProperties = parentI18nProperties;
+        this.parentI18nEmptyProperties = parentI18nEmptyProperties;
     }
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         return parent;
     }
 
+    @Override
+    protected PropertyImpl getPropertyForSet(String s) throws RepositoryException {
+        PropertyImpl p = super.getPropertyForSet(s);
+        if (p == null) {
+            if (s.endsWith(locale.toString())) {
+                s = s.substring(0, s.length() - locale.toString().length() - 1);
+                ExtendedPropertyDefinition def = parent.getPrimaryNodeType().getPropertyDefinitionsAsMap().get(s);
+                if (def != null && def.isInternationalized()) {
+                    p = new JahiaFieldPropertyImpl(getSession(), parent, def, new Value[0], null, locale);
+                    properties.put(s,p);
+                    return p;
+                }
+            }
+        }
+        return p;
+    }
 
     @Override
     protected void initProperties() throws RepositoryException {
@@ -81,10 +100,14 @@ public class TranslationNodeImpl extends NodeImpl {
 
         parent.initProperties();
 
-
         for (PropertyImpl i18nProperty : parentI18nProperties) {
             if (locale.equals(i18nProperty.getLocale())) {
                 properties.put(i18nProperty.getName(), i18nProperty);
+            }
+        }
+        for (PropertyImpl i18nProperty : parentI18nProperties) {
+            if (locale.equals(i18nProperty.getLocale())) {
+                emptyProperties.put(i18nProperty.getName(), i18nProperty);
             }
         }
 

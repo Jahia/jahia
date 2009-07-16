@@ -60,6 +60,8 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private int width = 0 ;
     private int height = 0 ;
     private SortInfo sortInfo = new SortInfo("name", Style.SortDir.ASC);
+    private List<GWTJahiaNodeVersion> versions;
+    private String selectedVersion;
 
     public GWTJahiaNode() {
         super();
@@ -372,5 +374,21 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setPortlet(boolean portlet) {
         this.portlet = portlet;
+    }
+
+    public void setVersions(List<GWTJahiaNodeVersion> versions) {
+        this.versions = versions;
+    }
+
+    public List<GWTJahiaNodeVersion> getVersions() {
+        return versions;
+    }
+
+    public void setSelectedVersion(String selectedVersion) {
+        this.selectedVersion = selectedVersion;
+    }
+
+    public String getSelectedVersion() {
+        return selectedVersion;
     }
 }

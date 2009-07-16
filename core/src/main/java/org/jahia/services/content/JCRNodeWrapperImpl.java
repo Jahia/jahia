@@ -119,7 +119,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             if (localPath != null) {
                 if (localPath.startsWith("/")) {
-                    objectNode = (Node) session.getProviderSession(provider).getItem(provider.encodeInternalName(localPath));
+                    String versionNumber = null;
+                    String realPath = localPath;
+                    if(localPath.contains("?v=")) {
+                        String[] strings = localPath.split("\\?v=");
+                        realPath = strings[0];
+                        versionNumber = strings[1];
+                    }
+                    objectNode = (Node) session.getProviderSession(provider).getItem(provider.encodeInternalName(realPath));
+                    if(versionNumber!=null) {
+                        objectNode = getFrozenVersion(versionNumber);
+                    }
                 } else {
                     objectNode = session.getProviderSession(provider).getNodeByUUID(localPath);
                     this.localPath = objectNode.getPath();

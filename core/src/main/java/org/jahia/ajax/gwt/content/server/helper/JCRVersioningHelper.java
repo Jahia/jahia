@@ -90,21 +90,23 @@ public class JCRVersioningHelper {
     public static List<GWTJahiaNodeVersion> getVersions(JCRNodeWrapper node, ProcessingContext jParams) {
         List<GWTJahiaNodeVersion> versions = new ArrayList<GWTJahiaNodeVersion>();
         try {
-            VersionHistory vh = node.getVersionHistory();
-            VersionIterator vi = vh.getAllVersions();
-            while (vi.hasNext()) {
-                Version v = vi.nextVersion();
-                if (!v.getName().equals("jcr:rootVersion")) {
-                    JCRNodeWrapper orig = ((JCRVersionHistory) v.getContainingHistory()).getNode();
-                    GWTJahiaNode n = ContentManagerHelper.getGWTJahiaNode(orig);
-                    n.setUrl(orig.getUrl() + "?v=" + v.getName());
-                    GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(),v.getName(), v.getCreated().getTime());
-                    jahiaNodeVersion.setNode(n);
-                    versions.add(jahiaNodeVersion);
+            if (node.isVersioned()) {
+                VersionHistory vh = node.getVersionHistory();
+                VersionIterator vi = vh.getAllVersions();
+                while (vi.hasNext()) {
+                    Version v = vi.nextVersion();
+                    if (!v.getName().equals("jcr:rootVersion")) {
+                        JCRNodeWrapper orig = ((JCRVersionHistory) v.getContainingHistory()).getNode();
+                        GWTJahiaNode n = ContentManagerHelper.getGWTJahiaNode(orig, false);
+                        n.setUrl(orig.getUrl() + "?v=" + v.getName());
+                        GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(), v.getName(), v.getCreated().getTime());
+                        jahiaNodeVersion.setNode(n);
+                        versions.add(jahiaNodeVersion);
+                    }
                 }
             }
         } catch (RepositoryException e) {
-           logger.error(e,e);
+            logger.error(e,e);
         }
         return versions;
     }

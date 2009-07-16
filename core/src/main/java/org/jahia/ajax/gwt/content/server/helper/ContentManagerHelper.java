@@ -224,7 +224,7 @@ public class ContentManagerHelper {
                     }
                 }
                 if (f.isCollection() || (matchesFilters(f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply))) {
-                    GWTJahiaNode theNode = getGWTJahiaNode(f);
+                    GWTJahiaNode theNode = getGWTJahiaNode(f,true);
 //                    if (openPaths != null && openPaths.length() > 0) {
 //                        logger.debug("trying to append children");
 //                        appendChildren(theNode, splitOpenPathList(openPaths), context, nodeTypes, mimeTypes, filters, noFolders);
@@ -333,7 +333,7 @@ public class ContentManagerHelper {
                 NodeIterator ni = jcr.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode("/content/users").getNodes();
                 while (ni.hasNext()) {
                     Node node = (Node) ni.next();
-                    GWTJahiaNode jahiaNode = getGWTJahiaNode((JCRNodeWrapper) node.getNode("files"));
+                    GWTJahiaNode jahiaNode = getGWTJahiaNode((JCRNodeWrapper) node.getNode("files"),true);
                     jahiaNode.setDisplayName(node.getName());
                     userNodes.add(jahiaNode);
                 }
@@ -482,7 +482,7 @@ public class ContentManagerHelper {
                     String path = n.getPath();
                     if (!foundPaths.contains(path)) { // TODO dirty filter, please correct search/index issue (sometimes duplicate results)
                         foundPaths.add(path);
-                        result.add(getGWTJahiaNode(n));
+                        result.add(getGWTJahiaNode(n,true));
                     }
                 }
             }
@@ -518,7 +518,7 @@ public class ContentManagerHelper {
             } else {
                 queryStore.save();
             }
-            return getGWTJahiaNode(jcr.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(path));
+            return getGWTJahiaNode(jcr.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(path),true);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not store query");
@@ -560,14 +560,14 @@ public class ContentManagerHelper {
 
     public static GWTJahiaNode getNode(String path, String workspace, ProcessingContext jParams) throws GWTJahiaServiceException {
         try {
-            return getGWTJahiaNode(jcr.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode(path));
+            return getGWTJahiaNode(jcr.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode(path),true);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
     }
 
-    public static GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper f) {
+    public static GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper f,boolean versionned) {
         List<String> list = f.getNodeTypes();
         List<String> inherited = new ArrayList<String>();
         for (String s : list) {
@@ -668,6 +668,12 @@ public class ContentManagerHelper {
             logger.error(e.getMessage(), e);
         }
         n.setNormalizedName(JCRStoreService.removeDiacritics(n.getName()));
+        if (versionned) {
+            List<GWTJahiaNodeVersion> gwtJahiaNodeVersions = JCRVersioningHelper.getVersions(f, null);
+            if (gwtJahiaNodeVersions != null && gwtJahiaNodeVersions.size() > 0) {
+                n.setVersions(gwtJahiaNodeVersions);
+            }
+        }
         return n;
     }
 
@@ -1348,7 +1354,7 @@ public class ContentManagerHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
         }
-        return getGWTJahiaNode(childNode);
+        return getGWTJahiaNode(childNode,true);
     }
 
     private static JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
@@ -1394,7 +1400,7 @@ public class ContentManagerHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Node creation failed");
         }
-        return getGWTJahiaNode(childNode);
+        return getGWTJahiaNode(childNode,true);
     }
 
     private static JCRNodeWrapper unsecureAddNode(JCRNodeWrapper parentNode, String name, String nodeType, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
@@ -1796,7 +1802,7 @@ public class ContentManagerHelper {
                 logger.error(e.getMessage(), e);
                 throw new GWTJahiaServiceException("Folder creation failed");
             }
-            return getGWTJahiaNode(node);
+            return getGWTJahiaNode(node,true);
         } catch (RepositoryException e) {
             logger.error(e, e);
             throw new GWTJahiaServiceException("error");

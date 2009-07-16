@@ -104,9 +104,10 @@ public class ContentPathBar extends TopBar {
 
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelection) {
         List<GWTJahiaNode> selection = (List<GWTJahiaNode>) topTableSelection ;
-        
-        if (selection != null && selection.size() > 0 && (selection.get(0).getNodeTypes().contains(config.getNodeTypes()) || selection.get(0).getInheritedNodeTypes().contains(config.getNodeTypes()))) {
-            selectedPath.setRawValue(selection.get(0).getPath());
+
+        GWTJahiaNode node = selection.get(0);
+        if (selection != null && selection.size() > 0 && (node.getNodeTypes().contains(config.getNodeTypes()) || node.getInheritedNodeTypes().contains(config.getNodeTypes()))) {
+            selectedPath.setRawValue(node.getPath()+(node.getSelectedVersion()!=null?"?v="+node.getSelectedVersion():""));
             if (callback != null && callback.length() > 0) {
                 nativeCallback(callback, selectedPath.getRawValue());
             }

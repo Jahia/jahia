@@ -1700,6 +1700,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <name>node</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>javax.jcr.Node</type>
+        </attribute>
     </tag>
     
     <tag>

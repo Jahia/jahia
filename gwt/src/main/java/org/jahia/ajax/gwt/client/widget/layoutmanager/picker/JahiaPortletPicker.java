@@ -63,7 +63,8 @@ import java.util.*;
  */
 
 public class JahiaPortletPicker extends ContentPanel {
-    private final String rootPath = "/content/shared/mashups";
+    //private final String rootPath = "/content/shared/mashups";
+    private final String rootPath = "/content/shared/ma";
     private final GWTJahiaNode directory = new GWTJahiaNode(null, null, null, rootPath, null, null, null, null, null, false, false, false, null,false);
 
 
@@ -80,7 +81,15 @@ public class JahiaPortletPicker extends ContentPanel {
     private Button config;
     private GWTJahiaNode selection;
 
+    // TO Do: make it not static
+    private static String containerUuid;
+
     public JahiaPortletPicker() {
+       this(null);
+    }
+
+    public JahiaPortletPicker(String containerUuid) {
+        this.containerUuid = containerUuid;
         setBorders(false);
         setBodyBorder(false);
         getHeader().setBorders(false);
@@ -250,12 +259,12 @@ public class JahiaPortletPicker extends ContentPanel {
         $wnd.addToMyPortal = function (uuid) {@org.jahia.ajax.gwt.client.widget.layoutmanager.picker.JahiaPortletPicker::addToMyPortal(Ljava/lang/String;)(uuid); };
     }-*/;
 
-    public static void addToMyPortal(String uuid) {
-        Element ele = DOM.getElementById(uuid);
+    public static void addToMyPortal(String nodeUuid) {
+        Element ele = DOM.getElementById(nodeUuid);
         DOM.setElementAttribute(ele, "disabled", "disabled");
         DOM.setElementAttribute(ele, "value", "added !");
         GWTJahiaNode gwtJahiaNode = new GWTJahiaNode();
-        gwtJahiaNode.setUUID(uuid);
+        gwtJahiaNode.setUUID(nodeUuid);
         GWTJahiaLayoutItem gwtLayoutItem = new GWTJahiaLayoutItem();
         gwtLayoutItem.setColumn(0);
         gwtLayoutItem.setRow(0);
@@ -263,7 +272,7 @@ public class JahiaPortletPicker extends ContentPanel {
         gwtLayoutItem.setGwtJahiaNode(gwtJahiaNode);
 
         // make a call ajax
-        LayoutmanagerService.App.getInstance().addLayoutItem(JahiaPageEntryPoint.getJahiaGWTPage(),gwtLayoutItem, new AsyncCallback() {
+        LayoutmanagerService.App.getInstance().addLayoutItem(containerUuid,gwtLayoutItem, new AsyncCallback() {
             public void onSuccess(Object o) {
                 Info.display("",Messages.getNotEmptyResource("p_mashup_added_myPortal", "Mashup added to 'MyPortal'"));
             }

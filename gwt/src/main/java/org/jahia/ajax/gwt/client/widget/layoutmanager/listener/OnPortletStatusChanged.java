@@ -69,7 +69,7 @@ public class OnPortletStatusChanged implements Listener<ComponentEvent> {
         if (newStatus != null) {
             status = newStatus;
         } else {
-            if (JahiaPropertyHelper.isStatusMinimized(jahiaPortlet.getPorletConfig().getStatus())) {
+            if (JahiaPropertyHelper.isStatusMinimized(jahiaPortlet.getGwtJahiaLayoutItem().getStatus())) {
                 status = JahiaPropertyHelper.getStatusMaximizedValue();
             } else {
                 status = JahiaPropertyHelper.getStatusMinimizedValue();
@@ -77,11 +77,11 @@ public class OnPortletStatusChanged implements Listener<ComponentEvent> {
         }
         Log.debug("JahiaPortlet[" + jahiaPortlet.getWindowId() + "] "+status+".");
 
-        GWTJahiaLayoutItem gwtJahiaLayoutItem = jahiaPortlet.getPorletConfig();
+        GWTJahiaLayoutItem gwtJahiaLayoutItem = jahiaPortlet.getGwtJahiaLayoutItem();
         gwtJahiaLayoutItem.setStatus(status);
 
         // make a call ajax
-        LayoutmanagerService.App.getInstance().saveLayoutItem(JahiaPageEntryPoint.getJahiaGWTPage(), gwtJahiaLayoutItem, new AsyncCallback<String>() {
+        LayoutmanagerService.App.getInstance().saveLayoutItem(gwtJahiaLayoutItem, new AsyncCallback<String>() {
             public void onSuccess(String o) {
                 Log.debug("old status: "+oldStatus);
                 if (JahiaPropertyHelper.isStatusFullScreen(oldStatus)) {

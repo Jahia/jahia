@@ -181,6 +181,10 @@ public class GWTJahiaLayoutItem implements Serializable {
         return currentMode == MODE_HELP;
     }
 
+    public boolean isPortletApplication() {
+        return  gwtJahiaNode != null && gwtJahiaNode.isPortlet();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

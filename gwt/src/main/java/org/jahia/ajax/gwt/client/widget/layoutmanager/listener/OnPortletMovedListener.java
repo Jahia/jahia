@@ -110,7 +110,7 @@ public class OnPortletMovedListener implements Listener<PortalEvent> {
 
 
         // make a call ajax
-        LayoutmanagerService.App.getInstance().saveLayoutItems(JahiaPageEntryPoint.getJahiaGWTPage(), layoutItemList, new AsyncCallback() {
+        LayoutmanagerService.App.getInstance().saveLayoutItems(layoutItemList, new AsyncCallback() {
             public void onSuccess(Object o) {
                 Log.debug("Layout manager updated successfuly.");
             }
@@ -132,7 +132,7 @@ public class OnPortletMovedListener implements Listener<PortalEvent> {
      */
     private void updateLayoutItems(List<GWTJahiaLayoutItem> layoutItems, JahiaPortlet portlet) {
         // get prferences object
-        GWTJahiaLayoutItem gwtLayoutItem = portlet.getPorletConfig();
+        GWTJahiaLayoutItem gwtLayoutItem = portlet.getGwtJahiaLayoutItem();
         
         // add to pref list
         layoutItems.add(gwtLayoutItem);

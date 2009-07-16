@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.client.module;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.DOM;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.JahiaModule;
 import org.jahia.ajax.gwt.client.core.JahiaType;
@@ -61,7 +62,8 @@ public class LayoutManagerJahiaModule extends JahiaModule {
     public void onModuleLoad(final GWTJahiaPageContext jahiaPageContext, final List<RootPanel> rootPanels) {
         if (rootPanels != null && rootPanels.size() == 1) {
             // get Root element attributes
-            LayoutmanagerService.App.getInstance().getLayoutmanagerConfig(new AsyncCallback<GWTJahiaLayoutManagerConfig>() {
+            final RootPanel rootPanel = rootPanels.get(0);
+            LayoutmanagerService.App.getInstance().getLayoutmanagerConfig(getContainerUUID(rootPanel), new AsyncCallback<GWTJahiaLayoutManagerConfig>() {
                 public void onSuccess(GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig) {
                     if (gwtLayoutManagerConfig == null || gwtLayoutManagerConfig.getNbColumns() < 1) {
                         gwtLayoutManagerConfig = new GWTJahiaLayoutManagerConfig();
@@ -87,6 +89,10 @@ public class LayoutManagerJahiaModule extends JahiaModule {
                 }
             });
         }
+    }
+
+    public String getContainerUUID(RootPanel panel){
+        return DOM.getElementAttribute(panel.getElement(), "uuid");
     }
 
 

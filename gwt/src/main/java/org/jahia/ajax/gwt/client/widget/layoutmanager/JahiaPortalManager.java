@@ -136,7 +136,7 @@ public class JahiaPortalManager extends ContentPanel {
                     public void handleEvent(MessageBoxEvent ce) {
                         Button btn = ce.getButtonClicked();
                         if (btn.getText().equalsIgnoreCase(MessageBox.OK)) {
-                            LayoutmanagerService.App.getInstance().saveAsDefault(JahiaPageEntryPoint.getJahiaGWTPage(), new AsyncCallback() {
+                            LayoutmanagerService.App.getInstance().saveAsDefault(getContainerUUID(), new AsyncCallback() {
                                 public void onSuccess(Object o) {
                                    Log.debug("Save as defaut");
                                 }
@@ -168,7 +168,7 @@ public class JahiaPortalManager extends ContentPanel {
                     public void handleEvent(MessageBoxEvent ce) {
                         Button btn = ce.getButtonClicked();
                         if (btn.getText().equalsIgnoreCase(MessageBox.OK)) {
-                            LayoutmanagerService.App.getInstance().restoreDefault(JahiaPageEntryPoint.getJahiaGWTPage(), new AsyncCallback() {
+                            LayoutmanagerService.App.getInstance().restoreDefault(getContainerUUID(), new AsyncCallback() {
                                 public void onSuccess(Object o) {
                                     refreshPortal();
                                 }
@@ -315,7 +315,7 @@ public class JahiaPortalManager extends ContentPanel {
 
     private void loadPortlets() {
         // first update all alod brother postion
-        LayoutmanagerService.App.getInstance().getLayoutItems(JahiaPageEntryPoint.getJahiaGWTPage(), new AsyncCallback<List<GWTJahiaLayoutItem>>() {
+        LayoutmanagerService.App.getInstance().getLayoutItems(getContainerUUID(), new AsyncCallback<List<GWTJahiaLayoutItem>>() {
             public void onSuccess(List<GWTJahiaLayoutItem> draggableWidgetList) {
                 // add boxes
                 try {
@@ -337,6 +337,10 @@ public class JahiaPortalManager extends ContentPanel {
             }
         });
 
+    }
+
+    private String getContainerUUID() {
+        return gwtPortalConfig.getContainerUUID();
     }
 
     /**
@@ -430,7 +434,7 @@ public class JahiaPortalManager extends ContentPanel {
 
     public void goToPortelSelector() {
         removeAll();
-        portletPicker = new JahiaPortletPicker();
+        portletPicker = new JahiaPortletPicker(gwtPortalConfig.getContainerUUID());
         portletPicker.setStyleAttribute("font", "black");
         bar.setVisible(false);
         portletPicker.setVisible(true);

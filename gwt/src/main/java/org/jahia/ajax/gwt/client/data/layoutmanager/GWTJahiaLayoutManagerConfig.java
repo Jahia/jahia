@@ -31,6 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.data.layoutmanager;
 
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+
 import java.io.Serializable;
 
 /**
@@ -40,17 +42,28 @@ import java.io.Serializable;
  * Time: 11:09:43
  */
 public class GWTJahiaLayoutManagerConfig implements Serializable {
-    private String id;
     private int nbColumns;
     private boolean liveDraggable;
     private boolean liveQuickbarVisible;
+    //private GWTJahiaNode containerNode;
+    private String containerUuid;
 
-    public String getId() {
-        return id;
+    public GWTJahiaLayoutManagerConfig() {
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public GWTJahiaLayoutManagerConfig(String containerUuid) {
+        this.containerUuid = containerUuid;
+    }
+
+    /*public GWTJahiaLayoutManagerConfig(GWTJahiaNode containerNode) {
+        this.containerNode = containerNode;
+    }*/
+
+    public String getContainerUUID() {
+        /*if (containerNode != null) {
+            return containerNode.getUUID();
+        }  */
+        return containerUuid;
     }
 
     public int getNbColumns() {

@@ -52,7 +52,7 @@ import com.google.gwt.user.client.Window;
  * Time: 17:11:29
  */
 public class JahiaPortlet extends Portlet {
-    private GWTJahiaLayoutItem porletConfig = new GWTJahiaLayoutItem();
+    private GWTJahiaLayoutItem gwtJahiaLayoutItem = new GWTJahiaLayoutItem();
     private LayoutContainer column;
     protected Widget viewContainer = null;
     protected Widget editContainer = null;
@@ -75,8 +75,8 @@ public class JahiaPortlet extends Portlet {
         getCollapseBtn().changeStyle("x-tool-portlet-toggle");
     }
 
-    public JahiaPortlet(GWTJahiaLayoutItem porletConfig) {
-        this.porletConfig = porletConfig;
+    public JahiaPortlet(GWTJahiaLayoutItem gwtJahiaLayoutItem) {
+        this.gwtJahiaLayoutItem = gwtJahiaLayoutItem;
         configPanel();
     }
 
@@ -85,9 +85,9 @@ public class JahiaPortlet extends Portlet {
         configPanel();
     }
 
-    public JahiaPortlet(Layout layout, GWTJahiaLayoutItem porletConfig) {
+    public JahiaPortlet(Layout layout, GWTJahiaLayoutItem gwtJahiaLayoutItem) {
         super(layout);
-        this.porletConfig = porletConfig;
+        this.gwtJahiaLayoutItem = gwtJahiaLayoutItem;
         configPanel();
     }
 
@@ -102,33 +102,37 @@ public class JahiaPortlet extends Portlet {
     }
 
     public void doView() {
-        if (porletConfig.hasViewMode()) {
-            Window.Location.replace(porletConfig.getViewModeLink());
+        if (gwtJahiaLayoutItem.hasViewMode()) {
+            Window.Location.replace(gwtJahiaLayoutItem.getViewModeLink());
         }
     }
 
     public void doEdit() {
-        if (porletConfig.hasEditMode()) {
-            Window.Location.replace(porletConfig.getEditModeLink());
+        if (gwtJahiaLayoutItem.hasEditMode()) {
+            Window.Location.replace(gwtJahiaLayoutItem.getEditModeLink());
         }
     }
 
     public void doHelp() {
-        if (porletConfig.hasHelpMode()) {
-            Window.Location.replace(porletConfig.getHelpModeLink());
+        if (gwtJahiaLayoutItem.hasHelpMode()) {
+            Window.Location.replace(gwtJahiaLayoutItem.getHelpModeLink());
         }
     }
 
     protected boolean isViewMode() {
-        return porletConfig.isViewMode();
+        return gwtJahiaLayoutItem.isViewMode();
     }
 
     protected boolean isEditMode() {
-        return porletConfig.isEditMode();
+        return gwtJahiaLayoutItem.isEditMode();
     }
 
     protected boolean isHelpMode() {
-        return porletConfig.isHelpMode();
+        return gwtJahiaLayoutItem.isHelpMode();
+    }
+
+    protected boolean isPortletApplicatin() {
+        return gwtJahiaLayoutItem.isPortletApplication();
     }
 
 
@@ -140,7 +144,7 @@ public class JahiaPortlet extends Portlet {
         setCollapsible(true);
         setAnimCollapse(false);
 
-        if (porletConfig.hasViewMode()) {
+        if (gwtJahiaLayoutItem.hasViewMode()) {
             viewButton.addSelectionListener(new SelectionListener<IconButtonEvent>() {
                 @Override
                 public void componentSelected(IconButtonEvent ce) {
@@ -152,7 +156,7 @@ public class JahiaPortlet extends Portlet {
         }
 
         // change mode
-        if (porletConfig.hasEditMode()) {
+        if (gwtJahiaLayoutItem.hasEditMode()) {
             editButton.addSelectionListener(new SelectionListener<IconButtonEvent>() {
                 @Override
                 public void componentSelected(IconButtonEvent ce) {
@@ -164,7 +168,7 @@ public class JahiaPortlet extends Portlet {
         }
 
         // help mode
-        if (porletConfig.hasHelpMode()) {
+        if (gwtJahiaLayoutItem.hasHelpMode()) {
             helpButton.addSelectionListener(new SelectionListener<IconButtonEvent>() {
                 @Override
                 public void componentSelected(IconButtonEvent ce) {
@@ -238,44 +242,44 @@ public class JahiaPortlet extends Portlet {
         this.column = column;
     }
 
-    public GWTJahiaLayoutItem getPorletConfig() {
-        return porletConfig;
+    public GWTJahiaLayoutItem getGwtJahiaLayoutItem() {
+        return gwtJahiaLayoutItem;
     }
 
-    public void setPorletConfig(GWTJahiaLayoutItem porletConfig) {
-        this.porletConfig = porletConfig;
+    public void setGwtJahiaLayoutItem(GWTJahiaLayoutItem gwtJahiaLayoutItem) {
+        this.gwtJahiaLayoutItem = gwtJahiaLayoutItem;
     }
 
     public int getColumnIndex() {
-        return porletConfig.getColumn();
+        return gwtJahiaLayoutItem.getColumn();
     }
 
     public String getStatus() {
-        return this.porletConfig.getStatus();
+        return this.gwtJahiaLayoutItem.getStatus();
     }
 
     public void setColumnIndex(int columnIndex) {
-        porletConfig.setColumn(columnIndex);
+        gwtJahiaLayoutItem.setColumn(columnIndex);
     }
 
     public int getRowIndex() {
-        return porletConfig.getRow();
+        return gwtJahiaLayoutItem.getRow();
     }
 
     public void setRowIndex(int rowIndex) {
-        porletConfig.setRow(rowIndex);
+        gwtJahiaLayoutItem.setRow(rowIndex);
     }
 
     public void setStatus(String status) {
-        porletConfig.setStatus(status);
+        gwtJahiaLayoutItem.setStatus(status);
     }
 
     public String getEntryPointInstanceId() {
-        return porletConfig.getEntryPointInstanceID();
+        return gwtJahiaLayoutItem.getEntryPointInstanceID();
     }
 
     public String getWindowId() {
-        return porletConfig.getNode();
+        return gwtJahiaLayoutItem.getNode();
     }
 
     public Widget getViewContainer() {

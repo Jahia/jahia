@@ -78,9 +78,9 @@ public class OnPortletRemoved extends SelectionListener<IconButtonEvent> {
 
     public void close() {
         // make a call ajax
-        LayoutmanagerService.App.getInstance().removeLayoutItem(JahiaPageEntryPoint.getJahiaGWTPage(), jahiaPortlet.getPorletConfig(), new AsyncCallback() {
+        LayoutmanagerService.App.getInstance().removeLayoutItem(jahiaPortlet.getGwtJahiaLayoutItem(), new AsyncCallback() {
             public void onSuccess(Object o) {
-                Log.debug("Portlet removed: " + jahiaPortlet.getPorletConfig().getNode());
+                Log.debug("Portlet removed: " + jahiaPortlet.getGwtJahiaLayoutItem().getNode());
                 JahiaPortalManager.getInstance().removeJahiaPortlet(jahiaPortlet);
             }
 

@@ -125,8 +125,6 @@ public class PortletRender extends HTML {
 
     }
 
-    public void refresh() {
-
-    }
+  
 
 }

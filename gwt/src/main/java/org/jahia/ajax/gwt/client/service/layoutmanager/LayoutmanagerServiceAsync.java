@@ -58,9 +58,9 @@ public interface LayoutmanagerServiceAsync {
 
     public void addLayoutItem(String containerUUID, GWTJahiaLayoutItem layoutItem, AsyncCallback async);
 
-    public void saveLayoutmanagerConfig(String containerUUID, GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig, AsyncCallback async);
+    public void saveLayoutmanagerConfig(GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig, AsyncCallback async);
 
-    public void getLayoutmanagerConfig(AsyncCallback<GWTJahiaLayoutManagerConfig> async);
+    public void getLayoutmanagerConfig(String containerUuid, AsyncCallback<GWTJahiaLayoutManagerConfig> async);
 
     public void getLayoutItems(String containerUUID, AsyncCallback<List<GWTJahiaLayoutItem>> async);
 

@@ -42,14 +42,8 @@ import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutManagerConfig;
 import org.jahia.ajax.gwt.content.server.helper.ContentManagerHelper;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.preferences.JahiaPreferencesProvider;
-import org.jahia.services.preferences.JahiaPreference;
-import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.content.*;
 import org.jahia.services.applications.ApplicationsManagerService;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.data.applications.EntryPointDefinition;
@@ -57,14 +51,9 @@ import org.jahia.data.beans.portlets.PortletWindowBean;
 import org.jahia.data.beans.portlets.PortletModeBean;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 import javax.portlet.PortletMode;
 import java.util.*;
-import java.security.Principal;
 
 /**
  * User: jahia
@@ -313,16 +302,15 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     /**
      * Save layout manager config
      *
-     * @param containerUUID
      * @param gwtLayoutManagerConfig
      */
-    public void saveLayoutmanagerConfig(String containerUUID, GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig) throws GWTJahiaServiceException {
+    public void saveLayoutmanagerConfig(GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig) throws GWTJahiaServiceException {
 //        try {
 ////             create layout[@pid] node
-//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(containerUUID.getPid()));
+//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(getContainerUUID.getPid()));
 //            if (layoutmanagerJahiaPreference == null) {
 //                layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
-//                ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(containerUUID.getPid(), false);
+//                ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(getContainerUUID.getPid(), false);
 //                layoutmanagerJahiaPreference.getNode().setPage(currentContentPage.getUUID());
 //            }
 //            JCRLayoutNode node = layoutmanagerJahiaPreference.getNode();
@@ -340,8 +328,8 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
      *
      * @return
      */
-    public GWTJahiaLayoutManagerConfig getLayoutmanagerConfig() {
-        GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig = new GWTJahiaLayoutManagerConfig();
+    public GWTJahiaLayoutManagerConfig getLayoutmanagerConfig(String containerUuid) {
+        GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig = new GWTJahiaLayoutManagerConfig(containerUuid);
         gwtLayoutManagerConfig.setNbColumns(3);
         gwtLayoutManagerConfig.setLiveDraggable(true);
         gwtLayoutManagerConfig.setLiveQuickbarVisible(true);
@@ -431,11 +419,11 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
 
             JCRNodeWrapper containerNode = jcrStoreService.getNodeByUUID(containerUUID, getRemoteJahiaUser());
 
-//            JahiaPreference<JCRLayoutNode> layoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(containerUUID.getPid()));
+//            JahiaPreference<JCRLayoutNode> layoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(getContainerUUID.getPid()));
 //
 //            if (layoutmanagerNode != null) {
 //                logger.debug("Layoutmanager config found for user [" + getRemoteUser() + "]");
-//                return fillGWTLayoutItems(containerUUID, layoutmanagerNode.getNode());
+//                return fillGWTLayoutItems(getContainerUUID, layoutmanagerNode.getNode());
 //            } else {
 //                logger.debug("Layoutmanager for user [" + getRemoteUser() + "] not found --> load default one");
                 return getDefaultLayoutItems(containerNode);

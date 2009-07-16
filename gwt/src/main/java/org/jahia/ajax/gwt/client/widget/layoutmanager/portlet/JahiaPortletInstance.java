@@ -33,10 +33,12 @@ package org.jahia.ajax.gwt.client.widget.layoutmanager.portlet;
 
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
 import org.jahia.ajax.gwt.client.widget.portlet.PortletRender;
+import org.jahia.ajax.gwt.client.widget.node.NodeRender;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.user.client.ui.HTML;
 
 /**
  * User: ktlili
@@ -44,7 +46,7 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
  * Time: 12:02:17
  */
 public class JahiaPortletInstance extends JahiaPortlet {
-    private PortletRender portletRender;
+    private HTML portletRender;
 
     public JahiaPortletInstance(GWTJahiaLayoutItem porletConfig) {
         super(porletConfig);
@@ -65,23 +67,33 @@ public class JahiaPortletInstance extends JahiaPortlet {
     }
 
     private void renderPortlet() {
-        setHeading(getPorletConfig().getGwtJahiaNode().getName());
-        portletRender = new PortletRender(getPageContext(), "-1", getWindowID(), getPathInfo(), getQueryString()) {
-            @Override
-            public void onRender() {
-                super.onRender();
-                layout();
+        setHeading(getGwtJahiaLayoutItem().getGwtJahiaNode().getName());
+        if (getGwtJahiaLayoutItem().isPortletApplication()) {
+            portletRender = new PortletRender(getPageContext(), "-1", getWindowID(), getPathInfo(), getQueryString()) {
+                @Override
+                public void onRender() {
+                    super.onRender();
+                    layout();
 
-            }
-        };
+                }
+            };
+        } else {
+            portletRender = new NodeRender(getGwtJahiaLayoutItem().getGwtJahiaNode()) {
+                @Override
+                public void onRender() {
+                    super.onRender();
+                    layout();
+
+                }
+            };
+        }
+
         add(portletRender);
         layout();
     }
 
     public void refreshContent() {
-        if (portletRender != null) {
-            portletRender.refresh();
-        }
+        // nothing to do
     }
 
     private String getPathInfo() {
@@ -111,7 +123,7 @@ public class JahiaPortletInstance extends JahiaPortlet {
     }
 
     public String getWindowID() {
-        return getPorletConfig().getNode();
+        return getGwtJahiaLayoutItem().getNode();
     }
 
 

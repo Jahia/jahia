@@ -111,7 +111,7 @@ public class JahiaPortalConfig extends Window {
                 gwtLayoutManagerConfig.setNbColumns(numberColumnsField.getValue().intValue());
                 gwtLayoutManagerConfig.setLiveDraggable(dndLiveMode.getValue());
                 gwtLayoutManagerConfig.setLiveQuickbarVisible(quickbarVisibleCheckBox.getValue());
-                LayoutmanagerService.App.getInstance().saveLayoutmanagerConfig(JahiaPageEntryPoint.getJahiaGWTPage(), gwtLayoutManagerConfig, new AsyncCallback() {
+                LayoutmanagerService.App.getInstance().saveLayoutmanagerConfig(gwtLayoutManagerConfig, new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
                         Log.error("Error while saving layout manager config", throwable);
                     }

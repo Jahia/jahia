@@ -40,6 +40,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.jcr.Node;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -55,12 +56,13 @@ import java.util.MissingResourceException;
 public class LayoutManagerAreaTag extends AbstractJahiaTag {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LayoutManagerAreaTag.class);
     private String width;
+    private Node node;
 
     public int doStartTag() {
         final JspWriter out = pageContext.getOut();
         try {
             //define area
-            out.print("<div id='layoutManager' " + JahiaType.JAHIA_TYPE + "=\"" + JahiaType.LAYOUT_MANAGER + "\"");
+            out.print("<div uuid='"+node.getUUID()+"' id='layoutManager' " + JahiaType.JAHIA_TYPE + "=\"" + JahiaType.LAYOUT_MANAGER + "\"");
             if (width != null) {
                 out.print(" jahia-layoutmanager-width='" + width + "'");
             }
@@ -109,7 +111,7 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
 
 
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e, e);
         }
 
@@ -122,6 +124,8 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
         try {
             // end box declaration
             out.print("\n</div>\n");
+            this.width = null;
+            this.node = null;
         } catch (IOException e) {
             logger.error(e, e);
         }
@@ -135,5 +139,13 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
 
     public void setWidth(String width) {
         this.width = width;
+    }
+
+    public Node getNode() {
+        return node;
+    }
+
+    public void setNode(Node node) {
+        this.node = node;
     }
 }

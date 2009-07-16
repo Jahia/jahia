@@ -221,8 +221,8 @@ public class ContainerListBean extends ContentBean {
         if (containerUUID == null) {
             return null;
         }
-//        if (containerUUID.indexOf('/')>0) {
-//            containerUUID = containerUUID.substring(0, containerUUID.indexOf('/'));
+//        if (getContainerUUID.indexOf('/')>0) {
+//            getContainerUUID = getContainerUUID.substring(0, getContainerUUID.indexOf('/'));
 //        }
         final Iterator<ContainerBean> containerIter = getContainers().iterator();
         while (containerIter.hasNext()) {

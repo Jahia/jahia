@@ -86,9 +86,9 @@ public interface LayoutmanagerService extends RemoteService {
 
     public void addLayoutItem(String containerUUID, GWTJahiaLayoutItem layoutItem) throws GWTJahiaServiceException;
 
-    public GWTJahiaLayoutManagerConfig getLayoutmanagerConfig() throws GWTJahiaServiceException;
+    public GWTJahiaLayoutManagerConfig getLayoutmanagerConfig(String containerUuid) throws GWTJahiaServiceException;
 
-    public void saveLayoutmanagerConfig(String containerUUID, GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig) throws GWTJahiaServiceException;
+    public void saveLayoutmanagerConfig(GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig) throws GWTJahiaServiceException;
 
     public List<GWTJahiaLayoutItem> getLayoutItems(String containerUUID) throws GWTJahiaServiceException;
 

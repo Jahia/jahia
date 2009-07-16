@@ -37,6 +37,11 @@
 <html>
 	<head>
 		<title><internal:message key="org.jahia.engines.contentmanager.ContentManager_Engine.name.label"/></title>
+        <script type="text/javascript">
+            window.moveTo(0, 0);
+            window.resizeTo(screen.availWidth, screen.availHeight);
+            window.focus();
+        </script>        
 		<internal:gwtInit standalone="true"/>
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager" />
 	</head>

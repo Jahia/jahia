@@ -1,5 +1,4 @@
-
-<module rename-to='guest.live'>
+<module>
     <inherits name="org.jahia.ajax.gwt.template.common.live.Live"/>
     <entry-point class='org.jahia.ajax.gwt.template.guest.live.client.LiveModeEntryPoint'/>
 </module>

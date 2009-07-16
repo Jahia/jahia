@@ -1,5 +1,5 @@
 
-<module rename-to='layoutmanager.live'>
+<module>
     <inherits name="org.jahia.ajax.gwt.template.common.live.Live"/>
     <entry-point class='org.jahia.ajax.gwt.template.layoutmanager.live.client.LiveModeEntryPoint'/>
 </module>

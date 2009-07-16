@@ -120,7 +120,6 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
         if (gwtJahiaNode != null) {
             String ext = gwtJahiaNode.getExt();
             if (ext != null) {
-                Log.debug("********** "+ext);
                 if (ext.equalsIgnoreCase(CONTENT)) {
                     return CONTENT_ICONS.content();
                 } else if (ext.equalsIgnoreCase(DIR)) {

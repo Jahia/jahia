@@ -8,7 +8,16 @@
 <ul>
 <c:forEach items="${currentNode.properties}" var="property">
     <c:if test="${property.definition.jahiaContentItem}">
-        <li>${property.name} ${property.string}</li>
+        <li>${property.name}:&nbsp;
+            <c:if test="${!property.definition.multiple}">${property.string}</c:if>
+            <c:if test="${property.definition.multiple}">
+                <ul>
+                    <c:forEach items="${property.values}" var="val">
+                        <li>${val.string}</li>
+                    </c:forEach>
+                </ul>
+            </c:if>
+        </li>
     </c:if>
 </c:forEach>
 </ul>

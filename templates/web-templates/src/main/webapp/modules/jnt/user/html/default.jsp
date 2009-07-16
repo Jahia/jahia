@@ -4,7 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
-<h2>Container : ${currentNode.name}</h2>
+<h2>User : ${currentNode.name}</h2>
 <ul>
 <c:forEach items="${currentNode.properties}" var="property">
     <c:if test="${property.definition.jahiaContentItem}">
@@ -12,19 +12,13 @@
     </c:if>
 </c:forEach>
 </ul>
+<jcr:node var="picture" path="${currentNode.path}/picture"/>
+<img src="${picture.url}" alt=""/>
 
-Metadata :
-<ul>
-<c:forEach items="${currentNode.properties}" var="property">
-    <c:if test="${property.definition.metadataItem}">
-        <li>${property.name} ${property.string}</li>
-    </c:if>
-</c:forEach>
-</ul>
 <jcr:xpath var="result" xpath="//element(*, jnt:page)[@jcr:createdBy='${currentNode.name}']" />
 
 
-My pages :
+User pages :
 
 <c:if test="${result.size == 0}">
     No results.

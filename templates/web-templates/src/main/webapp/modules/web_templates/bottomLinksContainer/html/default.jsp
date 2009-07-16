@@ -9,19 +9,18 @@
     <div class="spacer"><!--start mapshortcuts-->
         <div class="mapshortcuts">
             <h4><template:module template="link" path="link"/></h4>
-            <jcr:node var="links" path="${currentNode}/link"/>
-            <div class="sitemap">
+<%--            <div class="sitemap">
                 <ul>
-                    <c:forEach items="${currentNode.children}"  var="link">
-                        <c:if test="${jcr:isNodeType(link, 'jnt:page')}">
+                    <c:forEach items="${currentNode.children}"  var="child">
+                        <c:if test="${jcr:isNodeType(child, 'jnt:page')}">
                             <li>
-                                <jcr:nodeProperty node="${link}" name="jcr:title" var="title"/>
-                                <a href="${baseUrl}${link.path}.html">${title.string}</a>
+                                <jcr:nodeProperty node="${child}" name="jcr:title" var="title"/>
+                                <a href="${baseUrl}${child.path}.html">${title.string}</a>
                             </li>
                         </c:if>
                     </c:forEach>
                 </ul>
-            </div>
+            </div>--%>
         </div>
     </div>
     <div class="clear"></div>

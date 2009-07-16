@@ -129,7 +129,7 @@ public class RepositoryTab extends ContentPanel {
 
         // tree component
         m_tree = new TreePanel<GWTJahiaNode>(store);
-        m_tree.setIconProvider(new ContentModelIconProvider());
+        m_tree.setIconProvider(ContentModelIconProvider.getInstance());
         m_tree.setDisplayProperty("displayName");
         m_tree.setBorders(false);
 

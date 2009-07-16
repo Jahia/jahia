@@ -150,7 +150,7 @@ public class ContentTreeTable extends TopRightComponent {
             columns = cols.toString() ;
         }
         m_treeTable = new TreeGrid<GWTJahiaNode>(store, getHeaders(columns));
-        m_treeTable.setIconProvider(new ContentModelIconProvider());
+        m_treeTable.setIconProvider(ContentModelIconProvider.getInstance());
         m_treeTable.setBorders(false);
 //        m_treeTable.setHorizontalScroll(true);
 //        m_treeTable.setAnimate(false);

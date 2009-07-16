@@ -85,11 +85,10 @@ public class ManagerConfigurationFactory {
         completeManagerConfig.addItem(newFolder);
         ContentActionItem newContent = ItemCreator.createNewContentItem(linker);
         file.addItem(newContent);
-
+        completeManagerConfig.addItem(newContent);
         ContentActionItem newPageContent = ItemCreator.createNewPageContentItem(linker);
         file.addItem(newPageContent);
-
-        completeManagerConfig.addItem(newContent);
+        completeManagerConfig.addItem(newPageContent);               
         ContentActionItem newMashup = ItemCreator.createNewMashupItem(linker);
         file.addItem(newMashup);
         ContentActionItem newRSS = ItemCreator.createNewRSSItem(linker);
@@ -813,7 +812,7 @@ public class ManagerConfigurationFactory {
          */
         private static ContentActionItem createNewPageContentItem(final BrowserLinker linker) {
 
-            ContentActionItem newMashup = new ContentActionItem(Messages.getResource("fm_newpagecontent"), "fm-newpagecontent") {
+            ContentActionItem newMashup = new ContentActionItem(Messages.getNotEmptyResource("fm_newpagecontent","New page"), "fm-newcontent") {
                 public void onSelection() {
                     ContentActions.showContentWizard(linker,"jnt:page");
                 }

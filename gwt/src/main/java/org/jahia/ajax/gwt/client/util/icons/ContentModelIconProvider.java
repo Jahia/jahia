@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.util.icons;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 /**
@@ -46,57 +47,135 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
 
     public static final ContentIconsImageBundle CONTENT_ICONS = GWT.create(ContentIconsImageBundle.class);
 
+    public static final String CONTENT = "icon-content";
+
+    public static final String DIR = "icon-dir";
+
+    public static final String DOC = "icon-doc";
+
     public static final String EXE = "icon-exe";
+
+    public static final String FILE = "icon-file";
+
+    public static final String GEAR = "icon-gearth";
 
     public static final String HTML = "icon-html";
 
+    public static final String IMG = "icon-img";
+
+    public static final String LIST = "icon-list";
+
+    public static final String MASHUP = "icon-mashup";
+
+    public static final String PAGE = "icon-page";
+
     public static final String PDF = "icon-pdf";
 
-    public static final String PNG = "icon-img";
-
-    public static final String GIF = "icon-gif";
-
-    public static final String JPG = "icon-jpg";
-
-    public static final String JPEG = "icon-jpeg";
+    public static final String PLACE_HOLDER = "icon-placeholder";
 
     public static final String PORTLET = "icon-portlet";
 
-    public static final String RSS = "icon-rss";
+    public static final String PPT = "icon-ppt";
+
+    public static final String RAR = "icon-rar";
+
+    public static final String SOUND = "icon-sound";
+
+    public static final String TXT = "icon-txt";
+
+    public static final String USER_GROUP = "icon-user-group";
+
+    public static final String USER = "icon-user";
+
+    public static final String VIDEO = "icon-video";
+
+    public static final String XLS = "icon-xls";
+
+    public static final String ZIP = "icon-zip";
+
+    public static final String LOCK = "lock";
 
 
-    public ContentModelIconProvider() {
+    private static ContentModelIconProvider iconProvider = new ContentModelIconProvider();
+
+    private ContentModelIconProvider() {
     }
 
 
+    public static ContentModelIconProvider getInstance() {
+        if (iconProvider == null) {
+            iconProvider = new ContentModelIconProvider();
+        }
+        return iconProvider;
+    }
+
 
     /**
-     * Return an AbstractImagePrototype depending on the extension
+     * Return an AbstractImagePrototype depending on the extension and the displayLock flag
+     *
      * @param gwtJahiaNode
      * @return
      */
     public AbstractImagePrototype getIcon(GWTJahiaNode gwtJahiaNode) {
         if (gwtJahiaNode != null) {
-            if (gwtJahiaNode.isFile()) {
-                String ext = gwtJahiaNode.getExt();
-                if (ext != null) {
-                    if (ext.equalsIgnoreCase(EXE)) {
-                        return CONTENT_ICONS.exe();
-                    } else if (ext.equalsIgnoreCase(HTML)) {
-                        return CONTENT_ICONS.html();
-                    } else if (ext.equalsIgnoreCase(PNG) || ext.equalsIgnoreCase(GIF) || ext.equalsIgnoreCase(JPG) || ext.equalsIgnoreCase(JPEG)) {
-                        return CONTENT_ICONS.img();
-                    }else if (ext.equalsIgnoreCase(PDF)) {
-                        return CONTENT_ICONS.pdf();
-                    } else {
-                        return CONTENT_ICONS.file();
-                    }
+            String ext = gwtJahiaNode.getExt();
+            if (ext != null) {
+                Log.debug("********** "+ext);
+                if (ext.equalsIgnoreCase(CONTENT)) {
+                    return CONTENT_ICONS.content();
+                } else if (ext.equalsIgnoreCase(DIR)) {
+                    return CONTENT_ICONS.dir();
+                } else if (ext.equalsIgnoreCase(DOC)) {
+                    return CONTENT_ICONS.doc();
+                } else if (ext.equalsIgnoreCase(EXE)) {
+                    return CONTENT_ICONS.exe();
+                } else if (ext.equalsIgnoreCase(FILE)) {
+                    return CONTENT_ICONS.file();
+                } else if (ext.equalsIgnoreCase(GEAR)) {
+                    return CONTENT_ICONS.gearth();
+                } else if (ext.equalsIgnoreCase(HTML)) {
+                    return CONTENT_ICONS.html();
+                } else if (ext.equalsIgnoreCase(IMG)) {
+                    return CONTENT_ICONS.img();
+                } else if (ext.equalsIgnoreCase(LIST)) {
+                    return CONTENT_ICONS.list();
+                } else if (ext.equalsIgnoreCase(MASHUP)) {
+                    return CONTENT_ICONS.mashup();
+                } else if (ext.equalsIgnoreCase(PAGE)) {
+                    return CONTENT_ICONS.page();
+                } else if (ext.equalsIgnoreCase(PDF)) {
+                    return CONTENT_ICONS.pdf();
+                } else if (ext.equalsIgnoreCase(PLACE_HOLDER)) {
+                    return CONTENT_ICONS.placeholder();
+                } else if (ext.equalsIgnoreCase(PORTLET)) {
+                    return CONTENT_ICONS.portlet();
+                } else if (ext.equalsIgnoreCase(PPT)) {
+                    return CONTENT_ICONS.ppt();
+                } else if (ext.equalsIgnoreCase(RAR)) {
+                    return CONTENT_ICONS.rar();
+                } else if (ext.equalsIgnoreCase(SOUND)) {
+                    return CONTENT_ICONS.sound();
+                } else if (ext.equalsIgnoreCase(TXT)) {
+                    return CONTENT_ICONS.txt();
+                } else if (ext.equalsIgnoreCase(USER_GROUP)) {
+                    return CONTENT_ICONS.userGroup();
+                } else if (ext.equalsIgnoreCase(USER)) {
+                    return CONTENT_ICONS.user();
+                } else if (ext.equalsIgnoreCase(VIDEO)) {
+                    return CONTENT_ICONS.video();
+                } else if (ext.equalsIgnoreCase(XLS)) {
+                    return CONTENT_ICONS.xls();
+                } else if (ext.equalsIgnoreCase(ZIP)) {
+                    return CONTENT_ICONS.zip();
+                } else if (ext.equalsIgnoreCase(LOCK)) {
+                    return CONTENT_ICONS.lock();
                 }
-            } else {
-                return CONTENT_ICONS.dir();
             }
         }
-        // by default we consedered as a directory
-        return CONTENT_ICONS.dir();
+        return CONTENT_ICONS.file();
+    }
+
+    public AbstractImagePrototype getLockIcon() {
+        return CONTENT_ICONS.lock();
     }
 }

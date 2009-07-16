@@ -53,6 +53,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Formatter;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.content.FileStoreSorter;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
@@ -211,7 +212,7 @@ public class TableView extends TopRightComponent {
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                 public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-                    return new StringBuilder("<img src='../images/types/gwt/").append(modelData.getExt()).append(".png'>").toString();
+                    return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
                 }
             });
             col.setSortable(true);
@@ -228,7 +229,7 @@ public class TableView extends TopRightComponent {
                         String lockOwner = modelData.getLockOwner();
                         return lockOwner != null
                                 && lockOwner.equals(JahiaGWTParameters.SYSTEM_USER) ? "<img src='../images/icons/gwt/lock_information.png'>"
-                                : "<img src='../images/icons/gwt/lock.png'>";
+                                : ContentModelIconProvider.getInstance().getLockIcon().getHTML();
                     } else {
                         return "";
                     }

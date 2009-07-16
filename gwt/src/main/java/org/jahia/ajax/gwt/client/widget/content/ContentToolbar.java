@@ -193,8 +193,6 @@ public class ContentToolbar extends TopBar {
     }
 
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelectionEl) {
-        Log.debug("ContentToolbar: handleNdewSelection() ");
-
         List<GWTJahiaNode> topTableSelection = (List<GWTJahiaNode>) topTableSelectionEl;
 
         boolean isTreeSelection = leftTreeSelection != null ;

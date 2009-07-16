@@ -283,7 +283,7 @@
 
 [jnt:container] > nt:base, mix:created, jmix:hierarchyNode, jmix:collection
 
-[jnt:containerList] > nt:base, mix:created, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable
+[jnt:containerList] > nt:base, mix:created, jmix:hierarchyNode, jmix:collection, jmix:renderable
  + * (jnt:container)
 
 [jnt:internalPageLink] > jnt:nodeLink

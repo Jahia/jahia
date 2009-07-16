@@ -260,11 +260,15 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                     emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField, locale));
                 } else {
                     GregorianCalendar cal = new GregorianCalendar();
-                    cal.setTime(new Date(Long.parseLong(value)));
+                    try {
+                        cal.setTime(new Date(Long.parseLong(value)));
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
                     fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new ValueImpl(cal),contentField, locale));
                 }
                 break;
-            }
+            }                              
             case FieldTypes.PAGE: {
                 if (value == null || value.length()==0 || value.equals("<empty>")) {
                     //emptyFields.add(new JahiaPageLinkNodeImpl(getSession(), this, def.getNodeDefinition(), null));

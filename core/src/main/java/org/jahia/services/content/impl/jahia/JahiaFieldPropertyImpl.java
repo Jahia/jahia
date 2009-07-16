@@ -191,6 +191,7 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
                 case FieldTypes.DATE:
                     text = val != null ? Long.toString(val.getDate().getTime()
                             .getTime()) : null;
+                    break;
                 default:
                     text = val.getString();
                 }

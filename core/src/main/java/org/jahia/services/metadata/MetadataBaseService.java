@@ -115,6 +115,7 @@ public class MetadataBaseService extends MetadataService {
 
         ExtendedNodeType metadataType = null;
         try {
+            allTypes.add(NodeTypeRegistry.getInstance().getNodeType("mix:created"));
             metadataType = NodeTypeRegistry.getInstance().getNodeType(METADATA_TYPE);
         } catch (NoSuchNodeTypeException e) {
             e.printStackTrace();

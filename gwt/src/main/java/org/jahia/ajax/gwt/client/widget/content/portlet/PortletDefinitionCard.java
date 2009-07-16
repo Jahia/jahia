@@ -36,6 +36,9 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -83,6 +86,11 @@ public class PortletDefinitionCard extends MashupWizardCard {
         grid = new Grid<GWTJahiaPortletDefinition>(store, cm);
         grid.setBorders(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
+            public void handleEvent(GridEvent be) {
+                getWizardWindow().doNext();
+            }
+        });
 
         ContentPanel panel = new ContentPanel();
         panel.setLayout(new FitLayout());

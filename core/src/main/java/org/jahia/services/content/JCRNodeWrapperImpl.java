@@ -47,6 +47,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
 import org.jahia.spring.aop.interceptor.SilentJamonPerformanceMonitorInterceptor;
@@ -1039,13 +1040,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
+        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
+
+        if (epd != null && epd.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
+            return setProperty(s, node.getUUID());
+        }
+
         if (node instanceof JCRNodeWrapper) {
             node = ((JCRNodeWrapper)node).getRealNode();
         }
 
         final Locale locale = getSession().getLocale();
         if (locale != null) {
-            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(s);
             if (epd != null && epd.isInternationalized()) {
                 return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(s+"_"+locale.toString(), node), session, provider, getApplicablePropertyDefinition(s), s);
             }

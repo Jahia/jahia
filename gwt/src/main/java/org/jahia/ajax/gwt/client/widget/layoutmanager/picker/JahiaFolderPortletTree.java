@@ -78,7 +78,7 @@ public class JahiaFolderPortletTree extends LayoutContainer {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<List<GWTJahiaNode>> callback) {
                 if (gwtJahiaFolder == null) {
-                    service.getRoot(JCRClientUtils.ALL_MASHUPS, JCRClientUtils.FOLDER_NODETYPES, null, null, null, callback);
+                    service.getRoot(JCRClientUtils.GLOBAL_REPOSITORY, JCRClientUtils.FOLDER_NODETYPES, null, null, null, callback);
                 } else {
                     service.ls((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.FOLDER_NODETYPES, null, null, null, false, callback);
                 }

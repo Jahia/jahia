@@ -261,13 +261,13 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
 //            //add layout item
 //            JCRLayoutNode container = layoutmanagerJahiaPreference.getNode();
 
-            JCRReferenceNode jcrNodeWrapper = (JCRReferenceNode) container.addNode("j:item", "jnt:nodeReference");
+            JCRReferenceNode jcrNodeWrapper = (JCRReferenceNode) container.addNode("j:item"+System.currentTimeMillis(), "jnt:nodeReference");
 
             jcrNodeWrapper.setNode(layoutItem);
 
             jcrNodeWrapper.addMixin("jmix:positionable");
-            jcrNodeWrapper.setProperty("columnIndex",column);
-            jcrNodeWrapper.setProperty("rowIndex",row);
+            jcrNodeWrapper.setProperty("j:columnIndex",column);
+            jcrNodeWrapper.setProperty("j:rowIndex",row);
 //            jcrLayoutItemNode.setStatus(status);
             container.save();
 
@@ -448,7 +448,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
         List<JCRNodeWrapper> nodeWrappers = containerNode.getChildren();
         if (nodeWrappers != null) {
             for (JCRNodeWrapper n : nodeWrappers) {
-                if (n instanceof JCRReferenceNode) {
+                if (n instanceof JCRReferenceNode && n.isNodeType("jmix:positionable")) {
                     gwtJahiaLayoutItems.add(fillGWTLayoutItem((JCRReferenceNode) n));
                 }
             }
@@ -497,7 +497,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
         // get status
         String status = "open";
 
-        JCRNodeWrapper referencedNode = new JCRPortletNode((JCRNodeWrapper) jcrLayoutItemNode.getNode());
+        JCRNodeWrapper referencedNode = (JCRNodeWrapper) jcrLayoutItemNode.getNode();
         String uuid = referencedNode.getUUID();
 
         // get modes urls

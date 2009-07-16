@@ -114,7 +114,7 @@
                     </div>
                     <div>&nbsp;</div>
                     <div id="footer">
-template:include file="../../../../common/footer.jspf"
+                        <%@include file="areas/footer.jsp"%>
                     </div>
                     <div class="clear"></div>
                 </div>

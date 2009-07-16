@@ -22,9 +22,7 @@
                         <div class="box2-text">
                         ${abstract.string}
                         </div>
-                        <c:if test="${!empty link}">
-                            <div class="box2-more"><a href="${link.url}">${link.title}</a></div>
-                        </c:if>
+                        <div class="box2-more"><template:module template="link" path="link"/></div>
                         <div class="box2-bottomright"></div>
                         <div class="box2-bottomleft"></div>
                         <div class="clear"> </div>

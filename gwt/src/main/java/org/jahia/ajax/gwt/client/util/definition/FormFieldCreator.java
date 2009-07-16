@@ -39,6 +39,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField ;
 import org.jahia.ajax.gwt.client.widget.category.CategoryField;
+import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 
@@ -132,9 +133,9 @@ public class FormFieldCreator {
                 case GWTJahiaNodeSelectorType.CATEGORY:
                     field = new CategoryField();
                     break;
-                /*case GWTJahiaNodeSelectorType.FILE:
-                    field = new ContentPickerField("/", "","","","","",false);
-                    break;*/
+                case GWTJahiaNodeSelectorType.FILE:
+                    field = new ContentPickerField(definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/content", "", definition.getSelectorOptions().get("filters"), definition.getSelectorOptions().get("mime"), null, false);
+                    break;
                 case GWTJahiaNodeSelectorType.CHOICELIST:
                     ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
                     store.add(propDefinition.getValueConstraints());

@@ -78,16 +78,18 @@ public class ContentPickerField extends TriggerField<String> {
         final ContentPicker contentPicker = new ContentPicker(rootPath, getValue()!=null?getValue():"", types, filters, mimeTypes, configuration, allowThumbs, "");
 
         w.setModal(true);
-        w.setSize(600, 400);
+        w.setSize(800, 600);
+        w.setResizable(true);
+        w.setMaximizable(true);
         ButtonBar bar = new ButtonBar();
         Button ok = new Button("OK", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 List<GWTJahiaNode> selection = (List<GWTJahiaNode>) contentPicker.getLinker().getTableSelection();
                 if (selection != null && selection.size() > 0) {
-                    StringBuilder conCat = new StringBuilder(selection.get(0).getPath());
-                    for (int i = 1; i < selection.size(); i++) {
-                        conCat.append(", ").append(selection.get(i).getPath());
-                    }
+                    StringBuilder conCat = new StringBuilder(selection.get(0).getUUID());
+//                    for (int i = 1; i < selection.size(); i++) {
+//                        conCat.append(", ").append(selection.get(i).getPath());
+//                    }
                     setRawValue(conCat.toString());
                 }
                 w.hide();

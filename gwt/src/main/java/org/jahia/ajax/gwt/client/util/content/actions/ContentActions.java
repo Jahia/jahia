@@ -220,6 +220,7 @@ public class ContentActions {
                 }
             }
         } else {
+            m = (GWTJahiaNode) linker.getTreeSelection();
             if (m != null && !m.isFile()) {
                 linker.loading(Messages.getResource("fm_pastingref"));
                 final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();

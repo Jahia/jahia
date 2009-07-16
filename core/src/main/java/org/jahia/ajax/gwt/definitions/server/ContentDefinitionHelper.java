@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.definitions.server;
 
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaPropertyDefinition;
 import org.jahia.ajax.gwt.content.server.helper.Utils;
@@ -38,8 +39,7 @@ import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.*;
-import org.jahia.utils.i18n.ResourceBundleMarker;
-import org.jahia.exceptions.JahiaException;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.apache.log4j.Logger;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -89,6 +89,7 @@ public class ContentDefinitionHelper {
 
         List<GWTJahiaItemDefinition> items = new ArrayList<GWTJahiaItemDefinition>();
         List<GWTJahiaItemDefinition> inheritedItems = new ArrayList<GWTJahiaItemDefinition>();
+        JahiaResourceBundle rb = null;
         for (ExtendedItemDefinition def : defs) {
             if (!excludedTypes.contains(def.getDeclaringNodeType().getName()) && !excludedItems.contains(def.getName())) {
                 GWTJahiaItemDefinition item;
@@ -110,18 +111,13 @@ public class ContentDefinitionHelper {
                     boolean constrained = constr != null && constr.length > 0 ;
                     prop.setConstrained(constrained);
                     if (constrained) {
-                        List<String> l = new ArrayList<String>();
+                        boolean useResourceBundle = epd.getSelectorOptions().containsKey("resourceBundle");
+                        if (useResourceBundle && rb == null) {
+                            rb = new JahiaResourceBundle(null, context.getLocale(), context.getSite() != null ? context.getSite().getTemplatePackageName() : null);
+                        }
+                        List<GWTJahiaValueDisplayBean> l = new ArrayList<GWTJahiaValueDisplayBean>();
                         for (String s : constr) {
-                            try {
-                                ResourceBundleMarker resourceBundleMarker = ResourceBundleMarker.parseMarkerValue(s);
-                                if (resourceBundleMarker != null) {
-                                    l.add(resourceBundleMarker.getValue(context.getLocale()));
-                                } else {
-                                    l.add(s);
-                                }
-                            } catch (JahiaException e) {
-                                l.add(s);
-                            }
+                            l.add(new GWTJahiaValueDisplayBean(s, useResourceBundle ? rb.get(s, s) : s));
                         }
                         prop.setValueConstraints(l);
                     }

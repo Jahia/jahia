@@ -32,13 +32,17 @@
 package org.jahia.ajax.gwt.client.util.definition;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField ;
 import org.jahia.ajax.gwt.client.widget.category.CategoryField;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -132,9 +136,22 @@ public class FormFieldCreator {
                     field = new ContentPickerField("/", "","","","","",false);
                     break;*/
                 case GWTJahiaNodeSelectorType.CHOICELIST:
-                    field = new SimpleComboBox<GWTJahiaNodeType>();
-                    ((SimpleComboBox) field).add(propDefinition.getValueConstraints());
-                    ((SimpleComboBox) field).setTypeAhead(true);
+                    ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
+                    store.add(propDefinition.getValueConstraints());
+                    if (propDefinition.isMultiple()) {
+                        ListField<GWTJahiaValueDisplayBean> list = new ListField<GWTJahiaValueDisplayBean>();
+                        list.setStore(store);
+                        list.setDisplayField("display");
+                        field = list;
+                    } else {
+                        ComboBox<GWTJahiaValueDisplayBean> combo = new ComboBox<GWTJahiaValueDisplayBean>();
+                        combo.setStore(store);
+                        combo.setDisplayField("display");
+                        combo.setTypeAhead(true);
+                        combo.setTriggerAction(TriggerAction.ALL);
+                        combo.setForceSelection(true);
+                        field = combo;
+                    }
                     break;
                 default:
             }
@@ -177,85 +194,52 @@ public class FormFieldCreator {
         if (!definition.isNode()) {
             GWTJahiaPropertyDefinition propDefinition = (GWTJahiaPropertyDefinition) definition;
             Log.debug("selector : " + propDefinition.getSelector());
-            // fill value in constrains case
-            StringBuilder str;
-            switch (propDefinition.getRequiredType()) {
-                case GWTJahiaNodePropertyType.STRING:
-                    str = new StringBuilder(values.get(0).getString());
-                    for (int i = 1; i < values.size(); i++) {
-                        str.append(", ");
-                        str.append(values.get(i).getString());
+            if (propDefinition.getSelector() == GWTJahiaNodeSelectorType.CHOICELIST) {
+                List<GWTJahiaValueDisplayBean> selection = new ArrayList<GWTJahiaValueDisplayBean>();
+                if (propDefinition.isMultiple()) {
+                    for (GWTJahiaNodePropertyValue jahiaNodePropertyValue : values) {
+                        String val = jahiaNodePropertyValue.getString();
+                        if (val != null && val.length() > 0) {
+                            selection.add(new GWTJahiaValueDisplayBean(val, val));
+                        }
                     }
-                    field.setValue(str.toString());
-                    break;
-                case GWTJahiaNodePropertyType.BINARY:
-                    break;
-                case GWTJahiaNodePropertyType.BOOLEAN:
-                    break;
-                case GWTJahiaNodePropertyType.LONG:
-                    field.setValue(values.get(0).getLong());
-                    break;
-                case GWTJahiaNodePropertyType.DOUBLE:
-                    field.setValue(values.get(0).getDouble());
-                    break;
-                case GWTJahiaNodePropertyType.DECIMAL:
-                    field.setValue(values.get(0).getDecimal());
-                    break;
-                case GWTJahiaNodePropertyType.DATE:
-                    Log.debug("date :");
-                    Date d = values.get(0).getDate();
-                    Log.debug(d.toString());
-                    field.setValue(d);
-                    break;
-                case GWTJahiaNodePropertyType.NAME:
-                    str = new StringBuilder(values.get(0).getString());
-                    for (int i = 1; i < values.size(); i++) {
-                        str.append(", ");
-                        str.append(values.get(i).getString());
-                    }
-                    field.setValue(str.toString());
-                    break;
-                case GWTJahiaNodePropertyType.PATH:
-                    str = new StringBuilder(values.get(0).getString());
-                    for (int i = 1; i < values.size(); i++) {
-                        str.append(", ");
-                        str.append(values.get(i).getString());
-                    }
-                    field.setValue(str.toString());
-                    break;
-                case GWTJahiaNodePropertyType.REFERENCE:
-                    str = new StringBuilder(values.get(0).getString());
-                    for (int i = 1; i < values.size(); i++) {
-                        str.append(", ");
-                        str.append(values.get(i).getString());
-                    }
-                    field.setValue(str.toString());
-                    break;
-                case GWTJahiaNodePropertyType.WEAKREFERENCE:
-                    str = new StringBuilder(values.get(0).getString());
-                    for (int i = 1; i < values.size(); i++) {
-                        str.append(", ");
-                        str.append(values.get(i).getString());
-                    }
-                    field.setValue(str.toString());
-                    break;
-                case GWTJahiaNodePropertyType.URI:
-                    str = new StringBuilder(values.get(0).getString());
-                    for (int i = 1; i < values.size(); i++) {
-                        str.append(", ");
-                        str.append(values.get(i).getString());
-                    }
-                    field.setValue(str.toString());
-                    break;
-                case GWTJahiaNodePropertyType.UNDEFINED:
-                    str = new StringBuilder(values.get(0).getString());
-                    for (int i = 1; i < values.size(); i++) {
-                        str.append(", ");
-                        str.append(values.get(i).getString());
-                    }
-                    field.setValue(str.toString());
-                    break;
-                default:
+                    ((ListField<GWTJahiaValueDisplayBean>) field).setSelection(selection);
+                } else {
+                    String val = values.get(0).getString();
+                    selection.add(new GWTJahiaValueDisplayBean(val, val));
+                    ((ComboBox<GWTJahiaValueDisplayBean>) field).setSelection(selection);
+                }
+            } else {
+                switch (propDefinition.getRequiredType()) {
+                    case GWTJahiaNodePropertyType.BINARY:
+                        break;
+                    case GWTJahiaNodePropertyType.BOOLEAN:
+                        break;
+                    case GWTJahiaNodePropertyType.LONG:
+                        field.setValue(values.get(0).getLong());
+                        break;
+                    case GWTJahiaNodePropertyType.DOUBLE:
+                        field.setValue(values.get(0).getDouble());
+                        break;
+                    case GWTJahiaNodePropertyType.DECIMAL:
+                        field.setValue(values.get(0).getDecimal());
+                        break;
+                    case GWTJahiaNodePropertyType.DATE:
+                        Date d = values.get(0).getDate();
+                        Log.debug("date: " + d);
+                        field.setValue(d);
+                        break;
+                    case GWTJahiaNodePropertyType.STRING:
+                    case GWTJahiaNodePropertyType.NAME:
+                    case GWTJahiaNodePropertyType.PATH:
+                    case GWTJahiaNodePropertyType.REFERENCE:
+                    case GWTJahiaNodePropertyType.WEAKREFERENCE:
+                    case GWTJahiaNodePropertyType.URI:
+                    case GWTJahiaNodePropertyType.UNDEFINED:
+                        field.setValue(join(values));
+                        break;
+                    default:
+                }
             }
         } else {
             GWTJahiaNodeDefinition nodeDefinition = (GWTJahiaNodeDefinition) definition;
@@ -265,4 +249,13 @@ public class FormFieldCreator {
         }
     }
 
+    private static String join(List<GWTJahiaNodePropertyValue> values) {
+        StringBuilder str = new StringBuilder(values.get(0).getString());
+        for (int i = 1; i < values.size(); i++) {
+            str.append(", ");
+            str.append(values.get(i).getString());
+        }
+        
+        return str.toString();
+    }
 }

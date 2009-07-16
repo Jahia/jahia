@@ -53,8 +53,7 @@ public class GWTJahiaNodePropertyValue implements Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof GWTJahiaNodePropertyValue) {
             GWTJahiaNodePropertyValue val = (GWTJahiaNodePropertyValue) obj ;
-            return val.getString().equals(getString()) &&
-                    val.getType() == val.getType() ;
+            return val.getType() == val.getType() && val.getString().equals(getString());
         } else {
             return false ;
         }
@@ -116,4 +115,9 @@ public class GWTJahiaNodePropertyValue implements Serializable {
         return value ;
     }
 
+    @Override
+    public String toString() {
+        return getString();
+    }
+    
 }

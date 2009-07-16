@@ -34,8 +34,10 @@ package org.jahia.ajax.gwt.client.data.definition;
 import java.io.Serializable;
 import java.util.List;
 
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
+
 /**
- *
+ * Property definition GWT bean. 
  *
  * User: toto
  * Date: Aug 26, 2008 - 7:37:53 PM
@@ -46,13 +48,9 @@ public class GWTJahiaPropertyDefinition extends GWTJahiaItemDefinition implement
 
     private boolean internationalized;
 
-//    private Value[] valueConstraints = new Value[0];
-//    private Value[] defaultValues = new Value[0];
-
-
     private boolean multiple;
     private boolean constrained ;
-    private List<String> valueConstraints ;
+    private List<GWTJahiaValueDisplayBean> valueConstraints ;
     private List<GWTJahiaNodePropertyValue> defaultValues;
 
     public GWTJahiaPropertyDefinition() {
@@ -91,11 +89,11 @@ public class GWTJahiaPropertyDefinition extends GWTJahiaItemDefinition implement
         this.constrained = constrained;
     }
 
-    public List<String> getValueConstraints() {
+    public List<GWTJahiaValueDisplayBean> getValueConstraints() {
         return valueConstraints;
     }
 
-    public void setValueConstraints(List<String> valueConstraints) {
+    public void setValueConstraints(List<GWTJahiaValueDisplayBean> valueConstraints) {
         this.valueConstraints = valueConstraints;
     }
 

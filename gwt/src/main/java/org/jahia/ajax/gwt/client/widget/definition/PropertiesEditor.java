@@ -32,11 +32,14 @@
 package org.jahia.ajax.gwt.client.widget.definition;
 
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
+
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.ListField;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -231,11 +234,7 @@ public class PropertiesEditor extends FormPanel {
                     GWTJahiaNodeProperty prop = currentProperties.get(definition.getName());
                     if (f != null && f.isDirty()) {
                         Log.debug("Set value for " + prop.getName());
-                        if (!definition.isNode()) {
-                            prop.setValue(new GWTJahiaNodePropertyValue(getPropertyValue(f), ((GWTJahiaPropertyDefinition) definition).getRequiredType()));
-                        } else {
-                            prop.setValue(new GWTJahiaNodePropertyValue(f.getValue().toString(), GWTJahiaNodePropertyType.ASYNC_UPLOAD));
-                        }
+                        prop.setValues(getPropertyValues(f, definition));
                     }
                     newProps.add(prop);
                 }
@@ -251,22 +250,64 @@ public class PropertiesEditor extends FormPanel {
     }
     
     /**
-     * Returns string representation of the field value, depending on its type.
+     * Returns a list with property values, populated from the field value depending on its type.
      * 
      * @param fld
      *            the form field, holding the value
-     * @return string representation of the field value, depending on its type
+     * @param itemDef
+     *            the definition of the corresponding node/property
+     * @return a list with property values, populated from the field value depending on its type
      */
-    private String getPropertyValue(Field fld) {
-        String value = null;
-        if (fld.getValue() != null && fld.getValue() instanceof Date) {
-            value = String.valueOf(((Date) fld.getValue()).getTime());
-        } else if (fld.getValue() != null){
-            value = fld.getValue().toString();
+    private List<GWTJahiaNodePropertyValue> getPropertyValues(Field fld, GWTJahiaItemDefinition itemDef) {
+        List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>();
+        if (itemDef.isNode()) {
+            values.add(new GWTJahiaNodePropertyValue(fld.getValue().toString(), GWTJahiaNodePropertyType.ASYNC_UPLOAD));
         } else {
-            value = "";
+            GWTJahiaPropertyDefinition propDef = (GWTJahiaPropertyDefinition) itemDef;
+            if (propDef.isMultiple()) {
+                if (fld instanceof ListField) {
+                    List<GWTJahiaValueDisplayBean> selection = ((ListField<GWTJahiaValueDisplayBean>)fld).getSelection();
+                    for (GWTJahiaValueDisplayBean valueDisplayBean : selection) {
+                        GWTJahiaNodePropertyValue propertyValue = getPropertyValue(valueDisplayBean, propDef.getRequiredType());
+                        if (propertyValue != null) {
+                            values.add(propertyValue);
+                        }
+                    }
+                } else {
+                    values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType()));
+                }
+            } else {
+                values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType()));
+            }
         }
 
-        return value;
+        return values;
+    }
+    
+    /**
+     * Converts the field value into its string representation, considering
+     * field type.
+     * 
+     * @param fieldValue
+     *            the form field value
+     * @param requiredType
+     *            the expected field type
+     * @return string representation of the field value, converted based on its
+     *         type
+     */
+    private GWTJahiaNodePropertyValue getPropertyValue(Object fieldValue,
+            int requiredType) {
+        String propValueString = null;
+        if (fieldValue != null) {
+            if (fieldValue instanceof Date) {
+                propValueString = String.valueOf(((Date) fieldValue).getTime());
+            } else if (fieldValue instanceof GWTJahiaValueDisplayBean) {
+                propValueString = ((GWTJahiaValueDisplayBean) fieldValue)
+                        .getValue();
+            } else {
+                propValueString = fieldValue.toString();
+            }
+        }
+        return new GWTJahiaNodePropertyValue(propValueString, requiredType);
     }
 }

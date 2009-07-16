@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import java.io.Serializable;
 
 /**
+ * Key-value bean for representing values in selection lists or boxes.
  * User: rfelden
  * Date: 22 oct. 2008 - 12:48:46
  */
@@ -69,4 +70,13 @@ public class GWTJahiaValueDisplayBean extends BaseModelData implements Serializa
     public void setDisplay(String display) {
         set("display", display) ;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj)
+                || (getValue() != null && getValue().equals(
+                        ((GWTJahiaValueDisplayBean) obj).getValue()));
+    }
+    
+    
 }

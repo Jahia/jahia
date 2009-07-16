@@ -114,7 +114,15 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
                 JCRNodeWrapperImpl.changePermissions(userNode, "u:" + name, "rw");
             }
-            userNode.setProperty(JCRUser.J_PASSWORD, encryptPassword(password));
+
+            if (!password.startsWith("SHA-1:")) {
+                // Encrypt the password
+                password = encryptPassword (password);
+            } else {
+                password = password.substring(6);
+            }
+
+            userNode.setProperty(JCRUser.J_PASSWORD, password);
             userNode.setProperty(JCRUser.J_EXTERNAL, false);
             for (Map.Entry<Object, Object> entry : properties.entrySet()) {
                 userNode.setProperty((String) entry.getKey(), (String) entry.getValue());

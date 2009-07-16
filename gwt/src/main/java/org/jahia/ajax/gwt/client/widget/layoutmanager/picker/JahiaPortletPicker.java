@@ -64,7 +64,7 @@ import java.util.*;
 
 public class JahiaPortletPicker extends ContentPanel {
     //private final String rootPath = "/content/shared/mashups";
-    private final String rootPath = "/content/shared/ma";
+    private final String rootPath = "/content";
     private final GWTJahiaNode directory = new GWTJahiaNode(null, null, null, rootPath, null, null, null, null, null, false, false, false, null,false);
 
 

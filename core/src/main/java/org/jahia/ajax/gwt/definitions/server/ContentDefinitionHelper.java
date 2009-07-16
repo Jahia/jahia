@@ -36,7 +36,6 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaPropertyDefinition;
 import org.jahia.ajax.gwt.content.server.helper.Utils;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.api.Constants;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.utils.i18n.ResourceBundleMarker;
@@ -58,12 +57,18 @@ import java.util.*;
  */
 public class ContentDefinitionHelper {
 
-    private final static Logger logger = Logger.getLogger(ContentDefinitionHelper.class) ;
+    private static final Logger logger = Logger.getLogger(ContentDefinitionHelper.class) ;
 
-    private static List<String> excludedItems = Arrays.asList("j:locktoken", "jcr:lockOwner", "jcr:lockIsDeep",
+    private static final List<String> excludedItems = Arrays.asList("j:locktoken", "jcr:lockOwner", "jcr:lockIsDeep",
             "j:nodename", "j:fullpath", "j:applyAcl", "jcr:uuid", "j:fieldsinuse");
-    private static List<String> excludedTypes = Arrays.asList("nt:base", "");
-
+    
+    private static final List<String> excludedTypes = Arrays.asList("nt:base", "");
+    
+    private static final Comparator<GWTJahiaNodeType> gwtJahiaNodeTypeNameComparator = new Comparator<GWTJahiaNodeType>() {
+        public int compare(GWTJahiaNodeType o1, GWTJahiaNodeType o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
 
     public static GWTJahiaNodeType getNodeType(String name, ProcessingContext context) {
         ExtendedNodeType nodeType = null;
@@ -256,6 +261,8 @@ public class ContentDefinitionHelper {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+        Collections.sort(gwtNodeTypes, gwtJahiaNodeTypeNameComparator);
+        
         return gwtNodeTypes;
     }
 

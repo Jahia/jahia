@@ -34,7 +34,6 @@ package org.jahia.ajax.gwt.templates.components.layoutmanager.server;
 
 import org.apache.log4j.Logger;
 import org.apache.pluto.container.PortletWindow;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.layoutmanager.LayoutmanagerService;
@@ -44,7 +43,6 @@ import org.jahia.ajax.gwt.content.server.helper.ContentManagerHelper;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
-import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
 import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.content.*;
@@ -57,7 +55,6 @@ import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.beans.portlets.PortletWindowBean;
 import org.jahia.data.beans.portlets.PortletModeBean;
-import org.jahia.api.Constants;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -82,25 +79,24 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
 
 
     /**
-     * @param page               jahia parameter as pid, current mode,...
      * @param gwtJahiaLayoutItem draggableWidgetPreferences of the corresponding wiget
      */
-    public String saveLayoutItem(GWTJahiaPageContext page, GWTJahiaLayoutItem gwtJahiaLayoutItem) throws GWTJahiaServiceException {
+    public String saveLayoutItem(GWTJahiaLayoutItem gwtJahiaLayoutItem) throws GWTJahiaServiceException {
         try {
             // key
-            JCRNodeWrapper layoutItemNode = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getUuid(), getRemoteJahiaUser());
-            JCRLayoutItemNode jcrLayoutItemNode = new JCRLayoutItemNode(layoutItemNode);
-            JCRNodeWrapper portletNode = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getPortlet(), getRemoteJahiaUser());
-            if (portletNode != null) {
-                jcrLayoutItemNode.setColumnIndex(gwtJahiaLayoutItem.getColumn());
-                jcrLayoutItemNode.setRowIndex(gwtJahiaLayoutItem.getRow());
-                jcrLayoutItemNode.setStatus(gwtJahiaLayoutItem.getStatus());
-                jcrLayoutItemNode.setPortlet(portletNode);
-                jcrLayoutItemNode.save();
+            JCRReferenceNode layoutItemNode = (JCRReferenceNode) jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getUuid(), getRemoteJahiaUser());
+
+            JCRNodeWrapper referencedNode = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getNode(), getRemoteJahiaUser());
+            if (referencedNode != null) {
+                layoutItemNode.setProperty("j:columnIndex",gwtJahiaLayoutItem.getColumn());
+                layoutItemNode.setProperty("j:rowIndex",gwtJahiaLayoutItem.getRow());
+//                jcrLayoutItemNode.setStatus(gwtJahiaLayoutItem.getStatus());
+                layoutItemNode.setNode(referencedNode);
+                layoutItemNode.save();
             } else {
-                logger.error("Portlet Instance with uuid[" + gwtJahiaLayoutItem.getPortlet() + "] not found.");
+                logger.error("Portlet Instance with uuid[" + gwtJahiaLayoutItem.getNode() + "] not found.");
             }
-            return jcrLayoutItemNode.getPortlet().getUUID();
+            return layoutItemNode.getNode().getUUID();
         } catch (RepositoryException e) {
             logger.error(e, e);
             return null;
@@ -108,95 +104,123 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
 
     }
 
+
+    /**
+     * Update layoutnaode
+     *
+     * @param gwtJahiaLayoutItems
+     * @throws RepositoryException
+     */
+    private void updateLayoutNode(List<GWTJahiaLayoutItem> gwtJahiaLayoutItems) throws RepositoryException {
+        for (GWTJahiaLayoutItem gwtJahiaLayoutItem : gwtJahiaLayoutItems) {
+
+            JCRNodeWrapper referencedNode = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getNode(), getRemoteJahiaUser());
+            if (referencedNode != null) {
+                // retrieve layout item node
+                if (gwtJahiaLayoutItem.getUuid() != null) {
+                    JCRReferenceNode layoutItemNode = (JCRReferenceNode) jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getUuid(), getRemoteJahiaUser());
+                    layoutItemNode.setProperty("j:columnIndex",gwtJahiaLayoutItem.getColumn());
+                    layoutItemNode.setProperty("j:rowIndex",gwtJahiaLayoutItem.getRow());
+//                    jcrLayoutItemNode.setStatus(gwtJahiaLayoutItem.getStatus());
+                    layoutItemNode.setNode(referencedNode);
+                    layoutItemNode.save();
+                }
+            } else {
+                logger.error("Portlet Instance with uuid[" + gwtJahiaLayoutItem.getNode() + "] not found.");
+            }
+        }
+    }
+
+
+
+
     /**
      * Save current configuration as default one
      *
-     * @param jahiaPageContext
      * @throws GWTJahiaServiceException
      */
-    public void saveAsDefault(GWTJahiaPageContext jahiaPageContext) throws GWTJahiaServiceException {
-        try {
-            JahiaPreference<JCRLayoutNode> userLayoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(jahiaPageContext.getPid()));
-
-            JCRNodeWrapper layoutmanagerNode = findLayoutmanagerNode();
-            if (layoutmanagerNode != null) {
-                JCRLayoutNode defaultLayoutNode = findDefaultLayoutNode();
-
-                // remove layout_{pid} and its children or create a new one
-                if (defaultLayoutNode != null) {
-                    List<JCRNodeWrapper> nodeWrappers = defaultLayoutNode.getChildren();
-                    for (JCRNodeWrapper nodeWrapper : nodeWrappers) {
-                        nodeWrapper.remove();
-                    }
-                } else {
-                    defaultLayoutNode = new JCRLayoutNode(layoutmanagerNode.addNode("j:layout", Constants.JAHIANT_LAYOUT));
-                }
-
-                // copy user config
-                if (userLayoutmanagerNode != null) {
-                    defaultLayoutNode.setPage(userLayoutmanagerNode.getNode().getPage());
-                    defaultLayoutNode.setNbColumns(userLayoutmanagerNode.getNode().getNbColumns());
-                    defaultLayoutNode.setLiveDraggable(userLayoutmanagerNode.getNode().isLiveDraggable());
-                    defaultLayoutNode.setLiveEditable(userLayoutmanagerNode.getNode().isLiveEditable());
-                }
-
-                // copy user layoutIems
-                List<GWTJahiaLayoutItem> gwtJahiaLayoutItems = getLayoutItems(jahiaPageContext);
-                for (GWTJahiaLayoutItem gwtJahiaLayoutItem : gwtJahiaLayoutItems) {
-                    JCRNodeWrapper portletNode = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getPortlet(), getRemoteJahiaUser());
-                    if (portletNode != null) {
-                        // retrieve layout item node
-                        if (gwtJahiaLayoutItem.getUuid() != null) {
-                            JCRNodeWrapper nodeWrapper = defaultLayoutNode.addLayoutItem(portletNode, gwtJahiaLayoutItem.getColumn(), gwtJahiaLayoutItem.getRow(), gwtJahiaLayoutItem.getStatus());
-                            JCRLayoutItemNode jcrLayoutItemNode = new JCRLayoutItemNode(nodeWrapper);
-                            jcrLayoutItemNode.setColumnIndex(gwtJahiaLayoutItem.getColumn());
-                            jcrLayoutItemNode.setRowIndex(gwtJahiaLayoutItem.getRow());
-                            jcrLayoutItemNode.setStatus(gwtJahiaLayoutItem.getStatus());
-                            jcrLayoutItemNode.setPortlet(portletNode);
-                        }
-                    }
-                }
-
-                // save changes
-                layoutmanagerNode.save();
-            }
-        } catch (Exception e) {
-            logger.error("Unable to save default config due to", e);
-
-        }
+    public void saveAsDefault(String containerUUID) throws GWTJahiaServiceException {
+//        try {
+//            JahiaPreference<JCRLayoutNode> userLayoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(jahiaPageContext.getPid()));
+//
+//            JCRNodeWrapper layoutmanagerNode = findLayoutmanagerNode();
+//            if (layoutmanagerNode != null) {
+//                JCRLayoutNode defaultLayoutNode = findDefaultLayoutNode();
+//
+//                // remove layout_{pid} and its children or create a new one
+//                if (defaultLayoutNode != null) {
+//                    List<JCRNodeWrapper> nodeWrappers = defaultLayoutNode.getChildren();
+//                    for (JCRNodeWrapper nodeWrapper : nodeWrappers) {
+//                        nodeWrapper.remove();
+//                    }
+//                } else {
+//                    defaultLayoutNode = new JCRLayoutNode(layoutmanagerNode.addNode("j:layout", Constants.JAHIANT_LAYOUT));
+//                }
+//
+//                // copy user config
+//                if (userLayoutmanagerNode != null) {
+//                    defaultLayoutNode.setPage(userLayoutmanagerNode.getNode().getPage());
+//                    defaultLayoutNode.setNbColumns(userLayoutmanagerNode.getNode().getNbColumns());
+//                    defaultLayoutNode.setLiveDraggable(userLayoutmanagerNode.getNode().isLiveDraggable());
+//                    defaultLayoutNode.setLiveEditable(userLayoutmanagerNode.getNode().isLiveEditable());
+//                }
+//
+//                // copy user layoutIems
+//                List<GWTJahiaLayoutItem> gwtJahiaLayoutItems = getLayoutItems(jahiaPageContext);
+//                for (GWTJahiaLayoutItem gwtJahiaLayoutItem : gwtJahiaLayoutItems) {
+//                    JCRNodeWrapper portletNode = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getPortlet(), getRemoteJahiaUser());
+//                    if (portletNode != null) {
+//                        // retrieve layout item node
+//                        if (gwtJahiaLayoutItem.getUuid() != null) {
+//                            JCRNodeWrapper nodeWrapper = defaultLayoutNode.addLayoutItem(portletNode, gwtJahiaLayoutItem.getColumn(), gwtJahiaLayoutItem.getRow(), gwtJahiaLayoutItem.getStatus());
+//                            JCRReferenceNode jcrLayoutItemNode = new JCRReferenceNode(nodeWrapper);
+//                            jcrLayoutItemNode.setProperty("j:columnIndex",gwtJahiaLayoutItem.getColumn());
+//                            jcrLayoutItemNode.setProperty("j:rowIndex",gwtJahiaLayoutItem.getRow());
+////                            jcrLayoutItemNode.setStatus(gwtJahiaLayoutItem.getStatus());
+//                            jcrLayoutItemNode.setNode(portletNode);
+//                        }
+//                    }
+//                }
+//
+//                // save changes
+//                layoutmanagerNode.save();
+//            }
+//        } catch (Exception e) {
+//            logger.error("Unable to save default config due to", e);
+//
+//        }
 
     }
 
-    public void restoreDefault(GWTJahiaPageContext jahiaPageContext) throws GWTJahiaServiceException {
-        JahiaPreference<JCRLayoutNode> layoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(jahiaPageContext.getPid()));
-        if (layoutmanagerNode != null) {
-            getLayoutManagerJahiaPreferencesProvider().deleteJahiaPreference(layoutmanagerNode);
-        }
+    public void restoreDefault(String containerUUID) throws GWTJahiaServiceException {
+//        JahiaPreference<JCRLayoutNode> layoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(jahiaPageContext.getPid()));
+//        if (layoutmanagerNode != null) {
+//            getLayoutManagerJahiaPreferencesProvider().deleteJahiaPreference(layoutmanagerNode);
+//        }
     }
 
     /**
-     * @param jahiaPageContext
      * @param gwtJahiaLayoutItems
      * @throws GWTJahiaServiceException
      */
-    public void saveLayoutItems(GWTJahiaPageContext jahiaPageContext, List<GWTJahiaLayoutItem> gwtJahiaLayoutItems) throws GWTJahiaServiceException {
+    public void saveLayoutItems(List<GWTJahiaLayoutItem> gwtJahiaLayoutItems) throws GWTJahiaServiceException {
         try {
-            ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(jahiaPageContext.getPid(), false);
+//            ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(jahiaPageContext.getPid(), false);
 
 
-            // get layout manager node
-            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(jahiaPageContext.getPid()));
-            if (layoutmanagerJahiaPreference == null) {
-                layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
-                // update page
-                layoutmanagerJahiaPreference.getNode().setPage(currentContentPage.getUUID());
-            }
-
-            // update a layoutNode
-            JCRLayoutNode layoutNode = layoutmanagerJahiaPreference.getNode();
+//            // get layout manager node
+//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(jahiaPageContext.getPid()));
+//            if (layoutmanagerJahiaPreference == null) {
+//                layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
+//                // update page
+//                layoutmanagerJahiaPreference.getNode().setPage(currentContentPage.getUUID());
+//            }
+//
+//            // update a layoutNode
+//            JCRLayoutNode layoutNode = layoutmanagerJahiaPreference.getNode();
 
             // update layout node
-            updateLayoutNode(gwtJahiaLayoutItems, layoutNode);
+            updateLayoutNode(gwtJahiaLayoutItems);
 
         } catch (Exception e) {
             logger.error("Error while saving layoumanager pref.", e);
@@ -206,19 +230,18 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     }
 
     /**
-     * @param jahiaPageContext
      * @param gwtJahiaLayoutItem
      * @throws GWTJahiaServiceException
      */
-    public void addLayoutItem(GWTJahiaPageContext jahiaPageContext, GWTJahiaLayoutItem gwtJahiaLayoutItem) throws GWTJahiaServiceException {
+    public void addLayoutItem(String containerUUID, GWTJahiaLayoutItem gwtJahiaLayoutItem) throws GWTJahiaServiceException {
         try {
 
-            JCRNodeWrapper portletNode = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getPortlet(), getRemoteJahiaUser());
+            JCRNodeWrapper node = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getNode(), getRemoteJahiaUser());
+            JCRNodeWrapper container = jcrStoreService.getNodeByUUID(containerUUID, getRemoteJahiaUser());
 
-            addLayoutItem(portletNode, gwtJahiaLayoutItem.getColumn(), gwtJahiaLayoutItem.getRow(), gwtJahiaLayoutItem.getStatus(), jahiaPageContext.getPid());
+            addLayoutItem(container, node, gwtJahiaLayoutItem.getColumn(), gwtJahiaLayoutItem.getRow(), gwtJahiaLayoutItem.getStatus());
         } catch (Exception e) {
             logger.error("Error while saving layoumanager pref.", e);
-
         }
 
     }
@@ -226,79 +249,60 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     /**
      * Add layout manager item
      *
-     * @param portletNode
+     * @param layoutItem
      * @param column
      * @param row
      * @param status
-     * @param pid
      * @throws JahiaException
      * @throws RepositoryException
      */
-    private JCRLayoutItemNode addLayoutItem(JCRNodeWrapper portletNode, int column, int row, String status, int pid) throws JahiaException, RepositoryException {
-        JCRLayoutItemNode layoutItemNode = null;
-        if (portletNode != null) {
-            ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(pid, false);
+    private JCRReferenceNode addLayoutItem(JCRNodeWrapper container, JCRNodeWrapper layoutItem, int column, int row, String status) throws JahiaException, RepositoryException {
+        JCRReferenceNode layoutItemNode = null;
+        if (layoutItem != null) {
+//            ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(pid, false);
+//
+//            // get layout manager node
+//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(pid));
+//            if (layoutmanagerJahiaPreference == null) {
+//                layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
+//                // update page
+//                layoutmanagerJahiaPreference.getNode().setPage(currentContentPage.getUUID());
+//            }
+//
+//            //add layout item
+//            JCRLayoutNode container = layoutmanagerJahiaPreference.getNode();
 
-            // get layout manager node
-            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(pid));
-            if (layoutmanagerJahiaPreference == null) {
-                layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
-                // update page
-                layoutmanagerJahiaPreference.getNode().setPage(currentContentPage.getUUID());
-            }
+            JCRReferenceNode jcrNodeWrapper = (JCRReferenceNode) container.addNode("j:item", "jnt:nodeReference");
 
-            //add layout item
-            JCRLayoutNode layoutNode = layoutmanagerJahiaPreference.getNode();
-            layoutItemNode = layoutNode.addLayoutItem(portletNode, column, row, status);
+            jcrNodeWrapper.setNode(layoutItem);
+
+            jcrNodeWrapper.addMixin("jmix:positionable");
+            jcrNodeWrapper.setProperty("columnIndex",column);
+            jcrNodeWrapper.setProperty("rowIndex",row);
+//            jcrLayoutItemNode.setStatus(status);
+            container.save();
 
             // save pref
-            getLayoutManagerJahiaPreferencesProvider().setJahiaPreference(layoutmanagerJahiaPreference);
+//            getLayoutManagerJahiaPreferencesProvider().setJahiaPreference(layoutmanagerJahiaPreference);
         }
         return layoutItemNode;
     }
 
-    /**
-     * Update layoutnaode
-     *
-     * @param gwtJahiaLayoutItems
-     * @param layoutNode
-     * @throws RepositoryException
-     */
-    private void updateLayoutNode(List<GWTJahiaLayoutItem> gwtJahiaLayoutItems, JCRLayoutNode layoutNode) throws RepositoryException {
-        for (GWTJahiaLayoutItem gwtJahiaLayoutItem : gwtJahiaLayoutItems) {
-            JCRNodeWrapper portletNode = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getPortlet(), getRemoteJahiaUser());
-            if (portletNode != null) {
-                // retrieve layout item node
-                if (gwtJahiaLayoutItem.getUuid() != null) {
-                    JCRNodeWrapper nodeWrapper = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getUuid(), getRemoteJahiaUser());
-                    JCRLayoutItemNode jcrLayoutItemNode = new JCRLayoutItemNode(nodeWrapper);
-                    jcrLayoutItemNode.setColumnIndex(gwtJahiaLayoutItem.getColumn());
-                    jcrLayoutItemNode.setRowIndex(gwtJahiaLayoutItem.getRow());
-                    jcrLayoutItemNode.setStatus(gwtJahiaLayoutItem.getStatus());
-                    jcrLayoutItemNode.setPortlet(portletNode);
-                    jcrLayoutItemNode.save();
-                }
-            } else {
-                logger.error("Portlet Instance with uuid[" + gwtJahiaLayoutItem.getPortlet() + "] not found.");
-            }
-        }
-    }
 
 
     /**
      * Delete a widget from the layout manager
      *
-     * @param gwtJahiaPageContext
      * @param layoutItem
      */
-    public void removeLayoutItem(GWTJahiaPageContext gwtJahiaPageContext, GWTJahiaLayoutItem layoutItem) throws GWTJahiaServiceException {
+    public void removeLayoutItem(GWTJahiaLayoutItem layoutItem) throws GWTJahiaServiceException {
         //get layout manager prefererences
         try {
             Node layoutItemNode = jcrStoreService.getNodeByUUID(layoutItem.getUuid(), getRemoteJahiaUser());
             if (layoutItemNode != null) {
-                Node parentNode = layoutItemNode.getParent();
+                Node containerNode = layoutItemNode.getParent();
                 layoutItemNode.remove();
-                parentNode.save();
+                containerNode.save();
             }
         } catch (Exception e) {
             logger.error(e, e);
@@ -309,26 +313,26 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     /**
      * Save layout manager config
      *
-     * @param pageContext
+     * @param containerUUID
      * @param gwtLayoutManagerConfig
      */
-    public void saveLayoutmanagerConfig(GWTJahiaPageContext pageContext, GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig) throws GWTJahiaServiceException {
-        try {
-            // create layout[@pid] node
-            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(pageContext.getPid()));
-            if (layoutmanagerJahiaPreference == null) {
-                layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
-                ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(pageContext.getPid(), false);
-                layoutmanagerJahiaPreference.getNode().setPage(currentContentPage.getUUID());
-            }
-            JCRLayoutNode node = layoutmanagerJahiaPreference.getNode();
-            node.setNbColumns(gwtLayoutManagerConfig.getNbColumns());
-            node.setLiveDraggable(gwtLayoutManagerConfig.isLiveDraggable());
-            node.setLiveDraggable(gwtLayoutManagerConfig.isLiveQuickbarVisible());
-            getLayoutManagerJahiaPreferencesProvider().setJahiaPreference(layoutmanagerJahiaPreference);
-        } catch (Exception e) {
-            logger.error("Can't save layout manager config.", e);
-        }
+    public void saveLayoutmanagerConfig(String containerUUID, GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig) throws GWTJahiaServiceException {
+//        try {
+////             create layout[@pid] node
+//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(containerUUID.getPid()));
+//            if (layoutmanagerJahiaPreference == null) {
+//                layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
+//                ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(containerUUID.getPid(), false);
+//                layoutmanagerJahiaPreference.getNode().setPage(currentContentPage.getUUID());
+//            }
+//            JCRLayoutNode node = layoutmanagerJahiaPreference.getNode();
+//            node.setNbColumns(gwtLayoutManagerConfig.getNbColumns());
+//            node.setLiveDraggable(gwtLayoutManagerConfig.isLiveDraggable());
+//            node.setLiveDraggable(gwtLayoutManagerConfig.isLiveQuickbarVisible());
+//            getLayoutManagerJahiaPreferencesProvider().setJahiaPreference(layoutmanagerJahiaPreference);
+//        } catch (Exception e) {
+//            logger.error("Can't save layout manager config.", e);
+//        }
     }
 
     /**
@@ -341,29 +345,29 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
         gwtLayoutManagerConfig.setNbColumns(3);
         gwtLayoutManagerConfig.setLiveDraggable(true);
         gwtLayoutManagerConfig.setLiveQuickbarVisible(true);
-        try {
-            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(retrieveParamBean().getPageID()));
-
-            JCRLayoutNode node = null;
-            if (layoutmanagerJahiaPreference != null) {
-                node = layoutmanagerJahiaPreference.getNode();
-            } else {
-                // copy default config
-                node = copyDefaultConfig();
-
-                // copy default layout node
-                copyDefaultLayoutNode(retrieveParamBean().getPageID());
-            }
-
-
-            if (node != null) {
-                gwtLayoutManagerConfig.setNbColumns((int) node.getNbColumns());
-                gwtLayoutManagerConfig.setLiveDraggable(node.isLiveDraggable());
-                gwtLayoutManagerConfig.setLiveQuickbarVisible(node.isLiveEditable());
-            }
-        } catch (Exception e) {
-            logger.error(e, e);
-        }
+//        try {
+//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(retrieveParamBean().getPageID()));
+//
+//            JCRLayoutNode node = null;
+//            if (layoutmanagerJahiaPreference != null) {
+//                node = layoutmanagerJahiaPreference.getNode();
+//            } else {
+//                // copy default config
+//                node = copyDefaultConfig();
+//
+//                // copy default layout node
+//                getDefaultLayoutItems(retrieveParamBean().getPageID());
+//            }
+//
+//
+//            if (node != null) {
+//                gwtLayoutManagerConfig.setNbColumns((int) node.getNbColumns());
+//                gwtLayoutManagerConfig.setLiveDraggable(node.isLiveDraggable());
+//                gwtLayoutManagerConfig.setLiveQuickbarVisible(node.isLiveEditable());
+//            }
+//        } catch (Exception e) {
+//            logger.error(e, e);
+//        }
         return gwtLayoutManagerConfig;
     }
 
@@ -372,37 +376,37 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
      *
      * @return
      */
-    private JCRLayoutNode copyDefaultConfig() {
-        JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
-        if (layoutmanagerJahiaPreference != null) {
-            JCRLayoutNode node = findDefaultLayoutNode();
-
-            try {
-                if (node != null) {
-                    layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
-                    layoutmanagerJahiaPreference.getNode().setLiveDraggable(node.isLiveDraggable());
-                    layoutmanagerJahiaPreference.getNode().setLiveEditable(node.isLiveEditable());
-                    layoutmanagerJahiaPreference.getNode().setNbColumns(node.getNbColumns());
-                    layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
-
-                    layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
-                    layoutmanagerJahiaPreference.getNode().setLiveDraggable(node.isLiveDraggable());
-                    layoutmanagerJahiaPreference.getNode().setLiveEditable(node.isLiveEditable());
-                    layoutmanagerJahiaPreference.getNode().setNbColumns(node.getNbColumns());
-                    layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
-
-                    // save pref
-                    getLayoutManagerJahiaPreferencesProvider().setJahiaPreference(layoutmanagerJahiaPreference);
-                }
-
-
-            } catch (Exception e) {
-                logger.error(e, e);
-            }
-            return layoutmanagerJahiaPreference.getNode();
-        }
-        return null;
-    }
+//    private JCRLayoutNode copyDefaultConfig() {
+//        JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
+//        if (layoutmanagerJahiaPreference != null) {
+//            JCRLayoutNode node = findDefaultLayoutNode();
+//
+//            try {
+//                if (node != null) {
+//                    layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
+//                    layoutmanagerJahiaPreference.getNode().setLiveDraggable(node.isLiveDraggable());
+//                    layoutmanagerJahiaPreference.getNode().setLiveEditable(node.isLiveEditable());
+//                    layoutmanagerJahiaPreference.getNode().setNbColumns(node.getNbColumns());
+//                    layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
+//
+//                    layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
+//                    layoutmanagerJahiaPreference.getNode().setLiveDraggable(node.isLiveDraggable());
+//                    layoutmanagerJahiaPreference.getNode().setLiveEditable(node.isLiveEditable());
+//                    layoutmanagerJahiaPreference.getNode().setNbColumns(node.getNbColumns());
+//                    layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
+//
+//                    // save pref
+//                    getLayoutManagerJahiaPreferencesProvider().setJahiaPreference(layoutmanagerJahiaPreference);
+//                }
+//
+//
+//            } catch (Exception e) {
+//                logger.error(e, e);
+//            }
+//            return layoutmanagerJahiaPreference.getNode();
+//        }
+//        return null;
+//    }
 
 
     /**
@@ -410,29 +414,32 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
      *
      * @return
      */
-    private JahiaPreference<JCRLayoutNode> createPartialLayoutmanagerPreference() {
-        return getLayoutManagerJahiaPreferencesProvider().createJahiaPreferenceNode(getRemoteJahiaUser());
-    }
+//    private JahiaPreference<JCRLayoutNode> createPartialLayoutmanagerPreference() {
+//        return getLayoutManagerJahiaPreferencesProvider().createJahiaPreferenceNode(getRemoteJahiaUser());
+//    }
 
 
     /**
-     * @param jahiaPageContext jahia parameter as pid, current mode,...
+     * @param containerUUID jahia parameter as pid, current mode,...
      * @return Map <widget Id, widget preferences>
      */
 
-    public List<GWTJahiaLayoutItem> getLayoutItems(GWTJahiaPageContext jahiaPageContext) throws GWTJahiaServiceException {
+    public List<GWTJahiaLayoutItem> getLayoutItems(String containerUUID) throws GWTJahiaServiceException {
         List<GWTJahiaLayoutItem> layoutItems = new ArrayList<GWTJahiaLayoutItem>();
 
         try {
-            JahiaPreference<JCRLayoutNode> layoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(jahiaPageContext.getPid()));
 
-            if (layoutmanagerNode != null) {
-                logger.debug("Layoutmanager config found for user [" + getRemoteUser() + "]");
-                return fillGWTLayoutItems(jahiaPageContext, layoutmanagerNode.getNode());
-            } else {
-                logger.debug("Layoutmanager for user [" + getRemoteUser() + "] not found --> load default one");
-                return copyDefaultLayoutNode(jahiaPageContext.getPid());
-            }
+            JCRNodeWrapper containerNode = jcrStoreService.getNodeByUUID(containerUUID, getRemoteJahiaUser());
+
+//            JahiaPreference<JCRLayoutNode> layoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(containerUUID.getPid()));
+//
+//            if (layoutmanagerNode != null) {
+//                logger.debug("Layoutmanager config found for user [" + getRemoteUser() + "]");
+//                return fillGWTLayoutItems(containerUUID, layoutmanagerNode.getNode());
+//            } else {
+//                logger.debug("Layoutmanager for user [" + getRemoteUser() + "] not found --> load default one");
+                return getDefaultLayoutItems(containerNode);
+//            }
         } catch (RepositoryException e) {
             logger.error(e, e);
         }
@@ -443,53 +450,47 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     /**
      * load default config
      *
-     * @param pid
      * @throws RepositoryException
      */
-    private List<GWTJahiaLayoutItem> copyDefaultLayoutNode(int pid) throws RepositoryException {
-        JCRLayoutNode defaultLayoutNode = findDefaultLayoutNode();
+    private List<GWTJahiaLayoutItem> getDefaultLayoutItems(JCRNodeWrapper containerNode) throws RepositoryException {
 
-        // make a copy for the current user
+
         List<GWTJahiaLayoutItem> gwtJahiaLayoutItems = new ArrayList<GWTJahiaLayoutItem>();
-        if (defaultLayoutNode != null) {
 
-            List<JCRLayoutItemNode> jcrLayoutItemNodes = defaultLayoutNode.getLayoutItems();
-            for (JCRLayoutItemNode defaultLayoutItemNode : jcrLayoutItemNodes) {
-                try {
-                    JCRLayoutItemNode userlayoutItemNode = addLayoutItem((JCRNodeWrapper) defaultLayoutItemNode.getPortlet(), defaultLayoutItemNode.getColumnIndex(), defaultLayoutItemNode.getRowIndex(), defaultLayoutItemNode.getStatus(), pid);
-                    gwtJahiaLayoutItems.add(fillGWTLayoutItem(userlayoutItemNode));
-                } catch (JahiaException e) {
-                    logger.error(e, e);
+        List<JCRNodeWrapper> nodeWrappers = containerNode.getChildren();
+        if (nodeWrappers != null) {
+            for (JCRNodeWrapper n : nodeWrappers) {
+                if (n instanceof JCRReferenceNode) {
+                    gwtJahiaLayoutItems.add(fillGWTLayoutItem((JCRReferenceNode) n));
                 }
             }
-        } else {
-            logger.debug("There is no default config for page[pid=" + pid + "]");
         }
+
         return gwtJahiaLayoutItems;
     }
 
-    /**
-     * Create corresponding layout item list
-     *
-     * @param jahiaPageContext
-     * @param jcrLayoutNode
-     * @return
-     * @throws RepositoryException
-     */
-    private List<GWTJahiaLayoutItem> fillGWTLayoutItems(GWTJahiaPageContext jahiaPageContext, JCRLayoutNode jcrLayoutNode) throws RepositoryException {
-        // remove layout_{pid} and its children
-        List<GWTJahiaLayoutItem> gwtJahiaLayoutItems = new ArrayList<GWTJahiaLayoutItem>();
-        if (jcrLayoutNode != null) {
-            List<JCRLayoutItemNode> jcrLayoutItemNodes = jcrLayoutNode.getLayoutItems();
-            for (JCRLayoutItemNode layoutItemNode : jcrLayoutItemNodes) {
-                // create preferences values
-                gwtJahiaLayoutItems.add(fillGWTLayoutItem(layoutItemNode));
-            }
-        } else {
-            logger.debug("There is no default config for page[pid=" + jahiaPageContext.getPid() + "]");
-        }
-        return gwtJahiaLayoutItems;
-    }
+//    /**
+//     * Create corresponding layout item list
+//     *
+//     * @param containerNode
+//     * @param jcrLayoutNode
+//     * @return
+//     * @throws RepositoryException
+//     */
+//    private List<GWTJahiaLayoutItem> fillGWTLayoutItems(GWTJahiaNode containerNode, JCRLayoutNode jcrLayoutNode) throws RepositoryException {
+//        // remove layout_{pid} and its children
+//        List<GWTJahiaLayoutItem> gwtJahiaLayoutItems = new ArrayList<GWTJahiaLayoutItem>();
+//        if (jcrLayoutNode != null) {
+//            List<JCRReferenceNode> jcrLayoutItemNodes = jcrLayoutNode.getLayoutItems();
+//            for (JCRReferenceNode layoutItemNode : jcrLayoutItemNodes) {
+//                // create preferences values
+//                gwtJahiaLayoutItems.add(fillGWTLayoutItem(layoutItemNode));
+//            }
+//        } else {
+//            logger.debug("There is no default config for page[pid=" + containerNode.getPid() + "]");
+//        }
+//        return gwtJahiaLayoutItems;
+//    }
 
     /**
      * Create a GWTJahiaDraggableWidget from a layout item
@@ -498,70 +499,73 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
      * @return
      * @throws RepositoryException
      */
-    private GWTJahiaLayoutItem fillGWTLayoutItem(JCRLayoutItemNode jcrLayoutItemNode) throws RepositoryException {
+    private GWTJahiaLayoutItem fillGWTLayoutItem(JCRReferenceNode jcrLayoutItemNode) throws RepositoryException {
         // get column
-        int column = jcrLayoutItemNode.getColumnIndex();
+        int column = (int) jcrLayoutItemNode.getProperty("j:columnIndex").getLong();
 
         // get row
-        int row = jcrLayoutItemNode.getRowIndex();
+        int row = (int) jcrLayoutItemNode.getProperty("j:rowIndex").getLong();
 
         // get status
-        String status = jcrLayoutItemNode.getStatus();
+        String status = "open";
 
-        JCRPortletNode portletNode = new JCRPortletNode((JCRNodeWrapper) jcrLayoutItemNode.getPortlet());
-        String uuid = portletNode.getUUID();
+        JCRNodeWrapper referencedNode = new JCRPortletNode((JCRNodeWrapper) jcrLayoutItemNode.getNode());
+        String uuid = referencedNode.getUUID();
 
         // get modes urls
-        if (portletNode.getUUID() != null) {
+        if (referencedNode.getUUID() != null) {
             String viewModeUrl = null;
             String editModeUrl = null;
             String helpModeUrl = null;
             int currentPortletMode = 0;
-            try {
-                EntryPointDefinition entryPointDefinition = portletNode.getEntryPointDefinition();
-                EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(uuid);
-                PortletWindow window = ServicesRegistry.getInstance().getApplicationsManagerService().getPortletWindow(entryPointInstance, uuid, retrieveParamBean());
-                PortletWindowBean portletWindowBean = new PortletWindowBean(retrieveParamBean(), window);
-                portletWindowBean.setEntryPointInstance(entryPointInstance);
-                portletWindowBean.setEntryPointDefinition(entryPointDefinition);
-                List<PortletModeBean> portletModeBeans = portletWindowBean.getPortletModeBeans();
-                for (PortletModeBean portletModeBean : portletModeBeans) {
-                    String portletModeName = portletModeBean.getName();
-                    if (portletModeName != null) {
-                        if (portletModeName.equalsIgnoreCase("view")) {
-                            viewModeUrl = retrieveParamBean().composeUrl(portletModeBean.getURL());
-                        } else if (portletModeName.equalsIgnoreCase("edit")) {
-                            editModeUrl = retrieveParamBean().composeUrl(portletModeBean.getURL());
-                        } else if (portletModeName.equalsIgnoreCase("help")) {
-                            helpModeUrl = retrieveParamBean().composeUrl(portletModeBean.getURL());
-                        } else {
-                            logger.warn("Unknown portlet mode [" + portletModeBean.getName() + "]");
+            if (referencedNode instanceof JCRPortletNode) {
+                try {
+                    JCRPortletNode portletNode = (JCRPortletNode) referencedNode;
+                    EntryPointDefinition entryPointDefinition = portletNode.getEntryPointDefinition();
+                    EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(uuid);
+                    PortletWindow window = ServicesRegistry.getInstance().getApplicationsManagerService().getPortletWindow(entryPointInstance, uuid, retrieveParamBean());
+                    PortletWindowBean portletWindowBean = new PortletWindowBean(retrieveParamBean(), window);
+                    portletWindowBean.setEntryPointInstance(entryPointInstance);
+                    portletWindowBean.setEntryPointDefinition(entryPointDefinition);
+                    List<PortletModeBean> portletModeBeans = portletWindowBean.getPortletModeBeans();
+                    for (PortletModeBean portletModeBean : portletModeBeans) {
+                        String portletModeName = portletModeBean.getName();
+                        if (portletModeName != null) {
+                            if (portletModeName.equalsIgnoreCase("view")) {
+                                viewModeUrl = retrieveParamBean().composeUrl(portletModeBean.getURL());
+                            } else if (portletModeName.equalsIgnoreCase("edit")) {
+                                editModeUrl = retrieveParamBean().composeUrl(portletModeBean.getURL());
+                            } else if (portletModeName.equalsIgnoreCase("help")) {
+                                helpModeUrl = retrieveParamBean().composeUrl(portletModeBean.getURL());
+                            } else {
+                                logger.warn("Unknown portlet mode [" + portletModeBean.getName() + "]");
+                            }
                         }
                     }
-                }
 
-                // current mode
-                PortletModeBean currentPortletModeBean = portletWindowBean.getCurrentPortletModeBean();
-                if (currentPortletModeBean != null) {
-                    String portletModeName = currentPortletModeBean.getName();
-                    if (portletModeName != null) {
-                        if (portletModeName.equalsIgnoreCase(PortletMode.VIEW.toString())) {
-                            currentPortletMode = GWTJahiaLayoutItem.MODE_VIEW;
-                        } else if (portletModeName.equalsIgnoreCase(PortletMode.EDIT.toString())) {
-                            currentPortletMode = GWTJahiaLayoutItem.MODE_EDIT;
-                        } else if (portletModeName.equalsIgnoreCase(PortletMode.HELP.toString())) {
-                            currentPortletMode = GWTJahiaLayoutItem.MODE_HELP;
-                        } else {
-                            logger.warn("Unknown portlet mode [" + currentPortletModeBean.getName() + "]");
+                    // current mode
+                    PortletModeBean currentPortletModeBean = portletWindowBean.getCurrentPortletModeBean();
+                    if (currentPortletModeBean != null) {
+                        String portletModeName = currentPortletModeBean.getName();
+                        if (portletModeName != null) {
+                            if (portletModeName.equalsIgnoreCase(PortletMode.VIEW.toString())) {
+                                currentPortletMode = GWTJahiaLayoutItem.MODE_VIEW;
+                            } else if (portletModeName.equalsIgnoreCase(PortletMode.EDIT.toString())) {
+                                currentPortletMode = GWTJahiaLayoutItem.MODE_EDIT;
+                            } else if (portletModeName.equalsIgnoreCase(PortletMode.HELP.toString())) {
+                                currentPortletMode = GWTJahiaLayoutItem.MODE_HELP;
+                            } else {
+                                logger.warn("Unknown portlet mode [" + currentPortletModeBean.getName() + "]");
+                            }
                         }
                     }
+
+
+                } catch (JahiaException e) {
+                    logger.error(e, e);
                 }
-
-
-            } catch (JahiaException e) {
-                logger.error(e, e);
             }
-            return new GWTJahiaLayoutItem(jcrLayoutItemNode.getUUID(), ContentManagerHelper.getGWTJahiaNode(portletNode), viewModeUrl, editModeUrl, helpModeUrl, column, row, status, currentPortletMode);
+            return new GWTJahiaLayoutItem(jcrLayoutItemNode.getUUID(), ContentManagerHelper.getGWTJahiaNode(referencedNode), viewModeUrl, editModeUrl, helpModeUrl, column, row, status, currentPortletMode);
         } else {
             return null;
         }
@@ -574,7 +578,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
      *
      * @param portletNode
      */
-    public void createPorletInstanceWindow(GWTJahiaNode portletNode) {
+    public void createPortletInstanceWindow(GWTJahiaNode portletNode) {
         final ApplicationsManagerService service = ServicesRegistry.getInstance().getApplicationsManagerService();
         try {
             String entryPointInstanceID = portletNode.getUUID();
@@ -598,92 +602,77 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
         }
     }
 
-    /**
-     * @return the layout manager preferences
-     */
-    private JahiaPreferencesProvider<JCRLayoutNode> getLayoutManagerJahiaPreferencesProvider() {
-        try {
-            return servicesRegistry.getJahiaPreferencesService().getPreferencesProviderByClass(JCRLayoutNode.class);
-        } catch (JahiaPreferenceProviderException e) {
-            logger.error(e, e);
-        }
-        return null;
-    }
+//    /**
+//     * @return the layout manager preferences
+//     */
+//    private JahiaPreferencesProvider<JCRLayoutNode> getLayoutManagerJahiaPreferencesProvider() {
+//        try {
+//            return servicesRegistry.getJahiaPreferencesService().getPreferencesProviderByClass(JCRLayoutNode.class);
+//        } catch (JahiaPreferenceProviderException e) {
+//            logger.error(e, e);
+//        }
+//        return null;
+//    }
 
-    /*
-    * Get default layout node of the current page
-    * */
-    private JCRLayoutNode findDefaultLayoutNode() {
-        try {
-            ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(retrieveParamBean().getPageID(), false);
+//    /*
+//    * Get default layout node of the current page
+//    * */
+//    private JCRLayoutNode findDefaultLayoutNode() {
+//        try {
+//            ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(retrieveParamBean().getPageID(), false);
+//
+//            String path = "/" + LAYOUTMANAGER_NODE_PATH + "/j:layout[@j:page='" + currentContentPage.getUUID() + "']";
+//            NodeIterator ni = findNodeIteratorByXpath(getRemoteJahiaUser(), path);
+//            if (ni != null && ni.hasNext()) {
+//                return new JCRLayoutNode((JCRNodeWrapper) ni.nextNode());
+//            }
+//        } catch (JahiaException e) {
+//            logger.error(e, e);
+//        }
+//        return null;
+//    }
 
-            String path = "/" + LAYOUTMANAGER_NODE_PATH + "/j:layout[@j:page='" + currentContentPage.getUUID() + "']";
-            NodeIterator ni = findNodeIteratorByXpath(getRemoteJahiaUser(), path);
-            if (ni != null && ni.hasNext()) {
-                return new JCRLayoutNode((JCRNodeWrapper) ni.nextNode());
-            }
-        } catch (JahiaException e) {
-            logger.error(e, e);
-        }
-        return null;
-    }
-
-    /**
-     * Get layoutmanager node
-     *
-     * @return
-     */
-    private JCRNodeWrapper findLayoutmanagerNode() {
-        try {
-            return getJCRStoreService().getThreadSession(getRemoteJahiaUser()).getNode(LAYOUTMANAGER_NODE_PATH);
-        } catch (RepositoryException e) {
-            logger.error(e.toString(), e);
-            return null;
-        }
-    }
-
-
-    /**
-     * Find nodes by xpath
-     *
-     * @param p
-     * @param path
-     * @return
-     */
-    private NodeIterator findNodeIteratorByXpath(Principal p, String path) {
-        logger.debug("Find node by xpath[ " + path + " ]");
-        if (p instanceof JahiaGroup) {
-            logger.warn("Preference provider not implemented for JahiaGroup");
-            return null;
-        }
-        try {
-            QueryManager queryManager = getJCRStoreService().getQueryManager((JahiaUser) p);
-            if (queryManager != null) {
-                Query q = queryManager.createQuery(path.toString(), Query.XPATH);
-                // execute query
-                QueryResult queryResult = q.execute();
-
-                // get node iterator
-                NodeIterator ni = queryResult.getNodes();
-                if (ni.hasNext()) {
-                    logger.debug("Path[" + path + "] --> found [" + ni.getSize() + "] values.");
-                    return ni;
-                } else {
-                    logger.debug("Path[" + path + "] --> empty result.");
-                }
-            }
-        } catch (javax.jcr.PathNotFoundException e) {
-            logger.debug("javax.jcr.PathNotFoundException: Path[" + path + "]");
-        } catch (javax.jcr.ItemNotFoundException e) {
-            logger.debug(e, e);
-        } catch (javax.jcr.query.InvalidQueryException e) {
-            logger.error("InvalidQueryException ---> [" + path + "] is not valid.", e);
-        }
-        catch (RepositoryException e) {
-            logger.error(e, e);
-        }
-        return null;
-    }
+//    /**
+//     * Find nodes by xpath
+//     *
+//     * @param p
+//     * @param path
+//     * @return
+//     */
+//    private NodeIterator findNodeIteratorByXpath(Principal p, String path) {
+//        logger.debug("Find node by xpath[ " + path + " ]");
+//        if (p instanceof JahiaGroup) {
+//            logger.warn("Preference provider not implemented for JahiaGroup");
+//            return null;
+//        }
+//        try {
+//            QueryManager queryManager = getJCRStoreService().getQueryManager((JahiaUser) p);
+//            if (queryManager != null) {
+//                Query q = queryManager.createQuery(path.toString(), Query.XPATH);
+//                // execute query
+//                QueryResult queryResult = q.execute();
+//
+//                // get node iterator
+//                NodeIterator ni = queryResult.getNodes();
+//                if (ni.hasNext()) {
+//                    logger.debug("Path[" + path + "] --> found [" + ni.getSize() + "] values.");
+//                    return ni;
+//                } else {
+//                    logger.debug("Path[" + path + "] --> empty result.");
+//                }
+//            }
+//        } catch (javax.jcr.PathNotFoundException e) {
+//            logger.debug("javax.jcr.PathNotFoundException: Path[" + path + "]");
+//        } catch (javax.jcr.ItemNotFoundException e) {
+//            logger.debug(e, e);
+//        } catch (javax.jcr.query.InvalidQueryException e) {
+//            logger.error("InvalidQueryException ---> [" + path + "] is not valid.", e);
+//        }
+//        catch (RepositoryException e) {
+//            logger.error(e, e);
+//        }
+//        return null;
+//    }
 
     /**
      * Get the JCR store service

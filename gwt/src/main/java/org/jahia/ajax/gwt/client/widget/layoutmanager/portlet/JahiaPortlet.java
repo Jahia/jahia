@@ -275,7 +275,7 @@ public class JahiaPortlet extends Portlet {
     }
 
     public String getWindowId() {
-        return porletConfig.getPortlet();
+        return porletConfig.getNode();
     }
 
     public Widget getViewContainer() {

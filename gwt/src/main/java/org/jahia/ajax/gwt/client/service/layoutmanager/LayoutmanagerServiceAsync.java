@@ -35,6 +35,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutManagerConfig;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.List;
 
@@ -45,23 +46,23 @@ import java.util.List;
  */
 public interface LayoutmanagerServiceAsync {
 
-    public void saveLayoutItem(GWTJahiaPageContext pageContext, GWTJahiaLayoutItem gwtLayoutItem, AsyncCallback<String> async);
+    public void saveLayoutItem(GWTJahiaLayoutItem gwtLayoutItem, AsyncCallback<String> async);
 
-    public void saveAsDefault(GWTJahiaPageContext pageContext, AsyncCallback async);
+    public void saveAsDefault(String containerUUID, AsyncCallback async);
 
-    public void restoreDefault(GWTJahiaPageContext pageContext, AsyncCallback async);
+    public void restoreDefault(String containerUUID, AsyncCallback async);
     
-    public void removeLayoutItem(GWTJahiaPageContext pageContext, GWTJahiaLayoutItem gwtLayoutItem, AsyncCallback async);
+    public void removeLayoutItem(GWTJahiaLayoutItem gwtLayoutItem, AsyncCallback async);
 
-    public void saveLayoutItems(GWTJahiaPageContext pageContext, List<GWTJahiaLayoutItem> gwtLayoutItems, AsyncCallback async);
+    public void saveLayoutItems(List<GWTJahiaLayoutItem> gwtLayoutItems, AsyncCallback async);
 
-    public void addLayoutItem(GWTJahiaPageContext pageContext, GWTJahiaLayoutItem layoutItem, AsyncCallback async);
+    public void addLayoutItem(String containerUUID, GWTJahiaLayoutItem layoutItem, AsyncCallback async);
 
-    public void saveLayoutmanagerConfig(GWTJahiaPageContext pageContext, GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig, AsyncCallback async);
+    public void saveLayoutmanagerConfig(String containerUUID, GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig, AsyncCallback async);
 
     public void getLayoutmanagerConfig(AsyncCallback<GWTJahiaLayoutManagerConfig> async);
 
-    public void getLayoutItems(GWTJahiaPageContext pageContext, AsyncCallback<List<GWTJahiaLayoutItem>> async);
+    public void getLayoutItems(String containerUUID, AsyncCallback<List<GWTJahiaLayoutItem>> async);
 
 
 }

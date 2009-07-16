@@ -37,7 +37,6 @@ import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * User: ktlili
@@ -112,7 +111,7 @@ public class JahiaPortletInstance extends JahiaPortlet {
     }
 
     public String getWindowID() {
-        return getPorletConfig().getPortlet();
+        return getPorletConfig().getNode();
     }
 
 

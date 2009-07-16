@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutManagerConfig;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.List;
 
@@ -73,22 +74,22 @@ public interface LayoutmanagerService extends RemoteService {
 
     }
 
-    public String saveLayoutItem(GWTJahiaPageContext pageContext, GWTJahiaLayoutItem draggableWidgetPreferences) throws GWTJahiaServiceException;
+    public String saveLayoutItem(GWTJahiaLayoutItem draggableWidgetPreferences) throws GWTJahiaServiceException;
 
-    public void saveAsDefault(GWTJahiaPageContext jahiaPageContext) throws GWTJahiaServiceException;
+    public void saveAsDefault(String containerUUID) throws GWTJahiaServiceException;
 
-    public void restoreDefault(GWTJahiaPageContext jahiaPageContext) throws GWTJahiaServiceException;
+    public void restoreDefault(String containerUUID) throws GWTJahiaServiceException;
 
-    public void removeLayoutItem(GWTJahiaPageContext pageContext, GWTJahiaLayoutItem draggableWidgetPreferences) throws GWTJahiaServiceException;
+    public void removeLayoutItem(GWTJahiaLayoutItem draggableWidgetPreferences) throws GWTJahiaServiceException;
 
-    public void saveLayoutItems(GWTJahiaPageContext pageContext, List<GWTJahiaLayoutItem> layoutItems) throws GWTJahiaServiceException;
+    public void saveLayoutItems(List<GWTJahiaLayoutItem> layoutItems) throws GWTJahiaServiceException;
 
-    public void addLayoutItem(GWTJahiaPageContext pageContext, GWTJahiaLayoutItem layoutItem) throws GWTJahiaServiceException;    
+    public void addLayoutItem(String containerUUID, GWTJahiaLayoutItem layoutItem) throws GWTJahiaServiceException;
 
     public GWTJahiaLayoutManagerConfig getLayoutmanagerConfig() throws GWTJahiaServiceException;
 
-    public void saveLayoutmanagerConfig(GWTJahiaPageContext pageContext, GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig) throws GWTJahiaServiceException;
+    public void saveLayoutmanagerConfig(String containerUUID, GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaLayoutItem> getLayoutItems(GWTJahiaPageContext page) throws GWTJahiaServiceException;
+    public List<GWTJahiaLayoutItem> getLayoutItems(String containerUUID) throws GWTJahiaServiceException;
 
 }

@@ -86,7 +86,7 @@ public class GWTJahiaLayoutItem implements Serializable {
         this.uuid = uuid;
     }
 
-    public String getPortlet() {
+    public String getNode() {
         if (gwtJahiaNode != null) {
             return gwtJahiaNode.getUUID();
         }

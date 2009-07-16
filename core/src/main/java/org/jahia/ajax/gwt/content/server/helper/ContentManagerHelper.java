@@ -1201,11 +1201,15 @@ public class ContentManagerHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          sthg bad happened
      */
-    public static void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, JahiaUser user) throws GWTJahiaServiceException {
+    public static void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, ProcessingContext context) throws GWTJahiaServiceException {
+        Locale locale = context.getCurrentLocale();
+        String workspace = "default";
+        JahiaUser user = context.getUser();
+
         for (GWTJahiaNode aNode : nodes) {
             JCRNodeWrapper objectNode;
             try {
-                objectNode = jcr.getThreadSession(user).getNode(aNode.getPath());
+                objectNode = jcr.getThreadSession(user, workspace, locale).getNode(aNode.getPath());
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(aNode.getDisplayName()).append(" could not be accessed :\n").append(e.toString()).toString());

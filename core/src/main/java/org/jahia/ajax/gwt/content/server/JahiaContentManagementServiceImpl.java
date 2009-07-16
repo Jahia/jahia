@@ -208,7 +208,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException {
-        ContentManagerHelper.saveProperties(nodes, newProps, getUser());
+        ContentManagerHelper.saveProperties(nodes, newProps, retrieveParamBean());
     }
 
     public GWTJahiaNodeACL getACL(String path) throws GWTJahiaServiceException {

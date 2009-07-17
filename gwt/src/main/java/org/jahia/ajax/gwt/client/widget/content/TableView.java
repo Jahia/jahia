@@ -153,8 +153,8 @@ public class TableView extends TopRightComponent {
     @Override
     public void initWithLinker(BrowserLinker linker) {
         super.initWithLinker(linker);
-        DragSource source = new GridDragSource(m_table);
-        source.addDNDListener(linker.getDndListener());
+//        DragSource source = new GridDragSource(m_table);
+//        source.addDNDListener(linker.getDndListener());
     }
 
     public void setContextMenu(Menu menu) {

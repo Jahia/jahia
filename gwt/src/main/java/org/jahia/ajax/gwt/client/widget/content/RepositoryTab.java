@@ -163,24 +163,24 @@ public class RepositoryTab extends ContentPanel {
     public void init() {
         loader.load() ;
 
-        TreePanelDragSource source = new TreePanelDragSource(m_tree);
-        source.addDNDListener(getLinker().getDndListener());
-
-        TreePanelDropTarget target = new TreePanelDropTarget(m_tree) {
-            @Override
-            protected void handleInsert(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
-                super.handleInsert(dndEvent, treeNode);    //To change body of overridden methods use File | Settings | File Templates.
-            }
-
-            @Override
-            protected void handleAppendDrop(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
-                ContentActions.move(getLinker(), (List<GWTJahiaNode>) dndEvent.getData(), (GWTJahiaNode) treeNode.getModel());
-                super.handleAppendDrop(dndEvent, treeNode);    //To change body of overridden methods use File | Settings | File Templates.
-            }
-        };
-        target.setFeedback(DND.Feedback.BOTH);
-        target.setAllowSelfAsSource(true);
-        target.setAutoExpand(true);
+//        TreePanelDragSource source = new TreePanelDragSource(m_tree);
+//        source.addDNDListener(getLinker().getDndListener());
+//
+//        TreePanelDropTarget target = new TreePanelDropTarget(m_tree) {
+//            @Override
+//            protected void handleInsert(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
+//                super.handleInsert(dndEvent, treeNode);    //To change body of overridden methods use File | Settings | File Templates.
+//            }
+//
+//            @Override
+//            protected void handleAppendDrop(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
+//                ContentActions.move(getLinker(), (List<GWTJahiaNode>) dndEvent.getData(), (GWTJahiaNode) treeNode.getModel());
+//                super.handleAppendDrop(dndEvent, treeNode);    //To change body of overridden methods use File | Settings | File Templates.
+//            }
+//        };
+//        target.setFeedback(DND.Feedback.BOTH);
+//        target.setAllowSelfAsSource(true);
+//        target.setAutoExpand(true);
     }
 
 //    public void expandAllPreviousPaths() {

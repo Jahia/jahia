@@ -78,22 +78,22 @@ public class TemplateView extends TopRightComponent {
                     m_component.layout();
                     Map<String, List<RootPanel>> jahiaTypedRootPanels = TemplatesDOMUtil.getAllJahiaTypedRootPanels(html.getElement());
                     
-                    for (String jahiaType : jahiaTypedRootPanels.keySet()) {
-                        try {
-                            if ("placeHolder".equals(jahiaType)) {
-                                List<RootPanel> rootPanelsForType = jahiaTypedRootPanels.get(jahiaType);
-                                for (RootPanel rootPanel : rootPanelsForType) {
-                                    final Button w = new Button("drop here");
-                                    rootPanel.add(w);
-
-                                    DropTarget target = new DropTarget(w);
-                                    target.addDNDListener(getLinker().getDndListener());
-                                }
-                            }
-                        } catch (Exception e) {
-                            GWT.log("Unable to load jahia module [" + jahiaType + "].", e);
-                        }
-                    }
+//                    for (String jahiaType : jahiaTypedRootPanels.keySet()) {
+//                        try {
+//                            if ("placeHolder".equals(jahiaType)) {
+//                                List<RootPanel> rootPanelsForType = jahiaTypedRootPanels.get(jahiaType);
+//                                for (RootPanel rootPanel : rootPanelsForType) {
+//                                    final Button w = new Button("drop here");
+//                                    rootPanel.add(w);
+//
+//                                    DropTarget target = new DropTarget(w);
+//                                    target.addDNDListener(getLinker().getDndListener());
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                            GWT.log("Unable to load jahia module [" + jahiaType + "].", e);
+//                        }
+//                    }
 
                 }
 

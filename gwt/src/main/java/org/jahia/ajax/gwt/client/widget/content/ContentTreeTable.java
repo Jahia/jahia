@@ -375,24 +375,30 @@ public class ContentTreeTable extends TopRightComponent {
                             combo.setForceSelection(true);
                             combo.setTriggerAction(ComboBox.TriggerAction.ALL);
                             for (GWTJahiaNodeVersion version : versions) {
-                                combo.add(version.getVersionNumber() + " (" + DateTimeFormat.getFormat("d/MM/y").format(version.getDate()).toString() + ")");
+                                combo.add(version.getVersionNumber() + " (" + DateTimeFormat.getFormat("d/MM/y hh:mm").format(version.getDate()).toString() + ")");
                             }
-                            GWTJahiaNodeVersion version = versions.get(versions.size()-1);
-                            combo.setSimpleValue(version.getVersionNumber() + " (" + DateTimeFormat.getFormat("d/MM/y").format(version.getDate()).toString() + ")");
+                            final String s2 = "Always Latest Version";
+                            combo.add(s2);
+                            combo.setSimpleValue(s2);
                             combo.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
                                 @Override
                                 public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> simpleComboValueSelectionChangedEvent) {
                                     SimpleComboValue<String> value = simpleComboValueSelectionChangedEvent.getSelectedItem();
-                                    gwtJahiaNode.setSelectedVersion(value.getValue().split("\\(")[0].trim());                                    
+                                    String value1 = value.getValue();
+                                    if(!s2.equals(value1))
+                                    gwtJahiaNode.setSelectedVersion(value1.split("\\(")[0].trim());
                                 }
                             });
+                            combo.setDeferHeight(true);
                             return combo;
                         } else {
                             SimpleComboBox<String> combo = new SimpleComboBox<String>();
-                            combo.setForceSelection(true);
+                            combo.setForceSelection(false);
                             combo.setTriggerAction(ComboBox.TriggerAction.ALL);
                             combo.add("No version");
                             combo.setSimpleValue("No version");
+                            combo.setEnabled(false);
+                            combo.setDeferHeight(true);
                             return combo;
                         }
                     }

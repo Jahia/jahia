@@ -66,7 +66,7 @@ public class UsageEntry {
     private EntryLoadRequest loadRequest;
     private ContentPage aPage;
     private String url;
-    private String versionName;
+    private String versionName = "---";
 
     public UsageEntry (int id, int version, int workflow, String lang, String val, ProcessingContext jParams)
             throws JahiaException {

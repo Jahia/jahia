@@ -57,7 +57,6 @@ function handleSelection(path) {
         </c:if>
     }
     </c:if>
-    window.close();
 }
 </script>
 </head>

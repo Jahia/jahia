@@ -83,12 +83,15 @@ public class ManagerConfigurationFactory {
         ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         completeManagerConfig.addItem(newFolder);
+        ContentActionItem newContentListContent = ItemCreator.createNewContentListItem(linker);
+        file.addItem(newContentListContent);
+        completeManagerConfig.addItem(newContentListContent);
         ContentActionItem newContent = ItemCreator.createNewContentItem(linker);
         file.addItem(newContent);
         completeManagerConfig.addItem(newContent);
         ContentActionItem newPageContent = ItemCreator.createNewPageContentItem(linker);
         file.addItem(newPageContent);
-        completeManagerConfig.addItem(newPageContent);               
+        completeManagerConfig.addItem(newPageContent);
         ContentActionItem newMashup = ItemCreator.createNewMashupItem(linker);
         file.addItem(newMashup);
         ContentActionItem newRSS = ItemCreator.createNewRSSItem(linker);
@@ -815,6 +818,25 @@ public class ManagerConfigurationFactory {
             ContentActionItem newMashup = new ContentActionItem(Messages.getNotEmptyResource("fm_newpagecontent","New page"), "fm-newcontent") {
                 public void onSelection() {
                     ContentActions.showContentWizard(linker,"jnt:page");
+                }
+
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+                }
+            };
+            return newMashup;
+        }
+
+        /**
+         * Item that  loows creating a new page
+         * @param linker
+         * @return
+         */
+        private static ContentActionItem createNewContentListItem(final BrowserLinker linker) {
+
+            ContentActionItem newMashup = new ContentActionItem(Messages.getNotEmptyResource("fm_newcontentlist","New content list"), "fm-newfolder") {
+                public void onSelection() {
+                    ContentActions.showContentWizard(linker,"jnt:contentList");
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {

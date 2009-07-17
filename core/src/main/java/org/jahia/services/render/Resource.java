@@ -94,4 +94,15 @@ public class Resource {
         }
         return template;
     }
+
+    @Override
+    public String toString() {
+        return "Resource{" +
+                "node=" + node.getPath() +
+                ", workspace='" + workspace + '\'' +
+                ", locale=" + locale +
+                ", templateType='" + templateType + '\'' +
+                ", template='" + template + '\'' +
+                '}';
+    }
 }

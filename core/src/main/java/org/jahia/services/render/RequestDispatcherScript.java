@@ -99,7 +99,7 @@ public class RequestDispatcherScript implements Script {
                 }
             }
             if (templatePath == null) {
-                throw new IOException("template not found");
+                throw new IOException("Template not found for : "+resource);
             }
 
             this.request = request;

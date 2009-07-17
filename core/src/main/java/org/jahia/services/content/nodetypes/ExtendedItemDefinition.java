@@ -182,7 +182,8 @@ public class ExtendedItemDefinition implements ItemDefinition {
         try {
             boolean b = Arrays.asList(NodeTypeRegistry.getInstance().getNodeType("jmix:hierarchyNode").getSupertypes()).contains(dnt);
             b |= dnt.getName().equals("jmix:hierarchyNode");
-
+            b |= dnt.getName().equals("mix:created");
+            
             return b;
         } catch (NoSuchNodeTypeException e) {
             logger.error(e.getMessage(), e);

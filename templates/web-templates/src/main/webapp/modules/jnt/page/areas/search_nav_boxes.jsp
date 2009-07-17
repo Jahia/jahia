@@ -2,4 +2,4 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <template:module node="${currentNode}" template="nav.navBar2"/>
-<template:module path="columnB_box" />
+<template:module path="columnB_box" template="default"/>

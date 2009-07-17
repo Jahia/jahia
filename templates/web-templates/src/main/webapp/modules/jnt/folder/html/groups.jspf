@@ -1,0 +1,13 @@
+<div>
+    <img src="${pageContext.request.contextPath}/engines/images/types/gwt/large/icon-user-group.png" alt=" " style="float: left" />
+    <jcr:nodeProperty node="${child}" name="jcr:title" var="title"/>
+    <a href="${baseUrl}${child.path}.html"><strong>
+    <c:if test="${not empty title}">
+        ${title.string}&nbsp(${child.name})
+    </c:if>
+    <c:if test="${empty title}">
+        ${child.name}
+    </c:if>
+    </strong></a><br/>
+    <jcr:nodeProperty node="${child}" name="jcr:description" />
+</div><br style="clear: both"/>

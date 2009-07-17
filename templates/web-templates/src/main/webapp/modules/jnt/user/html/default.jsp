@@ -14,7 +14,9 @@
 <div class="peopleListItem">
     <div class="peoplePhoto">
         <jcr:node var="picture" path="${currentNode.path}/picture"/>
-        <img src="${picture.url}" alt=""/>
+        <c:if test="${not empty picture.url}">
+            <img src="${picture.url}" alt=" "/>
+        </c:if>
     </div>
     <div class="peopleBody">
         <h5>${firstname}&nbsp;${lastname}&nbsp;(${currentNode.name})</h5>
@@ -22,9 +24,9 @@
     </div>
     <div>
         <jcr:xpath var="result" xpath="//element(*, jnt:page)[@jcr:createdBy='${currentNode.name}']"/>
-        User pages :
+        User pages:
         <c:if test="${result.size == 0}">
-            No results.
+            ${currentNode.name} has not created any pages so far 
         </c:if>
         <ul>
             <c:forEach items="${result}" var="page">

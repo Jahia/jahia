@@ -16,6 +16,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.jcr.RepositoryException;
+import javax.jcr.PathNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -85,6 +86,9 @@ public class ModuleTag extends BodyTagSupport {
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
             if (currentResource != null) {
                 templateType = currentResource.getTemplateType();
+//                if (!templateType.endsWith("-fragment")) {
+//                    templateType += "-fragment";
+//                }
                 workspace = currentResource.getWorkspace();
                 locale = currentResource.getLocale();
             }
@@ -101,22 +105,37 @@ public class ModuleTag extends BodyTagSupport {
             if (nodeName != null) {
                 node = (JCRNodeWrapper) pageContext.findAttribute(nodeName);
             } else if (contentBeanName != null) {
-                try {
+                try {                            
                     ContentBean bean = (ContentBean) pageContext.getAttribute(contentBeanName);
                     node = bean.getContentObject().getJCRNode(Jahia.getThreadParamBean());
                 } catch (JahiaException e) {
                     logger.error(e.getMessage(), e);
                 }
-            } else if (path != null && currentResource != null) {                
-                JCRNodeWrapper nodeWrapper = currentResource.getNode();
+            } else if (path != null && currentResource != null) {
                 try {
-                    if (nodeWrapper.hasNode(path)) {
-                        node = (JCRNodeWrapper) nodeWrapper.getNode(path);
-                    } else {
-                        if (currentResource != null) {
+                    if (!path.startsWith("/")) {
+                        JCRNodeWrapper nodeWrapper = currentResource.getNode();
+                        if (nodeWrapper.hasNode(path)) {
+                            node = (JCRNodeWrapper) nodeWrapper.getNode(path);
+                        } else {
                             currentResource.getMissingResources().add(path);
+                            HashMap extraParams = new HashMap();
+
+                            extraParams.put("path", nodeWrapper.getPath()+"/"+path);
+                            pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeholder","placeholder"+ UUID.randomUUID().toString(), extraParams));
                         }
-//                        pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeHolder","placeholder"+ UUID.randomUUID().toString(),new HashMap()));
+                    } else if (path.startsWith("/")) {
+                        try {
+                            node = (JCRNodeWrapper) currentResource.getNode().getSession().getItem(path);
+                        } catch (PathNotFoundException e) {
+                            String currentPath = currentResource.getNode().getPath();
+                            if (path.startsWith(currentPath+"/") && path.substring(currentPath.length()+1).indexOf('/') == -1) {
+                                currentResource.getMissingResources().add(path.substring(currentPath.length()+1));
+                            }
+                            final HashMap extraParams = new HashMap();
+                            extraParams.put("path", path);
+                            pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeHolder","placeholder"+ UUID.randomUUID().toString(), extraParams));
+                        }
                     }
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);

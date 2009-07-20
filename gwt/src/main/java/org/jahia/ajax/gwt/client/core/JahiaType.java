@@ -60,4 +60,5 @@ public class JahiaType {
     public final static String TOOLBARS_MANAGER = "toolsbars";
     public final static String USER_GROUP = "usergroup";
     public final static String VERSION_COMPARISON = "versioncomparison";
+    public final static String CONTENT_PLACEHOLDER = "placeholder";
 }

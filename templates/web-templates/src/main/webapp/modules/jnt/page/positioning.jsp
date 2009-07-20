@@ -69,8 +69,8 @@
                 <div id="page">
                     <div id="pageHeader">
                         <div id="logotop">
-                        <jcr:node var="logo" path="${rootPage.path}/logo"/>
-                        <template:module node="${logo}"/>
+                        <%--<jcr:node var="logo" path="${rootPage.path}/logo"/>--%>
+                        <template:module path="${rootPage.path}/logo"/>
                         </div>
                         <h1 class="hide">${currentSite.title} : ${currentPage.title}</h1>
                         

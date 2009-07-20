@@ -185,6 +185,12 @@
                 <module>package</module>
             </modules>
         </profile>
+        <profile>
+            <id>qa-jboss</id>
+            <modules>
+                <module>package</module>
+            </modules>
+        </profile>
     </profiles>
 
   <modules>

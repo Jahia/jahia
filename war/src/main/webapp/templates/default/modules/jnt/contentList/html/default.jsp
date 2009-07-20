@@ -5,9 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <c:forEach items="${currentNode.children}" var="subchild">
-<c:if test="${jcr:isNodeType(subchild, 'jnt:container')}">
-<p>
+<p>>
     <template:module node="${subchild}" />
 </p>
-</c:if>
 </c:forEach>

@@ -12,15 +12,9 @@
     <properties>
         <jahia.tomcat.version>6.0.20</jahia.tomcat.version>
         <jahia.jboss.version>4.2.3.GA</jahia.jboss.version>
+        <jahia.package.module>jahia-tgz-package</jahia.package.module>
     </properties>
     <profiles>
-        <profile>
-              <id>qa-build</id>
-              <modules>
-                  <module>jahia-tgz-package</module>        
-                  <module>jahia-qa-package</module>
-              </modules>
-        </profile>
         <profile>
             <id>jboss-deployment</id>
             <activation>
@@ -29,13 +23,20 @@
                     <value>jboss</value>
                 </property>
             </activation>
-            <modules>
-                <module>jahia-jboss-package</module>
-            </modules>
+            <properties>
+                <jahia.package.module>jahia-jboss-package</jahia.package.module>
+            </properties>
         </profile>
         <profile>
               <id>qa-jboss</id>
               <modules>
+                  <module>jahia-qa-package</module>
+              </modules>
+        </profile>
+        <profile>
+              <id>qa-build</id>
+              <modules>
+                  <module>${jahia.package.module}</module>        
                   <module>jahia-qa-package</module>
               </modules>
         </profile>

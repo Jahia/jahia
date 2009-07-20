@@ -35,27 +35,31 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
-import org.jahia.data.constants.JahiaConstants;
+/**
+ * Utility class for collecting server information.
+ */
+public class ServletContainerUtils {
 
+    /**
+     * Server Types
+     */
+    public static final String SERVER_TOMCAT = "Tomcat";
 
+    public static final String SERVER_JBOSS = "JBoss";
 
-
-public class ServletContainerUtils
-{
-
-    public static Map infos = null;
+    public static final String SERVER_WEBLOGIC = "Weblogic";
+    
+    private static Map infos = null;
 
 
     //-------------------------------------------------------------------------
     /**
      * Default constructor.
      */
-    public ServletContainerUtils ()
+    private ServletContainerUtils ()
     {
         // nothing to do...
     }
@@ -81,108 +85,43 @@ public class ServletContainerUtils
             infos = new HashMap();
             infos.put("info", context.getServerInfo() );
 
-            //JahiaConsole.println("getServerInformations","serverinfo = " + context.getServerInfo() );
-
             // try to get the server type
-            if ( context.getServerInfo().toLowerCase().indexOf("tomcat")>=0 )
-            {
-                infos.put("type",JahiaConstants.SERVER_TOMCAT);
-
-                //JahiaConsole.println("getServerInformations", "servertype = " +infos.get("type") );
+            String serverInfo = context.getServerInfo().toLowerCase();
+            String serverType = "unknown";
+            String serverHome = "unknown";
+            if (serverInfo.contains("tomcat") || serverInfo.contains("jboss")) {
+                serverType = serverInfo.contains("tomcat") ? SERVER_TOMCAT : SERVER_JBOSS;
 
                 // try to get the server home disk path
-                String contextRealPath = context.getRealPath("/" + config.getServletName());
-                String jahiaRealPath = JahiaTools.replacePattern(contextRealPath,config.getServletName(),"");
+                String jahiaRealPath = JahiaTools.replacePattern(context.getRealPath("/" + config.getServletName()), config.getServletName(), "");
                 jahiaRealPath = JahiaTools.replacePattern(jahiaRealPath,File.separator+"."+File.separator,File.separator);
 
-                File jahiaDir = new File(jahiaRealPath);					// ../tomcat/webapps/jahia
-                //JahiaConsole.println("getServerInformations", "jahia dir name = " + jahiaDir.getAbsolutePath() );
-
-                String webAppPath = jahiaDir.getParent();
-                File webAppDir = new File(webAppPath);
-                //JahiaConsole.println("getServerInformations", "webapp dir = " + webAppDir.getAbsolutePath() );
-
-                String tomcatPath = webAppDir.getParent();
-                File tomcatDir = new File(tomcatPath);
-
-                //JahiaConsole.println("getServerInformations", "tomcat dir name = " + tomcatDir.getName() );
-
-                /*
-                File tomcatParentDir = tomcatDir.getParentFile();
-                File[] files = tomcatParentDir.listFiles();
-                for ( int i=0 ; i<files.length ; i++ ){
-                    if ( files[i].isDirectory() && (files[i].getName().indexOf(JahiaConstants.SERVER_TOMCAT) != -1) ){
-                        JahiaConsole.println("getServerInformations",
-                        "Files[i] = " + files[i].getAbsolutePath() );
-                        tomcatDir = files[i];
-                        break;
-                    }
-                }
-                */
-
-                //JahiaConsole.println("getServerInformations", "tomcat real path = " + tomcatDir.getAbsolutePath() );
-
+                File tomcatDir = new File(new File(new File(jahiaRealPath).getParent()).getParent());
                 String serverPath = tomcatDir.getAbsolutePath();
 
                 if ( !serverPath.endsWith(File.separator) ){
                     serverPath+=File.separator;
                 }
 
-                infos.put("home", serverPath);
-
+                serverHome = serverPath;
             } else if ( context.getServerInfo().toLowerCase().indexOf("weblogic")>=0 ) {
-                infos.put("type",JahiaConstants.SERVER_WEBLOGIC);
+                serverType = SERVER_WEBLOGIC;
                 // try to get the server home disk path
                 String contextRealPath = context.getRealPath("." + File.separator);
                 int pos = contextRealPath.toLowerCase().lastIndexOf("server");
                 if ( pos>=0 ){
                     int pos2 = contextRealPath.toLowerCase().indexOf(File.separator,pos);
                     if ( pos2 >=0 ){
-                        infos.put("home", contextRealPath.substring(0, pos2) + File.separator);
+                        serverHome = contextRealPath.substring(0, pos2) + File.separator;
                     }
                 }
-            } else {
-                infos.put("type", "unknown");
-                infos.put("home", "unknown");
             }
-
-            try {
-                Context ctx = new InitialContext();
-                if (((String)ctx.getEnvironment().get("java.naming.factory.url.pkgs")).indexOf("org.jboss") > -1) {
-                    infos.put("type",JahiaConstants.SERVER_JBOSS);
-                    infos.put("info", infos.get("info") + " (JBoss integration)" );
-
-                    // try to get the server home disk path
-                    String contextRealPath = context.getRealPath("/" + config.getServletName());
-                    String jahiaRealPath = JahiaTools.replacePattern(contextRealPath,config.getServletName(),"");
-                    jahiaRealPath = JahiaTools.replacePattern(jahiaRealPath,File.separator+"."+File.separator,File.separator);
-
-                    File jahiaDir = new File(jahiaRealPath);					// ../tomcat/webapps/jahia
-                    //JahiaConsole.println("getServerInformations", "jboss dir name = " + jahiaDir.getAbsolutePath() );
-
-                    String webAppPath = jahiaDir.getParent();
-                    File webAppDir = new File(webAppPath);
-                    //.println("getServerInformations", "webapp dir = " + webAppDir.getAbsolutePath() );
-                   //
-                    String tomcatPath = webAppDir.getParent();
-                    File tomcatDir = new File(tomcatPath);
-
-                    String serverPath = tomcatDir.getAbsolutePath();
-
-                    if ( !serverPath.endsWith(File.separator) ){
-                        serverPath+=File.separator;
-                    }
-
-                    infos.put("home", serverPath);
-
-                }
-            } catch (Exception e) {
-            }
+            
+            infos.put("type", serverType);
+            infos.put("home", serverHome);
 
             return infos;
         }
     } // end getServerInformations
-
-
 
 }

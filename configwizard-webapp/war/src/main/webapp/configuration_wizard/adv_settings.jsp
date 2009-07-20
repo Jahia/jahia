@@ -128,6 +128,7 @@
     <input type="hidden" name="starthsqlserver" value='<%=values.get("db_starthsqlserver")%>' />
     <input type="hidden" name="datasource" value='<%=values.get("datasource.name")%>' />
     <input type="hidden" name="hibernate_dialect" value='<%=values.get("hibernate_dialect")%>' />
+    <input type="hidden" name="database_type_mapping" value='<%=values.get("database_type_mapping")%>' />
     <input type="hidden" name="utf8Encoding" value='<%=values.get("utf8Encoding")%>' />
     <table summary="<fmt:message key="org.jahia.storeInDB.label"/>">
         <caption>

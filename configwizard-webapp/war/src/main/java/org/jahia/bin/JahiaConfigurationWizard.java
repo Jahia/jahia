@@ -31,9 +31,16 @@
  */
 package org.jahia.bin;
 
-import static javax.servlet.http.HttpServletResponse.*;
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static org.jahia.utils.ServletContainerUtils.SERVER_JBOSS;
+import static org.jahia.utils.ServletContainerUtils.SERVER_TOMCAT;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -66,22 +73,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.struts.util.RequestUtils;
 import org.jahia.admin.database.DatabaseConnection;
 import org.jahia.admin.database.DatabaseScripts;
-import org.jahia.data.constants.JahiaConstants;
 import org.jahia.resourcebundle.JahiaResourceBundle;
 import org.jahia.services.mail.MailSettings;
 import org.jahia.services.mail.MailSettingsValidationResult;
-import org.jahia.utils.FileUtils;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.PathResolver;
 import org.jahia.utils.ServletContainerUtils;
-import org.jahia.utils.Version;
-import org.jahia.utils.WebAppPathResolver;
 import org.jahia.utils.properties.PropertiesManager;
 
 
@@ -105,17 +110,14 @@ import org.jahia.utils.properties.PropertiesManager;
  */
 
 public class JahiaConfigurationWizard extends HttpServlet {
-    private  org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(JahiaConfigurationWizard.class);
-    /** ... */
+    private static Logger logger = Logger.getLogger(JahiaConfigurationWizard.class);
     static public final String COPYRIGHT =
             "&copy; Copyright 2002-2009  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
-    public static final String VERSION = "6.0";
+    public static final String VERSION = "7.0";
 
     private  ServletContext context;
     private  ServletConfig config;
     private static PathResolver pathResolver;
-    private final String INIT_PARAM_WEBINF_PATH = "webinf_path";
     private  PropertiesManager properties;
 
     private final DatabaseConnection db = new DatabaseConnection();
@@ -126,24 +128,13 @@ public class JahiaConfigurationWizard extends HttpServlet {
     protected String jahiaEtcFilesPath;
     protected String jahiaVarFilesPath;
 
-    String webinf_path;
     private  Map serverInfos;
     private  final Map values = new HashMap();
 
     public static String dbScriptsPath;
-    private  String old_database;
     private  String createTables;
     /** properties filename */
     private final String PROPERTIES_FILENAME = "jahia.properties";
-
-    /** license filename */
-    private final String LICENSE_FILENAME = "license.xml";
-
-    /** skeleton properties filename */
-    private final String PROPERTIES_BASIC = "jahia.skeleton";
-
-    // set default paths...
-    private  String jahiaPropertiesPath;
 
     public  final String USERS_GROUPNAME = "users";
     public  final String ADMINISTRATORS_GROUPNAME = "administrators";
@@ -151,7 +142,6 @@ public class JahiaConfigurationWizard extends HttpServlet {
     private static  String servletPath;
     private  Locale defaultLocale = Locale.ENGLISH;
     private  Locale newSelectedLocale;
-    private final String CTX_PARAM_DEFAULT_SERVLET_PATH = "defaultJahiaServletPath";
     private  final String WIZARD_CONTEXT = "/configuration_wizard/";
     private  final String HTTP_FILES = "";
     protected  final String CLASS_NAME = "org.jahia.bin.JahiaConfigurationWizard";
@@ -161,7 +151,6 @@ public class JahiaConfigurationWizard extends HttpServlet {
 
     // Total number of steps of the configuration wizard
     private static final String STEPS = "10";
-    private  static String jahiafilename;
     private  String jahiaPropertiesFileName;
 
     private HypersonicManager hsql;
@@ -187,10 +176,11 @@ public class JahiaConfigurationWizard extends HttpServlet {
         // get local context and config...
         context = config.getServletContext();
 
-        WebAppPathResolver webPathResolver = new WebAppPathResolver();
-        webPathResolver.setServletContext(context);
-        pathResolver = webPathResolver;
-        webinf_path = this.config.getInitParameter(INIT_PARAM_WEBINF_PATH);
+        pathResolver = new PathResolver () {
+            public String resolvePath(String relativePath) {
+                return context.getRealPath("/" + relativePath);
+            }
+        };
         // get server informations...
         serverInfos = ServletContainerUtils.getServerInformations(config);
 
@@ -199,21 +189,17 @@ public class JahiaConfigurationWizard extends HttpServlet {
         hsqldir.mkdirs();
         hsql.startup(new File(hsqldir, "hsqldbjahia").getPath());
 
-        jahiafilename = this.config.getInitParameter("jahia-filename");
-
-
         if(!jahiaExists()){
 
             // get xml init parameters...
-            dbScriptsPath = context.getRealPath(config.getInitParameter("dbScriptsPath"));
-            old_database = config.getInitParameter("old_database");
+            dbScriptsPath = context.getRealPath("/WEB-INF/jahia/WEB-INF/var/db");
             createTables = config.getInitParameter("create_tables");
             String defaultLanguageCode = context.getInitParameter(INIT_PARAM_DEFAULT_LOCALE);
             if (defaultLanguageCode == null) {
                 defaultLanguageCode = Locale.ENGLISH.toString();
             }
             defaultLocale = LanguageCodeConverters.languageCodeToLocale(defaultLanguageCode);
-            setPaths();
+            jahiaPropertiesFileName = context.getRealPath("/WEB-INF/jahia/WEB-INF/etc/config/") + File.separator + PROPERTIES_FILENAME;
             fillDefaultValues();
         }else{
 
@@ -227,15 +213,18 @@ public class JahiaConfigurationWizard extends HttpServlet {
     private boolean jahiaExists(){
 
         //jahia is installed if the properties file exists
-        String deployToDir = this.config.getInitParameter("dirName");
-        boolean exists = (new File((String) serverInfos.get("home")+"webapps/"+deployToDir+"/WEB-INF/etc/config/jahia.properties")).exists();
-        logger.debug("looking for the jahia properties file in:"+new File((String)serverInfos.get("home")+"webapps/"+deployToDir+"/WEB-INF/etc/config/jahia.properties"));
+        String deployToDir = context.getInitParameter("dirName");
+        File jahiaPropertiesFile = null;
+        if (serverInfos.get("type").equals(SERVER_JBOSS)) {
+            jahiaPropertiesFile = new File((String) serverInfos.get("home")+"deploy/"+deployToDir+"/WEB-INF/etc/config/jahia.properties");
+        } else {
+            jahiaPropertiesFile = new File((String) serverInfos.get("home")+"webapps/"+deployToDir+"/WEB-INF/etc/config/jahia.properties");
+        }
+        boolean exists = jahiaPropertiesFile.exists();
+        logger.debug("looking for the jahia properties file in: "+ jahiaPropertiesFile);
         if (exists) {
-
-            logger.info("Jahia is already installed");
             return true;
         } else {
-            logger.info("Jahia is not installed");
             return false;
         }
     }
@@ -258,17 +247,17 @@ public class JahiaConfigurationWizard extends HttpServlet {
         logger.debug("--[ " + request.getMethod() + " Request Start URI='" +
                 request.getRequestURI() + "' query='" +
                 request.getQueryString() + "'] --");
-        boolean connect = false;
+        
+        if(jahiaExists()) {
+            logger.info("Jahia is already installed. Redirecting to Jahia Web application.");
+            String ctxName = StringUtils.substringBefore(context.getInitParameter("dirName"), ".war");
+            response.sendRedirect("/" + ("ROOT".equals(ctxName) ? "" : ctxName));
+            return;
+        }
+
 
         if (servletPath == null) {
             servletPath = request.getServletPath();
-        }
-
-        // get *go* parameter...
-        if (request.getParameter("go") != null) {
-            if (request.getParameter("go").equals("connect")) {
-                connect = true;
-            }
         }
 
         dispatcher(request, response);
@@ -779,7 +768,6 @@ public class JahiaConfigurationWizard extends HttpServlet {
 
         // save form values...
         String acceptLicense = request.getParameter("acceptLicense");
-        String acceptRestrictiveSourceLicense = request.getParameter("acceptRestrictiveSourceLicense");
         //values.put("acceptOpenSourceLicense", acceptOpenSourceLicense);
         values.put("acceptLicense", acceptLicense);
 
@@ -1015,7 +1003,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
                  * Deactivated because :
                  *  - it's specific to Tomcat
                  *  - doesn't work when Jahia is installed in ROOT context.
-                 if (serverInfos.get("type").equals(JahiaConstants.SERVER_TOMCAT)) {
+                 if (serverInfos.get("type").equals(SERVER_TOMCAT)) {
                  // try the host url connection...
                  tryHostURL();
 
@@ -1144,6 +1132,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
         values.put("db_starthsqlserver",  request.getParameter("starthsqlserver").trim());
         values.put("datasource.name",  request.getParameter("datasource").trim());
         values.put("hibernate_dialect",  request.getParameter("hibernate_dialect").trim());
+        values.put("database_type_mapping",  request.getParameter("database_type_mapping").trim());
         values.put("storeFilesInDB",  request.getParameter("storeFilesInDB"));
         values.put("storeBigTextInDB",request.getParameter("storeBigTextInDB"));
         values.put("useExistingDb",request.getParameter("useExistingDb"));
@@ -1391,7 +1380,12 @@ public class JahiaConfigurationWizard extends HttpServlet {
             script.append(File.separator);
             script.append((String) values.get("database_script"));
             Properties dbProperties = new Properties();
-            dbProperties.load(new FileInputStream(script.toString()));
+            FileInputStream is = new FileInputStream(script.toString());
+            try {
+                dbProperties.load(is);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
             if (values.get("storeFilesInDB") != null) {
                 dbProperties.put("storeFilesInDB", values.get("storeFilesInDB"));
             }
@@ -1427,9 +1421,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
                 selectedLicenseFileName = "license-pro.xml";
             }
 
-            String pathToSourceLicenseFile = pathResolver.resolvePath("WEB-INF/jahia/WEB-INF/etc/config/licenses/" + selectedLicenseFileName);
-            String pathToDestinationLicenseFile = pathResolver.resolvePath("WEB-INF/jahia/WEB-INF/etc/config/license.xml");
-            FileUtils.copyFile(pathToSourceLicenseFile, pathToDestinationLicenseFile);
+            FileUtils.copyFile(new File(pathResolver.resolvePath("WEB-INF/jahia/WEB-INF/etc/config/licenses/" + selectedLicenseFileName)), new File(pathResolver.resolvePath("WEB-INF/jahia/WEB-INF/etc/config/license.xml")));
 
 // okay, everthing is okay... set error to false
             error = false;
@@ -1454,47 +1446,40 @@ public class JahiaConfigurationWizard extends HttpServlet {
             // database configuration. We do this last as it has for effect
             // of restarting the web application.
             String serverInfo = context.getServerInfo();
-            if (serverInfo.indexOf(JahiaConstants.SERVER_TOMCAT) != -1) {
-
-                // we assume in the following code that Tomcat follows the
-                // servlet API convention for serverInfo format. If it does
-                // not the code will fail.
-                int separatorPos = serverInfo.indexOf("/");
-                int parenPos = serverInfo.indexOf("(", separatorPos);
-                String versionStr;
-                if (parenPos != -1) {
-                    versionStr = serverInfo.substring(separatorPos + 1, parenPos);
-
-                } else {
-                    versionStr = serverInfo.substring(separatorPos + 1);
-                }
-                versionStr = versionStr.trim();
-                final Version currentTomcatVersion = new Version(versionStr);
-                final Version tomcatVersion5 = new Version("5.5");
-// update the XML context descriptor file configuration
-                String jahiaXml = pathResolver.resolvePath(this.config.getInitParameter("jahia-contextfile"));
-                String deployToDir = this.config.getInitParameter("dirName");
-                new JetspeedDataSourceConfigurator()
-                        .updateDataSourceConfiguration(jahiaXml+"/context.xml", jahiaXml,
+            if (serverInfo.contains(SERVER_TOMCAT)) {
+                // update the XML context descriptor file configuration
+                String jahiaXml = pathResolver.resolvePath("/WEB-INF/jahia/META-INF");
+                String deployToDir = context.getInitParameter("dirName");
+                JahiaDataSourceConfigurator.updateDataSourceConfiguration(jahiaXml+"/context.xml", jahiaXml,
                                 values);
-                logger.info("updating to context file in"+jahiaXml);
+                logger.info("updating to context file in "+jahiaXml);
 
                 //And now the big finale: copy the configured jahia
+                long startTime = System.currentTimeMillis();
+
                 File oldDir = new File(pathResolver.resolvePath("WEB-INF/jahia"));
                 File newDir = new File((String) values.get("server_home")+"webapps/"+deployToDir);
 
-                new File(newDir + "/META-INF").mkdirs();
-                FileUtils.copyFile(jahiaXml + "/context.xml", newDir + "/META-INF/context.xml");
-                logger.info("unzipping jahia GWT folder from "+pathResolver.resolvePath("WEB-INF/jahia/jsp/jahia/gwt.zip")+ " to"+(String)values.get("server_home")+"webapps/"+deployToDir+"jsp/jahia/gwt" );
-                FileUtils.unzipFile(pathResolver.resolvePath("WEB-INF/jahia/gwt.zip"),(String) values.get("server_home")+"webapps/"+deployToDir+"/gwt/" );
-                logger.info("deleting  gwt zip file");
-                FileUtils.deleteFile(pathResolver.resolvePath("WEB-INF/jahia/gwt.zip"));
-                logger.info("copying "+ oldDir.getCanonicalFile()+ " to "+newDir+"" );
-                FileUtils.copyDirectory(oldDir,newDir);
+                FileUtils.moveDirectory(oldDir, newDir);
+                
+                logger.info("Moved "+ oldDir.getCanonicalFile()+ " to "+newDir + " in " + (System.currentTimeMillis() - startTime) + " ms");
+            } else if (serverInfo.contains(SERVER_JBOSS)) {
+                String deployToDir = context.getInitParameter("dirName");
+                String datasource = pathResolver.resolvePath("WEB-INF/jahia-jboss-config.sar/jahia-ds.xml");
+                JahiaDataSourceConfigurator.updateDataSourceConfiguration(datasource, datasource, values);
+                logger.info("updating datasource configuration in  file " + datasource);
+                
+                //And now the big finale: copy the configured jahia
+                long startTime = System.currentTimeMillis();
+                
+                File oldDir = new File(pathResolver.resolvePath("WEB-INF/jahia"));
+                File newDir = new File((String) values.get("server_home")+"deploy/"+deployToDir);
 
+                FileUtils.moveDirectory(new File(pathResolver.resolvePath("WEB-INF/jahia-jboss-config.sar")), new File((String) values.get("server_home")+"deploy/jahia-jboss-config.sar"));
+                FileUtils.moveDirectory(oldDir, newDir);
+                
+                logger.info("Moved "+ oldDir.getCanonicalFile()+ " to "+newDir + " in " + (System.currentTimeMillis() - startTime) + " ms");
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
             msg = e.getMessage();
@@ -1923,9 +1908,10 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
      */
     private void fillDefaultValues(final boolean all, final boolean database) {
         // get init parameter and read jahia skeleton properties...
-        logger.debug("here is the jahia.skeleton path"+pathResolver.resolvePath(config.getInitParameter("skeleton"))); ;
+        String skeletonPath = pathResolver.resolvePath("/WEB-INF/jahia/WEB-INF/etc/config/jahia.skeleton");
+        logger.debug("here is the jahia.skeleton path " + skeletonPath); ;
 
-        properties = new PropertiesManager(pathResolver.resolvePath(config.getInitParameter("skeleton")));
+        properties = new PropertiesManager(skeletonPath);
 // root settings ...
         if (all) {
             values.put("root_user", "root");
@@ -1957,9 +1943,6 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
         // database settings...
         if (database || all) {
             values.put("database_script", properties.getProperty("db_script").trim());
-            if (((String) serverInfos.get("type")).indexOf("JBoss") != -1) {
-                values.put("database_script", "jboss.script");
-            }
             values.put("utf8Encoding", properties.getProperty("utf8Encoding").trim());
             values.put("database_custom", Boolean.FALSE);
             values.put("database_requested", Boolean.FALSE);
@@ -1982,6 +1965,7 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
                         copyStringSetting(curDatabaseHash, "jahia.database.datasource", values, "datasource.name", "");
                         copyStringSetting(curDatabaseHash, "jahia.database.starthsqlserver", values, "db_starthsqlserver", "false");
                         copyStringSetting(curDatabaseHash, "jahia.database.hibernate.dialect", values, "hibernate_dialect", "");
+                        copyStringSetting(curDatabaseHash, "jahia.jboss.datasource.typeMapping", values, "database_type_mapping", "");
                     }
                 }
             } catch (IOException ioe) {
@@ -2017,16 +2001,6 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
     }
 
 
-    String getDefaultServletPath(ServletContext ctx) {
-        String path = ctx.getInitParameter(CTX_PARAM_DEFAULT_SERVLET_PATH);
-        if (null == path) {
-            // should we alternatively default it to '/Jahia'?
-            throw new RuntimeException("Missing required context-param '"
-                    + CTX_PARAM_DEFAULT_SERVLET_PATH + "'"
-                    + " in the web.xml. Initialization failed.");
-        }
-        return path;
-    }
     public  String getJahiaPropertiesFileName () {
         return jahiaPropertiesFileName;
     }
@@ -2059,19 +2033,6 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
         }
 
         return result;
-    }
-
-    public void setPaths(){
-
-
-        // set default paths...
-        jahiaPropertiesPath = context.getRealPath(webinf_path +
-                "/etc/config/");
-        jahiaPropertiesFileName = jahiaPropertiesPath + File.separator +
-                PROPERTIES_FILENAME;
-
-
-
     }
 
     private void testEmail(HttpServletRequest request,
@@ -2197,6 +2158,5 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
     public static int getPatchNumber() {
         return PATCH_NUMBER;
     }
-
 
 }

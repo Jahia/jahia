@@ -7,25 +7,10 @@
     <display-name>Jahia Configuration Wizard</display-name>
 
     <context-param>
-        <description>
-            The default Jahia servlet path that will be used for generating URLs.
-            If you change it, please also add a corresponding servlet mapping for 'Jahia' servlet.
-        </description>
-        <param-name>defaultJahiaServletPath</param-name>
-        <param-value>/Jahia</param-value>
+        <param-name>dirName</param-name>
+        <param-value>${jahia.deploy.war.dirName}</param-value>
     </context-param>
 
-    <servlet>
-        <servlet-name>log4j-init</servlet-name>
-        <servlet-class>org.jahia.bin.Log4jInitServlet</servlet-class>
-
-        <init-param>
-            <param-name>log4j-xml-init-file</param-name>
-            <param-value>/WEB-INF/etc/log4j.xml</param-value>
-        </init-param>
-
-        <load-on-startup>2</load-on-startup>
-    </servlet>
     <servlet>
         <servlet-name>
             JahiaConfigurationWizard
@@ -37,53 +22,13 @@
             <param-name>default_locale</param-name>
             <param-value>en</param-value>
         </init-param>
-        <init-param>
-            <param-name>methods</param-name>
-            <param-value>/WEB-INF/jahia/WEB-INF/etc/methods/configurationwizard.properties</param-value>
-        </init-param>
-        <init-param>
-            <param-name>skeleton</param-name>
-            <param-value>/WEB-INF/jahia/WEB-INF/etc/config/jahia.skeleton</param-value>
-        </init-param>
-        <init-param>
-            <param-name>dbScriptsPath</param-name>
-            <param-value>/WEB-INF/jahia/WEB-INF/var/db</param-value>
-        </init-param>
-        <init-param>
-            <!-- This option *old_database* is no longer supported and may
-                 potentially damage your installation, dependingjahia-contextfile on your
-                 custom configuration. Any use is at your own risk. -->
-            <param-name>old_database</param-name>
-            <param-value>false</param-value>
-        </init-param>
-        <init-param>
-            <param-name>config_servlet_path</param-name>
-            <param-value>/installation/</param-value>
-        </init-param>
-        <init-param>
-            <param-name>jahia-contextfile</param-name>
-            <param-value>/WEB-INF/jahia/META-INF</param-value>
-        </init-param>
-
-        <init-param>
-            <param-name>webinf_path</param-name>
-            <param-value>/WEB-INF/jahia/WEB-INF</param-value>
-        </init-param>
-
-        <init-param>
-            <param-name>jahia-filename</param-name>
-            <param-value>jahia.war</param-value>
-        </init-param>
 
         <init-param>
             <param-name>jahia-edition</param-name>
             <param-value>community</param-value>
         </init-param>
 
-        <init-param>
-            <param-name>dirName</param-name>
-            <param-value>ROOT</param-value>
-        </init-param>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>

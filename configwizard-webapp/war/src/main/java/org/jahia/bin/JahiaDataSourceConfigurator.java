@@ -33,48 +33,23 @@ package org.jahia.bin;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 /**
- * JetspeedDataSourceConfigurator
- *
- * @author <a href="mailto:taylor@apache.org">David Sean Taylor</a>
- * @version $Id: JetspeedDataSourceConfigurator.java 19821 2008-02-27 15:43:47Z sshyrkov $
+ * Jahia DB datasource configuration tool.
  */
-public class JetspeedDataSourceConfigurator
+public class JahiaDataSourceConfigurator
 {
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(JetspeedDataSourceConfigurator.class);
+    private static Logger logger = Logger.getLogger(JahiaDataSourceConfigurator.class);
 
-    public static final String RESOURCE_PARAMS = "ResourceParams";
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String URL = "url";
-    public static final String DRIVER = "driverClassName";
-    public static final String PARAM_NAME = "name";
-    public static final String PARAM_VALUE = "value";
-
-    public static final String RESOURCE = "Resource";
-
-    public static void main(String[] args)
-    {
-        Map values = new HashMap();
-        values.put( "database_script",  "none" );
-        values.put( "database_driver", "NEW-DRIVER");
-        values.put( "database_url", "NEW-URL");
-        values.put( "database_user","NEW-DB-USER");
-        values.put( "database_pwd", "NEW-DB-PWD");
-
-        JetspeedDataSourceConfigurator configurator = new JetspeedDataSourceConfigurator();
-        configurator.updateDataSourceConfiguration("metadata/jahia.xml", "metadata/test.xml", values);
-    }
-
-    public void updateDataSourceConfiguration(String fileName, String outputFileName, Map values)
+    public static void updateDataSourceConfiguration(String fileName, String outputFileName, Map values)
     {
        logger.info("updating the values of the context file");
         File jahiaConfigFile = new File(fileName);
@@ -98,6 +73,7 @@ public class JetspeedDataSourceConfigurator
                 fileContent = StringUtils.replace(fileContent, "@PASSWORD@", getValue(values, "database_pwd"));
                 fileContent = StringUtils.replace(fileContent, "@DRIVER@", getValue(values, "database_driver"));
                 fileContent = StringUtils.replace(fileContent, "@URL@", getValue(values, "database_url"));
+                fileContent = StringUtils.replace(fileContent, "@TYPE_MAPPING@", getValue(values, "database_type_mapping"));
 
                 // we have finished replacing values, let's save the modified
                 // file.
@@ -105,16 +81,16 @@ public class JetspeedDataSourceConfigurator
                 fileWriter.write(fileContent);
                 fileWriter.close();
 
-            } catch (java.io.FileNotFoundException fnfe) {
-                System.out.println("Error modifying repository config file " +jahiaConfigFile.toString()+ fnfe);
-            } catch (java.io.IOException ioe) {
-                System.out.println("Error modifying repository config file " +jahiaConfigFile.toString()+ ioe);
+            } catch (FileNotFoundException fnfe) {
+                System.out.println("Error modifying config file " +jahiaConfigFile.toString()+ fnfe);
+            } catch (IOException ioe) {
+                System.out.println("Error modifying config file " +jahiaConfigFile.toString()+ ioe);
             }
 
         }
     }
 
-    private String getValue (Map values, String key) {
+    private static String getValue (Map values, String key) {
         String replacement = (String) values.get(key);
         if (replacement == null) {
             return "";

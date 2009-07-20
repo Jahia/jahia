@@ -108,6 +108,7 @@
     if (port != 80) {
         hostUrl.append(":").append(Integer.toString(port));
     }
+    hostUrl.append(request.getContextPath());
     %>
         location.href = "<%=hostUrl%>";
     }

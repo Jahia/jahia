@@ -115,6 +115,7 @@ final boolean openReadmeFile = jsp.equals("site_values.jsp"); %>
                       document.mainForm.starthsqlserver.value = '<%=js.get("jahia.database.starthsqlserver")%>';
                       document.mainForm.datasource.value = '<%=js.get("jahia.database.datasource")%>';
                       document.mainForm.hibernate_dialect.value = '<%=js.get("jahia.database.hibernate.dialect")%>';
+                      document.mainForm.database_type_mapping.value = '<%=js.get("jahia.jboss.datasource.typeMapping")%>';
                   }
               <% count++;
                   }

@@ -33,6 +33,7 @@
 --%>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ include file="header.inc" %>
+<%@page import="org.apache.commons.lang.StringUtils"%>
 <%
     final Object isTomcatObj = request.getAttribute("isTomcat");
     boolean isTomcat = false;
@@ -40,6 +41,7 @@
         isTomcat = ((Boolean) isTomcatObj).booleanValue();
     }
 %>
+
 
 <script type="text/javascript">
 
@@ -170,6 +172,8 @@ int port = request.getServerPort();
 if (port != 80) {
     hostUrl.append(":").append(Integer.toString(port));
 }
+String ctxPath = StringUtils.substringBefore(pageContext.getServletContext().getInitParameter("dirName"), ".war");
+hostUrl.append("/").append("ROOT".equals(ctxPath) ? "" : ctxPath);
 %>
     location.href = "<%=hostUrl%>";
 }

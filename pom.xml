@@ -27,6 +27,7 @@
     
     <drivers.libs.scope>compile</drivers.libs.scope> <!-- include DB driver JARs into jahia.war/WEB-INF/lib -->
     <jboss.libs.scope>compile</jboss.libs.scope> <!-- include jboss-*.jar files into jahia.war/WEB-INF/lib -->
+    <jahia.war.classifier></jahia.war.classifier>
   </properties>
 
   <scm>
@@ -61,14 +62,6 @@
   </pluginRepositories>
 
     <profiles>
-
-      <profile>
-          <id>qa-build</id>
-          <modules>
-              <module>configwizard-webapp</module>
-              <module>package</module>
-          </modules>
-      </profile>
 
       <profile>
           <id>code-coverage</id>
@@ -178,8 +171,17 @@
             <properties>
                 <jboss.libs.scope>provided</jboss.libs.scope> <!-- do not include DB driver JARs into jahia.war/WEB-INF/lib; they will be included into jahia.ear/ -->
                 <drivers.libs.scope>provided</drivers.libs.scope> <!-- do not include jboss-*.jar files into jahia.war/WEB-INF/lib; JBoss already contains them -->
+                <jahia.war.classifier>jboss</jahia.war.classifier>
             </properties>
             <modules>
+                <module>deployments</module>
+            </modules>
+        </profile>
+        
+        <profile>
+            <id>qa-build</id>
+            <modules>
+                <module>configwizard-webapp</module>
                 <module>package</module>
             </modules>
         </profile>

@@ -14,9 +14,10 @@ jahia.database.datasource = java:comp/env/jdbc/jetspeed
 jahia.database.ojbplatform = Hsqldb
 jahia.database.hibernate.dialect = org.hibernate.dialect.HSQLDialect
 jahia.nested_transaction_allowed = false
+jahia.quartz.selectWithLockSQL = SELECT * FROM {0}LOCKS WHERE LOCK_NAME = ?
 jahia.quartz.jdbcDelegate = org.quartz.impl.jdbcjobstore.HSQLDBDelegate
 jahia.quartz.serializable = false
-jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.bundle.BundleDbPersistenceManager
+jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.db.SimpleDbPersistenceManager
 jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DbFileSystem
 jahia.jackrabbit.journal = org.apache.jackrabbit.core.journal.DatabaseJournal
 jahia.jackrabbit.schema = default

@@ -15,6 +15,7 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>config</artifactId>
             <version>${jahia.package.version}</version>
+            <classifier>${jahia.war.classifier}</classifier>
             <type>war</type>
         </dependency>
         <!-- Pluto 2.0-->
@@ -51,6 +52,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
+                    <classifier>${jahia.war.classifier}</classifier>
                     <!-- <earSourceDirectory>src/main/resources</earSourceDirectory> -->
                     <modules>
                         <webModule>

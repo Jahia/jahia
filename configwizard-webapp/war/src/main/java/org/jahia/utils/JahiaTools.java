@@ -64,8 +64,8 @@ import org.apache.commons.jexl.ExpressionFactory;
 import org.apache.commons.jexl.JexlContext;
 import org.apache.commons.jexl.JexlHelper;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.jahia.bin.JahiaConfigurationWizard;
 
 
 /**
@@ -93,12 +93,6 @@ public class JahiaTools {
     private static Map<String, Long> milliSecondsMultiplier;
 
     private static Logger logger = Logger.getLogger(JahiaTools.class);
-    private static int BUILD_NUMBER=-1;
-    /** Jahia server release number */
-    private static double RELEASE_NUMBER = 6.0;
-
-    /** Jahia server patch number */
-    private static int PATCH_NUMBER = 0;
     /**************************************************************************
      * Debugging Tools
      *
@@ -1245,33 +1239,14 @@ public class JahiaTools {
     }
 
     public static int getBuildNumber(String filePath) {
-        logger.info(" in getBuildNumber ");
-        String buildnumber="";
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(filePath));
-            String str;
-            while ((str = in.readLine()) != null) {
-                if(str.contains("Implementation-Build")){
-                    buildnumber= str.substring(22);//just after   the string Implementation-Build:
-
-                    logger.info(" here is the build number : "+buildnumber);
-                }
-
-            }
-            in.close();
-        } catch (IOException e) {
-        }
-
-        BUILD_NUMBER=Integer.valueOf(buildnumber).intValue();
-        return BUILD_NUMBER;
-
+        return JahiaConfigurationWizard.getBuildNumber();
     }
 
     public static double getReleaseNumber() {
-        return RELEASE_NUMBER;
+        return JahiaConfigurationWizard.getReleaseNumber();
     }
 
     public static int getPatchNumber() {
-        return PATCH_NUMBER;
+        return JahiaConfigurationWizard.getPatchNumber();
     }
 }

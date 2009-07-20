@@ -32,7 +32,7 @@
 
 --%>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
-<%@page import="org.jahia.utils.WebAppPathResolver"%>
+<%@page import="org.jahia.utils.PathResolver"%>
 <%@ include file="header.inc" %>
 
 <jsp:useBean id="input" class="java.lang.String" scope="request"/>
@@ -148,8 +148,13 @@
         <fmt:message key="org.jahia.bin.JahiaConfigurationWizard.values.jahiaFilesPath.label"/>
     </td>
     <td headers="t4" class="t4">
-        <%  WebAppPathResolver webAppPathResolver = new WebAppPathResolver();
-            webAppPathResolver.setServletContext(pageContext.getServletContext());
+        <%  final ServletContext context = pageContext.getServletContext();
+            
+            PathResolver webAppPathResolver = new PathResolver() {
+                public String resolvePath(String relativePath) {
+                    return context.getRealPath("/" + relativePath);
+                }
+            };
             if (validate((String) values.get("server_jahiafiles")).equals("notSpecified")) { %>
         ---&nbsp;<fmt:message key="org.jahia.bin.JahiaConfigurationWizard.values.notSpecified.label"/>&nbsp;---
         <% } else { %>

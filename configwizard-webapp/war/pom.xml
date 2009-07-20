@@ -7,7 +7,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>config</artifactId>
-    <version>${jahia.package.version}</version>
     <packaging>war</packaging>
     <repositories>
         <repository>
@@ -22,11 +21,11 @@
             <artifactId>jahia-gwt</artifactId>
             <version>${jahia.package.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-war</artifactId>
             <version>${jahia.package.version}</version>
+            <classifier>${jahia.war.classifier}</classifier>
             <type>war</type>
         </dependency>
 
@@ -62,11 +61,13 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.1.2</version>
+            <scope>${jboss.libs.scope}</scope>
         </dependency>
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
             <version>1.1.2</version>
+            <scope>${jboss.libs.scope}</scope>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -179,7 +180,8 @@
                 <configuration>
                     <localWorkers>5</localWorkers>
                     <extraJvmArgs>-Xmx1024m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
-                    <webappDirectory>${project.build.directory}/config/gwt</webappDirectory>
+                    <webappDirectory>${project.build.directory}/${project.build.finalName}/configuration_wizard/gwt</webappDirectory>
+                    <skip>${jahia.gwt.skip}</skip>
                     <module>org.jahia.ajax.gwt.configwizard.ConfigWizard</module>
                 </configuration>
                 <executions>
@@ -192,14 +194,28 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.jahia.server</groupId>
-                <artifactId>maven-jahia-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
                 <executions>
                     <execution>
+                        <id>unpack</id>
                         <phase>process-resources</phase>
                         <goals>
-                            <goal>copy-jahiawar</goal>
+                            <goal>unpack</goal>
                         </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jahia.server</groupId>
+                                    <artifactId>jahia-war</artifactId>
+                                    <version>${jahia.package.version}</version>
+                                    <type>war</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/jahia</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -215,7 +231,16 @@
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifestEntries>
                     </archive>
-
+                    <webResources>
+                        <resource>
+                            <directory>${pom.basedir}/src/main/webapp</directory>
+                            <filtering>true</filtering>
+                            <includes>
+                                <include>WEB-INF/web.xml</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                    <classifier>${jahia.war.classifier}</classifier>
                 </configuration>
             </plugin>
             <plugin>
@@ -236,6 +261,19 @@
                 </dependencies>
                 <executions>
                     <execution>
+                        <id>store-build-number</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${project.build.directory}/${project.build.finalName}/configuration_wizard"/>
+                                <echo message="${buildNumber}" file="${project.build.directory}/${project.build.finalName}/configuration_wizard/jahia-buildnumber.txt"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>delete-gwt-temp</id>
                         <phase>process-classes</phase>
                         <goals>
@@ -248,24 +286,6 @@
                                 <echo message="...done"/>
                             </tasks>
                         </configuration>
-                    </execution>
-                    <execution>
-                        <id>zip-gwt</id>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <echo message="zipping gwt directory in Jahia..."/>
-                                <zip destfile="${project.build.directory}/${project.build.finalName}/WEB-INF/jahia/gwt.zip"
-                                     basedir="${project.build.directory}/${project.build.finalName}/WEB-INF/jahia/gwt"
-                                        />
-                                <delete includeemptydirs="true">
-                                    <fileset dir="${project.build.directory}/${project.build.finalName}/WEB-INF/jahia/gwt/" includes="**/*"/>
-                                </delete>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -299,6 +319,62 @@
                                 </buildCommand>
                             </additionalBuildcommands>
                         </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jboss-deployment</id>
+            <activation>
+                <property>
+                    <name>jahia.deploy.targetServerType</name>
+                    <value>jboss</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jahia.server</groupId>
+                    <artifactId>jahia-jboss-config</artifactId>
+                    <version>${jahia.package.version}</version>
+                    <type>sar</type>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.1</version>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.jahia.server</groupId>
+                                            <artifactId>jahia-war</artifactId>
+                                            <version>${jahia.package.version}</version>
+                                            <classifier>${jahia.war.classifier}</classifier>
+                                            <type>war</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/jahia</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.jahia.server</groupId>
+                                            <artifactId>jahia-jboss-config</artifactId>
+                                            <version>${jahia.package.version}</version>
+                                            <type>sar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/jahia-jboss-config.sar</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

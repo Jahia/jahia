@@ -618,6 +618,7 @@
                             <!--addExtensions>true</addExtensions-->
                         </manifest>
                     </archive>
+                    <classifier>${jahia.war.classifier}</classifier>
                 </configuration>
             </plugin>
 
@@ -645,6 +646,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
                 <executions>
                     <execution>
                         <id>copy-webtemplates</id>

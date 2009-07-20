@@ -8,6 +8,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
@@ -52,14 +53,14 @@ public class Render extends HttpServlet {
             String lang = path.substring(1, index);
             path = path.substring(index);
 
-            StringBuffer out = render(workspace, lang, path, ctx, req, resp);
+            String out = render(workspace, lang, path, ctx, req, resp);
 
             resp.setContentType("text/html");
             resp.setCharacterEncoding("UTF-8");
-            resp.setContentLength(out.toString().getBytes("UTF-8").length);
+            resp.setContentLength(out.getBytes("UTF-8").length);
 
             PrintWriter writer = resp.getWriter();
-            writer.print(out.toString());
+            writer.print(out);
             writer.close();
         } catch (PathNotFoundException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -262,7 +263,7 @@ public class Render extends HttpServlet {
         }
     }
 
-    public StringBuffer render(String workspace, String lang, String path, ProcessingContext ctx, HttpServletRequest request, HttpServletResponse response) throws RepositoryException, IOException {
+    public String render(String workspace, String lang, String path, ProcessingContext ctx, HttpServletRequest request, HttpServletResponse response) throws RepositoryException, IOException {
         try {
             if (workspace.equals("default")) {
                 ctx.setOperationMode("edit");
@@ -295,7 +296,7 @@ public class Render extends HttpServlet {
             // no site
         }
 
-        return RenderService.getInstance().render(r, request, response);
+        return RenderService.getInstance().render(r, new RenderContext(request, response));
     }
 
     /**

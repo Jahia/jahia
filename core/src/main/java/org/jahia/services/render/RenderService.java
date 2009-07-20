@@ -61,15 +61,15 @@ public class RenderService extends JahiaService {
      * Render a specific resource and returns it as a StringBuffer.
      *
      * @param resource Resource to display
-     * @param request Servlet request
-     * @param response Servlet response
+     * @param context The render context
      * @return The rendered result
      * @throws RepositoryException
      * @throws IOException
      */
-    public StringBuffer render(Resource resource, HttpServletRequest request, final HttpServletResponse response) throws RepositoryException, IOException {
-        Script script = resolveScript(resource, request, response);
+    public String render(Resource resource, RenderContext context) throws RepositoryException, IOException {
+        final HttpServletRequest request = context.getRequest();
 
+        Script script = resolveScript(resource, request, context.getResponse());
 
         Object old = request.getAttribute("currentNode");
         request.setAttribute("currentNode", resource.getNode());
@@ -80,19 +80,23 @@ public class RenderService extends JahiaService {
         request.setAttribute("workspace", resource.getNode().getSession().getWorkspace().getName());
         request.setAttribute("locale", resource.getNode().getSession().getWorkspace().getName());
 
-        Object oldResource = request.getAttribute("currentResource");
+        Resource oldResource = (Resource) request.getAttribute("currentResource");
         request.setAttribute("currentResource", resource);
 
-        String res;
+        String output;
         try {
             setJahiaAttributes(request, resource.getNode(), (ParamBean) Jahia.getThreadParamBean());
-            res = script.execute();
+            output = script.execute();
         } finally {
             request.setAttribute("currentNode",old);
             request.setAttribute("currentResource",oldResource);
         }
 
-        return new StringBuffer(res);
+        if (oldResource != null) {
+            oldResource.getDependencies().addAll(resource.getDependencies());
+        }
+
+        return output;
     }
 
     /**

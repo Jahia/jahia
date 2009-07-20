@@ -35,7 +35,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.apache.log4j.Logger;
 
 import javax.jcr.RepositoryException;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * A resource is the aggregation of a node and a specific template
@@ -51,6 +51,11 @@ public class Resource {
     private String templateType;
     private String template;
 
+    private List<JCRNodeWrapper> dependencies;
+
+    private List<Resource> includedResources;
+    private List<String> missingResources;
+
     /**
      * Creates a resource from the specified parameter
      * @param node The node to display
@@ -63,6 +68,11 @@ public class Resource {
         this.template = template;
         this.locale = locale;
         this.workspace = workspace;
+        dependencies = new ArrayList<JCRNodeWrapper>();
+        dependencies.add(node);
+
+        includedResources = new ArrayList<Resource>();
+        missingResources = new ArrayList<String>();
     }
 
     public JCRNodeWrapper getNode() {
@@ -93,6 +103,18 @@ public class Resource {
             return "default";
         }
         return template;
+    }
+
+    public List<JCRNodeWrapper> getDependencies() {
+        return dependencies;
+    }
+
+    public List<String> getMissingResources() {
+        return missingResources;
+    }
+
+    public List<Resource> getIncludedResources() {
+        return includedResources;
     }
 
     @Override

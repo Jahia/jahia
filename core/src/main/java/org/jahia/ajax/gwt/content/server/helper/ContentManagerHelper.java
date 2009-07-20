@@ -55,7 +55,7 @@ import org.jahia.services.webdav.UsageEntry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.captcha.CaptchaService;
 import org.jahia.services.categories.Category;
-import org.jahia.services.render.RenderService;
+import org.jahia.services.render.*;
 import org.jahia.services.render.Resource;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.params.ProcessingContext;
@@ -240,9 +240,10 @@ public class ContentManagerHelper {
             if (viewTemplateAreas && node.isNodeType("jmix:renderable") && node.hasProperty("j:defaultTemplate")) {
                 Resource r = new Resource(node, workspace, locale, "html", null);
                 final HashMap<String, List<String>> listHashMap = new HashMap<String, List<String>>();
-                ((ParamBean)context).getRequest().setAttribute("moduleTags", listHashMap);
-                RenderService.getInstance().render(r, ((ParamBean)context).getRequest(), ((ParamBean)context).getResponse()).toString();
-                List<String> l = listHashMap.get(node.getPath());
+                RenderContext renderContext = new RenderContext(((ParamBean) context).getRequest(), ((ParamBean) context).getResponse());
+                renderContext.setIncludeSubModules(false);
+                RenderService.getInstance().render(r, renderContext);
+                List<String> l = r.getMissingResources();
                 if (l != null) {
                     for (String s : l) {
                         if (!node.hasNode(s)) {
@@ -1203,7 +1204,6 @@ public class ContentManagerHelper {
      *
      * @param nodes    the nodes to save the properties of
      * @param newProps the new properties
-     * @param user     the current user
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          sthg bad happened
      */
@@ -2118,10 +2118,7 @@ public class ContentManagerHelper {
             JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser(), "default", ctx.getCurrentLocale());
             JCRNodeWrapper node = session.getNode(path);
             Resource r = new Resource(node, "default", ctx.getCurrentLocale(), "html", null);
-            final HashMap<String, List<String>> listHashMap = new HashMap<String, List<String>>();
-            ctx.getRequest().setAttribute("moduleTags", listHashMap);
-            res = RenderService.getInstance().render(r, ctx.getRequest(), ctx.getResponse()).toString();
-            System.out.println("-->" + listHashMap);
+            res = RenderService.getInstance().render(r, new RenderContext(ctx.getRequest(), ctx.getResponse()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {

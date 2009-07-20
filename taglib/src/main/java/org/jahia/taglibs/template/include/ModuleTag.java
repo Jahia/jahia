@@ -3,6 +3,7 @@ package org.jahia.taglibs.template.include;
 import org.jahia.data.beans.ContentBean;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
@@ -77,6 +78,10 @@ public class ModuleTag extends BodyTagSupport {
     public int doEndTag() throws JspException {
         try {
 
+            RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
+            if (renderContext == null) {
+                renderContext = new RenderContext((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
+            }
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
             if (currentResource != null) {
                 templateType = currentResource.getTemplateType();
@@ -103,22 +108,15 @@ public class ModuleTag extends BodyTagSupport {
                     logger.error(e.getMessage(), e);
                 }
             } else if (path != null && currentResource != null) {                
-                Map<String, List<String>> p = (Map<String, List<String>>) pageContext.getAttribute("moduleTags", PageContext.REQUEST_SCOPE);
-                if (p != null) {
-                    List<String> list = p.get(currentResource.getNode().getPath());
-                    if (list == null) {
-                        list = new ArrayList<String>();
-                        p.put(currentResource.getNode().getPath(), list);
-                    }
-                    list.add(path);
-                }
-
                 JCRNodeWrapper nodeWrapper = currentResource.getNode();
                 try {
                     if (nodeWrapper.hasNode(path)) {
                         node = (JCRNodeWrapper) nodeWrapper.getNode(path);
                     } else {
-                        pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeHolder","placeholder"+ UUID.randomUUID().toString(),new HashMap()));
+                        if (currentResource != null) {
+                            currentResource.getMissingResources().add(path);
+                        }
+//                        pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeHolder","placeholder"+ UUID.randomUUID().toString(),new HashMap()));
                     }
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
@@ -128,14 +126,13 @@ public class ModuleTag extends BodyTagSupport {
                 Resource resource = new Resource(node, workspace , locale, templateType, template);
 
                 try {
-                    StringBuffer buffer = RenderService.getInstance().render(resource, (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
-
-                    pageContext.getOut().print(buffer.toString());
+                    if (renderContext.isIncludeSubModules()) {
+                        pageContext.getOut().print(RenderService.getInstance().render(resource, renderContext));
+                    }
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
             }
-
             path = null;
             contentBeanName = null;
             node = null;

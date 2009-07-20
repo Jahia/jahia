@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.jahia.bin.JahiaConfigurationWizard;
 import org.jahia.utils.PathResolver;
 
@@ -125,7 +126,11 @@ public class DatabaseScripts {
             FileInputStream scriptInputStream = new FileInputStream(scriptFileObject.getPath());
             Properties      scriptProperties  = new Properties();
 
-            scriptProperties.load( scriptInputStream );
+            try {
+                scriptProperties.load( scriptInputStream );
+            } finally {
+                IOUtils.closeQuietly(scriptInputStream);
+            }
 
             Enumeration<?> scriptPropertiesEnum  = scriptProperties.propertyNames();
             Map<String, String>     scriptPropertiesHash  = new HashMap<String, String>();
@@ -200,8 +205,11 @@ public class DatabaseScripts {
         throws IOException {
         FileInputStream scriptInputStream = new FileInputStream(fileObject.getPath());
         Properties      scriptProperties  = new Properties();
-        scriptProperties.load( scriptInputStream );
-
+        try {
+            scriptProperties.load( scriptInputStream );
+        } finally {
+            IOUtils.closeQuietly(scriptInputStream);
+        }
 
         String scriptLocation = scriptProperties.getProperty("jahia.database.schemascriptdir");
         File parentFile = fileObject.getParentFile();
@@ -225,7 +233,11 @@ public class DatabaseScripts {
         throws IOException {
         FileInputStream scriptInputStream = new FileInputStream(fileObject.getPath());
         Properties      scriptProperties  = new Properties();
-        scriptProperties.load( scriptInputStream );
+        try {
+            scriptProperties.load( scriptInputStream );
+        } finally {
+            IOUtils.closeQuietly(scriptInputStream);
+        }
 
         String scriptLocation = scriptProperties.getProperty("jahia.database.popuplationscriptdir");
         File parentFile = fileObject.getParentFile();

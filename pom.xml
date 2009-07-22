@@ -75,11 +75,19 @@
                           <targetPercentage>7%</targetPercentage>
                           <!--<generateXml>true</generateXml>-->
                           <generatePdf>true</generatePdf>
-                          <historyDir>${user.home}/history</historyDir>
+                          <historyDir>${user.home}/history-${version}</historyDir>
                           <!--
                           <cloverDatabase>/foo/bar</cloverDatabase>
                           <cloverMergeDatabase>/foo/bar</cloverMergeDatabase>
                           -->
+                          <excludes>
+                              <exclude>**/org/jahia/ajax/gwt/client/**/*.java</exclude>
+                              <exclude>**/org/jahia/ajax/gwt/module/**/*.java</exclude>
+                              <exclude>**/org/jahia/ajax/gwt/template/**/*.java</exclude>
+                              <exclude>org/jahia/ajax/gwt/client/**/*.java</exclude>
+                              <exclude>org/jahia/ajax/gwt/module/**/*.java</exclude>
+                              <exclude>org/jahia/ajax/gwt/template/**/*.java</exclude>
+                          </excludes>
                       </configuration>
                       <executions>
                           <execution>

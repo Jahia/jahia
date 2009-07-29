@@ -345,6 +345,9 @@ class TemplatePackageRegistry {
                                     + "' for the package '"
                                     + pkg.getName()
                                     + "'. Skipping inheritance resolution.");
+                    pkg.getLookupPath().add("/templates/default");
+                    pkg.getResourceBundleHierarchy().add("jahiatemplates.common");
+            		pkg.getResourceBundleHierarchy().add("JahiaTypesResources");
                 }
             } else {
                 // check homepage and default page
@@ -356,10 +359,10 @@ class TemplatePackageRegistry {
                     pkg.setDefaultPageName(((JahiaTemplateDef) pkg
                             .getTemplates().get(0)).getName());
                 }
+                pkg.getLookupPath().add("/templates/default");
+                pkg.getResourceBundleHierarchy().add("jahiatemplates.common");
+            	pkg.getResourceBundleHierarchy().add("JahiaTypesResources");
             }
-            pkg.getLookupPath().add("/templates/default");
-            pkg.getResourceBundleHierarchy().add("jahiatemplates.common");
-            pkg.getResourceBundleHierarchy().add("JahiaTypesResources");
         }
     }
 

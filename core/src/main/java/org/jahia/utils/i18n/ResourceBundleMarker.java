@@ -361,16 +361,10 @@ public class ResourceBundleMarker {
     public static String drawMarker(String resourceBundleID,
                                     String resourceKey, String defaultValue) {
 
-        StringBuffer buff = new StringBuffer("<jahia-resource ");
-        buff.append("id=\"");
-        buff.append(resourceBundleID);
-        buff.append("\" key=\"");
-        buff.append(resourceKey);
-        buff.append("\" default-value=\"");
-        buff.append(defaultValue);
-        buff.append("\"/>");
-        return buff.toString();
-
+        return new StringBuilder(64).append("<jahia-resource ").append("id=\"")
+                .append(resourceBundleID).append("\" key=\"").append(
+                        resourceKey).append("\" default-value=\"").append(
+                        defaultValue).append("\"/>").toString();
     }
 
     //-------------------------------------------------------------------------

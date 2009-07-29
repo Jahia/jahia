@@ -426,16 +426,16 @@ public class Service {
         WorkflowService workflowService = WorkflowService.getInstance();
         try {
             ContentObject obj = ((JahiaContentNodeImpl)node.getNode()).getContentObject();
-            ContentObject mainObj = workflowService.getMainLinkObject(obj);
+            ContentObjectKey mainObjKey = workflowService.getMainLinkObject((ContentObjectKey) obj.getObjectKey());
 
             //Map<String, Set<String>> actions = new HashMap<String, Set<String>>();
             int mode = workflowService.getInheritedMode(obj);
             if (mode == WorkflowService.EXTERNAL) {
-                String wn = workflowService.getInheritedExternalWorkflowName(obj);
+                String wn = workflowService.getInheritedExternalWorkflowName(mainObjKey);
                 ExternalWorkflow ext = workflowService.getExternalWorkflow(wn);
-                ExternalWorkflowInstanceCurrentInfos info = ext.getCurrentInfo(mainObj.getObjectKey().toString(), languageCode);
+                ExternalWorkflowInstanceCurrentInfos info = ext.getCurrentInfo(mainObjKey.toString(), languageCode);
                 if (info != null) {
-                    return workflowService.getRole(mainObj, info.getNextRole(), false).getAllMembers();
+                    return workflowService.getRole(mainObjKey, info.getNextRole(), false).getAllMembers();
                 }
             }
         } catch (JahiaException e) {
@@ -486,16 +486,16 @@ public class Service {
         WorkflowService workflowService = WorkflowService.getInstance();
         try {
             ContentObject obj = ((JahiaContentNodeImpl)node.getNode()).getContentObject();
-            ContentObject mainObj = workflowService.getMainLinkObject(obj);
+            ContentObjectKey mainObjKey = workflowService.getMainLinkObject((ContentObjectKey) obj.getObjectKey());
 
             //Map<String, Set<String>> actions = new HashMap<String, Set<String>>();
             int mode = workflowService.getInheritedMode(obj);
             if (mode == WorkflowService.EXTERNAL && workflowService.getWorkflowMode(obj) != WorkflowService.LINKED) {
-                String wn = workflowService.getInheritedExternalWorkflowName(obj);
+                String wn = workflowService.getInheritedExternalWorkflowName(mainObjKey);
                 ExternalWorkflow ext = workflowService.getExternalWorkflow(wn);
-                ExternalWorkflowInstanceCurrentInfos info = ext.getCurrentInfo(mainObj.getObjectKey().toString(), languageCode);
+                ExternalWorkflowInstanceCurrentInfos info = ext.getCurrentInfo(mainObjKey.toString(), languageCode);
                 if (info != null) {
-                    return workflowService.getRole(mainObj, info.getCurrentRole(), false).getAllMembers();
+                    return workflowService.getRole(mainObjKey, info.getCurrentRole(), false).getAllMembers();
                 }
             }
         } catch (JahiaException e) {
@@ -564,14 +564,14 @@ public class Service {
         WorkflowService workflowService = WorkflowService.getInstance();
         try {
             ContentObject obj = ((JahiaContentNodeImpl)node.getNode()).getContentObject();
-            ContentObject mainObj = workflowService.getMainLinkObject(obj);
+            ContentObjectKey mainObjKey = workflowService.getMainLinkObject((ContentObjectKey) obj.getObjectKey());
 
             //Map<String, Set<String>> actions = new HashMap<String, Set<String>>();
             int mode = workflowService.getInheritedMode(obj);
             if (mode == WorkflowService.EXTERNAL) {
-                String wn = workflowService.getInheritedExternalWorkflowName(obj);
+                String wn = workflowService.getInheritedExternalWorkflowName(mainObjKey);
                 ExternalWorkflow ext = workflowService.getExternalWorkflow(wn);
-                List<ExternalWorkflowHistoryEntry> history = ext.getWorkflowHistoryByObject(mainObj.getObjectKey().toString());
+                List<ExternalWorkflowHistoryEntry> history = ext.getWorkflowHistoryByObject(mainObjKey.toString());
                 return history;
             }
         } catch (JahiaException e) {

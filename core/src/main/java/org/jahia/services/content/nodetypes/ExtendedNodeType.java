@@ -34,8 +34,10 @@ package org.jahia.services.content.nodetypes;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 
@@ -362,20 +364,32 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public String getResourceBundleId() {
-        if (getSystemId().startsWith("system-")) {
-            return "JahiaTypesResources";
-        }
         JahiaTemplatesPackage pkg = null;
-        try {
-            pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(getSystemId());
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!getSystemId().startsWith("system-")) {
+            try {
+                pkg = ServicesRegistry.getInstance()
+                        .getJahiaTemplateManagerService().getTemplatePackage(
+                                getSystemId());
+            } catch (Exception e) {
+                logger.warn(
+                        "Unable to get the tempalte package for the node with system id '"
+                                + getSystemId() + "'", e);
+            }
         }
         if (pkg == null) {
-            return "JahiaTypesResources";
-        } else {
-            return pkg.getResourceBundleName();
+            ProcessingContext ctx = Jahia.getThreadParamBean();
+            if (ctx != null && ctx.getSite() != null) {
+                String pckName = ctx.getSite().getTemplatePackageName();
+                if (pckName != null) {
+                    pkg = ServicesRegistry.getInstance()
+                            .getJahiaTemplateManagerService()
+                            .getTemplatePackage(pckName);
+                }
+            }
         }
+
+        return pkg != null ? pkg.getResourceBundleName()
+                : "JahiaTypesResources";
     }
 
     public String getResourceBundleMarker() {

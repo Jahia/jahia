@@ -83,6 +83,7 @@ public class SelectPage_Engine implements JahiaEngine {
     // Display any page for selection.
     public static final String SELECT_ANY_PAGE_OPERATION = "selectAnyPage";
 
+    public static final String LANGUAGE = "lang";
 
     public SelectPage_Engine() {
     }
@@ -120,13 +121,21 @@ public class SelectPage_Engine implements JahiaEngine {
             homepageID = (Integer) params.get(HOMEPAGE_ID);
         if (params.get(SITE_ID) != null)
             siteID = (Integer) params.get(SITE_ID);
-        String l = Jahia.getContextPath()+"/engines/selectpage/select_page.jsp?homepageID="+
-                homepageID + "&siteID="+siteID+"&pageID="+pageID+"&selectPageOperation="+operation+"&parentPageID="+parentPageID+
-                "&callback="+callback;
+        String language = (String) params.get(LANGUAGE);
+        language = language != null ? language : ""; 
+        StringBuilder link = new StringBuilder(64);
+        link.append(Jahia.getContextPath()).append(
+                "/engines/selectpage/select_page.jsp?homepageID=").append(
+                homepageID).append("&siteID=").append(siteID)
+                .append("&pageID=").append(pageID).append(
+                        "&selectPageOperation=").append(operation).append(
+                        "&parentPageID=").append(parentPageID).append(
+                        "&callback=").append(callback).append("&lang=").append(
+                        language);
         if (templates != null) {
-            l += "&templates="+templates;
+            link.append("&templates=").append(templates);
         }
-        return l;
+        return link.toString();
     }
 
     /**

@@ -33,7 +33,6 @@ package org.jahia.taglibs.internal.i18n;
 
 import org.jahia.params.ProcessingContext;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.data.JahiaData;
 import org.jahia.taglibs.utility.i18n.GWTMessageTag;
 import org.apache.log4j.Logger;
 
@@ -54,26 +53,25 @@ public class GWTResourceBundleTag extends GWTMessageTag {
     @Override
     protected String getMessage(String titleKey) {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+        ProcessingContext ctx = getProcessingContext();
 
-        Locale currentLocale = request.getLocale();
-        HttpSession session = pageContext.getSession();
-        if (session != null) {
-            if (session.getAttribute(ProcessingContext.SESSION_LOCALE) != null) {
-                currentLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
+        Locale currentLocale = ctx != null ? ctx.getLocale() : null;
+        if (currentLocale == null) {
+            HttpSession session = pageContext.getSession();
+            if (session != null) {
+                if (session.getAttribute(ProcessingContext.SESSION_LOCALE) != null) {
+                    currentLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
+                }
             }
+        }
+        if (currentLocale == null) {
+            currentLocale = request.getLocale();            
         }
 
         String resValue = null;
 
         try {
-
-            if (jData != null) {
-                resValue = JahiaResourceBundle.getJahiaInternalResource(titleKey, jData.getProcessingContext().getLocale());
-            } else {
-                // for any reason the jData wasn't loaded correctly
-                resValue = JahiaResourceBundle.getJahiaInternalResource(titleKey, currentLocale);
-            }
+            resValue = JahiaResourceBundle.getJahiaInternalResource(titleKey, currentLocale);
         } catch (MissingResourceException mre) {
             logger.error(mre.toString(), mre);
         }

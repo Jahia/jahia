@@ -118,6 +118,8 @@ private static boolean isAuthorizedForToolbar(String toolbarSetName, ParamBean j
         elh = new EngineLanguageHelper(jParams.getLocale());
     }
     final String currentLanguageCode = elh.getCurrentLanguageCode();
+    pageContext.setAttribute("currentLanguageCode", currentLanguageCode);
+    pageContext.setAttribute(ParamBean.SESSION_LOCALE_ENGINE, elh.getCurrentLocale(), PageContext.SESSION_SCOPE);
 
     final String fckUrl = buff.append(request.getContextPath()).append("/htmleditors/fckeditor/").toString();
     buff.delete(0, buff.length());
@@ -127,6 +129,7 @@ private static boolean isAuthorizedForToolbar(String toolbarSetName, ParamBean j
     params.put(SelectPage_Engine.PARENT_PAGE_ID, new Integer(-1));
     params.put(SelectPage_Engine.PAGE_ID, new Integer(-1));
     params.put("callback","SetUrl");
+    params.put(SelectPage_Engine.LANGUAGE, currentLanguageCode);
     String selectPageURL = EnginesRegistry.getInstance().getEngineByBeanName("selectPageEngine").renderLink(jParams, params);
     
     // determine, which toolbar set to use
@@ -192,11 +195,11 @@ jahia.config.startWorkInProgressOnLoad=true;
         oFCKeditor.Config.StylesXmlPath = '${pageContext.request.contextPath}<%=htmlEditorCSSDef%>';
     <%}%>
 
-		oFCKeditor.Config.ImageBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url'><c:param name='filters' value='*.bmp,*.gif,*.jpe,*.jpeg,*.jpg,*.png,*.tif,*.tiff'/></c:url>";
+		oFCKeditor.Config.ImageBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url&lang=${currentLanguageCode}'><c:param name='filters' value='*.bmp,*.gif,*.jpe,*.jpeg,*.jpg,*.png,*.tif,*.tiff'/></c:url>";
 
-		oFCKeditor.Config.FileBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url'/>";
+		oFCKeditor.Config.FileBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url&lang=${currentLanguageCode}'/>";
 		
-		oFCKeditor.Config.FlashBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url&filters=*.swf'/>";
+		oFCKeditor.Config.FlashBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url&filters=*.swf&lang=${currentLanguageCode}'/>";
 		
         oFCKeditor.Config.LinkBrowserURL = "<%=selectPageURL%>";
 

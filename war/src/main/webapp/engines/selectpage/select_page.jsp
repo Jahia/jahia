@@ -38,9 +38,19 @@
 <%@ page import="java.util.*"%>
 <%@ page import="org.jahia.services.pages.ContentPage" %>
 <%@ page import="org.jahia.services.version.EntryLoadRequest"%>
+<%@ page import="org.jahia.taglibs.utility.Utils"%>
+<%@ page import="org.jahia.utils.LanguageCodeConverters"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
-
+<c:if test="${not empty param.lang}">
+    <%
+    ProcessingContext ctx = Utils.getProcessingContext(pageContext);
+    if (ctx != null) {
+        ctx.setCurrentLocale(LanguageCodeConverters.languageCodeToLocale(request.getParameter("lang")));
+    }
+    %>
+</c:if>
 <internal:gwtInit />
 <internal:gwtImport module="org.jahia.ajax.gwt.module.pagepicker.PagePicker" />
 <internal:gwtGenerateDictionary/>

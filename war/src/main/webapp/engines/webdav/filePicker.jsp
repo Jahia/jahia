@@ -30,16 +30,27 @@
     between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 
---%>
-<%@ page language="java" contentType="text/html;charset=UTF-8" 
-%><%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib"
+--%><%@ page language="java" contentType="text/html;charset=UTF-8" 
+%><?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<%@ page import="org.jahia.params.ProcessingContext" %>
+<%@ page import="org.jahia.taglibs.utility.Utils" %>
+<%@ page import="org.jahia.utils.LanguageCodeConverters" %>
+<%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib"
 %><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" 
 %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<c:if test="${not empty param.lang}">
+    <%
+    ProcessingContext ctx = Utils.getProcessingContext(pageContext);
+    if (ctx != null) {
+        ctx.setCurrentLocale(LanguageCodeConverters.languageCodeToLocale(request.getParameter("lang")));
+    }
+    %>
+</c:if>
 <utility:setBundle basename="JahiaInternalResources"/>
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />

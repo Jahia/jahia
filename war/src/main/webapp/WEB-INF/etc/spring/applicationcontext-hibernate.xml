@@ -96,7 +96,7 @@
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">@HIBERNATE_DIALECT@</prop>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.hbm2ddl.auto">none</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <!-- prop key="hibernate.cache.provider_class">org.jahia.hibernate.cache.TreeCacheProvider</prop-->
                 <!-- prop key="hibernate.cache.provider_class">org.jahia.hibernate.cache.JahiaClusterCacheHibernateProvider</prop-->

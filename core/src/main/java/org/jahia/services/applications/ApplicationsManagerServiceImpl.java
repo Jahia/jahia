@@ -48,6 +48,8 @@ import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.container.PortletWindow;
 import org.apache.pluto.container.driver.PlutoServices;
+import org.apache.pluto.container.driver.PortletRegistryEvent;
+import org.apache.pluto.container.driver.PortletRegistryListener;
 import org.apache.pluto.container.driver.PortletRegistryService;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaDOMObject;
@@ -185,7 +187,20 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         /*
         loadCustomWindowStates(settingsBean.getJahiaEtcDiskPath() + File.separator + "services" +
                                         File.separator + "applications" + File.separator + "window-states.xml");
-        */                                        
+        */
+        
+        // register listener
+        PlutoServices.getServices().getPortletRegistryService().addPortletRegistryListener(new PortletRegistryListener() {
+            public void portletApplicationRegistered(
+                    PortletRegistryEvent evt) {
+                servletContextManager.removeContextFromCache(evt.getApplicationName());
+            }
+            public void portletApplicationRemoved(
+                    PortletRegistryEvent evt) {
+                // do nothing
+            }
+        });
+        
         this.isLoaded = true;
     }
 

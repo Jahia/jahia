@@ -955,7 +955,14 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
                 if (usingUserKey == null) {
                     if (attrName.equalsIgnoreCase(
                         ldapProperties.getProperty(UID_SEARCH_ATTRIBUTE_PROP))) {
-                        usingUserKey = attrValue;
+                        int multiValueMarkerPos = attrValue.indexOf('\n');
+                        if (multiValueMarkerPos != -1) {
+                            // we have detected a multi-valued UID_SEARCH_ATTRIBUTE_PROP, we will take only
+                            // the first value for the user key.
+                            usingUserKey = attrValue.substring(0, multiValueMarkerPos);   
+                        } else {
+                            usingUserKey = attrValue;
+                        }
                     }
                 }
                 // mark user property as read-only as it is coming from LDAP

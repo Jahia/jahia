@@ -119,22 +119,6 @@
                             <targetServerType>tomcat</targetServerType>
                             <targetServerVersion>6</targetServerVersion>
                             <targetServerDirectory>${project.build.directory}/apache-tomcat-${jahia.tomcat.version}</targetServerDirectory>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>deploy</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.jahia.server</groupId>
-                        <artifactId>maven-jahia-plugin</artifactId>
-                        <configuration>
-                            <targetServerDirectory>${project.build.directory}/apache-tomcat-${jahia.tomcat.version}</targetServerDirectory>
                             <siteImportLocation>
                                 <!--param>/home/bamboo/bin/siteImport_testSite.zip</param>
                                 <param>/home/bamboo/bin/siteImport_DemoSite.zip</param-->
@@ -156,6 +140,7 @@
                             <execution>
                                 <phase>package</phase>
                                 <goals>
+                                    <goal>deploy</goal>
                                     <goal>configure</goal>
                                 </goals>
                             </execution>

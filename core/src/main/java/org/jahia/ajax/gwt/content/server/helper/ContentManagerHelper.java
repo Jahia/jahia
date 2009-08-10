@@ -833,6 +833,9 @@ public class ContentManagerHelper {
                     }
                 } catch (AccessDeniedException e) {
                     missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - ACCESS DENIED").toString());
+                } catch (ReferentialIntegrityException e) {
+                    missedPaths.add(new StringBuilder(nodeToDelete.getPath())
+                            .append(" - is in use").toString());
                 } catch (RepositoryException e) {
                     logger.error("error", e);
                     missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - UNSUPPORTED").toString());

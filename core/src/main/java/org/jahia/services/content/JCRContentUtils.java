@@ -81,6 +81,20 @@ public final class JCRContentUtils {
         return nodeTypeName != null ? StringUtils.replaceChars(nodeTypeName,
                 ':', '_') : nodeTypeName;
     }
+    
+    public static String encodeInternalName(String name) {
+        name = name.replace("[", "\\5B");
+        name = name.replace("]", "\\5C");
+        name = name.replace("'", "\\27");
+        return name;
+    }
+
+    public static String decodeInternalName(String name) {
+        name = name.replace("\\5B","[");
+        name = name.replace("\\5C","]");
+        name = name.replace("\\27","'");
+        return name;
+    }
 
     /**
      * Returns a content object key for a node if available. Otherwise returns

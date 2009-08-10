@@ -746,17 +746,11 @@ public class JCRStoreProvider {
     }
 
     public String encodeInternalName(String name) {
-        name = name.replace("[", "\\5B");
-        name = name.replace("]", "\\5C");
-        name = name.replace("'", "\\27");
-        return name;
+        return JCRContentUtils.encodeInternalName(name);
     }
 
     public String decodeInternalName(String name) {
-        name = name.replace("\\5B","[");
-        name = name.replace("\\5C","]");
-        name = name.replace("\\27","'");
-        return name;
+        return JCRContentUtils.decodeInternalName(name);
     }
 
     public Session getThreadSession(JahiaUser user) throws RepositoryException {

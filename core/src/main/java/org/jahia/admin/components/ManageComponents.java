@@ -72,9 +72,7 @@ import org.jahia.utils.JahiaTools;
 import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.settings.SettingsBean;
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FileUtils;
-import org.apache.tools.ant.BuildException;
 
 
 /**
@@ -251,12 +249,8 @@ public class ManageComponents extends AbstractAdministrationModule {
 
             request.setAttribute("appsList", authAppList.iterator());
             request.setAttribute("appserverDeployerUrl", SettingsBean.getInstance().getJahiaWebAppsDeployerBaseURL());
-            String serverType = SettingsBean.getInstance().getServer();
-            if (serverType != null && serverType.equalsIgnoreCase("Tomcat")) {
-                request.setAttribute("isTomcat", Boolean.TRUE);
-            } else {
-                request.setAttribute("isTomcat", Boolean.FALSE);
-            }
+            String serverType = Jahia.getStaticServletConfig().getServletContext().getServerInfo();
+            request.setAttribute("isTomcat", serverType != null && serverType.toLowerCase().contains("tomcat"));
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "manage_components.jsp");
 
         } catch (JahiaException je) {

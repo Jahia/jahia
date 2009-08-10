@@ -427,7 +427,7 @@ cursor:pointer;
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.rolesperm.label"
                             aliasResourceName="mw_roles_perm"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.rolesperm.description.label"
-                            aliasResourceName="mw_roles_description"/>
+                            aliasResourceName="mw_roles_perm_desc"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.finish.label"
                             aliasResourceName="mw_finish"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.saveas.label"
@@ -437,8 +437,6 @@ cursor:pointer;
                             aliasResourceName="mw_name"/>
 <internal:gwtResourceBundle resourceName="org.jahia.admin.components.ManageComponents.applicationDesc.label"
                             aliasResourceName="mw_description"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.saveas.label"
-                            aliasResourceName="mw_roles_perm_desc"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.saveas.label"
                             aliasResourceName="mw_finish_description"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.roles.any"

@@ -21,6 +21,7 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-war</artifactId>
             <version>${jahia.package.version}</version>
+            <classifier>${jahia.war.classifier}</classifier>
             <type>war</type>
         </dependency>
         <!--<dependency>

@@ -9,7 +9,7 @@
 
     <portlet>
         <description>This portlet will render an HTML fragment</description>
-        <portlet-name>JahiaHTMLMashup</portlet-name>
+        <portlet-name>JahiaHTMLPortlet</portlet-name>
         <display-name>HTML portlet</display-name>
         <portlet-class>org.jahia.portlets.HTMLMashupPortlet</portlet-class>
         <init-param>
@@ -25,19 +25,8 @@
             <portlet-mode>VIEW</portlet-mode>
         </supports>
         <portlet-info>
-            <title>About Apache Pluto</title>
+            <title>HTML Portlet</title>
         </portlet-info>
-
-        <security-role-ref>
-          <role-name>role1</role-name>
-          <role-link>role1</role-link>
-        </security-role-ref>
-
-        <security-role-ref>
-          <role-name>role2</role-name>
-          <role-link>role2</role-link>
-        </security-role-ref>
-
     </portlet>
 
 </portlet-app>

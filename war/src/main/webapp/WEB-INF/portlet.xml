@@ -34,7 +34,7 @@
 
     <portlet>
         <description>Render an HTML fragment</description>
-        <portlet-name>JahiaHTMLportlet</portlet-name>
+        <portlet-name>JahiaHTMLPortlet</portlet-name>
         <display-name>HTML portlet</display-name>
         <portlet-class>org.jahia.portlets.HTMLMashupPortlet</portlet-class>
         <init-param>
@@ -50,7 +50,7 @@
             <portlet-mode>VIEW</portlet-mode>
         </supports>
         <portlet-info>
-            <title>HTML portlet</title>
+            <title>HTML Portlet</title>
         </portlet-info>
     </portlet>
 

@@ -31,50 +31,25 @@
  */
 package org.jahia.portlets;
 
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ParseException;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.data.applications.EntryPointInstance;
-import org.jahia.registries.ServicesRegistry;
-
-import javax.portlet.*;
-import javax.jcr.RepositoryException;
-import javax.jcr.Node;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.portlet.PortletException;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+
+import org.jahia.data.applications.EntryPointInstance;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Nov 28, 2008
  * Time: 5:26:49 PM
- * To change this template use File | Settings | File Templates.
  */
-public class HTMLMashupPortlet extends GenericPortlet {
-    private static final String DEFINITIONS = "definitions.cnd";
-
-    private static Map<String, String> defs = new HashMap<String, String>();
-
-    private String porletType;
-
-    public HTMLMashupPortlet() {
-        super();
-    }
-
-    public void init(PortletConfig portletConfig) throws PortletException {
-        super.init(portletConfig);
-
-        porletType = portletConfig.getInitParameter("portletType");
-
-        defs.put(getPortletName(), porletType);
-    }
-
-    public static String getPortletDefinition(String portletName) {
-        return defs.get(portletName);
-    }
+public class HTMLMashupPortlet extends JahiaPortlet {
 
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
         renderResponse.setContentType("text/html");

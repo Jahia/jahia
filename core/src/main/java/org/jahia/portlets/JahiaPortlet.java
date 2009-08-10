@@ -31,43 +31,36 @@
  */
 package org.jahia.portlets;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.portlet.GenericPortlet;
+import javax.portlet.PortletConfig;
 import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-
-import org.jahia.ajax.gwt.client.core.JahiaType;
 
 
 /**
- * User: ktlili
+ * Generic Jahia portlet.
+ * @author Khaled Tlili
  * Date: 11 d�c. 2008
  * Time: 18:59:26
  */
-public class JahiaRSSPortlet extends JahiaPortlet {
+public class JahiaPortlet extends GenericPortlet {
 
-    /**
-     * doView(...) method of the portlet
-     *
-     * @param renderRequest
-     * @param renderResponse
-     * @throws PortletException
-     * @throws IOException
-     */
-    public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
-        renderResponse.setContentType("text/html");
-        
-        String url = (String) renderRequest.getAttribute("url");
-        Long nbFeed = (Long) renderRequest.getAttribute("entriesCount");
-        if (nbFeed == null || nbFeed < 0) {
-            nbFeed = 5l;
-        }
-        String id = renderRequest.getWindowID();
-        String html = "<div id='" + id + "' jahiaType='" + JahiaType.RSS + "' url='" + url + "' entriesCount='" + nbFeed + "' > &nbsp </div>";
-        PrintWriter pw = renderResponse.getWriter();
-        pw.print(html);
+    private static Map<String, String> defs = new HashMap<String, String>();
+
+    public static String getPortletDefinition(String portletName) {
+        return defs.get(portletName);
     }
-}
 
+    private String porletType;
+
+    public void init(PortletConfig portletConfig) throws PortletException {
+        super.init(portletConfig);
+
+        porletType = portletConfig.getInitParameter("portletType");
+
+        defs.put(getPortletName(), porletType);
+    }
+
+}

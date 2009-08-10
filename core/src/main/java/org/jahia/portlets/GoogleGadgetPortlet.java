@@ -31,58 +31,32 @@
  */
 package org.jahia.portlets;
 
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ParseException;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.data.applications.EntryPointInstance;
-import org.jahia.registries.ServicesRegistry;
-
-import javax.portlet.*;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.portlet.PortletException;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+
+import org.jahia.data.applications.EntryPointInstance;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.JahiaUser;
 
 import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.SourceFormatter;
 import au.id.jericho.lib.html.StartTag;
 
 /**
- * Created by IntelliJ IDEA.
  * User: loom
  * Date: Jan 22, 2009
  * Time: 3:03:26 PM
- * To change this template use File | Settings | File Templates.
  */
-public class GoogleGadgetPortlet extends GenericPortlet {
-
-    private static final String DEFINITIONS = "definitions.cnd";
-
-    private static Map<String, String> defs = new HashMap<String, String>();
-
-    private String porletType;
-
-    public GoogleGadgetPortlet() {
-        super();
-    }
-
-    public void init(PortletConfig portletConfig) throws PortletException {
-        super.init(portletConfig);
-
-        porletType = portletConfig.getInitParameter("portletType");
-
-        defs.put(getPortletName(), porletType);
-    }
-
-    public static String getPortletDefinition(String portletName) {
-        return defs.get(portletName);
-    }
+public class GoogleGadgetPortlet extends JahiaPortlet {
 
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
         renderResponse.setContentType("text/html");

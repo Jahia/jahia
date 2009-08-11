@@ -1541,7 +1541,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public boolean hasNode(String s) throws RepositoryException {
         // add mountpoints here
-        return objectNode.hasNode(s);
+        return objectNode.hasNode(provider.encodeInternalName(s));
     }
 
     public boolean hasNodes() throws RepositoryException {

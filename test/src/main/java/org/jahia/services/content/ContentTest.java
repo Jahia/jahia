@@ -4,6 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.commons.io.IOUtils;
+import org.apache.jackrabbit.JcrConstants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -13,6 +14,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.query.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -327,5 +329,50 @@ public class ContentTest extends TestCase {
             session.logout();
         }
     }
+    /**
+     * Test file upload
+     *
+     * @throws RepositoryException
+     */
+    public void testSearch() throws Exception {
+        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
 
+        JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
+
+        try {
+            JCRNodeWrapper rootNode = session.getNode(providerRoot);
+
+            String value = "123456789abcd 123abc 456bcd 789def 123456789abcd";
+            String mimeType = "text/plain";
+
+            InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+
+            String name = "testSearch" + System.currentTimeMillis() + ".txt";
+            JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
+            session.save();
+            // Do the query
+            QueryManager qm = JCRStoreService.getInstance().getQueryManager(ctx.getUser());
+            Query query = qm.createQuery("//element(*,jnt:file)[(jcr:contains(jcr:content, '456bcd'))]", Query.XPATH);
+            QueryResult queryResult = query.execute();
+            RowIterator it = queryResult.getRows();
+            assertTrue("Bad result number ("+ queryResult.getRows().getSize() + " instead of 1)", (it.getSize() != 1));
+            while (it.hasNext()) {
+                Row row = it.nextRow();
+                String path = row.getValue(JcrConstants.JCR_PATH).getString();
+                assertTrue("Wrong file found ('" + path + "' instead of '" + testFile.getPath()+ "')",(!path.equals(testFile.getPath())));
+            }
+            testFile.remove();
+            session.save();
+
+            try {
+                session.getNode(providerRoot + "/" + name);
+                fail(providerRoot + " : File has not been deleted");
+
+            } catch (PathNotFoundException e) {
+                // ok
+            }
+        } finally {
+            session.logout();
+        }
+    }
 }

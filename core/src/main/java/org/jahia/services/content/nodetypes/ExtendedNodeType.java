@@ -372,7 +372,7 @@ public class ExtendedNodeType implements NodeType {
                                 getSystemId());
             } catch (Exception e) {
                 logger.warn(
-                        "Unable to get the tempalte package for the node with system id '"
+                        "Unable to get the template package for the node with system id '"
                                 + getSystemId() + "'", e);
             }
         }

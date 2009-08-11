@@ -163,12 +163,13 @@ public class FileSearchViewHandler extends AbstractSearchViewHandler {
         } else if (DateValue.Type.LAST_SIX_MONTHS == dateValue.getType()) {
             greaterThanDate.add(Calendar.MONTH, -6);
         } else if (DateValue.Type.RANGE == dateValue.getType()) {
+            greaterThanDate = null;
+            smallerThanDate = null;
             if (dateValue.getFromAsDate() != null) {
+                greaterThanDate = Calendar.getInstance();
                 greaterThanDate.setTime(dateValue.getFromAsDate());
-                smallerThanDate = null;
             }
             if (dateValue.getToAsDate() != null) {
-                greaterThanDate = null;
                 smallerThanDate = Calendar.getInstance();
                 smallerThanDate.setTime(dateValue.getToAsDate());
             }

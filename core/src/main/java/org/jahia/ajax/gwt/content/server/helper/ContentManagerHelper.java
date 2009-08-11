@@ -1385,6 +1385,11 @@ public class ContentManagerHelper {
             if (jcr.getThreadSession(context.getUser()).getNode(parentPath + "/" + name).isValid()) {
                 throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
             }
+        } catch (PathNotFoundException e) {
+            if(!e.getMessage().contains(name)) {
+                logger.error(e.toString(), e);
+                throw new GWTJahiaServiceException(new StringBuilder(parentPath).append("/").append(name).append(" could not be accessed :\n").append(e.toString()).toString());
+            }
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(parentPath).append("/").append(name).append(" could not be accessed :\n").append(e.toString()).toString());

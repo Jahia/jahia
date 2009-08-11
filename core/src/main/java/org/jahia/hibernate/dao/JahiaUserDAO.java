@@ -168,12 +168,14 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
             args.add(providerName);
             StringBuffer hql = new StringBuffer("select distinct p.comp_id.userkey from JahiaUserProp p ");
             hql.append("where p.comp_id.provider=?");
+            boolean isValid = false;
             for (int i = 0; i < criteriaNameList.size(); i++) {
                 String name = (String) criteriaNameList.get(i);
                 String value = (String) criteriaValueList.get(i);
                 if (name.equals("*")) {
                     hql.append(" and (p.value like ?) ");
                     args.add(value);
+                    isValid = true;
                     if (providerName.equals("jahia")) {
                         list.addAll(searchUserName(value));
                     }
@@ -185,9 +187,12 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
                     hql.append(" and (p.comp_id.name=? and p.value like ?) ");
                     args.add(name);
                     args.add(value);
+                    isValid = true;
                 }
             }
-            list.addAll(template.find(hql.toString(), args.toArray()));
+            if (isValid) {
+                list.addAll(template.find(hql.toString(), args.toArray()));
+            }
         }
         return list;
     }

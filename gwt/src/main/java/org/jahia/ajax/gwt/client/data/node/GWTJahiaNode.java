@@ -391,4 +391,12 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public String getSelectedVersion() {
         return selectedVersion;
     }
+
+    public String getProviderKey() {
+        return get("providerKey");
+    }
+
+    public void setProviderKey(String providerName) {
+        set("providerKey", providerName);
+    }
 }

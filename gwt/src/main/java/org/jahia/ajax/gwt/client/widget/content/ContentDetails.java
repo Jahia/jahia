@@ -632,7 +632,11 @@ public class ContentDetails extends BottomRightComponent {
                         authAclEditor = new AclEditor(gwtJahiaNodeACL, selectedNode.getAclContext());
                         authAclEditor.setAclGroup(JCRClientUtils.AUTHORIZATIONS_ACL);
                         authAclEditor.setCanBreakInheritance(false);
-                        authAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
+                        if(!(selectedNode.getProviderKey().equals("default")||selectedNode.getProviderKey().equals("jahia"))) {
+                            authAclEditor.setReadOnly(true);
+                        } else {
+                            authAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
+                        }
                         Button saveButton = authAclEditor.getSaveButton();
                         saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, AUTH_TAB_ITEM));
                         renderAuthorization();

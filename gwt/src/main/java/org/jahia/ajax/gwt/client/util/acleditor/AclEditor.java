@@ -236,15 +236,16 @@ public class AclEditor {
             col.setRenderer(new CellRenderer<TableItem>() {
                 public String render(final TableItem item, final String property, final Object value) {
                     final GWTJahiaNodeACE ace = (GWTJahiaNodeACE) value;
-
-                    if (!ace.getInheritedPermissions().isEmpty() && !acl.isBreakAllInheritance()) {
-                        if (!ace.getPermissions().equals(ace.getInheritedPermissions())) {
-                            item.setWidget(available.size() + 2, buildLocalRestoreButton(item, ace));
+                    if (!readOnly) {
+                        if (!ace.getInheritedPermissions().isEmpty() && !acl.isBreakAllInheritance()) {
+                            if (!ace.getPermissions().equals(ace.getInheritedPermissions())) {
+                                item.setWidget(available.size() + 2, buildLocalRestoreButton(item, ace));
+                            } else {
+                                item.setValue(available.size() + 2, buildInheritanceLabel(ace));
+                            }
                         } else {
-                            item.setValue(available.size() + 2, buildInheritanceLabel(ace));
+                            item.setWidget(available.size() + 2, buildRemoveButton(item, ace));
                         }
-                    } else {
-                        item.setWidget(available.size() + 2, buildRemoveButton(item, ace));
                     }
                     return "";
                 }

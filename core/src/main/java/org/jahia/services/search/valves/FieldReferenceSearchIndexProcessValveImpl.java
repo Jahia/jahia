@@ -213,7 +213,7 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
         List<String> valuesList = new ArrayList<String>();
         String[] values = null;
         try {
-            values = fillDocumentWithFileField(contextMap, fieldReference, doc);
+            values = fillDocumentWithFileField(contextMap, fieldReference.replace("file:",""), doc);
             String name = JahiaSearchConstant.CONTAINER_FIELD_PREFIX
                     + field.getDefinition().getCtnType().replaceAll("[ :]", "_").toLowerCase();
             doc.setFieldValues(name, values);

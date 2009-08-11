@@ -84,7 +84,8 @@ public class QueryResultAdapter implements QueryResult {
                         public Value getValue(String s) throws ItemNotFoundException, RepositoryException {
                             if (s.equals(JcrConstants.JCR_PATH)) {
                                 String rowValue = row.getValue(s).getString();
-                                return new StringValue(rowValue.startsWith("/") ? rowValue : queryResult.getProvider().getMountPoint() + "/" + rowValue);
+                                String mountPoint = queryResult.getProvider().getMountPoint();
+                                return new StringValue(mountPoint.equals("/") ? rowValue : mountPoint + rowValue);
                             }
                             return row.getValue(s);
                         }

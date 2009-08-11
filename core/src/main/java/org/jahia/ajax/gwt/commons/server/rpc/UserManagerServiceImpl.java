@@ -64,7 +64,7 @@ public class UserManagerServiceImpl extends SessionManagerServiceImpl implements
     public PagingLoadResult<GWTJahiaUser> searchUsers(String match, int offset, int limit, List<Integer> siteIds) {
         try {
             Properties criterias = new Properties();
-            criterias.setProperty(JahiaUserManagerDBProvider.USERNAME_PROPERTY_NAME, match);
+            criterias.setProperty("*", match);
 
             ParamBean jParams = retrieveParamBean();
             List<Integer> sites = siteIds;

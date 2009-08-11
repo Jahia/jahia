@@ -65,6 +65,10 @@ public class QueryResultAdapter implements QueryResult {
         this.queryResults = queryResults;
     }
 
+    public QueryResultAdapter() {
+        queryResults = new ArrayList<QueryResult>();
+    }
+
     public String[] getColumnNames() throws RepositoryException {
         return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -95,5 +99,13 @@ public class QueryResultAdapter implements QueryResult {
             this.nodeIterator = new NodeIteratorAdapter(nodes);
         }
         return this.nodeIterator;
+    }
+
+    public void addResults(List<QueryResult> queryResults) {
+        this.queryResults.addAll(queryResults);
+    }
+
+    public void addResult(QueryResult result) {
+        queryResults.add(result);
     }
 }

@@ -207,6 +207,14 @@ public class TableView extends TopRightComponent {
     private ColumnModel getHeaders() {
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
         ColumnConfig col;
+
+        if (configuration.isDisplayProvider()) {
+            col = new ColumnConfig("providerKey", Messages.getResource("fm_column_provider"), 140);
+            col.setSortable(true);
+            col.setResizable(true);
+            headerList.add(col);
+        }
+
         if (configuration.isDisplayExt()) {
             col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 40);
             col.setAlignment(Style.HorizontalAlignment.CENTER);

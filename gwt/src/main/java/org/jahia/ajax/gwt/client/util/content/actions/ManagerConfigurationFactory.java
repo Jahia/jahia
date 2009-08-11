@@ -184,7 +184,7 @@ public class ManagerConfigurationFactory {
     public static ManagerConfiguration getFileManagerConfiguration(final BrowserLinker linker) {
         ManagerConfiguration fileManagerConfig = new ManagerConfiguration();
         fileManagerConfig.setEnableTextMenu(true);
-
+        fileManagerConfig.setDisplayProvider(true);
         ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
         ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);

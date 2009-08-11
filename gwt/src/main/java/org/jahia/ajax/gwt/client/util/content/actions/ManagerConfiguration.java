@@ -62,6 +62,7 @@ public class ManagerConfiguration {
     private boolean displayExt = true;
     private boolean displayLock = true;
     private boolean displayDate = true;
+    private boolean displayProvider = false;
 
     public ManagerConfiguration() {
         items = new ArrayList<ContentActionItemItf>();
@@ -209,5 +210,13 @@ public class ManagerConfiguration {
 
     public void setDisplayDate(boolean displayDate) {
         this.displayDate = displayDate;
+    }
+
+    public boolean isDisplayProvider() {
+        return displayProvider;
+    }
+
+    public void setDisplayProvider(boolean displayProvider) {
+        this.displayProvider = displayProvider;
     }
 }

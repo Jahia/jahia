@@ -355,6 +355,8 @@ cursor:pointer;
                             aliasResourceName="fm_column_size"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.date.label"
                             aliasResourceName="fm_column_date"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label"
+                            aliasResourceName="fm_column_provider"/>
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"
                             aliasResourceName="fm_repository_myRepository"/>

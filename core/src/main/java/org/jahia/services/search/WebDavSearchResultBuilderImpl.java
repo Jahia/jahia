@@ -45,6 +45,8 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.JahiaUser;
 
+import javax.jcr.RepositoryException;
+
 /**
  * Default implementation to build Webdav Search Result from a collection of
  * ParsedObject
@@ -61,7 +63,7 @@ public class WebDavSearchResultBuilderImpl extends
             .getLogger(WebDavSearchResultBuilderImpl.class);
 
     public JahiaSearchResult buildResult(Collection<ParsedObject> parsedObjects,
-            JahiaUser user, String[] queriesArray) {
+            JahiaUser user, String[] queriesArray) throws RepositoryException {
 
         if (parsedObjects == null || parsedObjects.isEmpty()) {
             return EMPTY_RESULT;
@@ -74,9 +76,9 @@ public class WebDavSearchResultBuilderImpl extends
         result.setUseBitSet(false);
         JCRStoreService fileService = JCRStoreService.getInstance();
 
-        for (ParsedObject obj : (Collection<ParsedObject>) parsedObjects) {
+        for (ParsedObject obj : parsedObjects) {
             String uri = obj.getValue("uri");
-            JCRNodeWrapper node = fileService.getFileNode(uri, user);
+            JCRNodeWrapper node = fileService.getThreadSession(user).getNode(uri);
             if (node != null && node.isValid()) {
                 JahiaSearchHit hit = new JahiaSearchHit(obj);
                 hit.setType(JahiaSearchHitInterface.WEBDAVFILE_TYPE);
@@ -107,7 +109,12 @@ public class WebDavSearchResultBuilderImpl extends
     public JahiaSearchResult buildResult(Collection<ParsedObject> parsedObjects,
             ProcessingContext ctx, String[] queriesArray) {
 
-        return buildResult(parsedObjects, ctx.getUser(), queriesArray);
+        try {
+            return buildResult(parsedObjects, ctx.getUser(), queriesArray);
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public JahiaSearchResult buildResult(SearchResult jcrResult,

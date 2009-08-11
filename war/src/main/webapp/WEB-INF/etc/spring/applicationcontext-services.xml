@@ -189,6 +189,7 @@ FRAG2(frag_size=60000)</value>
                 <property name="cacheService" ref="JahiaCacheService" />
                 <property name="groupManagerService" ref="JahiaGroupManagerService" />
                 <property name="servletContextManager" ref="ServletContextManager" />
+                <property name="plutoServices" ref="PlutoServices" /> 
             </bean>
         </property>
     </bean>

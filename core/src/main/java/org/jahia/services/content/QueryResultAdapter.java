@@ -31,17 +31,17 @@
  */
 package org.jahia.services.content;
 
-import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
-import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
 import org.apache.jackrabbit.JcrConstants;
+import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
+import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.jackrabbit.value.StringValue;
 
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.RowIterator;
-import javax.jcr.query.Row;
 import javax.jcr.*;
-import java.util.List;
+import javax.jcr.query.QueryResult;
+import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -74,22 +74,23 @@ public class QueryResultAdapter implements QueryResult {
     }
 
     public RowIterator getRows() throws RepositoryException {
-        if (this.rowIterator == null){
+        if (this.rowIterator == null) {
             List<Row> rows = new ArrayList<Row>();
-            for (final JCRWorkspaceWrapper.QueryResultWrapper queryResult: queryResults){
+            for (final JCRWorkspaceWrapper.QueryResultWrapper queryResult : queryResults) {
                 RowIterator rowIterator = queryResult.getRows();
-                while(rowIterator.hasNext()){
+                while (rowIterator.hasNext()) {
                     final Row row = rowIterator.nextRow();
                     rows.add(new Row() {
                         public Value getValue(String s) throws ItemNotFoundException, RepositoryException {
-                            if(s.equals(JcrConstants.JCR_PATH)) {
-                                        return new StringValue(queryResult.getProvider().getMountPoint()+"/"+row.getValue(s).getString());
-                                    }
+                            if (s.equals(JcrConstants.JCR_PATH)) {
+                                String rowValue = row.getValue(s).getString();
+                                return new StringValue(rowValue.startsWith("/") ? rowValue : queryResult.getProvider().getMountPoint() + "/" + rowValue);
+                            }
                             return row.getValue(s);
                         }
 
                         public Value[] getValues() throws RepositoryException {
-                            return  row.getValues();
+                            return row.getValues();
                         }
                     });
                 }
@@ -100,11 +101,11 @@ public class QueryResultAdapter implements QueryResult {
     }
 
     public NodeIterator getNodes() throws RepositoryException {
-        if (this.nodeIterator == null){
+        if (this.nodeIterator == null) {
             List<Node> nodes = new ArrayList<Node>();
-            for (QueryResult queryResult: queryResults){
+            for (QueryResult queryResult : queryResults) {
                 NodeIterator nodeIterator = queryResult.getNodes();
-                while(nodeIterator.hasNext()){
+                while (nodeIterator.hasNext()) {
                     nodes.add(nodeIterator.nextNode());
                 }
             }

@@ -114,6 +114,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     private static final String APPLICATION_DEFINITION_CONTEXT = "ApplicationDefinitionContext";
     private Cache<String, EntryPointInstance> entryPointCache;
     private static final String ENTRY_POINT_INSTANCE = "EntryPointInstance";
+    private PlutoServices plutoServices;
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
@@ -137,6 +138,14 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
     public void setJcrStoreService (JCRStoreService jcrStoreService) {
         this.jcrStoreService = jcrStoreService;
+    }
+
+    public PlutoServices getPlutoServices() {
+        return plutoServices;
+    }
+
+    public void setPlutoServices(PlutoServices plutoServices) {
+        this.plutoServices = plutoServices;
     }
 
     /**
@@ -190,7 +199,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         */
         
         // register listener
-        PlutoServices.getServices().getPortletRegistryService().addPortletRegistryListener(new PortletRegistryListener() {
+        plutoServices.getPortletRegistryService().addPortletRegistryListener(new PortletRegistryListener() {
             public void portletApplicationRegistered(
                     PortletRegistryEvent evt) {
                 servletContextManager.removeContextFromCache(evt.getApplicationName());

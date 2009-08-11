@@ -209,7 +209,7 @@ public class TableView extends TopRightComponent {
         ColumnConfig col;
 
         if (configuration.isDisplayProvider()) {
-            col = new ColumnConfig("providerKey", Messages.getResource("fm_column_provider"), 140);
+            col = new ColumnConfig("providerKey", Messages.getResource("fm_column_provider"), 60);
             col.setSortable(true);
             col.setResizable(true);
             headerList.add(col);

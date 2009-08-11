@@ -62,7 +62,7 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <finalName>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}</finalName>
+                    <finalName>Jahia_CE_v${jahia.package.version}-${buildNumber}_JBoss_${jahia.jboss.version}</finalName>
                     <descriptors>
                         <descriptor>src/main/assembly/src.xml</descriptor>
                     </descriptors>

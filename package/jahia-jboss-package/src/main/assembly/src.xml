@@ -14,31 +14,31 @@
         <exclude>server/default/deploy/jboss-web.deployer/server.xml</exclude>
         <exclude>server/default/deploy/jboss-web.deployer/conf/web.xml</exclude>
       </excludes>
-      <outputDirectory>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}</outputDirectory>
+      <outputDirectory>Jahia_CE_v${jahia.package.version}-${buildNumber}_JBoss_${jahia.jboss.version}</outputDirectory>
     </fileSet>
     <fileSet>
       <directory>${project.build.directory}/jboss-${jahia.jboss.version}</directory>
       <includes><include>**/*.sh</include></includes>
       <fileMode>755</fileMode>
-      <outputDirectory>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}</outputDirectory>
+      <outputDirectory>Jahia_CE_v${jahia.package.version}-${buildNumber}_JBoss_${jahia.jboss.version}</outputDirectory>
     </fileSet>
   </fileSets>
   <files>
     <file>
         <source>src/main/resources/run.bat</source>
-        <outputDirectory>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}/bin</outputDirectory>
+        <outputDirectory>Jahia_CE_v${jahia.package.version}-${buildNumber}_JBoss_${jahia.jboss.version}/bin</outputDirectory>
     </file>
     <file>
         <source>src/main/resources/run.conf</source>
-        <outputDirectory>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}/bin</outputDirectory>
+        <outputDirectory>Jahia_CE_v${jahia.package.version}-${buildNumber}_JBoss_${jahia.jboss.version}/bin</outputDirectory>
     </file>
     <file>
         <source>src/main/resources/conf/server.xml</source>
-        <outputDirectory>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}/server/default/deploy/jboss-web.deployer</outputDirectory>
+        <outputDirectory>Jahia_CE_v${jahia.package.version}-${buildNumber}_JBoss_${jahia.jboss.version}/server/default/deploy/jboss-web.deployer</outputDirectory>
     </file>
     <file>
         <source>src/main/resources/conf/web.xml</source>
-        <outputDirectory>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}/server/default/deploy/jboss-web.deployer/conf</outputDirectory>
+        <outputDirectory>Jahia_CE_v${jahia.package.version}-${buildNumber}_JBoss_${jahia.jboss.version}/server/default/deploy/jboss-web.deployer/conf</outputDirectory>
     </file>
   </files>
 </assembly>

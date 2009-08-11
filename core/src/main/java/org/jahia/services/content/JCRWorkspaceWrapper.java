@@ -197,7 +197,7 @@ public class JCRWorkspaceWrapper implements Workspace {
     public QueryResult execute(QueryObjectModel queryObjectModel) throws InvalidQueryException,
                     RepositoryException {
 
-        List<QueryResult> results = new ArrayList<QueryResult>();
+        List<JCRWorkspaceWrapper.QueryResultWrapper> results = new ArrayList<JCRWorkspaceWrapper.QueryResultWrapper>();
         for (JCRStoreProvider jcrStoreProvider : service.getProviders().values()) {
             QueryManager qm = jcrStoreProvider.getQueryManager(session);
             if (qm != null && qm instanceof org.jahia.query.qom.QueryManagerImpl)  {
@@ -205,10 +205,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                         .createQuery(queryObjectModel.getSource(),
                         queryObjectModel.getConstraint(),queryObjectModel.getOrderings(),queryObjectModel.getColumns());
                 if (qom != null){
-                    QueryResult result = qom.execute();
-                    if (result != null){
-                        results.add(result);
-                    }
+                    qom.execute();
                 }
             }
         }
@@ -311,7 +308,7 @@ public class JCRWorkspaceWrapper implements Workspace {
         public QueryExecute getQueryExecute() {
             return new QueryExecute(){
                 public QueryResult execute(QueryObjectModel queryObjectModel) throws RepositoryException {
-                    List<QueryResult> results = new ArrayList<QueryResult>();
+                    List<JCRWorkspaceWrapper.QueryResultWrapper> results = new ArrayList<JCRWorkspaceWrapper.QueryResultWrapper>();
                     String nodeType = "";
                     Source source = queryObjectModel.getSource();
                     if (source instanceof SelectorImpl) {
@@ -327,10 +324,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                                     .createQuery(queryObjectModel.getSource(),
                                     queryObjectModel.getConstraint(),queryObjectModel.getOrderings(),queryObjectModel.getColumns());
                             if (qom != null){
-                                QueryResult result = qom.execute();
-                                if (result != null){
-                                    results.add(result);
-                                }
+                                qom.execute();
                             }
                         }
 /* not activated yet
@@ -465,6 +459,10 @@ public class JCRWorkspaceWrapper implements Workspace {
             this.provider = provider;
             this.result = result;
             this.user = user;
+        }
+
+        public JCRStoreProvider getProvider() {
+            return provider;
         }
 
         public String[] getColumnNames() throws RepositoryException {

@@ -33,13 +33,13 @@ package org.jahia.services.content;
 
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
+import org.apache.jackrabbit.JcrConstants;
+import org.apache.jackrabbit.value.StringValue;
 
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.RowIterator;
 import javax.jcr.query.Row;
-import javax.jcr.RepositoryException;
-import javax.jcr.NodeIterator;
-import javax.jcr.Node;
+import javax.jcr.*;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -52,7 +52,7 @@ import java.util.ArrayList;
  */
 public class QueryResultAdapter implements QueryResult {
 
-    private List<QueryResult> queryResults;
+    private List<JCRWorkspaceWrapper.QueryResultWrapper> queryResults;
     private RowIteratorAdapter rowIterator;
     private NodeIteratorAdapter nodeIterator;
 
@@ -61,12 +61,12 @@ public class QueryResultAdapter implements QueryResult {
      *
      * @param queryResults
      */
-    public QueryResultAdapter(List<QueryResult> queryResults) {
+    public QueryResultAdapter(List<JCRWorkspaceWrapper.QueryResultWrapper> queryResults) {
         this.queryResults = queryResults;
     }
 
     public QueryResultAdapter() {
-        queryResults = new ArrayList<QueryResult>();
+        queryResults = new ArrayList<JCRWorkspaceWrapper.QueryResultWrapper>();
     }
 
     public String[] getColumnNames() throws RepositoryException {
@@ -76,10 +76,22 @@ public class QueryResultAdapter implements QueryResult {
     public RowIterator getRows() throws RepositoryException {
         if (this.rowIterator == null){
             List<Row> rows = new ArrayList<Row>();
-            for (QueryResult queryResult: queryResults){
+            for (final JCRWorkspaceWrapper.QueryResultWrapper queryResult: queryResults){
                 RowIterator rowIterator = queryResult.getRows();
                 while(rowIterator.hasNext()){
-                    rows.add(rowIterator.nextRow());
+                    final Row row = rowIterator.nextRow();
+                    rows.add(new Row() {
+                        public Value getValue(String s) throws ItemNotFoundException, RepositoryException {
+                            if(s.equals(JcrConstants.JCR_PATH)) {
+                                        return new StringValue(queryResult.getProvider().getMountPoint()+"/"+row.getValue(s).getString());
+                                    }
+                            return row.getValue(s);
+                        }
+
+                        public Value[] getValues() throws RepositoryException {
+                            return  row.getValues();
+                        }
+                    });
                 }
             }
             this.rowIterator = new RowIteratorAdapter(rows);
@@ -101,11 +113,11 @@ public class QueryResultAdapter implements QueryResult {
         return this.nodeIterator;
     }
 
-    public void addResults(List<QueryResult> queryResults) {
+    public void addResults(List<JCRWorkspaceWrapper.QueryResultWrapper> queryResults) {
         this.queryResults.addAll(queryResults);
     }
 
-    public void addResult(QueryResult result) {
+    public void addResult(JCRWorkspaceWrapper.QueryResultWrapper result) {
         queryResults.add(result);
     }
 }

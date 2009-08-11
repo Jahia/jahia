@@ -1798,7 +1798,8 @@ public class ContentManagerHelper {
                     }
                 }
             }
-
+            node.changePermissions("g:users","rw");
+            node.changePermissions("g:guest","r-");
             try {
                 parentNode.save();
             } catch (RepositoryException e) {

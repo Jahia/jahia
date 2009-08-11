@@ -68,26 +68,26 @@ public class PortletModesCard extends MashupWizardCard {
         removeAll();
         super.createUI();
         // update
-        final GWTJahiaNodeACL acl = getPortletWizardWindow().getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getBaseAcl();
+        final GWTJahiaNodeACL acl = getPortletWizardWindow().getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getBaseAcl().cloneObject();
         List<String> permissions = acl.getAvailablePermissions().get(JCRClientUtils.MODES_ACL);
+        acl.setBreakAllInheritance(true);
         if (permissions != null && permissions.size() > 0) {
             JahiaContentManagementService.App.getInstance().createDefaultUsersGroupACE(permissions, true, new AsyncCallback<GWTJahiaNodeACE>() {
                 public void onSuccess(GWTJahiaNodeACE gwtJahiaNodeACE) {
                     Log.debug("Add group ACE");
-                    List<GWTJahiaNodeACE> aces = acl.getAce();
-                    if (aces == null) {
-                        aces = new ArrayList<GWTJahiaNodeACE>();
-                    }
+                    removeAll();
+                    List<GWTJahiaNodeACE> aces = new ArrayList<GWTJahiaNodeACE>();
                     aces.add(gwtJahiaNodeACE);
                     acl.setAce(aces);
-                    initModeMappingEditor();
+                    initModeMappingEditor(acl);
                     add(modeMappingEditor.renderNewAclPanel());
                     getPortletWizardWindow().updateWizard();
                 }
 
                 public void onFailure(Throwable throwable) {
                     Log.error("Unable to Add group ACE");
-                    initModeMappingEditor();
+                    removeAll();
+                    initModeMappingEditor(acl);
                     add(modeMappingEditor.renderNewAclPanel());
                 }
             });
@@ -96,15 +96,13 @@ public class PortletModesCard extends MashupWizardCard {
         }
     }
 
-    private void initModeMappingEditor() {
-        modeMappingEditor = new AclEditor(getPortletWizardWindow().getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getBaseAcl(), getPortletWizardWindow().getParentNode().getAclContext());
+    private void initModeMappingEditor(GWTJahiaNodeACL acl) {
+        modeMappingEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext());
         modeMappingEditor.setAclGroup(JCRClientUtils.MODES_ACL);
         modeMappingEditor.setAddUsersLabel(Messages.getNotEmptyResource("mw_modes_adduser", "Add mode-user permission"));
         modeMappingEditor.setAddGroupsLabel(Messages.getNotEmptyResource("mw_modes_addgroup", "Add mode-group permission"));
         Button saveButton = modeMappingEditor.getSaveButton();
         saveButton.setVisible(false);
-
-
         Button restoreButton = modeMappingEditor.getRestoreButton();
         restoreButton.setVisible(false);
     }

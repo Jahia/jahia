@@ -84,6 +84,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     protected String[] defaultPerms = { "jcr:read","jcr:write" };
 
     protected Exception exception = null;
+    private static final String J_PRIVILEGES = "j:privileges";
 
     protected JCRNodeWrapperImpl(String path, JCRSessionWrapper session, JCRStoreProvider provider) {
         super(session, provider);
@@ -1463,12 +1464,32 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             aced.setProperty("j:aceType","DENY");
         }
 
-        String[] grs = new String[gr.size()];
-        gr.toArray(grs) ;
-        aceg.setProperty("j:privileges",grs);
-        String[] dens = new String[den.size()];
-        den.toArray(dens) ;
-        aced.setProperty("j:privileges",dens);
+        List<String> grClone = new ArrayList<String>(gr);
+        List<String> denClone = new ArrayList<String>(den);
+        if (aceg.hasProperty(J_PRIVILEGES)) {
+            final Value[] values = aceg.getProperty(J_PRIVILEGES).getValues();
+            for (Value value : values) {
+                final String s = value.getString();
+                if (!gr.contains(s) && !den.contains(s)) {
+                    grClone.add(s);
+                }
+            }
+        }
+        if (aced.hasProperty(J_PRIVILEGES)) {
+            final Value[] values = aced.getProperty(J_PRIVILEGES).getValues();
+            for (Value value : values) {
+                final String s = value.getString();
+                if (!gr.contains(s) && !den.contains(s)) {
+                    denClone.add(s);
+                }
+            }
+        }
+        String[] grs = new String[grClone.size()];
+        grClone.toArray(grs);
+        aceg.setProperty(J_PRIVILEGES,grs);
+        String[] dens = new String[denClone.size()];
+        denClone.toArray(dens);
+        aced.setProperty(J_PRIVILEGES,dens);
     }
 
     public static void revokePermission(Node objectNode, String user) throws RepositoryException {

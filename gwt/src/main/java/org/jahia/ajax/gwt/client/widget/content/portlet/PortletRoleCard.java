@@ -42,6 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.widget.button.Button;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -67,20 +68,18 @@ public class PortletRoleCard extends MashupWizardCard {
     public void createUI() {
         // update
         super.createUI();        
-        final GWTJahiaNodeACL acl = getPortletWizardWindow().getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getBaseAcl();
+        final GWTJahiaNodeACL acl = getPortletWizardWindow().getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getBaseAcl().cloneObject();
+        acl.setBreakAllInheritance(true);
         List<String> permissions = acl.getAvailablePermissions().get(JCRClientUtils.ROLES_ACL);
         if (permissions != null && permissions.size() > 0) {
             JahiaContentManagementService.App.getInstance().createDefaultUsersGroupACE(permissions, true, new AsyncCallback<GWTJahiaNodeACE>() {
                 public void onSuccess(GWTJahiaNodeACE gwtJahiaNodeACE) {
                     Log.debug("Add group ACE");
                     removeAll();
-                    List<GWTJahiaNodeACE> aces = acl.getAce();
-                    if (aces == null) {
-                        aces = new ArrayList<GWTJahiaNodeACE>();
-                    }
+                    List<GWTJahiaNodeACE> aces = new ArrayList<GWTJahiaNodeACE>();
                     aces.add(gwtJahiaNodeACE);
                     acl.setAce(aces);
-                    initAclEditor();
+                    initAclEditor(acl);
                     add(aclEditor.renderNewAclPanel());
                     getPortletWizardWindow().updateWizard();
                 }
@@ -88,7 +87,7 @@ public class PortletRoleCard extends MashupWizardCard {
                 public void onFailure(Throwable throwable) {
                     Log.error("Unable to Add group ACE");
                     removeAll();
-                    initAclEditor();
+                    initAclEditor(acl);
                     add(aclEditor.renderNewAclPanel());
                 }
             });
@@ -97,15 +96,15 @@ public class PortletRoleCard extends MashupWizardCard {
         }
     }
 
-    private void initAclEditor() {
-        aclEditor = new AclEditor(getPortletWizardWindow().getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getBaseAcl(), getPortletWizardWindow().getParentNode().getAclContext());
+    private void initAclEditor(GWTJahiaNodeACL acl) {
+        aclEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext());
         aclEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
         aclEditor.setAddUsersLabel(Messages.getNotEmptyResource("mw_roles_adduser", "Add rode-user permission"));
         aclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("mw_roles_addgroup", "Add rode-group permission"));
-        Widget saveButton = aclEditor.getSaveButton();
+        Button saveButton = aclEditor.getSaveButton();
         saveButton.setVisible(false);
 
-        Widget restoreButton = aclEditor.getRestoreButton();
+        Button restoreButton = aclEditor.getRestoreButton();
         restoreButton.setVisible(false);
     }
 

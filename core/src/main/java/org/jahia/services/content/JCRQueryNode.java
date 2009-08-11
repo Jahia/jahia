@@ -65,9 +65,14 @@ public class JCRQueryNode extends JCRNodeDecorator {
             NodeIterator ni = qr.getNodes();
             while (ni.hasNext()) {
                 Node node = ni.nextNode();
-                JCRNodeWrapper child = getProvider().getNodeWrapper(node, (JCRSessionWrapper) getSession());
-                if (child.getException () == null) {
-                    list.add (child);
+                if (node instanceof JCRNodeWrapper) {
+                    JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) node;
+                    list.add(nodeWrapper);
+                } else {
+                    JCRNodeWrapper child = getProvider().getNodeWrapper(node, (JCRSessionWrapper) getSession());
+                    if (child.getException() == null) {
+                        list.add(child);
+                    }
                 }
             }
             return list;

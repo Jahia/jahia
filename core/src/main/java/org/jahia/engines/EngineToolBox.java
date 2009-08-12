@@ -201,10 +201,10 @@ public class EngineToolBox {
         }
 
         // logs
-        engineMap.put("flushLogs", Integer.valueOf(flushLogs));
+        engineMap.put("flushLogs", flushLogs);
         engineMap.put("sendLogsURL", ManageLogs_Engine.getInstance().renderLink(jParams, ""));
         engineMap.put("objectTypeName", JahiaObjectTool.getInstance().getObjectTypeName(objectType));
-        engineMap.put ("objectIDObj", Integer.valueOf(objectID));
+        engineMap.put ("objectIDObj", objectID);
         engineMap.put ("objectName", objectName);
         engineMap.put ("userAgent", userAgent);
 
@@ -222,7 +222,7 @@ public class EngineToolBox {
             default:
                 final List<Map<String, Object>> logData = mAuditLogManager.getLog(objectType, objectID, jParams);
                 engineMap.put("logData", logData);
-                engineMap.put("deletedRows", Integer.valueOf(deletedRows));
+                engineMap.put("deletedRows", deletedRows);
                 output = registry.getJahiaFetcherService().fetchServlet((ParamBean) jParams, JSP_LOGFORM);
         }
         engineMap.put("logForm", output);

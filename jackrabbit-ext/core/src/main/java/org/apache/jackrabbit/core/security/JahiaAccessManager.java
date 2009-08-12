@@ -128,7 +128,7 @@ public class JahiaAccessManager implements AccessManager {
         }
 
         permissions = new HashMap<String,Integer>();
-        permissions.put("jcr:read", Permission.READ);
+        permissions.put(Constants.JCR_READ_RIGHTS, Permission.READ);
         permissions.put("jcr:setProperties", Permission.SET_PROPERTY);
         permissions.put("jcr:addChildNodes", Permission.ADD_NODE);
         permissions.put("jcr:removeChildNodes", Permission.REMOVE_NODE);

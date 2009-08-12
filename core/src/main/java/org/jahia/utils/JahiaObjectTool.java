@@ -69,7 +69,7 @@ public class JahiaObjectTool
 
     private static JahiaObjectTool theObject           = null;
 
-    private static final String    MSG_INTERNAL_ERROR  = new String ("Object Tool internal error");
+    private static final String    MSG_INTERNAL_ERROR  = "Object Tool internal error";
 
     public static final int        FIELD_TYPE          = 1;
     public static final int        CONTAINER_TYPE      = 2;
@@ -137,8 +137,6 @@ public class JahiaObjectTool
                 } else {
                     return ("field [" + objectID + "]");
                 }
-            case APPLICATION_TYPE:
-                return sReg.getApplicationsManagerService().getApplication(objectID).getName();
             case TEMPLATE_TYPE:
                 return sReg.getJahiaPageTemplateService().lookupPageTemplate(objectID).getName();
             case SERVER_TYPE:
@@ -224,7 +222,6 @@ public class JahiaObjectTool
             case FIELD_TYPE:         return ((JahiaField) engineMap.get( "theField" )).getID();
             case TEMPLATE_TYPE:      return ((JahiaPageDefinition) engineMap.get( "theTemplate" )).getID();
             case CATEGORY_TYPE:      return ((Category) engineMap.get(CategoriesEdit_Engine.CATEGORY_SESSION_NAME)).getObjectKey().getIdInType();
-            case APPLICATION_TYPE:   return ((ApplicationBean) engineMap.get(Application_Engine.APPLICATION_SESSION_NAME)).getID();
             default:                 throw new JahiaException (MSG_INTERNAL_ERROR,
                                                                "Incompatible Object Type passed to JahiaObjectTool",
                                                                JahiaException.SERVICE_ERROR,

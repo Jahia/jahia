@@ -81,7 +81,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     protected Node objectNode = null;
 
-    protected String[] defaultPerms = { "jcr:read","jcr:write" };
+    protected String[] defaultPerms = { Constants.JCR_READ_RIGHTS,Constants.JCR_WRITE_RIGHTS };
 
     protected Exception exception = null;
     private static final String J_PRIVILEGES = "j:privileges";
@@ -1413,14 +1413,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         Map<String, String> permsAsMap = new HashMap<String, String>();
         perm = perm.toLowerCase();
         if (perm.charAt(0)=='r') {
-            permsAsMap.put("jcr:read", "GRANT");
+            permsAsMap.put(Constants.JCR_READ_RIGHTS, "GRANT");
         } else {
-            permsAsMap.put("jcr:read", "DENY");
+            permsAsMap.put(Constants.JCR_READ_RIGHTS, "DENY");
         }
         if (perm.charAt(1)=='w') {
-            permsAsMap.put("jcr:write", "GRANT");
+            permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "GRANT");
         } else {
-            permsAsMap.put("jcr:write", "DENY");
+            permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "DENY");
         }
         changePermissions(objectNode, user, permsAsMap);
     }

@@ -58,31 +58,16 @@ public class JCRPortletNode extends JCRNodeDecorator {
     }
 
     public String getContextName() throws RepositoryException {
-        String s = getProperty("j:application").getString().split("!")[0];
-        if (s.startsWith("$context")) {
-            String prefix = Jahia.getContextPath();
-            if (prefix.equals("/")) {
-                prefix = "";
-            }
-            s = prefix + s.substring("$context".length());
-        }
-        return s;
+        return getProperty("j:application").getNode().getProperty("j:context").getString();
     }
 
     public String getDefinitionName() throws RepositoryException {
-        return getProperty("j:application").getString().split("!")[1];
+        return getProperty("j:definition").getString();
     }
 
-    public void setApplication(String contextName, String defName) throws RepositoryException {
-        String prefix = Jahia.getContextPath();
-        if (prefix.equals("/")) {
-            prefix = "";
-        }
-        if (contextName.startsWith(prefix)) {
-            contextName = "$context" + contextName.substring(prefix.length());
-        }
-        String app = contextName + "!" + defName;
-        setProperty("j:application", app);
+    public void setApplication(String appId,String defName) throws RepositoryException {
+        setProperty("j:application", appId);
+        setProperty("j:definition", defName);
     }
 
     public String getCacheScope() throws RepositoryException {
@@ -94,7 +79,7 @@ public class JCRPortletNode extends JCRNodeDecorator {
     }
 
     public EntryPointDefinition getEntryPointDefinition() throws JahiaException, RepositoryException {
-        return ServicesRegistry.getInstance().getApplicationsManagerService().getApplication(getContextName()).getEntryPointDefinitionByName(getDefinitionName());
+        return ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(getContextName()).getEntryPointDefinitionByName(getDefinitionName());
     }
 
     public Map<String, List<String>> getAvailablePermissions() {
@@ -111,7 +96,7 @@ public class JCRPortletNode extends JCRNodeDecorator {
 
     public static Map<String, List<String>> getAvailablePermissions(String contextName, String definitionName) throws JahiaException {
         Map<String, List<String>> results = new HashMap<String, List<String>>();
-        ApplicationBean bean = ServicesRegistry.getInstance().getApplicationsManagerService().getApplication(contextName);
+        ApplicationBean bean = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(contextName);
         WebAppContext appContext = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationContext(bean);
         List<String> roles = appContext.getRoles();
         results.put("roles", roles);

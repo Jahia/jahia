@@ -57,10 +57,8 @@ import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.License;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.applications.ApplicationsManagerService;
 import org.jahia.services.applications.ServletContextManager;
-import org.jahia.services.shares.AppsShareService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -68,10 +66,12 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webapps_deployer.JahiaWebAppsDeployerService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.utils.JahiaTools;
 import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.settings.SettingsBean;
+import org.jahia.api.Constants;
 import org.apache.commons.io.FileUtils;
 
 
@@ -241,8 +241,7 @@ public class ManageComponents extends AbstractAdministrationModule {
             for (int i = 0; i < size; i++) {
                 app = appList.get(i);
                 if (showAllComponents ||
-                        app.getACL().getPermission(null, null, jParams.getUser(), JahiaBaseACL.WRITE_RIGHTS,
-                                false, jParams.getSiteID())) {
+                    JCRContentUtils.hasPermission(jParams.getUser(), Constants.JCR_WRITE_RIGHTS,app.getID())) {
                     authAppList.add(app);
                 }
             }
@@ -484,10 +483,10 @@ public class ManageComponents extends AbstractAdministrationModule {
 
                 while (enumeration.hasNext()) {
                     app = enumeration.next();
-                    if ((app.getVisibleStatus() == 1)
+                    if ((app.isVisible())
                             && !(JahiaTools.inValues(String.valueOf(app.getID()), ids))) {
                         apps.add(app);
-                    } else if ((app.getVisibleStatus() == 0)
+                    } else if (!app.isVisible()
                             && (JahiaTools.inValues(String.valueOf(app.getID()), ids))) {
                         apps.add(app);
                     }
@@ -560,18 +559,18 @@ public class ManageComponents extends AbstractAdministrationModule {
             String[] ids = request.getParameterValues("visible_status");
 
 // save change
-            int id = 0;
-            int visStatus = 0;
+            String id;
+            boolean visStatus = false;
             ApplicationBean app = null;
             for (int i = 0; i < ids.length; i++) {
-                id = Integer.parseInt(ids[i]);
+                id = ids[i];
                 app = appManServ.getApplication(id);
                 if (app != null) {
-                    visStatus = app.getVisibleStatus();
-                    if (visStatus == 0) {
-                        app.setVisible(1);
+                    visStatus = app.isVisible();
+                    if (!visStatus) {
+                        app.setVisible(true);
                     } else {
-                        app.setVisible(0);
+                        app.setVisible(false);
                     }
 
                     appManServ.saveDefinition(app);
@@ -627,14 +626,12 @@ public class ManageComponents extends AbstractAdministrationModule {
 
             JahiaSitesService sitesServ = sReg.getJahiaSitesService();
             ApplicationsManagerService appManServ = sReg.getApplicationsManagerService();
-            AppsShareService appShareServ = sReg.getAppsShareService();
             JahiaWebAppsDeployerService appDepServ = sReg.getJahiaWebAppsDeployerService();
             ApplicationsManagerService appPersServ =
                     sReg.getApplicationsManagerService();
 
             if (appManServ == null
                     || sitesServ == null
-                    || appShareServ == null
                     || appDepServ == null
                     || appPersServ == null) {
                 throw new JahiaException("Unavailable Services",
@@ -652,8 +649,7 @@ public class ManageComponents extends AbstractAdministrationModule {
                 displayComponentList(request, response, session);
                 return;
             }
-            int id = Integer.parseInt(strVal);
-            ApplicationBean app = appManServ.getApplication(id);
+            ApplicationBean app = appManServ.getApplication(strVal);
 
             if (app == null) {
                 String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.errMsg.applicaionNotFound.label",
@@ -665,21 +661,6 @@ public class ManageComponents extends AbstractAdministrationModule {
 
             String subAction = request.getParameter("subaction");
             if (subAction == null || (subAction.length() <= 0)) {
-
-                // get the list of authorized sites for this application
-                Iterator<Integer> authSitesID = null;
-
-                authSitesID = appShareServ.getSites(app);
-                List<JahiaSite> authSites = new ArrayList<JahiaSite>();
-                Integer siteID = null;
-                while (authSitesID.hasNext()) {
-                    siteID = authSitesID.next();
-                    JahiaSite aSite = sitesServ.getSite(siteID.intValue());
-                    authSites.add(aSite);
-                }
-
-                request.setAttribute("authSites", authSites.iterator());
-                request.setAttribute("nbShare", new Integer(authSites.size()));
 
                 request.setAttribute("appItem", app);
                 JahiaAdministration.doRedirect(request,
@@ -723,13 +704,13 @@ public class ManageComponents extends AbstractAdministrationModule {
                     app.setName(appName);
                 }
                 if (visible_status != null) {
-                    app.setVisible(1);
+                    app.setVisible(true);
                 } else {
-                    app.setVisible(0);
+                    app.setVisible(false);
                 }
 
                 String appDescr = request.getParameter("appDescr");
-                app.setdesc(appDescr);
+                app.setDescription(appDescr);
 
                 if (appManServ.saveDefinition(app)) {
                     String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.applicationUpdated.label",
@@ -741,7 +722,7 @@ public class ManageComponents extends AbstractAdministrationModule {
                     session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                 }
 
-                app = appManServ.getApplication(id);
+                app = appManServ.getApplication(strVal);
                 request.setAttribute("appItem", app);
                 JahiaAdministration.doRedirect(request,
                         response,
@@ -896,7 +877,7 @@ public class ManageComponents extends AbstractAdministrationModule {
                 if (pack != null) {
 
 // check if this application has been already registered in Jahia
-                    ApplicationBean app = appManServ.getApplication("/" + pack.getContextRoot());
+                    ApplicationBean app = appManServ.getApplicationByContext("/" + pack.getContextRoot());
                     if (app != null) {
                         String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.componentAlreadyRegistered.label",
                                 jParams.getLocale());
@@ -932,12 +913,12 @@ public class ManageComponents extends AbstractAdministrationModule {
                     if (!pack.isDirectory()) {
                         if (appDepServ.deploy(pack.getContextRoot(), appPath)) {
 // update with value from form
-                            ApplicationBean app = appManServ.getApplication("/" + pack.getContextRoot());
+                            ApplicationBean app = appManServ.getApplicationByContext("/" + pack.getContextRoot());
                             if (app != null) {
                                 if (appName != null && appName.trim().length() > 0) {
                                     app.setName(appName);
                                 }
-                                app.setdesc(appDescr);
+                                app.setDescription(appDescr);
                                 appManServ.saveDefinition(app);
                             }
                             String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.componentRegistered.label",
@@ -958,12 +939,12 @@ public class ManageComponents extends AbstractAdministrationModule {
                                 pack.getWebApps());
 
 // update with value from form
-                        ApplicationBean app = appManServ.getApplication("/" + pack.getContextRoot());
+                        ApplicationBean app = appManServ.getApplicationByContext("/" + pack.getContextRoot());
                         if (app != null) {
                             if (appName != null && appName.trim().length() > 0) {
                                 app.setName(appName);
                             }
-                            app.setdesc(appDescr);
+                            app.setDescription(appDescr);
                             appManServ.saveDefinition(app);
                         }
 
@@ -1159,14 +1140,12 @@ public class ManageComponents extends AbstractAdministrationModule {
         try {
             ApplicationsManagerService appManServ = sReg.getApplicationsManagerService();
             JahiaSitesService sitesServ = sReg.getJahiaSitesService();
-            AppsShareService appShareServ = sReg.getAppsShareService();
             ApplicationsManagerService appPersServ =
                     sReg.getApplicationsManagerService();
             JahiaGroupManagerService grpManServ = sReg.getJahiaGroupManagerService();
 
             if (appManServ == null
                     || sitesServ == null
-                    || appShareServ == null
                     || appPersServ == null
                     || grpManServ == null) {
                 throw new JahiaException("Unavailable Services",
@@ -1203,20 +1182,16 @@ public class ManageComponents extends AbstractAdministrationModule {
             request.setAttribute("sitesList", grantedSites);
 
             // get the current application
-            int appID = -1;
             String appIDStr = "";
             ApplicationBean app = null;
             if (request.getParameter("apps") == null) {
-
                 if (ownApps.size() > 0) {
-
                     app = ownApps.get(0); // get the first app
-                    appID = app.getID();
+                    appIDStr = app.getID();
                 }
             } else {
                 appIDStr = request.getParameter("apps");
-                appID = Integer.parseInt(appIDStr);
-                app = appManServ.getApplication(appID);
+                app = appManServ.getApplication(appIDStr);
             }
 
             String subAction = null;
@@ -1225,38 +1200,13 @@ public class ManageComponents extends AbstractAdministrationModule {
             }
 
             if (subAction != null && subAction.equals("save")) {
-                // delete all share for this app
-                appShareServ.removeShares(app);
-                // add new ones;
-                String[] vals = request.getParameterValues("authSites");
-                if (vals != null) {
-                    JahiaSite authSite = null;
-                    for (int i = 0; i < vals.length; i++) {
-                        authSite = sitesServ.getSite(Integer.parseInt(vals[i]));
-                        appShareServ.addShare(authSite, app);
-                    }
-                }
 
                 appPersServ.saveDefinition(app);
 
             }
 
-
-            // get the list of authorized sites for this application
-            Iterator<Integer> authSitesID = null;
-
-            authSitesID = appShareServ.getSites(app);
-            List<JahiaSite> authSites = new ArrayList<JahiaSite>();
-            Integer siteID = null;
-            while (authSitesID.hasNext()) {
-                siteID = authSitesID.next();
-                JahiaSite aSite = sitesServ.getSite(siteID.intValue());
-                authSites.add(aSite);
-            }
-
             request.setAttribute("app", app);
-            request.setAttribute("appID", new Integer(appID));
-            request.setAttribute("authSites", authSites.iterator());
+            request.setAttribute("appID", appIDStr);
 
             JahiaAdministration.doRedirect(request,
                     response,

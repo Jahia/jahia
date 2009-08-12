@@ -87,5 +87,5 @@
                                      j:privileges="jcr:write" j:aceType="GRANT"/>
         </j:acl>
     </mounts>
-
+    <portletdefinitions jcr:primaryType="jnt:portletDefinitions"/>
 </content>

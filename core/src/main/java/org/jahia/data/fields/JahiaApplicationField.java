@@ -101,7 +101,7 @@ public class JahiaApplicationField extends JahiaField implements JahiaAllowApply
             if (entryPointInstance != null) {
                 ApplicationBean appBean = ServicesRegistry.getInstance().
                         getApplicationsManagerService().
-                        getApplication(entryPointInstance.getContextName());
+                        getApplicationByContext(entryPointInstance.getContextName());
                 if (appBean != null) {
                     String defName = entryPointInstance.getDefName();
                     int separatorPos = defName.indexOf("###");

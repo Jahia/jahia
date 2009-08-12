@@ -60,7 +60,7 @@ public class ServletBean implements Serializable, EntryPointDefinition {
     private int webAppType = SERVLET_TYPE; // 1=servlet, 2=jsp
     private String desc; // desc
     private String urlMappingPattern = ""; // the mapping pattern that matched this servlet
-    private int applicationID = -1;
+    private String applicationID = "";
 
     /** if loaded in the Aplication registry or not
      that is instantiated
@@ -70,7 +70,7 @@ public class ServletBean implements Serializable, EntryPointDefinition {
     /**
      *
      */
-    public ServletBean (int applicationID,
+    public ServletBean (String applicationID,
                         int webAppType,
                         String name,
                         String servletName,
@@ -138,7 +138,7 @@ public class ServletBean implements Serializable, EntryPointDefinition {
         return isWelcomeFile;       
     }    
 
-    public int getApplicationID () {
+    public String getApplicationID () {
         return applicationID;
     }
 

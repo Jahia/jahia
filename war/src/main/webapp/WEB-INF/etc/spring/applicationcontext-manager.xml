@@ -243,15 +243,6 @@
             </bean>
         </property>
     </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaApplicationShareManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaApplicationShareManager">
-                <property name="jahiaApplicationShareDAO" ref="jahiaApplicationShareDAO" />
-                <property name="jahiaApplicationDefinitionDAO" ref="jahiaApplicationDefinitionDAO" />
-                <property name="jahiaSiteDAO" ref="jahiaSiteDAO" />
-            </bean>
-        </property>
-    </bean>
     <bean id="org.jahia.hibernate.manager.JahiaGroupManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaGroupManager">

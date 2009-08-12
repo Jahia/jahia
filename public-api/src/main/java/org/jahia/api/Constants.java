@@ -181,4 +181,7 @@ public class Constants {
     public static final String JAHIANT_GROUP = "jnt:group";
     public static final String JAHIANT_MEMBERS = "jnt:members";
     public static final String JAHIANT_MEMBER = "jnt:member";
+
+    public static final String JCR_READ_RIGHTS = "jcr:read";
+    public static final String JCR_WRITE_RIGHTS = "jcr:write";
 }

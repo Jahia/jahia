@@ -335,7 +335,7 @@ public class ManageApplicationCategoriesEngine implements JahiaEngine {
             String entryPoindDefName = st.nextToken();
 
             // find application
-            ApplicationBean theApplication = ServicesRegistry.getInstance().getApplicationsManagerService().getApplication(Integer.parseInt(appID));
+            ApplicationBean theApplication = ServicesRegistry.getInstance().getApplicationsManagerService().getApplication(appID);
             if (theApplication == null) {
                 logger.error("ApplicationBean with id [" + appID + "] not found. Look in ApplicationList");
                 return result;

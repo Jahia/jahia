@@ -78,8 +78,11 @@ import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.content.JCRPortletNode;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.utils.JahiaTools;
 import org.jahia.ajax.gwt.client.core.JahiaType;
+import org.jahia.api.Constants;
 
 /**
  * Modified and cleaned by Xavier Lawrence
@@ -1007,6 +1010,11 @@ public class GuiBean {
                                     containerList.checkWriteAccess(getUser())) {
                         return theEngine.renderLink(processingContext, anObject);
                     }
+                }
+            } else if (anObject instanceof ApplicationBean) {
+                ApplicationBean bean = (ApplicationBean) anObject;
+                if(JCRContentUtils.hasPermission(getUser(), Constants.JCR_WRITE_RIGHTS,bean.getID())) {
+                    return theEngine.renderLink(processingContext, anObject);
                 }
             }
 

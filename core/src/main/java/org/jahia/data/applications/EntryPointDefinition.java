@@ -85,7 +85,7 @@ public interface EntryPointDefinition {
      * Get the application id
      * @return
      */
-    public int getApplicationID();
+    public String getApplicationID();
 
     /**
      * Get the supported PortletMode for this entry point definition.

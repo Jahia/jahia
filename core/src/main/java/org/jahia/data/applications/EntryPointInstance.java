@@ -37,6 +37,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPortletNode;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.api.user.JahiaUserService;
 import org.jahia.bin.Jahia;
@@ -139,7 +140,7 @@ public class EntryPointInstance implements Serializable {
 
     public boolean isUserInRole(JahiaUser user, String role) {
         // This method maps servlet roles on Jahia's groups
-        return hasPermission(user, role);
+        return JCRContentUtils.hasPermission(user, role,ID);
     }
 
     public boolean isModeAllowed(JahiaUser user, String mode) {
@@ -147,39 +148,7 @@ public class EntryPointInstance implements Serializable {
         if(mode != null && mode.equalsIgnoreCase(PortletMode.VIEW.toString())){
             return true;
         }
-        return hasPermission(user, mode);
-    }
-
-    private boolean hasPermission(JahiaUser user, String role) {
-        try {
-            JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(ID, user);
-            Map<String, List<String[]>> aclEntriesMap = node.getAclEntries();
-
-            Set<String> principalSet = aclEntriesMap.keySet();
-            for (String currentPrincipal : principalSet) {
-                boolean isUser = currentPrincipal.indexOf("u:") == 0;
-                String principalName = currentPrincipal.substring(2);
-
-                // test if the principal is the user or if the user belongs to the principal (group)
-                if ((isUser && principalName.equalsIgnoreCase(user.getUsername())) || user.isMemberOfGroup(Jahia.getThreadParamBean().getSiteID(), principalName)) {
-                    List<String[]> principalPermValues = aclEntriesMap.get(currentPrincipal);
-                    for (String[] currentPrincipalPerm : principalPermValues) {
-                        String currentPrincipalPermValue = currentPrincipalPerm[1];
-                        String currentPrincipalPermName = currentPrincipalPerm[2];
-                        if (currentPrincipalPermName != null && currentPrincipalPermName.equalsIgnoreCase(role)) {
-                            if (currentPrincipalPermValue != null && currentPrincipalPermValue.equalsIgnoreCase("GRANT")) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-
-            }
-            return false;
-        } catch (Exception e) {
-            logger.error(e,e);
-            return false;
-        }
-    }
+        return JCRContentUtils.hasPermission(user, mode,ID);
+    }    
 
 }

@@ -283,9 +283,7 @@ public class GroupRoleUtils {
         try {
 
             // get the name of the app
-            String appName = ServicesRegistry.getInstance ().getApplicationsManagerService ()
-                    .getApplication (Integer.parseInt (appIDStr))
-                    .getName ();
+            String appName = ServicesRegistry.getInstance().getApplicationsManagerService().getApplication(appIDStr).getName();
 
             // get the name of the field
             String fieldName = null;

@@ -103,7 +103,7 @@ public class DispatchingServiceImpl extends DispatchingService {
             return "";
         }
 
-        ApplicationBean appBean = applicationsManager.getApplication (entryPointInstance.getContextName());
+        ApplicationBean appBean = applicationsManager.getApplicationByContext(entryPointInstance.getContextName());
 
         if (appBean == null) {
             logger.error("Couldn't find application with appID=" + entryPointIDStr);

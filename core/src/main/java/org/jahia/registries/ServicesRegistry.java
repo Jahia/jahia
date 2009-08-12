@@ -67,7 +67,6 @@ import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.search.JahiaSearchService;
 import org.jahia.services.search.facets.JahiaFacetingService;
 import org.jahia.services.search.indexingscheduler.JahiaSearchIndexationService;
-import org.jahia.services.shares.AppsShareService;
 import org.jahia.services.sitemap.JahiaSiteMapService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sso.CasService;
@@ -441,13 +440,6 @@ public class ServicesRegistry {
      */
     public JahiaSiteGroupManagerService getJahiaSiteGroupManagerService() {
         return (JahiaSiteGroupManagerService) getService(JAHIA_SITE_GROUP_MANAGER_SERVICE);
-    }
-
-    /**
-     * Return a reference on the apps share service
-     */
-    public AppsShareService getAppsShareService() {
-        return (AppsShareService) getService(JAHIA_APPS_SHARE_SERVICE);
     }
 
     /**

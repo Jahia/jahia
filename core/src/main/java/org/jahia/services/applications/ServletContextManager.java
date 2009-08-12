@@ -140,14 +140,14 @@ public class ServletContextManager implements ServletContextAware {
      * @return the application context , null if not found
      * @throws org.jahia.exceptions.JahiaException on error
      */
-    public WebAppContext getApplicationContext (int id)
+    public WebAppContext getApplicationContext (String id)
             throws JahiaException {
 
         logger.debug ("Requested application : [" + id + "]");
 
         ApplicationBean appBean = ServicesRegistry.getInstance ()
                 .getApplicationsManagerService ()
-                .getApplication (id);
+                .getApplicationByContext(id);
         if (appBean == null) {
             String errMsg = "Error getting application bean for application [" + id + "]";
             logger.debug (errMsg);
@@ -181,7 +181,7 @@ public class ServletContextManager implements ServletContextAware {
             appContext = (WebAppContext) mRegistry.get (appBean.getContext());
             if (appContext == null) {
                 // try to load from disk
-                appContext = loadContextInfoFromDisk (appBean.getID(), appBean.getContext(),appBean.getFilename());
+                appContext = loadContextInfoFromDisk (appBean.getID(), appBean.getContext());
             }
             if (appContext == null) {
                 // create a fake Application Context to avoid loading from disk the next time.
@@ -207,7 +207,7 @@ public class ServletContextManager implements ServletContextAware {
      * @param applicationID  id of the application
      * @param filename the directory of the application to read from
      */
-    private WebAppContext loadContextInfoFromDisk (int applicationID, String context, String filename) {
+    private WebAppContext loadContextInfoFromDisk (String applicationID, String context) {
 
         ServletContext dispatchedContext = mContext.getContext (context);
         if (dispatchedContext == null) {
@@ -215,9 +215,6 @@ public class ServletContextManager implements ServletContextAware {
             return null;
         }
         String path = dispatchedContext.getRealPath (WEB_XML_FILE);
-        if(!(path.indexOf(context)>0) && !context.startsWith("/")){
-            path = filename+WEB_XML_FILE;
-        }
         logger.debug ("dispatched context real Path :  " + path);
 
         // extract data from the web.xml file

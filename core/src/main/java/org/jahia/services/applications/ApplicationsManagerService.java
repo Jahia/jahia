@@ -61,22 +61,13 @@ public abstract class ApplicationsManagerService extends JahiaService {
 
     //--------------------------------------------------------------------------
     /**
-     * return a List of distinct Jahia web site for all application definitions
-     *
-     * @return a List of Jahia Web site
-     */
-    public abstract List<Integer> getWebSites ()
-        throws JahiaException;
-
-    //--------------------------------------------------------------------------
-    /**
      * return an Application Definition get directly from db
      *
      * @param appID the appID
      *
      * @return ApplicationBean, the Application Definition
      */
-    public abstract ApplicationBean getApplication (int appID)
+    public abstract ApplicationBean getApplication (String appID)
         throws JahiaException;
 
     //--------------------------------------------------------------------------
@@ -87,7 +78,7 @@ public abstract class ApplicationsManagerService extends JahiaService {
      *
      * @return ApplicationBean, the Application Definition
      */
-    public abstract ApplicationBean getApplication (String context)
+    public abstract ApplicationBean getApplicationByContext(String context)
         throws JahiaException;
 
     //--------------------------------------------------------------------------
@@ -108,7 +99,7 @@ public abstract class ApplicationsManagerService extends JahiaService {
      *
      * @return false on error
      */
-    public abstract boolean setVisible (int appID, boolean visible)
+    public abstract boolean setVisible (String appID, boolean visible)
         throws JahiaException;
 
     //--------------------------------------------------------------------------
@@ -146,7 +137,7 @@ public abstract class ApplicationsManagerService extends JahiaService {
      *          if there was an error while removing the application
      *          data from persistant storage area
      */
-    public abstract void removeApplication (int appID)
+    public abstract void removeApplication (String appID)
         throws JahiaException;
 
     //--------------------------------------------------------------------------
@@ -192,7 +183,7 @@ public abstract class ApplicationsManagerService extends JahiaService {
      *
      * @return the application context , null if not found
      */
-    public abstract WebAppContext getApplicationContext (int id)
+    public abstract WebAppContext getApplicationContext (String id)
         throws JahiaException;
 
     //--------------------------------------------------------------------------

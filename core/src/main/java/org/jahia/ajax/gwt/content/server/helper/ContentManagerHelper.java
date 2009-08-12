@@ -1718,11 +1718,10 @@ public class ContentManagerHelper {
                 ApplicationBean appBean = (ApplicationBean) iterator.next();
 
 
-                if (appBean.getACL().getPermission(null, null, jParams.getUser(), JahiaBaseACL.READ_RIGHTS, true, jParams.getSiteID())) {
-                    List l = appBean.getEntryPointDefinitions();
-                    for (Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
-                        EntryPointDefinition entryPointDefinition = (EntryPointDefinition) iterator1.next();
-                        results.add(createGWTJahiaPortletDefinition(jParams, appBean, entryPointDefinition));
+                if (JCRContentUtils.hasPermission(jParams.getUser(), Constants.JCR_READ_RIGHTS, appBean.getID())) {
+                    List<EntryPointDefinition> l = appBean.getEntryPointDefinitions();
+                    for (EntryPointDefinition aL : l) {
+                        results.add(createGWTJahiaPortletDefinition(jParams, appBean, aL));
                     }
                 }
             }
@@ -1755,7 +1754,7 @@ public class ContentManagerHelper {
         }
         GWTJahiaNodeACL gwtJahiaNodeACL = new GWTJahiaNodeACL(new ArrayList<GWTJahiaNodeACE>());
         gwtJahiaNodeACL.setAvailablePermissions(JCRPortletNode.getAvailablePermissions(appBean.getContext(), entryPointDefinition.getName()));
-        return new GWTJahiaPortletDefinition(appBean.getContext(), entryPointDefinition.getName(), entryPointDefinition.getDisplayName(jParams.getLocale()), portletType, gwtJahiaNodeACL, entryPointDefinition.getDescription(jParams.getLocale()), expTime, cacheScope);
+        return new GWTJahiaPortletDefinition(appBean.getID(),appBean.getContext(), entryPointDefinition.getName(), entryPointDefinition.getDisplayName(jParams.getLocale()), portletType, gwtJahiaNodeACL, entryPointDefinition.getDescription(jParams.getLocale()), expTime, cacheScope);
     }
 
     /**
@@ -1781,7 +1780,7 @@ public class ContentManagerHelper {
             JCRNodeWrapper parentNode = jcr.getThreadSession(context.getUser()).getNode(parentPath);
             JCRPortletNode node = (JCRPortletNode) addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), gwtJahiaNewPortletInstance.getProperties());
 
-            node.setApplication(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getContextName(), gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName());
+            node.setApplication(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getApplicationId(), gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName());
             node.revokeAllPermissions();
 
             // set modes permissions
@@ -2054,16 +2053,14 @@ public class ContentManagerHelper {
         if (appName != null && entryPointName != null) {
             try {
                 // TO DO: replace this part of the method by a more perfoming one
-                List appList = ServicesRegistry.getInstance().getApplicationsManagerService().getApplications();
-                for (Iterator iterator = appList.iterator(); iterator.hasNext();) {
-                    ApplicationBean appBean = (ApplicationBean) iterator.next();
-                    if (appBean.getACL().getPermission(null, null, context.getUser(), JahiaBaseACL.READ_RIGHTS, true, context.getSiteID())) {
-                        List l = appBean.getEntryPointDefinitions();
-                        for (Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
-                            EntryPointDefinition entryPointDefinition = (EntryPointDefinition) iterator1.next();
-                            boolean foundEntryPointDefinition = appName.equalsIgnoreCase(appBean.getName()) && entryPointDefinition.getName().equalsIgnoreCase(entryPointName);
+                List<ApplicationBean> appList = ServicesRegistry.getInstance().getApplicationsManagerService().getApplications();
+                for (ApplicationBean anAppList : appList) {
+                    if (JCRContentUtils.hasPermission(context.getUser(), Constants.JCR_READ_RIGHTS, anAppList.getID())) {
+                        List<EntryPointDefinition> l = anAppList.getEntryPointDefinitions();
+                        for (EntryPointDefinition aL : l) {
+                            boolean foundEntryPointDefinition = appName.equalsIgnoreCase(anAppList.getName()) && aL.getName().equalsIgnoreCase(entryPointName);
                             if (foundEntryPointDefinition) {
-                                return createGWTJahiaPortletDefinition(context, appBean, entryPointDefinition);
+                                return createGWTJahiaPortletDefinition(context, anAppList, aL);
                             }
                         }
                     }

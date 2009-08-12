@@ -34,6 +34,7 @@ package org.jahia.services.content;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -51,6 +52,7 @@ import org.jahia.data.containers.JahiaContainerDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
@@ -58,7 +60,9 @@ import org.jahia.services.content.impl.jahia.JahiaRootNodeImpl;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.bin.Jahia;
 
 /**
  * Utility class for accessing and manipulation JCR properties.
@@ -363,5 +367,37 @@ public final class JCRContentUtils {
      */
     public Map<String, List<String>> getMimeTypes() {
         return mimeTypes;
+    }
+
+    public static boolean hasPermission(JahiaUser user, String role, String nodeUUID) {
+        try {
+            JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(nodeUUID, user);
+            Map<String, List<String[]>> aclEntriesMap = node.getAclEntries();
+
+            Set<String> principalSet = aclEntriesMap.keySet();
+            for (String currentPrincipal : principalSet) {
+                boolean isUser = currentPrincipal.indexOf("u:") == 0;
+                String principalName = currentPrincipal.substring(2);
+
+                // test if the principal is the user or if the user belongs to the principal (group)
+                if ((isUser && principalName.equalsIgnoreCase(user.getUsername())) || user.isMemberOfGroup(Jahia.getThreadParamBean().getSiteID(), principalName)) {
+                    List<String[]> principalPermValues = aclEntriesMap.get(currentPrincipal);
+                    for (String[] currentPrincipalPerm : principalPermValues) {
+                        String currentPrincipalPermValue = currentPrincipalPerm[1];
+                        String currentPrincipalPermName = currentPrincipalPerm[2];
+                        if (currentPrincipalPermName != null && currentPrincipalPermName.equalsIgnoreCase(role)) {
+                            if (currentPrincipalPermValue != null && currentPrincipalPermValue.equalsIgnoreCase("GRANT")) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+            }
+            return false;
+        } catch (Exception e) {
+            logger.error(e,e);
+            return false;
+        }
     }
 }

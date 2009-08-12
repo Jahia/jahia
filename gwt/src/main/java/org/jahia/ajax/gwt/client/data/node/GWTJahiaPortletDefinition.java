@@ -48,8 +48,9 @@ public class GWTJahiaPortletDefinition extends BaseModel {
     public GWTJahiaPortletDefinition() {
     }
 
-    public GWTJahiaPortletDefinition(String appId, String name,String displayName, String portletType, GWTJahiaNodeACL baseAcl, String description, Integer exp, String cacheScope) {
-        setContextName(appId);
+    public GWTJahiaPortletDefinition(String appId,String contextName, String name,String displayName, String portletType, GWTJahiaNodeACL baseAcl, String description, Integer exp, String cacheScope) {
+        setApplicationId(appId);
+        setContextName(contextName);
         setDefinitionName(name);
         setDisplayName(displayName);
         setPortletType(portletType);
@@ -123,4 +124,11 @@ public class GWTJahiaPortletDefinition extends BaseModel {
         set("description", description);
     }
 
+    private void setApplicationId(String appId) {
+        set("applicationId",appId);
+    }
+    
+    public String getApplicationId() {
+        return get("applicationId");
+    }
 }

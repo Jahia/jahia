@@ -98,12 +98,10 @@ public class JahiaApplicationManager {
     private ApplicationBean convertJahiaAppDefToApplicationBean(JahiaAppDef appDef) {
         ApplicationBean applicationBean = null;
         if(appDef!=null) {
-        applicationBean = new ApplicationBean(appDef.getId().intValue(),
+        applicationBean = new ApplicationBean(appDef.getId().toString(),
                                               appDef.getName(), appDef.getContext(),
-                                              appDef.getVisible().intValue(),
-                                              appDef.getShared().intValue() == 1,
-                                              appDef.getJahiaAcl().getId().intValue(),
-                                              appDef.getFilename(), appDef.getDescription(),
+                                              appDef.getVisible() ==1,
+                                              appDef.getDescription(),
                                               appDef.getType());
         }
         return applicationBean;
@@ -114,18 +112,14 @@ public class JahiaApplicationManager {
      * @param app
      */
     public void addApplication(ApplicationBean app) {
-        JahiaAcl jahiaAcl = aclDAO.findLazyAclById(new Integer(app.getRights()));
         JahiaAppDef appDef = new JahiaAppDef();
         appDef.setContext(app.getContext());
-        appDef.setDescription(app.getdesc());
-        appDef.setFilename(app.getFilename());
-        appDef.setJahiaAcl(jahiaAcl);
         appDef.setName(app.getName());
-        appDef.setShared(new Integer(app.isShared() ? 1 : 0));
+        appDef.setDescription(app.getDescription());
         appDef.setType(app.getType());
-        appDef.setVisible(new Integer(app.getVisibleStatus()));
+        appDef.setVisible(app.isVisible()?1:0);
         dao.save(appDef);
-        app.setID(appDef.getId().intValue());
+        app.setID(appDef.getId().toString());
     }
 
     /**
@@ -135,15 +129,11 @@ public class JahiaApplicationManager {
     public void updateApplication(ApplicationBean app) {
         try {
             JahiaAppDef appDef = dao.loadApplicationDefinition(new Integer(app.getID()));
-            JahiaAcl jahiaAcl = aclDAO.findLazyAclById(new Integer(app.getRights()));
             appDef.setContext(app.getContext());
-            appDef.setDescription(app.getdesc());
-            appDef.setFilename(app.getFilename());
-            appDef.setJahiaAcl(jahiaAcl);
+            appDef.setDescription(app.getDescription());
             appDef.setName(app.getName());
-            appDef.setShared(new Integer(app.isShared() ? 1 : 0));
             appDef.setType(app.getType());
-            appDef.setVisible(new Integer(app.getVisibleStatus()));
+            appDef.setVisible(app.isVisible()?1:0);
             dao.update(appDef);
         } catch (ObjectRetrievalFailureException e) {
             log.warn("Try to update a non existing object " + app, e);

@@ -59,9 +59,11 @@ import org.jahia.services.lock.LockPrerequisites;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPortletNode;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.ObjectLink;
 import org.jahia.content.CategoryKey;
+import org.jahia.api.Constants;
 
 import javax.jcr.RepositoryException;
 
@@ -78,7 +80,7 @@ public class Application_Field implements FieldSubEngine {
     private static final String JSP_FILE = "/engines/shared/application_field.jsp";
     private static final String READONLY_JSP = "/engines/shared/readonly_application_field.jsp";
     public static final String APPLICATION_ROLES = "applicationRoles";
-    private Map<Integer, List> appRoleMembers = null;
+    private Map<String, List<Set<Principal>>> appRoleMembers = null;
 
     /**
      * AK    19.12.2000
@@ -151,15 +153,15 @@ public class Application_Field implements FieldSubEngine {
             }
         }
 
-        Integer oldAppID = (Integer) engineMap.get(theField.getDefinition().getName() + "_appID");
-        if ((oldAppID == null) || (oldAppID.intValue() == -1)) {
+        String oldAppID = (String) engineMap.get(theField.getDefinition().getName() + "_appID");
+        if (oldAppID == null) {
             logger.debug("No webapp was selected.");
             //return true;
         } else {
 
             WebAppContext appContext = ServicesRegistry.getInstance()
                     .getApplicationsManagerService()
-                    .getApplicationContext(oldAppID.intValue());
+                    .getApplicationContext(oldAppID);
             List roles = appContext.getRoles();
             // Handle roles changes
             List<Set<Principal>> roleMembersList = new ArrayList<Set<Principal>>();
@@ -294,7 +296,7 @@ public class Application_Field implements FieldSubEngine {
         String entryPointInstanceID = null;
         String selectedEntryPointDefName = null;
         ApplicationBean appBean = null;
-        int appID = -1;
+        String appID = null;
         try {
             String fieldValue = theField.getRawValue();
             logger.debug("Field value: " + fieldValue);
@@ -302,10 +304,10 @@ public class Application_Field implements FieldSubEngine {
             // update, otherwise it simply contains an instanceID.
             if ((fieldValue != null) && (fieldValue.indexOf("_") != -1)) {
                 // we found a field value in the form appID_defName
-                appID = ((Integer) engineMap.get(definitionName + "_appID")).intValue();
+                appID = (String) engineMap.get(definitionName + "_appID");
                 logger.debug("Application id: " + appID);
                 selectedEntryPointDefName = (String) engineMap.get(definitionName + "_selectedEntryPointDefName");
-                appBean = ServicesRegistry.getInstance().getApplicationsManagerService().getApplication(appID);
+                appBean = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(appID);
             } else {
                 entryPointInstanceID = fieldValue;
             }
@@ -330,7 +332,7 @@ public class Application_Field implements FieldSubEngine {
                 }
                 String contextName = epInstance.getContextName();
                 logger.debug("application ID from entry point instance: " + contextName);
-                appBean = ServicesRegistry.getInstance().getApplicationsManagerService().getApplication(contextName);
+                appBean = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(contextName);
                 appID = appBean.getID();
                 try {
                     final JCRNodeWrapper uuid = ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(entryPointInstanceID,jParams.getUser());
@@ -341,7 +343,7 @@ public class Application_Field implements FieldSubEngine {
             }
             engineMap.put(definitionName + "_entryPointInstanceID", entryPointInstanceID);
             engineMap.put(definitionName + "_selectedEntryPointDefName", selectedEntryPointDefName);
-            engineMap.put(definitionName + "_appID", new Integer(appID));
+            engineMap.put(definitionName + "_appID", appID);
 
             if(logger.isDebugEnabled()){
                 logger.debug("Number of allowed application: " + authAppList.size());
@@ -357,12 +359,12 @@ public class Application_Field implements FieldSubEngine {
             engineMap.put(definitionName+"_displaySelectInstance",Boolean.FALSE);
         }
         // set auth flag
-        if (authAppList != null && authAppList.size() > 0 && appBean != null && !authAppList.contains(appBean) && appID != -1) {
+        if (authAppList != null && authAppList.size() > 0 && appBean != null && !authAppList.contains(appBean) && appID != null) {
             engineMap.put(definitionName + "_unAuthorized", Boolean.TRUE);
         }
 
         List roles = new ArrayList();
-        if (appID >= 0) {
+        if (appID!=null) {
             WebAppContext appContext = ServicesRegistry.getInstance().
                     getApplicationsManagerService().
                     getApplicationContext(appID);
@@ -371,13 +373,13 @@ public class Application_Field implements FieldSubEngine {
         engineMap.put("roles", roles);
 
         // Get role members for each web apps
-        appRoleMembers = (Map<Integer, List>) engineMap.get(APPLICATION_ROLES);
+        appRoleMembers = (Map<String, List<Set<Principal>>>) engineMap.get(APPLICATION_ROLES);
         if (appRoleMembers == null) {
-            appRoleMembers = new HashMap<Integer, List>();
+            appRoleMembers = new HashMap<String, List<Set<Principal>>>();
         }
-        List<Set> roleMembersList = appRoleMembers.get(new Integer(appID));
+        List<Set<Principal>> roleMembersList = appRoleMembers.get(appID);
         if (roleMembersList == null) {
-            roleMembersList = new ArrayList<Set>();
+            roleMembersList = new ArrayList<Set<Principal>>();
             // Fill role members in the array list.
             for (int i = 0; i < roles.size(); i++) {
                 String role = (String) roles.get(i);
@@ -391,7 +393,7 @@ public class Application_Field implements FieldSubEngine {
                     roleMembersList.add(new HashSet());
                 }
             }
-            appRoleMembers.put(new Integer(appID), roleMembersList);
+            appRoleMembers.put(appID, roleMembersList);
         }
         engineMap.put(APPLICATION_ROLES, appRoleMembers);
         engineMap.put("selectUsrGrp",
@@ -497,7 +499,7 @@ public class Application_Field implements FieldSubEngine {
         Iterator it = appList.iterator();
         while (it.hasNext()) {
             ApplicationBean appBean = (ApplicationBean) it.next();
-            if (appBean.getACL().getPermission(null, null, jParams.getUser(), JahiaBaseACL.READ_RIGHTS, true, jParams.getSiteID())) {
+            if (JCRContentUtils.hasPermission(jParams.getUser(), Constants.JCR_READ_RIGHTS,appBean.getID())) {
                 // add to auhorised list
                 authAppList.add(appBean);
 
@@ -564,12 +566,12 @@ public class Application_Field implements FieldSubEngine {
                 //remove 'entrypoint'
                 strg.nextToken();
                 // get appId
-                int appId = Integer.parseInt(strg.nextToken());
+                String appId = strg.nextToken();
                 // get entrypointName
                 String entryPointName = strg.nextToken();
                 //find application bean
-                ApplicationBean aBean = ServicesRegistry.getInstance().getApplicationsManagerService().getApplication(appId);
-                if (aBean.getACL().getPermission(null, null, jParams.getUser(), JahiaBaseACL.READ_RIGHTS, true, jParams.getSiteID())) {
+                ApplicationBean aBean = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(appId);
+                if (JCRContentUtils.hasPermission(jParams.getUser(),Constants.JCR_READ_RIGHTS,aBean.getID())) {
                     // get entryPoint definition
                     EntryPointDefinition epd = aBean.getEntryPointDefinitionByName(entryPointName);
                     entryPointDefinitionList.add(epd);

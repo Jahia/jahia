@@ -184,7 +184,6 @@ FRAG2(frag_size=60000)</value>
                         <entry key="portlet" value-ref="ApplicationsManagerPortletProvider"/>
                     </map>
                 </property>
-                <property name="applicationManager" ref="org.jahia.hibernate.manager.JahiaApplicationManager" />
                 <property name="jcrStoreService" ref="JCRStoreService"/>
                 <property name="cacheService" ref="JahiaCacheService" />
                 <property name="groupManagerService" ref="JahiaGroupManagerService" />
@@ -624,13 +623,6 @@ FRAG2(frag_size=60000)</value>
                         </entry>
                     </map>
                 </property>
-            </bean>
-        </property>
-    </bean>
-    <bean id="AppsShareService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.shares.AppsShareBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="shareManager" ref="org.jahia.hibernate.manager.JahiaApplicationShareManager" />
             </bean>
         </property>
     </bean>

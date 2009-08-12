@@ -122,7 +122,7 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
     protected int m_AppRight = 1;            // FIXME , where to get it ?
 
     /** Is the web Apps visible by default to all user * */
-    protected int m_VisibleStatus = 1;       // FIXME , where to get it ?
+    protected boolean m_VisibleStatus = true;       // FIXME , where to get it ?
 
     /** a temporary folder * */
     protected static String m_TempFolderDiskPath = "";
@@ -310,13 +310,10 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
 
         // save definition in db
         ApplicationBean theWebApp = new ApplicationBean(
-                0, // id
+                "", // id
                 context.substring(1),
                 context,
                 m_VisibleStatus,
-                false, // not shared
-                acl.getID(),
-                "",
                 "",
                 "portlet"
         );
@@ -352,7 +349,7 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
                 context = "/"+appContext;
             ApplicationBean theWebApp = ServicesRegistry.getInstance ().
                     getApplicationsManagerService ().
-                    getApplication (context);
+                    getApplicationByContext(context);
 
             if (theWebApp == null) {
 
@@ -374,13 +371,10 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
 
                 // save definition in db
                 theWebApp = new ApplicationBean (
-                        0, // id
+                        "", // id
                         webAppDef.getName (),
                         context,
                         m_VisibleStatus,
-                        false, // not shared
-                        acl.getID (),
-                        filename,
                         webAppDef.getdesc (),
                         webAppDef.getType()
                 );

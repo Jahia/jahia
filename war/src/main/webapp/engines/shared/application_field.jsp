@@ -57,7 +57,7 @@
 
     final JahiaField theField = (JahiaField) engineMap.get(fieldsEditCallingEngineName + ".theField");
     final String definitionName = theField.getDefinition().getName();
-    int appID = (Integer) engineMap.get(definitionName + "_appID");
+    String appID = (String) engineMap.get(definitionName + "_appID");
     String selectedEntryPointDefName = (String) engineMap.get(definitionName + "_selectedEntryPointDefName");
     final Iterator appList = (Iterator) engineMap.get("appList");
     boolean appListIsEmpty = !appList.hasNext();

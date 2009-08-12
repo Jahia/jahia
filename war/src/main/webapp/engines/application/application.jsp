@@ -135,7 +135,7 @@
                       <fmt:message key="org.jahia.engines.application.description.label"/>
                     </th>
                     <td>
-                      <input type="text" name="applicationDescription" value="<%=theTempoApplicationBean.getdesc()%>" size="<%=inputSize%>">
+                      <input type="text" name="applicationDescription" value="<%=theTempoApplicationBean.getDescription()%>" size="<%=inputSize%>">
                     </td>
                   </tr>
                 </table>

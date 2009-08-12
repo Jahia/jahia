@@ -251,14 +251,20 @@
 // Portlets
 //---------------------------------------------------------
 
-[jnt:portletDefinition]
+[jnt:portletDefinition] > nt:base, mix:referenceable, jmix:accessControlled
  - j:name (string)
  - j:description (string)
- - j:isVisible (boolean)
+ - j:isVisible (boolean) = true
+ - j:type (string)
+ - j:context (string)
 
-[jnt:portlet] > nt:base, mix:referenceable, jmix:hierarchyNode
- - j:application (string,portletdefinition) protected
-// - j:application (reference) protected < jnt:portletDefinition
+[jnt:portletDefinitions] > nt:hierarchyNode, jmix:collection
++ * (jnt:portletDefinition)
+
+[jnt:portlet] > nt:base, jmix:hierarchyNode
+// - j:application (string,portletdefinition) protected
+ - j:application (reference) protected < jnt:portletDefinition
+ - j:definition (string)
  - j:cacheScope (string, choicelist) < 'portlet.private-scope','portlet.public-scope'
  - j:expirationTime (long)
 

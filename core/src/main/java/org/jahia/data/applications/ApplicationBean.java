@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.pluto.container.om.portlet.UserAttribute;
@@ -51,23 +52,21 @@ import org.jahia.services.acl.JahiaBaseACL;
  * @author Serge Huber
  * @version 1.0
  */
-public class ApplicationBean implements Serializable, Comparator<ApplicationBean>, Cloneable, ACLResourceInterface {
+public class ApplicationBean implements Serializable, Comparator<ApplicationBean>, Cloneable {
 
     private static final long serialVersionUID = -5886294839254670413L;
 
     private static final transient Logger logger = Logger.getLogger(ApplicationBean.class);
 
-    private int ID;
+    private String ID;
     private String name;
     private String context;
-    private int visible = 0;
-    private boolean shared = false;
-    private int rights;
-    private String filename = ""; // the file name of the .war or .ear package
-    private String desc = "";
+    private boolean visible = false;
+    private String description = "";
     private String type;
     private List<EntryPointInstance> entryPointInstances;
     private List<UserAttribute> userAttributes;
+    private Map<String, List<String[]>> aclEntries;
 
     /**
      * Basic constructor
@@ -75,21 +74,15 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
      * @param name
      * @param context
      * @param visible
-     * @param shared
-     * @param rights
-     * @param filename
      * @param desc
      * @param type
      */
-    public ApplicationBean(int ID, String name,String context,int visible,boolean shared,int rights,String filename,String desc,String type) {
+    public ApplicationBean(String ID, String name,String context,boolean visible,String desc,String type) {
         setID(ID);
         this.name = name;
         this.context = context;
         this.visible = visible;
-        this.shared = shared;
-        this.rights = rights;
-        this.filename = filename;
-        this.desc = desc;
+        this.description = desc;
         this.type = type;
     } // end constructor
 
@@ -97,7 +90,7 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
      * accessor methods
      * {
      */
-    public int getID() {
+    public String getID() {
         return ID;
     }
 
@@ -124,35 +117,8 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
      *
      * @return
      */
-    public int getVisibleStatus() {
+    public boolean isVisible() {
         return visible;
-    }
-
-    /**
-     * Get shared
-     *
-     * @return
-     */
-    public boolean isShared() {
-        return shared;
-    }
-
-    /**
-     * Get rigths
-     *
-     * @return
-     */
-    public int getRights() {
-        return rights;
-    }
-
-    /**
-     * Get filename
-     *
-     * @return
-     */
-    public String getFilename() {
-        return filename;
     }
 
     /**
@@ -160,8 +126,8 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
      *
      * @return
      */
-    public String getdesc() {
-        return desc;
+    public String getDescription() {
+        return description;
     }
 
     /**
@@ -169,7 +135,7 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
      *
      * @param ID
      */
-    public void setID(int ID) {
+    public void setID(String ID) {
         this.ID = ID;
     }
 
@@ -187,35 +153,8 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
      *
      * @param visible
      */
-    public void setVisible(int visible) {
+    public void setVisible(boolean visible) {
         this.visible = visible;
-    }
-
-    /**
-     * set shared
-     *
-     * @param shared
-     */
-    public void setShared(boolean shared) {
-        this.shared = shared;
-    }
-
-    /**
-     * Get rights
-     *
-     * @param rights
-     */
-    public void setRights(int rights) {
-        this.rights = rights;
-    }
-
-    /**
-     * Get filename
-     *
-     * @param filename
-     */
-    public void setFilename(String filename) {
-        this.filename = filename;
     }
 
     /**
@@ -223,8 +162,8 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
      *
      * @param descr
      */
-    public void setdesc(String descr) {
-        this.desc = descr;
+    public void setDescription(String descr) {
+        this.description = descr;
     }
 
     // end accessor methods
@@ -314,32 +253,6 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
     }
 
     /**
-     * Get acl object of the current portlet
-     *
-     * @return
-     */
-    public JahiaBaseACL getACL() {
-        JahiaBaseACL acl = null;
-        try {
-            acl = new JahiaBaseACL(rights);
-        } catch (ACLNotFoundException ex) {
-            logger.error(ex.getMessage(), ex);
-        } catch (Exception t) {
-            logger.error(t.getMessage(), t);
-        }
-        return acl;
-    }
-
-    /**
-     * Get acl id
-     *
-     * @return
-     */
-    public int getAclID() {
-        return rights;
-    }
-
-    /**
      * eqiasl method
      *
      * @param o
@@ -361,7 +274,7 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
      * @return
      */
     public int hashCode() {
-        return ID;
+        return ID.hashCode();
     }
 
     /**
@@ -381,4 +294,4 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
     public void setUserAttributes(List<UserAttribute> userAttributes) {
         this.userAttributes = userAttributes;
     }
-} 
+}

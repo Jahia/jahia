@@ -178,13 +178,13 @@ stretcherToOpen   = 0; %>
                       lineCounter++; %>
                       <tr class="<%=lineClass%>">
                         <td>
-                          <a href="javascript:doEdit(<%=app.getID()%>)" alt="<fmt:message key="org.jahia.admin.editProperties.label"/>"><%=app.getName() %></a>
+                          <a href="javascript:doEdit('<%=app.getID()%>')" alt="<fmt:message key="org.jahia.admin.editProperties.label"/>"><%=app.getName() %></a>
                         </td>
                         <td>
                           <%=app.getContext() %>
                         </td>
                         <td class="lastCol">
-                          <a href="javascript:doEdit(<%=app.getID()%>)" alt="<fmt:message key="org.jahia.admin.editProperties.label"/>"><img src="<%=URL%>images/icons/admin/adromeda/edit.png" alt="<fmt:message key='org.jahia.admin.edit.label'/>" title="<fmt:message key='org.jahia.admin.edit.label'/>" width="16" height="16" border="0"/></a>
+                          <a href="javascript:doEdit('<%=app.getID()%>')" alt="<fmt:message key="org.jahia.admin.editProperties.label"/>"><img src="<%=URL%>images/icons/admin/adromeda/edit.png" alt="<fmt:message key='org.jahia.admin.edit.label'/>" title="<fmt:message key='org.jahia.admin.edit.label'/>" width="16" height="16" border="0"/></a>
                         </td>
                       </tr>
                       <script type="text/javascript">

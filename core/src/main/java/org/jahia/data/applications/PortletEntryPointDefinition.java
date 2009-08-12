@@ -63,12 +63,12 @@ public class PortletEntryPointDefinition implements Serializable, EntryPointDefi
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(PortletEntryPointDefinition.class);
 
-    private int applicationID;
+    private String applicationID;
     private String context;
     private PortletDefinition portletDefinition;
     private List<PortletMode> portletModes = null;
 
-    public PortletEntryPointDefinition(int applicationID, String context, PortletDefinition portletDefinition) {
+    public PortletEntryPointDefinition(String applicationID, String context, PortletDefinition portletDefinition) {
         this.applicationID = applicationID;
         this.context = context;
         this.portletDefinition = portletDefinition;
@@ -126,7 +126,7 @@ public class PortletEntryPointDefinition implements Serializable, EntryPointDefi
      *
      * @return
      */
-    public int getApplicationID() {
+    public String getApplicationID() {
         return applicationID;
     }
 

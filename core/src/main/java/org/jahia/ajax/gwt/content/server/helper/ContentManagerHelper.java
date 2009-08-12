@@ -1901,11 +1901,17 @@ public class ContentManagerHelper {
      */
     public static GWTJahiaNode createRSSPortletInstance(String parentPath, String name, String url, ProcessingContext context) throws GWTJahiaServiceException {
         GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
-
+        String prefix = Jahia.getContextPath();
+        if (prefix.equals("/")) {
+            prefix = "";
+        } else {
+            prefix = prefix.substring(1) + "/";
+        }
         // get RSS GWTJahiaPortletDefinition
-        GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName("rss", "JahiaRSSPortlet", context);
+        final String appName = prefix + "rss";
+        GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, "JahiaRSSPortlet", context);
         if (gwtJahiaPortletDefinition == null) {
-            logger.error("RSS portlet defintion not found --> Aboard creating RSS portlet instance");
+            logger.error("RSS portlet defintion not found --> Abort creating RSS portlet instance");
         }
         gwtJahiaNewPortletInstance.setGwtJahiaPortletDefinition(gwtJahiaPortletDefinition);
 
@@ -1916,7 +1922,7 @@ public class ContentManagerHelper {
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:expirationTime", new GWTJahiaNodePropertyValue("0", GWTJahiaNodePropertyType.LONG)));
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("url", new GWTJahiaNodePropertyValue(url, GWTJahiaNodePropertyType.STRING)));
 
-        return createPortletInstance(parentPath, name, "rss", "JahiaRSSPortlet", gwtJahiaNodeProperties, context);
+        return createPortletInstance(parentPath, name, appName, "JahiaRSSPortlet", gwtJahiaNodeProperties, context);
     }
 
     /**
@@ -1931,11 +1937,18 @@ public class ContentManagerHelper {
      */
     public static GWTJahiaNode createGoogleGadgetPortletInstance(String parentPath, String name, String script, ProcessingContext context) throws GWTJahiaServiceException {
         GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
-
+        String prefix = Jahia.getContextPath();
+        if (prefix.equals("/")) {
+            prefix = "";
+        } else {
+            prefix = prefix.substring(1) + "/";
+        }
         // get RSS GWTJahiaPortletDefinition
-        GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName("googlegadget", "JahiaGoogleGadget", context);
+        final String appName = prefix + "googlegadget";
+        // get RSS GWTJahiaPortletDefinition
+        GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, "JahiaGoogleGadget", context);
         if (gwtJahiaPortletDefinition == null) {
-            logger.error("Google gadget portlet defintion not found --> Aboard creating Google Gadget portlet instance");
+            logger.error("Google gadget portlet defintion not found --> Abort creating Google Gadget portlet instance");
         }
         gwtJahiaNewPortletInstance.setGwtJahiaPortletDefinition(gwtJahiaPortletDefinition);
 
@@ -1946,7 +1959,7 @@ public class ContentManagerHelper {
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:expirationTime", new GWTJahiaNodePropertyValue("0", GWTJahiaNodePropertyType.LONG)));
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("code", new GWTJahiaNodePropertyValue(script, GWTJahiaNodePropertyType.STRING)));
 
-        return createPortletInstance(parentPath, name, "googlegadget", "JahiaGoogleGadget", gwtJahiaNodeProperties, context);
+        return createPortletInstance(parentPath, name, appName, "JahiaGoogleGadget", gwtJahiaNodeProperties, context);
     }
 
     /**

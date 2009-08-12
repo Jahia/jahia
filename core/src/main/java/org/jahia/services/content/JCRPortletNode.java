@@ -58,7 +58,31 @@ public class JCRPortletNode extends JCRNodeDecorator {
     }
 
     public String getContextName() throws RepositoryException {
-        return getProperty("j:application").getNode().getProperty("j:context").getString();
+        String context;
+        try {
+            context = getProperty("j:applicationRef").getNode().getProperty("j:context").getString();
+        } catch (RepositoryException e) {
+            // Is it an old portlet instance ?
+            final String[] strings = getProperty("j:application").getString().split("!");
+            context = strings[0];
+            if (context.startsWith("$context")) {
+                String prefix = Jahia.getContextPath();
+                if (prefix.equals("/")) {
+                    prefix = "";
+                }
+                context = prefix + context.substring("$context".length());
+            }
+            // Set the applicationReference now
+            try {
+                final ApplicationBean applicationByContext = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(context);
+                setProperty("j:applicationRef", applicationByContext.getID());
+                setProperty("j:definition", strings[1]);
+                save();
+            } catch (JahiaException e1) {
+                e1.printStackTrace();
+            }
+        }
+        return context;
     }
 
     public String getDefinitionName() throws RepositoryException {
@@ -66,8 +90,23 @@ public class JCRPortletNode extends JCRNodeDecorator {
     }
 
     public void setApplication(String appId,String defName) throws RepositoryException {
-        setProperty("j:application", appId);
+        setProperty("j:applicationRef", appId);
         setProperty("j:definition", defName);
+        try {
+            final ApplicationBean applicationBean = ServicesRegistry.getInstance().getApplicationsManagerService().getApplication(appId);
+            String contextName = applicationBean.getContext();
+            String prefix = Jahia.getContextPath();
+            if (prefix.equals("/")) {
+                prefix = "";
+            }
+            if (contextName.startsWith(prefix)) {
+                contextName = "$context" + contextName.substring(prefix.length());
+            }
+            String app = contextName + "!" + defName;
+            setProperty("j:application", app);
+        } catch (JahiaException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getCacheScope() throws RepositoryException {

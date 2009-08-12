@@ -262,8 +262,8 @@
 + * (jnt:portletDefinition)
 
 [jnt:portlet] > nt:base, jmix:hierarchyNode
-// - j:application (string,portletdefinition) protected
- - j:application (reference) protected < jnt:portletDefinition
+ - j:application (string,portletdefinition) protected
+ - j:applicationRef (reference) protected < jnt:portletDefinition
  - j:definition (string)
  - j:cacheScope (string, choicelist) < 'portlet.private-scope','portlet.public-scope'
  - j:expirationTime (long)

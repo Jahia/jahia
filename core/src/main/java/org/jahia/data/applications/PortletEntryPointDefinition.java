@@ -228,4 +228,26 @@ public class PortletEntryPointDefinition implements Serializable, EntryPointDefi
         return portletDefinition.getExpirationCache();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        PortletEntryPointDefinition that = (PortletEntryPointDefinition) o;
+
+        if (!applicationID.equals(that.applicationID)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return applicationID.hashCode();
+    }
 }

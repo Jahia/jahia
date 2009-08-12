@@ -41,9 +41,12 @@ public class ApplicationsManagerServiceTest extends TestCase {
         List<ApplicationBean> applicationBeans = applicationsManagerService.getApplications();
         for (ApplicationBean applicationBean : applicationBeans) {
             List<EntryPointDefinition> entryPointDefinitions = applicationsManagerService.getAppEntryPointDefinitions(applicationBean);
+            assertTrue(applicationBean.getEntryPointDefinitions().containsAll(entryPointDefinitions));
             for (EntryPointDefinition entryPointDefinition : entryPointDefinitions) {
                 List<PortletMode> portletModes = entryPointDefinition.getPortletModes();
+                assertTrue(applicationsManagerService.getSupportedPortletModes().containsAll(portletModes));
                 List<WindowState> windowStates = entryPointDefinition.getWindowStates();
+                assertTrue(applicationsManagerService.getSupportedWindowStates().containsAll(windowStates));
             }
         }
     }

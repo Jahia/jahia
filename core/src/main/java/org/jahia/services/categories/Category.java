@@ -688,12 +688,30 @@ public class Category extends JahiaObject implements ACLResourceInterface,
     }
 
     /**
+     * Removes a title for this category in a given locale
+     *
+     * @param locale the locale for which we want to remove the title
+     */
+    public void removeTitle (Locale locale) {
+        try {
+            categoryService.removeTitleForCategory (this,
+                    locale);
+        } catch (JahiaException je) {
+            logger.error (
+                    "Error while trying to remove title for category " + this.getObjectKey ()
+                    .toString (),
+                    je);
+        }
+    }
+
+    /**
      * Deletes this category and all associated data (but does not recursively
      * delete categories !), notably associations with child and parent objects,
      * titles in all languages, and finally the category itself.
      *
      * @throws JahiaException thrown if there was an error while removing any
      *                        of the associations, titles or the category itself from the database.
+     * todo ACLs are not deleted here, we must add this
      */
     public void delete ()
             throws JahiaException {

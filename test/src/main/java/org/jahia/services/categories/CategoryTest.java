@@ -3,6 +3,8 @@ package org.jahia.services.categories;
 import junit.framework.TestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.acl.ACLNotFoundException;
 
 import java.util.List;
 import java.util.Iterator;
@@ -101,6 +103,22 @@ public class CategoryTest extends TestCase {
 
         deleteCategoryWithChildren(newCategory);
         
+    }
+
+    public void testCategoryDelete() throws Exception {
+        Category rootCategory = Category.getRootCategory(); // root category is created at service start so it should already exist at this point.
+        Category newCategory = Category.createCategory("firstChild", rootCategory);
+        List<Category> rootChilds = rootCategory.getChildCategories();
+        assertTrue(rootChilds.size() == 1);
+        int aclID = newCategory.getAclID();
+        deleteCategoryWithChildren(newCategory);
+        boolean aclWasDeleted = false;
+        try {
+            JahiaBaseACL categoryACL = new JahiaBaseACL(aclID);
+        } catch (ACLNotFoundException anfe) {
+            aclWasDeleted = true;
+        }
+        assertTrue(aclWasDeleted);
     }
 
     public void testBuildCategoryTree() throws Exception {

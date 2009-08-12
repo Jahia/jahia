@@ -587,7 +587,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 if (scope != null) {
                     wrapper.setProperty("j:cacheScope", scope);
                 }
-                wrapper.setApplication(appBean.getID());
+                wrapper.setApplication(appBean.getID(),epInstance.getDefName());
 //                wrapper.setProperty("j:applicationID",epInstance.getApplicationID());
 //                wrapper.setProperty("j:definitionName",epInstance.getDefName());
                 wrapper.setProperty("j:expirationTime", epInstance.getExpirationTime());

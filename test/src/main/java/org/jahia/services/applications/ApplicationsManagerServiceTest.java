@@ -32,7 +32,7 @@ public class ApplicationsManagerServiceTest extends TestCase {
         List<ApplicationBean> applicationBeans = applicationsManagerService.getApplications();
         for (ApplicationBean applicationBean : applicationBeans) {
             WebAppContext webAppContext = applicationsManagerService.getApplicationContext(applicationBean);
-            ApplicationBean appFoundByContext = applicationsManagerService.getApplication(webAppContext.getContext());
+            ApplicationBean appFoundByContext = applicationsManagerService.getApplicationByContext(webAppContext.getContext());
             assertEquals(appFoundByContext.getID(), applicationBean.getID());
         }
     }

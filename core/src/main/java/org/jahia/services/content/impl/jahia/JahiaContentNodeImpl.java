@@ -60,7 +60,13 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.timebasedpublishing.RangeRetentionRule;
+import org.jahia.services.timebasedpublishing.RetentionRule;
+import org.jahia.services.timebasedpublishing.DayInWeekBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.hibernate.manager.JahiaObjectManager;
+import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.hibernate.manager.JahiaObjectDelegate;
 
 /**
  * Created by IntelliJ IDEA.
@@ -75,8 +81,9 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
 
     protected List<Item> fields;
     protected List<Item> emptyFields;
+    private JahiaObjectManager jahiaObjectManager;
 
-    protected JahiaContentNodeImpl(SessionImpl session, ContentObject object) {
+    protected JahiaContentNodeImpl(SessionImpl session, ContentObject object) throws ItemNotFoundException {
         super(session);
         this.object = object;
         try {
@@ -84,6 +91,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             if (!object.isAclSameAsParent()) {
                 initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:accessControlled"));
             }
+            checkTimeBasePublishingState(session, object);
         } catch (NoSuchNodeTypeException e) {
             e.printStackTrace();
         }
@@ -158,7 +166,8 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                 e.printStackTrace();
             }
 
-
+            // retentionRules
+            initTimeBasedPublishingProperties();
 
             initFields();
             for (Item item : fields) {
@@ -187,7 +196,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             if (!object.isAclSameAsParent()) {
                 initNode(new JahiaAclNodeImpl(getSession(), object.getAclID(), this));
             }
-
+            initTimeBasedPublishingNodes();
             initFields();
 
             try {
@@ -359,6 +368,103 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
         } catch (JahiaException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private void checkTimeBasePublishingState(SessionImpl session, ContentObject object) throws ItemNotFoundException, NoSuchNodeTypeException {
+        jahiaObjectManager = (JahiaObjectManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaObjectManager.class.getName());
+        final JahiaObjectDelegate jahiaObjectDelegate = jahiaObjectManager.getJahiaObjectDelegate(object.getObjectKey());
+        if(jahiaObjectDelegate!=null) {
+            if(session.getWorkspace().getName().equals("live") && jahiaObjectDelegate.isNotValid()) {
+                throw new ItemNotFoundException("This item is not visible in live due to some time based publishing rules");
+            }
+            final RetentionRule retentionRule = jahiaObjectDelegate.getRule();
+            if(retentionRule instanceof RangeRetentionRule) {
+                RangeRetentionRule rule = (RangeRetentionRule) retentionRule;
+                if(RetentionRule.RULE_START_AND_END_DATE.equals(retentionRule.getRuleType())) {
+                    initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:simpleTimebasedPublished"));
+                } else if (RetentionRule.RULE_XDAYINWEEK.equals(retentionRule.getRuleType())) {
+                    initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:dailyTimebasedPublished"));
+                } else if (RetentionRule.RULE_DAILY.equals(retentionRule.getRuleType())){
+                    initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:hourlyTimebasedPublished"));
+                }
+            }
+        }
+    }
+
+    private void initTimeBasedPublishingProperties() throws RepositoryException {
+        if (isNodeType("jmix:simpleTimebasedPublished")) {
+            jahiaObjectManager = (JahiaObjectManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaObjectManager.class.getName());
+            final JahiaObjectDelegate jahiaObjectDelegate = jahiaObjectManager.getJahiaObjectDelegate(object.getObjectKey());
+            if (jahiaObjectDelegate != null) {
+                final RetentionRule retentionRule = jahiaObjectDelegate.getRule();
+                if (RetentionRule.RULE_START_AND_END_DATE.equals(retentionRule.getRuleType())) {
+                    RangeRetentionRule rule = (RangeRetentionRule) retentionRule;
+                    final Long startDate = rule.getStartDate();
+                    final Long endDate = rule.getEndDate();
+                    if (startDate != null && startDate > 0) {
+                        final GregorianCalendar c = new GregorianCalendar();
+                        c.setTimeInMillis(startDate);
+                        initProperty(new PropertyImpl(getSession(), this, "j:startDate",
+                                                      NodeTypeRegistry.getInstance().getNodeType("jmix:simpleTimebasedPublished").getPropertyDefinitionsAsMap().get("j:startDate"),
+                                                      null, new ValueImpl(c)));
+                    }
+                    if (endDate != null && endDate > 0) {
+                        final GregorianCalendar c = new GregorianCalendar();
+                        c.setTimeInMillis(endDate);
+                        initProperty(new PropertyImpl(getSession(), this, "j:endDate",
+                                                      NodeTypeRegistry.getInstance().getNodeType("jmix:simpleTimebasedPublished").getPropertyDefinitionsAsMap().get("j:endDate"),
+                                                      null, new ValueImpl(c)));
+                    }
+                }
+            }
+        } else if (isNodeType("jmix:hourlyTimebasedPublished")) {
+            jahiaObjectManager = (JahiaObjectManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaObjectManager.class.getName());
+            final JahiaObjectDelegate jahiaObjectDelegate = jahiaObjectManager.getJahiaObjectDelegate(object.getObjectKey());
+            if (jahiaObjectDelegate != null) {
+                final RetentionRule retentionRule = jahiaObjectDelegate.getRule();
+                if (RetentionRule.RULE_DAILY.equals(retentionRule.getRuleType())) {
+                    RangeRetentionRule rule = (RangeRetentionRule) retentionRule;
+                    final int fromHours = rule.getDailyFromHours();
+                    final int fromMinutes = rule.getDailyFromMinutes();
+                    final int toHours = rule.getDailyToHours();
+                    final int toMinutes = rule.getDailyToMinutes();
+                    if (fromHours >= 0) {
+                        initProperty(new PropertyImpl(getSession(), this, "j:fromHour",
+                                                      NodeTypeRegistry.getInstance().getNodeType("jmix:hourlyTimebasedPublished").getPropertyDefinitionsAsMap().get("j:fromHour"),
+                                                      null, new ValueImpl(fromHours)));
+                        initProperty(new PropertyImpl(getSession(), this, "j:fromMinutes",
+                                                      NodeTypeRegistry.getInstance().getNodeType("jmix:hourlyTimebasedPublished").getPropertyDefinitionsAsMap().get("j:fromMinutes"),
+                                                      null, new ValueImpl(fromMinutes)));
+                    }
+                    if (toHours >= 0) {
+                        initProperty(new PropertyImpl(getSession(), this, "j:toHour",
+                                                      NodeTypeRegistry.getInstance().getNodeType("jmix:hourlyTimebasedPublished").getPropertyDefinitionsAsMap().get("j:toHour"),
+                                                      null, new ValueImpl(toHours)));
+                        initProperty(new PropertyImpl(getSession(), this, "j:toMinutes",
+                                                      NodeTypeRegistry.getInstance().getNodeType("jmix:hourlyTimebasedPublished").getPropertyDefinitionsAsMap().get("j:toMinutes"),
+                                                      null, new ValueImpl(toMinutes)));
+                    }
+                }
+            }
+        }
+    }
+
+    private void initTimeBasedPublishingNodes() throws RepositoryException {
+        if (isNodeType("jmix:dailyTimebasedPublished")) {
+            jahiaObjectManager = (JahiaObjectManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaObjectManager.class.getName());
+            final JahiaObjectDelegate jahiaObjectDelegate = jahiaObjectManager.getJahiaObjectDelegate(object.getObjectKey());
+            if (jahiaObjectDelegate != null) {
+                final RetentionRule retentionRule = jahiaObjectDelegate.getRule();
+                if (RetentionRule.RULE_XDAYINWEEK.equals(retentionRule.getRuleType())) {
+                    RangeRetentionRule rule = (RangeRetentionRule) retentionRule;
+                    final List days = rule.getDaysInWeek();
+                    for (int i = 0; i < days.size(); i++) {
+                        DayInWeekBean dayInWeekBean = (DayInWeekBean) days.get(i);
+                        initNode(new DaylyTimeBasedPublishingNode(getSession(),dayInWeekBean,this));
+                    }
+                }
+            }
         }
     }
 }

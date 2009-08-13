@@ -60,6 +60,17 @@
  - j:startDate (date)
  - j:endDate (date)
 
+ [jmix:hourlyTimebasedPublished] > jmix:timebasedPublished mixin
+ - j:fromHour (long)
+ - j:fromMinutes (long)
+ - j:toHour (long)
+ - j:toMinutes (long)
+
+[jnt:hourlyTimebasedPublished] > nt:base, jmix:hourlyTimebasedPublished
+
+ [jmix:dailyTimebasedPublished] > jmix:timebasedPublished mixin
+ + * (jnt:hourlyTimebasedPublished)
+
 //---------------------------------------------------------
 // Navigation
 //---------------------------------------------------------

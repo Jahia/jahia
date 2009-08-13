@@ -202,11 +202,12 @@ public abstract class ApplicationsManagerService extends JahiaService {
      * Creates an instance of an application entry point definition. This
      * creates the entry in the database.
      * @param entryPointDefinition EntryPointDefinition
+     * @param s
      * @throws JahiaException
      * @returns the created instance for the entry point definition.
      */
-    public abstract EntryPointInstance createEntryPointInstance (
-        EntryPointDefinition entryPointDefinition)
+    public abstract EntryPointInstance createEntryPointInstance(
+            EntryPointDefinition entryPointDefinition, String path)
         throws JahiaException;
 
     /**

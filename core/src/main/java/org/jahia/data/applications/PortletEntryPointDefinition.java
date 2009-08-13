@@ -239,11 +239,8 @@ public class PortletEntryPointDefinition implements Serializable, EntryPointDefi
 
         PortletEntryPointDefinition that = (PortletEntryPointDefinition) o;
 
-        if (!applicationID.equals(that.applicationID)) {
-            return false;
-        }
+        return applicationID.equals(that.applicationID);
 
-        return true;
     }
 
     @Override

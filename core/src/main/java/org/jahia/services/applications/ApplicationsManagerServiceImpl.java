@@ -561,10 +561,11 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * creates the entry in the database.
      *
      * @param entryPointDefinition EntryPointDefinition
+     * @param s
      * @return the created instance for the entry point definition.
      * @throws JahiaException
      */
-    public EntryPointInstance createEntryPointInstance(EntryPointDefinition entryPointDefinition)
+    public EntryPointInstance createEntryPointInstance(EntryPointDefinition entryPointDefinition, String path)
             throws JahiaException {
         if (entryPointDefinition == null) {
             return null;
@@ -580,7 +581,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         }
         if (epInstance != null) {
             try {
-                final JCRNodeWrapper parentNode = jcrStoreService.getThreadSession(Jahia.getThreadParamBean().getUser()).getNode("/content/mashups");
+                final JCRNodeWrapper parentNode = jcrStoreService.getThreadSession(Jahia.getThreadParamBean().getUser()).getNode(path);
                 final String name = epInstance.getResKeyName() != null ? epInstance.getResKeyName() : appBean.getName().replaceAll("/", "___") + Math.round(Math.random() * 1000000l);
                 final JCRPortletNode wrapper = (JCRPortletNode) parentNode.addNode(name, "jnt:portlet");
                 final String scope = epInstance.getCacheScope();
@@ -684,8 +685,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             throws JahiaException {
         try {
             if (epInstanceID != null) {
-                final JCRNodeWrapper parentNode = jcrStoreService.getThreadSession(Jahia.getThreadParamBean().getUser()).getNode("/content/mashups");
                 final Node node = jcrStoreService.getNodeByUUID(epInstanceID, Jahia.getThreadParamBean().getUser());
+                final JCRNodeWrapper parentNode = (JCRNodeWrapper) node.getParent();
                 node.remove();
                 parentNode.save();
                 entryPointCache.remove(ENTRY_POINT_INSTANCE + epInstanceID);

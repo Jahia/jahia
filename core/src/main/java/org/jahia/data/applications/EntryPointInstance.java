@@ -149,6 +149,28 @@ public class EntryPointInstance implements Serializable {
             return true;
         }
         return JCRContentUtils.hasPermission(user, mode,ID);
-    }    
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        EntryPointInstance that = (EntryPointInstance) o;
+
+        if (!ID.equals(that.ID)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return ID.hashCode();
+    }
 }

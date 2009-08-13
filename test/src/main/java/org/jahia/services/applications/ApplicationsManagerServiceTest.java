@@ -5,6 +5,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.WebAppContext;
 import org.jahia.data.applications.EntryPointDefinition;
+import org.jahia.data.applications.EntryPointInstance;
 
 import java.util.List;
 import javax.portlet.PortletMode;
@@ -30,6 +31,7 @@ public class ApplicationsManagerServiceTest extends TestCase {
 
     public void testRetrievingApplicationDefinitions() throws Exception {
         List<ApplicationBean> applicationBeans = applicationsManagerService.getApplications();
+        assertTrue("We do not find at least the three default portlet of jahia",applicationBeans.size()>=3);
         for (ApplicationBean applicationBean : applicationBeans) {
             WebAppContext webAppContext = applicationsManagerService.getApplicationContext(applicationBean);
             ApplicationBean appFoundByContext = applicationsManagerService.getApplicationByContext(webAppContext.getContext());
@@ -49,5 +51,16 @@ public class ApplicationsManagerServiceTest extends TestCase {
                 assertTrue(applicationsManagerService.getSupportedWindowStates().containsAll(windowStates));
             }
         }
+    }
+
+    public void testEntryPointInstance() throws Exception {
+        ApplicationBean applicationBean = applicationsManagerService.getApplications().get(0);
+        EntryPointDefinition definition = applicationBean.getEntryPointDefinitions().get(0);
+        final EntryPointInstance instance = applicationsManagerService.createEntryPointInstance(definition,"/content/shared/mashups");
+        assertNotNull(instance);
+        assertEquals(definition.getContext()+"."+definition.getName(),instance.getDefName());
+        assertEquals(instance,applicationsManagerService.getEntryPointInstance(instance.getID()));
+        applicationsManagerService.removeEntryPointInstance(instance.getID());
+        assertNull(applicationsManagerService.getEntryPointInstance(instance.getID()));
     }
 }

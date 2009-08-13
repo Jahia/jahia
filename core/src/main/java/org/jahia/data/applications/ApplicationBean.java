@@ -264,7 +264,7 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
 
         final ApplicationBean that = (ApplicationBean) o;
 
-        return ID == that.ID;
+        return ID.equals(that.ID);
 
     }
 

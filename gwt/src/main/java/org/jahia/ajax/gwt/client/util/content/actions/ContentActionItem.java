@@ -95,7 +95,7 @@ public abstract class ContentActionItem implements ContentActionItemItf {
     public abstract void enableOnConditions(boolean treeSelection,
                                             boolean tableSelection,
                                             boolean writable,
-                                            boolean parentWritable,
+                                            boolean deleteable, boolean parentWritable,
                                             boolean singleFile,
                                             boolean singleFolder,
                                             boolean pasteAllowed,

@@ -78,6 +78,7 @@ public class ContentListContextMenu extends Menu {
                 boolean isTreeSelection = leftTreeSelection != null ;
                 boolean isParentWriteable = (isTreeSelection) ? leftTreeSelection.isWriteable() && !leftTreeSelection.isLocked() : false;
                 boolean isWritable = false;
+                boolean isDeleteable = false;
                 boolean isLockable = false;
                 boolean isSingleFile = false;
                 boolean isSingleFolder = false;
@@ -98,9 +99,11 @@ public class ContentListContextMenu extends Menu {
                     }
                     isTableSelection = true ;
                     isWritable = true;
+                    isDeleteable = true;
                     isLockable = true;
                     for (GWTJahiaNode gwtJahiaNode : topTableSelection) {
                         isWritable &= gwtJahiaNode.isWriteable() && !gwtJahiaNode.isLocked();
+                        isDeleteable &= gwtJahiaNode.isDeleteable() && !gwtJahiaNode.isLocked();
                         isLockable &= gwtJahiaNode.isLockable();
                     }
                     if (topTableSelection.size() == 1) {
@@ -108,7 +111,7 @@ public class ContentListContextMenu extends Menu {
                         isSingleFolder = !isSingleFile;
                     }
                     if (isSingleFolder) {
-                        isMount = topTableSelection.get(0).getNodeTypes().contains("jnt:vfsMountPoint") ;
+                        isMount = topTableSelection.get(0).getInheritedNodeTypes().contains("jnt:mountPoint")  || topTableSelection.get(0).getNodeTypes().contains("jnt:mountPoint");
                     }
                     if (!isTreeSelection) {
                         isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo(topTableSelection.get(0)) ;
@@ -121,7 +124,7 @@ public class ContentListContextMenu extends Menu {
                 }
                 for (ContentActionItemGroup group: config.getGroupedItems()) {
                     for (ContentActionItemItf item: group.getItems()) {
-                        item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isZip, isImage, isMount);
+                        item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isZip, isImage, isMount);
                     }
                 }
             }

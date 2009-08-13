@@ -52,7 +52,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -84,7 +83,7 @@ public class ContentToolbar extends TopBar {
                 getLinker().refreshTable();
             }
 
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                 // always enabled
                 // setEnabled(treeSelection);
             }
@@ -198,6 +197,7 @@ public class ContentToolbar extends TopBar {
         boolean isTreeSelection = leftTreeSelection != null ;
         boolean isParentWriteable = (isTreeSelection) ? (((GWTJahiaNode) leftTreeSelection).isWriteable() && !((GWTJahiaNode) leftTreeSelection).isLocked()) : false;
         boolean isWritable = false;
+        boolean isDeleteable = false;
         boolean isLockable = false;
         boolean isSingleFile = false;
         boolean isSingleFolder = false;
@@ -218,9 +218,11 @@ public class ContentToolbar extends TopBar {
             }
             isTableSelection = true ;
             isWritable = true;
+            isDeleteable = true;
             isLockable = true;
             for (GWTJahiaNode gwtJahiaNode : topTableSelection) {
                 isWritable &= gwtJahiaNode.isWriteable() && !gwtJahiaNode.isLocked();
+                isDeleteable &= gwtJahiaNode.isDeleteable() && !gwtJahiaNode.isLocked();
                 isLockable &= gwtJahiaNode.isLockable();
             }
             if (topTableSelection.size() == 1) {
@@ -228,7 +230,7 @@ public class ContentToolbar extends TopBar {
                 isSingleFolder = !isSingleFile;
             }
             if (isSingleFolder) {
-                isMount = topTableSelection.get(0).getNodeTypes().contains("jnt:vfsMountPoint") ;
+                isMount = topTableSelection.get(0).getInheritedNodeTypes().contains("jnt:mountPoint")  || topTableSelection.get(0).getNodeTypes().contains("jnt:mountPoint");
             }
             if (!isTreeSelection) {
                 if (isSingleFolder) {
@@ -246,7 +248,7 @@ public class ContentToolbar extends TopBar {
         
         for (ContentActionItemGroup group: configuration.getGroupedItems()) {
             for (ContentActionItemItf item: group.getItems()) {
-                item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isZip, isImage, isMount);
+                item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isZip, isImage, isMount);
             }
         }
     }

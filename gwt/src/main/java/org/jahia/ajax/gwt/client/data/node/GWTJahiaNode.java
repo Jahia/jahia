@@ -68,7 +68,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         setFile(Boolean.FALSE);
     }
 
-    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, boolean writeable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
+    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, String providerKey, boolean writeable, boolean deleteable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
         super();
         setUUID(uuid);
         setName(name);
@@ -80,8 +80,10 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         setNodeTypes(nodetypes);
         setInheritedNodeTypes(inheritedTypes);
         setAclContext(aclContext);
+        setProviderKey(providerKey);
         setFile(Boolean.FALSE);
         setWriteable(writeable);
+        setDeleteable(deleteable);
         setLockable(lockable);
         setExt("icon-dir");
         setLocked(locked);
@@ -90,8 +92,8 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         setVersioned(versioned);
     }
 
-    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, Long size, boolean writeable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
-        this(uuid, name,description, path, url, date, nodetypes, inheritedTypes, aclContext, writeable, lockable, locked, lockOwner,versioned);
+    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, String providerKey, Long size, boolean writeable, boolean deleteable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
+        this(uuid, name,description, path, url, date, nodetypes, inheritedTypes, aclContext, providerKey, writeable, deleteable, lockable, locked, lockOwner,versioned);
         setSize(size);
         setFile(Boolean.TRUE);
         //setPreview("../images/types/gwt/large/icon-file.png");
@@ -151,6 +153,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public Boolean isWriteable() {
         return get("writeable");
+    }
+
+    public void setDeleteable(Boolean deleteable) {
+        set("deleteable", deleteable);
+    }
+
+    public Boolean isDeleteable() {
+        return get("deleteable");
     }
 
     public void setFileProperties(Map<String, String> map) {
@@ -247,6 +257,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setExt(String ext) {
         set("ext", ext);
+    }
+
+    public String getProviderKey() {
+        return get("providerKey");
+    }
+
+    public void setProviderKey(String providerName) {
+        set("providerKey", providerName);
     }
 
     public String getPreview() {

@@ -247,7 +247,7 @@ public class ContentManagerHelper {
                 if (l != null) {
                     for (String s : l) {
                         if (!node.hasNode(s)) {
-                            final GWTJahiaNode o = new GWTJahiaNode(null, s, "placeholder " + s, node.getProvider().decodeInternalName(node.getPath()) + "/" + s, null, null, null, null, null, node.isWriteable(), false, false, null, false);
+                            final GWTJahiaNode o = new GWTJahiaNode(null, s, "placeholder " + s, node.getProvider().decodeInternalName(node.getPath()) + "/" + s, null, null, null, null, null, null, node.isWriteable(), false, false, false, null, false);
                             o.setExt("icon-placeholder");
                             result.add(o);
                         }
@@ -617,9 +617,14 @@ public class ContentManagerHelper {
         }
 
         if (f.isFile() || f.isPortlet()) {
-            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), f.getNodeTypes(), inherited, aclContext, f.getFileContent().getContentLength(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
+            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), f.getNodeTypes(), inherited, aclContext, f.getProvider().getKey(), f.getFileContent().getContentLength(), f.isWriteable(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
         } else {
-            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, aclContext, f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
+            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, aclContext, f.getProvider().getKey(), f.isWriteable(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
+
+            if (JCRStoreService.getInstance().getMountPoints().containsKey(f.getPath())) {
+                n.setDeleteable(false);
+            }
+ 	
             boolean hasChildren = false;
             boolean hasFolderChildren = false;
             if (f instanceof JCRMountPointNode) {

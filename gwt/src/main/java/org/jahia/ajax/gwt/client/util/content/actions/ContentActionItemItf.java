@@ -40,7 +40,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
  */
 public interface ContentActionItemItf {
 
-    public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) ;
+    public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) ;
 
     public void setEnabled(boolean enabled) ;
 

@@ -332,6 +332,7 @@ public class Login_Engine implements JahiaEngine {
             JahiaGroupManagerService grpServ = ServicesRegistry.getInstance ().getJahiaGroupManagerService ();
 
             List<String> v = grpServ.getUserMembership(user);
+            v.add(grpServ.lookupGroup(site.getID(),"users").getName());
             int size = v.size();
             String grpKey;
             JahiaGroup grp;
@@ -339,7 +340,7 @@ public class Login_Engine implements JahiaEngine {
                 grpKey = (String) v.get(i);
                 grp = grpServ.lookupGroup(grpKey);
                 if (grp != null
-                        && grp.getSiteID() == site.getID()
+                        && (grp.getSiteID() == site.getID() || grp.getSiteID() == 0)
                         && grp.getHomepageID() >= 0) {
                     //logger.debug("found a group with homepage " + grp.getGroupname() + ", page=" + grp.getHomepageID() );
                     try {

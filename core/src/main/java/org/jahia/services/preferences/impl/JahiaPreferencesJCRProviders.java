@@ -43,6 +43,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.apache.jackrabbit.util.ISO9075;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -398,7 +399,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
         } else {
             principalName = ((JahiaGroup) principal).getGroupname();
         }
-        return "content/users/" + principalName + "/preferences/";
+        return "content/users/" + ISO9075.encode(principalName) + "/preferences/";
     }
 
     /**
@@ -409,7 +410,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
     private NodeIterator findPreferenceNodeByJahiaPreferenceXPath(Principal p, String partialXPath) {
         // create XPath value by JahiaPreferenceKey
         String xpathNode = getPreferenceProviderNodePath(p);
-        StringBuffer prefPath = new StringBuffer(encodeXPath(xpathNode));
+        StringBuffer prefPath = new StringBuffer(xpathNode);
         prefPath.append(PREFERENCE);
         if (partialXPath != null) {
             prefPath.append(partialXPath);
@@ -459,19 +460,5 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
             logger.error(e, e);
         }
         return null;
-    }
-
-    /**
-     * To Do: encode corretly all escaped charater.
-     * @param xpath
-     * @return
-     */
-    private String encodeXPath(String xpath) {
-        if (xpath != null) {
-            // To Do: to it for all escaped charater
-            return xpath.replaceAll("@", "_0040_");
-        }
-        return null;
-
     }
 }

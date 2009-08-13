@@ -27,13 +27,6 @@
       <id>eclipse-integration</id>
       <build>
         <plugins>
-            <!-- Due to a bug in the Maven WAR plugin version 2.1-alpha-2 (http://jira.codehaus.org/browse/MWAR-169), we
-                 need to force the version of the plugin to version 2.1-beta-1 -->
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-war-plugin</artifactId>
-              <version>2.1-beta-1</version>
-            </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-eclipse-plugin</artifactId>
@@ -75,4 +68,17 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+
+    <build>
+      <plugins>
+        <!-- Due to a bug in the Maven WAR plugin version 2.1-alpha-2 (http://jira.codehaus.org/browse/MWAR-169), we
+             need to force the version of the plugin to version 2.1-beta-1 -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>2.1-beta-1</version>
+        </plugin>
+      </plugins>
+    </build>
+
 </project>

@@ -74,7 +74,7 @@ public class RulesListener extends DefaultEventListener {
     private Set<String> ruleFiles;
     private String serverId;
 
-    private ThreadLocal inRules = new ThreadLocal();
+    private ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
 
     public RulesListener() {
         instances.add(this);
@@ -306,10 +306,11 @@ public class RulesListener extends DefaultEventListener {
                                 if (!propertiesToIgnore.contains(propertyName)) {
                                     try {
                                         Node n = (Node) s.getItem(nodePath);
-                                        NodeWrapper rn = eventsMap.get(n.getUUID());
+                                        String key = n.isNodeType(Constants.MIX_REFERENCEABLE) ? n.getUUID() : n.getPath();
+                                        NodeWrapper rn = eventsMap.get(key);
                                         if (rn == null) {
                                             rn = new NodeWrapper(n);
-                                            eventsMap.put(n.getUUID(), rn);
+                                            eventsMap.put(key, rn);
                                         }
                                         list.add(new DeletedPropertyWrapper(rn, provider.decodeInternalName(propertyName)));
                                     } catch (PathNotFoundException e) {

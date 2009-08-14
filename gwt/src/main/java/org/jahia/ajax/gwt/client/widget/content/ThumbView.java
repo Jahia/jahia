@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -83,6 +84,9 @@ public class ThumbView extends TopRightComponent {
         m_component.setId("images-view");
         m_component.setBorders(true);
         m_component.setBodyBorder(false);
+        if (GXT.isIE) {
+            m_component.setHeight(400); // media gallery fix
+        }
 
         ToolBar bar = new ToolBar();
         bar.add(new LabelToolItem(Messages.getResource("fm_thumbFilter")));

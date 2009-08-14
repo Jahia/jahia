@@ -33,16 +33,9 @@ package org.jahia.taglibs.uicomponents.mediagallery;
 
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.data.JahiaData;
-import org.jahia.params.ProcessingContext;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.Random;
-import java.util.Locale;
-import java.util.MissingResourceException;
 
 /**
  * a simple iterating body tag to display a list of image files in a webdav path
@@ -72,18 +65,9 @@ public class ThumbViewTag extends AbstractJahiaTag {
                     buf.append("\" ");
                 }
 
-                buf.append(JahiaType.JAHIA_TYPE);
-                buf.append("=\"");
-                buf.append(JahiaType.MEDIA_GALLERY);
-                buf.append("\" ");
-                buf.append("id=\"");
-                buf.append(new Random().nextInt() + System.currentTimeMillis());
-                buf.append("\" ");
-
-                buf.append("path=\"");
-                buf.append(path);
-                buf.append("\" />");
-                buf.append("</div>\n");
+                buf.append(JahiaType.JAHIA_TYPE).append("=\"").append(JahiaType.MEDIA_GALLERY);
+                buf.append("\" id=\"").append(new Random().nextInt() + System.currentTimeMillis());
+                buf.append("\" path=\"").append(path).append("\"></div>\n");
 
                 pageContext.getOut().print(buf.toString());
             }

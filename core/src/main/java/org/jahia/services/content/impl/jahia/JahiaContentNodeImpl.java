@@ -45,6 +45,7 @@ import org.jahia.content.ContentDefinition;
 import org.jahia.content.ContentObject;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaFieldDefinition;
+import org.jahia.data.beans.portlets.PortletWindowBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -305,6 +306,18 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                     JCRNodeWrapper file = JCRStoreService.getInstance().getFileNode(value, getSession().getJahiaUser());
                     if (file.isValid()) {
                         Value v = new ValueImpl(file.getUUID(), PropertyType.REFERENCE);
+                        fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
+                    }
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case FieldTypes.APPLICATION: {
+                try {
+                    JCRNodeWrapper portlet = (JCRNodeWrapper) JCRStoreService.getInstance().getThreadSession(getSession().getJahiaUser()).getNodeByUUID(contentField.getJahiaField(elr).getRawValue());
+                    if (portlet != null) {
+                        Value v = new ValueImpl(portlet.getUUID(), PropertyType.REFERENCE);
                         fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
                     }
                 } catch (RepositoryException e) {

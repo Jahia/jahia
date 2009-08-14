@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -99,13 +100,17 @@ public class ContentViews extends TopRightComponent {
 
             public void onSaveButtonClicked(String value) {
                 if (value != null && value.length() > 0) {
-                    String name = Window.prompt(Messages.getNotEmptyResource("fm_search_warning_entername","Please enter a name for this search"), JCRClientUtils.cleanUpFilename(value));
+                    String name = Window.prompt(Messages.getNotEmptyResource("fm_saveSearchName","Please enter a name for this search"), JCRClientUtils.cleanUpFilename(value));
                     if (name != null && name.length() > 0) {
                         name = JCRClientUtils.cleanUpFilename(name);
                         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
                         service.saveSearch(value, name, new AsyncCallback<GWTJahiaNode>() {
                             public void onFailure(Throwable throwable) {
-                                Log.error("error", throwable);
+                                if (throwable instanceof ExistingFileException) {
+                                    Window.alert(Messages.getNotEmptyResource("fm_inUseSaveSearch","The entered name is already in use."));
+                                } else {
+                                    Log.error("error", throwable);
+                                }
                             }
 
                             public void onSuccess(GWTJahiaNode o) {
@@ -114,7 +119,7 @@ public class ContentViews extends TopRightComponent {
                             }
                         });
                     } else {
-                        Window.alert(Messages.getNotEmptyResource("fm_search_error_nameinvalid","The entered name is invalid"));
+                        Window.alert(Messages.getNotEmptyResource("fm_failSaveSearch","The entered name is invalid."));
                     }
                 }
             }

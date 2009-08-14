@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.content.server.helper;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
@@ -513,6 +514,9 @@ public class ContentManagerHelper {
                 queryStore = jcr.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(user.getPath() + "/savedSearch");
             }
             String path = queryStore.getPath() + "/" + name;
+            if (checkExistence(path, context.getUser())) {
+                throw new ExistingFileException("The node " + path + " alreadey exists.");
+            }
             q.storeAsNode(path);
             if (createdSearchFolder) {
                 user.save();

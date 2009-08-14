@@ -197,6 +197,10 @@ cursor:pointer;
                             aliasResourceName="fm_failResize"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.rotate.label"
                             aliasResourceName="fm_failRotate"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.saveSearch.label"
+                            aliasResourceName="fm_failSaveSearch"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.inUseSaveSearch.label"
+                            aliasResourceName="fm_inUseSaveSearch"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.unlock.label"
                             aliasResourceName="fm_failUnlock"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.unmount.label"
@@ -255,6 +259,8 @@ cursor:pointer;
                             aliasResourceName="fm_browse"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.saveSearch.label"
                             aliasResourceName="fm_saveSearch"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.saveSearchName.label"
+                            aliasResourceName="fm_saveSearchName"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.search.label"
                             aliasResourceName="fm_search"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.filters.label"

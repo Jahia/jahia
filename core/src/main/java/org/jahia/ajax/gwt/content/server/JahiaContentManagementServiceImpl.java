@@ -393,10 +393,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         ContentManagerHelper.uploadedFile(location, tmpName, operation, newName, retrieveParamBean());
     }
 
-    
-
     public String getRenderedContent(String path) throws GWTJahiaServiceException {
         return ContentManagerHelper.getRenderedContent(path, retrieveParamBean());
     }
+
+    public Boolean isFileAccessibleForCurrentContainer(String path) throws GWTJahiaServiceException {
+        return Boolean.valueOf(ContentManagerHelper.isFileAccessibleForCurrentContainer(retrieveParamBean(), path));
+    }
+
 
 }

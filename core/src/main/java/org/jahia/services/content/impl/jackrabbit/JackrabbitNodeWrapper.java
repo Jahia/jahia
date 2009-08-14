@@ -86,6 +86,28 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
         return null;
     }
 
+    public Map<String, Map<String, String>> getActualAclEntries() {
+        Map<String, Map<String, String>> actualACLs = new HashMap<String, Map<String, String>>();
+        Map<String, List<String[]>> allACLs = getAclEntries();
+        if (allACLs != null) {
+            for (Map.Entry<String, List<String[]>> entry: allACLs.entrySet()) {
+                Map<String, String> permissionsForUser = new HashMap<String, String>();
+                // filtering stuff (path, GRANT/DENY, jcr:perm)
+                for (String[] perms: entry.getValue()) {
+                    if (permissionsForUser.containsKey(perms[2])) {
+                        if (perms[0].equals(getPath())) {
+                            permissionsForUser.put(perms[2], perms[1]);
+                        }
+                    } else {
+                        permissionsForUser.put(perms[2], perms[1]);
+                    }
+                }
+                actualACLs.put(entry.getKey(), permissionsForUser);
+            }
+        }
+        return actualACLs;
+    }
+
     public boolean getAclInheritanceBreak(){
         if (exception != null) {
             return false;

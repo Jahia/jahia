@@ -86,6 +86,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getAclEntries();
     }
 
+    public Map<String, Map<String, String>> getActualAclEntries() {
+        return node.getActualAclEntries();
+    }
+
     public Map<String, List<String>> getAvailablePermissions() {
         return node.getAvailablePermissions();
     }

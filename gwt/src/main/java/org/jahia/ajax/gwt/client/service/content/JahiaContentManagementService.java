@@ -157,4 +157,5 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public String getRenderedContent(String path) throws GWTJahiaServiceException;
 
+    public Boolean isFileAccessibleForCurrentContainer(String path) throws GWTJahiaServiceException;
 }

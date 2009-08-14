@@ -184,6 +184,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return new HashMap<String, List<String[]>>();
     }
 
+    public Map<String, Map<String, String>> getActualAclEntries() {
+        return new HashMap<String, Map<String, String>>();
+    }
+
     public Map<String, List<String>> getAvailablePermissions() {
         return Collections.singletonMap("default",Arrays.asList(defaultPerms));
     }

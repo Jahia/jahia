@@ -84,7 +84,17 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     boolean isValid();
 
+    /**
+     * get all the ACL entries including inherited ones
+     * @return a map of (user, list(path, GRANT/DENY, permission))
+     */
     Map<String, List<String[]>> getAclEntries();
+
+    /**
+     * get the active ACL entries
+     * @return a map of (user, map(permisson, GRANT/DENY))
+     */
+    Map<String, Map<String, String>> getActualAclEntries();
 
     Map<String, List<String>> getAvailablePermissions();
 

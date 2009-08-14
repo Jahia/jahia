@@ -36,6 +36,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.*;
@@ -44,6 +45,9 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
 
@@ -106,11 +110,26 @@ public class ContentPathBar extends TopBar {
         List<GWTJahiaNode> selection = (List<GWTJahiaNode>) topTableSelection ;
 
         GWTJahiaNode node = selection.get(0);
-        if (selection != null && selection.size() > 0 && (node.getNodeTypes().contains(config.getNodeTypes()) || node.getInheritedNodeTypes().contains(config.getNodeTypes()))) {
-            selectedPath.setRawValue(node.getPath()+(node.getSelectedVersion()!=null?"?v="+node.getSelectedVersion():""));
-            if (callback != null && callback.length() > 0) {
-                nativeCallback(callback, selectedPath.getRawValue());
-            }
+        if (selection != null && selection.size() > 0 && (selection.get(0).getNodeTypes().contains(config.getNodeTypes()) || selection.get(0).getInheritedNodeTypes().contains(config.getNodeTypes()))) {
+            final String path = selection.get(0).getPath();
+            JahiaContentManagementService.App.getInstance().isFileAccessibleForCurrentContainer(path, new AsyncCallback<Boolean>() {
+                public void onFailure(Throwable throwable) {
+                    Log.error("unable to check ACLs");
+                }
+                public void onSuccess(Boolean accessible) {
+                    boolean doIt = true;
+                    if (!accessible.booleanValue()) {
+                        doIt = Window.confirm("The file may not be readable by everyone, resulting in a broken link.\nDo you wish to continue ?");
+                    }
+                    if (doIt) {
+                        selectedPath.setRawValue(path);
+                        if (callback != null && callback.length() > 0) {
+                            nativeCallback(callback, selectedPath.getRawValue());
+                        }
+                    }
+                }
+            });
+
         }
     }
 

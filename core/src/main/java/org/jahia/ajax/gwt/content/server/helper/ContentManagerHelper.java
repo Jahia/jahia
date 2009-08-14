@@ -2161,126 +2161,126 @@ public class ContentManagerHelper {
     }
 
     /**
-         * Check if a node in a given container has at least all the ACLs of the container.
-         *
-         * @param paramBean the ParamBean
-         * @param path the node path
-         * @return true if accessibility is ok, false otherwise
-         */
-        public static boolean isFileAccessibleForCurrentContainer(ParamBean paramBean, String path) {
-            try {
-                // first let's check the JCR node ACLs
-                JCRNodeWrapper node = jcr.getThreadSession(paramBean.getUser()).getNode(path);
-                Map<String, Map<String, String>> m = node.getActualAclEntries();
-                List<String> jcrReadGroups = new ArrayList<String>();
-                List<String> jcrReadUsers = new ArrayList<String>();
-                logger.debug("JCR :");
-                for (String key: m.keySet()) {
-                    // keys are g:groupName or u:userName
-                    String[] userKey = key.split(":");
-                    if (userKey.length == 2) {
-                        String username = userKey[1];
-                        logger.debug("  " + key);
-                        Map<String, String> perms = m.get(key);
-                        boolean canRead = false;
-                        for (Map.Entry<String, String> perm: perms.entrySet()) {
-                            logger.debug("    " + perm.getKey() + " - " + perm.getValue());
-                            if (perm.getKey().equals("jcr:read")) {
-                                if (perm.getValue().equalsIgnoreCase("GRANT")) {
-                                    canRead = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (canRead) {
-                            if (username.equals("guest")) { // if guest has acess, nothing left to check
-                                return true;
-                            }
-                            if ("g".equals(userKey[0])) {
-                                jcrReadGroups.add(username);
-                            } else {
-                                jcrReadUsers.add(username);
-                            }
-                        }
-                    }
-                }
+	 * Check if a node in a given container has at least all the ACLs of the container.
+	 *
+	 * @param paramBean the ParamBean
+	 * @param path the node path
+	 * @return true if accessibility is ok, false otherwise
+	 */
+	public static boolean isFileAccessibleForCurrentContainer(ParamBean paramBean, String path) {
+		try {
+			// first let's check the JCR node ACLs
+			JCRNodeWrapper node = jcr.getThreadSession(paramBean.getUser()).getNode(path);
+			Map<String, Map<String, String>> m = node.getActualAclEntries();
+			List<String> jcrReadGroups = new ArrayList<String>();
+			List<String> jcrReadUsers = new ArrayList<String>();
+			logger.debug("JCR :");
+			for (String key: m.keySet()) {
+				// keys are g:groupName or u:userName
+				String[] userKey = key.split(":");
+				if (userKey.length == 2) {
+					String username = userKey[1];
+					logger.debug("  " + key);
+					Map<String, String> perms = m.get(key);
+					boolean canRead = false;
+					for (Map.Entry<String, String> perm: perms.entrySet()) {
+						logger.debug("    " + perm.getKey() + " - " + perm.getValue());
+						if (perm.getKey().equals("jcr:read")) {
+							if (perm.getValue().equalsIgnoreCase("GRANT")) {
+								canRead = true;
+								break;
+							}
+						}
+					}
+					if (canRead) {
+						if (username.equals("guest")) { // if guest has acess, nothing left to check
+							return true;
+						}
+						if ("g".equals(userKey[0])) {
+							jcrReadGroups.add(username);
+						} else {
+							jcrReadUsers.add(username);
+						}
+					}
+				}
+			}
 
-                // now let's retrieve the ACLs for the current container (from the engineMap)
-                Map engineMap = (Map) paramBean.getSession().getAttribute(ProcessingContext.SESSION_JAHIA_ENGINEMAP);
-                if (engineMap != null) {
-                    JahiaContainer theContainer = (JahiaContainer) engineMap.get("theContainer");
-                    JahiaBaseACL acl = theContainer.getACL();
-                    final Set<String> readGroups = new HashSet<String>();
-                    final Set<String> readUsers = new HashSet<String>();
-                    final List<String> groups= acl.getGroupnameList(null);
-                    final List<String> users = acl.getUsernameList(null);
-                    logger.debug("Container :");
-                    logger.debug("  Groups :");
-                    for (String group: groups) {
-                        logger.debug("    analyzing " + group);
-                        JahiaGroup g = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(group);
-                        if (g != null && (acl.getPermission(g, JahiaBaseACL.READ_RIGHTS) || acl.getPermission(g, JahiaBaseACL.WRITE_RIGHTS) || acl.getPermission(g, JahiaBaseACL.ADMIN_RIGHTS))) {
-                            String theGroupName;
-                            if (group.indexOf(":") > -1) {
-                                theGroupName = group.split(":")[0];
-                            } else if (group.indexOf("}") > -1) {
-                                theGroupName = group.substring(group.indexOf("}")+1);
-                            } else {
-                                theGroupName = group;
-                            }
-                            readGroups.add(theGroupName);
-                            logger.debug("      " + theGroupName + " is supposed to read");
-                        } else {
-                            logger.debug("      " + group + " is not supposed to read");
-                        }
-                    }
-                    logger.debug("  Users :");
-                    for (String user: users) {
-                        logger.debug("    analyzing " + user);
-                        JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
-                        if (u != null && (acl.getPermission(u, JahiaBaseACL.READ_RIGHTS) || acl.getPermission(u, JahiaBaseACL.WRITE_RIGHTS) || acl.getPermission(u, JahiaBaseACL.ADMIN_RIGHTS))) {
-                            String theUserName;
-                            if (user.indexOf(":") > -1) {
-                                theUserName = user.split(":")[0];
-                            } else if (user.indexOf("}") > -1) {
-                                theUserName = user.substring(user.indexOf("}")+1);
-                            } else {
-                                theUserName = user;
-                            }
-                            readUsers.add(theUserName);
-                            logger.debug("      " + theUserName + " is supposed to read");
-                        } else {
-                            logger.debug("      " + user + " is not supposed to read");
-                        }
-                    }
+			// now let's retrieve the ACLs for the current container (from the engineMap)
+			Map engineMap = (Map) paramBean.getSession().getAttribute(ProcessingContext.SESSION_JAHIA_ENGINEMAP);
+			if (engineMap != null) {
+				JahiaContainer theContainer = (JahiaContainer) engineMap.get("theContainer");
+				JahiaBaseACL acl = theContainer.getACL();
+				final Set<String> readGroups = new HashSet<String>();
+				final Set<String> readUsers = new HashSet<String>();
+				final List<String> groups= acl.getGroupnameList(null);
+				final List<String> users = acl.getUsernameList(null);
+				logger.debug("Container :");
+				logger.debug("  Groups :");
+				for (String group: groups) {
+					logger.debug("    analyzing " + group);
+					JahiaGroup g = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(group);
+					if (g != null && (acl.getPermission(g, JahiaBaseACL.READ_RIGHTS) || acl.getPermission(g, JahiaBaseACL.WRITE_RIGHTS) || acl.getPermission(g, JahiaBaseACL.ADMIN_RIGHTS))) {
+						String theGroupName;
+						if (group.indexOf(":") > -1) {
+							theGroupName = group.split(":")[0];
+						} else if (group.indexOf("}") > -1) {
+							theGroupName = group.substring(group.indexOf("}")+1);
+						} else {
+							theGroupName = group;
+						}
+						readGroups.add(theGroupName);
+						logger.debug("      " + theGroupName + " is supposed to read");
+					} else {
+						logger.debug("      " + group + " is not supposed to read");
+					}
+				}
+				logger.debug("  Users :");
+				for (String user: users) {
+					logger.debug("    analyzing " + user);
+					JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
+					if (u != null && (acl.getPermission(u, JahiaBaseACL.READ_RIGHTS) || acl.getPermission(u, JahiaBaseACL.WRITE_RIGHTS) || acl.getPermission(u, JahiaBaseACL.ADMIN_RIGHTS))) {
+						String theUserName;
+						if (user.indexOf(":") > -1) {
+							theUserName = user.split(":")[0];
+						} else if (user.indexOf("}") > -1) {
+							theUserName = user.substring(user.indexOf("}")+1);
+						} else {
+							theUserName = user;
+						}
+						readUsers.add(theUserName);
+						logger.debug("      " + theUserName + " is supposed to read");
+					} else {
+						logger.debug("      " + user + " is not supposed to read");
+					}
+				}
 
-                    // then let's check if people that have read rights on the container also have them on the jcr node
-                    Set<String> nonReadGroups = new HashSet<String>();
-                    Set<String> nonReadUsers = new HashSet<String>();
-                    for (String group: readGroups) {
-                        if (!jcrReadGroups.contains(group)) {
-                            nonReadGroups.add(group);
-                        }
-                    }
-                    for (String user: readUsers) {
-                        if (jcrReadUsers.contains(user)) {
-                            nonReadUsers.add(user);
-                        }
-                    }
+				// then let's check if people that have read rights on the container also have them on the jcr node
+				Set<String> nonReadGroups = new HashSet<String>();
+				Set<String> nonReadUsers = new HashSet<String>();
+				for (String group: readGroups) {
+					if (!jcrReadGroups.contains(group)) {
+						nonReadGroups.add(group);
+					}
+				}
+				for (String user: readUsers) {
+					if (jcrReadUsers.contains(user)) {
+						nonReadUsers.add(user);
+					}
+				}
 
-                    // if both sets are empty, all clear
-                    return nonReadGroups.size() == 0 && nonReadUsers.size() == 0;
-                }
-            } catch (JahiaSessionExpirationException e) {
-                logger.error(e.toString(), e);
-            } catch (PathNotFoundException e) {
-                logger.error(e.toString(), e);
-            } catch (RepositoryException e) {
-                logger.error(e.toString(), e);
-            } catch (JahiaACLException e) {
-                logger.error(e.toString(), e);
-            }
-            return Boolean.FALSE;
-        }
+				// if both sets are empty, all clear
+				return nonReadGroups.size() == 0 && nonReadUsers.size() == 0;
+			}
+		} catch (JahiaSessionExpirationException e) {
+			logger.error(e.toString(), e);
+		} catch (PathNotFoundException e) {
+			logger.error(e.toString(), e);
+		} catch (RepositoryException e) {
+			logger.error(e.toString(), e);
+		} catch (JahiaACLException e) {
+			logger.error(e.toString(), e);
+		}
+		return Boolean.FALSE;
+	}
 
 }

@@ -119,10 +119,10 @@ public class FormFieldCreator {
                     }
                     ((DateField) field).setHideTrigger(propDefinition.isProtected());
                     break;
-                /*case GWTJahiaNodeSelectorType.PORTLET:
-                    field = new ContentPickerField("/content/mashups", "jnt:portlet","","","","",false);
+                case GWTJahiaNodeSelectorType.PORTLET:
+                    field = new ContentPickerField("/content/mashups", "jnt:portlet","","",null,false);
                     break;
-                case GWTJahiaNodeSelectorType.PORTLETDEFINITION:
+                /*case GWTJahiaNodeSelectorType.PORTLETDEFINITION:
                     field = new PortletDefinitionField();
                     break;*/
                 case GWTJahiaNodeSelectorType.CHECKBOX:

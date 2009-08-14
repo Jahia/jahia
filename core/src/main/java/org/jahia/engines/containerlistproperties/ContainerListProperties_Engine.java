@@ -51,7 +51,6 @@ import org.jahia.data.fields.LoadFlags;
 import org.jahia.engines.EngineLanguageHelper;
 import org.jahia.engines.EngineToolBox;
 import org.jahia.engines.JahiaEngine;
-import org.jahia.engines.categories.ManageCategories;
 import org.jahia.engines.metadata.Metadata_Engine;
 import org.jahia.engines.rights.ManageRights;
 import org.jahia.engines.validation.EngineValidationHelper;
@@ -284,9 +283,10 @@ public class ContainerListProperties_Engine implements JahiaEngine {
                 throw new JahiaForbiddenAccessException ();
             }
         } else if (lastScreen.equals ("categories")) {
-            ManageCategories.getInstance ().handleActions (jParams, mode,
-                    engineMap, new ContentContainerListKey (theContainerList.getID ()),
-                    theContainerList.getDefinition (), false);
+        logger.error("Is this code still called?");
+//            ManageCategories.getInstance ().handleActions (jParams, mode,
+//                    engineMap, new ContentContainerListKey (theContainerList.getID ()),
+//                    theContainerList.getDefinition (), false);
         } else if (lastScreen.equals("workflow")) {
             final boolean isReadOnly = LockPrerequisites.getInstance().
                     getLockPrerequisitesResult((LockKey) engineMap.get("LockKey")) != null;
@@ -349,9 +349,10 @@ public class ContainerListProperties_Engine implements JahiaEngine {
                     engineMap);
 
         } else if (theScreen.equals ("categories")) {
-            ManageCategories.getInstance ().handleActions (jParams, mode,
-                    engineMap, new ContentContainerListKey (theContainerList.getID ()),
-                    theContainerList.getDefinition (), false);
+        logger.error("Is this code still called?");
+//            ManageCategories.getInstance ().handleActions (jParams, mode,
+//                    engineMap, new ContentContainerListKey (theContainerList.getID ()),
+//                    theContainerList.getDefinition (), false);
 
         } else {
             ContentContainerList contentContainerList = ContentContainerList.getContainerList(theContainerList.getID());
@@ -573,10 +574,11 @@ public class ContainerListProperties_Engine implements JahiaEngine {
                     }
 
                     // save categories
-                    ManageCategories.getInstance().handleActions(jParams, mode,
-                            engineMap,
-                            new ContentContainerListKey(theContainerList.getID()),
-                            theContainerList.getDefinition(), false);
+                    logger.error("Is this code still called?");
+//                    ManageCategories.getInstance().handleActions(jParams, mode,
+//                            engineMap,
+//                            new ContentContainerListKey(theContainerList.getID()),
+//                            theContainerList.getDefinition(), false);
 
                     // save metadata
                     final ObjectKey objectKey;

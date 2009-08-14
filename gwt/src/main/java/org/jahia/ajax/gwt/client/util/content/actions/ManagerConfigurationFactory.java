@@ -46,8 +46,10 @@ public class ManagerConfigurationFactory {
     public static final String MANAGER_CONFIG = "conf";
     public static final String FILEMANAGER = "filemanager";
     public static final String MASHUPMANAGER = "mashupmanager";
+    public static final String CATEGORYMANAGER = "categorymanager";    
     public static final String FILEPICKER = "filepicker";
     public static final String MASHUPPICKER = "mashuppicker";
+    public static final String CATEGORYPICKER = "categorypicker";    
     public static final String COMPLETE = "complete";
 
     public static ManagerConfiguration getConfiguration(String config, BrowserLinker linker) {
@@ -58,12 +60,18 @@ public class ManagerConfigurationFactory {
             if (config.contains(MASHUPMANAGER)) {
                 return getMashupManagerConfiguration(linker);
             }
+            if (config.contains(CATEGORYMANAGER)) {
+                return getCategoryManagerConfiguration(linker);
+            }            
             if (config.contains(FILEPICKER)) {
                 return getFilePickerConfiguration(linker);
             }
             if (config.contains(MASHUPPICKER)) {
                 return getMashupPickerConfiguration(linker);
             }
+            if (config.contains(CATEGORYPICKER)) {
+                return getCategoryPickerConfiguration(linker);
+            }            
             if (config.contains(COMPLETE)) {
                 return getCompleteManagerConfiguration(linker);
             }
@@ -466,7 +474,120 @@ public class ManagerConfigurationFactory {
         return mashupPickerConfig;
     }
 
+    public static ManagerConfiguration getCategoryManagerConfiguration(final BrowserLinker linker) {
+        ManagerConfiguration categoryManagerConfig = new ManagerConfiguration();
+        categoryManagerConfig.setEnableTextMenu(true);
+        categoryManagerConfig.setEnableFileDoubleClick(false);
+        categoryManagerConfig.setDisplayExt(false);
+        categoryManagerConfig.setDisplaySize(false);
+        categoryManagerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
+        ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
+        ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
+        file.addItem(newFolder);
+        categoryManagerConfig.addItem(newFolder);
+        ContentActionItem newCategory = ItemCreator.createNewCategoryItem(linker);
+        file.addItem(newCategory);
+        categoryManagerConfig.addItem(newCategory);
+        categoryManagerConfig.addItem(new ContentActionItemSeparator());
 
+        ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
+        ContentActionItem rename = ItemCreator.createRenameItem(linker);
+        edit.addItem(rename);
+        categoryManagerConfig.addItem(rename);
+        ContentActionItem remove = ItemCreator.createRemoveItem(linker);
+        edit.addItem(remove);
+        categoryManagerConfig.addItem(remove);
+        edit.addItem(new ContentActionItemSeparator());
+        categoryManagerConfig.addItem(new ContentActionItemSeparator());
+        ContentActionItem copy = ItemCreator.createCopyItem(linker);
+        edit.addItem(copy);
+        categoryManagerConfig.addItem(copy);
+        ContentActionItem cut = ItemCreator.createCutItem(linker);
+        edit.addItem(cut);
+        categoryManagerConfig.addItem(cut);
+        ContentActionItem paste = ItemCreator.createPasteItem(linker);
+        edit.addItem(paste);
+        categoryManagerConfig.addItem(paste);
+        ContentActionItem pasteRef = ItemCreator.createPasteReferenceItem(linker);
+        edit.addItem(pasteRef);
+        categoryManagerConfig.addItem(pasteRef);
+
+        // add menus to the config as well
+        categoryManagerConfig.addGroup(file);
+        categoryManagerConfig.addGroup(edit);
+
+        // no columns to add (default)
+
+        // show only the category repository
+        //categoryManagerConfig.addAccordion(JCRClientUtils.CATEGORY_REPOSITORY);
+
+        categoryManagerConfig.addTab(JCRClientUtils.ROLES_ACL);
+        categoryManagerConfig.addTab(JCRClientUtils.MODES_ACL);
+
+
+        // show the category tab by default
+
+        // do not hide the left panel (default)
+
+        categoryManagerConfig.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
+        return categoryManagerConfig;
+    }
+
+    public static ManagerConfiguration getCategoryPickerConfiguration(final BrowserLinker linker) {
+        ManagerConfiguration categoryPickerConfig = new ManagerConfiguration();
+        categoryPickerConfig.setEnableTextMenu(false);
+        categoryPickerConfig.setEnableFileDoubleClick(false);
+        categoryPickerConfig.setDisplayExt(false);
+        categoryPickerConfig.setDisplaySize(false);
+
+        categoryPickerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
+
+        ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
+        ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
+        file.addItem(newFolder);
+        categoryPickerConfig.addItem(newFolder);
+        ContentActionItem newCategory = ItemCreator.createNewCategoryItem(linker);
+        file.addItem(newCategory);
+        categoryPickerConfig.addItem(newCategory);
+
+        ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
+        ContentActionItem rename = ItemCreator.createRenameItem(linker);
+        edit.addItem(rename);
+        categoryPickerConfig.addItem(rename);
+        ContentActionItem remove = ItemCreator.createRemoveItem(linker);
+        edit.addItem(remove);
+        categoryPickerConfig.addItem(remove);
+        edit.addItem(new ContentActionItemSeparator());
+        categoryPickerConfig.addItem(new ContentActionItemSeparator());
+        ContentActionItem copy = ItemCreator.createCopyItem(linker);
+        edit.addItem(copy);
+        categoryPickerConfig.addItem(copy);
+        ContentActionItem cut = ItemCreator.createCutItem(linker);
+        edit.addItem(cut);
+        categoryPickerConfig.addItem(cut);
+        ContentActionItem paste = ItemCreator.createPasteItem(linker);
+        edit.addItem(paste);
+        categoryPickerConfig.addItem(paste);
+        ContentActionItem pasteRef = ItemCreator.createPasteReferenceItem(linker);
+        edit.addItem(pasteRef);
+        categoryPickerConfig.addItem(pasteRef);
+        // add menus to the config as well
+        categoryPickerConfig.addGroup(file);
+        categoryPickerConfig.addGroup(edit);
+
+        // only one column here : name
+        categoryPickerConfig.addColumn("name");
+
+        // no tab here
+//        mashupPickerConfig.addTab(JCRClientUtils.MASHUP_REPOSITORY);
+
+        // hide the left panel
+        categoryPickerConfig.setHideLeftPanel(true);
+
+        categoryPickerConfig.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
+        return categoryPickerConfig;
+    }
+    
     /**
      * Item creation methods
      */
@@ -749,7 +870,7 @@ public class ManagerConfigurationFactory {
             };
             return newMashup;
         }
-
+        
         /**
          * Item that creates a new RSS item
          * @param linker
@@ -787,6 +908,24 @@ public class ManagerConfigurationFactory {
         }
 
         /**
+         * Item that creates a new category
+         * @param linker
+         * @return
+         */
+        private static ContentActionItem createNewCategoryItem(final BrowserLinker linker) {
+            ContentActionItem newCategory = new ContentActionItem(Messages.getResource("fm_newcategory"), "fm-newcategory") {
+                public void onSelection() {
+                    ContentActions.showContentWizard(linker,"jnt:category");
+                }
+
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+                }
+            };
+            return newCategory;
+        }        
+        
+        /**
          * Item that creates a new content item action
          * @param linker
          * @return
@@ -811,7 +950,7 @@ public class ManagerConfigurationFactory {
          */
         private static ContentActionItem createNewPageContentItem(final BrowserLinker linker) {
 
-            ContentActionItem newMashup = new ContentActionItem(Messages.getNotEmptyResource("fm_newpagecontent","New page"), "fm-newcontent") {
+            ContentActionItem newPageContent = new ContentActionItem(Messages.getNotEmptyResource("fm_newpagecontent","New page"), "fm-newcontent") {
                 public void onSelection() {
                     ContentActions.showContentWizard(linker,"jnt:page");
                 }
@@ -820,7 +959,7 @@ public class ManagerConfigurationFactory {
                     setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
                 }
             };
-            return newMashup;
+            return newPageContent;
         }
 
         /**
@@ -830,7 +969,7 @@ public class ManagerConfigurationFactory {
          */
         private static ContentActionItem createNewContentListItem(final BrowserLinker linker) {
 
-            ContentActionItem newMashup = new ContentActionItem(Messages.getNotEmptyResource("fm_newcontentlist","New content list"), "fm-newfolder") {
+            ContentActionItem newContentListItem = new ContentActionItem(Messages.getNotEmptyResource("fm_newcontentlist","New content list"), "fm-newfolder") {
                 public void onSelection() {
                     ContentActions.showContentWizard(linker,"jnt:contentList");
                 }
@@ -839,7 +978,7 @@ public class ManagerConfigurationFactory {
                     setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
                 }
             };
-            return newMashup;
+            return newContentListItem;
         }
 
     }

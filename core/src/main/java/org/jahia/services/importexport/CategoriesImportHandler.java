@@ -53,6 +53,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.*;
 
+import javax.jcr.Node;
+
 /**
  * Created by IntelliJ IDEA.
  * User: toto
@@ -78,13 +80,15 @@ public class CategoriesImportHandler extends DefaultHandler {
                 Category c;
                 String key = attributes.getValue(ImportExportBaseService.JAHIA_URI, "key");
                 if (cats.isEmpty()) {
-                    c = cs.getRootCategory();
+                    Node node = cs.getCategoriesRoot();
+                    return;
                 } else {
-                    c =  cs.getCategory(key);
+                    List<Category> cList = cs.getCategory(key);
                     Category parent = cats.peek();
-                    if (c == null) {
+                    if (cList.size() == 0) {
                         c = Category.createCategory(key,parent);
                     } else {
+                        c = cList.get(0);
                         List<ObjectKey> parents = c.getParentObjectKeys();
                         if (!parents.contains(parent.getObjectKey())) {
                             parent.addChildObjectKey(c.getObjectKey());
@@ -103,7 +107,8 @@ public class CategoriesImportHandler extends DefaultHandler {
                 }
                 String acl = attributes.getValue(ImportExportBaseService.JAHIA_URI, "acl");
                 if (acl != null) {
-                    fillAcl(c.getACL(), acl);
+//                    TODO: commented while shifting from DB to JCR, needs to be finished
+//                    fillAcl(c.getACL(), acl);
                 }
                 cats.push(c);
             }

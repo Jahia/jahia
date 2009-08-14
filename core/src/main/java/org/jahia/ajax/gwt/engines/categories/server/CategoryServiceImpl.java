@@ -34,23 +34,20 @@ package org.jahia.ajax.gwt.engines.categories.server;
 import org.jahia.ajax.gwt.client.service.category.CategoryService;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
-import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryTitle;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaNodeProperty;
+import org.jahia.api.Constants;
 import org.jahia.services.usermanager.*;
 import org.jahia.services.categories.Category;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.acl.ACLResource;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.comparator.NumericStringComparator;
 import org.jahia.hibernate.manager.JahiaSiteLanguageListManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.gui.GuiBean;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.data.events.JahiaEvent;
 
 
 import java.util.*;
@@ -60,19 +57,16 @@ import java.util.*;
  * Date: 15 sept. 2008
  * Time: 17:25:18
  */
-@SuppressWarnings("serial")
 public class CategoryServiceImpl extends JahiaRemoteService implements CategoryService {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(CategoryServiceImpl.class);
 
-    public List<GWTJahiaCategoryNode> lsInit(final String rootKey, final List<GWTJahiaCategoryNode> selectedCategories, final String categoryLocale) throws GWTJahiaServiceException {
+    public List<GWTJahiaCategoryNode> lsInit(String rootKey, final List<GWTJahiaCategoryNode> selectedCategories, final String categoryLocale) throws GWTJahiaServiceException {
         try {
             final JahiaUser currentUser = getRemoteJahiaUser();
-            Category rootCategory;
-            boolean rootKeySupplied = (rootKey != null && rootKey.trim().length() > 0);
-            if (!rootKeySupplied) {
-                rootCategory = Category.getRootCategory(currentUser);
-            } else {
-                rootCategory = Category.getCategory(rootKey, currentUser);
+            boolean rootKeySupplied = false;
+            if (rootKey != null) {
+                rootKey = rootKey.trim();
+                rootKeySupplied = rootKey.length() > 0 && !rootKey.equals("root");
             }
 
             List<String> selectedPaths = new ArrayList<String>();
@@ -82,9 +76,9 @@ public class CategoryServiceImpl extends JahiaRemoteService implements CategoryS
 
             List<GWTJahiaCategoryNode> result = new ArrayList<GWTJahiaCategoryNode>(1);
 
-            if ("root".equals(rootCategory.getKey())) { // don't retrieve root category, get its children instead
+            if (!rootKeySupplied) { // don't retrieve root category, get its children instead
                 final TreeSet<Category> sortedChildrenCategories = new TreeSet<Category>(new NumericStringComparator<Category>());
-                sortedChildrenCategories.addAll(rootCategory.getChildCategories());
+                sortedChildrenCategories.addAll(Category.getRootCategories(currentUser));
                 for (Category child : sortedChildrenCategories) {
                     List<Category> parents = child.getParentCategories();
                     String parentKey = null;
@@ -97,6 +91,7 @@ public class CategoryServiceImpl extends JahiaRemoteService implements CategoryS
                     result.add(rootNode);
                 }
             } else {
+                Category rootCategory = Category.getCategory(rootKey, currentUser);
                 List<Category> parents = rootCategory.getParentCategories();
                 String parentKey = null;
                 if (parents != null && parents.size() > 0) {
@@ -141,14 +136,11 @@ public class CategoryServiceImpl extends JahiaRemoteService implements CategoryS
         try {
             final JahiaUser currentUser = getRemoteJahiaUser();
             logger.debug("Get categories for user " + currentUser);
-            final Category parentCategory;
+            Category parentCategory = null;
             List<Category> childrenCategories;
             if (gwtJahiaCategoryNode == null) {
                 // load root
-                parentCategory = Category.getRootCategory(currentUser);
-                childrenCategories = new ArrayList<Category>();
-                childrenCategories.add(parentCategory);
-                //childrenCategories = parentCategory.getChildCategories(currentUser);
+                childrenCategories = Category.getRootCategories(currentUser);
             } else {
                 logger.debug("load category with key[" + gwtJahiaCategoryNode.getKey() + "].");
                 parentCategory = Category.getCategory(gwtJahiaCategoryNode.getKey(), currentUser);
@@ -310,7 +302,7 @@ public class CategoryServiceImpl extends JahiaRemoteService implements CategoryS
         final JahiaUser currentUser = getRemoteJahiaUser();
         try {
             final Category category = Category.getCategory(gwtJahiaCategoryNode.getKey(), currentUser);
-            if (ACLResource.checkReadAccess(category, category, currentUser)) {
+            if (JCRContentUtils.hasPermission(currentUser, Constants.JCR_READ_RIGHTS, category.getJahiaCategory().getId ())) {
                 updateInfo(gwtJahiaCategoryNode, category);
             } else {
                 throw new GWTJahiaServiceException(getLocaleJahiaAdminResource("org.jahia.admin.components.ManageComponents.noRightToEdit.label"));
@@ -470,7 +462,7 @@ public class CategoryServiceImpl extends JahiaRemoteService implements CategoryS
      * @param acl
      */
     public void setACL(GWTJahiaCategoryNode node, GWTJahiaNodeACL acl) {
-        try {
+/*        try {
             Category cat = Category.getCategory(node.getKey());
 
             JahiaBaseACL baseACL = cat.getACL();
@@ -478,7 +470,7 @@ public class CategoryServiceImpl extends JahiaRemoteService implements CategoryS
             ServicesRegistry.getInstance().getJahiaEventService().fireSetRights(new JahiaEvent(cat, retrieveParamBean(), baseACL1));
         } catch (JahiaException e) {
             logger.error("Unable to set ACL for category [" + node + "] due to:", e);
-        }
+        }*/
 
     }
 
@@ -490,7 +482,7 @@ public class CategoryServiceImpl extends JahiaRemoteService implements CategoryS
      * @return
      */
     public GWTJahiaNodeACL getACL(GWTJahiaCategoryNode gwtJahiaCategoryNode) {
-        try {
+/*        try {
             Category cat = Category.getCategory(gwtJahiaCategoryNode.getKey());
 
             JahiaBaseACL baseACL = cat.getACL();
@@ -500,7 +492,7 @@ public class CategoryServiceImpl extends JahiaRemoteService implements CategoryS
         } catch (JahiaException e) {
             logger.error("Error retrieveing ACL for " + gwtJahiaCategoryNode
                     + ". Cause: " + e.getMessage(), e);
-        }
+        }*/
         return null;
     }
 
@@ -574,9 +566,9 @@ public class CategoryServiceImpl extends JahiaRemoteService implements CategoryS
         gwtJahiaNode.setPath(category.getCategoryPath(getRemoteJahiaUser()));
 
         // acl
-        gwtJahiaNode.setRead(ACLResource.checkReadAccess(category, category, currentUser));
-        gwtJahiaNode.setWriteable(ACLResource.checkWriteAccess(category, category, currentUser));
-        gwtJahiaNode.setAdmin(ACLResource.checkAdminAccess(category, category, currentUser));
+        gwtJahiaNode.setRead(JCRContentUtils.hasPermission(currentUser, Constants.JCR_READ_RIGHTS, category.getJahiaCategory().getId ()));
+        gwtJahiaNode.setWriteable(JCRContentUtils.hasPermission(currentUser, Constants.JCR_WRITE_RIGHTS, category.getJahiaCategory().getId ()));
+        gwtJahiaNode.setAdmin(JCRContentUtils.hasPermission(currentUser, Constants.JCR_ADMIN_RIGHTS, category.getJahiaCategory().getId ()));
 
         if (retrieveParamBean() != null) {
             final GuiBean gui = new GuiBean(retrieveParamBean());

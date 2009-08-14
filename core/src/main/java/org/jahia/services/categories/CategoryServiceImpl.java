@@ -37,20 +37,15 @@ import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.manager.JahiaCategoryManager;
 import org.jahia.hibernate.manager.JahiaFieldsDataManager;
-import org.jahia.hibernate.manager.JahiaResourceManager;
-import org.jahia.hibernate.model.JahiaAclEntry;
-import org.jahia.hibernate.model.JahiaResource;
-import org.jahia.hibernate.model.JahiaResourcePK;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.categories.jcr.JCRCategoryProvider;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerProvider;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.utils.comparator.NumericStringComparator;
 
 import java.util.*;
+
+import javax.jcr.Node;
 
 /**
  * <p>
@@ -79,8 +74,7 @@ public class CategoryServiceImpl extends CategoryService {
 
     private static CategoryServiceImpl singletonInstance;
 
-    private JahiaCategoryManager categoryManager;
-    private JahiaResourceManager resourceManager;
+    private JCRCategoryProvider categoryProvider;
     private JahiaFieldsDataManager fieldsDataManager;
     // we use a cache in a special way. Basically we use it to synchronize
     // last modification dates on all the nodes of the cluster. For sync
@@ -90,28 +84,17 @@ public class CategoryServiceImpl extends CategoryService {
     private Cache<?, ?> lastModifCache = null;
     private Date lastModifDate = null;
 
-    private static final String ROOT_CATEGORY_KEY = "root";
     private static final String CATEGORY_LINKTYPE = "category";
     private static final String CATEGORY_CHILD_PREFIX = "Category_%";
-    private static final String CATEGORY_RESOURCEKEY_PREFIX = "org.jahia.category.title.";
 
     private CacheService cacheService;
-    private JahiaUserManagerService userManagerService;
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
     }
 
-    public void setCategoryManager(JahiaCategoryManager categoryManager) {
-        this.categoryManager = categoryManager;
-    }
-
-    public void setResourceManager(JahiaResourceManager resourceManager) {
-        this.resourceManager = resourceManager;
-    }
-
-    public void setUserManagerService (JahiaUserManagerService userManagerService) {
-        this.userManagerService = userManagerService;
+    public void setCategoryProvider(JCRCategoryProvider categoryProvider) {
+        this.categoryProvider = categoryProvider;
     }
 
     protected CategoryServiceImpl() {
@@ -134,12 +117,6 @@ public class CategoryServiceImpl extends CategoryService {
             lastModifCache = cacheService
                     .createCacheInstance(CATEGORY_LASTMODIF_STATUS_CACHE);
             Category.categoryService = this;
-            // lastModifCache.registerListener(this);
-            if (getRootCategory() == null) {
-                final Category category = Category.createCategory(ROOT_CATEGORY_KEY, null);
-                JahiaUser guest = userManagerService.lookupUser(JahiaUserManagerProvider.GUEST_USERNAME);
-                category.getACL().setUserEntry(guest, new JahiaAclEntry(1,0));
-            }
         } catch (JahiaException je) {
             logger.error("Error while checking existence of root category", je);
             throw new JahiaInitializationException(
@@ -150,16 +127,24 @@ public class CategoryServiceImpl extends CategoryService {
     public void stop() {
     }
 
-    public Category getRootCategory() throws JahiaException {
-        return categoryManager.findCategoryByKey(ROOT_CATEGORY_KEY);
+    public Node getCategoriesRoot() throws JahiaException {
+        return categoryProvider.getCategoriesRoot();
+    }
+    
+    public List<Category> getRootCategories(JahiaUser user) throws JahiaException {
+        return categoryProvider.getRootCategories(user);
     }
 
-    public Category getCategory(String key) throws JahiaException {
-        return categoryManager.findCategoryByKey(key);
+    public List<Category> getCategory(String key) throws JahiaException {
+        return categoryProvider.findCategoryByKey(key);
+    }
+    
+    public Category getCategory(String key, Category parentCategory) throws JahiaException {
+        return categoryProvider.getCategoryByKey(key, parentCategory);
     }
 
-    public Category getCategory(int categoryID) throws JahiaException {
-        return categoryManager.getCategory(categoryID);
+    public Category getCategoryByUUID(String categoryUUID) throws JahiaException {
+        return categoryProvider.getCategoryByUUID(categoryUUID);
     }
 
     private List<ObjectLink> getCategoryChildLinks(Category parentCategory)
@@ -174,18 +159,9 @@ public class CategoryServiceImpl extends CategoryService {
                 childCategory.getObjectKey());
     }
 
-    public List<CategoryKey> getCategoryChildCategories(Category parentCategory)
+    public List<Category> getCategoryChildCategories(Category parentCategory, JahiaUser user)
             throws JahiaException {
-        List<ObjectLink> links = ObjectLink.findByTypeAndLeftAndLikeRightObjectKeys(
-                CATEGORY_LINKTYPE, parentCategory.getObjectKey(),
-                CATEGORY_CHILD_PREFIX);
-        List<CategoryKey> rightObjectKeys = new ArrayList<CategoryKey>();
-        Iterator<ObjectLink> linkIter = links.iterator();
-        while (linkIter.hasNext()) {
-            ObjectLink curLink = linkIter.next();
-            rightObjectKeys.add((CategoryKey)curLink.getRightObjectKey());
-        }
-        return rightObjectKeys;
+        return categoryProvider.getCategoryChildCategories(parentCategory, user);
     }
 
     public List<ObjectKey> getCategoryChildKeys(Category parentCategory)
@@ -223,20 +199,11 @@ public class CategoryServiceImpl extends CategoryService {
         return leftObjectKeys;
     }
 
-    public void addCategory(Category newCategory, Category parentCategory)
+    public Category addCategory(String key, Category parentCategory)
             throws JahiaException {
-        Category existingCategory = getCategory(newCategory.getKey());
-        if (existingCategory != null) {
-            throw new JahiaException("Category " + newCategory.getKey()
-                    + " already exists", "Category " + newCategory.getKey()
-                    + " already exists", JahiaException.DATA_ERROR,
-                    JahiaException.ERROR_SEVERITY);
-        }
-        categoryManager.createCategory(newCategory.getJahiaCategory());
+        Category newCategory = categoryProvider.createCategory(key, parentCategory);
         lastModifCache.flush();
-        if (parentCategory != null) {
-            addObjectKeyToCategory(parentCategory, newCategory.getObjectKey());
-        }
+        return newCategory;
     }
 
     public void removeCategory(Category category) throws JahiaException {
@@ -250,11 +217,8 @@ public class CategoryServiceImpl extends CategoryService {
         for (ObjectLink curLink : catParents) {
             curLink.remove();
         }
-        // next we must remove all the titles in all the languages
-        resourceManager.deleteAllResourcesForName(CATEGORY_RESOURCEKEY_PREFIX
-                + category.getKey());
         // now we can remove the category
-        categoryManager.removeCategory(category.getJahiaCategory());
+        categoryProvider.removeCategory(category.getJahiaCategory());
         lastModifCache.flush();
     }
 
@@ -344,8 +308,7 @@ public class CategoryServiceImpl extends CategoryService {
             for (ObjectLink curLink : links) {
                 CategoryKey curCatKey = (CategoryKey) curLink
                         .getLeftObjectKey();
-                Category curCategory = getCategory(Integer.parseInt(curCatKey
-                        .getIDInType()));
+                Category curCategory = getCategoryByUUID(curCatKey.getIDInType());
                 if (curCategory != null) {
                     categorySet.add(curCategory);
                 }
@@ -362,9 +325,9 @@ public class CategoryServiceImpl extends CategoryService {
                             JahiaField.MULTIPLE_VALUES_SEP);
                     while (st.hasMoreTokens()) {
                         String key = st.nextToken();
-                        Category cat = getCategory(key);
-                        if (cat != null) {
-                            categorySet.add(cat);
+                        List<Category> cat = getCategory(key);
+                        if (cat.size() > 0) {
+                            categorySet.add(cat.get(0));
                         }
                     }
                 }
@@ -377,54 +340,22 @@ public class CategoryServiceImpl extends CategoryService {
 
     public Map<String, String> getTitlesForCategory(Category category)
             throws JahiaException {
-        Map<String, String> result = new HashMap<String, String>();
-        List<JahiaResource> resources = resourceManager
-                .getResources(CATEGORY_RESOURCEKEY_PREFIX + category.getKey());
-        for (JahiaResource jahiaResource : resources) {
-            result.put(jahiaResource.getLanguageCode(), jahiaResource
-                    .getValue());
-        }
-        return result;
+        return categoryProvider.getTitlesForCategory(category);
     }
 
     public String getTitleForCategory(Category category, Locale locale)
             throws JahiaException {
-        JahiaResource dbResource = resourceManager.getResource(
-                CATEGORY_RESOURCEKEY_PREFIX + category.getKey(), locale
-                        .toString());
-        if (dbResource != null) {
-            return dbResource.getValue();
-        } else {
-            return null;
-        }
+        return categoryProvider.getTitleForCategory(category, locale);        
     }
 
     public void setTitleForCategory(Category category, Locale locale,
             String title) throws JahiaException {
-        JahiaResource dbResource = resourceManager.getResource(
-                CATEGORY_RESOURCEKEY_PREFIX + category.getKey(), locale
-                        .toString());
-        if (dbResource != null) {
-            dbResource.setValue(title);
-            resourceManager.updateResource(dbResource);
-        } else {
-            dbResource = new JahiaResource(new JahiaResourcePK(
-                    CATEGORY_RESOURCEKEY_PREFIX + category.getKey(), locale
-                            .toString()), title);
-            resourceManager.saveResource(dbResource);
-        }
-        lastModifCache.flush();
+        categoryProvider.setTitleForCategory(category, locale, title);
     }
 
     public void removeTitleForCategory(Category category, Locale locale)
             throws JahiaException {
-        JahiaResource dbResource = resourceManager.getResource(
-                CATEGORY_RESOURCEKEY_PREFIX + category.getKey(), locale
-                        .toString());
-        if (dbResource != null) {
-            resourceManager.removeResource(dbResource);
-        }
-        lastModifCache.flush();
+        categoryProvider.removeTitleForCategory(category, locale);
     }
 
     public Date getLastModificationDate() {
@@ -437,57 +368,19 @@ public class CategoryServiceImpl extends CategoryService {
 
     public List<Category> getCategoryStartingByKeyPrefix(final String keyPrefix)
             throws JahiaException {
-        return categoryManager.searchCategoryStartingByKey(keyPrefix);
+        return categoryProvider.findCategoriesStartingByKey(keyPrefix);
     }
 
     public List<Category> getCategoryStartingByTitlePrefix(
             final String titlePrefix, final String languageCode)
             throws JahiaException {
-        final List<JahiaResource> values = resourceManager
-                .searchResourcesByStartingNameInLanguage(titlePrefix,
-                        languageCode);
-        final List<Category> categories = new ArrayList<Category>(values.size());
-        for (int i = 0; i < values.size(); i++) {
-            final JahiaResource dbResource = values.get(i);
-            final String name = dbResource.getName();
-            final Category cat = getCategory(name
-                    .substring(CATEGORY_RESOURCEKEY_PREFIX.length()));
-            categories.add(cat);
-        }
-        final TreeSet<Category> tmp = new TreeSet<Category>(
-                new NumericStringComparator<Category>());
-        tmp.addAll(categories);
-        final List<Category> result = new ArrayList<Category>(values.size());
-        final Iterator<Category> tmpIterator = tmp.iterator();
-        while (tmpIterator.hasNext()) {
-            result.add(tmpIterator.next());
-        }
-        return result;
+        return categoryProvider.findCategoriesStartingByTitle(titlePrefix, languageCode);
     }
 
     public List<Category> getCategoriesContainingStringInTitle(
             final String string, final String languageCode)
             throws JahiaException {
-        final List<JahiaResource> values = resourceManager
-                .searchResourcesByContainingStringInLanguage(string,
-                        languageCode);
-        final List<Category> categories = new ArrayList<Category>(values.size());
-        for (int i = 0; i < values.size(); i++) {
-            final JahiaResource dbResource = values.get(i);
-            final String name = dbResource.getName();
-            final Category cat = getCategory(name
-                    .substring(CATEGORY_RESOURCEKEY_PREFIX.length()));
-            categories.add(cat);
-        }
-        final TreeSet<Category> tmp = new TreeSet<Category>(
-                new NumericStringComparator<Category>());
-        tmp.addAll(categories);
-        final List<Category> result = new ArrayList<Category>(values.size());
-        final Iterator<Category> tmpIterator = tmp.iterator();
-        while (tmpIterator.hasNext()) {
-            result.add(tmpIterator.next());
-        }
-        return result;
+        return categoryProvider.findCategoriesContainingTitleString(string, languageCode);        
     }
 
     /**
@@ -508,5 +401,21 @@ public class CategoryServiceImpl extends CategoryService {
 
     public void setFieldsDataManager(JahiaFieldsDataManager fieldsDataManager) {
         this.fieldsDataManager = fieldsDataManager;
+    }
+    
+    public List<Category> findCategoriesByPropNameAndValue(String propName, String propValue, JahiaUser user) {
+        return categoryProvider.findCategoriesByPropNameAndValue(propName, propValue, user);
+    }
+
+    public void removeProperties(String categoryId) {
+        categoryProvider.removeProperties(categoryId);
+    }
+
+    public Properties getProperties(String categoryId) {
+        return categoryProvider.getProperties(categoryId);
+    }
+
+    public void setProperties(String categoryId, Properties properties) {
+        categoryProvider.setProperties(categoryId, properties);
     }
 }

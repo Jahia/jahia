@@ -263,20 +263,6 @@
             </bean>
         </property>
     </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaCategoryManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaCategoryManager">
-                <property name="jahiaCategoryDAO" ref="jahiaCategoryDAO" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaCategoryPropertiesManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaCategoryPropertiesManager">
-                <property name="jahiaCategoryPropertiesDAO" ref="jahiaCategoryPropertiesDAO" />
-            </bean>
-        </property>
-    </bean>
     <bean id="org.jahia.hibernate.manager.JahiaAuditLogManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaAuditLogManager">

@@ -42,9 +42,9 @@ import java.io.Serializable;
  */
 public interface CategoryBean extends Serializable {
     /**
-     * @return the database identifier for the category
-     */
-    int getId ();
+     * @return the identifier for the category
+     */    
+    String getId();
 
     /**
      * @return the category key (unique) name
@@ -57,10 +57,4 @@ public interface CategoryBean extends Serializable {
      * @param key the unique identifier for the category
      */
     void setKey (String key);
-
-    /**
-     * @return acl identifier for the category
-     */
-    int getAclID ();
-
 }

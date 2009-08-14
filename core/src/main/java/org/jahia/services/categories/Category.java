@@ -31,7 +31,6 @@
  */
  package org.jahia.services.categories;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -40,23 +39,20 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.collections.FastArrayList;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.content.CategoryKey;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.content.JahiaObject;
 import org.jahia.content.ObjectKey;
-import org.jahia.content.PropertiesInterface;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.JahiaCategoryPropertiesManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.hibernate.model.JahiaCategory;
-import org.jahia.services.acl.ACLResource;
-import org.jahia.services.acl.ACLResourceInterface;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.acl.ParentACLFinder;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * <p>Title: Category object</p>
@@ -72,8 +68,7 @@ import org.jahia.services.acl.ParentACLFinder;
  * @version 1.0
  */
 
-public class Category extends JahiaObject implements ACLResourceInterface,
-        ParentACLFinder, PropertiesInterface {
+public class Category extends JahiaObject {
 
     private static final long serialVersionUID = 3389053914999712807L;
 
@@ -82,12 +77,10 @@ public class Category extends JahiaObject implements ACLResourceInterface,
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger (Category.class);
 
-    private JahiaCategory categoryBean = null;
-    private Properties properties = null;
-    private boolean propertiesLoaded = false;
+    private CategoryBean categoryBean = null;
     protected static CategoryService categoryService;
 
-    public Category (JahiaCategory categoryBean) {
+    public Category (CategoryBean categoryBean) {
         super (new CategoryKey (categoryBean.getId ()));
         this.categoryBean = categoryBean;
     }
@@ -106,21 +99,15 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      */
     static public Category createCategory (String key, Category parentCategory)
             throws JahiaException {
-        JahiaCategory categoryBean = new JahiaCategory ();
-        categoryBean.setKey (key);
-        JahiaBaseACL newAcl = new JahiaBaseACL ();
-        // the category ACLs are root ACLs.
-        newAcl.create (0);
-        categoryBean.setJahiaAcl(newAcl.getACL());
-        Category category = new Category (categoryBean);
-        categoryService.addCategory (
-                category, parentCategory);
+
+        Category category = categoryService.addCategory (key,
+                parentCategory);
         return category;
     }
 
-    static public Category getRootCategory ()
+    static public Node getCategoriesRoot ()
             throws JahiaException {
-        return getRootCategory(Jahia.getThreadParamBean().getUser());
+        return getCategoriesRoot(Jahia.getThreadParamBean().getUser());
     }
 
     /**
@@ -133,20 +120,40 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      * @throws JahiaException thrown if there was a problem communicating with
      *                        the database
      */
-    static public Category getRootCategory (Principal p)
+    static public Node getCategoriesRoot (JahiaUser p)
             throws JahiaException {
-        Category category = categoryService.
-                getRootCategory ();
-        if (p == null) {
-            return category;
+        Node categoriesRoot = categoryService.
+                getCategoriesRoot();
+        String uuid = null;
+        try {
+            uuid = categoriesRoot.getUUID();
+        } catch (RepositoryException e) {
+            logger.warn(e.getMessage(), e);
         }
-        if (ACLResource.checkReadAccess(category, category, p)) {
-            return category;
-        } else {
-            return null;
-        }
+        return p == null
+                || uuid == null
+                || JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS,
+                        uuid) ? categoriesRoot : null;
     }
 
+    /**
+     * @param p the Principal for which to retrieve the category, checking rights
+     * to make sure he has access to it. If this object is null, then no rights
+     * check will be performed.
+     * @return the root category object that corresponds to the start point
+     *         of the category tree.
+     *
+     * @throws JahiaException thrown if there was a problem communicating with
+     *                        the database
+     */
+    static public List<Category> getRootCategories (JahiaUser p)
+            throws JahiaException {
+        List<Category> rootCategories = categoryService.
+                getRootCategories(p);
+
+        return rootCategories;
+    }    
+    
     /**
      * @param key the key for the category to retrieve
      * @param p the Principal for which to retrieve the category, checking rights
@@ -159,28 +166,29 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      * @throws JahiaException thrown if there was a problem communicating with
      *                        the database
      */
-    static public Category getCategory (String key, Principal p)
+    public static Category getCategory (String key, JahiaUser p)
             throws JahiaException {
-        Category category = categoryService.getCategory (
-                key);
-        if (p == null) {
-            return category;
+        Category category = null;
+        List<Category> catList = categoryService.getCategory(key);
+        if (catList.size() > 0) {
+            category = catList.get(0);
+
+            if (!JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS,
+                    category.getJahiaCategory().getId())) {
+                category = null;
+            }
         }
-        if (ACLResource.checkReadAccess(category, category, p)) {
-            return category;
-        } else {
-            return null;
-        }
+        return category;
     }
 
-    static public Category getCategory (String key)
+    public static Category getCategory (String key)
             throws JahiaException {
         return getCategory(key,Jahia.getThreadParamBean().getUser());
     }
 
     public static List<Category> getCategoriesWithKeyPrefix(final String keyPrefix,
                                                   final String rootCategoryKey,
-                                                  final Principal p) throws JahiaException {
+                                                  final JahiaUser p) throws JahiaException {
         final List<Category> tmp = categoryService.getCategoryStartingByKeyPrefix(keyPrefix);
         final List<Category> validCategories;
         if (rootCategoryKey == null) {
@@ -192,7 +200,7 @@ public class Category extends JahiaObject implements ACLResourceInterface,
         final List<Category> result = new ArrayList<Category>();
         if (tmp == null) return result;
         for (final Category cat : tmp) {
-            if (p == null || ACLResource.checkReadAccess(cat, cat, p)) {
+            if (p == null || JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS, cat.getJahiaCategory().getId ())) {
                 if (rootCategoryKey == null || validCategories.contains(cat)) {
                     result.add(cat);
                 }
@@ -204,7 +212,7 @@ public class Category extends JahiaObject implements ACLResourceInterface,
     public static List<Category> getCategoriesWithtitlePrefix(final String titlePrefix,
                                                     final String rootCategoryKey,
                                                     final String languageCode,
-                                                    final Principal p)
+                                                    final JahiaUser p)
             throws JahiaException {
         final List<Category> tmp = categoryService.getCategoryStartingByTitlePrefix(titlePrefix, languageCode);
         List<Category> validCategories;
@@ -217,7 +225,7 @@ public class Category extends JahiaObject implements ACLResourceInterface,
         final List<Category> result = new ArrayList<Category>();
         if (tmp == null) return result;
         for (final Category cat : tmp) {
-            if (p == null || ACLResource.checkReadAccess(cat, cat, p)) {
+            if (p == null || JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS, cat.getJahiaCategory().getId ())) {
                 if (rootCategoryKey == null || validCategories.contains(cat)) {
                     result.add(cat);
                 }
@@ -229,7 +237,7 @@ public class Category extends JahiaObject implements ACLResourceInterface,
     public static List<Category> getCategoriesContainingStringInTitle(final String string,
                                                             final String rootCategoryKey,
                                                             final String languageCode,
-                                                            final Principal p)
+                                                            final JahiaUser p)
             throws JahiaException {
         final List<Category> tmp = categoryService.getCategoriesContainingStringInTitle(string, languageCode);
         List<Category> validCategories;
@@ -242,7 +250,7 @@ public class Category extends JahiaObject implements ACLResourceInterface,
         final List<Category> result = new ArrayList<Category>();
         if (tmp == null) return result;
         for (final Category cat : tmp) {
-            if (p == null || ACLResource.checkReadAccess(cat, cat, p)) {
+            if (p == null || JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS, cat.getJahiaCategory().getId ())) {
                 if (rootCategoryKey == null || validCategories.contains(cat)) {
                     result.add(cat);
                 }
@@ -251,7 +259,7 @@ public class Category extends JahiaObject implements ACLResourceInterface,
         return result;
     }
 
-    public static void getAllChildrenCategoriesFrom(final Category startCategory, final Principal p, List<Category> result)
+    public static void getAllChildrenCategoriesFrom(final Category startCategory, final JahiaUser p, List<Category> result)
             throws JahiaException {
         final List<Category> childCategories = startCategory.getChildCategories(p);
         for (final Category curChildCategory : childCategories) {
@@ -261,7 +269,7 @@ public class Category extends JahiaObject implements ACLResourceInterface,
     }
 
     /**
-     * @param categoryID the category ID for the category to retrieve
+     * @param categoryUUID the category ID for the category to retrieve
      * @param p the Principal for which to retrieve the category, checking rights
      * to make sure he has access to it. If this object is null, then no rights
      * check will be performed.
@@ -272,22 +280,22 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      * @throws JahiaException thrown if there was a problem communicating with
      *                        the database
      */
-    static public Category getCategory (int categoryID, Principal p)
+    static public Category getCategoryByUUID (String categoryUUID, JahiaUser p)
             throws JahiaException {
-        Category category = categoryService.getCategory (categoryID);
+        Category category = categoryService.getCategoryByUUID (categoryUUID);
         if (p == null) {
             return category;
         }
-        if (ACLResource.checkReadAccess(category, category, p)) {
+        if (JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS, category.getJahiaCategory().getId ())) {
             return category;
         } else {
             return null;
         }
     }
 
-    static public Category getCategory (int categoryID)
+    static public Category getCategoryByUUID (String categoryID)
             throws JahiaException {
-        return getCategory(categoryID,Jahia.getThreadParamBean().getUser());
+        return getCategoryByUUID(categoryID,Jahia.getThreadParamBean().getUser());
     }
 
     /**
@@ -300,14 +308,14 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      * @return a Category class instance that corresponds to the given
      * object key.
      */
-    static public JahiaObject getChildInstance (ObjectKey objectKey, Principal p) {
+    static public JahiaObject getChildInstance (ObjectKey objectKey, JahiaUser p) {
         try {
             Category category = categoryService.
-                    getCategory (objectKey.getIdInType ());
+                    getCategoryByUUID (objectKey.getIDInType());
             if (p == null) {
                 return category;
             }
-            if (ACLResource.checkReadAccess(category, category, p)) {
+            if (JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS, category.getJahiaCategory().getId ())) {
                 return category;
             } else {
                 return null;
@@ -359,22 +367,9 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      *         IDs that correspond to the matched properties.
      */
     static public List<Category> findCategoriesByPropNameAndValue (String propName,
-                                                         String propValue, Principal p) {
-        List<Category> foundCategories = new FastArrayList (53);
-        try {
-            JahiaCategoryPropertiesManager propertiesManager = (JahiaCategoryPropertiesManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaCategoryPropertiesManager.class.getName());
-            List<Integer> categoryIDs = propertiesManager.findCategoryIDsByPropNameAndValue (propName, propValue);
-            for (Integer curCategoryID : categoryIDs) {
-                Category curCategory = getCategory (curCategoryID.intValue (), p);
-                if(curCategory!=null ) // User may not have rights
-                foundCategories.add (curCategory);
-            }
-        } catch (JahiaException je) {
-            logger.error (
-                    "Error while trying to find categories by property name " + propName + "and property value " + propValue,
-                    je);
-        }
-        ((FastArrayList)foundCategories).setFast(true);
+                                                         String propValue, JahiaUser p) {
+        List<Category> foundCategories = categoryService.findCategoriesByPropNameAndValue (propName, propValue, p);
+
         return foundCategories;
     }
 
@@ -392,9 +387,9 @@ public class Category extends JahiaObject implements ACLResourceInterface,
         return categoryService.getLastModificationDate();
     }
 
-    public static Category getChildInstance (String IDInType, Principal p) {
+    public static Category getChildInstance (String IDInType, JahiaUser p) {
         try {
-            return getCategory (Integer.parseInt (IDInType), p);
+            return getCategoryByUUID (IDInType, p);
         } catch (JahiaException je) {
             logger.debug ("Error retrieving container instance for id : " + IDInType, je);
         }
@@ -427,27 +422,11 @@ public class Category extends JahiaObject implements ACLResourceInterface,
         if (categoryBean == null) {
             return null;
         }
-        if (categoryBean.getId () == 0) {
+        if (categoryBean.getId () == null || categoryBean.getId ().length() == 0) {
             return null;
         }
         return new CategoryKey (categoryBean.getId ());
     }
-
-    /**
-     * Retrieves the list of child categories for this category
-     *
-     * @return the list contains Category objects that correspond to the child
-     *         categories for this category.
-     *
-     * @throws JahiaException thrown if there was a problem communicating with
-     *                        the database
-     */
-    /*
-    public List getChildCategories ()
-            throws JahiaException {
-        return getChildCategories(null);
-    }
-    */
 
     /**
      * Retrieves the list of child categories for this category and at the same
@@ -458,21 +437,19 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      * @throws JahiaException thrown if there was a problem communicating with
      *                        the database
      */
-    public List<Category> getChildCategories (Principal p)
+    public List<Category> getChildCategories (JahiaUser p)
             throws JahiaException {
-        List<CategoryKey> childKeys = getChildCategoryKeys();
-        List<Category> childCategories = new ArrayList<Category>();
-        Iterator<CategoryKey> childKeyIter = childKeys.iterator ();
-        while (childKeyIter.hasNext ()) {
-            ObjectKey curKey = childKeyIter.next ();
-            Category curChildCategory = (Category) Category.getChildInstance (curKey, p);
-            if (curChildCategory != null) {
-                childCategories.add (curChildCategory);
-            }
-        }
-        return childCategories;
+        return categoryService.getCategoryChildCategories(this, p);
     }
 
+    /**
+     * Retrieves the list of child category keys for this category. 
+     *
+     * @return an List containing Cagegory classes
+     *
+     * @throws JahiaException thrown if there was a problem communicating with
+     *                        the database
+     */
     public List<Category> getChildCategories ()
             throws JahiaException {
         return getChildCategories(Jahia.getThreadParamBean().getUser());
@@ -489,7 +466,7 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      * @throws JahiaException thrown if there was a problem communicating with
      *                        the database
      */
-    public List<Category> getParentCategories (Principal p)
+    public List<Category> getParentCategories (JahiaUser p)
             throws JahiaException {
         List<ObjectKey> parentKeys = getParentObjectKeys ();
         List<Category> parentCategories = new ArrayList<Category>();
@@ -529,23 +506,9 @@ public class Category extends JahiaObject implements ACLResourceInterface,
     }
 
     /**
-     * Retrieves the list of child category keys for this category. 
-     *
-     * @return an List containing CagegoryKey classes
-     *
-     * @throws JahiaException thrown if there was a problem communicating with
-     *                        the database
-     */
-    public List<CategoryKey> getChildCategoryKeys ()
-            throws JahiaException {
-        return categoryService.
-                getCategoryChildCategories (this);
-    }     
-    
-    /**
      * Retrieves the list of child category keys for this category.
      *
-     * @return an List containing CagegoryKey classes
+     * @return an List containing Cagegory classes
      *
      * @throws JahiaException thrown if there was a problem communicating with
      *                        the database
@@ -553,17 +516,16 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      * @return
      * @throws JahiaException
      */
-    public List<CategoryKey> getChildCategoryKeys (boolean recursive)
+    public List<Category> getChildCategories (boolean recursive)
             throws JahiaException {
-        List<CategoryKey> childs = categoryService.
-                getCategoryChildCategories (this);
+        List<Category> childs = categoryService.
+                getCategoryChildCategories (this, Jahia.getThreadParamBean().getUser());
         if (!recursive){
             return childs;
         } else {
-            List<CategoryKey> keysList = new ArrayList<CategoryKey>();
-            for (CategoryKey catKey : childs){
-                Category cat = (Category)Category.getChildInstance(catKey);
-                List<CategoryKey> subChilds = cat.getChildCategoryKeys(recursive);
+            List<Category> keysList = new ArrayList<Category>();
+            for (Category cat : childs){
+                List<Category> subChilds = cat.getChildCategories(recursive);
                 keysList.addAll(subChilds);
             }
             childs.addAll(keysList);
@@ -715,8 +677,6 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      */
     public void delete ()
             throws JahiaException {
-        JahiaCategoryPropertiesManager propertiesManager = (JahiaCategoryPropertiesManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaCategoryPropertiesManager.class.getName());
-        propertiesManager.removeProperties (categoryBean.getId ());
         categoryService.removeCategory (this);
     }
 
@@ -755,16 +715,7 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      * @return the properties for this category
      */
     public Properties getProperties () {
-        if (propertiesLoaded) {
-            return properties;
-        } else {
-            JahiaCategoryPropertiesManager propertiesManager = (JahiaCategoryPropertiesManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaCategoryPropertiesManager.class.getName());
-            properties = propertiesManager.getProperties(categoryBean.getId());
-            if (properties != null && !properties.isEmpty()) {
-                propertiesLoaded = true;
-            }
-            return properties;
-        }
+        return categoryService.getProperties(categoryBean.getId());
     }
 
     /**
@@ -775,11 +726,7 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      *                      category.
      */
     public void setProperties (Properties newProperties) {
-        properties = newProperties;
-        JahiaCategoryPropertiesManager propertiesManager = (JahiaCategoryPropertiesManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaCategoryPropertiesManager.class.getName());
-        propertiesManager.setProperties(categoryBean.getId(), properties);
-        categoryService.setLastModificationDate();
-        propertiesLoaded = true;
+        categoryService.setProperties(categoryBean.getId(), newProperties);
     }
 
     /**
@@ -806,10 +753,9 @@ public class Category extends JahiaObject implements ACLResourceInterface,
     public void setProperty (String propertyName, String propertyValue) {
         if (getProperties () != null) {
             getProperties ().setProperty (propertyName, propertyValue);
-            setProperties (properties);
+            setProperties (getProperties());
         } else {
-            properties = new Properties ();
-            propertiesLoaded = true;
+            Properties properties = new Properties ();
             properties.setProperty (propertyName, propertyValue);
             setProperties (properties);
         }
@@ -824,64 +770,12 @@ public class Category extends JahiaObject implements ACLResourceInterface,
     public void removeProperty (String propertyName) {
         if (getProperties () != null) {
             getProperties ().remove (propertyName);
-            setProperties (properties);
+            setProperties (getProperties());
         }
     }
 
-    public JahiaCategory getJahiaCategory() {
+    public CategoryBean getJahiaCategory() {
         return categoryBean;
-    }
-
-    /**
-     * Return the parent category of the category passed in parameter.
-     *
-     * @param aclResource ACLResourceInterface
-     * @return ACLResourceInterface
-     */
-    public ACLResourceInterface getParent(ACLResourceInterface aclResource) {
-        if (!(aclResource instanceof Category)) {
-            return null;
-        }
-        Category category = (Category) aclResource;
-        try {
-            List<Category> parentCategories = category.getParentCategories(null);
-            if (parentCategories == null || parentCategories.isEmpty()) {
-                return null;
-            }
-            return parentCategories.get(0);
-        } catch (JahiaException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the ACL
-     *
-     * @return Return the ACL.
-     */
-    public JahiaBaseACL getACL() {
-        int aclID = getAclID();
-        if (aclID == -1) {
-            return null;
-        }
-        try {
-            return new JahiaBaseACL(aclID);
-        } catch (JahiaException je) {
-            logger.error("Error while retrieving ACL " + aclID, je);
-            return null;
-        }
-    }
-
-    /**
-     * Returns the acl id
-     *
-     * @return int the acl id. Return -1 if not found
-     */
-    public int getAclID() {
-        if (this.categoryBean == null) {
-            return -1;
-        }
-        return categoryBean.getAclID();
     }
 
     /**
@@ -891,7 +785,7 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      * @return
      * @throws JahiaException
      */
-    public String getCategoryPath(Principal p) throws JahiaException {
+    public String getCategoryPath(JahiaUser p) throws JahiaException {
         List<Category> parentCategories = this.getParentCategories(p);
         StringBuilder path = new StringBuilder(32);
         for (Category category : parentCategories) {
@@ -944,7 +838,7 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      * @throws JahiaException
      */
     public static String getCategoryPath(String categoryKey) throws JahiaException {
-        return getCategory(categoryKey).getCategoryPath((Principal) null);
+        return getCategory(categoryKey).getCategoryPath((JahiaUser) null);
     }
 
    @Override

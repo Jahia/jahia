@@ -51,7 +51,7 @@ public class TestObjectKey extends TestCase {
         ContentFieldKey fieldKey = new ContentFieldKey(1);
         ContentMetadataKey metadataKey = new ContentMetadataKey(1);
 
-        CategoryKey categoryKey = new CategoryKey(1);
+        CategoryKey categoryKey = new CategoryKey("1");
 
         FieldDefinitionKey fieldDefKey = new FieldDefinitionKey(1);
         ContainerDefinitionKey containerDefKey = new ContainerDefinitionKey(1);

@@ -48,7 +48,6 @@ import org.jahia.engines.EngineToolBox;
 import org.jahia.engines.JahiaEngine;
 import org.jahia.engines.JahiaEngineTools;
 import org.jahia.engines.addcontainer.AddContainer_Engine;
-import org.jahia.engines.categories.ManageCategories;
 import org.jahia.engines.importexport.ManageImportExport;
 import org.jahia.engines.metadata.Metadata_Engine;
 import org.jahia.engines.rights.ManageRights;
@@ -452,8 +451,9 @@ public class UpdateContainer_Engine implements JahiaEngine {
             evh = Metadata_Engine.getInstance().handleActions(jParams, mode, objectKey);
 
         } else if (lastScreen.equals("categories")) {
-            theContainer = (JahiaContainer) engineMap.get("theContainer");
-            ManageCategories.getInstance().handleActions(jParams, mode, engineMap, new ContentContainerKey(jahiaContentContainerFacade.getContainerID()), theContainer.getDefinition(), false);
+        logger.error("Is this code still called?");
+//            theContainer = (JahiaContainer) engineMap.get("theContainer");
+//            ManageCategories.getInstance().handleActions(jParams, mode, engineMap, new ContentContainerKey(jahiaContentContainerFacade.getContainerID()), theContainer.getDefinition(), false);
         } else if (lastScreen.equals("workflow")) {
             if (engineMap.get("adminAccess") != null) {
                 theContainer = (JahiaContainer) engineMap.get("theContainer");
@@ -552,7 +552,8 @@ public class UpdateContainer_Engine implements JahiaEngine {
                 engineMap.put(JahiaEngine.ENGINE_REDIRECT_URL, versioningURL);
                 engineMap.put(ENGINE_OUTPUT_FILE_PARAM, JahiaEngine.REDIRECT_JSP);
             } else if (theScreen.equals("categories")) {
-                ManageCategories.getInstance().handleActions(jParams, mode, engineMap, new ContentContainerKey(jahiaContentContainerFacade.getContainerID()), theContainer.getDefinition(), false);
+            logger.error("Is this code still called?");
+//                ManageCategories.getInstance().handleActions(jParams, mode, engineMap, new ContentContainerKey(jahiaContentContainerFacade.getContainerID()), theContainer.getDefinition(), false);
             } else if (theScreen.equals("workflow")) {
                 final boolean isReadOnly = LockPrerequisites.getInstance().getLockPrerequisitesResult((LockKey) engineMap.get("LockKey")) != null;
                 if (engineMap.get("adminAccess") != null || isReadOnly) {
@@ -762,7 +763,8 @@ public class UpdateContainer_Engine implements JahiaEngine {
 
                     if (allProcessedScreen.contains("categories")) {
                         // save categories
-                        ManageCategories.getInstance().handleActions(jParams, mode, engineMap, new ContentContainerKey(jahiaContentContainerFacade.getContainerID()), theContainer.getDefinition(), false);
+                        logger.error("Is this code still called?");
+//                        ManageCategories.getInstance().handleActions(jParams, mode, engineMap, new ContentContainerKey(jahiaContentContainerFacade.getContainerID()), theContainer.getDefinition(), false);
                     }
 
                     // save metadata

@@ -307,6 +307,7 @@ FRAG2(frag_size=60000)</value>
                 <entry key="search.wildcards.attributes" value="cn,description,uniqueMember"/>
                 <entry key="groupname.attribute.map" value="cn"/>
                 <entry key="description.attribute.map" value="description"/>
+                <entry key="ad.range.step" value="0"/>
             </map>
         </property>
     </bean>
@@ -658,13 +659,18 @@ FRAG2(frag_size=60000)</value>
         <property name="target">
             <bean class="org.jahia.services.categories.CategoryServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
                 <property name="cacheService" ref="JahiaCacheService" />
-                <property name="categoryManager" ref="org.jahia.hibernate.manager.JahiaCategoryManager" />
-                <property name="resourceManager" ref="org.jahia.hibernate.manager.JahiaResourceManager" />
+                <property name="categoryProvider" ref="org.jahia.services.categories.jcr.JCRCategoryProvider" />
                 <property name="fieldsDataManager" ref="org.jahia.hibernate.manager.JahiaFieldsDataManager" />
-                <property name="userManagerService" ref="JahiaUserManagerService"/>
             </bean>
         </property>
     </bean>
+    <bean id="org.jahia.services.categories.jcr.JCRCategoryProvider" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.categories.jcr.JCRCategoryProvider">
+                <property name="jcrStoreService" ref="JCRStoreService"/>
+            </bean>
+        </property>
+    </bean>    
     <bean id="HtmlParserService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.htmlparser.HtmlParserBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -1085,6 +1091,18 @@ FRAG2(frag_size=60000)</value>
     </bean>
 
     <bean id="extraction" class="org.jahia.services.content.automation.ExtractionService" factory-method="getInstance">
+        <property name="textFilterClasses">
+            <value>org.apache.jackrabbit.extractor.MsWordTextExtractor,
+                   org.apache.jackrabbit.extractor.MsExcelTextExtractor,
+                   org.apache.jackrabbit.extractor.MsPowerPointTextExtractor,
+                   org.apache.jackrabbit.extractor.PdfTextExtractor,
+                   org.apache.jackrabbit.extractor.OpenOfficeTextExtractor,
+                   org.apache.jackrabbit.extractor.RTFTextExtractor,
+                   org.apache.jackrabbit.extractor.HTMLTextExtractor,
+                   org.apache.jackrabbit.extractor.XMLTextExtractor,
+                   org.apache.jackrabbit.extractor.PlainTextExtractor
+            </value>
+        </property>
         <property name="extractors">
             <map>
                 <entry key="application/msword">

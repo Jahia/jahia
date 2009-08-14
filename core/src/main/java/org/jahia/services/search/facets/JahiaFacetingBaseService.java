@@ -150,21 +150,26 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
             String languageCode = LanguageCodeConverters.localeToLanguageTag(jParams.getLocale());
             if (fieldDef.getType() == FieldTypes.CATEGORY) {
                 String rootCategory = fieldDef.getItemDefinition().getSelectorOptions().get("root");
-                Category startCategory = rootCategory == null ? Category.getRootCategory(jParams.getUser()) : Category
-                        .getCategory(rootCategory, jParams.getUser());
-                if (startCategory != null) {
-                    for (Category category : startCategory.getChildCategories(jParams.getUser())) {
-                        String categoryTitle = category.getTitle(jParams.getLocale());
-                        if (categoryTitle == null || categoryTitle.length() == 0) {
-                            categoryTitle = category.getKey();
-                        }
-                        String filterQuery = fieldName + ":(\"" + QueryParser.escape(categoryTitle) + "\")";
-                        FacetValueBean facetValueBean = new FacetValueBean(facetBean, category.getKey(), new Object[] {category}, filterQuery, languageCode);
-                        if (createdFacets != null) {
-                            createdFacets.add(facetValueBean);
-                        }                                            
-                        facetBean.addFacetValueBean(facetValueBean);
+                Category startCategory = rootCategory != null ? Category
+                        .getCategory(rootCategory, jParams.getUser()) : null;
+                for (Category category : startCategory != null ? startCategory
+                        .getChildCategories(jParams.getUser()) : Category
+                        .getRootCategories(jParams.getUser())) {
+                    String categoryTitle = category.getTitle(jParams
+                            .getLocale());
+                    if (categoryTitle == null || categoryTitle.length() == 0) {
+                        categoryTitle = category.getKey();
                     }
+                    String filterQuery = fieldName + ":(\""
+                            + QueryParser.escape(categoryTitle) + "\")";
+                    FacetValueBean facetValueBean = new FacetValueBean(
+                            facetBean, category.getKey(),
+                            new Object[] { category }, filterQuery,
+                            languageCode);
+                    if (createdFacets != null) {
+                        createdFacets.add(facetValueBean);
+                    }
+                    facetBean.addFacetValueBean(facetValueBean);
                 }
             } else {
                 for (String value : fieldDef.getPropertyDefinition().getValueConstraints()) {

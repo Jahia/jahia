@@ -59,12 +59,12 @@ public class CategoryKey extends ObjectKey {
      */
     protected CategoryKey() {}
 
-    public CategoryKey(int categoryID) {
-        super(CATEGORY_TYPE, Integer.toString(categoryID));
+    public CategoryKey(String categoryID) {
+        super(CATEGORY_TYPE, categoryID);
     }
 
-    public CategoryKey(int categoryID, String objectKey) {
-        super(CATEGORY_TYPE, Integer.toString(categoryID), objectKey);
+    public CategoryKey(String categoryID, String objectKey) {
+        super(CATEGORY_TYPE, categoryID, objectKey);
     }
 
     public int getCategoryID() {
@@ -80,11 +80,11 @@ public class CategoryKey extends ObjectKey {
      * @return the ObjectKey corresponding to the ID for this class type
      */
     public static ObjectKey getChildInstance(String IDInType) {
-        return new CategoryKey(Integer.parseInt(IDInType));
+        return new CategoryKey(IDInType);
     }
 
     public ObjectKey getChildInstance(String IDInType, String objectKey) {
-        return new CategoryKey(Integer.parseInt(IDInType), objectKey);
+        return new CategoryKey(IDInType, objectKey);
     }
 
     /**

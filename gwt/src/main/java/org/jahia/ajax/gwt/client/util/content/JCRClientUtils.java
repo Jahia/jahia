@@ -40,6 +40,7 @@ public final class JCRClientUtils {
     public static final String FOLDER_NODETYPES = "nt:folder,jnt:mountPoint";
     public static final String FILE_NODETYPES = "nt:file,nt:folder,jnt:mountPoint,jnt:portlet";
     public static final String PORTLET_NODETYPES = "nt:folder,jnt:mountPoint,jnt:portlet";
+    public static final String CATEGORY_NODETYPES = "jnt:category";    
 
     public final static String MY_REPOSITORY = "myRepository";
     public final static String USERS_REPOSITORY = "usersRepository";

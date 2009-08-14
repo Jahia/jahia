@@ -1160,8 +1160,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         attr.addAttribute(NS_URI, "jahia", "xmlns:jahia", CDATA, JAHIA_URI);
         ch.startElement(JAHIA_URI, "categories", "jahia:categories", attr);
 
-        Category c = categoryService.getRootCategory();
-        exportCategories(ch, c, user);
+        List<Category> cList = categoryService.getRootCategories(null);
+        for (Category c : cList) {
+            exportCategories(ch, c, user);
+        }
 
         ch.endElement(JAHIA_URI, "categories", "jahia:categories");
         ch.endDocument();
@@ -1170,7 +1172,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private void exportCategories(ContentHandler ch, Category c, JahiaUser user) throws JahiaException, SAXException {
         AttributesImpl attr = new AttributesImpl();
         attr.addAttribute(JAHIA_URI, "key", "jahia:key", CDATA, c.getKey());
-        ((JahiaLegacyExporter) exporters.get(LEGACY_EXPORTER)).exportAcl(c.getACL(), "acl", attr, false, false);
+        // TODO: commented while moving categories from DB to JCR, needs to be finished
+/*        ((JahiaLegacyExporter) exporters.get(LEGACY_EXPORTER)).exportAcl(c.getACL(), "acl", attr, false, false);*/
         Map<String, String> titles = categoryService.getTitlesForCategory(c);
         for (Iterator<String> iterator = titles.keySet().iterator(); iterator.hasNext();) {
             String lang = (String) iterator.next();

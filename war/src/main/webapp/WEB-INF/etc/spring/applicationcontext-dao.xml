@@ -17,7 +17,6 @@
     <bean id="jahiaApplicationShareDAO" class="org.jahia.hibernate.dao.JahiaApplicationShareDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaAuditLogDAO" class="org.jahia.hibernate.dao.JahiaAuditLogDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaBigTextDataDAO" class="org.jahia.hibernate.dao.JahiaBigTextDataDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaCategoryDAO" class="org.jahia.hibernate.dao.JahiaCategoryDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaContainerDAO" class="org.jahia.hibernate.dao.JahiaContainerDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaContainerDefinitionDAO" class="org.jahia.hibernate.dao.JahiaContainerDefinitionDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaContainerListDAO" class="org.jahia.hibernate.dao.JahiaContainerListDAO" parent="abstractGeneratorDAO"/>
@@ -35,7 +34,6 @@
     <bean id="jahiaGroupDAO" class="org.jahia.hibernate.dao.JahiaGroupDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaGroupAccessDAO" class="org.jahia.hibernate.dao.JahiaGroupAccessDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaUserDAO" class="org.jahia.hibernate.dao.JahiaUserDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaCategoryPropertiesDAO" class="org.jahia.hibernate.dao.JahiaCategoryPropertiesDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaLockDAO" class="org.jahia.hibernate.dao.JahiaLockDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaResourceDAO" class="org.jahia.hibernate.dao.JahiaResourceDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaSiteLanguageListDAO" class="org.jahia.hibernate.dao.JahiaSiteLanguageListDAO" parent="abstractGeneratorDAO"/>

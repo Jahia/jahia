@@ -1,14 +1,13 @@
 package org.jahia.services.categories;
 
 import junit.framework.TestCase;
-import org.jahia.test.TestHelper;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.acl.ACLNotFoundException;
 
 import java.util.List;
 import java.util.Iterator;
 import java.util.Locale;
+
+import javax.jcr.Node;
 
 /**
  * Unit test for category service.
@@ -19,39 +18,46 @@ import java.util.Locale;
  */
 public class CategoryTest extends TestCase {
 
-    public void testRootCategory() throws Exception {
-        Category rootCategory = Category.getRootCategory(); // root category is created at service start so it should already exist at this point.
+    public void testCategoriesRoot() throws Exception {
+        Node rootCategory = Category.getCategoriesRoot(); // root category is created at service start so it should already exist at this point.
         assertNotNull(rootCategory);
     }
 
+    public void testCreateRootCategory() throws Exception {
+        Category newRootCategory = Category.createCategory("firstRoot", null);
+        assertNotNull(newRootCategory);        
+        deleteCategoryWithChildren(newRootCategory);        
+    }
+    
     public void testCreateCategory() throws Exception {
-        Category rootCategory = Category.getRootCategory(); // root category is created at service start so it should already exist at this point.
-        Category newCategory = Category.createCategory("firstChild", rootCategory);
+        Category rootCategory = Category.createCategory("firstRoot", null);
+        assertNotNull(rootCategory);        
+        Category newCategory = Category.createCategory("firstChild", rootCategory);        
         List<Category> rootChilds = rootCategory.getChildCategories();
         assertTrue(rootChilds.size() == 1);
         deleteCategoryWithChildren(newCategory);
-    }
+    }    
 
     public void testCategoryKeyUnicity() throws Exception {
-        Category rootCategory = Category.getRootCategory(); // root category is created at service start so it should already exist at this point.
-        Category newCategory = Category.createCategory("firstChild", rootCategory);
+        Category rootCategory = Category.createCategory("firstRoot", null);        
+        Category.createCategory("firstChild", rootCategory);
         List<Category> rootChilds = rootCategory.getChildCategories();
         assertTrue(rootChilds.size() == 1);
         boolean duplicateDetected = false;
         try {
-            Category duplicateKeyCategory = Category.createCategory("firstChild", newCategory);
+            Category.createCategory("firstChild", rootCategory);
         } catch (JahiaException je) {
             // this is expected, and normal.
             duplicateDetected = true;
         }
         assertTrue(duplicateDetected);
         
-        deleteCategoryWithChildren(newCategory);
+        deleteCategoryWithChildren(rootCategory);
 
     }
 
     public void testUpdateCategoryTitle() throws Exception {
-        Category rootCategory = Category.getRootCategory(); // root category is created at service start so it should already exist at this point.
+        Category rootCategory = Category.createCategory("firstRoot", null);
         Category newCategory = Category.createCategory("firstChild", rootCategory);
         List<Category> rootChilds = rootCategory.getChildCategories();
         assertTrue(rootChilds.size() == 1);
@@ -74,11 +80,15 @@ public class CategoryTest extends TestCase {
         assertNull(newCategory.getTitle(Locale.ENGLISH));
         newCategory.removeTitle(Locale.ENGLISH);
 
-        deleteCategoryWithChildren(newCategory);
+        deleteCategoryWithChildren(rootCategory);
     }
 
     public void testCategoryProperties() throws Exception {
-        Category rootCategory = Category.getRootCategory(); // root category is created at service start so it should already exist at this point.
+        // commented for now as category properties are no longer supported
+        // but there will be category relationships, which could be tested
+        // in a similar way
+        
+        /*Category rootCategory = Category.createCategory("firstRoot", null);
         Category newCategory = Category.createCategory("firstChild", rootCategory);
         List<Category> rootChilds = rootCategory.getChildCategories();
         assertTrue(rootChilds.size() == 1);
@@ -101,31 +111,32 @@ public class CategoryTest extends TestCase {
         assertNull(newCategory.getProperty("NullProperty"));
         newCategory.removeProperty("NullProperty");
 
-        deleteCategoryWithChildren(newCategory);
+        deleteCategoryWithChildren(newCategory);*/
         
     }
 
+
     public void testCategoryDelete() throws Exception {
-        Category rootCategory = Category.getRootCategory(); // root category is created at service start so it should already exist at this point.
-        Category newCategory = Category.createCategory("firstChild", rootCategory);
+        Category rootCategory = Category.createCategory("firstRoot", null);
+        Category.createCategory("firstChild", rootCategory);
         List<Category> rootChilds = rootCategory.getChildCategories();
         assertTrue(rootChilds.size() == 1);
-        int aclID = newCategory.getAclID();
-        deleteCategoryWithChildren(newCategory);
-        boolean aclWasDeleted = false;
+//        int aclID = newCategory.getAclID();
+        deleteCategoryWithChildren(rootCategory);
+/*        boolean aclWasDeleted = false;
         try {
             JahiaBaseACL categoryACL = new JahiaBaseACL(aclID);
         } catch (ACLNotFoundException anfe) {
             aclWasDeleted = true;
         }
-        assertTrue(aclWasDeleted);
+        assertTrue(aclWasDeleted);*/
     }
 
     public void testBuildCategoryTree() throws Exception {
-        Category rootCategory = Category.getRootCategory(); // root category is created at service start so it should already exist at this point.
+        Category rootCategory = Category.createCategory("firstRoot", null);
         Category newCategory = Category.createCategory("rootChild", rootCategory);
         buildCategoryTree(newCategory, 4, 3);
-        deleteCategoryWithChildren(newCategory);
+        deleteCategoryWithChildren(rootCategory);
     }
 
     public void testCategoryPath() throws Exception {
@@ -148,13 +159,13 @@ public class CategoryTest extends TestCase {
         while (childCategoriesIterator.hasNext()) {
             deleteCategoryWithChildren(childCategoriesIterator.next());
         }
-        if (!currentCategory.getObjectKey().equals(Category.getRootCategory().getObjectKey())) {
-            currentCategory.delete();
-        }
+        currentCategory.delete();
     }
 
     protected void tearDown() throws Exception {
-        deleteCategoryWithChildren(Category.getRootCategory()); // root category is created at service start so it should already exist at this point.
+        for (Category rootCategory : Category.getRootCategories(null)) {
+            deleteCategoryWithChildren(rootCategory);
+        }
     }
 
 }

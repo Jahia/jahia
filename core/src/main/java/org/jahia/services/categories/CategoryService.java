@@ -31,12 +31,14 @@
  */
  package org.jahia.services.categories;
 
-import org.jahia.content.CategoryKey;
 import org.jahia.content.ObjectKey;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
+import org.jahia.services.usermanager.JahiaUser;
 
 import java.util.*;
+
+import javax.jcr.Node;
 
 /**
  * <p>Title: Category management service</p>
@@ -54,30 +56,41 @@ import java.util.*;
 public abstract class CategoryService extends JahiaService {
 
     /**
-     * @return the root category object that corresponds to the start point
+     * @return the root node object that corresponds to the start point
      *         of the category tree.
      *
      * @throws JahiaException thrown if there was a problem communicating with
      *                        the database
      */
-    public abstract Category getRootCategory ()
+    public abstract Node getCategoriesRoot ()
             throws JahiaException;
 
     /**
+     * @param user the user name executing the operation
+     *  
+     * @return the root category objects (namespaces)
+     *
+     * @throws JahiaException thrown if there was a problem communicating with
+     *                        the database
+     */
+    public abstract List<Category> getRootCategories(JahiaUser user)
+            throws JahiaException;    
+    
+    /**
      * @param key the key for the category to retrieve
      *
-     * @return the category corresponding to the key if it exists in the
+     * @return the list of categories corresponding to the key if it exists in the
      *         database
      *
      * @throws JahiaException thrown if there was a problem communicating with
      *                        the database
      */
-    public abstract Category getCategory (String key)
+    public abstract List<Category> getCategory (String key)
             throws JahiaException;
 
     /**
-     * @param categoryID the identifier of the category to retrieve from the
-     *                   database
+     * @param categoryUUID the identifier of the category to retrieve from the
+     *                     persistent storage
      *
      * @return the category corresponding to the identifier if it exists in
      *         the database, or null otherwise
@@ -85,7 +98,7 @@ public abstract class CategoryService extends JahiaService {
      * @throws JahiaException thrown if there was a problem communicating with
      *                        the database
      */
-    public abstract Category getCategory (int categoryID)
+    public abstract Category getCategoryByUUID (String categoryUUID)
             throws JahiaException;
 
     /**
@@ -111,12 +124,12 @@ public abstract class CategoryService extends JahiaService {
      *
      * @param parentCategory the category for which to retrieve the sub-categories
      *
-     * @return a list of CategoryKey objects.
+     * @return a list of Category objects.
      *
      * @throws JahiaException thrown if there was a problem communicating with
      *                        the database
      */
-    public abstract List<CategoryKey> getCategoryChildCategories (Category parentCategory)
+    public abstract List<Category> getCategoryChildCategories (Category parentCategory, JahiaUser user)
             throws JahiaException;    
 
     /**
@@ -145,7 +158,7 @@ public abstract class CategoryService extends JahiaService {
      * @throws JahiaException thrown if there was a problem communicating with
      *                        the database
      */
-    public abstract void addCategory (Category newCategory,
+    public abstract Category addCategory (String key,
                                       Category parentCategory)
             throws JahiaException;
 
@@ -314,4 +327,12 @@ public abstract class CategoryService extends JahiaService {
     public abstract List<Category> getCategoriesContainingStringInTitle(final String string,
                                                               final String languageCode) throws JahiaException;
 
+    
+    public abstract List<Category> findCategoriesByPropNameAndValue(String propName, String propValue, JahiaUser user);
+
+    public abstract void removeProperties(String categoryId);
+
+    public abstract Properties getProperties(String categoryId);
+
+    public abstract void setProperties(String categoryId, Properties properties);
 }

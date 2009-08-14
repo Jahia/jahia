@@ -34,8 +34,6 @@
                 <value>org/jahia/hibernate/model/JahiaAppsShare.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaAuditLog.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaBigTextData.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaCategory.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaCategoryProp.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaContainer.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaContainerList.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaCtnDef.hbm.xml</value>

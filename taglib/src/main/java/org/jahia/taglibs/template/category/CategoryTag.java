@@ -31,10 +31,10 @@
  */
 package org.jahia.taglibs.template.category;
 
-import java.security.Principal;
 import java.util.Date;
 import java.util.Enumeration;
 
+import javax.jcr.Node;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -48,6 +48,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.categories.Category;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 /**
@@ -250,7 +251,7 @@ public class CategoryTag extends AbstractJahiaTag {
         ServletRequest request = pageContext.getRequest();
         JahiaData jData = (JahiaData) request.getAttribute(
             "org.jahia.data.JahiaData");
-        Principal p = null;
+        JahiaUser p = null;
         if (jData != null) {
             p = jData.getProcessingContext().getUser();
         }
@@ -264,9 +265,11 @@ public class CategoryTag extends AbstractJahiaTag {
         try {
             if (categoryKey != null) {
                 curCategory = Category.getCategory(key, p);
-            } else {
-                curCategory = Category.getRootCategory(p);
-            }
+                // this can happen if the user has no rights on the starting category                
+                if (curCategory == null) {
+                    return SKIP_BODY;
+                }
+            } 
         } catch (JahiaException je) {
             if (categoryKey != null) {
                 throw new JspException(
@@ -276,11 +279,6 @@ public class CategoryTag extends AbstractJahiaTag {
                 throw new JspException(
                     "Error while trying to access root category", je);
             }
-        }
-
-        // this can happen if the user has no rights on the starting category
-        if (curCategory == null) {
-            return SKIP_BODY;
         }
 
         JTree tree = null;
@@ -388,25 +386,34 @@ public class CategoryTag extends AbstractJahiaTag {
         return EVAL_PAGE;
     }
 
-    private JTree buildJTree (Category category, Principal p)
-        throws JspException {
+    private JTree buildJTree(Category category, JahiaUser p)
+            throws JspException {
+        JTree tree = null;
         // Root Node
-        DefaultMutableTreeNode top =
-            new DefaultMutableTreeNode(category, true);
-        DefaultTreeModel treeModel = new DefaultTreeModel(top, true);
-        JTree tree = new JTree(treeModel);
         try {
-            buildCategoryTree(top, category, p);
+            DefaultMutableTreeNode top = new DefaultMutableTreeNode(
+                    category != null ? category : Category.getCategoriesRoot(p),
+                    true);
+            DefaultTreeModel treeModel = new DefaultTreeModel(top, true);
+            tree = new JTree(treeModel);
+            if (category != null) {
+                buildCategoryTree(top, category, p);
+            } else {
+                for (Category rootCategory : Category.getRootCategories(p)) {
+                    buildCategoryTree(top, rootCategory, p);
+                }
+            }
+
         } catch (JahiaException je) {
-            throw new JspException("Error while building category tree for " +
-                                   category, je);
+            throw new JspException("Error while building category tree for "
+                    + category, je);
         }
         return tree;
     }
 
     private void buildCategoryTree (MutableTreeNode curNode,
                                     Category currentCategory,
-                                    Principal p)
+                                    JahiaUser p)
         throws JahiaException {
         if ( currentCategory != null ){
             for (Category curChildCategory : currentCategory.getChildCategories(p)) {

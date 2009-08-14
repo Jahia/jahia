@@ -88,4 +88,10 @@
         </j:acl>
     </mounts>
     <portletdefinitions jcr:primaryType="jnt:portletDefinitions"/>
+    <categories jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
+        <j:acl jcr:primaryType="jnt:acl">
+            <GRANT_jcr_write_g_administrators j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:administrators"
+                                    j:privileges="jcr:write" j:aceType="GRANT"/>
+        </j:acl>    
+    </categories>
 </content>

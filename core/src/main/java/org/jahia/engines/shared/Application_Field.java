@@ -489,7 +489,7 @@ public class Application_Field implements FieldSubEngine {
         String catId = jParams.getParameter("catId");
         CategoryKey catKey = null;
         if (catId != null && !catId.equalsIgnoreCase("")) {
-            catKey = new CategoryKey(Integer.parseInt(catId));
+            catKey = new CategoryKey(catId);
         }
 
         //result Object

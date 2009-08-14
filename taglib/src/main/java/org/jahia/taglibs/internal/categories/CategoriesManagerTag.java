@@ -84,7 +84,7 @@ public class CategoriesManagerTag extends AbstractJahiaTag {
 
         final JahiaUser currentUser = jParams.getUser();
         try {
-            final boolean hasRootCategoryAccess = Category.getRootCategory(currentUser) != null;
+            final boolean hasRootCategoryAccess = Category.getCategoriesRoot(currentUser) != null;
             if (!hasRootCategoryAccess) {
 
                 out.print(getJahiaInternalResourceValue("org.jahia.actions.server.admin.categories.ManageCategories.rootAccessDenied"));

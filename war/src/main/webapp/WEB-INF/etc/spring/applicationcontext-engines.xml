@@ -33,10 +33,7 @@
         <property name="siteservice" ref="JahiaSitesService" />
     </bean>
     <bean id="exportEngine" class="org.jahia.engines.importexport.ExportEngine" />
-    <bean id="categoriesEditEngine" class="org.jahia.engines.categories.CategoriesEdit_Engine" />
-    <bean id="categoriesSelectEngine" class="org.jahia.engines.categories.CategoriesSelect_Engine" />
     <bean id="applicationEngine" class="org.jahia.engines.applications.Application_Engine" />
-    <bean id="manageApplicationCategoriesEngine" class="org.jahia.engines.applications.ManageApplicationCategoriesEngine" />
     <!--  bean id="customizeSaveSearchViewEngine" class="org.jahia.engines.search.CustomizeSaveSearchView_Engine" >
         <property name="searchService" ref="JahiaSearchService" />
     </bean-->
@@ -66,10 +63,7 @@
                 <ref bean="mySettingsEngine" />
                 <ref bean="clipBoardEngine" />
                 <ref bean="exportEngine" />
-                <ref bean="categoriesEditEngine" />
-                <ref bean="categoriesSelectEngine" />
                 <ref bean="applicationEngine" />
-                <ref bean="manageApplicationCategoriesEngine" />
                 <!-- ref bean="customizeSaveSearchViewEngine" /-->
                 <ref bean="appDispatcherEngine" />
             </list>

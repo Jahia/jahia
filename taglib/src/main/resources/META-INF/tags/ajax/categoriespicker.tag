@@ -56,7 +56,7 @@
 <%
     final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
     final JahiaUser currentUser = jParams.getUser();
-    final boolean hasRootCategoryAccess = Category.getRootCategory(currentUser) != null;
+    final boolean hasRootCategoryAccess = Category.getCategoriesRoot(currentUser) != null;
     if (!hasRootCategoryAccess) { %>
 <fmt:message key="org.jahia.actions.server.admin.categories.ManageCategories.rootAccessDenied"/>
 <%} else {%>

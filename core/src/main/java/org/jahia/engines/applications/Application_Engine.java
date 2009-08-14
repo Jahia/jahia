@@ -73,7 +73,6 @@ public class Application_Engine implements JahiaEngine {
 
     // the temporary template to hold change until they have to be saved.
     public static final String TEMPORARY_APPLICATION_SESSION_NAME = "theTemporaryApplication";
-    public static final String PORTLETS_CATEGORIES_MAP_ATTR = "portletCategoriesMap";
 
     public static final String ENGINE_NAME = "application";
     private EngineToolBox toolBox;
@@ -321,13 +320,9 @@ public class Application_Engine implements JahiaEngine {
                             theApplication.getContext(), theApplication.isVisible(),
                             theApplication.getDescription(), theApplication.getType());
 
-            // category of portlets
-            Map portletsCategoriesMap = computePortletCategoriesMap(theTemporaryApplication);
-
             // init session
             engineMap.put(Application_Engine.APPLICATION_SESSION_NAME, theApplication);
             engineMap.put(Application_Engine.TEMPORARY_APPLICATION_SESSION_NAME, theTemporaryApplication);
-            engineMap.put(Application_Engine.PORTLETS_CATEGORIES_MAP_ATTR, portletsCategoriesMap);
         }
 
          // Init Engine Language Helper
@@ -446,28 +441,4 @@ public class Application_Engine implements JahiaEngine {
         return true;
 
     }
-
-    private Map computePortletCategoriesMap(ApplicationBean theTemporaryApplication) throws JahiaException {
-        // build portletUniqueId string
-        List definitions = theTemporaryApplication.getEntryPointDefinitions();
-        String[] portletIDs = new String[definitions.size()];
-        for (int i = 0; i < definitions.size(); i++) {
-            EntryPointDefinition definition = (EntryPointDefinition) definitions.get(i);
-            String appID;
-            // get name and id of the current portlet Definition
-            String definitionName = "";
-            String uniqueID = "";
-            if (definition != null) {
-                definitionName = definition.getName();
-                appID = "" + definition.getApplicationID();
-                uniqueID = appID + "::" + definitionName;
-            }
-            portletIDs[i] = uniqueID;
-        }
-        // build category Map. User methods of ManaApplicationCategorieEngine
-        Object[] results = ((ManageApplicationCategoriesEngine) EnginesRegistry.getInstance().getEngineByBeanName("manageApplicationCategoriesEngine")).loadSelectedEntryPointDefinitons(portletIDs);
-        Map portletsCategoriesMap = (Map) results[2];
-        return portletsCategoriesMap;
-    }
-
 }

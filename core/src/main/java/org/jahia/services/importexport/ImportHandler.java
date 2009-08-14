@@ -1878,7 +1878,7 @@ public class ImportHandler extends DefaultHandler {
                 StringTokenizer st = new StringTokenizer(cats, "$$$");
                 while (st.hasMoreTokens()) {
                     String catString = st.nextToken();
-                    Category cat = categoryService.getCategory(catString);
+                    Category cat = Category.getCategory(catString);
                     if (cat != null) {
                         categoryService.addObjectKeyToCategory(cat, objectKey);
                     }

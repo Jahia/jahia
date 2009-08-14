@@ -33,8 +33,6 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 
@@ -56,9 +54,8 @@ import java.util.TreeSet;
 public class Category implements ValueInitializer {
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
         if (jParams != null) {
-            CategoryService categoryService = ServicesRegistry.getInstance().getCategoryService();
             try {
-                final org.jahia.services.categories.Category category = categoryService.getCategory(params.get(0));
+                final org.jahia.services.categories.Category category = org.jahia.services.categories.Category.getCategory(params.get(0));
                 final List<org.jahia.services.categories.Category> childCategories = category.getChildCategories();
                 SortedSet<Value> values = new TreeSet<Value>(new Comparator<Value>() {
                     public int compare(Value o, Value o1) {

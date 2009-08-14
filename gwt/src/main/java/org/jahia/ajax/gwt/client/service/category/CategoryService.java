@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaNodeProperty;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -69,7 +70,7 @@ public interface CategoryService extends RemoteService {
 
     public List<GWTJahiaCategoryNode> getCategories(List<String> keys) throws GWTJahiaServiceException;
 
-     public List<GWTJahiaCategoryNode> searchByTitle(String title,String rootCategroyKey, int limit) throws GWTJahiaServiceException;
+    public List<GWTJahiaCategoryNode> searchByTitle(String title,String rootCategroyKey, int limit) throws GWTJahiaServiceException;
 
     public List<GWTJahiaCategoryNode> search(GWTJahiaNodeProperty gwtJahiaNodeProperty, int limit) throws GWTJahiaServiceException;
 

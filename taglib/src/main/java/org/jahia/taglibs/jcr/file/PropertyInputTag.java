@@ -32,7 +32,6 @@
 package org.jahia.taglibs.jcr.file;
 
 import org.apache.struts.taglib.TagUtils;
-import org.jahia.engines.categories.CategoriesSelect_Engine;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.nodetypes.*;
@@ -191,10 +190,10 @@ public class PropertyInputTag extends PropertyValueTag {
         String contextId = name + "@" + root;
         HttpSession s = pageContext.getSession();
 
-        Map<String, Object> categoryDataMap = (Map<String, Object>) s.getAttribute(CategoriesSelect_Engine.ENGINE_NAME + ".categoriesDataMap." + contextId);
+        Map<String, Object> categoryDataMap = (Map<String, Object>) s.getAttribute("categoriesSelect.categoriesDataMap." + contextId);
         if (categoryDataMap == null) {
             categoryDataMap = new HashMap<String, Object>();
-            s.setAttribute(CategoriesSelect_Engine.ENGINE_NAME + ".categoriesDataMap." + contextId, categoryDataMap);
+            s.setAttribute("categoriesSelect.categoriesDataMap." + contextId, categoryDataMap);
         }
 
         String selectedIds = "";

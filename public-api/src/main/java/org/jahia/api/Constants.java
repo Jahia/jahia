@@ -91,6 +91,7 @@ public class Constants {
     public static final String JCR_SUCCESSORS = "jcr:successors";
     public static final String JCR_SUPERTYPES = "jcr:supertypes";
     public static final String JCR_SYSTEM = "jcr:system";
+    public static final String JCR_TITLE = "jcr:title";    
     public static final String JCR_UUID = "jcr:uuid";
     public static final String JCR_VALUECONSTRAINTS = "jcr:valueConstraints";
     public static final String JCR_VERSIONHISTORY = "jcr:versionHistory";
@@ -150,6 +151,8 @@ public class Constants {
     public static final String JAHIANT_SYSTEM = "jnt:system";
     public static final String JAHIANT_AXISFOLDER = "jnt:axisFolder";
     public static final String JAHIANT_USER = "jnt:user";
+    public static final String JAHIANT_CATEGORY = "jnt:category";
+    public static final String JAHIANT_TRANSLATION = "jnt:translation";
 
     public static final String JAHIANT_SYSTEM_ROOT = "jnt:systemRoot";
     public static final String JAHIANT_JAHIACONTENT = "jnt:jahiacontent";
@@ -172,6 +175,8 @@ public class Constants {
     public static final String AUTOMATIONS = "j:automations";
     public static final String EXTRACTED_TEXT = "j:extractedText";
     public static final String EXTRACTION_DATE = "j:lastExtractionDate";
+    public static final String ORIGINAL_UUID = "j:originalUuid";
+    public static final String NODENAME = "j:nodename";
 
     public static final String APPLY_ACL = "j:applyAcl";
     public static final String THUMBNAIL = "j:thumbnail";

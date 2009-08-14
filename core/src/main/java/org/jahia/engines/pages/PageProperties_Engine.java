@@ -64,7 +64,6 @@ import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.engines.EngineToolBox;
 import org.jahia.engines.JahiaEngine;
-import org.jahia.engines.categories.ManageCategories;
 import org.jahia.engines.importexport.ManageImportExport;
 import org.jahia.engines.lock.LockEngine;
 import org.jahia.engines.metadata.Metadata_Engine;
@@ -374,9 +373,10 @@ public class PageProperties_Engine implements JahiaEngine {
                 throw new JahiaForbiddenAccessException();
             }
         } else if (lastScreen.equals("categories")) {
-            ManageCategories.getInstance().handleActions(jParams, mode,
-                    engineMap, new ContentPageKey(thePage.getID()),
-                    thePage.getPageTemplate(), false);
+        logger.error("Is this code still called?");
+//            ManageCategories.getInstance().handleActions(jParams, mode,
+//                    engineMap, new ContentPageKey(thePage.getID()),
+//                    thePage.getPageTemplate(), false);
         } else if (lastScreen.equals("workflow")) {
             if (engineMap.get("adminAccess") != null) {
                 ManageWorkflow.getInstance().handleActions(jParams, mode,
@@ -478,9 +478,10 @@ public class PageProperties_Engine implements JahiaEngine {
                 engineMap.put(JahiaEngine.ENGINE_REDIRECT_URL, versioningURL);
                 engineMap.put(ENGINE_OUTPUT_FILE_PARAM, JahiaEngine.REDIRECT_JSP);
             } else if (theScreen.equals("categories")) {
-                ManageCategories.getInstance().handleActions(jParams, mode[0],
-                        engineMap, new ContentPageKey(thePage.getID()),
-                        thePage.getPageTemplate(), false);
+            logger.error("Is this code still called?");
+//                ManageCategories.getInstance().handleActions(jParams, mode[0],
+//                        engineMap, new ContentPageKey(thePage.getID()),
+//                        thePage.getPageTemplate(), false);
             } else if (theScreen.equals("workflow")) {
                 if (engineMap.get("adminAccess") != null) {
                     ManageWorkflow.getInstance().handleActions(jParams, mode[0],
@@ -705,9 +706,10 @@ public class PageProperties_Engine implements JahiaEngine {
                     }
 
                     // save categories
-                    changed |= ManageCategories.getInstance().handleActions(jParams, mode[0],
-                            engineMap,
-                            new ContentPageKey(thePage.getID()), thePage.getPageTemplate(), false);
+                    logger.error("Is this code still called?");
+//                    changed |= ManageCategories.getInstance().handleActions(jParams, mode[0],
+//                            engineMap,
+//                            new ContentPageKey(thePage.getID()), thePage.getPageTemplate(), false);
 
                     // save metadata
                     if (changed) {

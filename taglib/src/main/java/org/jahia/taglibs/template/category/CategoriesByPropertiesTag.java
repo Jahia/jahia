@@ -41,6 +41,7 @@ import javax.servlet.jsp.JspException;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.services.categories.Category;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 /**
@@ -148,7 +149,7 @@ public class CategoriesByPropertiesTag extends AbstractJahiaTag {
         ServletRequest request = pageContext.getRequest();
         JahiaData jData = (JahiaData) request.getAttribute(
             "org.jahia.data.JahiaData");
-        Principal p = null;
+        JahiaUser p = null;
         if (jData != null) {
             p = jData.getProcessingContext().getUser();
         }

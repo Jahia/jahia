@@ -42,7 +42,7 @@ import org.apache.jackrabbit.spi.commons.query.jsr283.qom.DescendantNode;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.FullTextSearch;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
 import org.apache.lucene.search.HitCollector;
-import org.jahia.content.CategoryKey;
+import org.jahia.api.Constants;
 import org.jahia.data.beans.PageBean;
 import org.jahia.data.containers.ContainerFilterBean;
 import org.jahia.data.containers.ContainerFilterByCategories;
@@ -71,9 +71,9 @@ import org.jahia.query.qom.QueryModelTools;
 import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.query.qom.StaticOperandImpl;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.categories.Category;
 import org.jahia.services.containers.ContainerQueryContext;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.search.ContainerSearcher;
 import org.jahia.services.search.JahiaSearchConstant;
@@ -216,8 +216,8 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
                 // maybe it's a category path
                 try {
                     Category cat = Category.getLastCategoryNode(catKey);
-                    if (cat!=null && (cat.getACL()== null ||
-                            cat.getACL().getPermission(context.getUser(), JahiaBaseACL.READ_RIGHTS))){
+                    if (cat!=null && 
+                            JCRContentUtils.hasPermission(context.getUser(), Constants.JCR_READ_RIGHTS, cat.getJahiaCategory().getId ())){
                         if (!result.contains(cat.getKey())){
                             result.add(cat.getKey());
                         }
@@ -245,19 +245,13 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
             }
             try {
                 Category cat = Category.getCategory(catKey, context.getUser());
-                List<CategoryKey> childCategoryKeys = cat.getChildCategoryKeys(true);
-                for (CategoryKey categoryKey : childCategoryKeys){
-                    try {
-                        Category category = (Category)Category.getChildInstance(categoryKey);
-                        if (!result.contains(category.getKey())){
-                            result.add(category.getKey());
-                        }
-                    } catch ( Exception t ){
-                        logger.debug("Error loading Child Category " + categoryKey,t);
+                for (Category category : cat.getChildCategories(true)) {
+                    if (!result.contains(category.getKey())) {
+                        result.add(category.getKey());
                     }
                 }
-            } catch (Exception t){
-                logger.debug("Error loading Category " + catKey,t);
+            } catch (Exception t) {
+                logger.debug("Error loading Category " + catKey, t);
             }
         }
         String[] catKeys = new String[]{};

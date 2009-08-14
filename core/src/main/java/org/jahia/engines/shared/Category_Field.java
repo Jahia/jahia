@@ -261,7 +261,8 @@ public class Category_Field implements FieldSubEngine {
             }
         }
         if (startCategory == null) {
-            startCategory = Category.getRootCategory(jParams.getUser());
+            logger.error("code has been taken out while moving cateogries to JCR");
+            // TODO: startCategory = Category.getRootCategory(jParams.getUser());
         }
 
         // still possible if the user has no rights to see even the root
@@ -345,7 +346,7 @@ public class Category_Field implements FieldSubEngine {
             if (curParamName.startsWith(CATEGORYPREFIX_HTMLPARAMETER)) {
                 try {
                     final String curCategoryId = curParamName.substring(CATEGORYPREFIX_HTMLPARAMETER.length());
-                    final Category c = Category.getCategory(Integer.parseInt(curCategoryId), null);
+                    final Category c = Category.getCategoryByUUID(curCategoryId, null);
                     newSelectedCategories.add(c.getKey());
                     logger.debug("Submitted category key : " + c.getKey());
                 } catch (final Exception e) {

@@ -45,7 +45,6 @@ import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.engines.applications.Application_Engine;
-import org.jahia.engines.categories.CategoriesEdit_Engine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -141,8 +140,8 @@ public class JahiaObjectTool
                 return sReg.getJahiaPageTemplateService().lookupPageTemplate(objectID).getName();
             case SERVER_TYPE:
                 return "Jahia Server";
-            case CATEGORY_TYPE:
-                return sReg.getCategoryService().getCategory(objectID).getKey();
+//            case CATEGORY_TYPE:
+//                return sReg.getCategoryService().getCategoryByUUID(objectID).getKey();
             default:
                 throw new JahiaException (MSG_INTERNAL_ERROR,
                                           "Incompatible Object Type passed to JahiaObjectTool.getObjectName(objectType, objectID)",
@@ -168,7 +167,7 @@ public class JahiaObjectTool
             case PAGE_TYPE:          return ((JahiaPage) engineMap.get( "thePage" )).getTitle();
             case FIELD_TYPE:         return ((JahiaField) engineMap.get( "theField" )).getDefinition().getName();
             case TEMPLATE_TYPE:      return ((JahiaPageDefinition) engineMap.get( "theTemplate" )).getName();
-            case CATEGORY_TYPE:      return ((Category) engineMap.get(CategoriesEdit_Engine.CATEGORY_SESSION_NAME)).getKey();
+            case CATEGORY_TYPE:      return ((Category) engineMap.get("categoryKey")).getKey();
             case APPLICATION_TYPE:   return ((ApplicationBean) engineMap.get(Application_Engine.APPLICATION_SESSION_NAME)).getName();
 
             default:                 throw new JahiaException (MSG_INTERNAL_ERROR,
@@ -211,7 +210,7 @@ public class JahiaObjectTool
         * @param    engineMap
         * @return   the object ID, as an <code>int</code>
         */
-    public int getObjectID( int objectType, Map engineMap )
+    public int getObjectID( int objectType, Map<String, Object> engineMap )
     throws JahiaException
     {
         switch(objectType) {
@@ -221,7 +220,7 @@ public class JahiaObjectTool
             case PAGE_TYPE:          return ((JahiaPage) engineMap.get( "thePage" )).getID();
             case FIELD_TYPE:         return ((JahiaField) engineMap.get( "theField" )).getID();
             case TEMPLATE_TYPE:      return ((JahiaPageDefinition) engineMap.get( "theTemplate" )).getID();
-            case CATEGORY_TYPE:      return ((Category) engineMap.get(CategoriesEdit_Engine.CATEGORY_SESSION_NAME)).getObjectKey().getIdInType();
+            case CATEGORY_TYPE:      return ((Category) engineMap.get("categoryKey")).getObjectKey().getIdInType();
             default:                 throw new JahiaException (MSG_INTERNAL_ERROR,
                                                                "Incompatible Object Type passed to JahiaObjectTool",
                                                                JahiaException.SERVICE_ERROR,

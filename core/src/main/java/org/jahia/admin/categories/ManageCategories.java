@@ -173,10 +173,6 @@ public class ManageCategories extends AbstractAdministrationModule {
                 displayMoveCategory(request, response, session);
             } else if (operation.equals("commitMoveCategory")) {
                 commitMoveCategory(request, response, session);
-            } else if (operation.equals("commitEditProperty")) {
-                commitEditProperty(request, response, session);
-            } else if (operation.equals("commitDeleteProperty")) {
-                commitDeleteProperty(request, response, session);
             } else if (operation.equals("import")) {
                 importCategories(request, response, session);
             }
@@ -214,24 +210,26 @@ public class ManageCategories extends AbstractAdministrationModule {
             // For JSP Output
             String currentCategoryKey = (String) session.getAttribute(CURRENTCATEGORY_SESSIONKEY);
             if (currentCategoryKey == null) {
-                Category rootCategory = Category.getRootCategory(jParams.getUser());
+                logger.error("is this code still accessed?");
+/*                Category rootCategory = Category.getRootCategory(jParams.getUser());
                 if (rootCategory != null) {
                     currentCategoryKey = rootCategory.getObjectKey().getIDInType();
                     session.setAttribute(CURRENTCATEGORY_SESSIONKEY, currentCategoryKey);
-                }
+                }*/
             }
             // test if we are able to load the current category key
             if (currentCategoryKey != null) {
-                Category currentCategory = Category.getCategory(Integer.parseInt(currentCategoryKey), jParams.getUser());
+                Category currentCategory = Category.getCategoryByUUID(currentCategoryKey, jParams.getUser());
                 if (currentCategory == null) {
                     // if not we default to root category.
                     logger.warn("Couldn't find category key " + currentCategoryKey + " defaulting back to root category");
-                    currentCategory = Category.getRootCategory(jParams.getUser());
+                    logger.error("is this code still accessed?");
+/*                    currentCategory = Category.getRootCategory(jParams.getUser());
                     if (currentCategory != null) {
                         currentCategoryKey = currentCategory.getObjectKey().getIDInType();
                         session.setAttribute(CURRENTCATEGORY_SESSIONKEY,
                                 currentCategoryKey);
-                    }
+                    }*/
                 }
                 if (currentCategory != null) {
                     session.setAttribute(CURRENTCATEGORYCHILDS_SESSIONKEY,
@@ -306,8 +304,8 @@ public class ManageCategories extends AbstractAdministrationModule {
             Properties categoryProperties = new Properties();
 
             if (currentCategoryKey != null) {
-                Category currentCategory = Category.getCategory(
-                        Integer.parseInt(currentCategoryKey), jParams.getUser());
+                Category currentCategory = Category.getCategoryByUUID(
+                        currentCategoryKey, jParams.getUser());
                 session.setAttribute(CURRENTCATEGORY_SESSIONKEY,
                         currentCategory.getObjectKey().getIDInType());
                 if (parentCategoryKey == null) {
@@ -381,7 +379,7 @@ public class ManageCategories extends AbstractAdministrationModule {
                 // we are editing an existing category
                 categoryKey = (String) session.getAttribute(
                         CURRENTCATEGORY_SESSIONKEY);
-                currentCategory = Category.getCategory(Integer.parseInt(categoryKey), jParams.getUser());
+                currentCategory = Category.getCategoryByUUID(categoryKey, jParams.getUser());
             } else {
                 // we are adding a new category.
                 if (Category.getCategory(categoryKey, jParams.getUser()) != null) {
@@ -493,7 +491,7 @@ public class ManageCategories extends AbstractAdministrationModule {
         try {
 
             String curCategoryKey = request.getParameter("targetCategoryKey");
-            Category currentCategory = Category.getCategory(Integer.parseInt(curCategoryKey), jParams.getUser());
+            Category currentCategory = Category.getCategoryByUUID(curCategoryKey, jParams.getUser());
 
             recursiveDeleteCategory(currentCategory);
 
@@ -507,119 +505,6 @@ public class ManageCategories extends AbstractAdministrationModule {
             session.removeAttribute(CATEGORYTREE_SESSIONKEY);
 
             displayCategories(request, response, session);
-
-        } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
-                    "org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams.getLocale());
-            request.setAttribute("jahiaDisplayMessage", dspMsg);
-            JahiaAdministration.doRedirect(request,
-                    response,
-                    session,
-                    JSP_PATH + "menu.jsp");
-        }
-
-    }
-
-    //-------------------------------------------------------------------------
-    private void commitEditProperty(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    HttpSession session)
-            throws IOException, ServletException {
-
-        JahiaData jData = (JahiaData) request.getAttribute(
-                "org.jahia.data.JahiaData");
-        ProcessingContext jParams = null;
-        if (jData != null) {
-            jParams = jData.getProcessingContext();
-        }
-
-        try {
-            request.setAttribute("warningMsg", "");
-            String categoryKey = (String) session.getAttribute(CURRENTCATEGORY_SESSIONKEY);
-            Category currentCategory = Category.getCategory(Integer.parseInt(categoryKey), jParams.getUser());
-
-            Map parameterMap = request.getParameterMap();
-            Iterator keyIter = parameterMap.keySet().iterator();
-            while (keyIter.hasNext()) {
-                String curKey = (String) keyIter.next();
-                if (curKey.startsWith("setProperty_")) {
-                    String propertyName = curKey.substring("setProperty_".length());
-                    String propertyValue = request.getParameter(curKey);
-                    if ((propertyName != null) && (!"".equals(propertyValue))) {
-                        logger.debug("Setting property name=[" + propertyName +
-                                "] value=[" + propertyValue +
-                                "] for category [" +
-                                currentCategory.getKey() + "]");
-                        currentCategory.setProperty(propertyName, propertyValue);
-                    }
-                }
-            }
-
-            String newPropertyName = request.getParameter("newPropertyName");
-            if (newPropertyName != null) {
-                if (!"".equals(newPropertyName)) {
-                    String newPropertyValue = request.getParameter(
-                            "newPropertyValue");
-                    if (newPropertyValue != null) {
-                        logger.debug("Setting property name=[" +
-                                newPropertyName + "] value=[" +
-                                newPropertyValue + "] for category [" +
-                                currentCategory.getKey() + "]");
-                        currentCategory.setProperty(newPropertyName,
-                                newPropertyValue);
-                    }
-                }
-            }
-
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
-                    "org.jahia.admin.JahiaDisplayMessage.changeCommitted.label",
-                    jParams.getLocale());
-            request.setAttribute("jahiaDisplayMessage", dspMsg);
-            displayEditCategory(request, response, session, categoryKey);
-
-        } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
-                    "org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams.getLocale());
-            request.setAttribute("jahiaDisplayMessage", dspMsg);
-            JahiaAdministration.doRedirect(request,
-                    response,
-                    session,
-                    JSP_PATH + "menu.jsp");
-        }
-
-    }
-
-    //-------------------------------------------------------------------------
-    private void commitDeleteProperty(HttpServletRequest request,
-                                      HttpServletResponse response,
-                                      HttpSession session)
-            throws IOException, ServletException {
-
-        JahiaData jData = (JahiaData) request.getAttribute(
-                "org.jahia.data.JahiaData");
-        ProcessingContext jParams = null;
-        if (jData != null) {
-            jParams = jData.getProcessingContext();
-        }
-
-        try {
-            request.setAttribute("warningMsg", "");
-
-            String categoryKey = (String) session.getAttribute(CURRENTCATEGORY_SESSIONKEY);
-            Category currentCategory = Category.getCategory(Integer.parseInt(categoryKey), jParams.getUser());
-
-            String targetPropertyName = request.getParameter("property");
-            if (targetPropertyName != null) {
-                currentCategory.removeProperty(targetPropertyName);
-            }
-
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
-                    "org.jahia.admin.JahiaDisplayMessage.changeCommitted.label",
-                    jParams.getLocale());
-            request.setAttribute("jahiaDisplayMessage", dspMsg);
-            displayEditCategory(request, response, session, categoryKey);
 
         } catch (JahiaException je) {
             String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
@@ -690,8 +575,10 @@ public class ManageCategories extends AbstractAdministrationModule {
             // For JSP Output
             String currentCategoryKey = (String) session.getAttribute(CURRENTCATEGORY_SESSIONKEY);
             if (currentCategoryKey == null) {
-                currentCategoryKey = Category.getRootCategory(jParams.getUser()).getObjectKey().getIDInType();
-                session.setAttribute(CURRENTCATEGORY_SESSIONKEY, currentCategoryKey);
+                logger.error("is this code still accessed?");
+                
+/*                currentCategoryKey = Category.getRootCategory(jParams.getUser()).getObjectKey().getIDInType();
+                session.setAttribute(CURRENTCATEGORY_SESSIONKEY, currentCategoryKey);*/
             }
 //            Category currentCategory = Category.getCategory(Integer.parseInt(currentCategoryKey), jParams.getUser());
 //            ServicesRegistry.getInstance().getJahiaACLManagerService().flushCache();
@@ -735,15 +622,15 @@ public class ManageCategories extends AbstractAdministrationModule {
 
         try {
             String parentCategoryKey = request.getParameter("parentCategoryKey");
-            Category parentCategory = Category.getCategory(Integer.parseInt(parentCategoryKey), jParams.getUser());
+            Category parentCategory = Category.getCategoryByUUID(parentCategoryKey, jParams.getUser());
 
             String categoryKey = request.getParameter("currentCategoryKey");
-            Category currentCategory = Category.getCategory(Integer.parseInt(categoryKey), jParams.getUser());
+            Category currentCategory = Category.getCategoryByUUID(categoryKey, jParams.getUser());
 
             // now let's retrieve the selected category from the tree.
             String newParentKey = request.getParameter("newParentKey");
             if (newParentKey != null) {
-                Category newParentCategory = Category.getCategory(Integer.parseInt(newParentKey), jParams.getUser());
+                Category newParentCategory = Category.getCategoryByUUID(newParentKey, jParams.getUser());
 
                 // now that we've got the category, let's change the parenting.
                 parentCategory.removeChildObjectKey(currentCategory.getObjectKey());

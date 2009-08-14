@@ -76,7 +76,7 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
             try {
                 // As we are storing path inside the jcr and taht actually we cannot search by path on the
                 // category service we need to get the last value to have the "real" key of the category
-                Category category = ServicesRegistry.getInstance().getCategoryService().getCategory(getString().substring(getString().lastIndexOf("/")+1));
+                Category category = Category.getCategory(getString().substring(getString().lastIndexOf("/")+1));
                 if(category==null) throw new ValueFormatException(getString()+" is not a valid Jahia Category");
                 return new CategoryBean(category, Jahia.getThreadParamBean());
             } catch (JahiaException e) {

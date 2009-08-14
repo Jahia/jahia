@@ -188,12 +188,12 @@ public class FieldReferenceListener extends DefaultEventListener {
             node.setProperty(FULLPATH, node.getPath());
             node.setProperty("j:nodename",node.getName());
             node.save();
-            if (node.isNodeType(NT_FOLDER)) {
-                for (NodeIterator ni = node.getNodes(); ni.hasNext();) {
-                    updateFullPath(ni.nextNode());
-                }
-            }
         }
+        if (node.isNodeType(NT_FOLDER)) {
+            for (NodeIterator ni = node.getNodes(); ni.hasNext();) {
+                updateFullPath(ni.nextNode());
+            }
+        }        
     }
 
     public void setFieldXRefManager(JahiaFieldXRefManager fieldXRefManager) {

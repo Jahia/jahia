@@ -296,6 +296,10 @@ public class RepositoryTab extends ContentPanel {
         return folderTreeContainer.getLinker() ;
     }
 
+    public void deselectOnFreeSearch() {
+        m_tree.getSelectionModel().deselectAll();
+    }
+
     /**
      * This class extends the standard load listener to allow automated child selection once the children are retrieved.
      */

@@ -296,4 +296,17 @@ public class FolderTree extends LeftComponent {
         }
     }
 
+    public void deselectOnFreeSearch() {
+        if (searchPanel.isExpanded()) {
+            queryList.getSelectionModel().deselectAll();
+        } else {
+            for (RepositoryTab tab: repositories) {
+                if (tab.isExpanded()) {
+                    tab.deselectOnFreeSearch();
+                    return;
+                }
+            }
+        }
+    }
+
 }

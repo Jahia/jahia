@@ -93,6 +93,7 @@ public class ContentViews extends TopRightComponent {
         m_component.setBodyBorder(false);
         searchField = new SearchField(Messages.getResource("fm_search") + ": ", true) {
             public void onFieldValidation(String value) {
+                ((FolderTree) getLinker().getLeftObject()).deselectOnFreeSearch();
                 setSearchContent(value);
             }
 

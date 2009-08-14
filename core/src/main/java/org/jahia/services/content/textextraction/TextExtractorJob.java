@@ -31,31 +31,12 @@
  */
 package org.jahia.services.content.textextraction;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.jackrabbit.core.query.lucene.JackrabbitTextExtractor;
-import org.apache.jackrabbit.extractor.TextExtractor;
-import org.apache.log4j.Logger;
-import org.jahia.api.Constants;
-import org.jahia.hibernate.manager.JahiaFieldXRefManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.hibernate.model.JahiaFieldXRef;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRStoreProvider;
-import org.jahia.services.fields.ContentField;
+import org.jahia.services.content.automation.ExtractionService;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.search.JahiaSearchService;
-import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
 import org.quartz.JobExecutionContext;
-
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -64,126 +45,20 @@ import java.util.*;
  * Time: 13:58:32
  */
 public class TextExtractorJob extends BackgroundJob {
-    private final static Logger logger = Logger.getLogger(TextExtractorJob.class);
     public static final String EXTRACTION_TYPE = "textextraction";
     public static final String PATH = "path";
     public static final String NAME = "name";
     public static final String PROVIDER = "provider";
-
-    private static TextExtractor extractor = new JackrabbitTextExtractor(
-                        "org.apache.jackrabbit.extractor.MsWordTextExtractor," +
-                                "org.apache.jackrabbit.extractor.MsExcelTextExtractor," +
-                                "org.apache.jackrabbit.extractor.MsPowerPointTextExtractor," +
-                                "org.apache.jackrabbit.extractor.PdfTextExtractor," +
-                                "org.apache.jackrabbit.extractor.OpenOfficeTextExtractor," +
-                                "org.apache.jackrabbit.extractor.RTFTextExtractor," +
-                                "org.apache.jackrabbit.extractor.HTMLTextExtractor," +
-                                "org.apache.jackrabbit.extractor.XMLTextExtractor,"+
-                                "org.apache.jackrabbit.extractor.PlainTextExtractor"
-                );
-
-    public static List<String> getContentTypes() {
-        return Arrays.asList(extractor.getContentTypes());
-    }
+    public static final String EXTRACTNODE_PATH = "extractnode-path";
 
     public void executeJahiaJob(JobExecutionContext jobExecutionContext, ProcessingContext processingContext) throws Exception {
-        String providerPath = (String) jobExecutionContext.getJobDetail().getJobDataMap().get("provider");
+        String providerPath = (String) jobExecutionContext.getJobDetail().getJobDataMap().get(PROVIDER);
 
-        String path = (String) jobExecutionContext.getJobDetail().getJobDataMap().get("path");
+        String path = (String) jobExecutionContext.getJobDetail().getJobDataMap().get(PATH);
+        String extractNodePath = (String) jobExecutionContext.getJobDetail().getJobDataMap().get(EXTRACTNODE_PATH);        
 
         JCRStoreProvider provider = (JCRStoreProvider) ServicesRegistry.getInstance().getJCRStoreService().getMountPoints().get(providerPath);
 
-        try {
-            Session s = provider.getSystemSession();
-            try {
-                Property p = (Property) s.getItem(path);
-                Node n = p.getParent();
-
-
-                if (n.hasProperty(Constants.JCR_MIMETYPE)) {
-                    String type = n.getProperty(Constants.JCR_MIMETYPE).getString();
-
-                    // jcr:encoding is not mandatory
-                    String encoding = null;
-                    if (n.hasProperty(Constants.JCR_ENCODING)) {
-                        encoding = n.getProperty(Constants.JCR_ENCODING).getString();
-                    }
-
-                    InputStream stream = p.getStream();
-                    try {
-                        final Reader reader = extractor.extractText(stream, type, encoding);
-                        try {
-                            n.setProperty(Constants.EXTRACTED_TEXT, new InputStream() {
-                                byte[] temp;
-                                int i=0;
-                                public int read() throws IOException {
-                                    if (temp == null || i>=temp.length) {
-                                        char cb[] = new char[1];
-                                        if (reader.read(cb, 0, 1) == -1) {
-                                            return -1;
-                                        }
-                                        temp = new String(cb).getBytes("UTF-8");
-                                        i = 0;
-                                    }
-                                    if (temp[0] >= 0 &&  temp[0] <= 31) {
- 	 	                                i++;
- 	 		                            return 32; // if char is 31 or less (0 generates an error) it is replace with space (32)
- 	 	                            }
-                                    return temp[i++];
-                                }
-                            });
-                            n.setProperty(Constants.EXTRACTION_DATE, new GregorianCalendar());
-                            n.save();
-                        } finally {
-                            reader.close();
-                        }
-                        triggerJahiaFileReferenceReindexation(n.getParent(), provider, processingContext);
-                    } catch (Exception e) {
-                        logger.debug("Cannot extract content",e);
-                    } finally {
-                        IOUtils.closeQuietly(stream);
-                    }
-                }
-
-            } finally {
-                s.logout();
-            }
-        } catch (RepositoryException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Cannot extract content: " + e.getMessage(), e);
-            } else {
-                logger.warn("Cannot extract content: " + e.getMessage());
-            }
-        }
-
-
-    }
-    
-    private void triggerJahiaFileReferenceReindexation(Node n,
-            JCRStoreProvider provider, ProcessingContext processingContext)
-            throws Exception {
-        JahiaSearchService searchService = ServicesRegistry.getInstance()
-                .getJahiaSearchService();
-        JahiaFieldXRefManager fieldXRefManager = (JahiaFieldXRefManager) SpringContextSingleton
-                .getInstance().getContext().getBean(
-                        JahiaFieldXRefManager.class.getName());
-        Collection<JahiaFieldXRef> c = fieldXRefManager
-                .getReferencesForTarget(JahiaFieldXRefManager.FILE
-                        + provider.getKey() + ":" + n.getUUID());
-        for (JahiaFieldXRef xref : c) {
-            try {
-                ContentField contentObject = ContentField.getField(xref
-                        .getComp_id().getFieldId());
-                RuleEvaluationContext ctx = new RuleEvaluationContext(
-                        contentObject.getObjectKey(), contentObject,
-                        processingContext, processingContext.getUser());
-                searchService.indexContentObject(contentObject,
-                        processingContext.getUser(), ctx);
-            } catch (Exception e) {
-                logger.warn("Error when starting re-indexation. Field "
-                        + xref.getComp_id().getFieldId()
-                        + " was not re-indexed.", e);
-            }
-        }
+        ExtractionService.getInstance().extractText(provider, path, extractNodePath, processingContext);
     }
 }

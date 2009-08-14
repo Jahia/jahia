@@ -53,6 +53,7 @@ import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRFileContent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.automation.ExtractionService;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.search.DocumentField;
 import org.jahia.services.search.IndexableDocument;
@@ -346,8 +347,7 @@ public class FieldSearchIndexProcessValveImpl implements
             String strVal = null;
             ProcessingContext context = (ProcessingContext) contextMap.get(SearchIndexationPipeline.PROCESSING_CONTEXT);
 
-            JCRNodeWrapper file = JCRStoreService.getInstance().getFileNode(
-                    jcrPath, context.getUser());
+            JCRNodeWrapper file = JCRStoreService.getInstance().getThreadSession(context.getUser()).getNode(jcrPath);
 
             if (file != null && file.isValid() && !file.isCollection()) {
                 JCRFileContent fileContent = file.getFileContent();
@@ -366,7 +366,8 @@ public class FieldSearchIndexProcessValveImpl implements
                         String.valueOf(file.getLastModifiedAsDate()));
                 
                 if (contentType != null && !file.getPath().equals("#")) {
-                    strVal = fileContent.getExtractedText();
+                    strVal = ExtractionService.getInstance().getExtractedText(file, context);
+
                     doc.addFieldValue(
                             JahiaSearchConstant.FILE_CONTENT_FULLTEXT_SEARCH_FIELD,
                             strVal);
@@ -387,5 +388,4 @@ public class FieldSearchIndexProcessValveImpl implements
         }
         return values;
     }
-
 }

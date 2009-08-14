@@ -98,6 +98,21 @@ public class JCRFileContent {
         }
         return null;
     }
+    
+    /**
+     * The encoding is an optional property, can be null. 
+     * @return file encoding or null if not set
+     */
+    public String getEncoding() {
+        try {
+            Node content = objectNode.getNode(Constants.JCR_CONTENT);
+            if (content.hasProperty(Constants.JCR_ENCODING)) {
+                return content.getProperty(Constants.JCR_ENCODING).getString();
+            }
+        } catch (RepositoryException e) {
+        }
+        return null;
+    }
 
     public long getContentLength() {
         try {

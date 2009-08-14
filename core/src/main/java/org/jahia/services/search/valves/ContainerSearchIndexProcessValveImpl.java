@@ -238,8 +238,9 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                     }
 //                    JahiaUser root = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdminUser(0);
                     JahiaUser root = Jahia.getThreadParamBean().getUser();
-                    JCRNodeWrapper file = JCRStoreService.getInstance ()
-                            .getFileNode(fField.getRealName (), root);
+                    JCRNodeWrapper file = JCRStoreService.getInstance().getThreadSession(root).getNode(
+                            fField.getRealName());
+
                     if (file.isValid () && !file.isCollection ()) {
                         doc.getChildIndexableDocuments().add(new Integer(field.getID()));
                     }

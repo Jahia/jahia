@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.DefaultEventListener;
+import org.jahia.services.content.automation.ExtractionService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -91,7 +92,7 @@ public class TextExtractionListener extends DefaultEventListener {
                         continue;
                     }
                     Node n = p.getParent();
-                    if (n.hasProperty(Constants.JCR_MIMETYPE) && TextExtractorJob.getContentTypes().contains(n.getProperty(Constants.JCR_MIMETYPE).getString())) {
+                    if (n.hasProperty(Constants.JCR_MIMETYPE) && ExtractionService.getInstance().getContentTypes().contains(n.getProperty(Constants.JCR_MIMETYPE).getString())) {
                         if (n.hasProperty(Constants.EXTRACTION_DATE)) {
                             Calendar lastModified = n.getProperty(Constants.JCR_LASTMODIFIED).getDate();
                             Calendar extractionDate = n.getProperty(Constants.EXTRACTION_DATE).getDate();
@@ -108,13 +109,13 @@ public class TextExtractionListener extends DefaultEventListener {
                         }
 
                         JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for "+p.getParent().getName(), TextExtractorJob.class, jParams);
-
+                        Node file = p.getParent().getParent();
                         SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
                         JobDataMap jobDataMap;
                         jobDataMap = jobDetail.getJobDataMap();
                         jobDataMap.put(TextExtractorJob.PROVIDER, provider.getMountPoint());
-                        jobDataMap.put(TextExtractorJob.PATH, event.getPath());
-                        jobDataMap.put(TextExtractorJob.NAME, p.getParent().getParent().getName());
+                        jobDataMap.put(TextExtractorJob.PATH, file.getPath());
+                        jobDataMap.put(TextExtractorJob.NAME, file.getName());
                         jobDataMap.put(BackgroundJob.JOB_TYPE, TextExtractorJob.EXTRACTION_TYPE);
                         schedulerServ.scheduleJobNow(jobDetail);
                     }

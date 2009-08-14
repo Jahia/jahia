@@ -57,6 +57,7 @@ import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRFileContent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.automation.ExtractionService;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.search.DocumentField;
 import org.jahia.services.search.IndexableDocument;
@@ -344,6 +345,7 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
         String[] values = new String[] { "" };
         try {
             String strVal = null;
+            ProcessingContext context = (ProcessingContext) contextMap.get(SearchIndexationPipeline.PROCESSING_CONTEXT);
             JCRNodeWrapper file = JCRStoreService.getInstance().getNodeByUUID(
                     jcrPath.substring(jcrPath.lastIndexOf(':') + 1), null);
 
@@ -365,7 +367,7 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
                 doc.setFieldValue(JahiaSearchConstant.FILE_LAST_MODIFICATION_DATE,
                         String.valueOf(file.getLastModifiedAsDate()));                                        
                 if (contentType != null && !file.getPath().equals("#")) {
-                    strVal = fileContent.getExtractedText();
+                    strVal = ExtractionService.getInstance().getExtractedText(file, context);
                     doc.addFieldValue(JahiaSearchConstant.FILE_CONTENT_FULLTEXT_SEARCH_FIELD, strVal);
                     doc.addFieldValue(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE, strVal);
                 }
@@ -381,5 +383,4 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
         }
         return values;
     }
-
 }

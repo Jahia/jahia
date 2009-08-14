@@ -88,7 +88,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
         this.object = object;
         try {
             initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:workflowed"));
-            if (!object.isAclSameAsParent()) {
+            if (!object.isAclSameAsParent() && object.getACL().getACL().getHasEntries()==1) {
                 initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:accessControlled"));
             }
             checkTimeBasePublishingState(session, object);
@@ -193,7 +193,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             super.initNodes();
 
             // acl
-            if (!object.isAclSameAsParent()) {
+            if (!object.isAclSameAsParent() && object.getACL().getACL().getHasEntries()==1) {
                 initNode(new JahiaAclNodeImpl(getSession(), object.getAclID(), this));
             }
             initTimeBasedPublishingNodes();

@@ -31,25 +31,24 @@
  */
 package org.jahia.services.content.impl.jahia;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-
 import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.model.JahiaAclEntry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.api.Constants;
+
+import javax.jcr.*;
+import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
-  * User: toto
-  * Date: Jul 3, 2008
-  * Time: 11:22:59 AM
-  * To change this template use File | Settings | File Templates.
-  */
- public class JahiaAclNodeImpl extends NodeImpl {
+ * User: toto
+ * Date: Jul 3, 2008
+ * Time: 11:22:59 AM
+ * To change this template use File | Settings | File Templates.
+ */
+public class JahiaAclNodeImpl extends NodeImpl {
     private int aclId;
     private NodeImpl parent;
 
@@ -69,15 +68,41 @@ import org.jahia.services.content.nodetypes.ValueImpl;
     protected void initNodes() throws RepositoryException {
         super.initNodes();
         // todo ace
-//        try {
-//            JahiaBaseACL acl = new JahiaBaseACL(aclId);
-//            Collection c = acl.getACL().getEntries();
-//            for (Iterator iterator = c.iterator(); iterator.hasNext();) {
-//                JahiaAclEntry jahiaAclEntry = (JahiaAclEntry) iterator.next();
-//            }
-//        } catch (JahiaException e) {
-//
-//        }
+        try {
+            JahiaBaseACL acl = new JahiaBaseACL(aclId);
+            Collection<JahiaAclEntry> c = acl.getACL().getEntries();
+            for (JahiaAclEntry e : c) {
+                if (e != null) {
+                    String typeOfPrincipal = e.getComp_id().getType()==1?"u":"g";
+                    String principalName;
+                    if("u".equals(typeOfPrincipal)) {
+                        principalName = typeOfPrincipal +":"+ e.getComp_id().getTarget().split("\\}")[1];
+                    } else {
+                        principalName = typeOfPrincipal +":"+ e.getComp_id().getTarget().split(":")[0];
+                    }
+                    if (e.getPermission(JahiaBaseACL.READ_RIGHTS) == JahiaAclEntry.ACL_YES) {
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.GRANT, Constants.JCR_READ_RIGHTS));
+                    }
+                    if (e.getPermission(JahiaBaseACL.READ_RIGHTS) == JahiaAclEntry.ACL_NO) {
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.DENY, Constants.JCR_READ_RIGHTS));
+                    }
+                    if (e.getPermission(JahiaBaseACL.WRITE_RIGHTS) == JahiaAclEntry.ACL_YES) {
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.GRANT, Constants.JCR_WRITE_RIGHTS));
+                    }
+                    if (e.getPermission(JahiaBaseACL.WRITE_RIGHTS) == JahiaAclEntry.ACL_NO) {
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.DENY, Constants.JCR_WRITE_RIGHTS));
+                    }
+                    if (e.getPermission(JahiaBaseACL.ADMIN_RIGHTS) == JahiaAclEntry.ACL_YES) {
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.GRANT, Constants.JCR_ADMIN_RIGHTS));
+                    }
+                    if (e.getPermission(JahiaBaseACL.ADMIN_RIGHTS) == JahiaAclEntry.ACL_NO) {
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.DENY, Constants.JCR_ADMIN_RIGHTS));
+                    }
+                }
+            }
+        } catch (JahiaException e) {
+
+        }
     }
 
 
@@ -87,11 +112,11 @@ import org.jahia.services.content.nodetypes.ValueImpl;
             super.initProperties();
             try {
                 JahiaBaseACL acl = new JahiaBaseACL(aclId);
-                boolean inherit = acl.getInheritance()==1;
+                boolean inherit = acl.getInheritance() == 0;
 
                 initProperty(new PropertyImpl(getSession(), this,
-                        nodetype.getDeclaredPropertyDefinitionsAsMap().get("j:inherit"),null,
-                        new ValueImpl(Boolean.toString(inherit),PropertyType.BOOLEAN)));
+                                              nodetype.getDeclaredPropertyDefinitionsAsMap().get("j:inherit"), null,
+                                              new ValueImpl(inherit)));
 
             } catch (JahiaException e) {
                 throw new RepositoryException(e);

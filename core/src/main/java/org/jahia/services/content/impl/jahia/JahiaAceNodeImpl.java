@@ -36,12 +36,8 @@ import org.apache.log4j.Logger;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.timebasedpublishing.DayInWeekBean;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 /**
@@ -49,19 +45,23 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
  *
  * @author : rincevent
  * @since : JAHIA 6.1
- *        Created : 13 août 2009
+ *        Created : 14 août 2009
  */
-public class DaylyTimeBasedPublishingNode extends NodeImpl {
-    private transient static Logger logger = Logger.getLogger(DaylyTimeBasedPublishingNode.class);
-    private final DayInWeekBean day;
-    private final JahiaContentNodeImpl parent;
+public class JahiaAceNodeImpl extends NodeImpl {
+    private transient static Logger logger = Logger.getLogger(JahiaAceNodeImpl.class);
+    private final JahiaAclNodeImpl parent;
+    private final String principalName;
+    private final String aceType;
+    private final String privileges;
 
-    public DaylyTimeBasedPublishingNode(SessionImpl session, DayInWeekBean dayInWeekBean, JahiaContentNodeImpl node) {
+    public JahiaAceNodeImpl(SessionImpl session, JahiaAclNodeImpl parent, String principalName, String aceType, String privileges) {
         super(session);
-        day = dayInWeekBean;
-        parent = node;
+        this.parent = parent;
+        this.principalName = principalName;
+        this.aceType = aceType;
+        this.privileges = privileges;
         try {
-            final ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType("jnt:hourlyTimebasedPublished");
+            final ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType("jnt:ace");
             setDefinition(parent.nodetype.getChildNodeDefinitionsAsMap().get("*"));
             setNodetype(type);
         } catch (NoSuchNodeTypeException e) {
@@ -73,36 +73,26 @@ public class DaylyTimeBasedPublishingNode extends NodeImpl {
         return parent;
     }
 
+    @Override
     protected void initProperties() throws RepositoryException {
-        if (properties == null) {
-            super.initProperties();
-            final int fromHours = day.getFromHours();
-            final int fromMinutes = day.getFromMinutes();
-            final int toHours = day.getToHours();
-            final int toMinutes = day.getToMinutes();
-            if (fromHours >= 0) {
-                initProperty(new PropertyImpl(getSession(), this, "j:fromHour",
-                                              NodeTypeRegistry.getInstance().getNodeType("jmix:hourlyTimebasedPublished").getPropertyDefinitionsAsMap().get("j:fromHour"),
-                                              null, new ValueImpl(fromHours)));
-                initProperty(new PropertyImpl(getSession(), this, "j:fromMinutes",
-                                              NodeTypeRegistry.getInstance().getNodeType("jmix:hourlyTimebasedPublished").getPropertyDefinitionsAsMap().get("j:fromMinutes"),
-                                              null, new ValueImpl(fromMinutes)));
-            }
-            if (toHours >= 0) {
-                initProperty(new PropertyImpl(getSession(), this, "j:toHour",
-                                              NodeTypeRegistry.getInstance().getNodeType("jmix:hourlyTimebasedPublished").getPropertyDefinitionsAsMap().get("j:toHour"),
-                                              null, new ValueImpl(toHours)));
-                initProperty(new PropertyImpl(getSession(), this, "j:toMinutes",
-                                              NodeTypeRegistry.getInstance().getNodeType("jmix:hourlyTimebasedPublished").getPropertyDefinitionsAsMap().get("j:toMinutes"),
-                                              null, new ValueImpl(toMinutes)));
-            }
-
-        }
-
+        super.initProperties();
+        initProperty(new PropertyImpl(getSession(), this, "j:aceType",
+                                                      nodetype.getPropertyDefinitionsAsMap().get("j:aceType"),
+                                                      null, new ValueImpl(aceType, PropertyType.STRING)));
+        initProperty(new PropertyImpl(getSession(), this, "j:principal",
+                                                      nodetype.getPropertyDefinitionsAsMap().get("j:principal"),
+                                                      null, new ValueImpl(principalName, PropertyType.STRING)));
+        initProperty(new PropertyImpl(getSession(), this, "j:privileges",
+                                                      nodetype.getPropertyDefinitionsAsMap().get("j:privileges"),
+                                                      null, new ValueImpl(privileges, PropertyType.STRING)));
+        initProperty(new PropertyImpl(getSession(), this, "j:protected",
+                                                      nodetype.getPropertyDefinitionsAsMap().get("j:protected"),
+                                                      null, new ValueImpl(false)));
     }
 
     @Override
     public String getName() throws RepositoryException {
-        return day.getDay();
+//        return "GRANT_jcr_read_g_users";
+        return aceType+"_"+privileges.replace(":","_")+"_"+principalName.replace(":","_");
     }
 }

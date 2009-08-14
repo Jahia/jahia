@@ -184,4 +184,8 @@ public class Constants {
 
     public static final String JCR_READ_RIGHTS = "jcr:read";
     public static final String JCR_WRITE_RIGHTS = "jcr:write";
+    public static final String JCR_ADMIN_RIGHTS = "jcr:admin";
+
+    public static final String GRANT = "GRANT";
+    public static final String DENY = "DENY";
 }

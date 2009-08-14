@@ -745,7 +745,7 @@ public class ContentDetails extends BottomRightComponent {
                     } else if (flag == AUTH_TAB_ITEM) {
                         authAclEditor.setSaved();
                     }
-                    getLinker().getTopRightObject().refresh();
+                    //getLinker().getTopRightObject().refresh(); // refresh should not be needed
                 }
 
                 public void onFailure(Throwable throwable) {

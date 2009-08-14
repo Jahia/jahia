@@ -28,7 +28,6 @@
         <property name="jahiaUserManagerService" ref="JahiaUserManagerService" />
         <property name="cacheService" ref="JahiaCacheService" />
     </bean>
-    <bean id="BlogPingListener" class="org.jahia.blogs.BlogPingListener" />
     <!--
     <bean id="ChangeContentPickerListener" class="org.jahia.services.importexport.ChangeContentPickerListener" />
     -->

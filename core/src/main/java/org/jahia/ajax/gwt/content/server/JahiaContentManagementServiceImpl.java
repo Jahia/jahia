@@ -401,5 +401,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return Boolean.valueOf(ContentManagerHelper.isFileAccessibleForCurrentContainer(retrieveParamBean(), path));
     }
 
+    public Map<String, String> getStoredPasswordsProviders() {
+        return ContentManagerHelper.getStoredPasswordsProviders(getUser());
+    }
+
+    public void storePasswordForProvider(String providerKey, String username, String password) {
+        ContentManagerHelper.storePasswordForProvider(getUser(), providerKey, username, password);
+    }
 
 }

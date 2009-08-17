@@ -139,4 +139,9 @@ public interface JahiaContentManagementServiceAsync {
     void getRenderedContent(String path, AsyncCallback<String> async);
 
     void isFileAccessibleForCurrentContainer(String path, AsyncCallback<Boolean> async);
+
+    void getStoredPasswordsProviders(AsyncCallback<Map<String, String>> async) ;
+
+    void storePasswordForProvider(String providerKey, String username, String password, AsyncCallback async);
+    
 }

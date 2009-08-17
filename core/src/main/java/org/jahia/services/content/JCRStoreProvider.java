@@ -477,9 +477,11 @@ public class JCRStoreProvider {
                 }
             } else if ("storedPasswords".equals(authenticationType)) {
                 JahiaUser user = userManagerService.lookupUser(username);
+                if (user.getProperty("storedUsername_"+getKey()) != null) {
+                    username = user.getProperty("storedUsername_"+getKey());
+                }
                 String pass = user.getProperty("storedPassword_"+getKey());
-                if (pass != null) {
-                    
+                if (pass != null) {                    
                     credentials = new SimpleCredentials(username, pass.toCharArray());
                 } else {
                     if (guestPassword != null) {

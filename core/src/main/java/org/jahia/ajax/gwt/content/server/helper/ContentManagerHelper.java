@@ -2288,6 +2288,30 @@ public class ContentManagerHelper {
 			logger.error(e.toString(), e);
 		}
 		return Boolean.FALSE;
-	}
+    }
+    
+    public static Map<String, String> getStoredPasswordsProviders(JahiaUser user) {
+        Map<String, String> results = new HashMap<String,String>();
+        results.put(null, user.getUsername());
+        for (JCRStoreProvider provider : jcr.getProviders().values()) {
+            if ("storedPasswords".equals(provider.getAuthenticationType())) {
+                results.put (provider.getKey(), user.getProperty("storedUsername_"+provider.getKey()));
+            }
+        }
+        return results;
+    }
+ 		
+    public static void storePasswordForProvider(JahiaUser user, String providerKey, String username, String password) {
+        if (username == null) {
+            user.removeProperty("storedUsername_"+providerKey);
+        } else {
+            user.setProperty("storedUsername_"+providerKey, username);
+        }
+        if (password == null) {
+            user.removeProperty("storedPassword_"+providerKey);
+        } else {
+            user.setProperty("storedPassword_"+providerKey, password);
+        }
+    }
 
 }

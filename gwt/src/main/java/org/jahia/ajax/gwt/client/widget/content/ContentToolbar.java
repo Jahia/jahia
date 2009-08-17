@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.service.JahiaServiceAsync;
 import org.jahia.ajax.gwt.client.service.JahiaService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -54,8 +55,10 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -103,10 +106,59 @@ public class ContentToolbar extends TopBar {
 
         if (config.isEnableTextMenu() && config.getGroupedItems().size() > 0) {
             for (ContentActionItemGroup group: config.getGroupedItems()) {
-                Menu menu = new Menu() ;
+                final Menu menu = new Menu() ;
                 for (ContentActionItemItf item: group.getItems()) {
                     menu.add(item.getMenuItem()) ;
                 }
+
+                if (Messages.getResource("fm_remoteMenu").equals(group.getGroupLabel())) {
+                    JahiaContentManagementService.App.getInstance().getStoredPasswordsProviders(new AsyncCallback<Map<String, String>>() {
+                        public void onSuccess(Map<String, String> map) {
+                            final String username = map.get(null);
+                            for (final String key : map.keySet()) {
+                                if (key != null) {
+
+                                    final String loginLabel = Messages.getResource("fm_login") + " " + key;
+                                    final String logoutLabel = Messages.getResource("fm_logout") + " " + key;
+
+                                    final MenuItem item = new MenuItem(loginLabel);
+                                    if (map.get(key) != null) {
+                                        item.setText(logoutLabel);
+                                    } else {
+                                        item.setText(loginLabel);
+                                    }
+
+                                    item.addSelectionListener(new SelectionListener<MenuEvent>() {
+                                        public void componentSelected(MenuEvent event) {
+                                            if (item.getText().equals(loginLabel)) {
+                                                new PasswordPrompt(getLinker(), username, key, item, logoutLabel).show();
+                                            } else {
+                                                JahiaContentManagementService.App.getInstance().storePasswordForProvider(key, null, null, new AsyncCallback() {
+                                                    public void onSuccess(Object o) {
+                                                        item.setText(loginLabel);
+                                                        getLinker().refreshAll();
+                                                    }
+
+                                                    public void onFailure(Throwable throwable) {
+                                                        Log.error(Messages.getResource("fm_fail"), throwable);
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                    menu.add(item);
+                                }
+                            }
+                        }
+
+                        public void onFailure(Throwable throwable) {
+                            Log.error("error", throwable);
+                        }
+                    });
+
+                }
+
+
                 Button mMenu = new Button(group.getGroupLabel()) ;
                 mMenu.setMenu(menu);
                 menus.add(mMenu) ;

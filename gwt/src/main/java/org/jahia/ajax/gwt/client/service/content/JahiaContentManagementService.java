@@ -158,4 +158,9 @@ public interface JahiaContentManagementService extends RemoteService {
     public String getRenderedContent(String path) throws GWTJahiaServiceException;
 
     public Boolean isFileAccessibleForCurrentContainer(String path) throws GWTJahiaServiceException;
+
+    public Map<String, String> getStoredPasswordsProviders() throws GWTJahiaServiceException;
+
+ 	public void storePasswordForProvider(String providerKey, String username, String password) throws GWTJahiaServiceException;
+
 }

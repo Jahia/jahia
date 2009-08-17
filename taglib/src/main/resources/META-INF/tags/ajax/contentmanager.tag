@@ -389,6 +389,15 @@ cursor:pointer;
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.savedSearch.label"
                             aliasResourceName="fm_repository_savedSearch"/>
 
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.login.label"
+                            aliasResourceName="fm_login"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.logout.label"
+                            aliasResourceName="fm_logout"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.username.label"
+                            aliasResourceName="fm_username"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.password.label"
+                            aliasResourceName="fm_password"/>
+
 <internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.principal.label"
                             aliasResourceName="ae_principal"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restoreInheritance.label"

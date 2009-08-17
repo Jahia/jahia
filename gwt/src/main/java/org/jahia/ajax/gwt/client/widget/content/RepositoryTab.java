@@ -96,10 +96,10 @@ public class RepositoryTab extends ContentPanel {
             protected void load(Object gwtJahiaFolder, AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (init) {
                     Log.debug("retrieving root for " + repositoryType) ;
-                    contentManagementService.getRoot(repositoryType, JCRClientUtils.FOLDER_NODETYPES, config.getMimeTypes(), config.getFilters(), null, listAsyncCallback);
+                    contentManagementService.getRoot(repositoryType, config.getFolderTypes(), config.getMimeTypes(), config.getFilters(), null, listAsyncCallback);
                 } else {
                     Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName() + " for " + repositoryType) ;
-                    contentManagementService.ls((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.FOLDER_NODETYPES, config.getMimeTypes(), config.getFilters(), null, false, listAsyncCallback);
+                    contentManagementService.ls((GWTJahiaNode) gwtJahiaFolder, config.getFolderTypes(), config.getMimeTypes(), config.getFilters(), null, false, listAsyncCallback);
                 }
             }
         };

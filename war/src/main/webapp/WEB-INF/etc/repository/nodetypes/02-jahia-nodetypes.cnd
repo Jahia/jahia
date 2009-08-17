@@ -148,7 +148,7 @@
 // Categories
 //---------------------------------------------------------
 
-[jnt:category] > nt:base, jmix:hierarchyNode, mix:title
+[jnt:category] > nt:base, jmix:hierarchyNode, jmix:collection, mix:title
 + * (jnt:category)
 - * (reference) multiple < jnt:category
 

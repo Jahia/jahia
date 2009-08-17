@@ -174,6 +174,7 @@ public class ManagerConfigurationFactory {
         completeManagerConfig.addAccordion(JCRClientUtils.GLOBAL_REPOSITORY);
 
         completeManagerConfig.setNodeTypes("");
+        completeManagerConfig.setFolderTypes("");
 
         // show the current site (first) tab by default
 
@@ -274,6 +275,7 @@ public class ManagerConfigurationFactory {
 
         // do not hide the left panel (default)
         fileManagerConfig.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
+        fileManagerConfig.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
 
         return fileManagerConfig;
     }
@@ -341,6 +343,7 @@ public class ManagerConfigurationFactory {
         // hide the left panel
         filePickerConfig.setHideLeftPanel(true);
         filePickerConfig.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
+        filePickerConfig.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
 
         return filePickerConfig;
     }
@@ -409,6 +412,8 @@ public class ManagerConfigurationFactory {
         // do not hide the left panel (default)
 
         mashupManagerConfig.setNodeTypes(JCRClientUtils.PORTLET_NODETYPES);
+        mashupManagerConfig.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
+
         return mashupManagerConfig;
     }
 
@@ -471,6 +476,8 @@ public class ManagerConfigurationFactory {
         mashupPickerConfig.setHideLeftPanel(true);
 
         mashupPickerConfig.setNodeTypes(JCRClientUtils.PORTLET_NODETYPES);
+        mashupPickerConfig.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
+
         return mashupPickerConfig;
     }
 
@@ -513,9 +520,11 @@ public class ManagerConfigurationFactory {
         categoryManagerConfig.addGroup(file);
         categoryManagerConfig.addGroup(edit);
         
-        categoryManagerConfig.addAccordion(JCRClientUtils.GLOBAL_REPOSITORY);
+        categoryManagerConfig.addAccordion(JCRClientUtils.CATEGORY_REPOSITORY);
 
         categoryManagerConfig.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
+        categoryManagerConfig.setFolderTypes(JCRClientUtils.CATEGORY_NODETYPES);
+
         return categoryManagerConfig;
     }
 
@@ -565,6 +574,8 @@ public class ManagerConfigurationFactory {
         categoryPickerConfig.setHideLeftPanel(true);
 
         categoryPickerConfig.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
+        categoryPickerConfig.setFolderTypes(JCRClientUtils.CATEGORY_NODETYPES);
+
         return categoryPickerConfig;
     }
     

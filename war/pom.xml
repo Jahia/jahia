@@ -87,7 +87,7 @@
 
                                 <module>org.jahia.ajax.gwt.module.acleditor.ACLEditor</module>
                                 <module>org.jahia.ajax.gwt.module.admin.Admin</module>
-                                <module>org.jahia.ajax.gwt.module.categorymanager.CategoryManager</module>
+                                <!--<module>org.jahia.ajax.gwt.module.categorymanager.CategoryManager</module>-->
                                 <module>org.jahia.ajax.gwt.module.categorypicker.CategoryPicker</module>
                                 <module>org.jahia.ajax.gwt.module.contentmanager.ContentManager</module>
                                 <module>org.jahia.ajax.gwt.module.contentpicker.ContentPicker</module>
@@ -130,7 +130,6 @@
                         <artifactId>gwt-maven-plugin</artifactId>
                         <version>1.1</version>
                         <configuration>
-                            <localWorkers>5</localWorkers>
                             <extraJvmArgs>-Xmx1024m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
                             <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>

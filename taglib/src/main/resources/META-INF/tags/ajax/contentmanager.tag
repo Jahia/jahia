@@ -384,6 +384,8 @@ cursor:pointer;
                             aliasResourceName="fm_repository_websiteMashupRepository"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.globalRepository.label"
                             aliasResourceName="fm_repository_globalRepository"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.categoryRepository.label"
+                            aliasResourceName="fm_repository_categoryRepository"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.savedSearch.label"
                             aliasResourceName="fm_repository_savedSearch"/>
 

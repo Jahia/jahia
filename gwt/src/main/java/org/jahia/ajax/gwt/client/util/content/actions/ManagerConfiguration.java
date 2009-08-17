@@ -52,6 +52,7 @@ public class ManagerConfiguration {
     private String selectedAccordion = null;
     private boolean hideLeftPanel = false;
 
+    private String folderTypes;
     private String nodeTypes;
     private String filters;
     private String mimeTypes;
@@ -138,6 +139,14 @@ public class ManagerConfiguration {
 
     public void setEnableTextMenu(boolean enableTextMenu) {
         this.enableTextMenu = enableTextMenu;
+    }
+
+    public String getFolderTypes() {
+        return folderTypes;
+    }
+
+    public void setFolderTypes(String folderTypes) {
+        this.folderTypes = folderTypes;
     }
 
     public String getNodeTypes() {

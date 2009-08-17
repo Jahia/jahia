@@ -215,6 +215,7 @@ public class ContentManagerHelper {
             }
             if (f.isVisible() && (matchesNodeType(f, nodeTypesToApply) || (f.isCollection()))) {
                 if (f.isCollection() && noFolders) {
+                    System.out.println("--------------------- no folder -> continue");
                     continue;
                 }
                 try {
@@ -431,6 +432,12 @@ public class ContentManagerHelper {
                     userNodes.add(root);
                 }
                 break; // one node should be enough
+            }
+        } else if (key.equals(JCRClientUtils.CATEGORY_REPOSITORY)) {
+            GWTJahiaNode root = getNode("/content/categories", workspace, jParams);
+            if (root != null) {
+                root.setDisplayName("categories");
+                userNodes.add(root);
             }
         } else if (key.equals(JCRClientUtils.GLOBAL_REPOSITORY)) {
             GWTJahiaNode root = getNode("/content/", workspace, jParams);

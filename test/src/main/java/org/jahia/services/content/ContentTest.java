@@ -258,7 +258,7 @@ public class ContentTest extends TestCase {
                 assertTrue("rename returned false", result);
 
                 try {
-                    session.getNode(providerRoot + "/" + newname);
+                    testFile = session.getNode(providerRoot + "/" + newname);
                 } catch (RepositoryException e) {
                     fail(providerRoot + " : Renamed file not found");
                 }
@@ -427,7 +427,7 @@ public class ContentTest extends TestCase {
             while (it.hasNext()) {
                 Row row = it.nextRow();
                 String path = row.getValue(JcrConstants.JCR_PATH).getString();
-                assertTrue("Wrong file found ('" + path + "' instead of '" + testFile.getPath()+ "')",(!path.equals(testFile.getPath())));
+                assertEquals("Wrong file found ('" + path + "' instead of '" + testFile.getPath()+ "')",testFile.getPath(),path);
             }
             testFile.remove();
             session.save();

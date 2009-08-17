@@ -134,8 +134,11 @@ public class JCRSessionWrapper implements Session {
                 Node n = session.getNodeByUUID(uuid);
                 return provider.getNodeWrapper(n, this);
             } catch (ItemNotFoundException ee) {
+                // All good
             } catch (UnsupportedRepositoryOperationException uso) {
                 logger.debug("getNodeByUUID unsupported by : "+provider.getKey() + " / " + provider.getClass().getName());
+            } catch (RepositoryException ex) {
+                logger.warn("repository exception : "+provider.getKey() + " / " + provider.getClass().getName() + " : "+ex.getMessage());
             }
         }
         throw new ItemNotFoundException(uuid);

@@ -10,10 +10,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.impl.jahia.JahiaContentStoreProvider;
 
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.lock.Lock;
 import javax.jcr.query.*;
 import java.io.ByteArrayInputStream;
@@ -143,7 +140,7 @@ public class ContentTest extends TestCase {
             assertTrue(providerRoot+ " : Creation date invalid", creationDate < (System.currentTimeMillis() + 600000) && creationDate > (System.currentTimeMillis()-600000));
 
             long lastModifiedDate = testFile.getLastModifiedAsDate().getTime();
-            assertTrue(providerRoot+ " : Modification date invalid", lastModifiedDate < (System.currentTimeMillis()+600000) && lastModifiedDate > (System.currentTimeMillis()-60000));
+            assertTrue(providerRoot+ " : Modification date invalid", lastModifiedDate < (System.currentTimeMillis()+600000) && lastModifiedDate > (System.currentTimeMillis()-600000));
 
             testFile = session.getNode(providerRoot + "/" + name);
 
@@ -190,25 +187,25 @@ public class ContentTest extends TestCase {
 
             final String value = "Title test";
 
-            testCollection.setProperty("jcr:title", value);
+            testCollection.setProperty("jcr:description", value);
             testCollection.save();
 
             testCollection = session.getNode(providerRoot + "/" + name);
             try {
-                String actual = testCollection.getProperty("jcr:title").getString();
+                String actual = testCollection.getProperty("jcr:description").getString();
                 assertEquals("getProperty() Property value is not the same",value, actual);
             } catch (PathNotFoundException e) {
                 fail("getProperty() cannot find property");
             }
 
-            assertEquals("getPropertyAsString() : Property value is not the same",value, testCollection.getPropertyAsString("jcr:title"));
-            assertEquals("getPropertiesAsString() : Property value is not the same",value, testCollection.getPropertiesAsString().get("jcr:title"));
+            assertEquals("getPropertyAsString() : Property value is not the same",value, testCollection.getPropertyAsString("jcr:description"));
+            assertEquals("getPropertiesAsString() : Property value is not the same",value, testCollection.getPropertiesAsString().get("jcr:description"));
 
             boolean found = false;
             PropertyIterator pi = testCollection.getProperties();
             while (pi.hasNext()) {
                 Property p = pi.nextProperty();
-                if (p.getName().equals("jcr:title")) {
+                if (p.getName().equals("jcr:description")) {
                     found = true;
                     break;
                 }
@@ -254,15 +251,21 @@ public class ContentTest extends TestCase {
             session.save();
 
             final String newname = "renamed" + name;
-            boolean result = testFile.renameFile(newname);
-
-            assertTrue("rename returned false", result);
-
+            boolean result = false;
             try {
-                session.getNode(providerRoot + "/" + newname);
-            } catch (RepositoryException e) {
-                fail(providerRoot + " : Renamed file not found");
+                result = testFile.renameFile(newname);
+
+                assertTrue("rename returned false", result);
+
+                try {
+                    session.getNode(providerRoot + "/" + newname);
+                } catch (RepositoryException e) {
+                    fail(providerRoot + " : Renamed file not found");
+                }
+            } catch (UnsupportedRepositoryOperationException e) {
+
             }
+
 
             testFile.remove();
             session.save();
@@ -319,6 +322,8 @@ public class ContentTest extends TestCase {
             }
 
             testFile.remove();
+            session.save();
+
             rootNode.getNode(collectionName).remove();
             session.save();
 

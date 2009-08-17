@@ -140,10 +140,10 @@ public class ContentTest extends TestCase {
             assertEquals(providerRoot + " : Mime type is not the same", mimeType, testFile.getFileContent().getContentType());
 
             long creationDate = testFile.getCreationDateAsDate().getTime();
-            assertTrue(providerRoot+ " : Creation date invalid", creationDate < System.currentTimeMillis() && creationDate > System.currentTimeMillis()-10000);
+            assertTrue(providerRoot+ " : Creation date invalid", creationDate < (System.currentTimeMillis() + 600000) && creationDate > (System.currentTimeMillis()-600000));
 
             long lastModifiedDate = testFile.getLastModifiedAsDate().getTime();
-            assertTrue(providerRoot+ " : Modification date invalid", lastModifiedDate < System.currentTimeMillis() && lastModifiedDate > System.currentTimeMillis()-10000);
+            assertTrue(providerRoot+ " : Modification date invalid", lastModifiedDate < (System.currentTimeMillis()+600000) && lastModifiedDate > (System.currentTimeMillis()-60000));
 
             testFile = session.getNode(providerRoot + "/" + name);
 
@@ -267,6 +267,9 @@ public class ContentTest extends TestCase {
             testFile.remove();
             session.save();
 
+            session.logout();
+            session = service.getThreadSession(ctx.getUser());
+
             try {
                 session.getNode(providerRoot + "/" + name);
                 fail(providerRoot + " : File has not been deleted");
@@ -352,18 +355,27 @@ public class ContentTest extends TestCase {
 
             session.save();
 
-            boolean result = testFile.lockAndStoreToken();
-            testFile.save();
+            if (testFile.isNodeType("jmix:lockable")) {
+                boolean result = testFile.lockAndStoreToken();
+                testFile.save();
 
-            assertTrue("lockAndStoreToken returned false", result);
+                assertTrue("lockAndStoreToken returned false", result);
 
-            Lock lock = testFile.getLock();
-            assertNotNull("lock is null", lock);
+                Lock lock = testFile.getLock();
+                assertNotNull("lock is null", lock);
 
-            result = testFile.forceUnlock();
-            testFile.save();
+                result = testFile.forceUnlock();
+                testFile.save();
 
-            assertTrue("forceUnlock returned false", result);
+                assertTrue("forceUnlock returned false", result);
+            }
+
+            Lock lock = testFile.lock(false, false);
+            assertNotNull("Lock is null", lock);
+            assertTrue("Node not locked", testFile.isLocked());
+            testFile.unlock();
+            assertFalse("Node not unlocked", testFile.isLocked());
+
 
             testFile.remove();
             session.save();

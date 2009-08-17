@@ -85,12 +85,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sites.SiteLanguageMapping;
 import org.jahia.services.sites.SiteLanguageSettings;
-import org.jahia.services.usermanager.JahiaAdminUser;
-import org.jahia.services.usermanager.JahiaDBUser;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.*;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.JahiaTools;
@@ -289,10 +284,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         bw.write("ExportDate = " + new SimpleDateFormat(ImportExportService.DATE_FORMAT).format(new Date()) + "\n");
         bw.flush();
 
-        DataWriter dw = new DataWriter(new OutputStreamWriter(zout, "UTF-8"));
-        zout.putNextEntry(new ZipEntry(USERS_XML));
-        exportUsers(dw);
-        dw.flush();
+        DataWriter dw;
+        for (JahiaUserManagerProvider s : ServicesRegistry.getInstance().getJahiaUserManagerService().getProviderList()) {
+            if (s.getKey().equals("jahia_db")) {
+                dw = new DataWriter(new OutputStreamWriter(zout, "UTF-8"));
+                zout.putNextEntry(new ZipEntry(USERS_XML));
+                exportUsers(dw);
+                dw.flush();
+            }
+        }
 
         JahiaSite s = processingContext.getSite();
 
@@ -354,11 +354,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     public void exportFile(ContentObject object, String languageCode, OutputStream out, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException, IOException {
         DataWriter dw = new DataWriter(new OutputStreamWriter(out, "UTF-8"));
         export(object, languageCode, dw, new HashSet<JCRNodeWrapper>(), jParams, params);
-    }
-
-    public void exportCategories(OutputStream out, ProcessingContext jParams) throws JahiaException, SAXException, IOException {
-        DataWriter dw = new DataWriter(new OutputStreamWriter(out, "UTF-8"));
-        exportCategories(dw, jParams.getUser());
     }
 
     public void exportVersions(OutputStream out, ProcessingContext jParams) throws JahiaException, SAXException, IOException {
@@ -423,9 +418,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     exportSiteInfos(zout, jParams, jParams.getSite());
                 }
 
-                zout.putNextEntry(new ZipEntry(CATEGORIES_XML));
-                exportCategories(dw, jParams.getUser());
-                dw.flush();
+//                zout.putNextEntry(new ZipEntry(CATEGORIES_XML));
+//                exportCategories(dw, jParams.getUser());
+//                dw.flush();
 
                 zout.putNextEntry(new ZipEntry(USERS_XML));
                 exportSiteUsers(dw, jParams.getSite());
@@ -1151,78 +1146,73 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     //
 
-    private void exportCategories(ContentHandler ch, JahiaUser user) throws JahiaException, SAXException {
-        ch.startDocument();
-        ch.startPrefixMapping("jahia", JAHIA_URI);
-        ch.endPrefixMapping("jahia");
-        AttributesImpl attr = new AttributesImpl();
+//    private void exportCategories(ContentHandler ch, JahiaUser user) throws JahiaException, SAXException {
+//        ch.startDocument();
+//        ch.startPrefixMapping("jahia", JAHIA_URI);
+//        ch.endPrefixMapping("jahia");
+//        AttributesImpl attr = new AttributesImpl();
+//
+//        attr.addAttribute(NS_URI, "jahia", "xmlns:jahia", CDATA, JAHIA_URI);
+//        ch.startElement(JAHIA_URI, "categories", "jahia:categories", attr);
+//
+//        List<Category> cList = categoryService.getRootCategories(null);
+//        for (Category c : cList) {
+//            exportCategories(ch, c, user);
+//        }
+//
+//        ch.endElement(JAHIA_URI, "categories", "jahia:categories");
+//        ch.endDocument();
+//    }
 
-        attr.addAttribute(NS_URI, "jahia", "xmlns:jahia", CDATA, JAHIA_URI);
-        ch.startElement(JAHIA_URI, "categories", "jahia:categories", attr);
-
-        List<Category> cList = categoryService.getRootCategories(null);
-        for (Category c : cList) {
-            exportCategories(ch, c, user);
-        }
-
-        ch.endElement(JAHIA_URI, "categories", "jahia:categories");
-        ch.endDocument();
-    }
-
-    private void exportCategories(ContentHandler ch, Category c, JahiaUser user) throws JahiaException, SAXException {
-        AttributesImpl attr = new AttributesImpl();
-        attr.addAttribute(JAHIA_URI, "key", "jahia:key", CDATA, c.getKey());
-        // TODO: commented while moving categories from DB to JCR, needs to be finished
-/*        ((JahiaLegacyExporter) exporters.get(LEGACY_EXPORTER)).exportAcl(c.getACL(), "acl", attr, false, false);*/
-        Map<String, String> titles = categoryService.getTitlesForCategory(c);
-        for (Iterator<String> iterator = titles.keySet().iterator(); iterator.hasNext();) {
-            String lang = (String) iterator.next();
-            String value = (String) titles.get(lang);
-            if (value != null) {
-                attr.addAttribute(JAHIA_URI, "title_" + lang, "jahia:title_" + lang, CDATA, value);
-            }
-        }
-
-        Properties p = c.getProperties();
-
-        ch.startElement(JAHIA_URI, "category", "jahia:category", attr);
-
-        for (Iterator<Object> iterator = p.keySet().iterator(); iterator.hasNext();) {
-            String k = (String) iterator.next();
-            String property = p.getProperty(k);
-            if (XMLChar.isValidNCName(k) && property != null) {
-                AttributesImpl attrProp = new AttributesImpl();
-                attrProp.addAttribute(JAHIA_URI, "key", "jahia:key", CDATA, k);
-                if (k.startsWith("homepage")) {
-                    try {
-                        ContentPage contentPage = ContentPage.getPage(Integer.parseInt((String) p.get(k)));
-                        if (contentPage != null) {
-                            property = getUuid(contentPage);
-                        } else {
-                            continue;
-                        }
-                    } catch (Exception e) {
-                        continue;
-                    }
-                }
-                attrProp.addAttribute(JAHIA_URI, "value", "jahia:key", CDATA, property);
-                ch.startElement(JAHIA_URI, "property", "jahia:property", attrProp);
-                ch.endElement(JAHIA_URI, "property", "jahia:property");
-            }
-        }
-
-        List<Category> children = c.getChildCategories(user);
-        for (Iterator<Category> iterator = children.iterator(); iterator.hasNext();) {
-            Category child = (Category) iterator.next();
-            exportCategories(ch, child, user);
-        }
-        ch.endElement(JAHIA_URI, "category", "jahia:category");
-    }
-
-    public void exportUsersFile(OutputStream out) throws JahiaException, SAXException, IOException {
-        DataWriter dw = new DataWriter(new OutputStreamWriter(out, "UTF-8"));
-        exportUsers(dw);
-    }
+//    private void exportCategories(ContentHandler ch, Category c, JahiaUser user) throws JahiaException, SAXException {
+//        AttributesImpl attr = new AttributesImpl();
+//        attr.addAttribute(JAHIA_URI, "key", "jahia:key", CDATA, c.getKey());
+//        // TODO: commented while moving categories from DB to JCR, needs to be finished
+///*        ((JahiaLegacyExporter) exporters.get(LEGACY_EXPORTER)).exportAcl(c.getACL(), "acl", attr, false, false);*/
+//        Map<String, String> titles = categoryService.getTitlesForCategory(c);
+//        for (Iterator<String> iterator = titles.keySet().iterator(); iterator.hasNext();) {
+//            String lang = (String) iterator.next();
+//            String value = (String) titles.get(lang);
+//            if (value != null) {
+//                attr.addAttribute(JAHIA_URI, "title_" + lang, "jahia:title_" + lang, CDATA, value);
+//            }
+//        }
+//
+//        Properties p = c.getProperties();
+//
+//        ch.startElement(JAHIA_URI, "category", "jahia:category", attr);
+//
+//        for (Iterator<Object> iterator = p.keySet().iterator(); iterator.hasNext();) {
+//            String k = (String) iterator.next();
+//            String property = p.getProperty(k);
+//            if (XMLChar.isValidNCName(k) && property != null) {
+//                AttributesImpl attrProp = new AttributesImpl();
+//                attrProp.addAttribute(JAHIA_URI, "key", "jahia:key", CDATA, k);
+//                if (k.startsWith("homepage")) {
+//                    try {
+//                        ContentPage contentPage = ContentPage.getPage(Integer.parseInt((String) p.get(k)));
+//                        if (contentPage != null) {
+//                            property = getUuid(contentPage);
+//                        } else {
+//                            continue;
+//                        }
+//                    } catch (Exception e) {
+//                        continue;
+//                    }
+//                }
+//                attrProp.addAttribute(JAHIA_URI, "value", "jahia:key", CDATA, property);
+//                ch.startElement(JAHIA_URI, "property", "jahia:property", attrProp);
+//                ch.endElement(JAHIA_URI, "property", "jahia:property");
+//            }
+//        }
+//
+//        List<Category> children = c.getChildCategories(user);
+//        for (Iterator<Category> iterator = children.iterator(); iterator.hasNext();) {
+//            Category child = (Category) iterator.next();
+//            exportCategories(ch, child, user);
+//        }
+//        ch.endElement(JAHIA_URI, "category", "jahia:category");
+//    }
 
     private void exportUsers(ContentHandler ch) throws JahiaException, SAXException {
         ch.startDocument();

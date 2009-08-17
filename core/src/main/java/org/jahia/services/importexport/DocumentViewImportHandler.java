@@ -136,13 +136,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 if (nodes.peek().isWriteable()) {
                     child = nodes.peek().addNode(decodedQName, pt);
 
-                    String m = atts.getValue(Constants.JCR_MIXINTYPES);
-                    if (m != null) {
-                        StringTokenizer st = new StringTokenizer(m," ,");
-                        while (st.hasMoreTokens()) {
-                            child.addMixin(st.nextToken());
-                        }
-                    }
+                    addMixins(child, atts);
 
                     boolean contentFound = findContent();
 
@@ -159,66 +153,18 @@ public class DocumentViewImportHandler extends DefaultHandler {
                         }
                     }
 
-                    Map<String, ExtendedPropertyDefinition> defs = new HashMap<String, ExtendedPropertyDefinition>();
-                    NodeTypeRegistry reg = NodeTypeRegistry.getInstance();
-                    ExtendedNodeType nt = null;
-                    nt = reg.getNodeType(child.getPrimaryNodeType().getName());
-                    defs.putAll(nt.getPropertyDefinitionsAsMap());
-                    NodeType[] p = child.getMixinNodeTypes();
-                    for (int i = 0; i < p.length; i++) {
-                        defs.putAll(reg.getNodeType(p[i].getName()).getPropertyDefinitionsAsMap());
-                    }
-
-                    for (int i = 0; i < atts.getLength(); i++) {
-                        if (atts.getURI(i).equals("http://www.w3.org/2000/xmlns/")) {
-                            continue;
-                        }
-
-                        String attrName = ISO9075.decode(atts.getQName(i));
-                        String attrValue = atts.getValue(i);
-
-                        ExtendedPropertyDefinition propDef = defs.get(attrName);
-                        if (propDef == null) {
-                            propDef = defs.get("*");
-                            if (propDef == null) {
-                                continue;
-                            }
-                        }
-
-                        if (attrName.equals(Constants.JCR_PRIMARYTYPE)) {
-                            // nodeType = attrValue; // ?
-                        } else if (attrName.equals(Constants.JCR_MIXINTYPES)) {
-
-                        } else if (attrName.equals(Constants.JCR_UUID)) {
-                            uuidMapping.put(attrValue, child.getUUID());
-                        } else if (attrName.equals(Constants.JCR_CREATED)) {
-
-                        } else if (attrName.equals(Constants.JCR_MIMETYPE)) {
-
-                        } else if (propDef.getRequiredType() == PropertyType.REFERENCE) {
-                            references.put(attrValue, child.getUUID()+"/"+attrName);
-                        } else {
-                            if (propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
-                                references.put(attrValue, child.getUUID()+"/"+attrName);
-                            }
-                            if (propDef.isMultiple()) {
-                                String[] s = "".equals(attrValue) ? new String[0] : attrValue.split(" ");
-                                Value[] v = new Value[s.length];
-                                for (int j = 0; j < s.length; j++) {
-                                    v[j] = child.getRealNode().getSession().getValueFactory().createValue(s[j]);
-                                }
-                                child.setProperty(attrName, v);
-                            } else {
-                                child.setProperty(attrName, attrValue);
-                            }
-                        }
-                    }
+                    setAttributes(child, atts);
 
                     if (child.isCollection()) {
 //                        nodes.peek().saveSession();
                     } else if (currentFilePath == null) {
                         currentFilePath = child.getPath();
                     }
+                }
+            } else {
+                if (child.isWriteable()) {
+                    addMixins(child, atts);
+                    setAttributes(child, atts);
                 }
             }
 
@@ -229,6 +175,73 @@ public class DocumentViewImportHandler extends DefaultHandler {
             error++;
         } catch (Exception re) {
             throw new SAXException(re);
+        }
+    }
+
+    private void addMixins(JCRNodeWrapper child, Attributes atts) throws RepositoryException {
+        String m = atts.getValue(Constants.JCR_MIXINTYPES);
+        if (m != null) {
+            StringTokenizer st = new StringTokenizer(m," ,");
+            while (st.hasMoreTokens()) {
+                child.addMixin(st.nextToken());
+            }
+        }
+    }
+
+    private void setAttributes(JCRNodeWrapper child, Attributes atts) throws RepositoryException {
+        Map<String, ExtendedPropertyDefinition> defs = new HashMap<String, ExtendedPropertyDefinition>();
+        NodeTypeRegistry reg = NodeTypeRegistry.getInstance();
+        ExtendedNodeType nt = null;
+        nt = reg.getNodeType(child.getPrimaryNodeType().getName());
+        defs.putAll(nt.getPropertyDefinitionsAsMap());
+        NodeType[] p = child.getMixinNodeTypes();
+        for (int i = 0; i < p.length; i++) {
+            defs.putAll(reg.getNodeType(p[i].getName()).getPropertyDefinitionsAsMap());
+        }
+
+        for (int i = 0; i < atts.getLength(); i++) {
+            if (atts.getURI(i).equals("http://www.w3.org/2000/xmlns/")) {
+                continue;
+            }
+
+            String attrName = ISO9075.decode(atts.getQName(i));
+            String attrValue = atts.getValue(i);
+
+            ExtendedPropertyDefinition propDef = defs.get(attrName);
+            if (propDef == null) {
+                propDef = defs.get("*");
+                if (propDef == null) {
+                    continue;
+                }
+            }
+
+            if (attrName.equals(Constants.JCR_PRIMARYTYPE)) {
+                // nodeType = attrValue; // ?
+            } else if (attrName.equals(Constants.JCR_MIXINTYPES)) {
+
+            } else if (attrName.equals(Constants.JCR_UUID)) {
+                uuidMapping.put(attrValue, child.getUUID());
+            } else if (attrName.equals(Constants.JCR_CREATED)) {
+
+            } else if (attrName.equals(Constants.JCR_MIMETYPE)) {
+
+            } else if (propDef.getRequiredType() == PropertyType.REFERENCE) {
+                references.put(attrValue, child.getUUID()+"/"+attrName);
+            } else {
+                if (propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
+                    references.put(attrValue, child.getUUID()+"/"+attrName);
+                }
+                if (propDef.isMultiple()) {
+                    String[] s = "".equals(attrValue) ? new String[0] : attrValue.split(" ");
+                    Value[] v = new Value[s.length];
+                    for (int j = 0; j < s.length; j++) {
+                        v[j] = child.getRealNode().getSession().getValueFactory().createValue(s[j]);
+                    }
+                    child.setProperty(attrName, v);
+                } else {
+                    child.setProperty(attrName, attrValue);
+                }
+            }
         }
     }
 

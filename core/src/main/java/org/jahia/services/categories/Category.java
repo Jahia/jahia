@@ -130,10 +130,7 @@ public class Category extends JahiaObject {
         } catch (RepositoryException e) {
             logger.warn(e.getMessage(), e);
         }
-        return p == null
-                || uuid == null
-                || JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS,
-                        uuid) ? categoriesRoot : null;
+        return p == null || uuid == null ? categoriesRoot : null;
     }
 
     /**
@@ -172,11 +169,6 @@ public class Category extends JahiaObject {
         List<Category> catList = categoryService.getCategory(key);
         if (catList.size() > 0) {
             category = catList.get(0);
-
-            if (!JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS,
-                    category.getJahiaCategory().getId())) {
-                category = null;
-            }
         }
         return category;
     }
@@ -200,7 +192,7 @@ public class Category extends JahiaObject {
         final List<Category> result = new ArrayList<Category>();
         if (tmp == null) return result;
         for (final Category cat : tmp) {
-            if (p == null || JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS, cat.getJahiaCategory().getId ())) {
+            if (p == null) {
                 if (rootCategoryKey == null || validCategories.contains(cat)) {
                     result.add(cat);
                 }
@@ -225,7 +217,7 @@ public class Category extends JahiaObject {
         final List<Category> result = new ArrayList<Category>();
         if (tmp == null) return result;
         for (final Category cat : tmp) {
-            if (p == null || JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS, cat.getJahiaCategory().getId ())) {
+            if (p == null) {
                 if (rootCategoryKey == null || validCategories.contains(cat)) {
                     result.add(cat);
                 }
@@ -250,7 +242,7 @@ public class Category extends JahiaObject {
         final List<Category> result = new ArrayList<Category>();
         if (tmp == null) return result;
         for (final Category cat : tmp) {
-            if (p == null || JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS, cat.getJahiaCategory().getId ())) {
+            if (p == null) {
                 if (rootCategoryKey == null || validCategories.contains(cat)) {
                     result.add(cat);
                 }
@@ -286,11 +278,7 @@ public class Category extends JahiaObject {
         if (p == null) {
             return category;
         }
-        if (JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS, category.getJahiaCategory().getId ())) {
-            return category;
-        } else {
-            return null;
-        }
+        return category;
     }
 
     static public Category getCategoryByUUID (String categoryID)
@@ -315,11 +303,7 @@ public class Category extends JahiaObject {
             if (p == null) {
                 return category;
             }
-            if (JCRContentUtils.hasPermission(p, Constants.JCR_READ_RIGHTS, category.getJahiaCategory().getId ())) {
-                return category;
-            } else {
-                return null;
-            }
+            return category;
         } catch (JahiaException je) {
             logger.error ("Error while trying to load category from object key " +
                     objectKey.toString (), je);
@@ -833,7 +817,6 @@ public class Category extends JahiaObject {
     /**
      * Returns the path representation of the form <code>/root/catKey1/catKeyB/thisCategoryKey</code>
      *
-     * @param p
      * @return
      * @throws JahiaException
      */

@@ -49,11 +49,14 @@ import org.jahia.services.lock.LockPrerequisites;
 import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.categories.CategoryService;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.bin.JahiaAdministration;
 import org.xml.sax.SAXException;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.jcr.Node;
 import java.net.HttpURLConnection;
 import java.util.*;
 import java.io.IOException;
@@ -230,8 +233,9 @@ public class ExportEngine implements JahiaEngine {
                 return;
             } else if ("cats".equals(processingContext.getParameter("exportformat"))) {
                 resp.setContentType("text/xml");
-
-                ie.exportCategories(outputStream, processingContext);
+                Node node = ServicesRegistry.getInstance().getCategoryService().getCategoriesRoot();
+                JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(jParams.getUser());
+                session.exportDocumentView(node.getPath(), outputStream, true, false);
                 outputStream.close();
                 return;
             }

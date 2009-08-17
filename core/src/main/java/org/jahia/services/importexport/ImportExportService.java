@@ -132,8 +132,6 @@ public interface ImportExportService {
 
     void export(ContentObject object, String languageCodes, ContentHandler h, Set<JCRNodeWrapper> files, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException;
 
-    void exportCategories(OutputStream out, ProcessingContext jParams) throws JahiaException, SAXException, IOException;
-
     void exportVersions(OutputStream out, ProcessingContext jParams) throws JahiaException, SAXException, IOException;
 
     // Imports

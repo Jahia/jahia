@@ -81,6 +81,7 @@ public class CategoriesImportHandler extends DefaultHandler {
                 String key = attributes.getValue(ImportExportBaseService.JAHIA_URI, "key");
                 if (cats.isEmpty()) {
                     Node node = cs.getCategoriesRoot();
+                    cats.push(null);
                     return;
                 } else {
                     List<Category> cList = cs.getCategory(key);

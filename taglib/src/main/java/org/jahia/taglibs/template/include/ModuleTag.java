@@ -115,13 +115,14 @@ public class ModuleTag extends BodyTagSupport {
                 try {
                     if (!path.startsWith("/")) {
                         JCRNodeWrapper nodeWrapper = currentResource.getNode();
-                        if (nodeWrapper.hasNode(path)) {
+                        if (!path.equals("*") && nodeWrapper.hasNode(path)) {
                             node = (JCRNodeWrapper) nodeWrapper.getNode(path);
                         } else {
                             currentResource.getMissingResources().add(path);
                             HashMap extraParams = new HashMap();
 
                             extraParams.put("path", nodeWrapper.getPath()+"/"+path);
+                            extraParams.put("type", "placeholder");
                             pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeholder","placeholder"+ UUID.randomUUID().toString(), extraParams));
                         }
                     } else if (path.startsWith("/")) {
@@ -134,6 +135,7 @@ public class ModuleTag extends BodyTagSupport {
                             }
                             final HashMap extraParams = new HashMap();
                             extraParams.put("path", path);
+                            extraParams.put("type", "placeholder");
                             pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeHolder","placeholder"+ UUID.randomUUID().toString(), extraParams));
                         }
                     }
@@ -144,6 +146,8 @@ public class ModuleTag extends BodyTagSupport {
             if (node != null) {
                 Resource resource = new Resource(node, workspace , locale, templateType, template);
 
+                pageContext.getOut().print("<div class=\"jahia-template-gxt\" jahiatype=\"placeholder\" id=\"placeholder"+UUID.randomUUID().toString()+"\" type=\"existingNode\" path=\""+node.getPath()+"\">");
+
                 try {
                     if (renderContext.isIncludeSubModules()) {
                         pageContext.getOut().print(RenderService.getInstance().render(resource, renderContext));
@@ -151,6 +155,8 @@ public class ModuleTag extends BodyTagSupport {
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
+
+                pageContext.getOut().print("</div>");
             }
             path = null;
             contentBeanName = null;

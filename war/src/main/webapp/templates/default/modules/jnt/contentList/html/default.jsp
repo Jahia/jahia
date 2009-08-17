@@ -5,7 +5,9 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <c:forEach items="${currentNode.children}" var="subchild">
-<p>>
+<p>
     <template:module node="${subchild}" />
 </p>
 </c:forEach>
+
+<template:module path="*" />

@@ -493,7 +493,7 @@
             <version>2.9.1</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <!-- Database drivers -->
         <dependency>
             <groupId>com.oracle</groupId>
@@ -537,7 +537,7 @@
             <version>${driver.postgresql.version}</version>
             <scope>${drivers.libs.scope}</scope>
         </dependency>
-        
+
         <!-- JSTL -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -551,7 +551,7 @@
             <version>1.1.2</version>
             <scope>${jboss.libs.scope}</scope>
         </dependency>
-        
+
     </dependencies>
 
     <build>
@@ -596,6 +596,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <version>2.1-beta-1</version>
                 <configuration>
                     <webResources>
                         <resource>

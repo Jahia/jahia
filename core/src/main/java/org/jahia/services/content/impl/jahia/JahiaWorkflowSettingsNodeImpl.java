@@ -33,8 +33,17 @@ package org.jahia.services.content.impl.jahia;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.PropertyType;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 import org.jahia.content.ContentObject;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.exceptions.JahiaException;
+import org.apache.log4j.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,13 +53,20 @@ import org.jahia.content.ContentObject;
  * To change this template use File | Settings | File Templates.
  */
 public class JahiaWorkflowSettingsNodeImpl extends NodeImpl {
+    private transient static Logger logger = Logger.getLogger(JahiaWorkflowSettingsNodeImpl.class);
     private ContentObject object;
     private Node parent;
 
-    public JahiaWorkflowSettingsNodeImpl(SessionImpl session, Node parent, ContentObject object) {
+    public JahiaWorkflowSettingsNodeImpl(SessionImpl session, NodeImpl parent, ContentObject object) {
         super(session);
         this.object = object;
         this.parent = parent;
+        try {
+            setDefinition(NodeTypeRegistry.getInstance().getNodeType("jmix:workflowed").getChildNodeDefinitionsAsMap().get("j:workflow"));
+            setNodetype(NodeTypeRegistry.getInstance().getNodeType("jnt:workflow"));
+        } catch (NoSuchNodeTypeException e) {
+            logger.error(e);
+        }
     }
 
     public Node getParent() {
@@ -61,8 +77,25 @@ public class JahiaWorkflowSettingsNodeImpl extends NodeImpl {
     protected void initProperties() throws RepositoryException {
         if (properties == null) {
             super.initProperties();
-
-            // todo type
+            String type = "";
+            try {
+                final WorkflowService service = ServicesRegistry.getInstance().getWorkflowService();
+                final int inheritedMode = service.getWorkflowMode(object);
+                switch (inheritedMode) {
+                    case WorkflowService.INACTIVE : type = "no-workflow";
+                        break;
+                    case WorkflowService.INHERITED : type = "inherited";
+                        break;
+                    case WorkflowService.LINKED : type = "linked";
+                        break;
+                    case WorkflowService.EXTERNAL : type = service.getExternalWorkflowName(object); 
+                }
+            } catch (JahiaException e) {
+                e.printStackTrace();
+            }
+            initProperty(new PropertyImpl(getSession(), this, "j:type",
+                                                      nodetype.getPropertyDefinitionsAsMap().get("j:type"),
+                                                      null, new ValueImpl(type, PropertyType.STRING)));
         }
     }
 }

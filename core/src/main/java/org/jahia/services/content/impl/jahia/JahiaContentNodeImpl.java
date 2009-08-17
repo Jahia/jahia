@@ -88,12 +88,16 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
         super(session);
         this.object = object;
         try {
-            initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:workflowed"));
+            if (WorkflowService.LINKED != ServicesRegistry.getInstance().getWorkflowService().getWorkflowMode(object)) {
+                initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:workflowed"));
+            }
             if (!object.isAclSameAsParent() && object.getACL().getACL().getHasEntries()==1) {
                 initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:accessControlled"));
             }
             checkTimeBasePublishingState(session, object);
         } catch (NoSuchNodeTypeException e) {
+            e.printStackTrace();
+        } catch (JahiaException e) {
             e.printStackTrace();
         }
     }
@@ -110,63 +114,63 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                     ref.getDeclaredPropertyDefinitionsAsMap().get("jcr:uuid"), null,
                     new ValueImpl(uuid, PropertyType.STRING)));
 
-            /// workflow
-            try {
-                List<Locale> locales = getProcessingContext().getSite().getLanguageSettingsAsLocales(true);
-                for (Locale locale : locales) {
-                    String lang = locale.toString();
-                    String v = "";
-                    String loc = (object.isShared()) ? "shared" : lang;
-                    Map<String, Integer> states = object.getLanguagesStates();
-                    if (states.containsKey(loc)) {
-                        int state = states.get(loc);
-                        if (object instanceof ContentContainer) {
-                            List<? extends ContentObject> l = object.getChilds(getProcessingContext().getUser(), getEntryLoadRequest());
-                            for (Iterator<? extends ContentObject> contentObjectIterator = l.iterator(); contentObjectIterator.hasNext();) {
-                                ContentObject child = contentObjectIterator.next();
-                                if (child instanceof ContentField) {
-                                    loc = (child.isShared()) ? "shared" : lang;
-                                    states = child.getLanguagesStates();
-                                    if (!states.containsKey(loc)) {
-                                        continue;
+            if (isNodeType("jmix:workflowed")) {
+                /// workflow
+                try {
+                    List<Locale> locales = getProcessingContext().getSite().getLanguageSettingsAsLocales(true);
+                    for (Locale locale : locales) {
+                        String lang = locale.toString();
+                        String v = "";
+                        String loc = (object.isShared()) ? "shared" : lang;
+                        Map<String, Integer> states = object.getLanguagesStates();
+                        if (states.containsKey(loc)) {
+                            int state = states.get(loc);
+                            if (object instanceof ContentContainer) {
+                                List<? extends ContentObject> l = object.getChilds(getProcessingContext().getUser(), getEntryLoadRequest());
+                                for (Iterator<? extends ContentObject> contentObjectIterator = l.iterator(); contentObjectIterator.hasNext();) {
+                                    ContentObject child = contentObjectIterator.next();
+                                    if (child instanceof ContentField) {
+                                        loc = (child.isShared()) ? "shared" : lang;
+                                        states = child.getLanguagesStates();
+                                        if (!states.containsKey(loc)) {
+                                            continue;
+                                        }
+                                        state = Math.max(state, states.get(loc));
                                     }
-                                    state = Math.max(state,states.get(loc));
                                 }
                             }
-                        }
-                        if (state == 1) {
-                            v = "active";
-                        } else {
-                            String extState = WorkflowService.getInstance().getExtendedWorkflowState(object, lang);
-                            char c = extState.charAt(1);
-                            String quickEdit = "";
-                            if (extState.charAt(2) == '1') {
-                                quickEdit = "-quickEdit";
+                            if (state == 1) {
+                                v = "active";
+                            } else {
+                                String extState = WorkflowService.getInstance().getExtendedWorkflowState(object, lang);
+                                char c = extState.charAt(1);
+                                String quickEdit = "";
+                                if (extState.charAt(2) == '1') {
+                                    quickEdit = "-quickEdit";
+                                }
+                                switch (c) {
+                                    case '1':
+                                        v = "validated";
+                                        break;
+                                    case '2':
+                                        v = "inValidation";
+                                        break;
+                                    default:
+                                        v = "validationStep" + (Integer.valueOf("" + c) - 2) + quickEdit;
+                                        break;
+                                }
                             }
-                            switch (c) {
-                                case '1':
-                                    v = "validated"; break;
-                                case '2':
-                                    v = "inValidation"; break;
-                                case '3':
-                                    v = "validationStep1"+quickEdit; break;
-                                case '4':
-                                    v = "validationStep2"+quickEdit; break;
-                                case '5':
-                                    v = "validationStep3"+quickEdit; break;
-                            }
+
+                            initProperty(new PropertyImpl(getSession(), this, "j:workflowState",
+                                                          NodeTypeRegistry.getInstance().getNodeType("jmix:workflowed").getPropertyDefinitionsAsMap().get("j:workflowState"),
+                                                          locale, new ValueImpl(v, PropertyType.STRING)));
+
                         }
-
-                        initProperty(new PropertyImpl(getSession(), this, "j:workflowState",
-                                NodeTypeRegistry.getInstance().getNodeType("jmix:workflowed").getPropertyDefinitionsAsMap().get("j:workflowState"),
-                                locale,new ValueImpl(v, PropertyType.STRING)));
-
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-
             // retentionRules
             initTimeBasedPublishingProperties();
 
@@ -199,7 +203,15 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             }
             initTimeBasedPublishingNodes();
             initFields();
-
+            if (isNodeType("jmix:workflowed")) {
+                try {
+                    if (WorkflowService.INHERITED != ServicesRegistry.getInstance().getWorkflowService().getWorkflowMode(object)) {
+                        initNode(new JahiaWorkflowSettingsNodeImpl(getSession(), this, object));
+                    }
+                } catch (JahiaException e) {
+                    throw new UnsupportedRepositoryOperationException("Could not find the mode of workflow for object : " + object);
+                }
+            }
             try {
                 List<Locale> locales = getProcessingContext().getSite().getLanguageSettingsAsLocales(true);
                 for (Locale locale : locales) {

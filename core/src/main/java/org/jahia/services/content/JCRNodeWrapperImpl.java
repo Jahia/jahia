@@ -1336,9 +1336,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 Property property = getProperty("j:locktoken");
                 String v = property.getString();
                 systemSession.addLockToken(v);
+                systemNode.unlock();
                 property.remove();
+            } else {
+                systemNode.unlock();
             }
-            systemNode.unlock();
+
             systemNode.save();
             systemSession.logout();
             objectNode.refresh(true);

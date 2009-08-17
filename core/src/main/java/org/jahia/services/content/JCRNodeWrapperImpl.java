@@ -443,7 +443,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     if (mpp.equals("")) mpp="/";
                     if (mpp.equals(getPath())) {
                         JCRStoreProvider storeProvider = mountPoints.get(key);
-                        list.add(storeProvider.getNodeWrapper("/", session));
+                        list.add(storeProvider.getNodeWrapper(storeProvider.getRelativeRoot()+"/", session));
                     }
                 }
             }

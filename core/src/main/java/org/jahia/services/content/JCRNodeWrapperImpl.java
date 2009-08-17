@@ -1282,7 +1282,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         try {
             Lock lock = objectNode.lock(false,false);
-            if (lock.getLockToken() != null) {
+            if (lock.getLockToken() != null && isNodeType("jmix:lockable")) {
                 objectNode.setProperty("j:locktoken",lock.getLockToken());
                 objectNode.getSession().removeLockToken(lock.getLockToken());
             }

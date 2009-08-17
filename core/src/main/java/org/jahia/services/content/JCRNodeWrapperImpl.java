@@ -1361,7 +1361,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null || getLock() == null) {
             return null;
         }
-        if (!provider.isLoginModuleActivated()) {
+        if ("shared".equals(provider.getAuthenticationType())) {
             return getLock().getLockOwner();
         } else {
             return getSession().getUserID();

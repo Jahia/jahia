@@ -92,7 +92,9 @@ public class JCRStoreProvider {
     protected String user;
     protected String password;
     protected String rmibind;
-    protected boolean loginModuleActivated = true;
+
+    protected String authenticationType = null;
+
     private boolean running;
     private Map<String,List<DefaultEventListener>> listeners;
 
@@ -192,7 +194,9 @@ public class JCRStoreProvider {
 
     public void setUser(String user) {
         this.user = user;
-        this.loginModuleActivated = false;
+        if (authenticationType == null) {
+            authenticationType = "shared";
+        }
     }
 
     public String getPassword() {
@@ -203,8 +207,12 @@ public class JCRStoreProvider {
         this.password = password;
     }
 
-    public boolean isLoginModuleActivated() {
-        return loginModuleActivated;
+    public String getAuthenticationType() {
+        return authenticationType;
+    }
+
+    public void setAuthenticationType(String authenticationType) {
+        this.authenticationType = authenticationType;
     }
 
     public String getRmibind() {
@@ -259,7 +267,8 @@ public class JCRStoreProvider {
         try {
             getService().addProvider(getKey(), getMountPoint(), this);
             repo = getRepository();
-            loginModuleActivated = false;
+            String tmpAuthenticationType = authenticationType;
+            authenticationType = "shared";
             Session session = getSystemSession();
             try {
                 Workspace workspace = session.getWorkspace();
@@ -293,7 +302,7 @@ public class JCRStoreProvider {
                 initialized = true;
                 session.logout();
             }
-            loginModuleActivated = true;
+            authenticationType = tmpAuthenticationType;
         } catch (Exception e){
             logger.error("Repository init error",e);
             throw  new JahiaInitializationException("Repository init error",e) ;
@@ -423,7 +432,7 @@ public class JCRStoreProvider {
 
     public Session getSession(Credentials credentials, String workspace) throws RepositoryException {
         Session s;
-        if (loginModuleActivated) {
+        if ("jaas".equals(authenticationType) || authenticationType == null) {
             s = repo.login(credentials, workspace);
         } else {
             if (user != null) {

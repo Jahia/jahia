@@ -29,7 +29,10 @@
         <distant.hosts.ip>10.8.37.252</distant.hosts.ip>
         <distant.hosts.username>jahia</distant.hosts.username>
         <distant.hosts.password>jahia</distant.hosts.password>
-        <install.dir>Jahia_CE_v${jahia.package.version}-${buildNumber}_JBoss_${jahia.jboss.version}</install.dir>
+        <java.home>/usr/local/latest</java.home>
+        <install.dir>/home/jahia/install</install.dir>
+        <jboss.dir.name>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}</jboss.dir.name>
+        <jboss.dir>${install.dir}/${jboss.dir.name}</jboss.dir>
         <db.host>10.8.37.252</db.host>
         <db.schema>jahia</db.schema>
         <db.user>jahia</db.user>
@@ -170,7 +173,7 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <finalName>Jahia_CE_v${jahia.package.version}-${buildNumber}_JBoss_${jahia.jboss.version}</finalName>
+                    <finalName>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}</finalName>
                     <descriptors>
                         <descriptor>src/main/assembly/src.xml</descriptor>
                     </descriptors>
@@ -210,29 +213,42 @@
                         <phase>install</phase>
                         <configuration>
                             <tasks>
+								<echo message="Shutting JBoss server down..."/>
                                 <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                         command="export JAVA_HOME=/usr/local/latest;/home/jahia/install/${install.dir}/bin/shutdown.sh -S --server=${distant.hosts.ip}:1099"
+                                         command="export JAVA_HOME=${java.home};cd ${jboss.dir};./bin/shutdown.sh -S --server=${distant.hosts.ip}:1099"
                                          trust="true" failonerror="false"/>
+								<waitfor maxwait="180" maxwaitunit="second" checkevery="5" checkeveryunit="second" timeoutproperty="jboss.shutdown.timeout">
+									<not>
+										<socket server="${distant.hosts.ip}" port="1099"/>
+									</not>
+								</waitfor>
+								<fail message="Timeout reached trying to stop JBoss instance on ${distant.hosts.ip}" if="jboss.shutdown.timeout"/>
+								<echo message="...JBoss shutdown complete"/>
                                 <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                         command="rm -Rf /home/jahia/install/${install.dir}" trust="true"
+                                         command="rm -Rf ${jboss.dir}" trust="true"
                                          failonerror="false"/>
-                                <scp file="${project.build.directory}/${install.dir}-jahia.tar.gz"
-                                         todir="${distant.hosts.username}@${distant.hosts.ip}:/home/jahia/install" password="${distant.hosts.password}"
+								<echo message="Uploading ${jboss.dir.name}-jahia.tar.gz"/>
+                                <scp file="${project.build.directory}/${jboss.dir.name}-jahia.tar.gz"
+                                         todir="${distant.hosts.username}@${distant.hosts.ip}:${install.dir}" password="${distant.hosts.password}"
                                          trust="true"/>
+								<echo message="${jboss.dir.name}-jahia.tar.gz uploaded successfully. Unpacking..."/>
                                 <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                         command="tar xfz /home/jahia/install/${install.dir}-jahia.tar.gz --directory /home/jahia/install"
+                                         command="tar xfz ${install.dir}/${jboss.dir.name}-jahia.tar.gz --directory ${install.dir}"
+                                         trust="true" failonerror="true"/>
+                                <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
+                                         command="rm ${install.dir}/${jboss.dir.name}-jahia.tar.gz"
                                          trust="true" failonerror="false"/>
+								<echo message="Starting JBoss server up..."/>
                                 <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                         command="rm /home/jahia/install/${install.dir}-jahia.tar.gz "
-                                         trust="true" failonerror="false"/>
-                                <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                         command="chmod 755 /home/jahia/install/${install.dir}/bin/*.sh" trust="true"
-                                         failonerror="false"/>
-                                <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                         command="export JAVA_HOME=/usr/local/latest;export LAUNCH_JBOSS_IN_BACKGROUND=1;/home/jahia/install/${install.dir}/bin/run.sh -b ${distant.hosts.ip} &amp;"
+                                         command="export JAVA_HOME=${java.home};cd ${install.dir.path};nohup ./bin/run.sh -b ${distant.hosts.ip} &lt;/dev/null &gt; ${install.dir.path}/server/default/log/output.log 2&gt;&amp;1 &amp;"
                                          trust="true" failonerror="false"
                                          timeout="120000"/>
-                            </tasks>
+								<waitfor maxwait="180" maxwaitunit="second" checkevery="5" checkeveryunit="second" timeoutproperty="jboss.startup.timeout">
+									<socket server="${distant.hosts.ip}" port="1099"/>
+								</waitfor>
+								<fail message="Timeout reached trying to start JBoss instance up on ${distant.hosts.ip}" if="jboss.startup.timeout"/>
+								<echo message="...JBoss server started successfully"/>
+							</tasks>
                         </configuration>
                         <goals>
                             <goal>run</goal>

@@ -40,5 +40,13 @@
         <source>src/main/resources/conf/web.xml</source>
         <outputDirectory>Jahia_CE_v${jahia.package.version}-${buildNumber}_JBoss_${jahia.jboss.version}/server/default/deploy/jboss-web.deployer/conf</outputDirectory>
     </file>
+    <file>
+        <source>src/main/resources/startJahia.bat</source>
+        <outputDirectory>Jahia_CE_v${jahia.package.version}-${buildNumber}_JBoss_${jahia.jboss.version}</outputDirectory>
+    </file>
+    <file>
+        <source>src/main/resources/stopJahia.bat</source>
+        <outputDirectory>Jahia_CE_v${jahia.package.version}-${buildNumber}_JBoss_${jahia.jboss.version}</outputDirectory>
+    </file>
   </files>
 </assembly>

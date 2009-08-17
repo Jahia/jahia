@@ -14,6 +14,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.lock.Lock;
 import javax.jcr.query.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -329,6 +330,56 @@ public class ContentTest extends TestCase {
             session.logout();
         }
     }
+
+    /**
+     * Test lock / unlock operations
+     */
+    public void testLock() throws Exception {
+        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
+
+        JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
+
+        try {
+            JCRNodeWrapper rootNode = session.getNode(providerRoot);
+
+            String value = "This is a test";
+            String mimeType = "text/plain";
+
+            InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+
+            String name = "test" + System.currentTimeMillis() + ".txt";
+            JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
+
+            session.save();
+
+            boolean result = testFile.lockAndStoreToken();
+            testFile.save();
+
+            assertTrue("lockAndStoreToken returned false", result);
+
+            Lock lock = testFile.getLock();
+            assertNotNull("lock is null", lock);
+
+            result = testFile.forceUnlock();
+            testFile.save();
+
+            assertTrue("forceUnlock returned false", result);
+
+            testFile.remove();
+            session.save();
+
+            try {
+                session.getNode(providerRoot + "/" + name);
+                fail(providerRoot + " : File has not been deleted");
+            } catch (PathNotFoundException e) {
+                // ok
+            }
+        } finally {
+            session.logout();
+        }
+
+    }
+
     /**
      * Test file upload
      *

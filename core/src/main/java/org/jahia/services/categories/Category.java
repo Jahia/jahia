@@ -130,7 +130,7 @@ public class Category extends JahiaObject {
         } catch (RepositoryException e) {
             logger.warn(e.getMessage(), e);
         }
-        return p == null || uuid == null ? categoriesRoot : null;
+        return categoriesRoot;
     }
 
     /**

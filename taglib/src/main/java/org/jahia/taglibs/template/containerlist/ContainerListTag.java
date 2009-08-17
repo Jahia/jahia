@@ -513,8 +513,10 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     }
 
     private void checkSubdefinition(ProcessingContext processingContext) throws JahiaException {
-        boolean isSubdef = ServicesRegistry.getInstance().getJahiaContainersService().hasContainerDefinitionParents(getContainerList().getctndefid());
-        if (!isSubdef && ProcessingContext.EDIT.equals(processingContext.getOperationMode())) {
+        if (Jahia.getSettings().isDevelopmentMode()
+                && ProcessingContext.EDIT.equals(processingContext.getOperationMode())
+                && !ServicesRegistry.getInstance().getJahiaContainersService().hasContainerDefinitionParents(
+                        containerList.getctndefid())) {        
             try {
                 pageContext.getOut().append("<font color=\"red\">The container list ").append(listName).append(" is not a subdefiniton of ").append(parentListName).append(" but is use as is, this will lead to import/export/copy/paste issues, please correct your definitions in your template</font>");
             } catch (IOException e) {

@@ -745,7 +745,7 @@ public class ContentManagerHelper {
                 missedPaths.add(new StringBuilder(node.getName()).append(": write access denied").toString());
             } else if (node.isLocked()) {
                 if (!locked) {
-                    if (!node.getLockOwner().equals(user.getUsername()) && !user.isRoot()) {
+                    if (node.getLockOwner() != null && !node.getLockOwner().equals(user.getUsername()) && !user.isRoot()) {
                         missedPaths.add(new StringBuilder(node.getName()).append(": locked by ").append(node.getLockOwner()).toString());
                     } else {
                         if (!node.forceUnlock()) {

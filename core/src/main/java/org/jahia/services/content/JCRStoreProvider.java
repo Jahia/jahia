@@ -203,6 +203,10 @@ public class JCRStoreProvider {
         this.password = password;
     }
 
+    public boolean isLoginModuleActivated() {
+        return loginModuleActivated;
+    }
+
     public String getRmibind() {
         return rmibind;
     }

@@ -277,7 +277,12 @@ public class JCRSessionWrapper implements Session {
 
     public Session getProviderSession(JCRStoreProvider provider) throws RepositoryException {
         if (sessions.get(provider) == null) {
-            Session s = provider.getSession(credentials, workspace.getName());
+            Session s = null;
+            try {
+                s = provider.getSession(credentials, workspace.getName());
+            } catch (NoSuchWorkspaceException e) {
+                s = provider.getSession(credentials, null);
+            }
             sessions.put(provider, s);
         }
         return sessions.get(provider);

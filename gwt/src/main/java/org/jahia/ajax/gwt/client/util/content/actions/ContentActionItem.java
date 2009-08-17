@@ -100,7 +100,7 @@ public abstract class ContentActionItem implements ContentActionItemItf {
                                             boolean singleFolder,
                                             boolean pasteAllowed,
                                             boolean lockable,
-                                            boolean isZip,
+                                            boolean locked, boolean isZip,
                                             boolean isImage,
                                             boolean isMount) ;
 

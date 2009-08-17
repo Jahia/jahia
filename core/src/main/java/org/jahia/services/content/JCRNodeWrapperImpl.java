@@ -1279,8 +1279,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         try {
             Lock lock = objectNode.lock(false,false);
-            objectNode.setProperty("j:locktoken",lock.getLockToken());
-            objectNode.getSession().removeLockToken(lock.getLockToken());
+            if (lock.getLockToken() != null) {
+                objectNode.setProperty("j:locktoken",lock.getLockToken());
+                objectNode.getSession().removeLockToken(lock.getLockToken());
+            }
         } catch (RepositoryException e) {
             logger.error(e, e) ;
             return false;
@@ -1330,11 +1332,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             Session systemSession = provider.getSystemSession();
             Node systemNode = (Node) systemSession.getItem(objectNode.getPath());
-            Property property = getProperty("j:locktoken");
-            String v = property.getString();
-            systemSession.addLockToken(v);
+            if (hasProperty("j:locktoken")) {
+                Property property = getProperty("j:locktoken");
+                String v = property.getString();
+                systemSession.addLockToken(v);
+                property.remove();
+            }
             systemNode.unlock();
-            property.remove();
             systemNode.save();
             systemSession.logout();
             objectNode.refresh(true);
@@ -1354,7 +1358,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null || getLock() == null) {
             return null;
         }
-        return getLock().getLockOwner();
+        if (!provider.isLoginModuleActivated()) {
+            return getLock().getLockOwner();
+        } else {
+            return getSession().getUserID();
+        }
     }
 
     public void versionFile() {

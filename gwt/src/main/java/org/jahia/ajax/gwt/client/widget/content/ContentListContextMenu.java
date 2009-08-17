@@ -80,6 +80,7 @@ public class ContentListContextMenu extends Menu {
                 boolean isWritable = false;
                 boolean isDeleteable = false;
                 boolean isLockable = false;
+                boolean isLocked = false;
                 boolean isSingleFile = false;
                 boolean isSingleFolder = false;
                 boolean isPasteAllowed = isTreeSelection ? CopyPasteEngine.getInstance().canCopyTo(leftTreeSelection) : false ;
@@ -101,10 +102,12 @@ public class ContentListContextMenu extends Menu {
                     isWritable = true;
                     isDeleteable = true;
                     isLockable = true;
+                    isLocked = true;
                     for (GWTJahiaNode gwtJahiaNode : topTableSelection) {
                         isWritable &= gwtJahiaNode.isWriteable() && !gwtJahiaNode.isLocked();
                         isDeleteable &= gwtJahiaNode.isDeleteable() && !gwtJahiaNode.isLocked();
                         isLockable &= gwtJahiaNode.isLockable();
+                        isLocked &= gwtJahiaNode.isLocked();
                     }
                     if (topTableSelection.size() == 1) {
                         isSingleFile = topTableSelection.get(0).isFile();
@@ -124,7 +127,7 @@ public class ContentListContextMenu extends Menu {
                 }
                 for (ContentActionItemGroup group: config.getGroupedItems()) {
                     for (ContentActionItemItf item: group.getItems()) {
-                        item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isZip, isImage, isMount);
+                        item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
                     }
                 }
             }

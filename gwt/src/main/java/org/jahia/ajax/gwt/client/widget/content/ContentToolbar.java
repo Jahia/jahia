@@ -83,7 +83,7 @@ public class ContentToolbar extends TopBar {
                 getLinker().refreshTable();
             }
 
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
                 // always enabled
                 // setEnabled(treeSelection);
             }
@@ -199,6 +199,7 @@ public class ContentToolbar extends TopBar {
         boolean isWritable = false;
         boolean isDeleteable = false;
         boolean isLockable = false;
+        boolean isLocked = false;
         boolean isSingleFile = false;
         boolean isSingleFolder = false;
         boolean isPasteAllowed = isTreeSelection ? CopyPasteEngine.getInstance().canCopyTo((GWTJahiaNode) leftTreeSelection) : false ;
@@ -220,10 +221,12 @@ public class ContentToolbar extends TopBar {
             isWritable = true;
             isDeleteable = true;
             isLockable = true;
+            isLocked = true;
             for (GWTJahiaNode gwtJahiaNode : topTableSelection) {
                 isWritable &= gwtJahiaNode.isWriteable() && !gwtJahiaNode.isLocked();
                 isDeleteable &= gwtJahiaNode.isDeleteable() && !gwtJahiaNode.isLocked();
                 isLockable &= gwtJahiaNode.isLockable();
+                isLocked &= gwtJahiaNode.isLocked();
             }
             if (topTableSelection.size() == 1) {
                 isSingleFile = topTableSelection.get(0).isFile();
@@ -248,7 +251,7 @@ public class ContentToolbar extends TopBar {
         
         for (ContentActionItemGroup group: configuration.getGroupedItems()) {
             for (ContentActionItemItf item: group.getItems()) {
-                item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isZip, isImage, isMount);
+                item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
             }
         }
     }

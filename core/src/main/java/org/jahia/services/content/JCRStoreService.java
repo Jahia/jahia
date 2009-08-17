@@ -281,15 +281,13 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     public void deployNewSite(JahiaSite site, JahiaUser user) throws RepositoryException {
-        for (JCRStoreProvider provider : providers.values()) {
-            provider.deployNewSite(site, user);
-        }
+        JCRStoreProvider provider = mountPoints.get("/");
+        provider.deployNewSite(site, user);
     }
 
     public void deployExternalUser(String username, String providerName) throws RepositoryException {
-        for (JCRStoreProvider provider : providers.values()) {
-            provider.deployExternalUser(username,providerName);
-        }
+        JCRStoreProvider provider = mountPoints.get("/");
+        provider.deployExternalUser(username, providerName);
     }
 
     public void addProvider(String key, String mountPoint, JCRStoreProvider p) {

@@ -58,27 +58,64 @@ public class TextHtml {
      * @return          The converted HTML text including symbolic codes string
      */
     public static String text2html(String text) {
+        return improvedText2html(text);
+    }
+
+    // bupa version
+    private static String improvedText2html(String text) {
         if (text == null)
             return text;
-        StringBuilder t = new StringBuilder(text.length() + 10); // 10 is just a test value, could be anything, should affect performance
+        int length = text.length();
+        int lastPointer = 0;
+        StringBuilder t = new StringBuilder(length + 500);
+        for (int i = 0; i < length; i++) {
+            char c = text.charAt(i);
+            int ci = (int) c;
+            String sc = null;
+            if (ci < 160) {
+                switch (ci) {
+                case 25:
+                case 34:
+                case 64:
+                case 96:
+                case 146:
+                    sc = symbolicCode[ci];
+                }
+            } else if (ci < 256) {
+                sc = symbolicCode[ci];
+            }
+            if (sc != null) {
+                t.append(text.substring(lastPointer, i));
+                lastPointer = i + 1;
+                t.append(sc);
+            }
+        }
+        t.append(text.substring(lastPointer, length));
+        return t.toString();
+    }    
+
+/*    public static String text2html(String text) {
+        if (text == null)
+            return text;
+        StringBuffer t = new StringBuffer(text.length() + 10); // 10 is just a test value, could be anything, should affect performance
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             // Check for non ISO8859-1 characters
-            if ((int)c < symbolicCode.length) { // Maybe slower than  "(int)c & 0xFF != 0" but more evolutive
-                String sc = symbolicCode[(int)c];
+            if ((int) c < symbolicCode.length) { // Maybe slower than
+                                                 // "(int)c & 0xFF != 0" but
+                                                 // more evolutive
+                String sc = symbolicCode[(int) c];
                 if ("".equals(sc)) {
                     t = t.append(c);
-                }
-                else {
+                } else {
                     t = t.append(sc);
                 }
-            }
-            else {
+            } else {
                 t = t.append(c);
             }
         }
         return t.toString();
-    }
+    }*/
 
     /**
      * Method html2text: Convert an HTML text format to a normal text format.
@@ -289,7 +326,7 @@ public class TextHtml {
      * This class also implements the 'Comparable' interface to ease the sorting
      * process in the initialization block.
     */
-    final private static class NumericSymbolicCode implements Comparable {
+    final private static class NumericSymbolicCode implements Comparable<NumericSymbolicCode> {
 
         public NumericSymbolicCode(String symbolicCode, int numericCode) {
             this.symbolicCode = symbolicCode;
@@ -304,8 +341,7 @@ public class TextHtml {
             return numericCode;
         }
 
-        public int compareTo(Object object) {
-            NumericSymbolicCode nsc = (NumericSymbolicCode)object;
+        public int compareTo(NumericSymbolicCode nsc) {
             return symbolicCode.compareTo(nsc.symbolicCode);
         }
 

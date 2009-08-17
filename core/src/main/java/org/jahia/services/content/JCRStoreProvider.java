@@ -89,11 +89,15 @@ public class JCRStoreProvider {
     private String factory;
     private String url;
     private String workspace;
-    protected String user;
-    protected String password;
-    protected String rmibind;
+
+    protected String systemUser;
+    protected String systemPassword;
+    protected String guestUser;
+    protected String guestPassword;
 
     protected String authenticationType = null;
+
+    protected String rmibind;
 
     private boolean running;
     private Map<String,List<DefaultEventListener>> listeners;
@@ -188,23 +192,23 @@ public class JCRStoreProvider {
         this.url = url;
     }
 
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
+    public void setSystemUser(String user) {
+        this.systemUser = user;
         if (authenticationType == null) {
             authenticationType = "shared";
         }
     }
 
-    public String getPassword() {
-        return password;
+    public void setSystemPassword(String password) {
+        this.systemPassword = password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setGuestUser(String user) {
+        this.guestUser = user;
+    }
+
+    public void setGuestPassword(String password) {
+        this.guestPassword = password;
     }
 
     public String getAuthenticationType() {
@@ -446,17 +450,49 @@ public class JCRStoreProvider {
 
     public Session getSession(Credentials credentials, String workspace) throws RepositoryException {
         Session s;
-        if ("jaas".equals(authenticationType) || authenticationType == null) {
-            s = repo.login(credentials, workspace);
-        } else {
-            if (user != null) {
-                s = getRepository().login(credentials,workspace);
-            } else if(!initialized){
-                s = getRepository().login(new SimpleCredentials(user, password.toCharArray()),workspace);
-            } else {
-                s = repo.login(workspace);
+
+        if (credentials instanceof SimpleCredentials) {
+            String username = ((SimpleCredentials)credentials).getUserID();
+
+            if ("shared".equals(authenticationType)) {
+                if (username.startsWith(" system ") || guestUser == null) {
+                    credentials = JahiaLoginModule.getSystemCredentials();
+                } else {
+                    credentials = JahiaLoginModule.getGuestCredentials();
+                }
             }
+
+            if (username.startsWith(" system ") && systemUser != null) {
+                if (systemPassword != null) {
+                    credentials = new SimpleCredentials(systemUser, systemPassword.toCharArray());
+                } else {
+                    credentials = JahiaLoginModule.getCredentials(systemUser);
+                }
+            } else if (username.startsWith(" guest ") && guestUser != null) {
+                if (guestPassword != null) {
+                    credentials = new SimpleCredentials(guestUser, guestPassword.toCharArray());
+                } else {
+                    credentials = JahiaLoginModule.getCredentials(guestUser);
+                }
+            } else if ("storedPasswords".equals(authenticationType)) {
+                JahiaUser user = userManagerService.lookupUser(username);
+                String pass = user.getProperty("storedPassword_"+getKey());
+                if (pass != null) {
+                    
+                    credentials = new SimpleCredentials(username, pass.toCharArray());
+                } else {
+                    if (guestPassword != null) {
+                        credentials = new SimpleCredentials(guestUser, guestPassword.toCharArray());
+                    } else {
+                        credentials = JahiaLoginModule.getCredentials(guestUser);
+                    }
+                }
+            }
+            logger.debug("Login for "+getKey() + " as " + ((SimpleCredentials)credentials).getUserID());
         }
+
+        s = getRepository().login(credentials,workspace);
+
         registerNamespaces(s.getWorkspace());
         return s;
     }

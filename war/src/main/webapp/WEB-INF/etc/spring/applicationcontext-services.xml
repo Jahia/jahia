@@ -65,7 +65,7 @@ FRAG2(frag_size=60000)</value>
 
     <bean id="JahiaCacheService" parent="proxyTemplate">
         <property name="target">
-            <bean class="org.jahia.services.cache.CacheFactory" parent="jahiaServiceTemplate" factory-method="getInstance" >
+            <bean class="org.jahia.services.cache.CacheFactory" parent="jahiaServiceTemplate" factory-method="getInstance" init-method="start">
                 <property name="cacheProviders">
                     <map>
                         <entry key="DEFAULT_CACHE" value-ref="org.jahia.services.cache.CacheProvider"/>

@@ -190,5 +190,14 @@ public class JahiaWebdavServlet extends SimpleWebdavServlet {
         return super.execute(request, response, method, resource);
     }
 
-
+    @Override
+    protected void doUnlock(WebdavRequest request, WebdavResponse response, DavResource resource) throws DavException {
+        try {
+            super.doUnlock(request, response, resource);    //To change body of overridden methods use File | Settings | File Templates.
+        } catch (DavException e) {
+            if (e.getErrorCode() != DavServletResponse.SC_PRECONDITION_FAILED) {
+                throw e;
+            }
+        }
+    }
 }

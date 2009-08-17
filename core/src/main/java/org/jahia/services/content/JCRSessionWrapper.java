@@ -54,9 +54,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.AccessControlException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Locale;
 
 /**
@@ -77,6 +75,7 @@ public class JCRSessionWrapper implements Session {
     private JCRWorkspaceWrapper workspace;
     private boolean isLive = true;
     private Locale locale;
+    private List<String> tokens = new ArrayList<String>();
 
     private Map<JCRStoreProvider, Session> sessions = new HashMap<JCRStoreProvider, Session>();
 
@@ -263,16 +262,22 @@ public class JCRSessionWrapper implements Session {
         return isLive;
     }
 
-    public void addLockToken(String s) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void addLockToken(String token) {
+        tokens.add(token);
+        for (Session session : sessions.values()) {
+            session.addLockToken(token);
+        }
     }
 
     public String[] getLockTokens() {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return tokens.toArray(new String[tokens.size()]);
     }
 
-    public void removeLockToken(String s) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void removeLockToken(String token) {
+        tokens.remove(token);
+        for (Session session : sessions.values()) {
+            session.removeLockToken(token);
+        }
     }
 
     public Session getProviderSession(JCRStoreProvider provider) throws RepositoryException {
@@ -284,6 +289,9 @@ public class JCRSessionWrapper implements Session {
                 s = provider.getSession(credentials, null);
             }
             sessions.put(provider, s);
+            for (String token : tokens) {
+                s.addLockToken(token);
+            }
         }
         return sessions.get(provider);
     }

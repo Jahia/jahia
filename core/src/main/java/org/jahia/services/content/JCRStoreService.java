@@ -151,7 +151,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             descriptors.put("option.locking.supported" , "true");
             descriptors.put("option.query.sql.supported" , "true");
             descriptors.put("query.xpath.pos.index" , "true");
-            descriptors.put("query.xpath.doc.order" , "false");            
+            descriptors.put("query.xpath.doc.order" , "false");
         } catch (Exception e){
             logger.error("Repository init error",e);
         }

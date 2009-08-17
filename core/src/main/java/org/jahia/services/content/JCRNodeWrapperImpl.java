@@ -1315,7 +1315,36 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return null;
         }
         try {
-            return objectNode.getLock();
+            final Lock lock = objectNode.getLock();
+            return new Lock() {
+                public String getLockOwner() {
+                    return lock.getLockOwner();
+                }
+
+                public boolean isDeep() {
+                    return lock.isDeep();
+                }
+
+                public Node getNode() {
+                    return JCRNodeWrapperImpl.this;
+                }
+
+                public String getLockToken() {
+                    return lock.getLockToken();
+                }
+
+                public boolean isLive() throws RepositoryException {
+                    return lock.isLive();
+                }
+
+                public boolean isSessionScoped() {
+                    return lock.isSessionScoped();
+                }
+
+                public void refresh() throws LockException, RepositoryException {
+                    lock.isSessionScoped();
+                }
+            };
         } catch (RepositoryException e) {
             return null;
         }

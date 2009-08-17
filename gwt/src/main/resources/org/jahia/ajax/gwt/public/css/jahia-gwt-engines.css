@@ -47,6 +47,10 @@
     background-image: url( ../images/application_add.png ) !important;
 }
 
+.fm-newcategory {
+    background-image: url( ../images/add-file.png ) !important;
+}
+
 .fm-newrssmashup {
     background-image: url( ../images/rss.gif ) !important;
 }

@@ -123,7 +123,7 @@ public class JCRSessionWrapper implements Session {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Node getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
+    public JCRNodeWrapper getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
         for (JCRStoreProvider provider : service.getProviderList()) {
             if (!provider.isInitialized()) {
                 logger.debug("Provider " + provider.getKey() + " / " + provider.getClass().getName() + " is not yet initialized, skipping...");
@@ -142,6 +142,16 @@ public class JCRSessionWrapper implements Session {
             }
         }
         throw new ItemNotFoundException(uuid);
+    }
+
+    public JCRNodeWrapper getNodeByUUID(String providerKey, String uuid) throws ItemNotFoundException, RepositoryException {
+        JCRStoreProvider provider = service.getProviders().get(providerKey);
+        if (provider == null) {
+            throw new ItemNotFoundException(uuid);
+        }
+        Session session = getProviderSession(provider);
+        Node n = session.getNodeByUUID(uuid);
+        return provider.getNodeWrapper(n, this);
     }
 
     public Item getItem(String path) throws PathNotFoundException, RepositoryException {

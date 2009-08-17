@@ -2145,7 +2145,7 @@ public abstract class ContentObject extends JahiaObject {
      */
     public String getJCRPath(ProcessingContext context) throws JahiaException {
         try {
-            return ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(getUUID(), context.getUser()).getPath();
+            return ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID("jahia",getUUID(), context.getUser()).getPath();
         } catch (RepositoryException e) {
             throw new JahiaException("","",0,0,e);
         }
@@ -2153,7 +2153,7 @@ public abstract class ContentObject extends JahiaObject {
 
     public JCRNodeWrapper getJCRNode(ProcessingContext context) throws JahiaException {
         try {
-            return ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(getUUID(), context.getUser());
+            return ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID("jahia",getUUID(), context.getUser());
         } catch (RepositoryException e) {
             throw new JahiaException("","",0,0,e);
         }

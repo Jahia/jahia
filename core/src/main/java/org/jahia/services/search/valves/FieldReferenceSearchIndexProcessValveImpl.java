@@ -334,7 +334,7 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
     }
 
     protected String[] fillDocumentWithFileField(
-            Map<String, Object> contextMap, String jcrPath,
+            Map<String, Object> contextMap, String jcrName,
             IndexableDocument doc) {
 
         Boolean applyFileFieldIndexationRule = (Boolean) contextMap
@@ -346,12 +346,14 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
         try {
             String strVal = null;
             ProcessingContext context = (ProcessingContext) contextMap.get(SearchIndexationPipeline.PROCESSING_CONTEXT);
+            String providerKey = jcrName.substring(0,jcrName.indexOf(':'));
+            String uuid = jcrName.substring(jcrName.indexOf(':') + 1);
             JCRNodeWrapper file = JCRStoreService.getInstance().getNodeByUUID(
-                    jcrPath.substring(jcrPath.lastIndexOf(':') + 1), null);
+                    providerKey, uuid, null);
 
             if (file != null && file.isValid() && !file.isCollection()) {
                 JCRFileContent fileContent = file.getFileContent();
-                doc.addFieldValue(JahiaSearchConstant.FILE_REALNAME, jcrPath);
+                doc.addFieldValue(JahiaSearchConstant.FILE_REALNAME, jcrName);
                 doc
                         .addFieldValue(JahiaSearchConstant.FILE_NAME, file
                                 .getName());

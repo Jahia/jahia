@@ -555,7 +555,11 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     public JCRNodeWrapper getNodeByUUID(String uuid, JahiaUser user) throws ItemNotFoundException, RepositoryException {
-        return (JCRNodeWrapper) getThreadSession(user).getNodeByUUID(uuid);
+        return getThreadSession(user).getNodeByUUID(uuid);
+    }
+
+    public JCRNodeWrapper getNodeByUUID(String providerKey, String uuid, JahiaUser user) throws ItemNotFoundException, RepositoryException {
+        return getThreadSession(user).getNodeByUUID(providerKey, uuid);
     }
 
     public QueryManager getQueryManager(JahiaUser user) {

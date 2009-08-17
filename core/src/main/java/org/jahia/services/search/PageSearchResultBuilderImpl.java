@@ -252,8 +252,10 @@ public class PageSearchResultBuilderImpl extends
                                     JahiaField jahiaField = contentField.getJahiaField(jParams.getEntryLoadRequest());
                                     jcrName = jahiaField.getValue();
                                 }
+                                String providerKey = jcrName.substring(0,jcrName.indexOf(':'));
+                                String uuid = jcrName.substring(jcrName.indexOf(':') + 1);
                                 JCRNodeWrapper file = JCRStoreService.getInstance().getNodeByUUID(
-                                        jcrName.substring(jcrName.lastIndexOf(':') + 1), currentUser);
+                                        providerKey, uuid, currentUser);
                                 info.setObject(file);
 
                                 if (mimeType == null) {

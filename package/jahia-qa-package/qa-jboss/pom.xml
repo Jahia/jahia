@@ -240,7 +240,7 @@
                                          trust="true" failonerror="false"/>
 								<echo message="Starting JBoss server up..."/>
                                 <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                         command="export JAVA_HOME=${java.home};cd ${install.dir.path};nohup ./bin/run.sh -b ${distant.hosts.ip} &lt;/dev/null &gt; ${install.dir.path}/server/default/log/output.log 2&gt;&amp;1 &amp;"
+                                         command="export JAVA_HOME=${java.home};cd ${jboss.dir};nohup ./bin/run.sh -b ${distant.hosts.ip} &lt;/dev/null &gt; ${jboss.dir}/server/default/log/output.log 2&gt;&amp;1 &amp;"
                                          trust="true" failonerror="false"
                                          timeout="120000"/>
 								<waitfor maxwait="180" maxwaitunit="second" checkevery="5" checkeveryunit="second" timeoutproperty="jboss.startup.timeout">

@@ -80,10 +80,10 @@
                                 <module>org.jahia.ajax.gwt.template.guest.live.Live</module>
                                 <module>org.jahia.ajax.gwt.template.layoutmanager.edit.Edit</module>
                                 <module>org.jahia.ajax.gwt.template.layoutmanager.live.Live</module>
-                                <module>org.jahia.ajax.gwt.template.mediagallery.edit.Edit</module>
-                                <module>org.jahia.ajax.gwt.template.mediagallery.live.Live</module>
-                                <module>org.jahia.ajax.gwt.template.opensearch.edit.Edit</module>
-                                <module>org.jahia.ajax.gwt.template.opensearch.live.Live</module>
+                                <!--<module>org.jahia.ajax.gwt.template.mediagallery.edit.Edit</module>-->
+                                <!--<module>org.jahia.ajax.gwt.template.mediagallery.live.Live</module>-->
+                                <!--<module>org.jahia.ajax.gwt.template.opensearch.edit.Edit</module>-->
+                                <!--<module>org.jahia.ajax.gwt.template.opensearch.live.Live</module>-->
 
                                 <module>org.jahia.ajax.gwt.module.acleditor.ACLEditor</module>
                                 <module>org.jahia.ajax.gwt.module.admin.Admin</module>
@@ -130,6 +130,7 @@
                         <artifactId>gwt-maven-plugin</artifactId>
                         <version>1.1</version>
                         <configuration>
+                            <force>true</force>
                             <extraJvmArgs>-Xmx1024m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
                             <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
@@ -179,6 +180,47 @@
             </build>
         </profile>
 
+        <profile>
+            <id>jucb</id>
+            <dependencies>
+                <!--Cross project dependencies-->
+                <dependency>
+                    <groupId>org.jahia.extensions</groupId>
+                    <artifactId>jucb-connectors</artifactId>
+                    <version>1.1-SNAPSHOT</version>
+                    <type>war</type>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jahia.extensions</groupId>
+                    <artifactId>jucb-connectors-config</artifactId>
+                    <version>1.1-SNAPSHOT</version>
+                    <type>war</type>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>2.0</version>
+                        <configuration>
+                            <overlays>
+                                <overlay>
+                                    <artifactId>jucb-connectors</artifactId>
+                                    <version>1.1-SNAPSHOT</version>                                    
+                                </overlay>
+                                <overlay>
+                                    <artifactId>jucb-connectors-config</artifactId>
+                                    <version>1.1-SNAPSHOT</version>                                    
+                                </overlay>
+                            </overlays>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>testJahia</id>
             <build>

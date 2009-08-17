@@ -1121,11 +1121,15 @@ public class ContentManagerHelper {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
-        if (node.isLocked() && !node.getLockOwner().equals(user.getUsername())) {
-            throw new GWTJahiaServiceException(new StringBuilder(node.getName()).append(" is locked by ").append(user.getUsername()).toString());
-        } else if (!node.hasPermission(JCRNodeWrapper.WRITE)) {
-            throw new GWTJahiaServiceException(new StringBuilder(node.getName()).append(" - ACCESS DENIED").toString());
-        } else if (!node.renameFile(newName)) {
+        try {
+            if (node.isLocked() && !node.getLockOwner().equals(user.getUsername())) {
+                throw new GWTJahiaServiceException(new StringBuilder(node.getName()).append(" is locked by ").append(user.getUsername()).toString());
+            } else if (!node.hasPermission(JCRNodeWrapper.WRITE)) {
+                throw new GWTJahiaServiceException(new StringBuilder(node.getName()).append(" - ACCESS DENIED").toString());
+            } else if (!node.renameFile(newName)) {
+                throw new GWTJahiaServiceException(new StringBuilder("Could not rename file ").append(node.getName()).append(" into ").append(newName).toString());
+            }
+        } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(new StringBuilder("Could not rename file ").append(node.getName()).append(" into ").append(newName).toString());
         }
         try {
@@ -1705,21 +1709,21 @@ public class ContentManagerHelper {
                         }
                     } catch (RepositoryException e) {
                         logger.error("Exception", e);
-                        throw new GWTJahiaServiceException("Folder creation failed");
+                        throw new GWTJahiaServiceException("A system error happened");
                     }
                     try {
                         parent.save();
                     } catch (RepositoryException e) {
                         logger.error(e.getMessage(), e);
-                        throw new GWTJahiaServiceException("Folder creation failed");
+                        throw new GWTJahiaServiceException("A system error happened");
                     }
                 }
                 if (childNode == null || !childNode.isValid()) {
-                    throw new GWTJahiaServiceException("Folder creation failed");
+                    throw new GWTJahiaServiceException("A system error happened");
                 }
             } catch (RepositoryException e) {
-                logger.error("Folder creation failed", e);
-                throw new GWTJahiaServiceException("Folder creation failed");
+                logger.error("A system error happened", e);
+                throw new GWTJahiaServiceException("A system error happened");
             } finally {
                 if (session != null) {
                     session.logout();
@@ -1828,7 +1832,7 @@ public class ContentManagerHelper {
                 parentNode.save();
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
-                throw new GWTJahiaServiceException("Folder creation failed");
+                throw new GWTJahiaServiceException("A system error happened");
             }
             return getGWTJahiaNode(node,true);
         } catch (RepositoryException e) {

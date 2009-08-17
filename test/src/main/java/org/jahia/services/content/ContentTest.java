@@ -13,11 +13,14 @@ import org.jahia.services.content.impl.jahia.JahiaContentStoreProvider;
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
 import javax.jcr.query.*;
-import java.io.ByteArrayInputStream;
+import javax.jcr.nodetype.ConstraintViolationException;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * This is a test case
@@ -48,6 +51,8 @@ public class ContentTest extends TestCase {
     private ProcessingContext ctx;
     private String providerRoot;
 
+    private List<String> nodes = new ArrayList();
+
     public ContentTest(String name, String path) {
         super(name);
         this.providerRoot = path;
@@ -56,6 +61,18 @@ public class ContentTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         ctx = Jahia.getThreadParamBean();
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
+        JCRSessionWrapper session = service.getSystemSession();
+        for (String node : nodes) {
+            session.getNodeByUUID(node).remove();
+        }
+        session.save();
+        session.logout();
+        nodes.clear();
     }
 
     @Override
@@ -80,6 +97,7 @@ public class ContentTest extends TestCase {
 
             JCRNodeWrapper testCollection = rootNode.createCollection(name);
             session.save();
+            nodes.add(testCollection.getUUID());
 
             assertTrue(providerRoot + " : Created folder is not valid", testCollection.isValid());
             assertTrue(providerRoot + " : Created folder is not a collection", testCollection.isCollection());
@@ -93,17 +111,6 @@ public class ContentTest extends TestCase {
             testCollection = session.getNode(providerRoot + "/" + name);
 
             assertTrue(providerRoot + " : Folder cannot be reloaded", testCollection.isValid());
-
-            testCollection.remove();
-            session.save();
-
-            try {
-                session.getNode(providerRoot + "/" + name);
-                fail(providerRoot + " : Folder has not been deleted");
-
-            } catch (PathNotFoundException e) {
-                // ok
-            }
         } finally {
             session.logout();
         }
@@ -130,6 +137,7 @@ public class ContentTest extends TestCase {
             String name = "test" + System.currentTimeMillis() + ".txt";
             JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
             session.save();
+            nodes.add(testFile.getUUID());
 
             assertTrue(providerRoot + " : Created file is not valid", testFile.isValid());
 
@@ -151,17 +159,6 @@ public class ContentTest extends TestCase {
             IOUtils.copy(is, baos);
             String checkString = new String(baos.toByteArray(), "UTF-8");
             assertEquals(providerRoot + " : File content is different", value, checkString);
-
-            testFile.remove();
-            session.save();
-
-            try {
-                session.getNode(providerRoot + "/" + name);
-                fail(providerRoot + " : File has not been deleted");
-
-            } catch (PathNotFoundException e) {
-                // ok
-            }
         } finally {
             session.logout();
         }
@@ -184,11 +181,16 @@ public class ContentTest extends TestCase {
 
             JCRNodeWrapper testCollection = rootNode.createCollection(name);
             session.save();
+            nodes.add(testCollection.getUUID());
 
             final String value = "Title test";
 
-            testCollection.setProperty("jcr:description", value);
-            testCollection.save();
+            try {
+                testCollection.setProperty("jcr:description", value);
+                testCollection.save();
+            } catch (ConstraintViolationException e) {
+                return;
+            }
 
             testCollection = session.getNode(providerRoot + "/" + name);
             try {
@@ -211,17 +213,6 @@ public class ContentTest extends TestCase {
                 }
             }
             assertTrue(found);
-
-            testCollection.remove();
-            session.save();
-
-            try {
-                session.getNode(providerRoot + "/" + name);
-                fail(providerRoot + " : Folder has not been deleted");
-
-            } catch (PathNotFoundException e) {
-                // ok
-            }
         } finally {
             session.logout();
         }
@@ -249,6 +240,7 @@ public class ContentTest extends TestCase {
             String name = "test" + System.currentTimeMillis() + ".txt";
             JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
             session.save();
+            nodes.add(testFile.getUUID());
 
             final String newname = "renamed" + name;
             boolean result = false;
@@ -264,21 +256,6 @@ public class ContentTest extends TestCase {
                 }
             } catch (UnsupportedRepositoryOperationException e) {
 
-            }
-
-
-            testFile.remove();
-            session.save();
-
-            session.logout();
-            session = service.getThreadSession(ctx.getUser());
-
-            try {
-                session.getNode(providerRoot + "/" + name);
-                fail(providerRoot + " : File has not been deleted");
-
-            } catch (PathNotFoundException e) {
-                // ok
             }
         } finally {
             session.logout();
@@ -305,9 +282,11 @@ public class ContentTest extends TestCase {
 
             String name = "test" + System.currentTimeMillis() + ".txt";
             JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
+            nodes.add(testFile.getUUID());
 
             final String collectionName = "foldertest" + System.currentTimeMillis();
             JCRNodeWrapper testCollection = rootNode.createCollection(collectionName);
+            nodes.add(testCollection.getUUID());
 
             session.save();
 
@@ -321,19 +300,6 @@ public class ContentTest extends TestCase {
                 fail(providerRoot + " : moved file not found");
             }
 
-            testFile.remove();
-            session.save();
-
-            rootNode.getNode(collectionName).remove();
-            session.save();
-
-            try {
-                session.getNode(providerRoot + "/" + name);
-                fail(providerRoot + " : File has not been deleted");
-
-            } catch (PathNotFoundException e) {
-                // ok
-            }
         } finally {
             session.logout();
         }
@@ -357,6 +323,7 @@ public class ContentTest extends TestCase {
 
             String name = "test" + System.currentTimeMillis() + ".txt";
             JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
+            nodes.add(testFile.getUUID());
 
             session.save();
 
@@ -380,17 +347,6 @@ public class ContentTest extends TestCase {
             assertTrue("Node not locked", testFile.isLocked());
             testFile.unlock();
             assertFalse("Node not unlocked", testFile.isLocked());
-
-
-            testFile.remove();
-            session.save();
-
-            try {
-                session.getNode(providerRoot + "/" + name);
-                fail(providerRoot + " : File has not been deleted");
-            } catch (PathNotFoundException e) {
-                // ok
-            }
         } finally {
             session.logout();
         }
@@ -418,6 +374,8 @@ public class ContentTest extends TestCase {
             String name = "testSearch" + System.currentTimeMillis() + ".txt";
             JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
             session.save();
+            nodes.add(testFile.getUUID());
+
             // Do the query
             QueryManager qm = JCRStoreService.getInstance().getQueryManager(ctx.getUser());
             Query query = qm.createQuery("//element(*,jnt:file)[(jcr:contains(jcr:content, '456bcd'))]", Query.XPATH);
@@ -428,16 +386,6 @@ public class ContentTest extends TestCase {
                 Row row = it.nextRow();
                 String path = row.getValue(JcrConstants.JCR_PATH).getString();
                 assertEquals("Wrong file found ('" + path + "' instead of '" + testFile.getPath()+ "')",testFile.getPath(),path);
-            }
-            testFile.remove();
-            session.save();
-
-            try {
-                session.getNode(providerRoot + "/" + name);
-                fail(providerRoot + " : File has not been deleted");
-
-            } catch (PathNotFoundException e) {
-                // ok
             }
         } finally {
             session.logout();

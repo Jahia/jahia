@@ -195,6 +195,7 @@
             <item ref-type="org.jahia.toolbar.item.FileManager"/>
             <item ref-type="org.jahia.toolbar.item.MashupManager"/>
             <item ref-type="org.jahia.toolbar.item.ContentManager"/>
+            <item ref-type="org.jahia.toolbar.item.CategoryManager"/>            
             <item ref-type="org.jahia.toolbar.item.GWTWorkflow"/>
             <item ref-type="org.jahia.toolbar.item.Pdisplay"/>
         </itemsgroup>
@@ -527,6 +528,19 @@
             <property name="url">
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
                                 input="gwtmashupmanager"/>
+            </property>
+        </item>
+
+        <!-- Category Manager -->
+        <item type="org.jahia.toolbar.item.CategoryManager" extends="org.jahia.toolbar.item.OpenWindow">
+            <title-resourcebundle-key key="button.categorymanager"/>
+            <icon-style min="gwt-toolbar-ItemsGroup-icons-categorymanager-min"
+                        max="gwt-toolbar-ItemsGroup-icons-categorymanager-normal"/>
+            <description-resourcebundle-key key="button.categorymanager"/>
+            <visibility site-action-permission="engines.categorymanager"/>
+            <property name="url">
+                <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
+                                input="gwtcategorymanager"/>
             </property>
         </item>
 

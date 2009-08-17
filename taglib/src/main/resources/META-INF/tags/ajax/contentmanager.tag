@@ -126,6 +126,8 @@ cursor:pointer;
                             aliasResourceName="fm_rotateRight"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.refresh.label"
                             aliasResourceName="fm_refresh"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newCategory.label"
+                            aliasResourceName="fm_newcategory"/>                            
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.statusbar.copying.label"
                             aliasResourceName="fm_copying"/>

@@ -37,7 +37,7 @@ package org.jahia.ajax.gwt.client.util.content;
  */
 public final class JCRClientUtils {
 
-    public static final String FOLDER_NODETYPES = "nt:folder,jnt:mountPoint";
+    public static final String FOLDER_NODETYPES = "nt:folder,jnt:mountPoint,jnt:category";
     public static final String FILE_NODETYPES = "nt:file,nt:folder,jnt:mountPoint,jnt:portlet";
     public static final String PORTLET_NODETYPES = "nt:folder,jnt:mountPoint,jnt:portlet";
     public static final String CATEGORY_NODETYPES = "jnt:category";    

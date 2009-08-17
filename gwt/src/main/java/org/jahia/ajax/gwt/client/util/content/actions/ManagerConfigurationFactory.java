@@ -477,14 +477,11 @@ public class ManagerConfigurationFactory {
     public static ManagerConfiguration getCategoryManagerConfiguration(final BrowserLinker linker) {
         ManagerConfiguration categoryManagerConfig = new ManagerConfiguration();
         categoryManagerConfig.setEnableTextMenu(true);
-        categoryManagerConfig.setEnableFileDoubleClick(false);
         categoryManagerConfig.setDisplayExt(false);
         categoryManagerConfig.setDisplaySize(false);
-        categoryManagerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
+        categoryManagerConfig.setDisplayDate(false);
+        categoryManagerConfig.setDefaultView(JCRClientUtils.FILE_TABLE);
         ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
-        ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
-        file.addItem(newFolder);
-        categoryManagerConfig.addItem(newFolder);
         ContentActionItem newCategory = ItemCreator.createNewCategoryItem(linker);
         file.addItem(newCategory);
         categoryManagerConfig.addItem(newCategory);
@@ -515,19 +512,8 @@ public class ManagerConfigurationFactory {
         // add menus to the config as well
         categoryManagerConfig.addGroup(file);
         categoryManagerConfig.addGroup(edit);
-
-        // no columns to add (default)
-
-        // show only the category repository
-        //categoryManagerConfig.addAccordion(JCRClientUtils.CATEGORY_REPOSITORY);
-
-        categoryManagerConfig.addTab(JCRClientUtils.ROLES_ACL);
-        categoryManagerConfig.addTab(JCRClientUtils.MODES_ACL);
-
-
-        // show the category tab by default
-
-        // do not hide the left panel (default)
+        
+        categoryManagerConfig.addAccordion(JCRClientUtils.GLOBAL_REPOSITORY);
 
         categoryManagerConfig.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
         return categoryManagerConfig;
@@ -543,9 +529,6 @@ public class ManagerConfigurationFactory {
         categoryPickerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
 
         ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
-        ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
-        file.addItem(newFolder);
-        categoryPickerConfig.addItem(newFolder);
         ContentActionItem newCategory = ItemCreator.createNewCategoryItem(linker);
         file.addItem(newCategory);
         categoryPickerConfig.addItem(newCategory);
@@ -577,9 +560,6 @@ public class ManagerConfigurationFactory {
 
         // only one column here : name
         categoryPickerConfig.addColumn("name");
-
-        // no tab here
-//        mashupPickerConfig.addTab(JCRClientUtils.MASHUP_REPOSITORY);
 
         // hide the left panel
         categoryPickerConfig.setHideLeftPanel(true);

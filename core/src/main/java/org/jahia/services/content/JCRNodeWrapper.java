@@ -172,7 +172,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     public List<Item> getAncestors() throws RepositoryException;
 
-    boolean renameFile(String newName);
+    boolean renameFile(String newName) throws RepositoryException;
 
     boolean moveFile(String dest) throws RepositoryException;
 

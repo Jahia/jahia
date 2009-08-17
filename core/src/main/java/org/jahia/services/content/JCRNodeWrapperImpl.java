@@ -1112,16 +1112,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return ancestors;
     }
 
-    public boolean renameFile(String newName) {
+    public boolean renameFile(String newName) throws RepositoryException {
         if (exception != null) {
             return false;
         }
 
-        try {
-            objectNode.getSession().move(objectNode.getPath(), objectNode.getParent().getPath()+"/"+ provider.encodeInternalName(newName));
-        } catch (RepositoryException e) {
-            logger.error(e) ;
-        }
+        objectNode.getSession().move(objectNode.getPath(), objectNode.getParent().getPath()+"/"+ provider.encodeInternalName(newName));
 
         return true;
     }

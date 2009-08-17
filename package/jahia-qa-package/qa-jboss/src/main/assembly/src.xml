@@ -40,5 +40,15 @@
         <source>src/main/resources/conf/web.xml</source>
         <outputDirectory>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}/server/default/deploy/jboss-web.deployer/conf</outputDirectory>
     </file>
+    <file>
+        <source>${project.build.directory}/prepackagedSites/ACME.zip</source>
+        <outputDirectory>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}/server/default/deploy/${jahia.deploy.war.dirName}/WEB-INF/var/imports</outputDirectory>
+        <destName>siteImport_ACME.zip</destName>
+    </file>
+    <file>
+        <source>${project.build.directory}/prepackagedSites/testSite.zip</source>
+        <outputDirectory>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}/server/default/deploy/${jahia.deploy.war.dirName}/WEB-INF/var/imports</outputDirectory>
+        <destName>siteImport_testSite.zip</destName>
+    </file>
   </files>
 </assembly>

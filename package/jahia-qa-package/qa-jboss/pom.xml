@@ -79,6 +79,24 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy/${jahia.deploy.war.dirName}</outputDirectory>
                                 </artifactItem>
+                                <artifactItem>
+						            <groupId>org.jahia.prepackagedsites</groupId>
+						            <artifactId>webtemplates</artifactId>
+						            <version>${jahia.package.version}</version>
+						            <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/prepackagedSites</outputDirectory>
+                                    <includes>ACME.zip</includes>
+                                </artifactItem>
+                                <artifactItem>
+						            <groupId>org.jahia.prepackagedsites</groupId>
+						            <artifactId>testSite</artifactId>
+						            <version>${jahia.package.version}</version>
+						            <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/prepackagedSites</outputDirectory>
+                                    <includes>testSite.zip</includes>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
@@ -145,10 +163,12 @@
                     <targetServerDirectory>${project.build.directory}/jboss-${jahia.jboss.version}</targetServerDirectory>
                     <targetServerType>jboss</targetServerType>
                     <targetServerVersion>4.2.x</targetServerVersion>
+                    <!-- 
                     <siteImportLocation>
                         <param>/home/bamboo/bin/siteImport_testSite.zip</param>
                         <param>/home/bamboo/bin/siteImport_DemoSite.zip</param>
                     </siteImportLocation>
+                     -->
                     <cluster_activated>false</cluster_activated>
                     <processingServer>true</processingServer>
                     <databaseType>mysql</databaseType>

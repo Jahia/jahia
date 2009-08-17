@@ -278,6 +278,7 @@ public class JCRStoreProvider {
             initObservers();
             initContent();
 
+            initialized = true;
             authenticationType = tmpAuthenticationType;
         } catch (Exception e){
             logger.error("Repository init error",e);
@@ -286,9 +287,9 @@ public class JCRStoreProvider {
     }
 
     protected void initNodeTypes() throws RepositoryException, IOException {
-        JahiaUser root = getGroupManagerService().getAdminUser(0);
+//        JahiaUser root = getGroupManagerService().getAdminUser(0);
         if (canRegisterCustomNodeTypes()) {
-            Session session = getSystemSession(root.getUsername());
+            Session session = getSystemSession();
             try {
                 Workspace workspace = session.getWorkspace();
                 registerCustomNodeTypes(workspace);
@@ -343,8 +344,7 @@ public class JCRStoreProvider {
 
     protected void initContent() throws RepositoryException, IOException {
         if ("/".equals(mountPoint)) {
-            JahiaUser root = getGroupManagerService().getAdminUser(0);
-            Session session = getSystemSession(root.getUsername());
+            Session session = getSystemSession();
             try {
                 Node rootNode = session.getRootNode();
                 if (!rootNode.hasNode(Constants.CONTENT)) {

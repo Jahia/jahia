@@ -460,6 +460,7 @@ public class JCRStoreProvider {
                 } else {
                     credentials = JahiaLoginModule.getGuestCredentials();
                 }
+                username = ((SimpleCredentials)credentials).getUserID();
             }
 
             if (username.startsWith(" system ") && systemUser != null) {

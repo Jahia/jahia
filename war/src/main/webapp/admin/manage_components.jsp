@@ -197,7 +197,7 @@ stretcherToOpen   = 0; %>
                         }
                         %>
                         // add actions to javascript action launcher
-                        var theID = <%=app.getID()%>;
+                        var theID = "<%=app.getID()%>";
                         var theUrl = "<%=url%>";
 
                         // edit action

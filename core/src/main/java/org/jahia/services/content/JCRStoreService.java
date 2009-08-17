@@ -191,7 +191,9 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
     public void deployDefinitions(String systemId) {
         for (JCRStoreProvider provider : providers.values()) {
-            provider.deployDefinitions(systemId);
+            if (provider.canRegisterCustomNodeTypes()) {
+                provider.deployDefinitions(systemId);
+            }
         }
     }
 

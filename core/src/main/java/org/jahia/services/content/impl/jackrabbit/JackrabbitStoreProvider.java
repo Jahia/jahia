@@ -93,6 +93,10 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         jntm.registerNodeTypes( new FileInputStream(cndOutFile), JackrabbitNodeTypeManager.TEXT_X_JCR_CND, true);
     }
 
+    protected boolean canRegisterCustomNodeTypes() {
+        return true;
+    }
+
     protected void registerCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
         File cndOutFile = null;
         try {

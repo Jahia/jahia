@@ -89,13 +89,13 @@ public class JahiaLoginModule implements LoginModule {
             if (name != null) {
                 if (SYSTEM.equals(name)) {
                     String key = new String(pass);
-                    if (key.equals(systemPass.get(name))) {
+                    if (validateTicket(name, key)) {
 //                        systemPass.remove(key);
                         user = new JahiaPrincipal(SYSTEM, true, false);
                     }
                 } else if (name.startsWith(SYSTEM)) {
                     String key = new String(pass);
-                    if (key.equals(systemPass.get(name))) {
+                    if (validateTicket(name, key)) {
 //                        systemPass.remove(key);
                         user = new JahiaPrincipal(name.substring(SYSTEM.length()), true, false);
                     }
@@ -103,7 +103,7 @@ public class JahiaLoginModule implements LoginModule {
                     user = new JahiaPrincipal(GUEST, false, true);
                 } else {
                     String key = new String(pass);
-                    if (key.equals(systemPass.get(name)) || getUserService().checkPassword(name,key)) {
+                    if (validateTicket(name, key) || getUserService().checkPassword(name,key)) {
 //                        systemPass.remove(key);
                         user = new JahiaPrincipal(name);
                     }
@@ -118,6 +118,10 @@ public class JahiaLoginModule implements LoginModule {
             e.printStackTrace();
         }
         return user != null;
+    }
+
+    public static boolean validateTicket(String name, String key) {
+        return key.equals(systemPass.get(name));
     }
 
     public boolean commit() throws LoginException {

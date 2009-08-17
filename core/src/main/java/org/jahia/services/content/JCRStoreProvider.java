@@ -265,47 +265,35 @@ public class JCRStoreProvider {
 
     public void start() throws JahiaInitializationException {
         try {
-            getService().addProvider(getKey(), getMountPoint(), this);
-            repo = getRepository();
             String tmpAuthenticationType = authenticationType;
             authenticationType = "shared";
-            Session session = getSystemSession();
-            try {
-                Workspace workspace = session.getWorkspace();
 
-                try {
-                    registerCustomNodeTypes(workspace);
-                } catch (RepositoryException e) {
-                    logger.error("Cannot register nodetypes",e);
-                }
+            getService().addProvider(getKey(), getMountPoint(), this);
 
-                session.save();
+            initNodeTypes();
+            initObservers();
+            initContent();
 
-                initObservers();
-
-                Node rootNode = session.getRootNode();
-                initializeAcl(session);
-
-                if ("/".equals(mountPoint) && !rootNode.hasNode(Constants.CONTENT)) {
-                    session.importXML("/", new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/root.xml"),ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
-                    Node userNode = (Node) session.getItem("/"+Constants.CONTENT+"/users");
-                    NodeIterator nodeIterator = userNode.getNodes();
-                    while (nodeIterator.hasNext()) {
-                        Node node = (Node) nodeIterator.next();
-                        if(!"guest".equals(node.getName())) {
-                            JCRNodeWrapperImpl.changePermissions(node, "u:" + node.getName(), "rw");
-                        }
-                    }
-                }
-                session.save();
-            } finally {
-                initialized = true;
-                session.logout();
-            }
             authenticationType = tmpAuthenticationType;
         } catch (Exception e){
             logger.error("Repository init error",e);
             throw  new JahiaInitializationException("Repository init error",e) ;
+        }
+    }
+
+    protected void initNodeTypes() throws RepositoryException, IOException {
+        JahiaUser root = getGroupManagerService().getAdminUser(0);
+        if (canRegisterCustomNodeTypes()) {
+            Session session = getSystemSession(root.getUsername());
+            try {
+                Workspace workspace = session.getWorkspace();
+                registerCustomNodeTypes(workspace);
+                session.save();
+            } catch (RepositoryException e) {
+                logger.error("Cannot register nodetypes",e);
+            } finally {
+                session.logout();
+            }
         }
     }
 
@@ -349,6 +337,32 @@ public class JCRStoreProvider {
         }
     }
 
+    protected void initContent() throws RepositoryException, IOException {
+        if ("/".equals(mountPoint)) {
+            JahiaUser root = getGroupManagerService().getAdminUser(0);
+            Session session = getSystemSession(root.getUsername());
+            try {
+                Node rootNode = session.getRootNode();
+                if (!rootNode.hasNode(Constants.CONTENT)) {
+                    initializeAcl(session);
+
+                    session.importXML("/", new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/root.xml"),ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
+                    Node userNode = (Node) session.getItem("/"+Constants.CONTENT+"/users");
+                    NodeIterator nodeIterator = userNode.getNodes();
+                    while (nodeIterator.hasNext()) {
+                        Node node = (Node) nodeIterator.next();
+                        if(!"guest".equals(node.getName())) {
+                            JCRNodeWrapperImpl.changePermissions(node, "u:" + node.getName(), "rw");
+                        }
+                    }
+                }
+                session.save();
+            } finally {
+                session.logout();
+            }
+        }
+    }
+
     public void stop() {
         running = false;
         service.removeProvider(key);
@@ -383,17 +397,17 @@ public class JCRStoreProvider {
     public synchronized Repository getRepository(){
         if (repo == null) {
             if (repositoryName != null) {
-                Repository r = getRepositoryByJNDI();
+                repo = getRepositoryByJNDI();
                 if (rmibind != null) {
                     try {
-                        Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(r));
+                        Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(repo));
                     } catch (MalformedURLException e) {
                     } catch (RemoteException e) {
                     }
                 }
-                return r;
+                return repo;
             } else if (factory != null && url != null) {
-                return getRepositoryByRMI();
+                repo = getRepositoryByRMI();
             }
         }
         return repo;
@@ -436,9 +450,9 @@ public class JCRStoreProvider {
             s = repo.login(credentials, workspace);
         } else {
             if (user != null) {
-                s = repo.login(new SimpleCredentials(user, password.toCharArray()), workspace);
+                s = getRepository().login(credentials,workspace);
             } else if(!initialized){
-                s = repo.login(JahiaLoginModule.getSystemCredentials(), workspace);
+                s = getRepository().login(new SimpleCredentials(user, password.toCharArray()),workspace);
             } else {
                 s = repo.login(workspace);
             }
@@ -487,6 +501,10 @@ public class JCRStoreProvider {
 
     public JCRPropertyWrapperImpl getPropertyWrapper(Property prop, JCRSessionWrapper session) throws RepositoryException {
         return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getNode(), session, this), prop, session, this);
+    }
+
+    protected boolean canRegisterCustomNodeTypes() {
+        return false;
     }
 
     protected void registerCustomNodeTypes(Workspace ws) throws IOException, RepositoryException {

@@ -37,6 +37,9 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.callback.*;
 import java.util.Map;
 import java.security.Principal;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.net.HttpURLConnection;
 
 /**
  * TODO Comment me
@@ -103,20 +106,23 @@ public class JahiaHTTPLoginModule  implements LoginModule {
             callbackHandler.handle(callbacks);
 
             final String name = ((NameCallback)callbacks[0]).getName();
-
             char[] pass = ((PasswordCallback)callbacks[1]).getPassword();
             System.out.println("name="+name+",pass="+new String(pass));
 
-            user = new Principal() {
-                /**
-                 * Returns the name of this principal.
-                 *
-                 * @return the name of this principal.
-                 */
-                public String getName() {
-                    return name;
-                }
-            };
+            URL url = new URL(options.get("url")+"?user="+ URLEncoder.encode(name,"UTF-8") + "&pass=" + URLEncoder.encode(new String(pass),"UTF-8"));
+            int i = ((HttpURLConnection)url.openConnection()).getResponseCode();
+            if (i == 200) {
+                user = new Principal() {
+                    /**
+                     * Returns the name of this principal.
+                     *
+                     * @return the name of this principal.
+                     */
+                    public String getName() {
+                        return name;
+                    }
+                };
+            }
         } catch (UnsupportedCallbackException e) {
             // ignore
         } catch (Exception e) {

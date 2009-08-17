@@ -642,18 +642,6 @@
         </servlet-class>
     </servlet>
 
-    <!-- XMLRPCServlet for the blogs -->
-    <servlet>
-        <servlet-name>XMLRPCServlet</servlet-name>
-        <servlet-class>org.jahia.blogs.XMLRPCServlet</servlet-class>
-    </servlet>
-
-    <!-- TrackBackPingServlet accepting trackBack pings -->
-    <servlet>
-        <servlet-name>TrackBackPingServlet</servlet-name>
-        <servlet-class>org.jahia.blogs.TrackBackPingServlet</servlet-class>
-    </servlet>
-
     <!-- Ajax Struts Servlet -->
     <servlet>
         <servlet-name>action</servlet-name>
@@ -673,6 +661,11 @@
     <servlet>
         <servlet-name>GetFile</servlet-name>
         <servlet-class>org.jahia.bin.GetFile</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ValidateTicket</servlet-name>
+        <servlet-class>org.jahia.bin.ValidateTicket</servlet-class>
     </servlet>
 
     <servlet>
@@ -768,6 +761,10 @@
         <servlet-name>GetFile</servlet-name>
         <url-pattern>/getFile</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ValidateTicket</servlet-name>
+        <url-pattern>/validateTicket</url-pattern>
+    </servlet-mapping>
 
     <!-- Axis (SOAP) Mappings -->
     <servlet-mapping>
@@ -819,18 +816,6 @@
     <servlet-mapping>
         <servlet-name>Test</servlet-name>
         <url-pattern>/test/*</url-pattern>
-    </servlet-mapping>
-
-    <!-- XMLRPCServlet mapping for the blogs -->
-    <servlet-mapping>
-        <servlet-name>XMLRPCServlet</servlet-name>
-        <url-pattern>/blogs/*</url-pattern>
-    </servlet-mapping>
-
-    <!-- TrackBackPingServlet mapping for the pings -->
-    <servlet-mapping>
-        <servlet-name>TrackBackPingServlet</servlet-name>
-        <url-pattern>/trackbacks/*</url-pattern>
     </servlet-mapping>
 
     <!-- Ajax Struts Servlet Mapping -->

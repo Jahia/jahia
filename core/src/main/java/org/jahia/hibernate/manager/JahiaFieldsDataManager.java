@@ -799,9 +799,9 @@ public class JahiaFieldsDataManager {
                 fieldCache = cacheService.createCacheInstance(CACHE_NAME);
             }
             if (!forceLoadFromDB) {
-                ContentField retContentField = (ContentField) fieldCache.get(MD_KEY_PREFIX + objectKey + name);
+                Object retContentField = fieldCache.get(MD_KEY_PREFIX+objectKey+name);
                 if (retContentField != null) {
-                    return retContentField;
+                    return Boolean.FALSE.equals(retContentField) ? null : (ContentField)retContentField;
                 }
             }
             JahiaObjectPK jpk = new JahiaObjectPK(objectKey.getType(), (objectKey.getIdInType()));
@@ -835,6 +835,8 @@ public class JahiaFieldsDataManager {
                         activeValues);
                 fieldCache.put(MD_KEY_PREFIX + objectKey + name, f);
                 return f;
+            } else {
+                fieldCache.put(MD_KEY_PREFIX + objectKey + name, Boolean.FALSE);
             }
 
         } catch (JahiaException e) {

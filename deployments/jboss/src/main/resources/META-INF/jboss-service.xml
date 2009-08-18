@@ -17,6 +17,15 @@
                   </jaas:login-module>
                </jaas:authentication>
             </jaas:application-policy>
+            <jaas:application-policy name="probe">
+               <jaas:authentication>
+                  <jaas:login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule" flag="required">
+                     <jaas:module-option name="usersProperties">jahia-users.properties</jaas:module-option>
+                     <jaas:module-option name="rolesProperties">jahia-roles.properties</jaas:module-option>
+                     <jaas:module-option name="unauthenticatedIdentity">guest</jaas:module-option>
+                  </jaas:login-module>
+               </jaas:authentication>
+            </jaas:application-policy>
          </jaas:policy>         
       </attribute>
       <depends optional-attribute-name="LoginConfigService">

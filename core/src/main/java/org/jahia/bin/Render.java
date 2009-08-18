@@ -1,6 +1,7 @@
 package org.jahia.bin;
 
 import org.apache.log4j.Logger;
+import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -63,10 +64,9 @@ public class Render extends HttpServlet {
             writer.print(out);
             writer.close();
         } catch (PathNotFoundException e) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        	ErrorHandler.getInstance().handle(e, req, resp);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new ServletException(e);
+        	ErrorHandler.getInstance().handle(e, req, resp);
         } finally {
             if (logger.isInfoEnabled()) {
                 StringBuilder sb = new StringBuilder(100);

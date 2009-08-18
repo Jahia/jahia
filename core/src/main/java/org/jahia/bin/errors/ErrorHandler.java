@@ -34,6 +34,7 @@ package org.jahia.bin.errors;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
@@ -43,6 +44,7 @@ import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.jcr.PathNotFoundException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -134,7 +136,9 @@ public class ErrorHandler {
             e = ((ServletException) e).getRootCause();
         }
 
-        if (e instanceof JahiaException) {
+        if (e instanceof PathNotFoundException) {
+        	code = SC_NOT_FOUND;
+        } else if (e instanceof JahiaException) {
             if (e instanceof JahiaSessionExpirationException) {
                 code = SC_BAD_REQUEST;
             } else if (e instanceof JahiaForbiddenAccessException

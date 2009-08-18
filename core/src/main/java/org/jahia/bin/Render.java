@@ -313,6 +313,9 @@ public class Render extends HttpServlet {
      * @throws RepositoryException
      */
     private Resource resolveResource(String workspace, Locale locale, String path, JahiaUser user) throws RepositoryException {
+        if (logger.isDebugEnabled()) {
+        	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
+        }
         JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(user, workspace, locale);
 
         JCRNodeWrapper node = null;
@@ -341,6 +344,9 @@ public class Render extends HttpServlet {
             }
         }
         Resource r = new Resource(node, workspace, locale, ext, tpl);
+        if (logger.isDebugEnabled()) {
+        	logger.debug("Resolved resource: " + r);
+        }
         return r;
     }
 

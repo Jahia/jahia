@@ -31,6 +31,7 @@
  */
 package org.jahia.services.render;
 
+import org.apache.log4j.Logger;
 import org.jahia.data.beans.TemplatePathResolverFactory;
 import org.jahia.data.beans.TemplatePathResolverBean;
 import org.jahia.hibernate.manager.SpringContextSingleton;
@@ -68,6 +69,8 @@ import java.util.Collections;
  */
 public class RequestDispatcherScript implements Script {
 
+    private static final Logger logger = Logger.getLogger(RequestDispatcherScript.class);
+    
     private RequestDispatcher rd;
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -100,6 +103,10 @@ public class RequestDispatcherScript implements Script {
             }
             if (templatePath == null) {
                 throw new IOException("Template not found for : "+resource);
+            } else {
+            	if (logger.isDebugEnabled()) {
+            		logger.debug("Template '" + templatePath + "' resolved for resource: " + resource);
+            	}
             }
 
             this.request = request;
@@ -147,8 +154,8 @@ public class RequestDispatcherScript implements Script {
                 }
             });
         } catch (ServletException e) {
-            e.printStackTrace();
-            throw new IOException();
+            logger.error(e.getMessage(), e);
+            throw new IOException(e.getMessage());
         }
         if(isWriter[0]) {
             return stringWriter.getBuffer().toString();

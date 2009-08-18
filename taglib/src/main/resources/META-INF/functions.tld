@@ -11,6 +11,18 @@
     <short-name>functions</short-name>
     <uri>http://www.jahia.org/tags/functions</uri>
 
+	<function>
+		<description>
+			Abbreviates a String using ellipses. This will turn:
+     		"Now is the time for all good men" into "Now is the time for..."
+		</description>
+		<name>abbreviate</name>
+		<function-class>org.apache.commons.lang.StringUtils</function-class>
+		<function-signature>java.lang.String abbreviate(java.lang.String, int)</function-signature>
+		<example>
+			${functions:abbreviate(field.value, 100)}
+		</example>
+	</function>
     <function>
         <description>Prints out the attribute values for a tag, based on the provided Map</description>
         <name>attributes</name>

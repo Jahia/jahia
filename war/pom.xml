@@ -102,6 +102,9 @@
                                 <module>org.jahia.ajax.gwt.module.workflow.WorkflowManager</module>
 
                                 <module>org.jahia.ajax.gwt.module.linkchecker.LinkChecker</module>
+
+                                <module>org.jahia.ajax.gwt.module.edit.Edit</module>
+
                             </modules>
                         </configuration>
                         <executions>
@@ -209,11 +212,11 @@
                             <overlays>
                                 <overlay>
                                     <artifactId>jucb-connectors</artifactId>
-                                    <version>1.1-SNAPSHOT</version>                                    
+                                    <version>1.1-SNAPSHOT</version>
                                 </overlay>
                                 <overlay>
                                     <artifactId>jucb-connectors-config</artifactId>
-                                    <version>1.1-SNAPSHOT</version>                                    
+                                    <version>1.1-SNAPSHOT</version>
                                 </overlay>
                             </overlays>
                         </configuration>

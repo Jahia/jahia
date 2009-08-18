@@ -167,7 +167,7 @@ public class TemplatesDOMUtil extends DOMUtil {
      * @param parent the element to search into
      * @return a list of jahia typed elements
      */
-    private static List<Element> getAllJahiaTypedElementsRec(Element parent) {
+    public static List<Element> getAllJahiaTypedElementsRec(Element parent) {
         List<Element> list = new ArrayList<Element>();
         int nb = DOM.getChildCount(parent);
         String type = DOM.getElementAttribute(parent, JahiaType.JAHIA_TYPE);

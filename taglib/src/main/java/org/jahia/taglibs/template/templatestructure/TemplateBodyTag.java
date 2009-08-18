@@ -39,6 +39,7 @@ import org.jahia.params.AdvPreviewSettings;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.render.Resource;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.internal.gwt.GWTIncluder;
 import org.jahia.registries.ServicesRegistry;
@@ -154,6 +155,15 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
     public int doStartTag() {
         try {
+
+            if ("edit".equals(pageContext.getRequest().getParameter("mode"))) {
+                Resource r = (Resource) pageContext.getRequest().getAttribute("currentResource");
+                pageContext.getRequest().setAttribute("jahia.engines.gwtModuleIncluded", Boolean.TRUE);
+                pageContext.getOut().println(GWTIncluder.generateGWTImport(pageContext, "org.jahia.ajax.gwt.module.edit.Edit"));
+                pageContext.getOut().println("<div class=\"jahia-template-gxt editmode-gxt\" id=\"editmode\" jahiatype=\"editmode\" path=\""+r.getNode().getPath()+"\" ></div>");
+                return SKIP_BODY;
+            }
+
             useGwt = false;
             ServletRequest request = pageContext.getRequest();
             JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");

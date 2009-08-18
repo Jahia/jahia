@@ -123,7 +123,9 @@ public class ModuleTag extends BodyTagSupport {
 
                             extraParams.put("path", nodeWrapper.getPath()+"/"+path);
                             extraParams.put("type", "placeholder");
+                            if ("edit".equals(pageContext.getRequest().getParameter("mode"))|| "edit".equals(pageContext.getRequest().getAttribute("mode"))) {
                             pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeholder","placeholder"+ UUID.randomUUID().toString(), extraParams));
+                            }
                         }
                     } else if (path.startsWith("/")) {
                         try {
@@ -136,7 +138,9 @@ public class ModuleTag extends BodyTagSupport {
                             final HashMap extraParams = new HashMap();
                             extraParams.put("path", path);
                             extraParams.put("type", "placeholder");
+                            if ("edit".equals(pageContext.getRequest().getParameter("mode"))|| "edit".equals(pageContext.getRequest().getAttribute("mode"))) {
                             pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeHolder","placeholder"+ UUID.randomUUID().toString(), extraParams));
+                            }
                         }
                     }
                 } catch (RepositoryException e) {
@@ -146,17 +150,19 @@ public class ModuleTag extends BodyTagSupport {
             if (node != null) {
                 Resource resource = new Resource(node, workspace , locale, templateType, template);
 
-                pageContext.getOut().print("<div class=\"jahia-template-gxt\" jahiatype=\"placeholder\" id=\"placeholder"+UUID.randomUUID().toString()+"\" type=\"existingNode\" path=\""+node.getPath()+"\">");
-
-                try {
-                    if (renderContext.isIncludeSubModules()) {
-                        pageContext.getOut().print(RenderService.getInstance().render(resource, renderContext));
+                if ("edit".equals(pageContext.getRequest().getParameter("mode"))|| "edit".equals(pageContext.getRequest().getAttribute("mode"))) {
+                    pageContext.getOut().print("<div class=\"jahia-template-gxt\" jahiatype=\"placeholder\" id=\"placeholder"+UUID.randomUUID().toString()+"\" type=\"existingNode\" path=\""+node.getPath()+"\" template=\""+template+"\">");
+                    pageContext.getOut().print("</div>");
+                } else {
+                    try {
+                        if (renderContext.isIncludeSubModules()) {
+                            pageContext.getOut().print(RenderService.getInstance().render(resource, renderContext));
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
                     }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
                 }
 
-                pageContext.getOut().print("</div>");
             }
             path = null;
             contentBeanName = null;

@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.widget.content.ContentToolbar;
 import org.jahia.ajax.gwt.client.widget.content.ContentStatusBar;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
+import com.extjs.gxt.ui.client.widget.Component;
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,7 +69,14 @@ public class ContentManager extends TriPanelBrowserViewport {
         }
 
         // construction of the UI components
-        LeftComponent tree = new FolderTree(config);
+        LeftComponent tree = null;
+        Component leftTree = null;
+
+        if(!config.isHideLeftPanel()){
+            tree = new FolderTree(config);
+            leftTree = tree.getComponent();
+        }
+
         final ContentViews filesViews = new ContentViews(config);
         BottomRightComponent tabs = new ContentDetails(config);
         TopBar toolbar = new ContentToolbar(config) {
@@ -85,13 +93,14 @@ public class ContentManager extends TriPanelBrowserViewport {
             }
 
             protected void setTemplateView() {
-                filesViews.switchToTemplateView();;
+                filesViews.switchToTemplateView();
             }
         };
         BottomBar statusBar = new ContentStatusBar();
 
         // setup widgets in layout
-        initWidgets(tree.getComponent(),
+
+        initWidgets(leftTree,
                 filesViews.getComponent(),
                 tabs.getComponent(),
                 toolbar.getComponent(),

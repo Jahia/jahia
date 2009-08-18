@@ -439,6 +439,16 @@ public class ContentManagerHelper {
                 root.setDisplayName("categories");
                 userNodes.add(root);
             }
+
+        }else if (key.equals(JCRClientUtils.PORTLET_DEFINITIONS_REPOSITORY)) {
+            GWTJahiaNode root = getNode("/content/portletdefinitions", workspace, jParams);
+            if (root != null) {
+                root.setDisplayName("Portlet Definition");
+
+                userNodes.add(root);
+
+            }
+
         } else if (key.equals(JCRClientUtils.GLOBAL_REPOSITORY)) {
             GWTJahiaNode root = getNode("/content/", workspace, jParams);
             if (root != null) {

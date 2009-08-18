@@ -87,4 +87,9 @@ public class DOMUtil {
     public static String getRootAttr(Panel panel, String name) {
         return DOM.getElementAttribute(panel.getElement(), name);
     }
+
+    public static boolean getRootAttrAsBoolean(Panel panel, String name) {
+        String value = DOM.getElementAttribute(panel.getElement(), name);
+        return value != null && Boolean.valueOf(value);
+    }
 }

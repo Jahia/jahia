@@ -35,6 +35,8 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.DOM;
 import org.jahia.ajax.gwt.client.widget.content.ContentManager;
+import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
+import org.jahia.ajax.gwt.client.util.DOMUtil;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,14 +47,18 @@ import org.jahia.ajax.gwt.client.widget.content.ContentManager;
 public class ContentManagerEntryPoint implements EntryPoint {
 
     public void onModuleLoad() {
-        RootPanel panel = RootPanel.get("contentmanager") ;
+        RootPanel panel = RootPanel.get("contentmanager");
         if (panel != null) {
-            String conf = DOM.getElementAttribute(panel.getElement(), "config") ;
-            panel.add(new ContentManager(
-                    DOM.getElementAttribute(panel.getElement(), "nodeTypes"),
-                    DOM.getElementAttribute(panel.getElement(), "filters"),
-                    DOM.getElementAttribute(panel.getElement(), "mimeTypes"),
-                    conf)) ;
+            boolean embedded = DOMUtil.getRootAttrAsBoolean(panel, "embedded");
+            String nodeTypes = DOMUtil.getRootAttr(panel, "nodeTypes");
+            String filters = DOMUtil.getRootAttr(panel, "filters");
+            String mimeTypes = DOMUtil.getRootAttr(panel, "mimeTypes");
+            String config = DOMUtil.getRootAttr(panel, "config");
+            if (true) {
+                panel.add(new ContentManagerEmbedded(nodeTypes,filters,mimeTypes,config));
+            } else {
+                panel.add(new ContentManager(nodeTypes,filters,mimeTypes,config));
+            }
         }
     }
 

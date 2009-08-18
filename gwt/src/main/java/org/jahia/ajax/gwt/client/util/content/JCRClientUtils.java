@@ -40,7 +40,9 @@ public final class JCRClientUtils {
     public static final String FOLDER_NODETYPES = "nt:folder,jnt:mountPoint";
     public static final String FILE_NODETYPES = "nt:file,nt:folder,jnt:mountPoint,jnt:portlet";
     public static final String PORTLET_NODETYPES = "nt:folder,jnt:mountPoint,jnt:portlet";
-    public static final String CATEGORY_NODETYPES = "jnt:category";    
+    public static final String CATEGORY_NODETYPES = "jnt:category";
+    public static final String PORTLET_DEFINITIONS_NODETYPES = "jnt:portletDefinitions";    
+
 
     public final static String MY_REPOSITORY = "myRepository";
     public final static String USERS_REPOSITORY = "usersRepository";
@@ -55,6 +57,9 @@ public final class JCRClientUtils {
     public final static String WEBSITE_MASHUP_REPOSITORY = "websiteMashupRepository";
 
     public final static String CATEGORY_REPOSITORY = "categoryRepository";
+
+    public final static String PORTLET_DEFINITIONS_REPOSITORY = "portletDefinitionRepository";
+
 
     public final static String AUTHORIZATIONS_ACL = "default";
     public final static String MODES_ACL = "modes";

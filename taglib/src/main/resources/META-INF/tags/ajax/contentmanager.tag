@@ -41,6 +41,7 @@
 <%@ attribute name="nodeTypes" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="mimeTypes" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="conf" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
+<%@ attribute name="embedded" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="callback" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 
 <link rel="stylesheet" type="text/css" media="screen" href="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/uvumi-crop.css"/>
@@ -60,7 +61,7 @@ cursor:pointer;
 <script type="text/javascript" > var crop=0; 	</script>
 <template:gwtJahiaModule id="contentmanager" jahiaType="contentmanager" rootPath="<%=rootPath%>" startPath="<%=startPath%>"
                          enginemode="<%=enginemode%>" nodeTypes="<%=nodeTypes%>" filters="<%=filters%>"
-                         mimeTypes="<%=mimeTypes%>" callback="<%=callback%>" config="<%=conf%>"/>
+                         mimeTypes="<%=mimeTypes%>" callback="<%=callback%>" config="<%=conf%>" embedded="<%=embedded%>"/>
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newDir.label"
                             aliasResourceName="fm_newdir"/>
@@ -388,6 +389,18 @@ cursor:pointer;
                             aliasResourceName="fm_repository_categoryRepository"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.savedSearch.label"
                             aliasResourceName="fm_repository_savedSearch"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.portletdef.label"
+                            aliasResourceName="fm_repository_portletDefinitionRepository"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.portletdef.description.label"
+                            aliasResourceName="fm_select_portlet"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.admin.components.ManageComponents.portletReady.label"
+                            aliasResourceName="fm_portlet_ready"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.components.ManageComponents.deployNewComponents.label"
+                            aliasResourceName="fm_portlet_deploy"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.components.ManageComponents.deploy.preparewar.label"
+                            aliasResourceName="fm_portlet_preparewar"/>
+
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.login.label"
                             aliasResourceName="fm_login"/>
@@ -510,5 +523,7 @@ cursor:pointer;
                             aliasResourceName="add_content_wizard_card_name_text"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.nameCard.title"
                             aliasResourceName="add_content_wizard_card_name_title"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.title"
+                            aliasResourceName="add_content_wizard_title"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.title"
                             aliasResourceName="add_content_wizard_title"/>

@@ -46,10 +46,11 @@ public class ManagerConfigurationFactory {
     public static final String MANAGER_CONFIG = "conf";
     public static final String FILEMANAGER = "filemanager";
     public static final String MASHUPMANAGER = "mashupmanager";
-    public static final String CATEGORYMANAGER = "categorymanager";    
+    public static final String CATEGORYMANAGER = "categorymanager";
+    public static final String PORTLETDEFINITIONMANAGER = "portletdefinitionmanager";
     public static final String FILEPICKER = "filepicker";
     public static final String MASHUPPICKER = "mashuppicker";
-    public static final String CATEGORYPICKER = "categorypicker";    
+    public static final String CATEGORYPICKER = "categorypicker";
     public static final String COMPLETE = "complete";
 
     public static ManagerConfiguration getConfiguration(String config, BrowserLinker linker) {
@@ -62,7 +63,7 @@ public class ManagerConfigurationFactory {
             }
             if (config.contains(CATEGORYMANAGER)) {
                 return getCategoryManagerConfiguration(linker);
-            }            
+            }
             if (config.contains(FILEPICKER)) {
                 return getFilePickerConfiguration(linker);
             }
@@ -71,7 +72,10 @@ public class ManagerConfigurationFactory {
             }
             if (config.contains(CATEGORYPICKER)) {
                 return getCategoryPickerConfiguration(linker);
-            }            
+            }
+            if (config.contains(PORTLETDEFINITIONMANAGER)) {
+                return getPortletDefinitionManagerConfiguration(linker);
+            }
             if (config.contains(COMPLETE)) {
                 return getCompleteManagerConfiguration(linker);
             }
@@ -519,7 +523,7 @@ public class ManagerConfigurationFactory {
         // add menus to the config as well
         categoryManagerConfig.addGroup(file);
         categoryManagerConfig.addGroup(edit);
-        
+
         categoryManagerConfig.addAccordion(JCRClientUtils.CATEGORY_REPOSITORY);
 
         categoryManagerConfig.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
@@ -578,7 +582,50 @@ public class ManagerConfigurationFactory {
 
         return categoryPickerConfig;
     }
-    
+
+    public static ManagerConfiguration getPortletDefinitionManagerConfiguration(final BrowserLinker linker) {
+        ManagerConfiguration portletDefinitionManagerConf = new ManagerConfiguration();
+
+        portletDefinitionManagerConf.setEnableTextMenu(false);
+        portletDefinitionManagerConf.setEnableFileDoubleClick(false);
+        portletDefinitionManagerConf.setDisplayExt(false);
+        portletDefinitionManagerConf.setDisplaySize(false);
+
+
+        // file item group
+        ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
+        ContentActionItem deployPortletDefinition = ItemCreator.createDeployPortletDefinition(linker);
+        file.addItem(deployPortletDefinition);
+        portletDefinitionManagerConf.addItem(deployPortletDefinition);
+
+        // edit item group
+        ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
+
+        // remove item
+        ContentActionItem remove = ItemCreator.createRemoveItem(linker);
+        edit.addItem(remove);
+        portletDefinitionManagerConf.addItem(remove);
+        portletDefinitionManagerConf.addItem(new ContentActionItemSeparator());
+
+
+        // add menus to the config as well
+        portletDefinitionManagerConf.addGroup(file);
+        portletDefinitionManagerConf.addGroup(edit);
+
+        // only one column here : name
+        portletDefinitionManagerConf.addColumn("name");
+
+        // hide the left panel
+        portletDefinitionManagerConf.setHideLeftPanel(true);
+
+        portletDefinitionManagerConf.addAccordion(JCRClientUtils.PORTLET_DEFINITIONS_REPOSITORY);
+
+        portletDefinitionManagerConf.setNodeTypes(JCRClientUtils.PORTLET_DEFINITIONS_NODETYPES);
+        portletDefinitionManagerConf.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
+
+        return portletDefinitionManagerConf;
+    }
+
     /**
      * Item creation methods
      */
@@ -846,6 +893,7 @@ public class ManagerConfigurationFactory {
 
         /**
          * Item that creates a new mashup
+         *
          * @param linker
          * @return
          */
@@ -861,9 +909,10 @@ public class ManagerConfigurationFactory {
             };
             return newMashup;
         }
-        
+
         /**
          * Item that creates a new RSS item
+         *
          * @param linker
          * @return
          */
@@ -882,6 +931,7 @@ public class ManagerConfigurationFactory {
 
         /**
          * Item that creates a new Google Gadget item
+         *
          * @param linker
          * @return
          */
@@ -900,13 +950,14 @@ public class ManagerConfigurationFactory {
 
         /**
          * Item that creates a new category
+         *
          * @param linker
          * @return
          */
         private static ContentActionItem createNewCategoryItem(final BrowserLinker linker) {
             ContentActionItem newCategory = new ContentActionItem(Messages.getResource("fm_newcategory"), "fm-newcategory") {
                 public void onSelection() {
-                    ContentActions.showContentWizard(linker,"jnt:category");
+                    ContentActions.showContentWizard(linker, "jnt:category");
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
@@ -914,10 +965,30 @@ public class ManagerConfigurationFactory {
                 }
             };
             return newCategory;
-        }        
-        
+        }
+
+        /**
+         * Item that open a Portlet Upload manager
+         *
+         * @param linker
+         * @return
+         */
+        private static ContentActionItem createDeployPortletDefinition(final BrowserLinker linker) {
+            ContentActionItem actionItem = new ContentActionItem(Messages.getNotEmptyResource("fm_deployPortlet", "Deploy Portlet"), "fm-newmashup") {
+                public void onSelection() {
+                    ContentActions.showDeployPortletForm(linker);
+                }
+
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+                }
+            };
+            return actionItem;
+        }
+
         /**
          * Item that creates a new content item action
+         *
          * @param linker
          * @return
          */
@@ -936,14 +1007,15 @@ public class ManagerConfigurationFactory {
 
         /**
          * Item that  loows creating a new page
+         *
          * @param linker
          * @return
          */
         private static ContentActionItem createNewPageContentItem(final BrowserLinker linker) {
 
-            ContentActionItem newPageContent = new ContentActionItem(Messages.getNotEmptyResource("fm_newpagecontent","New page"), "fm-newcontent") {
+            ContentActionItem newPageContent = new ContentActionItem(Messages.getNotEmptyResource("fm_newpagecontent", "New page"), "fm-newcontent") {
                 public void onSelection() {
-                    ContentActions.showContentWizard(linker,"jnt:page");
+                    ContentActions.showContentWizard(linker, "jnt:page");
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
@@ -955,14 +1027,15 @@ public class ManagerConfigurationFactory {
 
         /**
          * Item that  loows creating a new page
+         *
          * @param linker
          * @return
          */
         private static ContentActionItem createNewContentListItem(final BrowserLinker linker) {
 
-            ContentActionItem newContentListItem = new ContentActionItem(Messages.getNotEmptyResource("fm_newcontentlist","New content list"), "fm-newfolder") {
+            ContentActionItem newContentListItem = new ContentActionItem(Messages.getNotEmptyResource("fm_newcontentlist", "New content list"), "fm-newfolder") {
                 public void onSelection() {
-                    ContentActions.showContentWizard(linker,"jnt:contentList");
+                    ContentActions.showContentWizard(linker, "jnt:contentList");
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {

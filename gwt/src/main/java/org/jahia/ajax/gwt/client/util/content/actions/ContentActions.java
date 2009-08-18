@@ -51,6 +51,7 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
+import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
 import org.jahia.ajax.gwt.client.widget.content.*;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow;
@@ -513,6 +514,38 @@ public class ContentActions {
             w.show();
         }
     }
+
+    /**
+     * Show deploy portlet form
+     * @param linker
+     */
+    public static void showDeployPortletForm(final BrowserLinker linker) {
+        GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
+        if (parent == null) {
+            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+            if (selectedItems != null && selectedItems.size() == 1) {
+                parent = selectedItems.get(0);
+            }
+        }
+        if (parent != null && !parent.isFile()) {
+            final com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
+            w.setHeading(Messages.getNotEmptyResource("fm_portlet_deploy", "New portlets"));
+            w.setModal(true);
+            w.setResizable(false);
+            w.setBodyBorder(false);
+            w.setLayout(new FillLayout());
+            w.setWidth(400);
+            w.add(new FormDeployPortletDefinition(){
+                public void afterSubmit() {
+                    w.hide();
+                }
+            });
+            w.setScrollMode(Style.Scroll.AUTO);
+            w.layout();
+            w.show();
+        }
+    }
+
 
     /**
      * Show the content wizard

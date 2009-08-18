@@ -921,4 +921,26 @@ public class ContentActions {
         }
     }
 
+    public static void exportContent(final BrowserLinker linker) {
+        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+        if (selectedItems != null && selectedItems.size() == 1) {
+            GWTJahiaNode selectedNode = selectedItems.get(0);
+            if (selectedNode != null) {
+                new ContentExport(linker, selectedNode).show();
+            }
+        } else {
+            GWTJahiaNode selectedNode = (GWTJahiaNode) linker.getTreeSelection();
+            if (selectedNode != null) {
+                new ContentExport(linker, selectedNode).show();
+            }
+        }
+    }
+
+    public static void importContent(final BrowserLinker linker) {
+        final GWTJahiaNode selectedNode = (GWTJahiaNode) linker.getTreeSelection();
+        if (selectedNode != null) {
+            new ContentImport(linker, selectedNode).show();
+        }
+    }
+
 }

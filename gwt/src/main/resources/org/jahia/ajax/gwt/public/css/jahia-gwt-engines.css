@@ -127,6 +127,14 @@
     background-image: url( ../images/unlock.png ) !important;
 }
 
+.fm-import {
+    background-image: url( ../images/import.png ) !important;
+}
+
+.fm-export {
+    background-image: url( ../images/export.png ) !important;
+}
+
 .fm-resize-bw {
     background-image: url( ../images/disabled/resize.png ) !important;
 }
@@ -225,6 +233,14 @@
 
 .fm-unlock-bw {
     background-image: url( ../images/disabled/unlock.png ) !important;
+}
+
+.fm-import-bw {
+    background-image: url( ../images/disabled/import.png ) !important;
+}
+
+.fm-export-bw {
+    background-image: url( ../images/disabled/export.png ) !important;
 }
 
 .fm-myRepository {

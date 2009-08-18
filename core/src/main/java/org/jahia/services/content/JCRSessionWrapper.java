@@ -247,8 +247,14 @@ public class JCRSessionWrapper implements Session {
         throw new UnsupportedRepositoryOperationException();
     }
 
-    public void importXML(String s, InputStream inputStream, int i) throws IOException, PathNotFoundException, ItemExistsException, ConstraintViolationException, VersionException, InvalidSerializedDataException, LockException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+    public void importXML(String path, InputStream inputStream, int uuidBehavior) throws IOException, PathNotFoundException, ItemExistsException, ConstraintViolationException, VersionException, InvalidSerializedDataException, LockException, RepositoryException {
+        JCRNodeWrapper node = getNode(path);
+        JCRStoreProvider jcrStoreProvider = node.getProvider();
+        String mp = jcrStoreProvider.getMountPoint();
+        if (mp.equals("/")) {
+            mp="";
+        }
+        getProviderSession(jcrStoreProvider).importXML(path.substring(mp.length()), inputStream, uuidBehavior);
     }
 
     public void setNamespacePrefix(String prefix, String uri) throws NamespaceException, RepositoryException {

@@ -42,11 +42,13 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 
 /**
  *
@@ -54,80 +56,46 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * User: toto
  * Date: Nov 13, 2008 - 7:31:46 PM
  */
-public class ImageRotate extends Window {
+public class ContentExport extends Window {
 
     private BrowserLinker m_linker ;
 
-    public ImageRotate(final BrowserLinker linker, final GWTJahiaNode n) {
+    public ContentExport(final BrowserLinker linker, final GWTJahiaNode n) {
         super() ;
 
         m_linker = linker ;
-
-        setHeading(Messages.getResource("fm_rotate"));
+        setHeading(Messages.getResource("fm_export"));
         setSize(500, 150);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
-        final FormPanel form = new FormPanel() ;
-        form.setFrame(false);
-        form.setHeaderVisible(false);
-        form.setBorders(false);
+
         setModal(true);
 
+        JahiaContentManagementService.App.getInstance().getExportUrl(n.getPath(), new AsyncCallback<String>() {
 
-        final TextField<String> newname = new TextField<String>();
-        newname.setName("newname");
-        int extIndex = n.getName().lastIndexOf(".") ;
-        if (extIndex > 0) {
-            String dotExt = n.getName().substring(extIndex) ;
-            newname.setValue(n.getName().replaceAll(dotExt, "_rotate" + dotExt));
-        } else {
-            newname.setValue(n.getName() + "_rotate");
-        }
-        newname.setFieldLabel(Messages.getResource("fm_newname"));
-        form.add(newname);
+            public void onSuccess(String result) {
+                HTML link = new HTML("<br /><br /><a href=\"" + result + "\" target=\"_new\">" + n.getName() + ".xml</a>");
+                final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
+                add(link);
+                layout();
+            }
+
+            public void onFailure(Throwable caught) {
+                com.google.gwt.user.client.Window.alert(Messages.getResource("fm_fail") + "\n" + caught.getLocalizedMessage());
+                Log.error(Messages.getResource("fm_fail"), caught);
+            }
+
+        });
 
         Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide() ;
             }
         });
-        Button left = new Button(Messages.getResource("fm_rotateLeft"), new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                rotateImage(n.getPath(), newname.getValue(), false, false) ;
-            }
-        }) ;
-        Button right = new Button(Messages.getResource("fm_rotateRight"), new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                rotateImage(n.getPath(), newname.getValue(), true, false) ;
-            }
-        }) ;
-        buttons.add(left) ;
-        buttons.add(right) ;
+
         buttons.add(cancel) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setBottomComponent(buttons);
-
-        add(form);
-    }
-
-    private void rotateImage(final String path, final String target, final boolean clockwise, boolean force) {
-         JahiaContentManagementService.App.getInstance().rotateImage(path, target, clockwise, force, new AsyncCallback() {
-             public void onFailure(Throwable throwable) {
-                 if (throwable instanceof ExistingFileException) {
-                    if (com.google.gwt.user.client.Window.confirm(Messages.getResource("fm_alreadyExists") + "\n"+ Messages.getResource("fm_confOverwrite"))) {
-                         rotateImage(path, target, clockwise, true);
-                     }
-                } else {
-                    com.google.gwt.user.client.Window.alert(Messages.getResource("fm_failRotate") + "\n" + throwable.getLocalizedMessage());
-                    Log.error(Messages.getResource("fm_failRotate"), throwable);
-                }
-             }
-
-             public void onSuccess(Object result) {
-                hide();
-                m_linker.refreshTable();
-             }
-         });
     }
 
 }

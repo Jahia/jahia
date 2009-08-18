@@ -410,6 +410,14 @@ cursor:pointer;
                             aliasResourceName="fm_username"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.password.label"
                             aliasResourceName="fm_password"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.import.label"
+                            aliasResourceName="fm_import"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.importfile.label"
+                            aliasResourceName="fm_importfile"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.export.label"
+                            aliasResourceName="fm_export"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.exportlink.label"
+                            aliasResourceName="fm_exportlink"/>
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.principal.label"
                             aliasResourceName="ae_principal"/>

@@ -145,7 +145,7 @@ public class ImageResize extends Window {
         buttons.add(submit) ;
         buttons.add(cancel) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);
-        setTopComponent(buttons);
+        setBottomComponent(buttons);
 
         add(form);
     }

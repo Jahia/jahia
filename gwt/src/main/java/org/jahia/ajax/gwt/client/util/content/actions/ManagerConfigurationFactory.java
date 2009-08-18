@@ -497,6 +497,12 @@ public class ManagerConfigurationFactory {
         file.addItem(newCategory);
         categoryManagerConfig.addItem(newCategory);
         categoryManagerConfig.addItem(new ContentActionItemSeparator());
+        ContentActionItem exportItem = ItemCreator.createExportItem(linker);
+        file.addItem(exportItem);
+        categoryManagerConfig.addItem(exportItem);
+        ContentActionItem importItem = ItemCreator.createImportItem(linker);
+        file.addItem(importItem);
+        categoryManagerConfig.addItem(importItem);
 
         ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
         ContentActionItem rename = ItemCreator.createRenameItem(linker);
@@ -570,6 +576,14 @@ public class ManagerConfigurationFactory {
         // add menus to the config as well
         categoryPickerConfig.addGroup(file);
         categoryPickerConfig.addGroup(edit);
+
+        ContentActionItem exportItem = ItemCreator.createExportItem(linker);
+        file.addItem(exportItem);
+        categoryPickerConfig.addItem(exportItem);
+        ContentActionItem importItem = ItemCreator.createImportItem(linker);
+        file.addItem(importItem);
+        categoryPickerConfig.addItem(importItem);
+
 
         // only one column here : name
         categoryPickerConfig.addColumn("name");
@@ -1043,6 +1057,32 @@ public class ManagerConfigurationFactory {
                 }
             };
             return newContentListItem;
+        }
+
+        private static ContentActionItem createExportItem(final BrowserLinker linker) {
+            ContentActionItem exportItem = new ContentActionItem(Messages.getResource("fm_export"), "fm-export") {
+                public void onSelection() {
+                    ContentActions.exportContent(linker);
+                }
+
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection || treeSelection);
+                }
+            };
+            return exportItem;
+        }
+
+        private static ContentActionItem createImportItem(final BrowserLinker linker) {
+            ContentActionItem importItem = new ContentActionItem(Messages.getResource("fm_import"), "fm-import") {
+                public void onSelection() {
+                    ContentActions.importContent(linker);
+                }
+
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable);
+                }
+            };
+            return importItem;
         }
 
     }

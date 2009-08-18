@@ -143,5 +143,9 @@ public interface JahiaContentManagementServiceAsync {
     void getStoredPasswordsProviders(AsyncCallback<Map<String, String>> async) ;
 
     void storePasswordForProvider(String providerKey, String username, String password, AsyncCallback async);
-    
+
+    void getExportUrl(String path, AsyncCallback<String> async);
+
+    void importContent(String parentPath, String fileKey, AsyncCallback async);
+
 }

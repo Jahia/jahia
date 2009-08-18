@@ -231,10 +231,10 @@ public class ExportEngine implements JahiaEngine {
                     outputStream.close();
                 }
                 return;
-            } else if ("cats".equals(processingContext.getParameter("exportformat"))) {
+            } else if ("jcr".equals(processingContext.getParameter("exportformat"))) {
                 resp.setContentType("text/xml");
-                Node node = ServicesRegistry.getInstance().getCategoryService().getCategoriesRoot();
                 JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(jParams.getUser());
+                Node node = session.getNode(processingContext.getParameter("path"));
                 session.exportDocumentView(node.getPath(), outputStream, true, false);
                 outputStream.close();
                 return;

@@ -40,7 +40,6 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 import org.jahia.ajax.gwt.utils.JahiaGWTUtils;
@@ -2171,6 +2170,7 @@ public class ContentManagerHelper {
             JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser(), "default", ctx.getCurrentLocale());
             JCRNodeWrapper node = session.getNode(path);
             Resource r = new Resource(node, "default", ctx.getCurrentLocale(), "html", null);
+            ctx.getRequest().setAttribute("mode", "edit");
             res = RenderService.getInstance().render(r, new RenderContext(ctx.getRequest(), ctx.getResponse()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -2328,4 +2328,15 @@ public class ContentManagerHelper {
         }
     }
 
+
+    public static void importContent(JahiaUser user, String parentPath, String fileKey) {
+        GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
+        try {
+            JCRSessionWrapper session = jcr.getThreadSession(user);
+            session.importXML(parentPath, item.file, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+            session.save();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

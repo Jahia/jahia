@@ -141,7 +141,7 @@ public class ImageCrop extends Window {
         buttons.add(submit) ;
         buttons.add(cancel) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);
-        setTopComponent(buttons);
+        setBottomComponent(buttons);
 
         add(flowPanel);
         add(form);

@@ -65,6 +65,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
+import org.jahia.engines.importexport.ExportEngine;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -407,6 +408,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void storePasswordForProvider(String providerKey, String username, String password) {
         ContentManagerHelper.storePasswordForProvider(getUser(), providerKey, username, password);
+    }
+
+    public String getExportUrl(String path) throws GWTJahiaServiceException {
+        try {
+            return retrieveParamBean().composeEngineUrl(ExportEngine.ENGINE_NAME,"path="+path+"&exportformat=jcr");
+        } catch (JahiaException e) {
+            throw new GWTJahiaServiceException();
+        }
+    }
+
+    public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {
+        ContentManagerHelper.importContent(getUser(), parentPath, fileKey);
     }
 
 }

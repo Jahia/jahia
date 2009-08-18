@@ -1884,7 +1884,8 @@ public class ManageSites extends AbstractAdministrationModule {
                     jcrNodeWrapper.remove();
                     jcrNodeWrapper.saveSession();
                 } catch (RepositoryException e) {
-                    e.printStackTrace();
+					logger.error("Error removing site folders for site '" + site.getTitle() + " (" + site.getSiteKey()
+					        + ")'. Cause: " + e.getMessage(), e);
                 }
             }
         }

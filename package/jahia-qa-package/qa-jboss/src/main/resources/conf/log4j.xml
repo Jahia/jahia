@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!--
+  This is the default log4j development file. For use in production server,
+  please use the log4j-prod.xml file instead, as it is a lot less verbose than
+  this one.
+-->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <!--
+    <appender name="Chainsaw" class="org.apache.log4j.net.SocketAppender">
+        <param name="RemoteHost" value="localhost"/>
+        <param name="Port" value="4445"/>
+        <param name="LocationInfo" value="true"/>
+    </appender>
+    -->
+
+    <appender name="ROLL" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${jboss.dir}/server/default/log/jahia.log"></param>
+        <param name="MaxFileSize" value="1MB"></param>
+        <param name="MaxBackupIndex" value="2"></param>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d: %-5p [%t] %C{1}, %c: %m%n"></param>
+            <!-- another useful pattern to see date time,class, lines
+            BUT cpu intensive
+            -->
+            <!--param name="ConversionPattern" value="(%r)%d %5p [%t] (%F:%L) - %m%n" /-->
+        </layout>
+    </appender>
+
+    <appender name="hitAccess" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${jboss.dir}/server/default/log/jahia_access.log"></param>
+        <param name="Threshold" value="debug"></param>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d%m%n"></param>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="debug"/>
+            <param name="AcceptOnMatch" value="true"/>
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter"/>
+
+    </appender>
+
+    <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d: %-5p [%c{1}] - %m%n"></param>
+            <!-- another useful pattern to see date time,class, lines
+            BUT cpu intensive
+            -->
+            <!--param name="ConversionPattern" value="(%r)%d %5p [%t] (%F:%L) - %m%n" /-->
+        </layout>
+    </appender>
+
+    <logger name="REQUEST">
+        <appender-ref ref="ROLL"></appender-ref>
+    </logger>
+
+    <logger name="SysOut">
+        <appender-ref ref="Console"></appender-ref>
+    </logger>
+
+
+    <!--
+    Uncomment the following if you need to filter on categories,
+    such as class packages
+
+    <category name="org.jahia.engines.shared.BigText_Field">
+        <priority value="debug"/>
+    </category>
+
+    <category name="org.jahia.services.workflow">
+        <priority value="debug"/>
+    </category>
+
+    -->
+
+    <category name="org.jahia.bin.errors">
+        <priority value="warn"/>
+    </category>    
+
+    <category name="org.apache.jackrabbit.core.state.ItemStateMap">
+        <priority value="error"/>
+    </category>
+
+
+
+    <!-- (FH): changing the following level to DEBUG will generate a lot of logs,
+think twice before changing it! -->
+
+    <category name="jsp.jahia.engines">
+        <priority value="warn"/>
+    </category>
+
+    <category name="org.apache.commons">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.apache.struts.action.RequestProcessor">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.springframework">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.jahia.blogs">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.hibernate">
+        <priority value="error"/>
+    </category>
+
+    <category name="net.sf.ehcache">
+        <priority value="error"/>
+    </category>
+
+    <category name="net.htmlparser.jericho">
+        <priority value="warn"/>
+    </category>
+
+    <category name="org.apache.jsp">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.apache.jackrabbit.extractor">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.apache.jasper.compiler.TagLibraryInfoImpl">
+        <priority value="error"/>
+    </category>
+
+    <category name="EventListener">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.jahia.hibernate">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.jahia.hibernate.cache">
+        <priority value="info"/>
+    </category>
+
+    <category name="org.jboss.cache">
+        <priority value="fatal"/>
+    </category>
+
+    <category name="org.jboss.cache.transaction.DummyTransactionManager">
+        <priority value="fatal"/>
+    </category>
+    
+    <category name="org.jahia.services.events">
+        <priority value="info"/>
+    </category>
+
+    <category name="org.jahia.utils.i18n">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.quartz">
+        <priority value="info"/>
+    </category>
+    
+    <category name="org.jahia.services.search.lucene.fs.LuceneSearchHandlerImpl">
+        <priority value="info"/>
+    </category>    
+
+    <category name="org.jahia.spring.aop.interceptor">
+        <!-- Set this to debug to activate JAMon monitoring -->
+        <priority value="info"/>
+    </category>
+
+    <category name="accessLogger">
+        <appender-ref ref="hitAccess"/>
+    </category>
+
+    <root>
+        <level value="info"></level>
+        <appender-ref ref="ROLL"></appender-ref>
+        <appender-ref ref="Console"></appender-ref>
+    </root>
+
+</log4j:configuration>

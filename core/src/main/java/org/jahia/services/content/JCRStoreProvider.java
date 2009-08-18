@@ -496,19 +496,7 @@ public class JCRStoreProvider {
 
         s = getRepository().login(credentials,workspace);
 
-        registerNamespaces(s.getWorkspace());
         return s;
-    }
-
-    protected void registerNamespaces(Workspace workspace) throws RepositoryException {
-        NamespaceRegistry namespaceRegistry = workspace.getNamespaceRegistry();
-        try {
-            namespaceRegistry.getURI(Constants.JAHIA_PREF);
-        } catch (NamespaceException e) {
-            namespaceRegistry.registerNamespace(Constants.JAHIA_PREF, Constants.JAHIA_NS);
-            namespaceRegistry.registerNamespace(Constants.JAHIANT_PREF, Constants.JAHIANT_NS);
-            namespaceRegistry.registerNamespace(Constants.JAHIAMIX_PREF, org.jahia.api.Constants.JAHIAMIX_NS);
-        }
     }
 
     public JCRNodeWrapper getNodeWrapper(String localPath, JahiaUser user) {

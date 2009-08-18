@@ -79,6 +79,9 @@ public class JCRSessionWrapper implements Session {
 
     private Map<JCRStoreProvider, Session> sessions = new HashMap<JCRStoreProvider, Session>();
 
+    private Map<String,String> nsToPrefix = new HashMap<String,String>();
+    private Map<String,String> prefixToNs = new HashMap<String,String>();
+
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale, JCRStoreService service) {
         this.user = user;
         this.isSystem = isSystem;
@@ -248,20 +251,32 @@ public class JCRSessionWrapper implements Session {
         throw new UnsupportedRepositoryOperationException();
     }
 
-    public void setNamespacePrefix(String s, String s1) throws NamespaceException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setNamespacePrefix(String prefix, String uri) throws NamespaceException, RepositoryException {
+        nsToPrefix.put(uri, prefix);
+        prefixToNs.put(prefix, uri);
+        for (Session s : sessions.values()) {
+            s.setNamespacePrefix(prefix, uri);
+        }
     }
 
     public String[] getNamespacePrefixes() throws RepositoryException {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+        Set<String> wsPrefixes = new HashSet<String>(Arrays.asList(getWorkspace().getNamespaceRegistry().getPrefixes()));
+        wsPrefixes.addAll(prefixToNs.keySet());
+        return wsPrefixes.toArray(new String[wsPrefixes.size()]);
     }
 
-    public String getNamespaceURI(String s) throws NamespaceException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public String getNamespaceURI(String prefix) throws NamespaceException, RepositoryException {
+        if (prefixToNs.containsKey(prefix)) {
+            return prefixToNs.get(prefix);
+        }
+        return getWorkspace().getNamespaceRegistry().getURI(prefix);
     }
 
-    public String getNamespacePrefix(String s) throws NamespaceException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public String getNamespacePrefix(String uri) throws NamespaceException, RepositoryException {
+        if (nsToPrefix.containsKey(uri)) {
+            return nsToPrefix.get(uri);
+        }
+        return getWorkspace().getNamespaceRegistry().getPrefix(uri);
     }
 
     public void logout() {
@@ -293,6 +308,10 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    public Collection<Session> getAllSessions() {
+        return sessions.values();
+    }
+
     public Session getProviderSession(JCRStoreProvider provider) throws RepositoryException {
         if (sessions.get(provider) == null) {
             Session s = null;
@@ -304,6 +323,22 @@ public class JCRSessionWrapper implements Session {
             sessions.put(provider, s);
             for (String token : tokens) {
                 s.addLockToken(token);
+            }
+
+            NamespaceRegistry namespaceRegistryWrapper = getWorkspace().getNamespaceRegistry();
+            NamespaceRegistry providerNamespaceRegistry = s.getWorkspace().getNamespaceRegistry();
+
+
+            for (String prefix : namespaceRegistryWrapper.getPrefixes()) {
+                try {
+                    providerNamespaceRegistry.getURI(prefix);
+                } catch (RepositoryException e) {
+                    providerNamespaceRegistry.registerNamespace(prefix, namespaceRegistryWrapper.getURI(prefix));
+                }
+            }
+
+            for (String prefix : prefixToNs.keySet()) {
+                s.setNamespacePrefix(prefix, prefixToNs.get(prefix));
             }
         }
         return sessions.get(provider);

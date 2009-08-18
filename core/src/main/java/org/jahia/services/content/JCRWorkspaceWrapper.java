@@ -74,7 +74,7 @@ public class JCRWorkspaceWrapper implements Workspace {
         this.session = session;
     }
 
-    public Session getSession() {
+    public JCRSessionWrapper getSession() {
         return session;
     }
 
@@ -164,7 +164,7 @@ public class JCRWorkspaceWrapper implements Workspace {
     }
 
     public NamespaceRegistry getNamespaceRegistry() throws RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return service.getNamespaceRegistry();
     }
 
     public NodeTypeManager getNodeTypeManager() throws RepositoryException {
@@ -507,6 +507,5 @@ public class JCRWorkspaceWrapper implements Workspace {
             };
         }
     }
-
 
 }

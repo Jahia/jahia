@@ -50,6 +50,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.webdav.UsageEntry;
+import org.jahia.api.Constants;
 import org.springframework.web.context.ServletContextAware;
 import org.xml.sax.ContentHandler;
 
@@ -87,6 +88,8 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     private ServletContext servletContext;
 
     private Map<String,String> decorators = new HashMap<String,String>();
+
+    private NamespaceRegistryWrapper namespaceRegistry;
 
     static private JCRStoreService instance = null;
 
@@ -152,6 +155,9 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             descriptors.put("option.query.sql.supported" , "true");
             descriptors.put("query.xpath.pos.index" , "true");
             descriptors.put("query.xpath.doc.order" , "false");
+
+            namespaceRegistry = new NamespaceRegistryWrapper();
+
         } catch (Exception e){
             logger.error("Repository init error",e);
         }
@@ -695,5 +701,10 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         }
         return null;
     }
+
+    public NamespaceRegistry getNamespaceRegistry() throws RepositoryException {
+        return namespaceRegistry;
+    }
+
 
 }

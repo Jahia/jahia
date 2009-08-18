@@ -134,8 +134,10 @@ class TemplatePackageDeployer {
                 }
             }
             if (tmplPack.isWar()) {
-                FileUtils.copyDirectory(new File(tmplRootFolder, "WEB-INF/classes"),
-                        new File(settingsBean.getClassDiskPath()));
+				File classesFolder = new File(tmplRootFolder, "WEB-INF/classes");
+				if (classesFolder.exists()) {
+					FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()));
+				}
                 FileUtils.deleteDirectory(new File(tmplRootFolder, "WEB-INF"));
             }
         } catch (JahiaException je) {

@@ -32,9 +32,7 @@
 
 --%>
 <jsp:include page="../../../common.html.jsp">
-	<jsp:param name="template" value="basic"/>
+	<jsp:param name="template" value="tree"/>
 	<jsp:param name="skipType" value="true"/>
-	<jsp:param name="skipMetadata" value="true"/>
-	<jsp:param name="skipParentLink" value="true"/>
-	<jsp:param name="skipNodes" value="true"/>
+	<jsp:param name="skipProperties" value="true"/>
 </jsp:include>

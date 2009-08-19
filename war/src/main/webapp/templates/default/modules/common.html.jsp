@@ -66,6 +66,15 @@
 		</c:if>
 	</div>
 	</c:if>
+	<c:if test="${param.skipProperties && template == 'tree' && jcr:isNodeType(currentNode, 'nt:resource')}">
+		<jcr:nodeProperty node="${currentNode}" name="jcr:data" var="dataProp"/>
+		<div class="property type-binary">
+			<span class="label">${fn:escapeXml(jcr:label(dataProp.definition))}:</span>
+			<span class="value">
+				<a href ="<c:url value='${currentNode.parent.url}'/>">&lt;binary&gt;</a>
+			</span>
+		</div>
+	</c:if>
 	<c:if test="${!param.skipParentLink && level <= 1 && currentNode.depth > 1}">
 		<div class="parent">
 			<a href="<c:url value='${baseUrl}${currentNode.parent.path}.${template}.html' context='/'/>">..</a>

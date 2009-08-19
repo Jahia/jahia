@@ -7,9 +7,7 @@ import com.extjs.gxt.ui.client.widget.form.HiddenField;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.i18n.client.Dictionary;
-import com.google.gwt.user.client.ui.FormHandler;
-import com.google.gwt.user.client.ui.FormSubmitEvent;
-import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
+import com.google.gwt.user.client.Window;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
@@ -46,6 +44,7 @@ import org.jahia.ajax.gwt.client.widget.WorkInProgress;
  * for your use, please contact the sales department at sales@jahia.com.
  */
 public abstract class FormDeployPortletDefinition extends FormPanel {
+    private boolean doCloseParent = true;
 
     public FormDeployPortletDefinition() {
         super();
@@ -81,58 +80,92 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         deployPortlet.setValue(false);
         add(deployPortlet);
 
-
-        Button deployButton = new Button(Messages.getNotEmptyResource("fm_portlet_deploy", "Deploy"));
-        deployButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                deployPortlet.setValue(true);
-                submit();
-            }
-        });
-        addButton(deployButton);
-
         Button prepareButton = new Button(Messages.getNotEmptyResource("fm_portlet_preparewar", "Prepare"));
         prepareButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 preparePortlet.setValue(true);
-                submit();
+                doCloseParent = true;
+                submitAfterValidation(portletDefinitionField);
             }
         });
         addButton(prepareButton);
 
-        Button prepareAndDeployButton = new Button(Messages.getNotEmptyResource("fm_portlet_prepareAndDeploywar", "Prepare and deploy"));
-        prepareAndDeployButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        final boolean isTomcat = isTomcat();
+        Button deployButton = new Button(Messages.getNotEmptyResource("fm_portlet_deploy", "Deploy"));
+        deployButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                deployPortlet.setValue(true);
-                preparePortlet.setValue(true);
-                submit();
-
+                if (isTomcat) {
+                    deployPortlet.setValue(true);
+                    doCloseParent = true;
+                    submitAfterValidation(portletDefinitionField);
+                } else {
+                    doCloseParent = false;
+                    Window.open(getAppserverDeployerUrl(), "_blank", "");
+                }
             }
         });
-        addButton(prepareAndDeployButton);
+        addButton(deployButton);
+
+        if (isTomcat) {
+            Button prepareAndDeployButton = new Button(Messages.getNotEmptyResource("fm_portlet_prepareAndDeploywar", "Prepare and deploy"));
+            prepareAndDeployButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    deployPortlet.setValue(true);
+                    preparePortlet.setValue(true);
+                    doCloseParent = true;
+                    submitAfterValidation(portletDefinitionField);
+
+                }
+            });
+            addButton(prepareAndDeployButton);
+
+        }
+
+        Button helpButton = new Button("?");
+        helpButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent buttonEvent) {
+                deployPortlet.setValue(false);
+                preparePortlet.setValue(false);
+                doCloseParent = false;
+                submit();
+            }
+        });
+        addButton(helpButton);
+
         addListener(Events.BeforeSubmit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
                 WorkInProgress.show();
             }
         });
-
         addListener(Events.Submit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
-                afterSubmit();
+                if (doCloseParent) {
+                    closeParent();
+                }
+                String html = formEvent.getResultHtml();
+                if (html != null) {
+                    MessageBox.info("", html, null);
+                }
                 WorkInProgress.hide();
             }
         });
 
 
-
-
         layout();
     }
 
-     public static String getPortletDeploymentParam(String key) {
+    private void submitAfterValidation(com.extjs.gxt.ui.client.widget.form.FileUploadField portletDefinitionField) {
+        if (portletDefinitionField.getValue() != null && portletDefinitionField.getValue().length() > 0) {
+            submit();
+        }else{
+             MessageBox.alert("", Messages.getNotEmptyResource("fm_portlet_select_war", "Please select a *.war file"), null);
+        }
+    }
+
+    public static String getPortletDeploymentParam(String key) {
         try {
             //Log.debug("Dictionary name: " + jahiaModuleType + "_rb_" + elementId);
             Dictionary dictionary = Dictionary.getDictionary("portletDeployment");
@@ -143,9 +176,23 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         }
     }
 
-    public abstract void afterSubmit();
+    public static boolean isTomcat() {
+        try {
+            return Boolean.valueOf(getPortletDeploymentParam("isTomcat"));
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
+    public static String getAppserverDeployerUrl() {
+        try {
+            return getPortletDeploymentParam("appserverDeployerUrl");
+        } catch (Exception e) {
+            return "";
+        }
+    }
 
+    public abstract void closeParent();
 
 
 }

@@ -38,10 +38,16 @@
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <%@ include file="/admin/include/header.inc" %>
-<% stretcherToOpen = 0; %>
+<%
+    Boolean isTomcat = (Boolean) request.getAttribute("isTomcat");
+    String appserverDeployerUrl = (String) request.getAttribute("appserverDeployerUrl");
+
+    stretcherToOpen = 0; %>
 <script type="text/javascript">
     var portletDeployment =  {
-        formActionUrl: "<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=deployPortlet")%>"
+        formActionUrl: "<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=prepareDeployPortlet")%>",
+        isTomcat: "<%=isTomcat%>",
+        appserverDeployerUrl: "<%=appserverDeployerUrl%>"
     }
 </script>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager" /><div id="topTitle">
@@ -71,7 +77,7 @@
                                 </div>
                             </div>
                             <div class="content-item-noborder">
-                                <internal:contentManager embedded="true" nodeTypes="jnt:portletDefinition" conf="portletdefinitionmanager"/>
+                                <internal:contentManager embedded="true" nodeTypes="jnt:portletDefinition" conf="portletdefinitionmanager" enablePortletDeployment=""/>
                             </div>
                         </div>
                     </div>

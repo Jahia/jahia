@@ -519,6 +519,10 @@ public class ContentActions {
      * Show deploy portlet form
      * @param linker
      */
+     /**
+     * Show deploy portlet form
+     * @param linker
+     */
     public static void showDeployPortletForm(final BrowserLinker linker) {
         GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
         if (parent == null) {
@@ -534,9 +538,9 @@ public class ContentActions {
             w.setResizable(false);
             w.setBodyBorder(false);
             w.setLayout(new FillLayout());
-            w.setWidth(400);
+            w.setWidth(500);
             w.add(new FormDeployPortletDefinition(){
-                public void afterSubmit() {
+                public void closeParent() {
                     w.hide();
                 }
             });
@@ -545,7 +549,6 @@ public class ContentActions {
             w.show();
         }
     }
-
 
     /**
      * Show the content wizard

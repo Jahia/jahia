@@ -155,5 +155,14 @@
         <function-signature>boolean isNodeType(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
 
     </function>
+    <function>
+        <description>Returns the string name of the node property type</description>
+        <name>propertyTypeName</name>
+        <function-class>javax.jcr.PropertyType</function-class>
+        <function-signature>java.lang.String nameFromValue(int)</function-signature>
+		<example>
+			${jcr:propertyTypeName(myProperty.type)}
+		</example>
+    </function>
 
 </taglib>

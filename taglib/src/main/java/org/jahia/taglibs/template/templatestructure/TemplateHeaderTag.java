@@ -127,16 +127,18 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
     private final static Logger logger = Logger.getLogger(TemplateHeaderTag.class);
 
     private boolean gwtForGuest;
+    
+    private String title;
 
     public int doStartTag() throws JspException {
         // retrieve parameters
         ServletRequest request = pageContext.getRequest();
         JahiaData jData = getJahiaData();
         JahiaPage page = jData.page();
-        String title = "";
-        if (page != null) {
-            page.getTitle();
-            if (title == null) {
+        String pageTitle = title;
+        if (pageTitle == null && page != null) {
+            pageTitle = page.getTitle();
+            if (pageTitle == null) {
                 PageProperty prop = null;
                 try {
                     prop = page.getPageLocalProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
@@ -144,9 +146,9 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
                     logger.error("Cannot access current page properties", e);
                 }
                 if (prop != null) {
-                    title = prop.getValue();
+                    pageTitle = prop.getValue();
                 } else {
-                    title = String.valueOf(page.getID());
+                    pageTitle = String.valueOf(page.getID());
                 }
             }
         }
@@ -180,7 +182,9 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
         buf.append(((HttpServletRequest) request).getContextPath());
         buf.append("/css/portlets.css\"/>");
         buf.append(DefaultIncludeProvider.getJSToolsImportCss((HttpServletRequest) pageContext.getRequest()));
-        buf.append("\t<title>").append(title).append("</title>\n");
+        if (pageTitle != null) {
+        	buf.append("\t<title>").append(pageTitle).append("</title>\n");
+        }
 
         // write StringBuffer to JspWriter
         try {
@@ -203,4 +207,14 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
         return EVAL_PAGE;
     }
 
+	public void setTitle(String title) {
+    	this.title = title;
+    }
+
+	@Override
+    protected void resetState() {
+		title = null;
+	    super.resetState();
+    }
+	
 }

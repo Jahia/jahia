@@ -65,6 +65,13 @@
         <name>templateHead</name>
         <tag-class>org.jahia.taglibs.template.templatestructure.TemplateHeaderTag</tag-class>
         <body-content>JSP</body-content>
+        <attribute>
+            <description>Provide the title for the document. If not provided the title of the current page will be used</description>
+            <name>title</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
     <tag>
         <description>

@@ -49,7 +49,7 @@ public class SidePanel extends ContentPanel {
     private final ListStore<GWTJahiaNode> displayStore;
     private final ContentPanel properties;
 
-    public SidePanel() {
+    public SidePanel(EditManager editManager) {
         super();
         setHeaderVisible(true);
         VBoxLayout layout = new VBoxLayout();
@@ -88,7 +88,8 @@ public class SidePanel extends ContentPanel {
         final Grid<GWTJahiaNodeType> createGrid = new Grid<GWTJahiaNodeType>(createStore, new ColumnModel(createColumns));
         createGrid.setBorders(false);
         createGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-        new GridDragSource(createGrid);
+        GridDragSource createGridSource = new GridDragSource(createGrid);
+        editManager.getDndListener().setCreateGridSource(createGridSource);
         create.add(createGrid);
 
         // browsing
@@ -147,7 +148,8 @@ public class SidePanel extends ContentPanel {
                 }
             }
         });
-        new TreePanelDragSource(m_tree);
+        TreePanelDragSource contentTreeSource = new TreePanelDragSource(m_tree);
+        editManager.getDndListener().setContentTreeSource(contentTreeSource);
         browse.add(m_tree);
 
         // searching
@@ -211,7 +213,8 @@ public class SidePanel extends ContentPanel {
                 displayProperties(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
             }
         });
-        new GridDragSource(displayGrid);
+        GridDragSource displayGridSource = new GridDragSource(displayGrid);
+        editManager.getDndListener().setDisplayGridSource(displayGridSource);
         display.add(displayGrid);
 
         // properties panel

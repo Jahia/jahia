@@ -1,12 +1,8 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,7 +15,7 @@ public class ListModule extends ContentPanel {
 
     private HTML html;
 
-    public ListModule(String path, String s) {
+    public ListModule(String path, String s, EditManager editManager) {
 //        super(new FitLayout());
 
         setCollapsible(true);
@@ -28,7 +24,7 @@ public class ListModule extends ContentPanel {
         setScrollMode(Style.Scroll.AUTO);
         html = new HTML(s);
         add(html);
-        ModuleHelper.parse(this,html);
+        ModuleHelper.parse(this,html, editManager);
     }
 
     public HTML getHtml() {

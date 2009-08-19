@@ -2,12 +2,9 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HTML;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Container;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -24,7 +21,7 @@ import org.jahia.ajax.gwt.client.core.JahiaType;
  * To change this template use File | Settings | File Templates.
  */
 public class ModuleHelper {
-    public static void parse(LayoutContainer w, HTML html) {
+    public static boolean parse(LayoutContainer w, HTML html, EditManager editManager) {
         Map<Element, Widget> m = new HashMap();
         List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(html.getElement());
         for (Element divElement : el) {
@@ -35,11 +32,11 @@ public class ModuleHelper {
                 String template = DOM.getElementAttribute(divElement, "template");
                 LayoutContainer widget = null;
                 if (type.equals("list")) {
-                    widget = new ListModule(path, divElement.getInnerHTML());
+                    widget = new ListModule(path, divElement.getInnerHTML(), editManager);
                 } else if (type.equals("existingNode")) {
-                    widget = new SimpleModule(path, divElement.getInnerHTML());
+                    widget = new SimpleModule(path, divElement.getInnerHTML(), editManager);
                 } else if (type.equals("placeholder")) {
-                    widget  = new PlaceholderModule(path);
+                    widget  = new PlaceholderModule(path, editManager);
                 }
 
                 if (widget != null) {
@@ -58,6 +55,8 @@ public class ModuleHelper {
             divElement.setInnerHTML("");
             DOM.appendChild(divElement, moduleElement);
         }
+
+        return !m.isEmpty();
     }
 
 }

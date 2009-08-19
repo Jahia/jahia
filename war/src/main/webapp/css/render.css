@@ -1,0 +1,59 @@
+/* Styles for default rendering templates */
+#render {
+    font: 0.74em Arial, sans-serif;
+    margin: 5px;
+}
+
+#render .render-item .name {
+    font-weight: bold;
+}
+#render .level-1 .name {
+    font-size: 2em;
+}
+#render .level-2 .name {
+    font-size: 1.5em;
+}
+
+#render .level-2 .name {
+    font-size: 2em;
+}
+
+#render .render-item .type {
+	color: #444444;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+#render .properties, #render .nodes {
+    margin-top: 10px;
+    padding: 5px;
+}
+
+#render .properties br {
+	clear: left;
+}
+
+#render .property .label, #render .property .value {
+	display: block;
+	float: left;
+	width: 80%;
+}
+#render .property .label {
+	width: 200px;
+	text-align: right;
+	padding-right: 10px;
+}
+
+#render .property .label {
+	color: #444444;
+}
+
+#render .jahia-properties, #render .metadata-properties {
+	border: 1px dashed #0C96F3;
+	margin-bottom: 5px;
+	padding: 5px;
+}
+
+#render .metadata-properties {
+	border: 1px dashed #B7CBD8;
+}

@@ -37,7 +37,7 @@ public class SimpleModule extends ContentPanel {
 //        super(new FitLayout());
         setHeaderVisible(false);
         setScrollMode(Style.Scroll.AUTO);
-
+        setBorders(false);
         html = new HTML(s);
         add(html);
         boolean last = !ModuleHelper.parse(this, html, editManager);

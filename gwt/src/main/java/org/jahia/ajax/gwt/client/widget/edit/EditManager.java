@@ -44,10 +44,10 @@ public class EditManager extends Viewport {
 
     public void setSelection(ContentPanel selection) {
         if (this.selection != null) {
-            this.selection.unmask();
+            this.selection.setBorders(false);
         }
         this.selection = selection;
-        selection.mask();
+        this.selection.setBorders(true);
 
     }
 }

@@ -4,10 +4,10 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 
 <template:template>
-<head>
+<template:templateHead>
     <title>${currentNode.name}</title>
-</head>
-<body>
+</template:templateHead>
+<template:templateBody>
 <h1>Page : ${currentNode.name}</h1>
 <div id="nav">
     <h2>Navigation</h2>
@@ -40,5 +40,5 @@
             </c:if>
         </c:forEach>
 </div>
-</body>
+</template:templateBody>
 </template:template>

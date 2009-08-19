@@ -1,7 +1,16 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-Content type : ${currentNode.fileContent.contentType} <br>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
-Creation date : <fmt:formatDate value="${created.time}" dateStyle="full"/> <br>
-
-<a href ="${pageContext.request.contextPath}/files${currentNode.path}">${pageContext.request.contextPath}/files${currentNode.path}</a>
+<fmt:formatDate value="${created.time}" dateStyle="full" var="displayDate"/>
+<c:choose>
+    <c:when test="${fn:startsWith(currentNode.fileContent.contentType,'image/')}">
+        <img src="${pageContext.request.contextPath}/files${currentNode.path}"
+             alt="${displayDate}"/>
+    </c:when>
+    <c:otherwise>
+        <a href="${pageContext.request.contextPath}/files${currentNode.path}"
+             title="${displayDate}">${pageContext.request.contextPath}/files${currentNode.path}</a>
+    </c:otherwise>
+</c:choose>

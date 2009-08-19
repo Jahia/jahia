@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.fields.ContentField;
@@ -210,4 +211,13 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
         return super.getEntryLoadRequest();
     }
 
+    @Override
+    public Node getNode() throws ValueFormatException, RepositoryException {
+        final int type = getType();
+        if(type == PropertyType.REFERENCE || type == ExtendedPropertyType.WEAKREFERENCE) {
+            return getSession().getNodeByUUID(values[0].getString());
+        } else {
+            throw new ValueFormatException("This value is not a reference to a node "+def);
+        }
+    }
 }

@@ -165,6 +165,10 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         return session.getNodeByUUID(property.getString());
     }
 
+    public Node getReferencedNode() throws ValueFormatException, RepositoryException {
+        return session.getNodeByUUID(property.getString());
+    }
+
     public long getLength() throws ValueFormatException, RepositoryException {
         return property.getLength();
     }

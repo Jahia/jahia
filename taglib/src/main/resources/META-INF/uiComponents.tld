@@ -101,7 +101,7 @@
         <body-content>JSP</body-content>
         <attribute>
             <name>name</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
@@ -126,6 +126,12 @@
             <name>currentCSSClass</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>node</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>org.jahia.services.content.JCRNodeWrapper</type>
         </attribute>
     </tag>
 

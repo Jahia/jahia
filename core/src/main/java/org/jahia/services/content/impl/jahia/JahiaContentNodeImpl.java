@@ -45,6 +45,7 @@ import org.jahia.content.ContentDefinition;
 import org.jahia.content.ContentObject;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaFieldDefinition;
+import org.jahia.data.fields.JahiaField;
 import org.jahia.data.beans.portlets.PortletWindowBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -327,7 +328,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             }
             case FieldTypes.APPLICATION: {
                 try {
-                    JCRNodeWrapper portlet = (JCRNodeWrapper) JCRStoreService.getInstance().getThreadSession(getSession().getJahiaUser()).getNodeByUUID(contentField.getJahiaField(elr).getRawValue());
+                    JCRNodeWrapper portlet = JCRStoreService.getInstance().getThreadSession(getSession().getJahiaUser()).getNodeByUUID(contentField.getJahiaField(elr).getRawValue());
                     if (portlet != null) {
                         Value v = new ValueImpl(portlet.getUUID(), PropertyType.REFERENCE);
                         fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
@@ -344,10 +345,18 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                 if (value == null || value.length()==0 || value.equals("<empty>")) {
                     emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField, locale));
                 } else {
-                    Value v = new ValueImpl(value, PropertyType.STRING);
                     ExtendedPropertyDefinition propertyDefinition = def.getPropertyDefinition();
-                    if (propertyDefinition != null) {
+                    if (propertyDefinition != null && !propertyDefinition.isMultiple()) {
+                        Value v = new ValueImpl(value, PropertyType.STRING);
                         fields.add(new JahiaFieldPropertyImpl(getSession(), this, propertyDefinition, v, contentField, locale));
+                    } else {
+                        String[] strings = value.split("\\$\\$\\$");
+                        Value[] values = new Value[strings.length];
+                        for (int i = 0; i < strings.length; i++) {
+                            String string = strings[i];
+                            values[i] = new ValueImpl(string,PropertyType.STRING);
+                        }
+                        fields.add(new JahiaFieldPropertyImpl(getSession(), this, propertyDefinition, values, contentField, locale));
                     }
                 }
                 break;

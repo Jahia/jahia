@@ -158,7 +158,7 @@
     <function>
         <description>Returns the string name of the node property type</description>
         <name>propertyTypeName</name>
-        <function-class>javax.jcr.PropertyType</function-class>
+        <function-class>org.jahia.services.content.nodetypes.ExtendedPropertyType</function-class>
         <function-signature>java.lang.String nameFromValue(int)</function-signature>
 		<example>
 			${jcr:propertyTypeName(myProperty.type)}

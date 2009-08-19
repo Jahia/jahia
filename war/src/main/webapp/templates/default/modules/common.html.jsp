@@ -46,7 +46,8 @@
 		<div class="type">${currentNode.primaryNodeTypeName}</div>
 	</c:if>
 	<c:if test="${!param.skipProperties && currentNode.properties.size > 0}">
-	<utility:useConstants var="jcrPropertyTypes" className="javax.jcr.PropertyType" scope="application"/>
+	<utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType" scope="application"/>
+    <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType" scope="application"/>
 	<div class="properties">
 		<div class="jahia-properties">
 			<c:forEach var="property" items="${currentNode.properties}">

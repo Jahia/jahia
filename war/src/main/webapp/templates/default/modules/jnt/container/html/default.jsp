@@ -3,9 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<utility:useConstants var="propertyType" className="javax.jcr.PropertyType"/>
-<utility:useConstants var="extendedPropertyType" className="org.jahia.services.content.nodetypes.ExtendedPropertyType"/>
-<utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"/>
+<utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType" scope="application"/>
+<utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType" scope="application"/>
 <h2>Container : ${currentNode.name}</h2>
 <ul>
     <c:forEach items="${currentNode.properties}" var="property">
@@ -13,7 +12,7 @@
             <li>${property.name}:&nbsp;
                 <c:if test="${!property.definition.multiple}">
                     <c:choose>
-                        <c:when test="${property.type == propertyType.REFERENCE || property.type == extendedPropertyType.WEAKREFERENCE}">
+                        <c:when test="${property.type == jcrPropertyTypes.REFERENCE || property.type == jcrPropertyTypes.WEAKREFERENCE}">
                             <template:module node="${property.referencedNode}"/>
                         </c:when>
                         <c:when test="${property.definition.selector == selectorType.COLOR}">
@@ -28,7 +27,7 @@
                     <ul>
                         <c:forEach items="${property.values}" var="val">
                             <li><c:choose>
-                                <c:when test="${property.type == propertyType.REFERENCE || property.type == extendedPropertyType.WEAKREFERENCE}">
+                                <c:when test="${property.type == jcrPropertyTypes.REFERENCE || property.type == jcrPropertyTypes.WEAKREFERENCE}">
                                     <template:module node="${property.referencedNode}"/>
                                 </c:when>
                                 <c:otherwise>

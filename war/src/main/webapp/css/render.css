@@ -4,6 +4,10 @@
     margin: 5px;
 }
 
+#render .render-item {
+	border: 1px dashed #B7CBD8;
+}
+
 #render .render-item .name {
     font-weight: bold;
 }

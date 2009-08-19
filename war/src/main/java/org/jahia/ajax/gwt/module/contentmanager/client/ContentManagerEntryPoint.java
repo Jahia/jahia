@@ -54,7 +54,7 @@ public class ContentManagerEntryPoint implements EntryPoint {
             String filters = DOMUtil.getRootAttr(panel, "filters");
             String mimeTypes = DOMUtil.getRootAttr(panel, "mimeTypes");
             String config = DOMUtil.getRootAttr(panel, "config");
-            if (true) {
+            if (embedded) {
                 panel.add(new ContentManagerEmbedded(nodeTypes,filters,mimeTypes,config));
             } else {
                 panel.add(new ContentManager(nodeTypes,filters,mimeTypes,config));

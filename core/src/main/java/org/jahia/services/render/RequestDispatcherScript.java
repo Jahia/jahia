@@ -78,24 +78,23 @@ public class RequestDispatcherScript implements Script {
     /**
      * Builds the script, tries to resolve the jsp template
      * @param resource resource to display
-     * @param request servlet request
-     * @param response servlet response
+     * @param context
      * @throws IOException if template cannot be found, or something wrong happens
      */
-    public RequestDispatcherScript(Resource resource, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public RequestDispatcherScript(Resource resource, RenderContext context) throws IOException {
         TemplatePathResolverFactory factory = (TemplatePathResolverFactory) SpringContextSingleton.getInstance().getContext().getBean("TemplatePathResolverFactory");
         ProcessingContext threadParamBean = Jahia.getThreadParamBean();
         TemplatePathResolverBean templatePathResolver = factory.getTemplatePathResolver(threadParamBean);
 
         try {
             ExtendedNodeType nt = (ExtendedNodeType) resource.getNode().getPrimaryNodeType();
-            String templatePath = getTemplatePath(resource, templatePathResolver, nt);
+            String templatePath = getTemplatePath(resource, context, templatePathResolver, nt);
 
             if (templatePath == null) {
                 List<ExtendedNodeType> nodeTypeList = Arrays.asList(nt.getSupertypes());
                 Collections.reverse(nodeTypeList);
                 for (ExtendedNodeType st : nodeTypeList) {
-                    templatePath = getTemplatePath(resource, templatePathResolver, st);
+                    templatePath = getTemplatePath(resource, context, templatePathResolver, st);
                     if (templatePath != null) {
                         break;
                     }
@@ -109,17 +108,18 @@ public class RequestDispatcherScript implements Script {
             	}
             }
 
-            this.request = request;
-            this.response = response;
+            this.request = context.getRequest();
+            this.response = context.getResponse();
 
             rd = request.getRequestDispatcher(templatePath);
 
         } catch (RepositoryException e) {            
+            e.printStackTrace();
             throw new IOException();
         }
     }
 
-    private String getTemplatePath(Resource resource, TemplatePathResolverBean templatePathResolver, ExtendedNodeType nt) {
+    private String getTemplatePath(Resource resource, RenderContext context, TemplatePathResolverBean templatePathResolver, ExtendedNodeType nt) {
         return templatePathResolver.lookup("modules/" +
                 nt.getAlias().replace(':','/') +
                 "/" + resource.getTemplateType() +

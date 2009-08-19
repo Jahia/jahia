@@ -1,6 +1,7 @@
 package org.jahia.bin;
 
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
@@ -54,7 +55,14 @@ public class Render extends HttpServlet {
             String lang = path.substring(1, index);
             path = path.substring(index);
 
-            String out = render(workspace, lang, path, ctx, req, resp);
+            String baseUrl = StringUtils.removeEnd(req.getRequestURI(), path);
+            req.setAttribute("baseUrl", baseUrl);
+            req.getSession().setAttribute("baseUrl", baseUrl);
+
+            RenderContext renderContext = new RenderContext(req, resp);
+            renderContext.setTemplateWrapper("fullpage");
+
+            String out = render(workspace, lang, path, ctx, renderContext);
 
             resp.setContentType("text/html");
             resp.setCharacterEncoding("UTF-8");
@@ -263,10 +271,14 @@ public class Render extends HttpServlet {
         }
     }
 
-    public String render(String workspace, String lang, String path, ProcessingContext ctx, HttpServletRequest request, HttpServletResponse response) throws RepositoryException, IOException {
+    public String render(String workspace, String lang, String path, ProcessingContext ctx, RenderContext renderContext) throws RepositoryException, IOException {
         try {
             if (workspace.equals("default")) {
-                ctx.setOperationMode("edit");
+                if (renderContext.isEditMode()) {
+                    ctx.setOperationMode("edit");
+                } else {
+                    ctx.setOperationMode("preview");
+                }
             }
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);
@@ -296,7 +308,7 @@ public class Render extends HttpServlet {
             // no site
         }
 
-        return RenderService.getInstance().render(r, new RenderContext(request, response));
+        return RenderService.getInstance().render(r, renderContext);
     }
 
     /**

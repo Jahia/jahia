@@ -2160,18 +2160,21 @@ public class ContentManagerHelper {
      * Get rendered content
      *
      * @param path
-     * @param ctx
-     * @return
+     * @param template
+     *@param editMode
+     * @param ctx  @return
      * @throws GWTJahiaServiceException
      */
-    public static String getRenderedContent(String path, ParamBean ctx) throws GWTJahiaServiceException {
+    public static String getRenderedContent(String path, String template, boolean editMode, ParamBean ctx) throws GWTJahiaServiceException {
         String res = null;
         try {
             JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser(), "default", ctx.getCurrentLocale());
             JCRNodeWrapper node = session.getNode(path);
-            Resource r = new Resource(node, "default", ctx.getCurrentLocale(), "html", null);
+            Resource r = new Resource(node, "default", ctx.getCurrentLocale(), "html", template);
             ctx.getRequest().setAttribute("mode", "edit");
-            res = RenderService.getInstance().render(r, new RenderContext(ctx.getRequest(), ctx.getResponse()));
+            RenderContext renderContext = new RenderContext(ctx.getRequest(), ctx.getResponse());
+            renderContext.setEditMode(editMode);
+            res = RenderService.getInstance().render(r, renderContext);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {

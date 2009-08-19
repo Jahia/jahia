@@ -606,6 +606,12 @@
     </servlet>
 
     <servlet>
+        <servlet-name>Edit</servlet-name>
+        <servlet-class>org.jahia.bin.Edit</servlet-class>
+        <load-on-startup>99</load-on-startup>
+    </servlet>
+
+    <servlet>
         <servlet-name>Test</servlet-name>
         <servlet-class>org.jahia.bin.TestServlet</servlet-class>
         <load-on-startup>99</load-on-startup>
@@ -813,6 +819,10 @@
     <servlet-mapping>
         <servlet-name>Render</servlet-name>
         <url-pattern>/render/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Edit</servlet-name>
+        <url-pattern>/edit/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Test</servlet-name>

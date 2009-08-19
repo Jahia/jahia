@@ -2,9 +2,12 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HTML;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Container;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -30,19 +33,20 @@ public class ModuleHelper {
                 String type = DOM.getElementAttribute(divElement, "type");
                 String path = DOM.getElementAttribute(divElement, "path");
                 String template = DOM.getElementAttribute(divElement, "template");
+                LayoutContainer widget = null;
                 if (type.equals("list")) {
-                    m.put(divElement, new ListModule(path, divElement.getInnerHTML()));
-                    divElement.setInnerHTML("");
-                    w.add(m.get(divElement));
+                    widget = new ListModule(path, divElement.getInnerHTML());
                 } else if (type.equals("existingNode")) {
-                    m.put(divElement, new SimpleModule(path, divElement.getInnerHTML()));
-                    divElement.setInnerHTML("");
-                    w.add(m.get(divElement));
+                    widget = new SimpleModule(path, divElement.getInnerHTML());
                 } else if (type.equals("placeholder")) {
-                    m.put(divElement, new PlaceholderModule(path));
-                    w.add(m.get(divElement));
+                    widget  = new PlaceholderModule(path);
                 }
 
+                if (widget != null) {
+                    m.put(divElement, widget);
+                    divElement.setInnerHTML("");
+                    w.add(widget);
+                }
             }
         }
 

@@ -33,7 +33,6 @@ package org.jahia.services.render;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,6 +45,8 @@ public class RenderContext {
     private HttpServletRequest request;
     private HttpServletResponse response;
     private boolean includeSubModules = true;
+    private boolean isEditMode = false;
+    private String templateWrapper;
 
     private Set<String> dependencies = new HashSet<String>();
 
@@ -82,5 +83,21 @@ public class RenderContext {
 
     public void setIncludeSubModules(boolean includeSubModules) {
         this.includeSubModules = includeSubModules;
+    }
+
+    public boolean isEditMode() {
+        return isEditMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        isEditMode = editMode;
+    }
+
+    public String getTemplateWrapper() {
+        return templateWrapper;
+    }
+
+    public void setTemplateWrapper(String pageWrapper) {
+        this.templateWrapper = pageWrapper;
     }
 }

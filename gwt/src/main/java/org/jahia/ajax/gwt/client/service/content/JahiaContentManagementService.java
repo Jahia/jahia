@@ -155,7 +155,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion) throws GWTJahiaServiceException;    
 
-    public String getRenderedContent(String path) throws GWTJahiaServiceException;
+    public String getRenderedContent(String path, String template, boolean editMode) throws GWTJahiaServiceException;
 
     public Boolean isFileAccessibleForCurrentContainer(String path) throws GWTJahiaServiceException;
 

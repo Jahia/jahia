@@ -15,7 +15,6 @@ import org.jahia.operations.valves.EngineValve;
 import org.jahia.params.ParamBean;
 import org.jahia.content.ContentObject;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -69,13 +68,26 @@ public class RenderService extends JahiaService {
     public String render(Resource resource, RenderContext context) throws RepositoryException, IOException {
         final HttpServletRequest request = context.getRequest();
 
-        Script script = resolveScript(resource, request, context.getResponse());
+        Script script = null;
+        if (context.getTemplateWrapper() != null) {
+            Resource wrappedResource = new Resource(resource.getNode(), resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), "wrapper."+context.getTemplateWrapper());
+            context.setTemplateWrapper(null);
+            try {
+                script = resolveScript(wrappedResource, context);
+            } catch (IOException e) {
+                logger.error("Cannot get wrapper "+context.getTemplateWrapper());
+            }
+        }
+        if (script == null) {
+            script = resolveScript(resource, context);
+        }
 
         Object old = request.getAttribute("currentNode");
         request.setAttribute("currentNode", resource.getNode());
 
-        // temporary variable to build urls - should be replace with a jstl function ?
-        request.setAttribute("baseUrl", request.getContextPath()+"/render/"+ resource.getWorkspace() +"/"+ resource.getLocale());
+        if (request.getAttribute("baseUrl") == null) {
+            request.setAttribute("baseUrl", request.getSession().getAttribute("baseUrl"));
+        }
 
         request.setAttribute("workspace", resource.getNode().getSession().getWorkspace().getName());
         request.setAttribute("locale", resource.getNode().getSession().getWorkspace().getName());
@@ -106,15 +118,14 @@ public class RenderService extends JahiaService {
      * If template cannot be resolved, fall back on default template
      *
      * @param resource The resource to display
-     * @param request Serlvet request
-     * @param response Servlet response
+     * @param context
      * @return An executable script
      * @throws RepositoryException
      * @throws IOException
      */
-    private Script resolveScript(Resource resource, HttpServletRequest request, final HttpServletResponse response) throws RepositoryException, IOException {
+    private Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, IOException {
 //        try {
-            return new RequestDispatcherScript(resource, request, response);
+            return new RequestDispatcherScript(resource, context);
 //        } catch (IOException e) {
 //            if (resource.getTemplate() != null) {
 //                return new RequestDispatcherScript(new Resource(resource.getNode(), resource.getTemplateType() ,null), request,response);

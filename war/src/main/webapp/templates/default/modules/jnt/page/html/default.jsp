@@ -1,13 +1,3 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-
-<template:template>
-<template:templateHead>
-    <title>${currentNode.name}</title>
-</template:templateHead>
-<template:templateBody>
 <h1>Page : ${currentNode.name}</h1>
 <div id="nav">
     <h2>Navigation</h2>
@@ -40,5 +30,3 @@
             </c:if>
         </c:forEach>
 </div>
-</template:templateBody>
-</template:template>

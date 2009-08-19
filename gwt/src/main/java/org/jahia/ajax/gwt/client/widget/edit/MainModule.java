@@ -20,14 +20,14 @@ public class MainModule extends LayoutContainer {
     private HTML html;
 
 
-    public MainModule(final String path) {
+    public MainModule(final String path, final String template) {
         super(new FlowLayout());
 
         setScrollMode(Style.Scroll.AUTO);
 
 //        Draggable d = new Draggable(cp);
 
-        JahiaContentManagementService.App.getInstance().getRenderedContent(path, new AsyncCallback<String>() {
+        JahiaContentManagementService.App.getInstance().getRenderedContent(path, template, true, new AsyncCallback<String>() {
             public void onSuccess(String result) {
                 html = new HTML(result);
                 add(html);

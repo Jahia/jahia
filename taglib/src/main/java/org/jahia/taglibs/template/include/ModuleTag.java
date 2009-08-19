@@ -89,9 +89,6 @@ public class ModuleTag extends BodyTagSupport {
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
             if (currentResource != null) {
                 templateType = currentResource.getTemplateType();
-//                if (!templateType.endsWith("-fragment")) {
-//                    templateType += "-fragment";
-//                }
                 workspace = currentResource.getWorkspace();
                 locale = currentResource.getLocale();
             }
@@ -126,7 +123,7 @@ public class ModuleTag extends BodyTagSupport {
 
                             extraParams.put("path", nodeWrapper.getPath()+"/"+path);
                             extraParams.put("type", "placeholder");
-                            if ("edit".equals(pageContext.getRequest().getParameter("mode"))|| "edit".equals(pageContext.getRequest().getAttribute("mode"))) {
+                            if (renderContext.isEditMode()) {
                                 pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeholder","placeholder"+ UUID.randomUUID().toString(), extraParams));
                             }
                         }
@@ -141,7 +138,7 @@ public class ModuleTag extends BodyTagSupport {
                             final Map<String, Object> extraParams = new HashMap<String, Object>();
                             extraParams.put("path", path);
                             extraParams.put("type", "placeholder");
-                            if ("edit".equals(pageContext.getRequest().getParameter("mode"))|| "edit".equals(pageContext.getRequest().getAttribute("mode"))) {
+                            if (renderContext.isEditMode()) {
                                 pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeHolder","placeholder"+ UUID.randomUUID().toString(), extraParams));
                             }
                         }
@@ -153,7 +150,7 @@ public class ModuleTag extends BodyTagSupport {
             if (node != null) {
                 Resource resource = new Resource(node, workspace , locale, templateType, template);
 
-                if ("edit".equals(pageContext.getRequest().getParameter("mode"))|| "edit".equals(pageContext.getRequest().getAttribute("mode"))) {
+                if (renderContext.isEditMode()) {
                     try {
                         if (node.isNodeType("jmix:link")) {
                             // no placeholder at all for links

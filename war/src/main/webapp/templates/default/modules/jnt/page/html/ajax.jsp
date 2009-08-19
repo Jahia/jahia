@@ -3,11 +3,6 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 
-<template:template>
-<head>
-    <title>${currentNode.name}</title>
-
-
 <script type="text/javascript">
 
 
@@ -29,8 +24,7 @@ function replace(url,divID) {
 }
 </script>
 
-</head>
-<body>
+
 <h1>Page : ${currentNode.name}</h1>
 <div id="nav">
     <h2>Navigation</h2>
@@ -65,5 +59,3 @@ function replace(url,divID) {
             </c:if>
         </c:forEach>
 </div>
-</body>
-</template:template>

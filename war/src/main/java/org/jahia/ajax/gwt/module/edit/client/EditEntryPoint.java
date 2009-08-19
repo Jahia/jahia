@@ -16,7 +16,7 @@ public class EditEntryPoint {
     public void onModuleLoad() {
         RootPanel panel = RootPanel.get("editmode") ;
         if (panel != null) {
-            panel.add(new EditManager(DOM.getElementAttribute(panel.getElement(), "path"))) ;
+            panel.add(new EditManager(DOM.getElementAttribute(panel.getElement(), "path"),DOM.getElementAttribute(panel.getElement(), "template"))) ;
         }
     }
 }

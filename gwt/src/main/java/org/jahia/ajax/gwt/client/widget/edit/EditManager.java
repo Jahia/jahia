@@ -18,7 +18,7 @@ public class EditManager extends Viewport {
 
     private LayoutContainer m_component;
 
-    public EditManager(String path) {
+    public EditManager(String path, String template) {
         super();
         setLayout(new BorderLayout());
 
@@ -29,6 +29,6 @@ public class EditManager extends Viewport {
 
         final DNDListener dndListener = new DNDListener();
         setScrollMode(Style.Scroll.AUTO);
-        add(new MainModule(path), new BorderLayoutData(Style.LayoutRegion.CENTER));
+        add(new MainModule(path, template), new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
 }

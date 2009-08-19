@@ -21,14 +21,16 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Handler for the &lt;template:module/&gt; tag, used to render content objects.
  * User: toto
  * Date: May 14, 2009
  * Time: 7:18:15 PM
- * To change this template use File | Settings | File Templates.
  */
 public class ModuleTag extends BodyTagSupport {
-    private static Logger logger = Logger.getLogger(ModuleTag.class);
+
+    private static final long serialVersionUID = -8968618483176483281L;
+
+	private static Logger logger = Logger.getLogger(ModuleTag.class);
 
     private String path;
 
@@ -72,7 +74,9 @@ public class ModuleTag extends BodyTagSupport {
 
     @Override
     public int doStartTag() throws JspException {
-        return super.doStartTag();    //To change body of overridden methods use File | Settings | File Templates.
+		Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+		pageContext.setAttribute("org.jahia.modules.level", level != null ? level + 1 : 2, PageContext.REQUEST_SCOPE);
+        return super.doStartTag();
     }
 
     @Override
@@ -119,7 +123,7 @@ public class ModuleTag extends BodyTagSupport {
                             node = (JCRNodeWrapper) nodeWrapper.getNode(path);
                         } else {
                             currentResource.getMissingResources().add(path);
-                            HashMap extraParams = new HashMap();
+                            Map<String, Object> extraParams = new HashMap<String, Object>();
 
                             extraParams.put("path", nodeWrapper.getPath()+"/"+path);
                             extraParams.put("type", "placeholder");
@@ -135,7 +139,7 @@ public class ModuleTag extends BodyTagSupport {
                             if (path.startsWith(currentPath+"/") && path.substring(currentPath.length()+1).indexOf('/') == -1) {
                                 currentResource.getMissingResources().add(path.substring(currentPath.length()+1));
                             }
-                            final HashMap extraParams = new HashMap();
+                            final Map<String, Object> extraParams = new HashMap<String, Object>();
                             extraParams.put("path", path);
                             extraParams.put("type", "placeholder");
                             if ("edit".equals(pageContext.getRequest().getParameter("mode"))|| "edit".equals(pageContext.getRequest().getAttribute("mode"))) {
@@ -171,7 +175,11 @@ public class ModuleTag extends BodyTagSupport {
             templateType = "html";
             workspace = null;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            throw new JspException(ex);
+        } finally {
+    		Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+    		pageContext.setAttribute("org.jahia.modules.level", level != null ? level -1 : 1, PageContext.REQUEST_SCOPE);
+        	
         }
         return EVAL_PAGE;
     }

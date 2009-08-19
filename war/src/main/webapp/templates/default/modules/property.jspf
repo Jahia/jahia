@@ -31,4 +31,29 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<jsp:include page="full.jsp"/>
+<div class="property type-${fn:toLowerCase(jcr:propertyTypeName(property.type))}">
+	<span class="label">${fn:escapeXml(jcr:label(property))}:</span>
+	<span class="value">
+		<c:choose>
+		<c:when test="${property.type == jcrPropertyTypes.BINARY}"> <%-- binary --%>
+			<c:if test="${property.name == 'jcr:data'}">
+				<a href ="<c:url value='/files${currentNode.parent.path}'/>">&lt;binary&gt;</a>
+			</c:if>
+			<c:if test="${property.name != 'jcr:data'}">
+				&lt;binary&gt;
+			</c:if>
+		</c:when>
+		<c:when test="${property.type == jcrPropertyTypes.DATE && not empty property.date}"> <%-- date --%>
+			<fmt:formatDate value="${property.date.time}" pattern="yyyy-MM-dd HH:mm"/>
+		</c:when>
+		<c:otherwise> <%-- other types --%>
+            <c:if test="${property.definition.multiple && fn:length(property.values) > 0}">
+				                    <c:forEach items="${property.values}" var="val">
+                	<span>${fn:escapeXml(functions:abbreviate(val.string, 500))}</span>
+				                    </c:forEach>
+            </c:if>
+            <c:if test="${!property.definition.multiple}">${fn:escapeXml(functions:abbreviate(property.string, 500))}</c:if>
+		</c:otherwise>
+		</c:choose>
+	</span>
+</div>

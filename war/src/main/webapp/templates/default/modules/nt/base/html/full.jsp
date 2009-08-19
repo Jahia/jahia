@@ -31,4 +31,4 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<jsp:include page="full.jsp"/>
+<jsp:include page="../../../common.html.jsp"/>

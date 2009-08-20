@@ -167,4 +167,6 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException;
 
+    public void moveOnTopOf(String sourcePath, String targetPath) throws GWTJahiaServiceException;
+
 }

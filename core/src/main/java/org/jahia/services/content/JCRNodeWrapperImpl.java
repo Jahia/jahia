@@ -1592,7 +1592,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
 
     public void orderBefore(String s, String s1) throws UnsupportedRepositoryOperationException, VersionException, ConstraintViolationException, ItemNotFoundException, LockException, RepositoryException {
-        throw new UnsupportedOperationException();
+        objectNode.orderBefore(s, s1);
     }
 
     public Item getPrimaryItem() throws ItemNotFoundException, RepositoryException {

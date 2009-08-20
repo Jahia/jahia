@@ -54,45 +54,10 @@ public class SimpleModule extends ContentPanel implements Module {
 
         if (last) {
 
-            DragSource source = new DragSource(this) {
-                @Override
-                protected void onDragDrop(DNDEvent e) {
-
-                }
-
-                @Override
-                protected void onDragStart(DNDEvent e) {
-                    e.setCancelled(false);
-                    e.setData(this);
-
-                    if (getStatusText() == null) {
-                        e.getStatus().update("Moving content");
-                    }
-
-                }
-            };
+            DragSource source = new SimpleModuleDragSource(this);
             source.addDNDListener(editManager.getDndListener());
 
-            DropTarget target = new DropTarget(this) {
-                @Override
-                protected void onDragMove(DNDEvent event) {
-                    event.setCancelled(false);
-                }
-
-                @Override
-                protected void showFeedback(DNDEvent event) {
-                    showInsert(event, this.getComponent().getElement(), true);
-                }
-
-                private void showInsert(DNDEvent event, Element row, boolean before) {
-                    Insert insert = Insert.get();
-                    insert.setVisible(true);
-                    Rectangle rect = El.fly(row).getBounds();
-                    int y = !before ? (rect.y + rect.height - 4) : rect.y - 2;
-                    insert.el().setBounds(rect.x, y, rect.width, 6);
-                }
-
-            };
+            DropTarget target = new SimpleModuleDropTarget(this);
             target.setOperation(DND.Operation.COPY);
             target.setFeedback(DND.Feedback.INSERT);
 
@@ -122,5 +87,66 @@ public class SimpleModule extends ContentPanel implements Module {
 
     public GWTJahiaNode getNode() {
         return null; 
+    }
+
+    public class SimpleModuleDragSource extends DragSource {
+        private final SimpleModule simpleModule;
+
+        public SimpleModuleDragSource(SimpleModule simpleModule) {
+            super(simpleModule);
+            this.simpleModule = simpleModule;
+        }
+
+        public SimpleModule getSimpleModule() {
+            return simpleModule;
+        }
+
+        @Override
+        protected void onDragDrop(DNDEvent e) {
+
+        }
+
+        @Override
+        protected void onDragStart(DNDEvent e) {
+            e.setCancelled(false);
+            e.setData(this);
+
+            if (getStatusText() == null) {
+                e.getStatus().update("Moving content");
+            }
+
+        }
+    }
+
+    public class SimpleModuleDropTarget extends DropTarget {
+        private final SimpleModule simpleModule;
+
+        public SimpleModuleDropTarget(SimpleModule simpleModule) {
+            super(simpleModule);
+            this.simpleModule = simpleModule;
+        }
+
+        public SimpleModule getSimpleModule() {
+            return simpleModule;
+        }
+
+        @Override
+        protected void onDragMove(DNDEvent event) {
+            event.setCancelled(false);
+        }
+
+        @Override
+        protected void showFeedback(DNDEvent event) {
+            showInsert(event, this.getComponent().getElement(), true);
+        }
+
+        private void showInsert(DNDEvent event, Element row, boolean before) {
+            Insert insert = Insert.get();
+            insert.setVisible(true);
+            Rectangle rect = El.fly(row).getBounds();
+            int y = !before ? (rect.y + rect.height - 4) : rect.y - 2;
+            insert.el().setBounds(rect.x, y, rect.width, 6);
+        }
+
     }
 }

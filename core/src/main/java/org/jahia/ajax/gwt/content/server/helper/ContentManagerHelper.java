@@ -2342,4 +2342,19 @@ public class ContentManagerHelper {
             e.printStackTrace();
         }
     }
+
+    public static void moveOnTopOf(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
+        JCRSessionWrapper session = jcr.getThreadSession(user);
+        final JCRNodeWrapper srcNode = session.getNode(sourcePath);
+        final JCRNodeWrapper targetNode = session.getNode(targetPath);
+        final Node targetParent = targetNode.getParent();
+        if (srcNode.getParent().getPath().equals(targetParent.getPath())) {
+            targetParent.orderBefore(srcNode.getName(), targetNode.getName());
+        } else {
+            session.getWorkspace().move(sourcePath, targetParent.getPath());
+            targetParent.orderBefore(srcNode.getName(), targetNode.getName());
+        }
+        targetParent.save();
+        session.save();
+    }
 }

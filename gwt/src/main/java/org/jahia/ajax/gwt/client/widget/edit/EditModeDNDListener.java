@@ -116,6 +116,20 @@ public class EditModeDNDListener extends DNDListener {
                 }
 
             }
+        } else if (e.getDragSource() instanceof SimpleModule.SimpleModuleDragSource &&
+                   e.getDropTarget() instanceof SimpleModule.SimpleModuleDropTarget) {
+            String sourcePath = ((SimpleModule.SimpleModuleDragSource) e.getDragSource()).getSimpleModule().getPath();
+            String targetPath = ((SimpleModule.SimpleModuleDropTarget) e.getDropTarget()).getSimpleModule().getPath();
+            JahiaContentManagementService.App.getInstance().moveOnTopOf(sourcePath, targetPath, new AsyncCallback() {
+
+                public void onFailure(Throwable throwable) {
+                    //To change body of implemented methods use File | Settings | File Templates.
+                }
+
+                public void onSuccess(Object o) {
+                    //To change body of implemented methods use File | Settings | File Templates.
+                }
+            });
         }
         Log.info("xx"+e.getStatus().getData("sourceNode"));
         super.dragDrop(e);    //To change body of overridden methods use File | Settings | File Templates.

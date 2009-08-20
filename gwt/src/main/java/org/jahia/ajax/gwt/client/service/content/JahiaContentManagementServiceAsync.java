@@ -148,4 +148,5 @@ public interface JahiaContentManagementServiceAsync {
 
     void importContent(String parentPath, String fileKey, AsyncCallback async);
 
+    void moveOnTopOf(String sourcePath, String targetPath, AsyncCallback asyncCallback);
 }

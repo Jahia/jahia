@@ -422,4 +422,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         ContentManagerHelper.importContent(getUser(), parentPath, fileKey);
     }
 
+    public void moveOnTopOf(String sourcePath, String targetPath) throws GWTJahiaServiceException {
+        try {
+            ContentManagerHelper.moveOnTopOf(getUser(),sourcePath,targetPath);
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
 }

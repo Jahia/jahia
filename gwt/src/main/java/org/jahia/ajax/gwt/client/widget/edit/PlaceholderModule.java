@@ -32,8 +32,8 @@ public class PlaceholderModule extends LayoutContainer implements Module {
         setBorders(false);
         setHeight(20);
         
-//        HTML html = new HTML("--placehodler--");
-//        add(html);
+        HTML html = new HTML("--placehodler--");
+        add(html);
 
         DropTarget target = new DropTarget(this) {
             @Override

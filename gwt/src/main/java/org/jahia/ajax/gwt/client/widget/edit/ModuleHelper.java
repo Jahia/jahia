@@ -21,7 +21,7 @@ import org.jahia.ajax.gwt.client.core.JahiaType;
  * To change this template use File | Settings | File Templates.
  */
 public class ModuleHelper {
-    public static boolean parse(LayoutContainer w, HTML html, EditManager editManager) {
+    public static Map<Element, Widget> parse(LayoutContainer w, HTML html, EditManager editManager) {
         Map<Element, Widget> m = new HashMap();
         List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(html.getElement());
         for (Element divElement : el) {
@@ -47,16 +47,16 @@ public class ModuleHelper {
             }
         }
 
-        w.layout();
+        return m;
+    }
 
+    public static void move(Map<Element, Widget> m) {
         for (Element divElement : m.keySet()) {
             Element moduleElement = m.get(divElement).getElement();
             String s = divElement.getInnerHTML();
             divElement.setInnerHTML("");
             DOM.appendChild(divElement, moduleElement);
         }
-
-        return !m.isEmpty();
     }
 
 }

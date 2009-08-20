@@ -5,9 +5,13 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.core.client.GWT;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,7 +23,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 public class MainModule extends LayoutContainer {
 
     private HTML html;
-
+    Map<Element, Widget> m;
 
     public MainModule(final String path, final String template, final EditManager editManager) {
         super(new FlowLayout());
@@ -32,7 +36,8 @@ public class MainModule extends LayoutContainer {
             public void onSuccess(String result) {
                 html = new HTML(result);
                 add(html);
-                ModuleHelper.parse(MainModule.this,html, editManager);
+                m = ModuleHelper.parse(MainModule.this,html, editManager);
+                layout();
             }
 
             public void onFailure(Throwable caught) {
@@ -43,8 +48,11 @@ public class MainModule extends LayoutContainer {
     }
 
     @Override
-    public boolean layout() {
-        Log.info("layout--");
-        return super.layout();    //To change body of overridden methods use File | Settings | File Templates.
+    protected void onAfterLayout() {
+        super.onAfterLayout();
+        if (m != null) {
+            ModuleHelper.move(m);
+        }
     }
+
 }

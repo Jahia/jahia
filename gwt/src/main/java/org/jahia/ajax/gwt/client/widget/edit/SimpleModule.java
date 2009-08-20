@@ -17,10 +17,12 @@ import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.dnd.Insert;
 import com.extjs.gxt.ui.client.fx.Draggable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.Element;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,7 +42,8 @@ public class SimpleModule extends ContentPanel {
         setBorders(false);
         html = new HTML(s);
         add(html);
-        boolean last = !ModuleHelper.parse(this, html, editManager);
+        Map<Element, Widget> m = ModuleHelper.parse(this, html, editManager);
+        boolean last = m.isEmpty();
 
         if (last) {
 

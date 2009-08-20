@@ -192,7 +192,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         GWTJahiaNode node = ContentManagerHelper.getNode(path, "default", jParams);
         List<GWTJahiaNodeType> nodeTypes = ContentDefinitionHelper.getNodeTypes(node.getNodeTypes(), jParams);
         Map<String, GWTJahiaNodeProperty> props = ContentManagerHelper.getProperties(path, jParams);
-        return new GWTJahiaGetPropertiesResult(nodeTypes, props);
+        GWTJahiaGetPropertiesResult result = new GWTJahiaGetPropertiesResult(nodeTypes, props);
+        result.setNode(node);
+        return result;
     }
 
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException {

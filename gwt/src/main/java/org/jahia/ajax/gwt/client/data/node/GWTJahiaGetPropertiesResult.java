@@ -39,13 +39,13 @@ import java.util.Map;
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
+ * GWT bean, representing result of the node properties request.
  * User: toto
  * Date: Sep 12, 2008
  * Time: 11:01:51 AM
- * To change this template use File | Settings | File Templates.
  */
 public class GWTJahiaGetPropertiesResult implements Serializable {
+	private GWTJahiaNode node;
     private List<GWTJahiaNodeType> nodeTypes;
     private Map<String, GWTJahiaNodeProperty> properties;
 
@@ -71,5 +71,13 @@ public class GWTJahiaGetPropertiesResult implements Serializable {
 
     public void setProperties(Map<String, GWTJahiaNodeProperty> properties) {
         this.properties = properties;
+    }
+
+	public GWTJahiaNode getNode() {
+    	return node;
+    }
+
+	public void setNode(GWTJahiaNode node) {
+    	this.node = node;
     }
 }

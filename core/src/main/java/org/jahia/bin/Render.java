@@ -136,6 +136,7 @@ public class Render extends HttpServlet {
                     }
                 }
             }
+            String url = null;
             if (node != null) {
                 String nodeType = req.getParameter("nodeType");
                 if (nodeType == null || "".equalsIgnoreCase(nodeType.trim())) {
@@ -167,17 +168,14 @@ public class Render extends HttpServlet {
                         newNode.setProperty(key, values[0]);
                     }
                 }
+                url = ((JCRNodeWrapper) newNode).getPath();
                 session.save();
             }
-            StringBuffer out = new StringBuffer("Successfully created/updated");
-
-            resp.setContentType("text/html");
-            resp.setCharacterEncoding("UTF-8");
-            resp.setContentLength(out.length());
-
-            PrintWriter writer = resp.getWriter();
-            writer.print(out.toString());
-            writer.close();
+            resp.setStatus(HttpServletResponse.SC_CREATED);
+            if(url!=null) {
+                String requestedURL = req.getRequestURL().toString();                
+                resp.setHeader("Location",requestedURL.substring(0,requestedURL.indexOf(path))+url+".html");
+            }
         } catch (PathNotFoundException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } catch (Exception e) {

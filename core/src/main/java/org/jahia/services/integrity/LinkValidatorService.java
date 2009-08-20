@@ -52,9 +52,9 @@ import org.jahia.services.files.JahiaTextFileService;
 import org.jahia.services.integrity.Link.Type;
 import org.jahia.services.version.RevisionEntry;
 
-import au.id.jericho.lib.html.Source;
-import au.id.jericho.lib.html.StartTag;
-import au.id.jericho.lib.html.Tag;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.StartTag;
+import net.htmlparser.jericho.HTMLElementName;
 
 /**
  * Jahia service implementation for performing different kinds of link
@@ -69,7 +69,7 @@ public class LinkValidatorService extends JahiaService {
 
     private static void addLinks(Source source, String tagName,
             String attributeName, RevisionEntry field, List<Link> foundLinks) {
-        List<StartTag> tags = source.findAllStartTags(tagName);
+        List<StartTag> tags = source.getAllStartTags(tagName);
         for (StartTag tag : tags) {
             String url = tag.getAttributeValue(attributeName);
             if (url != null
@@ -154,10 +154,10 @@ public class LinkValidatorService extends JahiaService {
             }
             if (content != null && content.length() > 0) {
                 Source source = new Source(content);
-                addLinks(source, Tag.A, "href", field, links);
-                addLinks(source, Tag.IMG, "src", field, links);
-                addLinks(source, Tag.LINK, "href", field, links);
-                addLinks(source, Tag.SCRIPT, "src", field, links);
+                addLinks(source, HTMLElementName.A, "href", field, links);
+                addLinks(source, HTMLElementName.IMG, "src", field, links);
+                addLinks(source, HTMLElementName.LINK, "href", field, links);
+                addLinks(source, HTMLElementName.SCRIPT, "src", field, links);
                 addLinks(source, "embed", "src", field, links);
             }
         }

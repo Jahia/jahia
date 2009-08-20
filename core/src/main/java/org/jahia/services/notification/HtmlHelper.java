@@ -46,7 +46,7 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import au.id.jericho.lib.html.*;
+import net.htmlparser.jericho.*;
 
 
 /**
@@ -84,19 +84,19 @@ public class HtmlHelper {
 
         Source source = new Source(content);
         OutputDocument document = new OutputDocument(source);
-        List<StartTag> linkTags = source.findAllStartTags(Tag.A);
+        List<StartTag> linkTags = source.getAllStartTags(HTMLElementName.A);
         for (StartTag startTag : linkTags) {
             final Attributes attributes = startTag.getAttributes();
             final Attribute href = attributes.get("href");
             restoreURL(ctx, document, href);
         }
-        linkTags = source.findAllStartTags(Tag.IMG);
+        linkTags = source.getAllStartTags(HTMLElementName.IMG);
         for (StartTag startTag : linkTags) {
             final Attributes attributes = startTag.getAttributes();
             final Attribute href = attributes.get("src");
             restoreURL(ctx, document, href);
         }
-        linkTags = source.findAllStartTags(Tag.INPUT);
+        linkTags = source.getAllStartTags(HTMLElementName.INPUT);
         for (StartTag startTag : linkTags) {
             final Attributes attributes = startTag.getAttributes();
             final Attribute href = attributes.get("src");
@@ -110,7 +110,7 @@ public class HtmlHelper {
 //        }
 
         StringBuilder sb=new StringBuilder();
-        linkTags = source.findAllStartTags(Tag.LINK);
+        linkTags = source.getAllStartTags(HTMLElementName.LINK);
         for (StartTag startTag : linkTags) {
             final Attributes attributes = startTag.getAttributes();
             if ("stylesheet".equals(attributes.get("rel").getValue())) {
@@ -157,7 +157,7 @@ public class HtmlHelper {
                 }
             }
         }
-        linkTags = source.findAllStartTags(Tag.DIV);
+        linkTags = source.getAllStartTags(HTMLElementName.DIV);
         for (StartTag startTag : linkTags) {
             final Attributes attributes = startTag.getAttributes();
             final Attribute styleAttr = attributes.get("style");

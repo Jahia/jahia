@@ -34,13 +34,7 @@
 
 package org.jahia.data.fields;
 
-import au.id.jericho.lib.html.Attribute;
-import au.id.jericho.lib.html.Attributes;
-import au.id.jericho.lib.html.OutputDocument;
-import au.id.jericho.lib.html.Source;
-import au.id.jericho.lib.html.SourceFormatter;
-import au.id.jericho.lib.html.StartTag;
-import au.id.jericho.lib.html.Tag;
+import net.htmlparser.jericho.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.extractor.HTMLTextExtractor;
@@ -357,19 +351,19 @@ public class JahiaBigTextField extends JahiaField implements
             }
             Source source = new Source(content);
             OutputDocument document = new OutputDocument(source);
-            List<StartTag> linkTags = source.findAllStartTags(Tag.A);
+            List<StartTag> linkTags = source.getAllStartTags(HTMLElementName.A);
             for (StartTag startTag : linkTags) {
                 final Attributes attributes = startTag.getAttributes();
                 final Attribute href = attributes.get("href");
                 restoreURL(processingContext, document, href);
             }
-            linkTags = source.findAllStartTags(Tag.IMG);
+            linkTags = source.getAllStartTags(HTMLElementName.IMG);
             for (StartTag startTag : linkTags) {
                 final Attributes attributes = startTag.getAttributes();
                 final Attribute href = attributes.get("src");
                 restoreURL(processingContext, document, href);
             }
-            linkTags = source.findAllStartTags(Tag.PARAM);
+            linkTags = source.getAllStartTags(HTMLElementName.PARAM);
             for (StartTag startTag : linkTags) {
                 final Attributes attributes = startTag.getAttributes();
                 final Attribute href = attributes.get("value");
@@ -407,21 +401,21 @@ public class JahiaBigTextField extends JahiaField implements
         String cleanContent = cleanHtml(content);
         Source source = new Source((new SourceFormatter(new Source(cleanContent))).toString());
         OutputDocument document = new OutputDocument(source);
-        List<StartTag> linkTags = source.findAllStartTags(Tag.A);
+        List<StartTag> linkTags = source.getAllStartTags(HTMLElementName.A);
         for (StartTag startTag : linkTags) {
             final Attributes attributes = startTag.getAttributes();
             final Attribute href = attributes.get("href");
             if(href!=null)
             cleanURL(processingContext, code, document, href);
         }
-        linkTags = source.findAllStartTags(Tag.IMG);
+        linkTags = source.getAllStartTags(HTMLElementName.IMG);
         for (StartTag startTag : linkTags) {
             final Attributes attributes = startTag.getAttributes();
             final Attribute href = attributes.get("src");
             if(href != null)
             cleanURL(processingContext, code, document, href);
         }
-        linkTags = source.findAllStartTags(Tag.PARAM);
+        linkTags = source.getAllStartTags(HTMLElementName.PARAM);
         for (StartTag startTag : linkTags) {
             final Attributes attributes = startTag.getAttributes();
             final Attribute href = attributes.get("value");

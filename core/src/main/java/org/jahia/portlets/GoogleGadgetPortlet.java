@@ -47,9 +47,10 @@ import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 
-import au.id.jericho.lib.html.Source;
-import au.id.jericho.lib.html.SourceFormatter;
-import au.id.jericho.lib.html.StartTag;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.SourceFormatter;
+import net.htmlparser.jericho.StartTag;
+import net.htmlparser.jericho.HTMLElementName;
 
 /**
  * User: loom
@@ -72,7 +73,7 @@ public class GoogleGadgetPortlet extends JahiaPortlet {
                 String height = "";
                 Source source = new Source(htmlCode);
                 source = new Source((new SourceFormatter(source)).toString());
-                List<StartTag> scriptTags = source.findAllStartTags("script");
+                List<StartTag> scriptTags = source.getAllStartTags(HTMLElementName.SCRIPT);
                 for (StartTag curScriptTag : scriptTags) {
                     if ((curScriptTag.getAttributeValue("src") != null) &&
                        (!curScriptTag.getAttributeValue("src").equals("")) ) {

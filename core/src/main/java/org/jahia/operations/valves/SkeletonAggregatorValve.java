@@ -31,10 +31,6 @@
  */
 package org.jahia.operations.valves;
 
-import au.id.jericho.lib.html.OutputDocument;
-import au.id.jericho.lib.html.Source;
-import au.id.jericho.lib.html.StartTag;
-import au.id.jericho.lib.html.Tag;
 
 import org.apache.log4j.Logger;
 import org.jahia.content.ContentObjectKey;
@@ -82,6 +78,11 @@ import java.io.Writer;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.OutputDocument;
+import net.htmlparser.jericho.Tag;
+import net.htmlparser.jericho.StartTag;
 
 /**
  * <p>Title: </p> <p>Description: </p> <p>Copyright: Copyright (c) 2004</p> <p>Company: Jahia Ltd</p>
@@ -232,8 +233,8 @@ public class SkeletonAggregatorValve implements Valve {
                             OutputDocument outputDocument = new OutputDocument(htmlContent);
                             watch.stop();
                             watch.start("find tags");
-                            List<? extends Tag> esiIncludeTags = htmlContent.findAllStartTags("esi:include");
-                            List<? extends Tag> esiVarsTags = htmlContent.findAllStartTags("esi:vars");
+                            List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");
+                            List<? extends Tag> esiVarsTags = htmlContent.getAllStartTags("esi:vars");
                             watch.stop();
                             if (containerHTMLCache == null) {
                                 try {

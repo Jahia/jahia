@@ -31,8 +31,8 @@
  */
 package org.jahia.taglibs.template.field;
 
-import au.id.jericho.lib.html.Source;
-import au.id.jericho.lib.html.TextExtractor;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.TextExtractor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.content.ContentObject;

@@ -31,7 +31,7 @@
  */
 package org.jahia.services.cache;
 
-import au.id.jericho.lib.html.Tag;
+import net.htmlparser.jericho.Tag;
 
 import java.io.Serializable;
 import java.util.List;

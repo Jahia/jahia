@@ -31,10 +31,10 @@
  */
 package org.jahia.operations.valves;
 
-import au.id.jericho.lib.html.OutputDocument;
-import au.id.jericho.lib.html.Source;
-import au.id.jericho.lib.html.SourceFormatter;
-import au.id.jericho.lib.html.StartTag;
+import net.htmlparser.jericho.OutputDocument;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.SourceFormatter;
+import net.htmlparser.jericho.StartTag;
 
 import org.apache.log4j.Category;
 import org.jahia.content.ContentObjectKey;
@@ -223,7 +223,7 @@ public class SkeletonParseAndStoreValve implements Valve {
                 Source source = new Source(cleanHtml(generatedOutput));
                 // This will remove all blank line and drastically reduce data in memory
                 source = new Source((new SourceFormatter(source)).toString());
-                List<StartTag> esiIncludeTags = source.findAllStartTags("esi:include");
+                List<StartTag> esiIncludeTags = source.getAllStartTags("esi:include");
                 if (logger.isDebugEnabled()) displaySegments(esiIncludeTags);
                 // We will remove container content here has we do not want to store them twice in memory
                 OutputDocument outputDocument = emptyEsiIncludeTagContainer(esiIncludeTags, source);

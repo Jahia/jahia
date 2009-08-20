@@ -31,10 +31,7 @@
  */
 package org.jahia.ajax.gwt.commons.server.rpc;
 
-import au.id.jericho.lib.html.OutputDocument;
-import au.id.jericho.lib.html.Source;
-import au.id.jericho.lib.html.StartTag;
-import au.id.jericho.lib.html.SourceFormatter;
+import net.htmlparser.jericho.*;
 import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.engines.LockHelper;
@@ -297,7 +294,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
             // create them dynamically.
             Source source = new Source(portletOutput);
             source = new Source((new SourceFormatter(source)).toString());
-            List<StartTag> scriptTags = source.findAllStartTags("script");
+            List<StartTag> scriptTags = source.getAllStartTags(HTMLElementName.SCRIPT);
             for (StartTag curScriptTag : scriptTags) {
                 if ((curScriptTag.getAttributeValue("src") != null) &&
                         (!curScriptTag.getAttributeValue("src").equals(""))) {
@@ -574,11 +571,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
         }
         LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_CONTAINER_TYPE, containerID);
         final LockService lockService = servicesRegistry.getLockService();
-        if (lockService.isAcquireable(lockKey, jParams.getUser(), jParams.getUser().getUserKey())) {
-            return true;
-        } else {
-            return false;
-        }
+        return lockService.isAcquireable(lockKey, jParams.getUser(), jParams.getUser().getUserKey());
     }
 
     public GWTJahiaProcessJob getProcessJob(String name, String groupName) {
@@ -641,7 +634,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
             return false;
         }
 
-        boolean result = true;
+        boolean result;
         try {
             result = LockHelper.release(lockType, retrieveParamBean());
         } catch (JahiaException e) {

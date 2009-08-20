@@ -31,23 +31,25 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.google.gwt.user.client.DeferredCommand;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.allen_sauer.gwt.log.client.Log;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 
 import java.util.List;
 
@@ -71,7 +73,7 @@ public class ContentPathBar extends TopBar {
     public ContentPathBar(final String startPath, final ManagerConfiguration config, final String callback, final boolean allowThumbs) {
         m_component = new ToolBar() ;
         selectedPath = new TextField() ;
-        selectedPath.setId("file_id");
+        selectedPath.setId("content_id");
         selectedPath.setReadOnly(true);
         m_component.add(new LabelToolItem(Messages.getResource("fm_selection"))) ;
         m_component.add(selectedPath) ;
@@ -139,7 +141,7 @@ public class ContentPathBar extends TopBar {
 
     public void initPathField(String path) {
         selectedPath.setRawValue(path);
-        selectedPath.setName("file_id");
+        selectedPath.setName("content_id");
     }
 
     public boolean isAllowThumbs() {

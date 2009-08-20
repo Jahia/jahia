@@ -36,9 +36,9 @@ import org.jahia.data.fields.FieldsEditHelper;
 import org.jahia.data.fields.FieldsEditHelperAbstract;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.files.JahiaFileField;
+import org.jahia.engines.EngineLanguageHelper;
 import org.jahia.engines.JahiaEngine;
 import org.jahia.engines.JahiaEngineTools;
-import org.jahia.engines.EngineLanguageHelper;
 import org.jahia.engines.filemanager.TableEntry;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
@@ -46,16 +46,17 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.webdav.JahiaWebdavBaseService;
-import org.jahia.services.lock.LockPrerequisitesResult;
-import org.jahia.services.lock.LockPrerequisites;
 import org.jahia.services.lock.LockKey;
+import org.jahia.services.lock.LockPrerequisites;
+import org.jahia.services.lock.LockPrerequisitesResult;
+import org.jahia.services.webdav.JahiaWebdavBaseService;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Status;
-import javax.jcr.RepositoryException;
-
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -135,7 +136,7 @@ public class DAVFile_Field implements FieldSubEngine {
     private boolean getFormData(final ProcessingContext jParams, final Map<String, Object> engineMap, final JahiaField theField) {
         boolean out = true;
 
-        final String fileID = TableEntry.javascriptDecode(jParams.getParameter("file_id"));
+        final String fileID = TableEntry.javascriptDecode(jParams.getParameter("content_id"));
         JahiaFileField fField;
 
         final HttpSession session = ((ParamBean) jParams).getRequest().getSession();
@@ -263,7 +264,7 @@ public class DAVFile_Field implements FieldSubEngine {
 
 //        List list = checkRights(jParams, theField);
         if (jParams.getSessionState().getAttribute(jParams.getSiteID() + "-justUploaded") != null) {
-            jParams.setParameter("file_id", TableEntry.javascriptEncode((String) jParams.getSessionState().
+            jParams.setParameter("content_id", TableEntry.javascriptEncode((String) jParams.getSessionState().
                     getAttribute(jParams.getSiteID() + "-justUploaded")));
             jParams.getSessionState().removeAttribute(jParams.getSiteID() + "-justUploaded");
             //getFormData(jParams, engineMap, theField);
@@ -365,7 +366,7 @@ public class DAVFile_Field implements FieldSubEngine {
             jParams.getSessionState().removeAttribute(jParams.getSiteID() + "-movedfrom");
             final String movedTo = (String) jParams.getSessionState().getAttribute(jParams.getSiteID() + "-movedto");
             if (fField.getRealName().equals(movedFrom)) {
-                jParams.setParameter("file_id", TableEntry.javascriptEncode(movedTo));
+                jParams.setParameter("content_id", TableEntry.javascriptEncode(movedTo));
                 this.getFormData(jParams, engineMap, theField);
                 fField = (JahiaFileField) theField.getObject();
             }

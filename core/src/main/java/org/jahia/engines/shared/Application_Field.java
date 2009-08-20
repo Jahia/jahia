@@ -37,6 +37,10 @@
 package org.jahia.engines.shared;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
+import org.jahia.api.Constants;
+import org.jahia.content.CategoryKey;
+import org.jahia.content.ObjectKey;
+import org.jahia.content.ObjectLink;
 import org.jahia.data.applications.*;
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.fields.FieldsEditHelper;
@@ -49,24 +53,19 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.SessionState;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.registries.EnginesRegistry;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.lock.LockPrerequisitesResult;
-import org.jahia.services.lock.LockPrerequisites;
-import org.jahia.services.lock.LockKey;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPortletNode;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.content.ObjectKey;
-import org.jahia.content.ObjectLink;
-import org.jahia.content.CategoryKey;
-import org.jahia.api.Constants;
+import org.jahia.services.lock.LockKey;
+import org.jahia.services.lock.LockPrerequisites;
+import org.jahia.services.lock.LockPrerequisitesResult;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.RepositoryException;
-
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.*;
@@ -140,7 +139,7 @@ public class Application_Field implements FieldSubEngine {
             throws JahiaException {
         logger.debug("getFormaData()");
         String fieldValue = jParams.getParameter("_" + Integer.toString(theField.getID()));
-        final String fileID = TableEntry.javascriptDecode(jParams.getParameter("file_id"));
+        final String fileID = TableEntry.javascriptDecode(jParams.getParameter("content_id"));
         if (fieldValue != null && !"-1".equals(fieldValue)) {
             theField.setRawValue(fieldValue);
         } else if(fileID!=null) {
@@ -149,7 +148,7 @@ public class Application_Field implements FieldSubEngine {
                 if(node!=null && node instanceof JCRPortletNode)
             theField.setRawValue(node.getUUID());
             } catch (RepositoryException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error(e,e);
             }
         }
 

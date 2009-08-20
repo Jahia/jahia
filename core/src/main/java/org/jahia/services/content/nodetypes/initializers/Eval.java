@@ -59,7 +59,7 @@ import java.lang.reflect.Method;
  */
 public class Eval implements ValueInitializer {
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
-        if (jParams != null && jParams instanceof ParamBean) {
+        if (jParams != null && jParams instanceof ParamBean && Jahia.getJahiaServlet()!= null) {
             ParamBean paramBean = (ParamBean) jParams;
             JspFactory jspFactory = JspFactory.getDefaultFactory();
             final PageContext pageContext = jspFactory.getPageContext(Jahia.getJahiaServlet(),

@@ -52,9 +52,8 @@ public interface CategoryBean extends Serializable {
     String getKey ();
 
     /**
-     * Sets the category key (unique) name
-     *
-     * @param key the unique identifier for the category
+     * Get path
+     * @return
      */
-    void setKey (String key);
+    String getPath();
 }

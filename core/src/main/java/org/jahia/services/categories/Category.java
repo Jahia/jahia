@@ -818,6 +818,11 @@ public class Category extends JahiaObject {
      * @throws JahiaException
      */
     public String getCategoryPath(JahiaUser p) throws JahiaException {
+        
+        return categoryBean.getPath();
+
+        /*
+
         List<Category> parentCategories = this.getParentCategories(p);
         StringBuilder path = new StringBuilder(32);
         for (Category category : parentCategories) {
@@ -825,7 +830,7 @@ public class Category extends JahiaObject {
         }
         path.append(PATH_DELIMITER).append(this.getKey());
 
-        return path.toString();
+        return path.toString();*/
     }
 
     /**

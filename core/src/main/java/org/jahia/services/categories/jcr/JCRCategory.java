@@ -31,13 +31,12 @@
  */
 package org.jahia.services.categories.jcr;
 
-import java.io.Serializable;
+import org.apache.log4j.Logger;
+import org.jahia.services.categories.CategoryBean;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import org.apache.log4j.Logger;
-import org.jahia.services.categories.CategoryBean;
+import java.io.Serializable;
 
 
 /**
@@ -61,6 +60,8 @@ public class JCRCategory implements CategoryBean, Serializable {
     private String id;    
 
     private String key;
+
+    private String path;
     
     private Node categoryNode;
     
@@ -74,6 +75,7 @@ public class JCRCategory implements CategoryBean, Serializable {
         try {
             this.id = categoryNode.getUUID();
             this.key =  categoryNode.getName();
+            this.path = categoryNode.getPath();
         } catch (RepositoryException e) {
             logger.warn(e, e);
         }        
@@ -99,6 +101,11 @@ public class JCRCategory implements CategoryBean, Serializable {
     public void setKey(String key) {
         this.key = key;
     }
+
+    public String getPath(){
+       return path;
+    }
+
 
     /**
      * Get the category node in the JCR 

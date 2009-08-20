@@ -147,7 +147,7 @@ public class CategoryServiceImpl extends CategoryService {
     }
 
     public Category getCategoryByPath(String categoryPath) throws JahiaException {
-        return categoryProvider.getCategoryByUUID(categoryPath);
+        return categoryProvider.getCategoryByPath(categoryPath);
     }
 
     private List<ObjectLink> getCategoryChildLinks(Category parentCategory)

@@ -68,6 +68,14 @@ public class EditModeDNDListener extends DNDListener {
             }
             e.getStatus().setData("sourceNodes", l);
 
+        } else if (e.getSource() == displayGridSource) {
+            e.getStatus().setData("sourceType", "content");
+
+            List<GWTJahiaNode> list = (List<GWTJahiaNode>) e.getData();
+            e.getStatus().setData("size", list.size());
+
+            e.getStatus().setData("sourceNodes", list);
+
         }
 
         super.dragStart(e);    //To change body of overridden methods use File | Settings | File Templates.

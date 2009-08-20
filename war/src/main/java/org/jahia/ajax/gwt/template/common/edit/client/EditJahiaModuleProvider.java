@@ -67,8 +67,6 @@ public class EditJahiaModuleProvider extends JahiaModuleProvider {
                 return new InlineEditingJahiaModule();
             } else if (jahiaType.equalsIgnoreCase(JahiaType.USER_GROUP)) {
                 return new UserGroupJahiaModule();
-            } else if (jahiaType.equalsIgnoreCase(JahiaType.CONTENT_PLACEHOLDER)) {
-                return new ContentPlaceholderJahiaModule();
             }
         }
         return null;

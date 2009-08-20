@@ -1,18 +1,9 @@
 drop table if exists seq_acl;
 create table seq_acl ( next_val bigint );
 insert into seq_acl values ( 1 );
-drop table if exists seq_app_def;
-create table seq_app_def ( next_val bigint );
-insert into seq_app_def values ( 1 );
-drop table if exists seq_appentry;
-create table seq_appentry ( next_val bigint );
-insert into seq_appentry values ( 1 );
 drop table if exists seq_audit_log;
 create table seq_audit_log ( next_val bigint );
 insert into seq_audit_log values ( 1 );
-drop table if exists seq_category;
-create table seq_category ( next_val bigint );
-insert into seq_category values ( 1 );
 drop table if exists seq_ctn_def;
 create table seq_ctn_def ( next_val bigint );
 insert into seq_ctn_def values ( 1 );

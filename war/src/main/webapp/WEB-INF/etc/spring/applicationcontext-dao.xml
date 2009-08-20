@@ -12,9 +12,6 @@
 
     <bean id="jahiaAclDAO" class="org.jahia.hibernate.dao.JahiaAclDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaAclNamesDAO" class="org.jahia.hibernate.dao.JahiaAclNamesDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaApplicationDefinitionDAO" class="org.jahia.hibernate.dao.JahiaApplicationDefinitionDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaApplicationEntryDAO" class="org.jahia.hibernate.dao.JahiaApplicationEntryDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaApplicationShareDAO" class="org.jahia.hibernate.dao.JahiaApplicationShareDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaAuditLogDAO" class="org.jahia.hibernate.dao.JahiaAuditLogDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaBigTextDataDAO" class="org.jahia.hibernate.dao.JahiaBigTextDataDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaContainerDAO" class="org.jahia.hibernate.dao.JahiaContainerDAO" parent="abstractGeneratorDAO"/>
@@ -73,10 +70,7 @@
     		       The sequence name will be table_name.column_name -->
     			<map>
     			  <entry key="org.jahia.hibernate.model.JahiaAcl" value="jahia_acl.id_jahia_acl"/>
-    			  <entry key="org.jahia.hibernate.model.JahiaAppDef" value="jahia_app_def.id_jahia_app_def"/>
-    			  <entry key="org.jahia.hibernate.model.JahiaAppentry" value="jahia_appentry.id_jahia_appentry"/>
     			  <entry key="org.jahia.hibernate.model.JahiaAuditLog" value="jahia_audit_log.id_jahia_audit_log"/>
-    			  <entry key="org.jahia.hibernate.model.JahiaCategory" value="jahia_category.id_category"/>
     			  <entry key="org.jahia.hibernate.model.JahiaCtnDef" value="jahia_ctn_def.id_jahia_ctn_def"/>
     			  <entry key="org.jahia.hibernate.model.JahiaCtnDefProperty"
                          value="jahia_ctn_def_properties.id_jahia_ctn_def_properties"/>

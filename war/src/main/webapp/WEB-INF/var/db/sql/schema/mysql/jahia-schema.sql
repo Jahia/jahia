@@ -7,29 +7,9 @@
         drop 
         foreign key FK3C5F357D48212BE1;
 
-    alter table jahia_app_def 
-        drop 
-        foreign key FKE6C84991455C901A;
-
-    alter table jahia_appdef_prop 
-        drop 
-        foreign key FK8D4A0C287FCEE0FB;
-
-    alter table jahia_apps_share 
-        drop 
-        foreign key FK7FE512E81F78D07;
-
-    alter table jahia_apps_share 
-        drop 
-        foreign key FK7FE512E83D3F9BB0;
-
     alter table jahia_audit_log 
         drop 
         foreign key FKF4669B0AC75E28FD;
-
-    alter table jahia_category 
-        drop 
-        foreign key FKAFAF3D94348193C9;
 
     alter table jahia_ctn_def_properties 
         drop 
@@ -129,11 +109,11 @@
 
     alter table jahia_sites_grps 
         drop 
-        foreign key FK7B245597F46755FE;
+        foreign key FK7B24559790F996AC;
 
     alter table jahia_sites_grps 
         drop 
-        foreign key FK7B24559790F996AC;
+        foreign key FK7B245597F46755FE;
 
     alter table jahia_sites_users 
         drop 
@@ -145,21 +125,9 @@
 
     drop table if exists jahia_acl_names;
 
-    drop table if exists jahia_app_def;
-
-    drop table if exists jahia_appdef_prop;
-
-    drop table if exists jahia_appentry;
-
-    drop table if exists jahia_apps_share;
-
     drop table if exists jahia_audit_log;
 
     drop table if exists jahia_bigtext_data;
-
-    drop table if exists jahia_category;
-
-    drop table if exists jahia_category_prop;
 
     drop table if exists jahia_ctn_def;
 
@@ -299,43 +267,6 @@
         primary key (acl_name)
     );
 
-    create table jahia_app_def (
-        id_jahia_app_def integer not null,
-        name_jahia_app_def varchar(250),
-        context_jahia_app_def varchar(250),
-        visible_jahia_app_def integer,
-        shared_jahia_app_def integer,
-        rights_jahia_app_def integer,
-        filename_jahia_app_def varchar(250),
-        desc_jahia_app_def varchar(250),
-        type_jahia_app_def varchar(30),
-        primary key (id_jahia_app_def)
-    );
-
-    create table jahia_appdef_prop (
-        appdefid_appdef_prop integer not null,
-        propname_appdef_prop varchar(250) not null,
-        propvalue_appdef_prop varchar(250),
-        primary key (appdefid_appdef_prop, propname_appdef_prop)
-    );
-
-    create table jahia_appentry (
-        id_jahia_appentry integer not null,
-        appid_jahia_appentry integer,
-        defname_jahia_appentry varchar(250),
-        rights_jahia_appentry integer,
-        reskeyname_jahia_appentry varchar(250),
-        expirationTime_jahia_appentry integer,
-        cacheScope_jahia_appentry varchar(250),
-        primary key (id_jahia_appentry)
-    );
-
-    create table jahia_apps_share (
-        definition integer not null,
-        site integer not null,
-        primary key (definition, site)
-    );
-
     create table jahia_audit_log (
         id_jahia_audit_log integer not null,
         time_jahia_audit_log bigint,
@@ -357,20 +288,6 @@
         id_bigtext_data varchar(255) not null,
         raw_value longtext,
         primary key (id_bigtext_data)
-    );
-
-    create table jahia_category (
-        id_category integer not null,
-        key_category varchar(250) not null unique,
-        aclid_category integer,
-        primary key (id_category)
-    );
-
-    create table jahia_category_prop (
-        id_category integer not null,
-        name_category_prop varchar(250) not null,
-        value_category_prop varchar(250) not null,
-        primary key (id_category, name_category_prop)
     );
 
     create table jahia_ctn_def (
@@ -935,41 +852,11 @@
         foreign key (acl_id) 
         references jahia_acl (id_jahia_acl);
 
-    alter table jahia_app_def 
-        add index FKE6C84991455C901A (rights_jahia_app_def), 
-        add constraint FKE6C84991455C901A 
-        foreign key (rights_jahia_app_def) 
-        references jahia_acl (id_jahia_acl);
-
-    alter table jahia_appdef_prop 
-        add index FK8D4A0C287FCEE0FB (appdefid_appdef_prop), 
-        add constraint FK8D4A0C287FCEE0FB 
-        foreign key (appdefid_appdef_prop) 
-        references jahia_app_def (id_jahia_app_def);
-
-    alter table jahia_apps_share 
-        add index FK7FE512E81F78D07 (site), 
-        add constraint FK7FE512E81F78D07 
-        foreign key (site) 
-        references jahia_sites (id_jahia_sites);
-
-    alter table jahia_apps_share 
-        add index FK7FE512E83D3F9BB0 (definition), 
-        add constraint FK7FE512E83D3F9BB0 
-        foreign key (definition) 
-        references jahia_app_def (id_jahia_app_def);
-
     alter table jahia_audit_log 
         add index FKF4669B0AC75E28FD (parent_id_jahia_audit_log), 
         add constraint FKF4669B0AC75E28FD 
         foreign key (parent_id_jahia_audit_log) 
         references jahia_audit_log (id_jahia_audit_log);
-
-    alter table jahia_category 
-        add index FKAFAF3D94348193C9 (aclid_category), 
-        add constraint FKAFAF3D94348193C9 
-        foreign key (aclid_category) 
-        references jahia_acl (id_jahia_acl);
 
     alter table jahia_ctn_def_properties 
         add index FKA2522525B1CEB792 (ctndefid_jahia_ctn_def_prop), 
@@ -1116,16 +1003,16 @@
         references jahia_sites (id_jahia_sites);
 
     alter table jahia_sites_grps 
-        add index FK7B245597F46755FE (siteid_sites_grps), 
-        add constraint FK7B245597F46755FE 
-        foreign key (siteid_sites_grps) 
-        references jahia_sites (id_jahia_sites);
-
-    alter table jahia_sites_grps 
         add index FK7B24559790F996AC (grpid_sites_grps), 
         add constraint FK7B24559790F996AC 
         foreign key (grpid_sites_grps) 
         references jahia_grps (key_jahia_grps);
+
+    alter table jahia_sites_grps 
+        add index FK7B245597F46755FE (siteid_sites_grps), 
+        add constraint FK7B245597F46755FE 
+        foreign key (siteid_sites_grps) 
+        references jahia_sites (id_jahia_sites);
 
     alter table jahia_sites_users 
         add index FKEA2BF1BF6CF683C0 (userid_sites_users), 

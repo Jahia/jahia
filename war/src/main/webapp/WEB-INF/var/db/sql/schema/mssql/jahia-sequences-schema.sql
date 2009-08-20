@@ -1,18 +1,9 @@
 drop table seq_acl;
 create table seq_acl ( next_val numeric(19,0) );
 insert into seq_acl values ( 1 );
-drop table seq_app_def;
-create table seq_app_def ( next_val numeric(19,0) );
-insert into seq_app_def values ( 1 );
-drop table seq_appentry;
-create table seq_appentry ( next_val numeric(19,0) );
-insert into seq_appentry values ( 1 );
 drop table seq_audit_log;
 create table seq_audit_log ( next_val numeric(19,0) );
 insert into seq_audit_log values ( 1 );
-drop table seq_category;
-create table seq_category ( next_val numeric(19,0) );
-insert into seq_category values ( 1 );
 drop table seq_ctn_def;
 create table seq_ctn_def ( next_val numeric(19,0) );
 insert into seq_ctn_def values ( 1 );

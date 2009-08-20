@@ -235,14 +235,6 @@
             </bean>
         </property>
     </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaApplicationManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaApplicationManager">
-                <property name="jahiaApplicationDefinitionDAO" ref="jahiaApplicationDefinitionDAO" />
-                <property name="jahiaAclDAO" ref="jahiaAclDAO" />
-            </bean>
-        </property>
-    </bean>
     <bean id="org.jahia.hibernate.manager.JahiaGroupManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaGroupManager">

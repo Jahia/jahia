@@ -1,13 +1,7 @@
 drop sequence seq_acl;
 create sequence seq_acl start with 1 increment by 20;
-drop sequence seq_app_def;
-create sequence seq_app_def start with 1 increment by 20;
-drop sequence seq_appentry;
-create sequence seq_appentry start with 1 increment by 20;
 drop sequence seq_audit_log;
 create sequence seq_audit_log start with 1 increment by 20;
-drop sequence seq_category;
-create sequence seq_category start with 1 increment by 20;
 drop sequence seq_ctn_def;
 create sequence seq_ctn_def start with 1 increment by 20;
 drop sequence seq_ctn_def_properties;

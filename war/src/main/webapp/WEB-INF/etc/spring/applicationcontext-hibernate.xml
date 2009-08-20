@@ -28,10 +28,6 @@
                 <value>org/jahia/hibernate/model/JahiaAcl.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaAclEntry.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaAclName.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaAppDef.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaAppdefProp.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaAppentry.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaAppsShare.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaAuditLog.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaBigTextData.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaContainer.hbm.xml</value>

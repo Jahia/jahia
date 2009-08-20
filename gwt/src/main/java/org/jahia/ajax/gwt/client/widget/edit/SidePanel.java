@@ -1,6 +1,8 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -23,6 +25,7 @@ import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.*;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
@@ -30,11 +33,14 @@ import java.util.Date;
 import java.util.ArrayList;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,7 +53,7 @@ public class SidePanel extends ContentPanel {
 
     private boolean init = false;
     private final ListStore<GWTJahiaNode> displayStore;
-    private final ContentPanel properties;
+    private final TabItem propertiesTabItem;
 
     public SidePanel(EditManager editManager) {
         super();
@@ -66,7 +72,7 @@ public class SidePanel extends ContentPanel {
         repository.getHeader().setBorders(false);
         repository.setCollapsible(true);
 
-        TabPanel tabs = new TabPanel();
+        TabPanel repositoryTabs = new TabPanel();
 
         // creating
         TabItem create = new TabItem("Create");
@@ -188,19 +194,19 @@ public class SidePanel extends ContentPanel {
         searchForm.add(ok);
         search.add(searchForm);
 
-        tabs.add(create);
-        tabs.add(browse);
-        tabs.add(search);
-        repository.add(tabs);
+        repositoryTabs.add(create);
+        repositoryTabs.add(browse);
+        repositoryTabs.add(search);
+        repository.add(repositoryTabs);
 
 
 
 
-        // display panel
-        ContentPanel display = new ContentPanel();
-        display.setHeading("Display");
-        display.setLayout(new FitLayout());
-        display.setCollapsible(true);
+        // content list panel
+        ContentPanel contentList = new ContentPanel();
+        contentList.setHeading("Content list");
+        contentList.setLayout(new FitLayout());
+        contentList.setCollapsible(true);
         displayStore = new ListStore<GWTJahiaNode>();
         List<ColumnConfig> displayColumns = new ArrayList<ColumnConfig>();
         displayColumns.add(new ColumnConfig("name", "Name", 100));
@@ -215,19 +221,29 @@ public class SidePanel extends ContentPanel {
         });
         GridDragSource displayGridSource = new GridDragSource(displayGrid);
         editManager.getDndListener().setDisplayGridSource(displayGridSource);
-        display.add(displayGrid);
+        contentList.add(displayGrid);
 
-        // properties panel
-        properties = new ContentPanel();
-        properties.setHeading("Properties");
-        properties.setLayout(new FitLayout());
-        properties.setCollapsible(true);
+        // displayPanel panel
+        ContentPanel displayPanel = new ContentPanel();
+        displayPanel.setHeading("Display");
+        displayPanel.setLayout(new FitLayout());
+        displayPanel.setCollapsible(true);
+        TabPanel displayTabs = new TabPanel();
 
+        TabItem previewTabItem = new TabItem("Preview");
+
+        propertiesTabItem = new TabItem("Properties");
+        propertiesTabItem.setLayout(new FitLayout());
+        displayTabs.add(previewTabItem);
+        displayTabs.add(propertiesTabItem);
+        displayPanel.add(displayTabs);
+
+        // add to side panel
         VBoxLayoutData vBoxData = new VBoxLayoutData(5, 5, 5, 5);
         vBoxData.setFlex(1);
         add(repository, vBoxData);
-        add(display, vBoxData);
-        add(properties, vBoxData);
+        add(contentList, vBoxData);
+        add(displayPanel, vBoxData);
     }
 
     /**
@@ -265,12 +281,58 @@ public class SidePanel extends ContentPanel {
      *
      * @param node the current node
      */
-    private void displayProperties(GWTJahiaNode node) {
-        properties.removeAll();
-        if (node != null) {
-            properties.add(new Label("Path: " + node.getPath()));
-        }
-        properties.layout();
+    private void displayProperties(final GWTJahiaNode node) {
+        JahiaContentManagementService.App.getInstance().getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
+            public void onFailure(Throwable throwable) {
+                Log.debug("Cannot get properties", throwable);
+            }
+
+            public void onSuccess(GWTJahiaGetPropertiesResult result) {
+                final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
+                elements.add(node);
+
+                List<String> list = new ArrayList<String>();
+                list.add("jcr:content");
+                list.add("j:thumbnail");
+                final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, list, null);
+
+                ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
+                Button item = new Button(Messages.getResource("fm_save"));
+                item.setIconStyle("gwt-icons-save");
+                item.setEnabled(node.isWriteable() && !node.isLocked());
+                item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    public void componentSelected(ButtonEvent event) {
+                        JahiaContentManagementService.App.getInstance().saveProperties(elements, propertiesEditor.getProperties(), new AsyncCallback() {
+                            public void onFailure(Throwable throwable) {
+                                com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                                Log.error("failed", throwable);
+                            }
+
+                            public void onSuccess(Object o) {
+                                Info.display("", "Properties saved");
+                                //getLinker().refreshTable();
+                            }
+                        });
+                    }
+                });
+                toolBar.add(new FillToolItem());
+                toolBar.add(item);
+                item = new Button(Messages.getResource("fm_restore"));
+                item.setIconStyle("gwt-icons-restore");
+                item.setEnabled(node.isWriteable() && !node.isLocked());
+
+                item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    public void componentSelected(ButtonEvent event) {
+                        propertiesEditor.resetForm();
+                    }
+                });
+                toolBar.add(item);
+                toolBar.setVisible(true);
+                propertiesTabItem.removeAll();
+                propertiesTabItem.add(propertiesEditor);
+                propertiesTabItem.layout();
+            }
+        });
     }
 
 

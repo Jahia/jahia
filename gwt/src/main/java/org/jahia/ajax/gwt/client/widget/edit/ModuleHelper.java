@@ -21,28 +21,28 @@ import org.jahia.ajax.gwt.client.core.JahiaType;
  * To change this template use File | Settings | File Templates.
  */
 public class ModuleHelper {
-    public static Map<Element, Widget> parse(LayoutContainer w, HTML html, EditManager editManager) {
-        Map<Element, Widget> m = new HashMap();
+    public static Map<Element, Module> parse(LayoutContainer w, HTML html, EditManager editManager) {
+        Map<Element, Module> m = new HashMap<Element,Module>();
         List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(html.getElement());
         for (Element divElement : el) {
             String jahiatype = DOM.getElementAttribute(divElement, JahiaType.JAHIA_TYPE);
             if ("placeholder".equals(jahiatype)) {
                 String type = DOM.getElementAttribute(divElement, "type");
                 String path = DOM.getElementAttribute(divElement, "path");
-                String template = DOM.getElementAttribute(divElement, "template");
-                LayoutContainer widget = null;
+                //String template = DOM.getElementAttribute(divElement, "template");
+                Module module = null;
                 if (type.equals("list")) {
-                    widget = new ListModule(path, divElement.getInnerHTML(), editManager);
+                    module = new ListModule(path, divElement.getInnerHTML(), editManager);
                 } else if (type.equals("existingNode")) {
-                    widget = new SimpleModule(path, divElement.getInnerHTML(), editManager);
+                    module = new SimpleModule(path, divElement.getInnerHTML(), editManager);
                 } else if (type.equals("placeholder")) {
-                    widget  = new PlaceholderModule(path, editManager);
+                    module  = new PlaceholderModule(path, editManager);
                 }
 
-                if (widget != null) {
-                    m.put(divElement, widget);
+                if (module != null) {
+                    m.put(divElement, module);
                     divElement.setInnerHTML("");
-                    w.add(widget);
+                    w.add(module.getContainer());
                 }
             }
         }
@@ -50,10 +50,9 @@ public class ModuleHelper {
         return m;
     }
 
-    public static void move(Map<Element, Widget> m) {
+    public static void move(Map<Element, Module> m) {
         for (Element divElement : m.keySet()) {
-            Element moduleElement = m.get(divElement).getElement();
-            String s = divElement.getInnerHTML();
+            Element moduleElement = m.get(divElement).getContainer().getElement();
             divElement.setInnerHTML("");
             DOM.appendChild(divElement, moduleElement);
         }

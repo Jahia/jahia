@@ -1,6 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.dnd.DragSource;
@@ -28,10 +29,11 @@ public class PlaceholderModule extends LayoutContainer implements Module {
     public PlaceholderModule(String path, EditManager editManager) {
         super(new FlowLayout());
         this.path = path;
-        setBorders(true);
-        setWidth("80%");
-        HTML html = new HTML("--placehodler--");
-        add(html);
+        setBorders(false);
+        setHeight(20);
+        
+//        HTML html = new HTML("--placehodler--");
+//        add(html);
 
         DropTarget target = new DropTarget(this) {
             @Override
@@ -58,6 +60,10 @@ public class PlaceholderModule extends LayoutContainer implements Module {
 
         target.addDNDListener(editManager.getDndListener());
 //        ModuleHelper.parse(this,html);
+    }
+
+    public Container getContainer() {
+        return this;
     }
 
     public String getPath() {

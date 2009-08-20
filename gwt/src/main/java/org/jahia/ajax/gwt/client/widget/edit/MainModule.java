@@ -2,6 +2,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -25,7 +26,7 @@ public class MainModule extends LayoutContainer implements Module {
 
     private HTML html;
     private String path;
-    Map<Element, Widget> m;
+    Map<Element, Module> m;
 
     public MainModule(final String path, final String template, final EditManager editManager) {
         super(new FlowLayout());
@@ -57,6 +58,10 @@ public class MainModule extends LayoutContainer implements Module {
         }
     }
 
+    public Container getContainer() {
+        return this;
+    }
+
     public String getPath() {
         return path;
     }
@@ -64,4 +69,6 @@ public class MainModule extends LayoutContainer implements Module {
     public GWTJahiaNode getNode() {
         return null; 
     }
+
+
 }

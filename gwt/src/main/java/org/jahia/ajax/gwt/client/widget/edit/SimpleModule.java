@@ -1,6 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.core.El;
@@ -48,7 +49,7 @@ public class SimpleModule extends ContentPanel implements Module {
         this.path = path;
         html = new HTML(s);
         add(html);
-        Map<Element, Widget> m = ModuleHelper.parse(this, html, editManager);
+        Map<Element, Module> m = ModuleHelper.parse(this, html, editManager);
         boolean last = m.isEmpty();
 
         if (last) {
@@ -109,6 +110,10 @@ public class SimpleModule extends ContentPanel implements Module {
 
     public HTML getHtml() {
         return html;
+    }
+
+    public Container getContainer() {
+        return this;
     }
 
     public String getPath() {

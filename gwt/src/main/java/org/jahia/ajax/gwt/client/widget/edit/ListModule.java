@@ -1,6 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -31,6 +32,10 @@ public class ListModule extends ContentPanel implements Module {
 
     public HTML getHtml() {
         return html;
+    }
+
+    public Container getContainer() {
+        return this;
     }
 
     public String getPath() {

@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.Window;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -22,9 +23,14 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
  * To change this template use File | Settings | File Templates.
  */
 public class EditModeDNDListener extends DNDListener {
+    private EditManager editManager;
     private TreePanelDragSource contentTreeSource;
     private GridDragSource createGridSource;
     private GridDragSource displayGridSource;
+
+    public EditModeDNDListener(EditManager editManager) {
+        this.editManager = editManager;
+    }
 
     public void setContentTreeSource(TreePanelDragSource contentTreeSource) {
         this.contentTreeSource = contentTreeSource;
@@ -94,22 +100,22 @@ public class EditModeDNDListener extends DNDListener {
                 if ("*".equals(name)) {
                     JahiaContentManagementService.App.getInstance().pasteReferences(nodes, path, new AsyncCallback() {
                         public void onSuccess(Object result) {
-                            //To change body of implemented methods use File | Settings | File Templates.
+                            editManager.getMainModule().refresh();
                         }
 
                         public void onFailure(Throwable caught) {
-                            //To change body of implemented methods use File | Settings | File Templates.
+                            Window.alert("Failed : "+caught);
                         }
                     });
 
                 } else if (nodes.size() == 1) {
                     JahiaContentManagementService.App.getInstance().pasteReference(nodes.get(0), path, name, new AsyncCallback() {
                         public void onSuccess(Object result) {
-                            //To change body of implemented methods use File | Settings | File Templates.
+                            editManager.getMainModule().refresh();
                         }
 
                         public void onFailure(Throwable caught) {
-                            //To change body of implemented methods use File | Settings | File Templates.
+                            Window.alert("Failed : "+caught);
                         }
                     });
 
@@ -122,13 +128,14 @@ public class EditModeDNDListener extends DNDListener {
             String targetPath = ((SimpleModule.SimpleModuleDropTarget) e.getDropTarget()).getSimpleModule().getPath();
             JahiaContentManagementService.App.getInstance().moveOnTopOf(sourcePath, targetPath, new AsyncCallback() {
 
-                public void onFailure(Throwable throwable) {
-                    //To change body of implemented methods use File | Settings | File Templates.
+                public void onSuccess(Object o) {
+                    editManager.getMainModule().refresh();
                 }
 
-                public void onSuccess(Object o) {
-                    //To change body of implemented methods use File | Settings | File Templates.
+                public void onFailure(Throwable throwable) {
+                    Window.alert("Failed : "+throwable);
                 }
+
             });
         }
         Log.info("xx"+e.getStatus().getData("sourceNode"));

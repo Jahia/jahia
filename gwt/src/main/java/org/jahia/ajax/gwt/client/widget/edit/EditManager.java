@@ -20,12 +20,13 @@ import com.allen_sauer.gwt.log.client.Log;
 public class EditManager extends Viewport {
 
     private EditModeDNDListener dndListener;
+    private MainModule main;
 
     public EditManager(String path, String template) {
         super();
         setLayout(new BorderLayout());
 
-        dndListener = new EditModeDNDListener();
+        dndListener = new EditModeDNDListener(this);
 
         BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 340);
         data.setCollapsible(true);
@@ -33,11 +34,15 @@ public class EditManager extends Viewport {
         add(new SidePanel(this), data);
 
         setScrollMode(Style.Scroll.AUTO);
-        add(new MainModule(path, template, this), new BorderLayoutData(Style.LayoutRegion.CENTER));
+        add(main = new MainModule(path, template, this), new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
 
     public EditModeDNDListener getDndListener() {
         return dndListener;
+    }
+
+    public MainModule getMainModule() {
+        return main;
     }
 
     private ContentPanel selection;

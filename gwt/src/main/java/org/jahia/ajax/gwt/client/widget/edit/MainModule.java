@@ -2,6 +2,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -24,6 +25,7 @@ public class MainModule extends LayoutContainer implements Module {
     private GWTJahiaNode node;
     private HTML html;
     private String path;
+    private String template;
 
     private EditManager editManager;
 
@@ -36,10 +38,18 @@ public class MainModule extends LayoutContainer implements Module {
 
         this.editManager = editManager;
         this.path = path;
-//        Draggable d = new Draggable(cp);
+        this.template = template;
 
+        refresh();
+    }
+
+    public void refresh() {
         JahiaContentManagementService.App.getInstance().getRenderedContent(path, template, true, new AsyncCallback<String>() {
             public void onSuccess(String result) {
+                int i = getVScrollPosition();
+
+                removeAll();
+
                 html = new HTML(result);
                 add(html);
 
@@ -47,6 +57,8 @@ public class MainModule extends LayoutContainer implements Module {
                 ModuleHelper.buildTree(MainModule.this);
                 parse();
                 layout();
+
+                setVScrollPosition(i);
             }
 
             public void onFailure(Throwable caught) {

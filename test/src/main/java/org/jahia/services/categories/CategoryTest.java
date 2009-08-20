@@ -2,6 +2,8 @@ package org.jahia.services.categories;
 
 import junit.framework.TestCase;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.content.ObjectKey;
 
 import java.util.List;
 import java.util.Iterator;
@@ -140,7 +142,21 @@ public class CategoryTest extends TestCase {
     }
 
     public void testCategoryPath() throws Exception {
-        // todo not yet implemented
+        Category rootCategory = Category.createCategory("firstRoot", null);
+        Category newCategory = Category.createCategory("rootChild", rootCategory);
+        String path = newCategory.getCategoryPath((JahiaUser)null);
+        Category categoryByPath = Category.getLastCategoryNode(path);
+        assertNotNull(categoryByPath);
+        deleteCategoryWithChildren(rootCategory);
+    }
+
+    public void testCategoryChilds() throws Exception {
+        Category rootCategory = Category.createCategory("firstRoot", null);
+        Category newCategory = Category.createCategory("rootChild", rootCategory);
+        List<Category> childObjectKeys = rootCategory.getChildCategories();
+        assertEquals(childObjectKeys.size(), 1);
+        assertEquals(childObjectKeys.get(0).getKey(), "rootChild");
+        deleteCategoryWithChildren(rootCategory);
     }
 
     private void buildCategoryTree(Category parentCategory, int depth, int nbChildren) throws Exception {

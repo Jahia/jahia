@@ -24,8 +24,8 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.*;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.Window;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
@@ -53,6 +53,7 @@ public class SidePanel extends ContentPanel {
 
     private boolean init = false;
     private final ListStore<GWTJahiaNode> displayStore;
+    private final TabItem previewTabItem;
     private final TabItem propertiesTabItem;
 
     public SidePanel(EditManager editManager) {
@@ -134,6 +135,7 @@ public class SidePanel extends ContentPanel {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
                 GWTJahiaNode selected = gwtJahiaNodeSelectionChangedEvent.getSelectedItem();
                 if (selected != null) {
+                    displayPreview(selected);
                     displayProperties(selected);
                     if (selected.hasChildren()) {
                         JahiaContentManagementService.App.getInstance().ls(gwtJahiaNodeSelectionChangedEvent.getSelectedItem(), null, null, null, null, false, new AsyncCallback<List<GWTJahiaNode>>() {
@@ -216,6 +218,7 @@ public class SidePanel extends ContentPanel {
         displayGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         displayGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
+                displayPreview(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
                 displayProperties(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
             }
         });
@@ -230,7 +233,9 @@ public class SidePanel extends ContentPanel {
         displayPanel.setCollapsible(true);
         TabPanel displayTabs = new TabPanel();
 
-        TabItem previewTabItem = new TabItem("Preview");
+        previewTabItem = new TabItem("Preview");
+        previewTabItem.setLayout(new FitLayout());
+        displayTabs.add(previewTabItem);
 
         propertiesTabItem = new TabItem("Properties");
         propertiesTabItem.setLayout(new FitLayout());
@@ -273,6 +278,30 @@ public class SidePanel extends ContentPanel {
         displayStore.removeAll();
         if (content != null) {
             displayStore.add(content);
+        }
+    }
+
+    /**
+     * Display the rendered html of the given node in the preview panel
+     *
+     * @param node the node to render
+     */
+    private void displayPreview(final GWTJahiaNode node) {
+        if (node != null) {
+            JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, false, new AsyncCallback<String>() {
+                public void onSuccess(String result) {
+                    previewTabItem.removeAll();
+                    HTML html = new HTML(result);
+                    previewTabItem.add(html);
+                    previewTabItem.layout();
+
+                }
+
+                public void onFailure(Throwable caught) {
+                    Log.error("", caught);
+                    Window.alert("-->"+caught.getMessage());
+                }
+            });
         }
     }
 

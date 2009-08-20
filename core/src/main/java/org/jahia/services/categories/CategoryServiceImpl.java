@@ -43,9 +43,8 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.categories.jcr.JCRCategoryProvider;
 import org.jahia.services.usermanager.JahiaUser;
 
-import java.util.*;
-
 import javax.jcr.Node;
+import java.util.*;
 
 /**
  * <p>
@@ -145,6 +144,10 @@ public class CategoryServiceImpl extends CategoryService {
 
     public Category getCategoryByUUID(String categoryUUID) throws JahiaException {
         return categoryProvider.getCategoryByUUID(categoryUUID);
+    }
+
+    public Category getCategoryByPath(String categoryPath) throws JahiaException {
+        return categoryProvider.getCategoryByUUID(categoryPath);
     }
 
     private List<ObjectLink> getCategoryChildLinks(Category parentCategory)

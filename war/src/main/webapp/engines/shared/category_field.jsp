@@ -34,12 +34,13 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <%@ page import="org.jahia.data.JahiaData" %>
-<%@ page import="org.jahia.engines.EngineLanguageHelper" %>
-<%@ page import="org.jahia.params.ProcessingContext" %>
-<%@ page import="org.jahia.engines.JahiaEngine" %>
 <%@ page import="org.jahia.data.fields.JahiaField" %>
-<%@ page import="java.util.*" %>
+<%@ page import="org.jahia.engines.EngineLanguageHelper" %>
+<%@ page import="org.jahia.engines.JahiaEngine" %>
 <%@ page import="org.jahia.engines.shared.Category_Field" %>
+<%@ page import="org.jahia.params.ProcessingContext" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
@@ -61,5 +62,5 @@
 
 %>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.categorypicker.CategoryPicker"/>
-<internal:categorySelector startCategoryKey="<%=startCategory%>" multiple="<%=theField.getDefinition().getPropertyDefinition().isMultiple()%>" selectedCategories="<%=selectedCategories%>" readonly="<%=readOnly%>" locale="<%=elh.getCurrentLanguageCode()%>" autoSelectParent='<%=theField.getDefinition().getItemDefinition().getSelectorOptions().get("autoSelectParent")%>'/>
+<internal:categorySelector startCategoryUUID="<%=startCategory%>" multiple="<%=theField.getDefinition().getPropertyDefinition().isMultiple()%>" selectedCategories="<%=selectedCategories%>" readonly="<%=readOnly%>" locale="<%=elh.getCurrentLanguageCode()%>" autoSelectParent='<%=theField.getDefinition().getItemDefinition().getSelectorOptions().get("autoSelectParent")%>'/>
 

@@ -32,13 +32,13 @@
 
 --%>
 <%@ tag import="org.jahia.params.ProcessingContext" %>
-<%@ tag import="java.util.Iterator" %>
 <%@ tag import="org.jahia.services.categories.Category" %>
 <%@ tag import="org.jahia.services.usermanager.JahiaUser" %>
+<%@ tag import="java.util.Iterator" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
-<%@ attribute name="startCategoryKey" required="false" rtexprvalue="true" type="java.lang.String"
+<%@ attribute name="startCategoryUUID" required="false" rtexprvalue="true" type="java.lang.String"
               description="root category key" %>
 <%@ attribute name="readonly" required="false" rtexprvalue="true" type="java.lang.Boolean"
               description="True value allows to pick several categories " %>
@@ -67,14 +67,15 @@
     if(selectedCategories != null){
         final Iterator selectedCa = selectedCategories.iterator();
         while (selectedCa.hasNext()) {
-            final String key = (String) selectedCa.next();
-            final Category cat = Category.getCategory(key, jParams.getUser());
+            final String catUUID = (String) selectedCa.next();
+            %>//<%=catUUID%><%
+            final Category cat = Category.getCategoryByUUID(catUUID, jParams.getUser());
             if (cat != null) {
                 String title = cat.getTitle(jParams.getLocale());
                 if (title == null || title.length() == 0) {
-                 title = key;
+                 title = catUUID;
                 }%>
-            {"id":"<%=cat.getJahiaCategory().getId()%>","key":"<%=key%>","title":"<%=title%>","path":"<%=cat.getCategoryPath(jParams.getUser())%>"}<%if(selectedCa.hasNext()){%>,<%}%>
+            {"id":"<%=cat.getJahiaCategory().getId()%>","key":"<%=cat.getKey()%>","title":"<%=title%>","path":"<%=cat.getCategoryPath(jParams.getUser())%>"}<%if(selectedCa.hasNext()){%>,<%}%>
             <%
             }
         }
@@ -87,8 +88,7 @@
 </logic:present>
 <input id="removedCategories" type="hidden" name="removedCategories" value=""/>
 
-<template:gwtJahiaModule id="categories_picker" jahiaType="categories_picker"
-                         rootKey="${startCategoryKey}" readonly="${readonly}" multiple="${multiple}"/>
+<template:gwtJahiaModule id="categories_picker" jahiaType="categories_picker" readonly="${readonly}" multiple="${multiple}"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.categories.categories"
                             aliasResourceName="categories"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.categories.title"

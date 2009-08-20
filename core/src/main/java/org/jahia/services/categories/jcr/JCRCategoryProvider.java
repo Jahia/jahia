@@ -31,23 +31,6 @@
  */
 package org.jahia.services.categories.jcr;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.jcr.ItemExistsException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -59,6 +42,11 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.JahiaUser;
+
+import javax.jcr.*;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+import java.util.*;
 
 /**
  * This is the manager/provider class to create/get/remove categories within Jahia's JCR. 
@@ -200,6 +188,29 @@ public class JCRCategoryProvider {
         return categoryByUUID;
     }
 
+
+    /**
+     * Get category by path
+     * @param categoryPath
+     * @return
+     */
+    public Category getCategoryByPath(String categoryPath) {
+        Category categoryByUUID = null;
+        ProcessingContext paramBean = Jahia.getThreadParamBean();
+        try {
+            JCRSessionWrapper session = jcrStoreService
+                    .getThreadSession(paramBean.getUser());
+            Node categoryNode = session.getNode(categoryPath);
+            categoryByUUID = new Category(
+                    createCategoryBeanFromNode(categoryNode));
+        } catch (PathNotFoundException e) {
+            logger.debug(e.getMessage(), e);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return categoryByUUID;
+    }
+
     /**
      * Get child category within a parent category (or null for root) by its key 
      * @param categoryKey
@@ -315,7 +326,7 @@ public class JCRCategoryProvider {
     
     /**
      * Find categories containing term in title and language anywhere in the tree
-     * @param titlePrefix
+     * @param title
      * @param language 
      * @return list of categories matching the title term and language
      */

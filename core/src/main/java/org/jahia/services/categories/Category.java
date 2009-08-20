@@ -31,28 +31,19 @@
  */
  package org.jahia.services.categories;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.Set;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.content.CategoryKey;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.content.JahiaObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.usermanager.JahiaUser;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.util.*;
 
 /**
  * <p>Title: Category object</p>
@@ -281,10 +272,60 @@ public class Category extends JahiaObject {
         return category;
     }
 
-    static public Category getCategoryByUUID (String categoryID)
+    /**
+     * @param categoryUUID the category ID for the category to retrieve for the current principal for which to retrieve the category, checking rights
+     * to make sure he has access to it. If this object is null, then no rights
+     * check will be performed.
+     *
+     * @return the category corresponding to the key if it exists in the
+     *         database
+     *
+     * @throws JahiaException thrown if there was a problem communicating with
+     *                        the database
+     */
+    static public Category getCategoryByUUID (String categoryUUID)
             throws JahiaException {
-        return getCategoryByUUID(categoryID,Jahia.getThreadParamBean().getUser());
+        return getCategoryByUUID(categoryUUID,Jahia.getThreadParamBean().getUser());
     }
+
+    /**
+     * @param categoryPath the category path for the category to retrieve
+     * @param p the Principal for which to retrieve the category, checking rights
+     * to make sure he has access to it. If this object is null, then no rights
+     * check will be performed.
+     *
+     * @return the category corresponding to the key if it exists in the
+     *         database
+     *
+     * @throws JahiaException thrown if there was a problem communicating with
+     *                        the database
+     */
+    static public Category getCategoryByPath (String categoryPath, JahiaUser p)
+            throws JahiaException {
+        Category category = categoryService.getCategoryByPath(categoryPath);
+        if (p == null) {
+            return category;
+        }
+        return category;
+    }
+
+    /**
+     * @param categoryPath the category Ipath for the category to retrieve for the current principal for which to retrieve the category, checking rights
+     * to make sure he has access to it. If this object is null, then no rights
+     * check will be performed.
+     *
+     * @return the category corresponding to the key if it exists in the
+     *         database
+     *
+     * @throws JahiaException thrown if there was a problem communicating with
+     *                        the database
+     */
+    static public Category getCategoryByPath (String categoryPath)
+            throws JahiaException {
+        return getCategoryByPath(categoryPath,Jahia.getThreadParamBean().getUser());
+    }
+
+
 
     /**
      * Instance generator. Build an instance of the appropriate
@@ -392,6 +433,13 @@ public class Category extends JahiaObject {
             return null;
         }
         return categoryBean.getKey ();
+    }
+
+    public String getID () {
+        if (this.categoryBean == null) {
+            return null;
+        }
+        return categoryBean.getId ();
     }
 
     protected CategoryBean getCategoryBean () {

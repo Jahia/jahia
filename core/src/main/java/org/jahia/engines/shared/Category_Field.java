@@ -125,7 +125,7 @@ public class Category_Field implements FieldSubEngine {
             theField.setRawValue(fieldValue);
         }
 
-        updateCategories(theField, jParams, engineMap);
+        updateSelectedCategoryUUID(theField, jParams, engineMap);
         return true;
     }
 
@@ -220,16 +220,16 @@ public class Category_Field implements FieldSubEngine {
         logger.debug("Loading categories from field " + theField);
         jParams.setAttribute("ZimbraInclude", "true");
         final SessionState session = jParams.getSessionState();
-        List<String> selectedCategories = (List<String>) engineMap.get(theField.getDefinition().getName() +
+        List<String> selectedCategoryUUIDs = (List<String>) engineMap.get(theField.getDefinition().getName() +
                 SELECTEDCATEGORIES_ENGINEMAPKEY);
 
-        List<String> defaultSelectedCategories = new ArrayList<String>();
+        List<String> defaultSelectedCategoryUUIDs = new ArrayList<String>();
         boolean foundNoSelectionMarker = false;
         
-        String rootCategoryKey = theField.getDefinition().getItemDefinition().getSelectorOptions().get("root");
-        Category startCategory = (rootCategoryKey != null) ? Category.getCategory(rootCategoryKey, jParams.getUser()) : null;
+        String rootCategoryPath = theField.getDefinition().getItemDefinition().getSelectorOptions().get("root");
+        Category startCategory = (rootCategoryPath != null) ? Category.getCategoryByPath(rootCategoryPath, jParams.getUser()) : null;
         
-        String fieldDefaultValue = theField.getDefinition().getDefaultValue();
+        String  fieldDefaultValue = theField.getDefinition().getDefaultValue();
 
         // the field default value contains a combination of :
         // the root category key name, as well as category keys
@@ -241,28 +241,32 @@ public class Category_Field implements FieldSubEngine {
         logger.debug("fieldDefaultValue: " + fieldDefaultValue);
         if ((fieldDefaultValue != null) && !"".equals(fieldDefaultValue)) {
 
-            int defaultCategoryKeysStartPos = 0;
+            int defaultCategoryUUIDsStartPos = 0;
             if ((fieldDefaultValue.indexOf("]") > 0) &&
                     (fieldDefaultValue.indexOf("[") == 0)) {
-                defaultCategoryKeysStartPos = fieldDefaultValue.indexOf("]") + 1;
+                defaultCategoryUUIDsStartPos = fieldDefaultValue.indexOf("]") + 1;
             }
 
-            for (final String curCategoryKey : JahiaTools.getTokens(
-                fieldDefaultValue.substring(defaultCategoryKeysStartPos),
+            for (final String curCategoryUUID : JahiaTools.getTokens(
+                fieldDefaultValue.substring(defaultCategoryUUIDsStartPos),
                 JahiaField.MULTIPLE_VALUES_SEP)) {
-                final Category curCategory = Category.getCategory(curCategoryKey, jParams.getUser());
+                final Category curCategory = Category.getCategoryByUUID(curCategoryUUID, jParams.getUser());
                 if (curCategory != null) {
-                    defaultSelectedCategories.add(curCategoryKey);
-                    logger.debug("defaultSelectedCategories.add(curCategoryKey): " + curCategoryKey);
+                    defaultSelectedCategoryUUIDs.add(curCategoryUUID);
+                    logger.debug("defaultSelectedCategories.add(curCategoryUUID): " + curCategoryUUID);
                 } else {
-                    logger.warn("Category " + curCategoryKey +
+                    logger.warn("Category " + curCategoryUUID +
                             " is defined in field default value but does not exist in category tree.");
                 }
             }
         }
         if (startCategory == null) {
-            logger.error("code has been taken out while moving cateogries to JCR");
-            // TODO: startCategory = Category.getRootCategory(jParams.getUser());
+            logger.debug("Start category undefined --> Selecte first root category as start category");
+            List<Category> rootCategoryList = Category.getRootCategories(jParams.getUser());
+            if(rootCategoryList != null && !rootCategoryList.isEmpty()){
+                startCategory = rootCategoryList.get(0);
+            }
+            logger.debug("No categories");
         }
 
         // still possible if the user has no rights to see even the root
@@ -271,156 +275,175 @@ public class Category_Field implements FieldSubEngine {
             engineMap.put("NoCategories", "NoCategories");
             return false;
         }
-        logger.debug(START_CATEGORY+": " + startCategory.getKey());
-        engineMap.put(START_CATEGORY, startCategory.getKey());
+        logger.debug(START_CATEGORY+": " + startCategory.getID());
+        engineMap.put(START_CATEGORY, startCategory.getID());
         engineMap.remove("NoCategories");
 
-        if (selectedCategories == null) {
-            selectedCategories = new ArrayList<String>();
+        if (selectedCategoryUUIDs == null) {
+            selectedCategoryUUIDs = new ArrayList<String>();
 
             // we can now compare what's in the object links and what
             // we have in the field. The field values should be a subset of
             // the links, otherwise we have detected a synchronization
             // problem and must correct it.
 
-            String[] categoryKeys;
+            String[] categoryUUIDs;
             if (NOSELECTION_MARKER.equals(theField.getValue())) {
-                categoryKeys = null;
+                categoryUUIDs = null;
                 foundNoSelectionMarker = true;
             } else {
-                categoryKeys = theField.getValues();
+                categoryUUIDs = theField.getValues();
             }
 
-            if ((categoryKeys != null) && (categoryKeys.length > 0)) {
-                for (int i = 0; i < categoryKeys.length; i++) {
-                    logger.debug("selectedCategories.add(categoryKeys[i]);");
-                    selectedCategories.add(categoryKeys[i]);
+            if ((categoryUUIDs != null) && (categoryUUIDs.length > 0)) {
+                for (int i = 0; i < categoryUUIDs.length; i++) {
+                    logger.debug("add "+categoryUUIDs[i]+" to selected categories");
+                    selectedCategoryUUIDs.add(categoryUUIDs[i]);
                 }
             }
 
             engineMap.put(theField.getDefinition().getName() + ORIGINALLYSELECTEDCATEGORIES_ENGINEMAPKEY,
-                    selectedCategories);
+                    selectedCategoryUUIDs);
 
             // if after all this we still have no category selections, let's
             // insert the default values, if there are any. We also need to
             // check if the field has ever been edited, in which case we will
             // not insert the default values.
-            if ((selectedCategories.size() == 0) && (!foundNoSelectionMarker)) {
-                selectedCategories.addAll(defaultSelectedCategories);
+            if ((selectedCategoryUUIDs.size() == 0) && (!foundNoSelectionMarker)) {
+                selectedCategoryUUIDs.addAll(defaultSelectedCategoryUUIDs);
             }
 
-            engineMap.put(theField.getDefinition().getName() + SELECTEDCATEGORIES_ENGINEMAPKEY, selectedCategories);
+            engineMap.put(theField.getDefinition().getName() + SELECTEDCATEGORIES_ENGINEMAPKEY, selectedCategoryUUIDs);
         }
-        if ((selectedCategories.size() == 0) && (useDefaults)) {
+        if ((selectedCategoryUUIDs.size() == 0) && (useDefaults)) {
             // this mechanism allows templates to set the currently
             // selected categories into the session and we can use these
             // values to initialize the selected categories.
-            selectedCategories = (List<String>) session.getAttribute(
+            selectedCategoryUUIDs = (List<String>) session.getAttribute(
                     theField.getDefinition().getName() + DEFAULTCATEGORIES_SESSIONKEYPREFIX);
             logger.debug("Looking for default selected categories in session key " +
                     theField.getDefinition().getName() + DEFAULTCATEGORIES_SESSIONKEYPREFIX);
-            if (selectedCategories != null) {
-                logger.debug("Found default categories " + selectedCategories +
+            if (selectedCategoryUUIDs != null) {
+                logger.debug("Found default categories " + selectedCategoryUUIDs +
                         "for session key " +
                         theField.getDefinition().getName() + DEFAULTCATEGORIES_SESSIONKEYPREFIX);
             } else {
-                selectedCategories = new ArrayList<String>();
+                selectedCategoryUUIDs = new ArrayList<String>();
             }
-            engineMap.put(theField.getDefinition().getName() + SELECTEDCATEGORIES_ENGINEMAPKEY, selectedCategories);
+            engineMap.put(theField.getDefinition().getName() + SELECTEDCATEGORIES_ENGINEMAPKEY, selectedCategoryUUIDs);
         }
 
         engineMap.put(theField.getDefinition().getName() + FLATCATEGORYLIST_ENGINEMAPKEY, null);
         return true;
     }
 
-    private boolean updateCategories(JahiaField theField,
+    /**
+     * Update selecetd categoryUUIDs
+     * @param theField
+     * @param jParams
+     * @param engineMap
+     * @return
+     * @throws JahiaException
+     */
+    private boolean updateSelectedCategoryUUID(JahiaField theField,
                                      ProcessingContext jParams,
                                      Map<String, Object> engineMap) throws JahiaException {
         logger.debug("Processing categories update");
         final Map<String, Object> parameterMap = jParams.getParameterMap();
 
         final Iterator<String> paramNameIter = parameterMap.keySet().iterator();
-        final List<String> newSelectedCategories = new ArrayList<String>();
+        final List<String> newSelectedCategoryUUIDs = new ArrayList<String>();
+        
         while (paramNameIter.hasNext()) {
             String curParamName = paramNameIter.next();
             if (curParamName.startsWith(CATEGORYPREFIX_HTMLPARAMETER)) {
                 try {
-                    final String curCategoryId = curParamName.substring(CATEGORYPREFIX_HTMLPARAMETER.length());
-                    final Category c = Category.getCategoryByUUID(curCategoryId, null);
-                    newSelectedCategories.add(c.getKey());
-                    logger.debug("Submitted category key : " + c.getKey());
+                    final String curCategoryUUID = curParamName.substring(CATEGORYPREFIX_HTMLPARAMETER.length());
+                    logger.debug("Submitted category key : " + curCategoryUUID);                    
+                    newSelectedCategoryUUIDs.add(curCategoryUUID);
                 } catch (final Exception e) {
                     logger.debug(e, e);
                 }
             }
         }
         engineMap.put(theField.getDefinition().getName() + CATEGORIESUPDATED_ENGINEMAPKEY, Boolean.TRUE);
-        engineMap.put(theField.getDefinition().getName() + SELECTEDCATEGORIES_ENGINEMAPKEY, newSelectedCategories);
+        engineMap.put(theField.getDefinition().getName() + SELECTEDCATEGORIES_ENGINEMAPKEY, newSelectedCategoryUUIDs);
         return true;
     }
 
+    /**
+     * Save selected categories
+     * @param theField
+     * @param jParams
+     * @param engineMap
+     * @param defaultCategories
+     * @return
+     * @throws JahiaException
+     */
     private boolean saveCategories(JahiaField theField, ProcessingContext jParams, Map<String, Object> engineMap, String defaultCategories)
             throws JahiaException {
         boolean success;
         logger.debug("Saving categories selection");
-        List<String> selectedCategories = (List<String>) engineMap.get(
-                theField.getDefinition().getName() + SELECTEDCATEGORIES_ENGINEMAPKEY);
-        List<String> originallySelectedCategories = (List<String>) engineMap.get(
-                theField.getDefinition().getName() + ORIGINALLYSELECTEDCATEGORIES_ENGINEMAPKEY);
-        logger.debug("selectedCategories: " + selectedCategories);
-        logger.debug("originallySelectedCategories: " + originallySelectedCategories);
+        
+        // get selected categories
+        List<String> selectedCategoryUUIDs = (List<String>) engineMap.get(theField.getDefinition().getName() + SELECTEDCATEGORIES_ENGINEMAPKEY);
+        logger.debug("selectedCategories: " + selectedCategoryUUIDs);
+        
+        // get old selecte categories
+        List<String> originallySelectedCategoryUUIDs = (List<String>) engineMap.get(theField.getDefinition().getName() + ORIGINALLYSELECTEDCATEGORIES_ENGINEMAPKEY);
+        logger.debug("originallySelectedCategories: " + originallySelectedCategoryUUIDs);
 
         // selectedCategories will be null here if we never went into the
         // categories tab
 
-        if (selectedCategories == null) {
+        if (selectedCategoryUUIDs == null) {
             // this mechanism allows templates to set the currently
             // selected categories into the session and we can use these
             // values to initialize the selected categories.
-            selectedCategories = (List<String>) jParams.getSessionState().
+            selectedCategoryUUIDs = (List<String>) jParams.getSessionState().
                     getAttribute(theField.getDefinition().getName() + DEFAULTCATEGORIES_SESSIONKEYPREFIX);
             logger.debug("Looking for default selected categories in session key " +
                     theField.getDefinition().getName() + DEFAULTCATEGORIES_SESSIONKEYPREFIX);
-            if (selectedCategories != null) {
+            if (selectedCategoryUUIDs != null) {
                 logger.debug("Found default categories " +
-                        selectedCategories + "for session key " +
+                        selectedCategoryUUIDs + "for session key " +
                         theField.getDefinition().getName() + DEFAULTCATEGORIES_SESSIONKEYPREFIX);
             } else if (defaultCategories != null) {
-                int defaultCategoryKeysStartPos = 0;
+                int defaultCategoryUUIDsStartPos = 0;
                 if ((defaultCategories.indexOf("]") > 0) &&
                         (defaultCategories.indexOf("[") == 0)) {
                     // we have detected a root category key
-                    defaultCategoryKeysStartPos = defaultCategories.indexOf("]") + 1;
+                    defaultCategoryUUIDsStartPos = defaultCategories.indexOf("]") + 1;
                 }
-                final StringTokenizer categoryKeyTokens = new StringTokenizer(defaultCategories.substring(defaultCategoryKeysStartPos));
-                while (categoryKeyTokens.hasMoreTokens()) {
-                    final String curCategoryKey = categoryKeyTokens.nextToken();
-                    final Category curCategory = Category.getCategory(curCategoryKey, jParams.getUser());
+                final StringTokenizer categoryUUIDTokens = new StringTokenizer(defaultCategories.substring(defaultCategoryUUIDsStartPos));
+                while (categoryUUIDTokens.hasMoreTokens()) {
+                    final String curCategoryUUID = categoryUUIDTokens.nextToken();
+                    final Category curCategory = Category.getCategoryByUUID(curCategoryUUID, jParams.getUser());
                     if (curCategory != null) {
-                        if (selectedCategories == null) {
-                            selectedCategories = new ArrayList<String>();
+                        if (selectedCategoryUUIDs == null) {
+                            selectedCategoryUUIDs = new ArrayList<String>();
                         }
-                        selectedCategories.add(curCategoryKey);
-                        logger.debug("selectedCategories.add(curCategoryKey): " + curCategoryKey);
+                        selectedCategoryUUIDs.add(curCategoryUUID);
+                        logger.debug("selectedCategories.add(curCategoryUUID): " + curCategoryUUID);
                     }
                 }
             }
         }
 
-        logger.debug("saving now.... " + selectedCategories);
-        if (selectedCategories == null) {
+        logger.debug("saving now.... " + selectedCategoryUUIDs);
+        if (selectedCategoryUUIDs == null) {
             return false;
         }
 
-        if (selectedCategories.size() == 0) {
+        if (selectedCategoryUUIDs.size() == 0) {
             theField.setValue(NOSELECTION_MARKER);
         } else {
-            Iterator<String> selectedCategoryIter = selectedCategories.iterator();
+            Iterator<String> selectedCategoryUUIDIter = selectedCategoryUUIDs.iterator();
             StringBuffer multipleValue = new StringBuffer();
-            while (selectedCategoryIter.hasNext()) {
-                String curCategoryKey = selectedCategoryIter.next();
-                multipleValue.append(curCategoryKey);
-                if (selectedCategoryIter.hasNext()) {
+            while (selectedCategoryUUIDIter.hasNext()) {
+                String curCategoryUUID = selectedCategoryUUIDIter.next();
+                multipleValue.append(curCategoryUUID);
+                if (selectedCategoryUUIDIter.hasNext()) {
                     multipleValue.append(JahiaField.MULTIPLE_VALUES_SEP);
                 }
             }

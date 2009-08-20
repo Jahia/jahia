@@ -36,9 +36,8 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.usermanager.JahiaUser;
 
-import java.util.*;
-
 import javax.jcr.Node;
+import java.util.*;
 
 /**
  * <p>Title: Category management service</p>
@@ -99,6 +98,20 @@ public abstract class CategoryService extends JahiaService {
      *                        the database
      */
     public abstract Category getCategoryByUUID (String categoryUUID)
+            throws JahiaException;
+
+
+    /**
+     * @param categoryPath the identifier of the category to retrieve from the
+     *                     persistent storage
+     *
+     * @return the category corresponding to the identifier if it exists in
+     *         the database, or null otherwise
+     *
+     * @throws JahiaException thrown if there was a problem communicating with
+     *                        the database
+     */
+    public abstract Category getCategoryByPath (String categoryPath)
             throws JahiaException;
 
     /**

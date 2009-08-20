@@ -3,6 +3,8 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Container;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.Element;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,9 +15,16 @@ import com.extjs.gxt.ui.client.widget.Container;
  */
 public interface Module {
 
-    Container getContainer();
+    void parse();
+
+    HTML getHtml();
+
+    LayoutContainer getContainer();
 
     String getPath();
     
     GWTJahiaNode getNode();
+
+    void setNode(GWTJahiaNode node);
+
 }

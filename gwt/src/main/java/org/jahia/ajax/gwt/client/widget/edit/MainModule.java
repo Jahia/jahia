@@ -2,14 +2,11 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.core.client.GWT;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
@@ -24,8 +21,12 @@ import java.util.Map;
  */
 public class MainModule extends LayoutContainer implements Module {
 
+    private GWTJahiaNode node;
     private HTML html;
     private String path;
+
+    private EditManager editManager;
+
     Map<Element, Module> m;
 
     public MainModule(final String path, final String template, final EditManager editManager) {
@@ -33,13 +34,18 @@ public class MainModule extends LayoutContainer implements Module {
 
         setScrollMode(Style.Scroll.AUTO);
 
+        this.editManager = editManager;
+        this.path = path;
 //        Draggable d = new Draggable(cp);
 
         JahiaContentManagementService.App.getInstance().getRenderedContent(path, template, true, new AsyncCallback<String>() {
             public void onSuccess(String result) {
                 html = new HTML(result);
                 add(html);
-                m = ModuleHelper.parse(MainModule.this,html, editManager);
+
+                ModuleHelper.initAllModules(html, editManager);
+                ModuleHelper.buildTree(MainModule.this);
+                parse();
                 layout();
             }
 
@@ -58,7 +64,15 @@ public class MainModule extends LayoutContainer implements Module {
         }
     }
 
-    public Container getContainer() {
+    public void parse() {
+        m = ModuleHelper.parse(this);
+    }
+
+    public HTML getHtml() {
+        return html;
+    }
+
+    public LayoutContainer getContainer() {
         return this;
     }
 
@@ -67,8 +81,11 @@ public class MainModule extends LayoutContainer implements Module {
     }
 
     public GWTJahiaNode getNode() {
-        return null; 
+        return node; 
     }
 
+    public void setNode(GWTJahiaNode node) {
+        this.node = node;
+    }
 
 }

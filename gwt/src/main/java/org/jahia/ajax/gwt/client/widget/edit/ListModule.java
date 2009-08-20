@@ -1,10 +1,13 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Container;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,26 +18,33 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
  */
 public class ListModule extends ContentPanel implements Module {
 
+    private GWTJahiaNode node;
     private HTML html;
     private String path;
+
+    private EditManager editManager;
 
     public ListModule(String path, String s, EditManager editManager) {
 //        super(new FitLayout());
         this.path = path;
+        this.editManager = editManager;
         setCollapsible(true);
         setBodyStyleName("pad-text");
         setHeading("Content : "+path);
         setScrollMode(Style.Scroll.AUTO);
         html = new HTML(s);
         add(html);
-        ModuleHelper.parse(this,html, editManager);
+    }
+
+    public void parse() {
+        Map<Element, Module> m = ModuleHelper.parse(this);
     }
 
     public HTML getHtml() {
         return html;
     }
 
-    public Container getContainer() {
+    public LayoutContainer getContainer() {
         return this;
     }
 
@@ -43,6 +53,11 @@ public class ListModule extends ContentPanel implements Module {
     }
 
     public GWTJahiaNode getNode() {
-        return null;
+        return node;
     }
+
+    public void setNode(GWTJahiaNode node) {
+        this.node = node;
+    }
+
 }

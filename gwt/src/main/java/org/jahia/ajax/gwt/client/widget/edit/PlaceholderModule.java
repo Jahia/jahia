@@ -3,8 +3,6 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.Insert;
@@ -59,10 +57,17 @@ public class PlaceholderModule extends LayoutContainer implements Module {
         target.setFeedback(DND.Feedback.INSERT);
 
         target.addDNDListener(editManager.getDndListener());
-//        ModuleHelper.parse(this,html);
+
     }
 
-    public Container getContainer() {
+    public void parse() {
+    }
+
+    public HTML getHtml() {
+        return null;
+    }
+
+    public LayoutContainer getContainer() {
         return this;
     }
 
@@ -73,4 +78,9 @@ public class PlaceholderModule extends LayoutContainer implements Module {
     public GWTJahiaNode getNode() {
         return null;
     }
+
+    public void setNode(GWTJahiaNode node) {
+        
+    }
+
 }

@@ -1,13 +1,10 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Container;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.core.El;
-import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.util.Rectangle;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -16,14 +13,11 @@ import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.dnd.Insert;
-import com.extjs.gxt.ui.client.fx.Draggable;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.allen_sauer.gwt.log.client.Log;
 
-import java.util.List;
 import java.util.Map;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -37,8 +31,12 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
  */
 public class SimpleModule extends ContentPanel implements Module {
 
+    private GWTJahiaNode node;
+    private Element element;
     private HTML html;
     private String path;
+
+    private EditManager editManager;
 
     public SimpleModule(final String path, String s, final EditManager editManager) {
 //        super(new FitLayout());
@@ -47,9 +45,14 @@ public class SimpleModule extends ContentPanel implements Module {
         setBorders(false);
 
         this.path = path;
+        this.editManager = editManager;
+
         html = new HTML(s);
         add(html);
-        Map<Element, Module> m = ModuleHelper.parse(this, html, editManager);
+    }
+
+    public void parse() {
+        Map<Element, Module> m = ModuleHelper.parse(this);
         boolean last = m.isEmpty();
 
         if (last) {
@@ -77,7 +80,7 @@ public class SimpleModule extends ContentPanel implements Module {
         return html;
     }
 
-    public Container getContainer() {
+    public LayoutContainer getContainer() {
         return this;
     }
 
@@ -86,7 +89,11 @@ public class SimpleModule extends ContentPanel implements Module {
     }
 
     public GWTJahiaNode getNode() {
-        return null; 
+        return node;
+    }
+
+    public void setNode(GWTJahiaNode node) {
+        this.node = node;
     }
 
     public class SimpleModuleDragSource extends DragSource {

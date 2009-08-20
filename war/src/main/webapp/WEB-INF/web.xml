@@ -602,12 +602,20 @@
     <servlet>
         <servlet-name>Render</servlet-name>
         <servlet-class>org.jahia.bin.Render</servlet-class>
+        <init-param>
+            <param-name>render-servlet-path</param-name>
+            <param-value>/render</param-value>
+        </init-param>
         <load-on-startup>99</load-on-startup>
     </servlet>
 
     <servlet>
         <servlet-name>Edit</servlet-name>
         <servlet-class>org.jahia.bin.Edit</servlet-class>
+        <init-param>
+            <param-name>edit-servlet-path</param-name>
+            <param-value>/edit</param-value>
+        </init-param>
         <load-on-startup>99</load-on-startup>
     </servlet>
 

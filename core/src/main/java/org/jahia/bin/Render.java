@@ -20,6 +20,7 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
+import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,9 +36,23 @@ import java.util.Set;
 public class Render extends HttpServlet {
     private static Logger logger = Logger.getLogger(Render.class);
 
+    private static String renderServletPath;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        if (getServletConfig().getInitParameter("render-servlet-path") != null) {
+            renderServletPath = getServletConfig().getInitParameter("render-servlet-path");
+        }
+    }
+
+    public static String getRenderServletPath() {
+        return renderServletPath;
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        
         long startTime = System.currentTimeMillis();
 
         ProcessingContext ctx = null;

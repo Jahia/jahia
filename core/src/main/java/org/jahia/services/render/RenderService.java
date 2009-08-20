@@ -9,6 +9,8 @@ import org.jahia.services.containers.ContentContainer;
 import org.jahia.data.beans.ContainerBean;
 import org.jahia.data.JahiaData;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.Render;
+import org.jahia.bin.Edit;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.operations.valves.EngineValve;
@@ -86,7 +88,11 @@ public class RenderService extends JahiaService {
         request.setAttribute("currentNode", resource.getNode());
 
         if (request.getAttribute("baseUrl") == null) {
-            request.setAttribute("baseUrl", request.getSession().getAttribute("baseUrl"));
+            if (context.isEditMode()) {
+                request.setAttribute("baseUrl", context.getRequest().getContextPath()+Edit.getEditServletPath()+ "/"+resource.getWorkspace()+"/"+resource.getLocale());
+            } else {
+                request.setAttribute("baseUrl", context.getRequest().getContextPath()+Render.getRenderServletPath()+ "/"+resource.getWorkspace()+"/"+resource.getLocale());
+            }
         }
 
         request.setAttribute("workspace", resource.getNode().getSession().getWorkspace().getName());

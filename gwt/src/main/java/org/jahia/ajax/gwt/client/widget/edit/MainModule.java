@@ -10,6 +10,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.core.client.GWT;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.Map;
 
@@ -20,9 +21,10 @@ import java.util.Map;
  * Time: 12:34:18 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MainModule extends LayoutContainer {
+public class MainModule extends LayoutContainer implements Module {
 
     private HTML html;
+    private String path;
     Map<Element, Widget> m;
 
     public MainModule(final String path, final String template, final EditManager editManager) {
@@ -55,4 +57,11 @@ public class MainModule extends LayoutContainer {
         }
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public GWTJahiaNode getNode() {
+        return null; 
+    }
 }

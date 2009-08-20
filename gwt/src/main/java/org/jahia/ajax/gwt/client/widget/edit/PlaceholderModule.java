@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.util.Rectangle;
 import com.extjs.gxt.ui.client.core.El;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Element;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 
 /**
@@ -21,7 +22,7 @@ import com.google.gwt.user.client.Element;
  * Time: 12:03:48 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PlaceholderModule extends LayoutContainer {
+public class PlaceholderModule extends LayoutContainer implements Module {
     private String path;
 
     public PlaceholderModule(String path, EditManager editManager) {
@@ -61,5 +62,9 @@ public class PlaceholderModule extends LayoutContainer {
 
     public String getPath() {
         return path;
+    }
+
+    public GWTJahiaNode getNode() {
+        return null;
     }
 }

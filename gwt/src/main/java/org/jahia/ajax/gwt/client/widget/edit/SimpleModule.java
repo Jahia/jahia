@@ -24,6 +24,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import java.util.List;
 import java.util.Map;
 
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+
 /**
  * Created by IntelliJ IDEA.
  * User: toto
@@ -31,15 +33,18 @@ import java.util.Map;
  * Time: 12:25:19 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SimpleModule extends ContentPanel {
+public class SimpleModule extends ContentPanel implements Module {
 
     private HTML html;
+    private String path;
 
     public SimpleModule(final String path, String s, final EditManager editManager) {
 //        super(new FitLayout());
         setHeaderVisible(false);
         setScrollMode(Style.Scroll.AUTO);
         setBorders(false);
+
+        this.path = path;
         html = new HTML(s);
         add(html);
         Map<Element, Widget> m = ModuleHelper.parse(this, html, editManager);
@@ -105,4 +110,11 @@ public class SimpleModule extends ContentPanel {
         return html;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public GWTJahiaNode getNode() {
+        return null; 
+    }
 }

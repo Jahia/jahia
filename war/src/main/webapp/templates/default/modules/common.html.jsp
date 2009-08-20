@@ -38,19 +38,61 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<c:set var="template" value="${functions:default(param.template, 'full')}"/>
 <c:set var="level" value="${functions:default(requestScope['org.jahia.modules.level'], 1)}"/>
-<c:if test="${level <= 1}">
-	<template:template>
-	<template:templateHead title="${fn:escapeXml(currentNode.name)}">
-		<link rel="stylesheet" type="text/css" href="<c:url value='/css/render.css'/>"/>
-	</template:templateHead>
-	<template:templateBody>
-		<div id="render">
-		<jsp:include page="commonContent.html.jsp"/>
+<div class="render-item type-${fn:replace(currentNode.primaryNodeTypeName, ':', '-')} level-${level}">
+	<div class="name">${fn:escapeXml(currentNode.name)}</div>
+	<c:if test="${!param.skipType}">
+		<div class="type">${currentNode.primaryNodeTypeName}</div>
+	</c:if>
+	<c:if test="${!param.skipProperties && currentNode.properties.size > 0}">
+	<utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType" scope="application"/>
+    <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType" scope="application"/>
+	<div class="properties">
+		<div class="jahia-properties">
+			<c:forEach var="property" items="${currentNode.properties}">
+				<c:if test="${!property.definition.metadataItem}">
+					<%@ include file="property.jspf" %><br/>
+				</c:if>
+			</c:forEach>
 		</div>
-	</template:templateBody>
-	</template:template>
-</c:if>
-<c:if test="${level > 1}">
-	<jsp:include page="commonContent.html.jsp"/>
-</c:if>
+		<c:if test="${!param.skipMetadata}">
+			<div class="metadata-properties">
+				<c:forEach var="property" items="${currentNode.properties}">
+					<c:if test="${property.definition.metadataItem}">
+						<%@ include file="property.jspf" %><br/>
+					</c:if>
+				</c:forEach>
+			</div>
+		</c:if>
+	</div>
+	</c:if>
+	<c:if test="${param.skipProperties && template == 'tree' && jcr:isNodeType(currentNode, 'nt:resource')}">
+		<jcr:nodeProperty node="${currentNode}" name="jcr:data" var="dataProp"/>
+		<div class="property type-binary">
+			<span class="label">${fn:escapeXml(jcr:label(dataProp.definition))}:</span>
+			<span class="value">
+				<a href ="<c:url value='${currentNode.parent.url}'/>">&lt;binary&gt;</a>
+			</span>
+		</div>
+	</c:if>
+	<c:if test="${!param.skipNodes}">
+		<div class="nodes">
+			<c:if test="${!param.skipParentLink && level <= 1 && currentNode.depth > 1}">
+				<div class="parent">
+					<a href="<c:url value='${baseUrl}${currentNode.parent.path}.${template}.html' context='/'/>">..</a>
+				</div>
+			</c:if>
+			<c:forEach var="child" items="${currentNode.nodes}">
+				<div class="child type-${fn:replace(currentNode.primaryNodeTypeName, ':', '-')}">
+					<c:if test="${!param.inlineNodes}" var="nodesAsLinks">
+						<a href="<c:url value='${baseUrl}${child.path}.${template}.html' context='/'/>">${fn:escapeXml(child.name)}</a>
+					</c:if>
+					<c:if test="${!nodesAsLinks}">
+						<template:module node="${child}" template="${template}"/>
+					</c:if>
+				</div>
+			</c:forEach>
+		</div>
+	</c:if>
+</div>

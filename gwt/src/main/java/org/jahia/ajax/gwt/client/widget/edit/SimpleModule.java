@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.fx.Draggable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
@@ -95,14 +96,14 @@ public class SimpleModule extends ContentPanel implements Module {
             target.setFeedback(DND.Feedback.INSERT);
 
             target.addDNDListener(editManager.getDndListener());
-
+            sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
             Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent ce) {
                     Log.info("click" + path);
                     editManager.setSelection(SimpleModule.this);
                 }
             };
-            addListener(Events.OnMouseDown, listener);
+            addListener(Events.OnClick, listener);
         }
     }
 

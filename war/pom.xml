@@ -753,6 +753,16 @@
                         <artifactId>jsch</artifactId>
                         <version>0.1.38</version>
                     </dependency>
+                    <dependency>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate</artifactId>
+                        <version>3.2.6.ga</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jahia.server</groupId>
+                        <artifactId>jahia-impl</artifactId>
+                        <version>${jahia.package.version}</version>
+                    </dependency>
                 </dependencies>
                 <executions>
                     <execution>

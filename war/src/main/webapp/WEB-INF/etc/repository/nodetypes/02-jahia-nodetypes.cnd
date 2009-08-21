@@ -273,6 +273,7 @@
  + * (nt:base)
 
 [jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:contentmetadata
+ orderable
  + * (nt:base)
 
 [jnt:gridContentList] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:contentmetadata

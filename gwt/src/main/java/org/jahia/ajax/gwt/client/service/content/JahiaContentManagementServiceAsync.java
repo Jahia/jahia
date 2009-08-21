@@ -151,4 +151,8 @@ public interface JahiaContentManagementServiceAsync {
     void moveOnTopOf(String sourcePath, String targetPath, AsyncCallback asyncCallback);
 
     void getNodes(List<String> list, AsyncCallback<List<GWTJahiaNode>> async);
+
+    void pasteReferenceOnTopOf(GWTJahiaNode pathsToCopy, String destinationPath, String name, AsyncCallback async);
+
+    void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath, AsyncCallback async);
 }

@@ -171,4 +171,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public List<GWTJahiaNode> getNodes(List<String> list) throws GWTJahiaServiceException;
 
+    public void pasteReferenceOnTopOf(GWTJahiaNode pathsToCopy, String destinationPath, String name) throws GWTJahiaServiceException;
+
+    public void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException;
+
 }

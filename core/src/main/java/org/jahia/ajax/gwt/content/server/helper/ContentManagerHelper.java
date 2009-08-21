@@ -2397,4 +2397,77 @@ public class ContentManagerHelper {
         targetParent.save();
         session.save();
     }
+
+    public static void pasteReferenceOnTopOf(GWTJahiaNode aNode, String destinationPath, String name, JahiaUser user) throws GWTJahiaServiceException {
+        try {
+            JCRNodeWrapper targetNode = jcr.getFileNode(destinationPath, user);
+            final JCRNodeWrapper targetParent = (JCRNodeWrapper) targetNode.getParent();
+            if (targetParent.isCollection() && targetParent.isWriteable()) {
+                JCRNodeWrapper node = jcr.getFileNode(aNode.getPath(), user);
+                if (node.hasPermission(JCRNodeWrapper.READ)) {
+                    name = findAvailableName(targetParent, name, user);
+                    doPasteReference(targetParent, node, name);
+                    targetParent.orderBefore(name, targetNode.getName());
+                    targetParent.save();
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Exception", e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        } catch (JahiaException e) {
+            logger.error("Exception", e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+    public static void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath, JahiaUser user) throws GWTJahiaServiceException {
+        List<String> missedPaths = new ArrayList<String>();
+
+        final JCRNodeWrapper targetParent;
+        JCRNodeWrapper targetNode = jcr.getFileNode(destinationPath, user);
+        try {
+            targetParent = (JCRNodeWrapper) targetNode.getParent();
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+
+        for (GWTJahiaNode aNode : pathsToCopy) {
+            JCRNodeWrapper node = jcr.getFileNode(aNode.getPath(), user);
+            String name = node.getName();
+            if (node.hasPermission(JCRNodeWrapper.READ)) {
+                if (targetParent.isCollection()) {
+                    try {
+                        name = findAvailableName(targetParent, name, user);
+                        if (targetParent.isWriteable()) {
+                            doPasteReference(targetParent, node, name);
+                            targetParent.orderBefore(node.getName(), targetNode.getName());
+                        } else {
+                            missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(targetParent.getPath()).toString());
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error("Exception", e);
+                        missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(targetParent.getPath()).toString());
+                    } catch (JahiaException e) {
+                        logger.error("Exception", e);
+                        missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(targetParent.getPath()).toString());
+                    }
+                }
+            } else {
+                missedPaths.add(new StringBuilder("Source file ").append(name).append(" could not be read by ").append(user.getUsername()).append(" - ACCESS DENIED").toString());
+            }
+        }
+        try {
+            targetParent.save();
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+
+        if (missedPaths.size() > UPLOAD) {
+            StringBuilder errors = new StringBuilder("The following files could not have their reference pasted:");
+            for (String err : missedPaths) {
+                errors.append("\n").append(err);
+            }
+            throw new GWTJahiaServiceException(errors.toString());
+        }
+    }
 }

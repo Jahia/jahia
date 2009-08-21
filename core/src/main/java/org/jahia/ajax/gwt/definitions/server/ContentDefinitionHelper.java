@@ -43,8 +43,6 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.apache.log4j.Logger;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.nodetype.NodeType;
 import javax.jcr.Value;
 import javax.jcr.RepositoryException;
 import java.util.*;
@@ -77,6 +75,11 @@ public class ContentDefinitionHelper {
         } catch (NoSuchNodeTypeException e) {
             return null;
         }
+        GWTJahiaNodeType gwt = getGWTJahiaNodeType(context, nodeType);
+        return gwt;
+    }
+
+    private static GWTJahiaNodeType getGWTJahiaNodeType(ProcessingContext context, ExtendedNodeType nodeType) {
         GWTJahiaNodeType gwt = new GWTJahiaNodeType();
         gwt.setName(nodeType.getName());
         Locale loc = context.getLocale() ;
@@ -141,7 +144,7 @@ public class ContentDefinitionHelper {
                 item.setDeclaringNodeType(def.getDeclaringNodeType().getName());
                 item.setSelector(def.getSelector());
                 item.setSelectorOptions(new HashMap<String, String>(def.getSelectorOptions()));
-                if (def.getDeclaringNodeType().getName().equals(name)) {
+                if (def.getDeclaringNodeType().getName().equals(nodeType.getName())) {
                 items.add(item);
                 } else {
                     inheritedItems.add(item);
@@ -166,19 +169,23 @@ public class ContentDefinitionHelper {
         return null;
     }
 
-    public static List<GWTJahiaNodeType> getNodeTypes(ProcessingContext context) {
+    public static Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> getNodeTypes(ProcessingContext ctx) {
+        Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> map = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
         try {
-            List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>();
-            NodeTypeIterator nti = NodeTypeRegistry.getInstance().getAllNodeTypes();
-            while (nti.hasNext()) {
-                NodeType nt = nti.nextNodeType();
-                list.add(getNodeType(nt.getName(), context));
+            ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType("jmix:content");
+            ExtendedNodeType[] nts = nt.getDeclaredSubtypes();
+
+            for (ExtendedNodeType mainType : nts) {
+                List<GWTJahiaNodeType> l = new ArrayList<GWTJahiaNodeType>();
+                map.put(getGWTJahiaNodeType(ctx,mainType), l);
+                for (ExtendedNodeType subType : mainType.getSubtypes()) {
+                    l.add(getGWTJahiaNodeType(ctx,subType));
+                };
             }
-            return list;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        return null;
+        return map;
     }
 
     /**
@@ -226,10 +233,7 @@ public class ContentDefinitionHelper {
                         types.add(extendedNodeType);
                         for (ExtendedNodeType nodeType : types) {
                             if (!excludedTypes.contains(nodeType.getName()) && !nodeType.isMixin() && !nodeType.isAbstract()) {
-                                gwtNodeTypes
-                                        .add(new GWTJahiaNodeType(nodeType
-                                                .getName(), nodeType
-                                                .getLabel(ctx.getLocale())));
+                                gwtNodeTypes.add(getGWTJahiaNodeType(ctx, nodeType));
                             }
                         }
                     }
@@ -249,9 +253,7 @@ public class ContentDefinitionHelper {
                     for (int i = 0; i < types.length; i++) {
                         ExtendedNodeType nodeType = types[i];
                         if (!excludedTypes.contains(nodeType.getName())) {
-                            gwtNodeTypes.add(new GWTJahiaNodeType(nodeType
-                                    .getName(), nodeType.getLabel(ctx
-                                    .getLocale())));
+                            gwtNodeTypes.add(getGWTJahiaNodeType(ctx, nodeType));
                         }
                     }
                 }

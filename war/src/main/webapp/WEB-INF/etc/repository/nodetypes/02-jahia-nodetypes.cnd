@@ -266,17 +266,31 @@
  - j:url (string)
 
 //---------------------------------------------------------
+// Definition organization
+//---------------------------------------------------------
+
+[jmix:content] mixin
+
+[jmix:containerContent] > jmix:content mixin
+
+[jmix:structuredContent] > jmix:content mixin
+
+[jmix:interactiveContent] > jmix:content mixin
+
+[jmix:queryContent] > jmix:content mixin
+
+//---------------------------------------------------------
 // Pages, content lists
 //---------------------------------------------------------
 
 [jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:navigation, jmix:contentmetadata
  + * (nt:base)
 
-[jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:contentmetadata
+[jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:contentmetadata, jmix:containerContent
  orderable
  + * (nt:base)
 
-[jnt:gridContentList] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:contentmetadata
+[jnt:gridContentList] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:contentmetadata, jmix:containerContent
  - j:nbColumns (long)
  + * (jmix:positionable)
 
@@ -294,7 +308,7 @@
 [jnt:portletDefinitions] > nt:hierarchyNode, jmix:collection
 + * (jnt:portletDefinition)
 
-[jnt:portlet] > nt:base, jmix:hierarchyNode, jmix:contentmetadata
+[jnt:portlet] > nt:base, jmix:hierarchyNode, jmix:contentmetadata, jmix:interactiveContent
  - j:application (string,portletdefinition) protected
  - j:applicationRef (reference) protected < jnt:portletDefinition
  - j:definition (string)

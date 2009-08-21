@@ -40,6 +40,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * GWT remote service for retrieving JCR node type information.
@@ -66,7 +67,7 @@ public interface JahiaContentDefinitionService extends RemoteService {
 
     public GWTJahiaNodeType getNodeType(String names);
 
-    public List<GWTJahiaNodeType> getNodeTypes();
+    public Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> getNodeTypes();
 
     public List<GWTJahiaNodeType> getNodeTypes(List<String> names);
 

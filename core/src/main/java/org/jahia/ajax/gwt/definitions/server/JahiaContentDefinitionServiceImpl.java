@@ -49,7 +49,7 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
         return ContentDefinitionHelper.getNodeType(name, retrieveParamBean());
     }
 
-    public List<GWTJahiaNodeType> getNodeTypes() {
+    public Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> getNodeTypes() {
         return ContentDefinitionHelper.getNodeTypes(retrieveParamBean());
     }
 

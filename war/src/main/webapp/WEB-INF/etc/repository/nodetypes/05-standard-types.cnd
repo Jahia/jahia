@@ -48,7 +48,7 @@
 [jnt:filesBox] > jnt:box
  containerList fileContainer (jnt:fileContainer)
 
-[jnt:lastNewsContainer] > jnt:container
+[jnt:lastNewsContainer] > jnt:container, jmix:queryContent
  integer maxNews = 10 indexed=no
 
 [jnt:lastNewsBox] > jnt:box
@@ -61,7 +61,7 @@
 [jnt:linksBox] > jnt:box
  containerList linkContainer (jnt:linkContainer)
 
-[jnt:mainContentContainer] > jnt:container
+[jnt:mainContentContainer] > jnt:container, jmix:structuredContent
  smallText mainContentTitle primary
  bigText mainContentBody
  file mainContentImage
@@ -70,7 +70,7 @@
 [jnt:mainContentsBox] > jnt:box
  containerList mainContentContainer (jnt:mainContentContainer)
 
-[jnt:newsContainer] > jnt:container
+[jnt:newsContainer] > jnt:container, jmix:structuredContent
  smallText newsTitle primary
  bigText newsDesc
  file newsImage (file[mime='image/*'])
@@ -95,7 +95,7 @@
 [jnt:savedSearchBox] > jnt:box
  containerList savedSearchContainer (jnt:savedSearchContainer)
 
-[jnt:textContainer] > jnt:container
+[jnt:textContainer] > jnt:container, jmix:structuredContent
  bigText text
 
 [jnt:textsBox] > jnt:box
@@ -121,7 +121,7 @@
 [jnt:portletsBox] > jnt:box
  containerList portletContainer (jnt:portletContainer)
 
-[jnt:peopleContainer] > jnt:container 
+[jnt:peopleContainer] > jnt:container, jmix:structuredContent
  sharedSmallText peopleFirstname
  sharedSmallText peopleLastname sortable
  date peopleBirthdate
@@ -134,7 +134,7 @@
 [jnt:peopleBox] > jnt:box
  containerList peopleContainer (jnt:peopleContainer)
 
-[jnt:locationContainer] > jnt:container
+[jnt:locationContainer] > jnt:container, jmix:structuredContent
  sharedSmallText locationStreet
  sharedSmallText locationZipCode analyzer='keyword'
  smallText locationTown facetable
@@ -143,7 +143,7 @@
 [jnt:locationBox] > jnt:box
  containerList locationContainer (jnt:locationContainer)
 
-[jnt:organizationContainer] > jnt:container
+[jnt:organizationContainer] > jnt:container, jmix:structuredContent
  sharedSmallText organizationName facetable
  sharedSmallText organizationAcronym analyzer='keyword' facetable
  file organizationLogo (file[mime='image/*'])
@@ -152,7 +152,7 @@
 [jnt:organizationBox] > jnt:box
  containerList organizationContainer (jnt:organizationContainer)
 
-[jnt:mediaContainer] > jnt:container
+[jnt:mediaContainer] > jnt:container, jmix:structuredContent
  file mediaFile
  sharedSmallText mediaAuthor analyzer='simple'
  date mediaDate
@@ -162,7 +162,7 @@
 [jnt:mediaBox] > jnt:box
  containerList mediaContainer (jnt:mediaContainer)
 
-[jnt:eventContainer] > jnt:container
+[jnt:eventContainer] > jnt:container, jmix:structuredContent
  smallText eventTitle
  date eventDateBegin
  date eventDateEnd
@@ -186,7 +186,7 @@
 [jnt:IframeBox] > jnt:box
  containerList IframeContainer (jnt:IframeContainer)
 
-[jnt:videoContainer] > jnt:container
+[jnt:videoContainer] > jnt:container, jmix:structuredContent
  sharedSmallText videoName
  file videoSource
  integer videoWidth = '0'
@@ -211,7 +211,7 @@
 [jnt:fileContentBox] > jnt:box
  containerList fileContentContainer (jnt:fileContentContainer)
 
-[jnt:flashContainer] > jnt:container
+[jnt:flashContainer] > jnt:container, jmix:structuredContent
  file flashSourceFlashContainer
  sharedSmallText widthFlashContainer analyzer='keyword' fulltextsearchable=no
  sharedSmallText heightFlashContainer analyzer='keyword' fulltextsearchable=no

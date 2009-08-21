@@ -7,7 +7,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.taglibs.internal.gwt.GWTIncluder;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.JspException;
@@ -46,6 +45,8 @@ public class ModuleTag extends BodyTagSupport {
 
     private boolean editable = true;
 
+    private String nodeTypes;
+
     private String workspace = null;
 
     private Locale locale = null;
@@ -72,6 +73,10 @@ public class ModuleTag extends BodyTagSupport {
 
     public void setTemplateType(String templateType) {
         this.templateType = templateType;
+    }
+
+    public void setNodeTypes(String nodeTypes) {
+        this.nodeTypes = nodeTypes;
     }
 
     public void setEditable(boolean editable) {
@@ -127,10 +132,9 @@ public class ModuleTag extends BodyTagSupport {
                             currentResource.getMissingResources().add(path);
                             Map<String, Object> extraParams = new HashMap<String, Object>();
 
-                            extraParams.put("path", nodeWrapper.getPath()+"/"+path);
-                            extraParams.put("type", "placeholder");
                             if (renderContext.isEditMode()) {
-                                pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeholder","placeholder"+ UUID.randomUUID().toString(), extraParams));
+                                printPlaceholderModuleStart("placeholder", nodeWrapper.getPath()+"/"+path);
+                                printPlaceholderModuleEnd();
                             }
                         }
                     } else if (path.startsWith("/")) {
@@ -141,11 +145,10 @@ public class ModuleTag extends BodyTagSupport {
                             if (path.startsWith(currentPath+"/") && path.substring(currentPath.length()+1).indexOf('/') == -1) {
                                 currentResource.getMissingResources().add(path.substring(currentPath.length()+1));
                             }
-                            final Map<String, Object> extraParams = new HashMap<String, Object>();
-                            extraParams.put("path", path);
-                            extraParams.put("type", "placeholder");
+
                             if (renderContext.isEditMode()) {
-                                pageContext.getOut().print(GWTIncluder.generateJahiaModulePlaceHolder(false,null,"placeHolder","placeholder"+ UUID.randomUUID().toString(), extraParams));
+                                printPlaceholderModuleStart("placeholder", path);
+                                printPlaceholderModuleEnd();
                             }
                         }
                     }
@@ -154,6 +157,24 @@ public class ModuleTag extends BodyTagSupport {
                 }
             }
             if (node != null) {
+                if (nodeTypes != null) {
+                    StringTokenizer st = new StringTokenizer(nodeTypes, " ");
+                    boolean found = false;
+                    while (st.hasMoreTokens()) {
+                        String tok = st.nextToken();
+                        try {
+                            if (node.isNodeType(tok)) {
+                                found = true;
+                                break;
+                            }
+                        } catch (RepositoryException e) {
+                            logger.error("Cannot test on "+tok,e);
+                        }
+                    }
+                    if (!found) {
+                        return EVAL_PAGE;
+                    }
+                }
                 Resource resource = new Resource(node, workspace , locale, templateType, template);
 
                 if (renderContext.isEditMode() && editable) {
@@ -166,9 +187,9 @@ public class ModuleTag extends BodyTagSupport {
                             if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
                                 type = "list";
                             }
-                            pageContext.getOut().print("<div class=\"jahia-template-gxt\" jahiatype=\"placeholder\" id=\"placeholder"+UUID.randomUUID().toString()+"\" type=\""+type+"\" path=\""+node.getPath()+"\" template=\""+template+"\">");
+                            printPlaceholderModuleStart(type, node.getPath());
                             render(renderContext, resource);
-                            pageContext.getOut().print("</div>");
+                            printPlaceholderModuleEnd();
                         }
                     } catch (RepositoryException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -185,6 +206,7 @@ public class ModuleTag extends BodyTagSupport {
             editable = true;
             templateType = "html";
             workspace = null;
+            nodeTypes = null;
         } catch (IOException ex) {
             throw new JspException(ex);
         } finally {
@@ -193,6 +215,16 @@ public class ModuleTag extends BodyTagSupport {
         	
         }
         return EVAL_PAGE;
+    }
+
+    private void printPlaceholderModuleStart(String type, String path) throws IOException {
+        pageContext.getOut().print("<div class=\"jahia-template-gxt\" jahiatype=\"placeholder\" " +
+                "id=\"placeholder"+ UUID.randomUUID().toString()+"\" type=\""+type+"\" path=\""+ path +"\" " +
+                ((nodeTypes != null) ? "nodetypes=\""+nodeTypes+"\"" : "") + " template=\""+template+"\">");
+    }
+
+    private void printPlaceholderModuleEnd() throws IOException {
+        pageContext.getOut().print("</div>");
     }
 
     private void render(RenderContext renderContext, Resource resource) throws IOException {

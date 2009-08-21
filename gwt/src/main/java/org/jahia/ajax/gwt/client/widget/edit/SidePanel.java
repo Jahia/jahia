@@ -32,6 +32,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import java.util.List;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -60,9 +61,14 @@ public class SidePanel extends ContentPanel {
 
     private boolean init = false;
     private final ListStore<GWTJahiaNode> displayStore;
+    private final ListStore<GWTJahiaNodeType> displayTypesStore;
     private final PreviewTabItem previewTabItem;
     private final TabItem propertiesTabItem;
+    private final ContentPanel contentList;
+    private Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> definitions;
     ListStore<GWTJahiaBasicDataBean> templateListStore;
+    private final Grid<GWTJahiaNode> displayGrid;
+    private final Grid<GWTJahiaNodeType> displayTypesGrid;
 
     public SidePanel(EditManager editManager) {
         super();
@@ -87,15 +93,18 @@ public class SidePanel extends ContentPanel {
         TabItem create = new TabItem("Create");
         create.setLayout(new FitLayout());
         final ListStore<GWTJahiaNodeType> createStore = new ListStore<GWTJahiaNodeType>();
-        JahiaContentDefinitionService.App.getInstance().getNodeTypes(new AsyncCallback<List<GWTJahiaNodeType>>() {
+        JahiaContentDefinitionService.App.getInstance().getNodeTypes(new AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
             public void onFailure(Throwable caught) {
                 MessageBox.alert("Alert","Unable to load content definitions. Cause: "
                                 + caught.getLocalizedMessage(),null);
             }
 
-            public void onSuccess(List<GWTJahiaNodeType> result) {
-                createStore.add(result);
+            public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
+                definitions = result;
+                List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>(result.keySet());
+                createStore.add(list);
             }
+
         });
         List<ColumnConfig> createColumns = new ArrayList<ColumnConfig>();
         createColumns.add(new ColumnConfig("name", "Name", 150));
@@ -103,9 +112,20 @@ public class SidePanel extends ContentPanel {
         final Grid<GWTJahiaNodeType> createGrid = new Grid<GWTJahiaNodeType>(createStore, new ColumnModel(createColumns));
         createGrid.setBorders(false);
         createGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-        GridDragSource createGridSource = new CreateGridDragSource(createGrid);
-        createGridSource.addDNDListener(editManager.getDndListener());
+//        GridDragSource createGridSource = new CreateGridDragSource(createGrid);
+//        createGridSource.addDNDListener(editManager.getDndListener());
         create.add(createGrid);
+        createGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNodeType>() {
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNodeType> gwtJahiaNodeSelectionChangedEvent) {
+                GWTJahiaNodeType selected = gwtJahiaNodeSelectionChangedEvent.getSelectedItem();
+                if (selected != null) {
+                    List<GWTJahiaNodeType> list = definitions.get(selected);
+                    setDisplayTypesContent(list);
+                } else {
+                    setDisplayTypesContent(null);
+                }
+            }
+        });
 
         // browsing
         TabItem browse = new TabItem("Browse");
@@ -212,15 +232,15 @@ public class SidePanel extends ContentPanel {
 
 
         // content list panel
-        ContentPanel contentList = new ContentPanel();
+        contentList = new ContentPanel();
         contentList.setHeading("Content list");
         contentList.setLayout(new FitLayout());
         contentList.setCollapsible(true);
         displayStore = new ListStore<GWTJahiaNode>();
         List<ColumnConfig> displayColumns = new ArrayList<ColumnConfig>();
-        displayColumns.add(new ColumnConfig("name", "Name", 100));
-        displayColumns.add(new ColumnConfig("path", "Path", 200));
-        final Grid<GWTJahiaNode> displayGrid = new Grid<GWTJahiaNode>(displayStore, new ColumnModel(displayColumns));
+        displayColumns.add(new ColumnConfig("name", "Name", 300));
+//        displayColumns.add(new ColumnConfig("path", "Path", 200));
+        displayGrid = new Grid<GWTJahiaNode>(displayStore, new ColumnModel(displayColumns));
         displayGrid.setBorders(false);
         displayGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         displayGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
@@ -231,6 +251,14 @@ public class SidePanel extends ContentPanel {
         GridDragSource displayGridSource = new DisplayGridDragSource(displayGrid);
         displayGridSource.addDNDListener(editManager.getDndListener());
         contentList.add(displayGrid);
+
+        displayTypesStore = new ListStore<GWTJahiaNodeType>();
+
+        displayTypesGrid = new Grid<GWTJahiaNodeType>(displayTypesStore, new ColumnModel(displayColumns));
+        displayTypesGrid.setBorders(false);
+        displayTypesGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        GridDragSource createGridSource = new CreateGridDragSource(displayTypesGrid);
+        createGridSource.addDNDListener(editManager.getDndListener());
 
         // displayPanel panel
         ContentPanel displayPanel = new ContentPanel();
@@ -312,10 +340,23 @@ public class SidePanel extends ContentPanel {
      * @param content items to add
      */
     private void setDisplayContent(List<GWTJahiaNode> content) {
+        contentList.removeAll();
         displayStore.removeAll();
         if (content != null) {
             displayStore.add(content);
         }
+        contentList.add(displayGrid);
+        contentList.layout();
+    }
+
+    private void setDisplayTypesContent(List<GWTJahiaNodeType> content) {
+        contentList.removeAll();
+        displayTypesStore.removeAll();
+        if (content != null) {
+            displayTypesStore.add(content);
+        }
+        contentList.add(displayTypesGrid);
+        contentList.layout();
     }
 
     private void displaySelection(final GWTJahiaNode node) {

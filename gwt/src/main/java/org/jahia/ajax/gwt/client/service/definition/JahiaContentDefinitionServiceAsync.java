@@ -36,6 +36,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * GWT remote service for retrieving JCR node type information.
@@ -49,7 +50,7 @@ public interface JahiaContentDefinitionServiceAsync {
 
     public void getNodeType(String names, AsyncCallback<GWTJahiaNodeType> async);
 
-    public void getNodeTypes(AsyncCallback<List<GWTJahiaNodeType>> async);
+    public void getNodeTypes(AsyncCallback<Map<GWTJahiaNodeType,List<GWTJahiaNodeType>>> async);
 
     public void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
 

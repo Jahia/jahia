@@ -113,4 +113,14 @@ public class GWTJahiaNodeType extends BaseModelData implements Serializable {
     public void setValidator(String validator) {
         set("validator",validator);
     }
+
+
+    public String getIcon() {
+        return get("icon");
+    }
+
+    public void setIcon(String ext) {
+        set("icon", ext);
+    }
+
 }

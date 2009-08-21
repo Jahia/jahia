@@ -134,19 +134,19 @@ public class LeftPanel extends LeftComponent {
 
     private void retrieveTypes() {
         typesList.removeAll() ;
-        service.getNodeTypes(new AsyncCallback<List<GWTJahiaNodeType>>() {
-            public void onFailure(Throwable throwable) {
-                // ...
-            }
-            public void onSuccess(List<GWTJahiaNodeType> gwtJahiaNodeTypes) {
-                for (GWTJahiaNodeType query: gwtJahiaNodeTypes) {
-                    addNodeType(query, false);
-                }
-                if (selectorsPanel.isExpanded()) {
-                    getLinker().onTreeItemSelected();
-                }
-            }
-        });
+//        service.getNodeTypes(new AsyncCallback<List<GWTJahiaNodeType>>() {
+//            public void onFailure(Throwable throwable) {
+//                 ...
+//            }
+//            public void onSuccess(List<GWTJahiaNodeType> gwtJahiaNodeTypes) {
+//                for (GWTJahiaNodeType query: gwtJahiaNodeTypes) {
+//                    addNodeType(query, false);
+//                }
+//                if (selectorsPanel.isExpanded()) {
+//                    getLinker().onTreeItemSelected();
+//                }
+//            }
+//        });
     }
 
     public Object getSelectedItem() {

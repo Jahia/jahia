@@ -201,6 +201,10 @@ public class ExtendedNodeType implements NodeType {
         declaredSubtypes.add(subType);
     }
 
+    public ExtendedNodeType[] getDeclaredSubtypes() {
+        return declaredSubtypes.toArray(new ExtendedNodeType[declaredSubtypes.size()]);
+    }
+
     public ExtendedNodeType[] getSubtypes() {
         List<ExtendedNodeType> l = new ArrayList<ExtendedNodeType>();
         for (Iterator<ExtendedNodeType> iterator = declaredSubtypes.iterator(); iterator.hasNext();) {

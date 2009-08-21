@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.dnd.Insert;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.DOM;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.Map;
@@ -122,9 +123,9 @@ public class SimpleModule extends ContentPanel implements Module {
         protected void onDragStart(DNDEvent e) {
             e.setCancelled(false);
             e.setData(this);
-
+            e.setOperation(DND.Operation.MOVE);
             if (getStatusText() == null) {
-                e.getStatus().update("Moving content");
+                e.getStatus().update(DOM.clone(html.getElement(),true));
             }
 
         }
@@ -157,7 +158,7 @@ public class SimpleModule extends ContentPanel implements Module {
             insert.setVisible(true);
             Rectangle rect = El.fly(row).getBounds();
             int y = !before ? (rect.y + rect.height - 4) : rect.y - 2;
-            insert.el().setBounds(rect.x, y, rect.width, 6);
+            insert.el().setBounds(rect.x, y, rect.width, 20);
         }
 
     }

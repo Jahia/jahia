@@ -32,6 +32,7 @@ public class EditModeDNDListener extends DNDListener {
     public static final String TARGET_TYPE = "targetType";
     public static final String TARGET_PATH = "targetPath";
     public static final String SOURCE_NODES = "sourceNodes";
+    public static final String OPERATION_CALLED = "operationCalled";
 
     public EditModeDNDListener(EditManager editManager) {
         this.editManager = editManager;
@@ -51,8 +52,6 @@ public class EditModeDNDListener extends DNDListener {
         this.displayGridSource = displayGridSource;
         displayGridSource.addDNDListener(this);
     }
-
-
 
     @Override
     public void dragMove(DNDEvent e) {
@@ -104,7 +103,7 @@ public class EditModeDNDListener extends DNDListener {
     }
 
     @Override
-    public void dragDrop(DNDEvent e) {
+    public void dragDrop(final DNDEvent e) {
         if ("placeholder".equals(e.getStatus().getData(TARGET_TYPE))) {
             if (CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 List<GWTJahiaNode> nodes = (List<GWTJahiaNode>) e.getStatus().getData(SOURCE_NODES);
@@ -113,6 +112,7 @@ public class EditModeDNDListener extends DNDListener {
                 String name = path.substring(i +1);
                 path = path.substring(0,i);
 
+                e.getStatus().setData(OPERATION_CALLED, "true");
                 if ("*".equals(name)) {
                     JahiaContentManagementService.App.getInstance().pasteReferences(nodes, path, new AsyncCallback() {
                         public void onSuccess(Object result) {
@@ -142,6 +142,7 @@ public class EditModeDNDListener extends DNDListener {
                    e.getDropTarget() instanceof SimpleModule.SimpleModuleDropTarget) {
             String sourcePath = ((SimpleModule.SimpleModuleDragSource) e.getDragSource()).getSimpleModule().getPath();
             String targetPath = ((SimpleModule.SimpleModuleDropTarget) e.getDropTarget()).getSimpleModule().getPath();
+            e.getStatus().setData(OPERATION_CALLED, "true");
             JahiaContentManagementService.App.getInstance().moveOnTopOf(sourcePath, targetPath, new AsyncCallback() {
 
                 public void onSuccess(Object o) {
@@ -160,6 +161,7 @@ public class EditModeDNDListener extends DNDListener {
                 int i = path.lastIndexOf('/');
                 String name = path.substring(i +1);
 
+                e.getStatus().setData(OPERATION_CALLED, "true");
                 if ("*".equals(name)) {
                     JahiaContentManagementService.App.getInstance().pasteReferencesOnTopOf(nodes, path, new AsyncCallback() {
                         public void onSuccess(Object result) {

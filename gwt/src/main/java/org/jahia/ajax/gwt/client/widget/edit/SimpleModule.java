@@ -5,10 +5,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.util.Rectangle;
-import com.extjs.gxt.ui.client.event.DNDEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
@@ -102,7 +99,7 @@ public class SimpleModule extends ContentPanel implements Module {
         this.node = node;
     }
 
-    public class SimpleModuleDragSource extends DragSource {
+    public class SimpleModuleDragSource extends EditModeDragSource {
         private final SimpleModule simpleModule;
 
         public SimpleModuleDragSource(SimpleModule simpleModule) {
@@ -114,9 +111,11 @@ public class SimpleModule extends ContentPanel implements Module {
             return simpleModule;
         }
 
-        @Override
-        protected void onDragDrop(DNDEvent e) {
-
+        protected void onDragEnd(DNDEvent e) {
+            if (e.getStatus().getData("operationCalled") == null) {
+                DOM.setStyleAttribute(html.getElement(), "display", "block");
+            }
+            super.onDragEnd(e);
         }
 
         @Override
@@ -126,9 +125,14 @@ public class SimpleModule extends ContentPanel implements Module {
             e.setOperation(DND.Operation.MOVE);
             if (getStatusText() == null) {
                 e.getStatus().update(DOM.clone(html.getElement(),true));
+
+                e.getStatus().setData("element",html.getElement());
+                DOM.setStyleAttribute(html.getElement(), "display", "none");
+
             }
 
         }
+
     }
 
     public class SimpleModuleDropTarget extends DropTarget {
@@ -154,6 +158,11 @@ public class SimpleModule extends ContentPanel implements Module {
         }
 
         private void showInsert(DNDEvent event, Element row, boolean before) {
+//            Element toDrag = event.getStatus().getData("element");
+//            if (toDrag != null) {
+//                Element parent = DOM.getParent(row);
+//                parent.insertBefore(toDrag, row);
+//            }
             Insert insert = Insert.get();
             insert.setVisible(true);
             Rectangle rect = El.fly(row).getBounds();

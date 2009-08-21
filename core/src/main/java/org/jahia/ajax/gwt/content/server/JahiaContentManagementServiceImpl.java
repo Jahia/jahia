@@ -434,8 +434,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public List<GWTJahiaNode> getNodes(List<String> list) throws GWTJahiaServiceException{
-        return new ArrayList<GWTJahiaNode>(0);
+    public List<GWTJahiaNode> getNodes(List<String> pathes) throws GWTJahiaServiceException {
+        String workspace = "default";
+        ParamBean jParams = retrieveParamBean();
+        List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
+        for (String path : pathes) {
+            list.add(ContentManagerHelper.getNode(path, workspace, jParams));
+        }
+        return list;
     }
 
 }

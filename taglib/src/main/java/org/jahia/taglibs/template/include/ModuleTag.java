@@ -44,6 +44,8 @@ public class ModuleTag extends BodyTagSupport {
 
     private String templateType = "html";
 
+    private boolean editable = true;
+
     private String workspace = null;
 
     private Locale locale = null;
@@ -70,6 +72,10 @@ public class ModuleTag extends BodyTagSupport {
 
     public void setTemplateType(String templateType) {
         this.templateType = templateType;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 
     @Override
@@ -150,7 +156,7 @@ public class ModuleTag extends BodyTagSupport {
             if (node != null) {
                 Resource resource = new Resource(node, workspace , locale, templateType, template);
 
-                if (renderContext.isEditMode()) {
+                if (renderContext.isEditMode() && editable) {
                     try {
                         if (node.isNodeType("jmix:link")) {
                             // no placeholder at all for links
@@ -176,6 +182,7 @@ public class ModuleTag extends BodyTagSupport {
             contentBeanName = null;
             node = null;
             template = null;
+            editable = true;
             templateType = "html";
             workspace = null;
         } catch (IOException ex) {

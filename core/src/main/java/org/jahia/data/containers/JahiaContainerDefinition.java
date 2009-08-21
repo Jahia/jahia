@@ -403,7 +403,7 @@ public class JahiaContainerDefinition extends ContentDefinition implements Seria
 
     public int getContainerListType() {
         ExtendedNodeDefinition nodeDef = getContainerListNodeDefinition();
-        if (nodeDef.getRequiredPrimaryTypes()[0].isNodeType(Constants.JAHIANT_CONTAINERLIST)) {
+        if (nodeDef.getRequiredPrimaryTypes()[0].isNodeType(Constants.JAHIANT_CONTAINERLIST) || nodeDef.getRequiredPrimaryTypes()[0].isNodeType(Constants.JAHIANT_CONTENTLIST)) {
             nodeDef = nodeDef.getRequiredPrimaryTypes()[0].getChildNodeDefinitionsAsMap().get("*");
         }        
 

@@ -328,7 +328,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
                 String containerName = nt.getName().replace(':','_') + "_" + nodeDef.getName();
 //                String containerName = nodeDef.getDeclaringNodeType().getName().replace(':','_') + "_" + nodeDef.getName();
                 ExtendedNodeType[] requiredPrimaryTypes = nodeDef.getRequiredPrimaryTypes();
-                if (requiredPrimaryTypes[0].isNodeType(Constants.JAHIANT_CONTAINERLIST)) {
+                if (requiredPrimaryTypes[0].isNodeType(Constants.JAHIANT_CONTAINERLIST) || requiredPrimaryTypes[0].isNodeType(Constants.JAHIANT_CONTENTLIST)) {
                     nodeDef = requiredPrimaryTypes[0].getDeclaredChildNodeDefinitionsAsMap().get("*");
                     requiredPrimaryTypes = nodeDef.getRequiredPrimaryTypes(); 
                 }
@@ -501,11 +501,8 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
      * @param containerName
      * @param containerType
      * @param fieldName
-     * @param fieldTitle
      * @param fieldType
      * @param aliasNames
-     * @param boostFactor    the search boost factor, 1.0 by default
-     * @param indexableField true by default, false if the field should not be indexed @throws JahiaException
      */
     private void declareField(String containerName,
                              String containerType, 
@@ -955,7 +952,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
             StringBuffer defTypes = new StringBuffer();
             ExtendedNodeType[] nodeTypes = nodeDef.getRequiredPrimaryTypes();
             if (nodeTypes.length > 0) {
-                if (nodeTypes[0].isNodeType(Constants.JAHIANT_CONTAINERLIST)) {
+                if (nodeTypes[0].isNodeType(Constants.JAHIANT_CONTAINERLIST)||nodeTypes[0].isNodeType(Constants.JAHIANT_CONTENTLIST)) {
                     nodeTypes = nodeTypes[0].getChildNodeDefinitionsAsMap().get("*").getRequiredPrimaryTypes();
                 }
                 for (int i = 0; i < nodeTypes.length; i++) {

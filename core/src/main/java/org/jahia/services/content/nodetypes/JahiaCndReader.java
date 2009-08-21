@@ -377,7 +377,7 @@ public class JahiaCndReader {
                     ExtendedNodeType listType = new ExtendedNodeType(registry, systemId);
                     listType.setName(parseName(ctnListTypeName));
                     listType.setAlias(aliasName);
-                    listType.setDeclaredSupertypes(new String[] {Constants.JAHIANT_CONTAINERLIST});
+                    listType.setDeclaredSupertypes(new String[] {Constants.JAHIANT_CONTENTLIST});
                     listType.setHasOrderableChildNodes(true);
                     ExtendedNodeDefinition def = new ExtendedNodeDefinition(registry);
                     def.setName(parseName("*"));

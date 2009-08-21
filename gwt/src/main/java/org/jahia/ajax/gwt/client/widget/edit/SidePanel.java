@@ -6,10 +6,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
@@ -26,6 +23,7 @@ import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.core.client.GWT;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
@@ -35,7 +33,9 @@ import java.util.ArrayList;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.ActionIconsImageBundle;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
@@ -47,14 +47,19 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  * User: romain
  * Date: Aug 19, 2009
  * Time: 11:56:07 AM
- * To change this template use File | Settings | File Templates.
+ *
+ * This is the content browser / editor side panel.
+ *
  */
 public class SidePanel extends ContentPanel {
+
+    public static final ActionIconsImageBundle ACTION_ICONS = GWT.create(ActionIconsImageBundle.class);
 
     private boolean init = false;
     private final ListStore<GWTJahiaNode> displayStore;
     private final TabItem previewTabItem;
     private final TabItem propertiesTabItem;
+    ListStore<GWTJahiaBasicDataBean> templateListStore;
 
     public SidePanel(EditManager editManager) {
         super();
@@ -135,8 +140,7 @@ public class SidePanel extends ContentPanel {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
                 GWTJahiaNode selected = gwtJahiaNodeSelectionChangedEvent.getSelectedItem();
                 if (selected != null) {
-                    displayPreview(selected);
-                    displayProperties(selected);
+                    displaySelection(selected);
                     if (selected.hasChildren()) {
                         JahiaContentManagementService.App.getInstance().ls(gwtJahiaNodeSelectionChangedEvent.getSelectedItem(), null, null, null, null, false, new AsyncCallback<List<GWTJahiaNode>>() {
                             public void onFailure(Throwable throwable) {
@@ -218,8 +222,7 @@ public class SidePanel extends ContentPanel {
         displayGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         displayGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
-                displayPreview(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
-                displayProperties(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
+                displaySelection(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
             }
         });
         GridDragSource displayGridSource = new DisplayGridDragSource(displayGrid);
@@ -249,6 +252,38 @@ public class SidePanel extends ContentPanel {
         add(repository, vBoxData);
         add(contentList, vBoxData);
         add(displayPanel, vBoxData);
+
+        ToolBar toolbar = new ToolBar();
+        templateListStore = new ListStore<GWTJahiaBasicDataBean>();
+        ComboBox<GWTJahiaBasicDataBean> templateBox = new ComboBox<GWTJahiaBasicDataBean>();
+        templateBox.setStore(templateListStore);
+        templateBox.setDisplayField(GWTJahiaBasicDataBean.DISPLAY_NAME);
+        // TODO fill in real templates (see updateToolBar method below)
+        templateListStore.add(new GWTJahiaBasicDataBean("template1", "template1"));
+        templateListStore.add(new GWTJahiaBasicDataBean("template2", "template2"));
+        templateListStore.add(new GWTJahiaBasicDataBean("template3", "template3"));
+        Button lock = new Button();
+        lock.setIcon(ACTION_ICONS.lock());
+        lock.setToolTip("lock");
+        Button edit = new Button();
+        edit.setIcon(ACTION_ICONS.edit());
+        lock.setToolTip("edit");
+        Button remove = new Button();
+        remove.setIcon(ACTION_ICONS.remove());
+        lock.setToolTip("remove");
+        Button delete = new Button();
+        delete.setIcon(ACTION_ICONS.delete());
+        lock.setToolTip("delete");
+        Button undo = new Button();
+        undo.setIcon(ACTION_ICONS.undo());
+        lock.setToolTip("undo");
+        toolbar.add(templateBox);
+        toolbar.add(lock);
+        toolbar.add(edit);
+        toolbar.add(remove);
+        toolbar.add(delete);
+        toolbar.add(undo);
+        setBottomComponent(toolbar);
     }
 
     /**
@@ -281,16 +316,21 @@ public class SidePanel extends ContentPanel {
         }
     }
 
+    private void displaySelection(final GWTJahiaNode node) {
+        displayPreview(node);
+        displayProperties(node);
+    }
+
     /**
      * Display the rendered html of the given node in the preview panel
      *
      * @param node the node to render
      */
     private void displayPreview(final GWTJahiaNode node) {
+        previewTabItem.removeAll();
         if (node != null) {
             JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, false, new AsyncCallback<String>() {
                 public void onSuccess(String result) {
-                    previewTabItem.removeAll();
                     HTML html = new HTML(result);
                     previewTabItem.add(html);
                     previewTabItem.layout();
@@ -311,6 +351,7 @@ public class SidePanel extends ContentPanel {
      * @param node the current node
      */
     private void displayProperties(final GWTJahiaNode node) {
+        propertiesTabItem.removeAll();
         JahiaContentManagementService.App.getInstance().getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
             public void onFailure(Throwable throwable) {
                 Log.debug("Cannot get properties", throwable);
@@ -357,13 +398,21 @@ public class SidePanel extends ContentPanel {
                 });
                 toolBar.add(item);
                 toolBar.setVisible(true);
-                propertiesTabItem.removeAll();
                 propertiesTabItem.add(propertiesEditor);
                 propertiesTabItem.layout();
             }
         });
     }
 
+    /**
+     * This will update the template conbo box based on the page selected item
+     *
+     * @param node the selected node (item on the page)
+     */
+    public void updateToolBar(GWTJahiaNode node) {
+        templateListStore.removeAll();
+        // TODO retrieve selected node in the page and fill in the store with its available templates
+    }
 
 
 }

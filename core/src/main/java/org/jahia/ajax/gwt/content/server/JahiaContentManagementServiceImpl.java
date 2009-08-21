@@ -37,7 +37,6 @@ import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
 import org.apache.log4j.Logger;
-import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -67,8 +66,6 @@ import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
-
-import org.jahia.engines.importexport.ExportEngine;
 
 /**
  * GWT server code implementation for the DMS repository services.

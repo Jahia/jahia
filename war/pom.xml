@@ -133,6 +133,7 @@
                         <artifactId>gwt-maven-plugin</artifactId>
                         <version>1.1</version>
                         <configuration>
+                            <localWorkers>5</localWorkers>
                             <force>true</force>
                             <extraJvmArgs>-Xmx1024m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
                             <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
@@ -596,6 +597,56 @@
             <scope>${jboss.libs.scope}</scope>
         </dependency>
 
+        <!-- Shindig WAR overlay -->
+        <dependency>
+            <groupId>org.apache.shindig</groupId>
+            <artifactId>shindig-server</artifactId>
+            <version>1.1-BETA3-incubating-SNAPSHOT</version>
+            <type>war</type>
+            <!--
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-digester</groupId>
+                    <artifactId>commons-digester</artifactId>
+                </exclusion>
+            </exclusions>
+            -->
+        </dependency>
+
+        <!-- Other Shindig dependencies -->
+
+        <dependency>
+          <groupId>org.apache.shindig</groupId>
+          <artifactId>shindig-gadgets</artifactId>
+          <version>1.1-BETA3-incubating-SNAPSHOT</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>de.odysseus.juel</groupId>
+                  <artifactId>juel-api</artifactId>
+              </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.shindig</groupId>
+          <artifactId>shindig-features</artifactId>
+          <version>1.1-BETA3-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <!-- External Shindig dependencies -->
+        <!-- external dependencies -->
+        <dependency>
+          <groupId>org.json</groupId>
+          <artifactId>json</artifactId>
+           <version>20070829</version>
+        </dependency>
+        <dependency>
+          <groupId>org.jsecurity</groupId>
+          <artifactId>jsecurity</artifactId>
+          <version>0.9.0</version>
+        </dependency>
+
+        <!-- End of Shindig dependencies -->
+        
     </dependencies>
 
     <build>
@@ -642,6 +693,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.1-beta-1</version>
                 <configuration>
+                    <dependentWarExcludes>WEB-INF/lib/**</dependentWarExcludes>
                     <webResources>
                         <resource>
                             <directory>${pom.basedir}/src/main/webapp</directory>

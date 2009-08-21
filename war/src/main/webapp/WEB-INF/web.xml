@@ -80,6 +80,22 @@
         <param-value>60000</param-value>
     </context-param>
 
+<!-- Shindig configuration -->
+    <!-- configuration -->
+    <!-- If you have your own Guice module(s), put them here as a colon-separated list. -->
+    <context-param>
+      <param-name>guice-modules</param-name>
+      <param-value>
+        org.apache.shindig.common.PropertiesModule:
+        org.apache.shindig.gadgets.DefaultGuiceModule:
+        org.jahia.services.shindig.GuiceModule:
+        <!--org.apache.shindig.social.sample.SampleModule:-->
+        org.apache.shindig.gadgets.oauth.OAuthModule:
+        org.apache.shindig.common.cache.ehcache.EhCacheModule
+      </param-value>
+    </context-param>
+<!-- End of Shindig configuration -->    
+
     <!--
       Configure the following filters to use NTLM Domain authentification.
       Also don't forget to uncomment the filter-mapping entry below.
@@ -262,6 +278,45 @@
         </init-param>
     </filter>
 
+<!-- Shindig filters -->
+    <filter>
+        <filter-name>JSecurityFilter</filter-name>
+        <filter-class>org.jsecurity.web.servlet.JSecurityFilter</filter-class>
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>
+
+                # The JSecurityFilter configuration is very powerful and flexible, while still remaining succinct.
+                # Please read the comprehensive example, with full comments and explanations, in the JavaDoc:
+                #
+                # http://www.jsecurity.org/api/org/jsecurity/web/servlet/JSecurityFilter.html
+                [main]
+                shindigSampleRealm = org.apache.shindig.social.sample.oauth.SampleRealm
+                securityManager.realm = $shindigSampleRealm
+
+                [filters]
+                jsecurity.loginUrl = /login.jsp
+
+                [urls]
+                # The /login.jsp is not restricted to authenticated users (otherwise no one could log in!), but
+                # the 'authc' filter must still be specified for it so it can process that url's
+                # login submissions. It is 'smart' enough to allow those requests through as specified by the
+                # jsecurity.loginUrl above.
+                /login.jsp = authc
+
+                /oauth/authorize/** = authc
+                /remoting/** = authc, roles[b2bClient], perms[remote:invoke:"lan,wan"]
+
+            </param-value>
+        </init-param>
+    </filter>
+
+  <filter>
+    <filter-name>authFilter</filter-name>
+    <filter-class>org.apache.shindig.auth.AuthenticationServletFilter</filter-class>
+  </filter>
+<!-- End of shindig filters -->    
+
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
         <url-pattern>*.html</url-pattern>
@@ -369,6 +424,43 @@
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 
+<!-- Shinding filter mappings -->
+    <filter-mapping>
+        <filter-name>JSecurityFilter</filter-name>
+        <url-pattern>/oauth/authorize</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>JSecurityFilter</filter-name>
+        <url-pattern>*.jsp</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+      <filter-name>authFilter</filter-name>
+      <url-pattern>/social/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+      <filter-name>authFilter</filter-name>
+      <url-pattern>/gadgets/ifr</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+      <filter-name>authFilter</filter-name>
+      <url-pattern>/gadgets/makeRequest</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+      <filter-name>authFilter</filter-name>
+      <url-pattern>/gadgets/api/rpc/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+      <filter-name>authFilter</filter-name>
+      <url-pattern>/gadgets/api/rest/*</url-pattern>
+    </filter-mapping>
+<!-- End of Shindig filter mappings -->    
+
     <listener>
         <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
     </listener>
@@ -388,6 +480,12 @@
     <listener>
         <listener-class>org.jahia.bin.JahiaWebAppListener</listener-class>
     </listener>
+
+<!-- Shindig context listeners -->
+    <listener>
+      <listener-class>org.apache.shindig.common.servlet.GuiceServletContextListener</listener-class>
+    </listener>
+<!-- End of Shindig context listeners -->    
 
     <servlet>
         <servlet-name>
@@ -746,6 +844,117 @@
         </init-param>
     </servlet>
 
+<!-- Shindig servlets -->
+    <!-- Render a Gadget -->
+    <servlet>
+      <servlet-name>xml-to-html</servlet-name>
+      <servlet-class>
+        org.apache.shindig.gadgets.servlet.GadgetRenderingServlet
+      </servlet-class>
+    </servlet>
+
+    <!-- Proxy -->
+    <servlet>
+      <servlet-name>proxy</servlet-name>
+      <servlet-class>
+        org.apache.shindig.gadgets.servlet.ProxyServlet
+      </servlet-class>
+    </servlet>
+
+    <!-- makeRequest -->
+    <servlet>
+      <servlet-name>makeRequest</servlet-name>
+      <servlet-class>
+        org.apache.shindig.gadgets.servlet.MakeRequestServlet
+      </servlet-class>
+    </servlet>
+
+    <!-- Concat -->
+    <servlet>
+      <servlet-name>concat</servlet-name>
+      <servlet-class>
+        org.apache.shindig.gadgets.servlet.ConcatProxyServlet
+      </servlet-class>
+    </servlet>
+
+    <!-- OAuth callback -->
+    <servlet>
+      <servlet-name>oauthCallback</servlet-name>
+      <servlet-class>
+        org.apache.shindig.gadgets.servlet.OAuthCallbackServlet
+      </servlet-class>
+    </servlet>
+
+    <!-- Metadata RPC -->
+    <servlet>
+      <servlet-name>metadata</servlet-name>
+      <servlet-class>
+        org.apache.shindig.gadgets.servlet.RpcServlet
+      </servlet-class>
+    </servlet>
+
+    <!-- javascript serving -->
+    <servlet>
+      <servlet-name>js</servlet-name>
+      <servlet-class>org.apache.shindig.gadgets.servlet.JsServlet</servlet-class>
+    </servlet>
+
+    <!-- Serve social REST api -->
+    <servlet>
+      <servlet-name>socialRestapiServlet</servlet-name>
+      <servlet-class>
+        org.apache.shindig.protocol.DataServiceServlet
+      </servlet-class>
+      <init-param>
+        <param-name>handlers</param-name>
+        <param-value>org.apache.shindig.social.handlers</param-value>
+      </init-param>
+    </servlet>
+
+    <!-- Serve social RPC api -->
+    <servlet>
+      <servlet-name>socialJsonRpcServlet</servlet-name>
+      <servlet-class>
+        org.apache.shindig.protocol.JsonRpcServlet
+      </servlet-class>
+      <init-param>
+        <param-name>handlers</param-name>
+        <param-value>org.apache.shindig.social.handlers</param-value>
+      </init-param>
+    </servlet>
+
+    <!-- Serve gadgets RPC api -->
+    <servlet>
+      <servlet-name>gadgetsJsonRpcServlet</servlet-name>
+      <servlet-class>
+        org.apache.shindig.protocol.JsonRpcServlet
+      </servlet-class>
+      <init-param>
+        <param-name>handlers</param-name>
+        <param-value>org.apache.shindig.gadgets.handlers</param-value>
+      </init-param>
+    </servlet>
+
+    <servlet>
+      <servlet-name>gadgetsRestapiServlet</servlet-name>
+      <servlet-class>
+        org.apache.shindig.protocol.DataServiceServlet
+      </servlet-class>
+      <init-param>
+        <param-name>handlers</param-name>
+        <param-value>org.apache.shindig.gadgets.handlers</param-value>
+      </init-param>
+    </servlet>
+
+    <!-- Serve sample OAuth apis -->
+    <servlet>
+      <servlet-name>sampleOAuth</servlet-name>
+      <servlet-class>
+        org.apache.shindig.social.sample.oauth.SampleOAuthServlet
+      </servlet-class>
+    </servlet>
+    
+<!-- End of Shindig servlets -->
 
     <!-- [INSERT FRAGMENT HERE] -->
 
@@ -878,6 +1087,68 @@
         <servlet-name>GWTDispatcherServlet</servlet-name>
         <url-pattern>*.gwt</url-pattern>
     </servlet-mapping>
+
+<!-- Shindig servlet mappings -->
+    <servlet-mapping>
+      <servlet-name>js</servlet-name>
+      <url-pattern>/gadgets/js/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>proxy</servlet-name>
+      <url-pattern>/gadgets/proxy/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>makeRequest</servlet-name>
+      <url-pattern>/gadgets/makeRequest</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>gadgetsJsonRpcServlet</servlet-name>
+      <url-pattern>/gadgets/api/rpc/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>gadgetsRestapiServlet</servlet-name>
+      <url-pattern>/gadgets/api/rest/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>concat</servlet-name>
+      <url-pattern>/gadgets/concat</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>oauthCallback</servlet-name>
+      <url-pattern>/gadgets/oauthcallback</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>xml-to-html</servlet-name>
+      <url-pattern>/gadgets/ifr</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>metadata</servlet-name>
+      <url-pattern>/gadgets/metadata</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>socialRestapiServlet</servlet-name>
+      <url-pattern>/social/rest/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>socialJsonRpcServlet</servlet-name>
+      <url-pattern>/social/rpc/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>sampleOAuth</servlet-name>
+      <url-pattern>/oauth/*</url-pattern>
+    </servlet-mapping>
+<!-- End of Shindig servlet mappings -->
     
     <!-- Session timeout value is set in minutes. Comment this section out
          in order to set the timeout time back to the server's value  -->

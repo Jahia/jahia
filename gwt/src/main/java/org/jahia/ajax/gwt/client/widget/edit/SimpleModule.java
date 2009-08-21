@@ -99,76 +99,15 @@ public class SimpleModule extends ContentPanel implements Module {
         this.node = node;
     }
 
-    public class SimpleModuleDragSource extends EditModeDragSource {
-        private final SimpleModule simpleModule;
-
+    public class SimpleModuleDragSource extends ModuleDragSource {
         public SimpleModuleDragSource(SimpleModule simpleModule) {
             super(simpleModule);
-            this.simpleModule = simpleModule;
         }
-
-        public SimpleModule getSimpleModule() {
-            return simpleModule;
-        }
-
-        protected void onDragEnd(DNDEvent e) {
-            if (e.getStatus().getData("operationCalled") == null) {
-                DOM.setStyleAttribute(html.getElement(), "display", "block");
-            }
-            super.onDragEnd(e);
-        }
-
-        @Override
-        protected void onDragStart(DNDEvent e) {
-            e.setCancelled(false);
-            e.setData(this);
-            e.setOperation(DND.Operation.MOVE);
-            if (getStatusText() == null) {
-                e.getStatus().update(DOM.clone(html.getElement(),true));
-
-                e.getStatus().setData("element",html.getElement());
-                DOM.setStyleAttribute(html.getElement(), "display", "none");
-
-            }
-
-        }
-
     }
 
-    public class SimpleModuleDropTarget extends DropTarget {
-        private final SimpleModule simpleModule;
-
+    public class SimpleModuleDropTarget extends ModuleDropTarget {
         public SimpleModuleDropTarget(SimpleModule simpleModule) {
             super(simpleModule);
-            this.simpleModule = simpleModule;
         }
-
-        public SimpleModule getSimpleModule() {
-            return simpleModule;
-        }
-
-        @Override
-        protected void onDragMove(DNDEvent event) {
-            event.setCancelled(false);
-        }
-
-        @Override
-        protected void showFeedback(DNDEvent event) {
-            showInsert(event, this.getComponent().getElement(), true);
-        }
-
-        private void showInsert(DNDEvent event, Element row, boolean before) {
-//            Element toDrag = event.getStatus().getData("element");
-//            if (toDrag != null) {
-//                Element parent = DOM.getParent(row);
-//                parent.insertBefore(toDrag, row);
-//            }
-            Insert insert = Insert.get();
-            insert.setVisible(true);
-            Rectangle rect = El.fly(row).getBounds();
-            int y = !before ? (rect.y + rect.height - 4) : rect.y - 2;
-            insert.el().setBounds(rect.x, y, rect.width, 20);
-        }
-
     }
 }

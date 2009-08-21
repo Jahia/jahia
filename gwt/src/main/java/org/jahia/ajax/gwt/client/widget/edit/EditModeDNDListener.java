@@ -24,9 +24,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
  */
 public class EditModeDNDListener extends DNDListener {
     private EditManager editManager;
-    private TreePanelDragSource contentTreeSource;
-    private GridDragSource createGridSource;
-    private GridDragSource displayGridSource;
+
     public static final String SOURCE_TYPE = "sourceType";
     public static final String CONTENT_SOURCE_TYPE = "content";
     public static final String TARGET_TYPE = "targetType";
@@ -38,21 +36,6 @@ public class EditModeDNDListener extends DNDListener {
         this.editManager = editManager;
     }
 
-    public void setContentTreeSource(TreePanelDragSource contentTreeSource) {
-        this.contentTreeSource = contentTreeSource;
-        contentTreeSource.addDNDListener(this);
-    }
-
-    public void setCreateGridSource(GridDragSource createGridSource) {
-        this.createGridSource = createGridSource;
-        createGridSource.addDNDListener(this);
-    }
-
-    public void setDisplayGridSource(GridDragSource displayGridSource) {
-        this.displayGridSource = displayGridSource;
-        displayGridSource.addDNDListener(this);
-    }
-
     @Override
     public void dragMove(DNDEvent e) {
         super.dragMove(e);    //To change body of overridden methods use File | Settings | File Templates.
@@ -60,7 +43,7 @@ public class EditModeDNDListener extends DNDListener {
 
     @Override
     public void dragStart(DNDEvent e) {
-        if (e.getSource() == contentTreeSource) {
+        if (e.getSource() instanceof ContentTreeDragSource) {
             e.getStatus().setData(SOURCE_TYPE, CONTENT_SOURCE_TYPE);
 
             List list = (List) e.getData();
@@ -72,7 +55,7 @@ public class EditModeDNDListener extends DNDListener {
             }
             e.getStatus().setData(SOURCE_NODES, l);
 
-        } else if (e.getSource() == displayGridSource) {
+        } else if (e.getSource() instanceof DisplayGridDragSource) {
             e.getStatus().setData(SOURCE_TYPE, CONTENT_SOURCE_TYPE);
 
             List<GWTJahiaNode> list = (List<GWTJahiaNode>) e.getData();
@@ -92,7 +75,7 @@ public class EditModeDNDListener extends DNDListener {
             e.getStatus().setData(TARGET_PATH, ((PlaceholderModule)e.getDropTarget().getComponent()).getPath());
         }else if (e.getDropTarget() instanceof SimpleModule.SimpleModuleDropTarget) {
             e.getStatus().setData(TARGET_TYPE, "simpleModule");
-            e.getStatus().setData(TARGET_PATH, ((SimpleModule.SimpleModuleDropTarget)e.getDropTarget()).getSimpleModule().getPath());
+            e.getStatus().setData(TARGET_PATH, ((SimpleModule.SimpleModuleDropTarget)e.getDropTarget()).getModule().getPath());
         }
         super.dragEnter(e);    //To change body of overridden methods use File | Settings | File Templates.
     }
@@ -140,8 +123,8 @@ public class EditModeDNDListener extends DNDListener {
             }
         } else if (e.getDragSource() instanceof SimpleModule.SimpleModuleDragSource &&
                    e.getDropTarget() instanceof SimpleModule.SimpleModuleDropTarget) {
-            String sourcePath = ((SimpleModule.SimpleModuleDragSource) e.getDragSource()).getSimpleModule().getPath();
-            String targetPath = ((SimpleModule.SimpleModuleDropTarget) e.getDropTarget()).getSimpleModule().getPath();
+            String sourcePath = ((SimpleModule.SimpleModuleDragSource) e.getDragSource()).getModule().getPath();
+            String targetPath = ((SimpleModule.SimpleModuleDropTarget) e.getDropTarget()).getModule().getPath();
             e.getStatus().setData(OPERATION_CALLED, "true");
             JahiaContentManagementService.App.getInstance().moveOnTopOf(sourcePath, targetPath, new AsyncCallback() {
 

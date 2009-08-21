@@ -95,8 +95,8 @@ public class SidePanel extends ContentPanel {
         final Grid<GWTJahiaNodeType> createGrid = new Grid<GWTJahiaNodeType>(createStore, new ColumnModel(createColumns));
         createGrid.setBorders(false);
         createGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-        GridDragSource createGridSource = new GridDragSource(createGrid);
-        editManager.getDndListener().setCreateGridSource(createGridSource);
+        GridDragSource createGridSource = new CreateGridDragSource(createGrid);
+        createGridSource.addDNDListener(editManager.getDndListener());
         create.add(createGrid);
 
         // browsing
@@ -156,8 +156,8 @@ public class SidePanel extends ContentPanel {
                 }
             }
         });
-        TreePanelDragSource contentTreeSource = new TreePanelDragSource(m_tree);
-        editManager.getDndListener().setContentTreeSource(contentTreeSource);
+        TreePanelDragSource contentTreeSource = new ContentTreeDragSource(m_tree);
+        contentTreeSource.addDNDListener(editManager.getDndListener());
         browse.add(m_tree);
 
         // searching
@@ -222,8 +222,8 @@ public class SidePanel extends ContentPanel {
                 displayProperties(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
             }
         });
-        GridDragSource displayGridSource = new GridDragSource(displayGrid);
-        editManager.getDndListener().setDisplayGridSource(displayGridSource);
+        GridDragSource displayGridSource = new DisplayGridDragSource(displayGrid);
+        displayGridSource.addDNDListener(editManager.getDndListener());
         contentList.add(displayGrid);
 
         // displayPanel panel

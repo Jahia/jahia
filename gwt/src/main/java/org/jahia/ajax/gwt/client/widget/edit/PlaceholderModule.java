@@ -30,29 +30,10 @@ public class PlaceholderModule extends LayoutContainer implements Module {
         setBorders(false);
         setHeight(20);
         
-        HTML html = new HTML("--placehodler--");
+        HTML html = new HTML("");
         add(html);
 
-        DropTarget target = new DropTarget(this) {
-            @Override
-            protected void onDragMove(DNDEvent event) {
-              event.setCancelled(false);
-            }
-
-            @Override
-            protected void showFeedback(DNDEvent event) {
-                showInsert(event, this.getComponent().getElement(), true);
-            }
-
-            private void showInsert(DNDEvent event, Element row, boolean before) {
-              Insert insert = Insert.get();
-              insert.setVisible(true);
-              Rectangle rect = El.fly(row).getBounds();
-              int y = !before ? (rect.y + rect.height - 4) : rect.y - 2;
-              insert.el().setBounds(rect.x, y, rect.width, 6);
-            }
-
-        };
+        DropTarget target = new PlaceholderModuleDropTarget();
         target.setOperation(DND.Operation.COPY);
         target.setFeedback(DND.Feedback.INSERT);
 
@@ -83,4 +64,15 @@ public class PlaceholderModule extends LayoutContainer implements Module {
         
     }
 
+    private class PlaceholderModuleDropTarget extends ModuleDropTarget {
+        public PlaceholderModuleDropTarget() {
+            super(PlaceholderModule.this);
+        }
+
+        @Override
+        protected void onDragMove(DNDEvent event) {
+            event.setCancelled(false);
+        }
+
+    }
 }

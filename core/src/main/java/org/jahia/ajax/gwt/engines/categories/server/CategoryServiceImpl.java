@@ -334,10 +334,10 @@ public class CategoryServiceImpl extends JahiaRemoteService implements CategoryS
                 for (GWTJahiaCategoryNode categoryNode : copiedNode) {
                     Category categoryToMove = Category.getCategory(categoryNode.getKey(), currentUser);
                     if (categoryToMove != null) {
-                        String newParentPath = newParentCat.getCategoryPath(currentUser);
+                        String newParentPath = newParentCat.getCategoryPath();
                         List<Category> oldParentCategories = categoryToMove.getParentCategories(currentUser);
                         // paste categories if it's not root and if newParent is not a child of the catgeories to move
-                        if ((oldParentCategories != null && !oldParentCategories.isEmpty()) && newParentPath.indexOf(categoryToMove.getCategoryPath(currentUser)) != 0) {
+                        if ((oldParentCategories != null && !oldParentCategories.isEmpty()) && newParentPath.indexOf(categoryToMove.getCategoryPath()) != 0) {
                             if (cut) {
                                 // remove from old parent
                                 Category parentCat = Category.getCategory(categoryNode.getParentKey(), currentUser);
@@ -563,7 +563,7 @@ public class CategoryServiceImpl extends JahiaRemoteService implements CategoryS
         gwtJahiaNode.setName(name);
         gwtJahiaNode.setExtendedName(extendedName);
         gwtJahiaNode.setKey(category.getKey());
-        gwtJahiaNode.setPath(category.getCategoryPath(getRemoteJahiaUser()));
+        gwtJahiaNode.setPath(category.getCategoryPath());
 
         // acl
         gwtJahiaNode.setRead(JCRContentUtils.hasPermission(currentUser, Constants.JCR_READ_RIGHTS, category.getJahiaCategory().getId ()));

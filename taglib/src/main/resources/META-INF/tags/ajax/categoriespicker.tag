@@ -75,7 +75,7 @@
                 if (title == null || title.length() == 0) {
                  title = catUUID;
                 }%>
-            {"id":"<%=cat.getJahiaCategory().getId()%>","key":"<%=cat.getKey()%>","title":"<%=title%>","path":"<%=cat.getCategoryPath(jParams.getUser())%>"}<%if(selectedCa.hasNext()){%>,<%}%>
+            {"id":"<%=cat.getJahiaCategory().getId()%>","key":"<%=cat.getKey()%>","title":"<%=title%>","path":"<%=cat.getCategoryPath()%>"}<%if(selectedCa.hasNext()){%>,<%}%>
             <%
             }
         }

@@ -813,11 +813,10 @@ public class Category extends JahiaObject {
     /**
      * Returns the path representation of the form <code>/root/catKey1/catKeyB/thisCategoryKey</code>
      *
-     * @param p
      * @return
      * @throws JahiaException
      */
-    public String getCategoryPath(JahiaUser p) throws JahiaException {
+    public String getCategoryPath() throws JahiaException {
         
         return categoryBean.getPath();
 
@@ -874,7 +873,7 @@ public class Category extends JahiaObject {
      * @throws JahiaException
      */
     public static String getCategoryPath(String categoryKey) throws JahiaException {
-        return getCategory(categoryKey).getCategoryPath((JahiaUser) null);
+        return getCategory(categoryKey).getCategoryPath();
     }
 
    @Override

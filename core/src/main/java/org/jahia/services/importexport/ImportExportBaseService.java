@@ -451,6 +451,16 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         exportFilesBinary(sorted, zout, typesToIgnore);
     }
 
+//    public void exportFile(JCRNodeWrapper file, FileOutputStream out) {
+//        ZipOutputStream zout = new ZipOutputStream(out);
+//        TreeSet<JCRNodeWrapper> sorted = new TreeSet<JCRNodeWrapper>();
+//        sorted.add(file);
+//        DataWriter dw = new DataWriter(new OutputStreamWriter(zout, "UTF-8"));
+//        exportFilesInfo(dw, sorted, null);
+//        dw.flush();
+//        exportFilesBinary(sorted, zout, null);
+//    }
+//
     private void exportFilesBinary(SortedSet<JCRNodeWrapper> files, ZipOutputStream zout, Set<String> typesToIgnore) throws SAXException {
         byte[] buffer = new byte[4096];
         for (Iterator<JCRNodeWrapper> iterator = files.iterator(); iterator.hasNext();) {
@@ -1448,6 +1458,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         importCategoriesAndGetUuidProps(is, new CategoriesImportHandler(jParams));
     }
 
+    public void importCategories(ProcessingContext jParams, Category rootCategory, InputStream is) {
+        CategoriesImportHandler importHandler = new CategoriesImportHandler(jParams);
+        importHandler.setRootCategory(rootCategory);
+        importCategoriesAndGetUuidProps(is, importHandler);
+    }
+
     private List<String[]> importUsersAndGetUuidProps(InputStream is, UsersImportHandler importHandler) {
         handleImport(is, importHandler);
         return importHandler.getUuidProps();
@@ -1998,6 +2014,25 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         } catch (RepositoryException e) {
             e.printStackTrace();
         }
+    }
+
+    public int detectXmlFormat(InputStream is) {
+        XMLFormatDetectionHandler handler = new XMLFormatDetectionHandler();
+        try {
+            SAXParserFactory factory;
+
+            factory = new SAXParserFactoryImpl();
+
+            factory.setNamespaceAware(true);
+            factory.setValidating(false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+            SAXParser parser = factory.newSAXParser();
+
+            parser.parse(is, handler);
+        } catch (Exception e) {
+        }
+        return handler.getType();
     }
 
 }

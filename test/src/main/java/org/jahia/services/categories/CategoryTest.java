@@ -2,8 +2,6 @@ package org.jahia.services.categories;
 
 import junit.framework.TestCase;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.content.ObjectKey;
 
 import java.util.List;
 import java.util.Iterator;
@@ -144,7 +142,7 @@ public class CategoryTest extends TestCase {
     public void testCategoryPath() throws Exception {
         Category rootCategory = Category.createCategory("firstRoot", null);
         Category newCategory = Category.createCategory("rootChild", rootCategory);
-        String path = newCategory.getCategoryPath((JahiaUser)null);
+        String path = newCategory.getCategoryPath();
         Category categoryByPath = Category.getLastCategoryNode(path);
         assertNotNull(categoryByPath);
         deleteCategoryWithChildren(rootCategory);

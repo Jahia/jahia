@@ -54,6 +54,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.util.*;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,7 +69,7 @@ public class CategoriesImportHandler extends DefaultHandler {
     private CategoryService cs ;
     private JahiaSite site;
     private List<String[]> uuidProps = new ArrayList<String[]>();
-
+    private Category rootCategory = null;
     public CategoriesImportHandler(ProcessingContext jParams) {
         site = jParams.getSite();
         cs = ServicesRegistry.getInstance().getCategoryService();
@@ -80,24 +81,27 @@ public class CategoriesImportHandler extends DefaultHandler {
                 Category c;
                 String key = attributes.getValue(ImportExportBaseService.JAHIA_URI, "key");
                 if (cats.isEmpty()) {
-                    Node node = cs.getCategoriesRoot();
-                    cats.push(null);
+                    cats.push(rootCategory);
                     return;
                 } else {
-                    List<Category> cList = cs.getCategory(key);
+                    String parentPath;
                     Category parent = cats.peek();
-                    if (cList.size() == 0) {
+                    if (parent == null) {
+                        try {
+                            parentPath = cs.getCategoriesRoot().getPath();
+                        } catch (RepositoryException e) {
+                            throw new SAXException(e);
+                        }
+                    } else {
+                        parentPath = parent.getCategoryPath();
+                    }
+
+                    Category cat = cs.getCategoryByPath(parentPath + "/"  + key);
+
+                    if (cat == null) {
                         c = Category.createCategory(key,parent);
                     } else {
-                        c = cList.get(0);
-                        List<ObjectKey> parents = c.getParentObjectKeys();
-                        if (!parents.contains(parent.getObjectKey())) {
-                            parent.addChildObjectKey(c.getObjectKey());
-                            for (Iterator<ObjectKey> iterator = parents.iterator(); iterator.hasNext();) {
-                                ObjectKey k = (ObjectKey) iterator.next();
-                                ((Category)Category.getChildInstance(k,null)).removeChildObjectKey(c.getObjectKey());
-                            }
-                        }
+                        c = cat;
                     }
                 }
                 for (int i = 0; i < attributes.getLength(); i++) {
@@ -228,4 +232,8 @@ public class CategoriesImportHandler extends DefaultHandler {
         return l;
     }
 
+
+    public void setRootCategory(Category cat) {
+        rootCategory = cat;
+    }
 }

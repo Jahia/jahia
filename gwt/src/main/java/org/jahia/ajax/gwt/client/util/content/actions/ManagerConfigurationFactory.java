@@ -496,13 +496,13 @@ public class ManagerConfigurationFactory {
         ContentActionItem newCategory = ItemCreator.createNewCategoryItem(linker);
         file.addItem(newCategory);
         categoryManagerConfig.addItem(newCategory);
-        categoryManagerConfig.addItem(new ContentActionItemSeparator());
         ContentActionItem exportItem = ItemCreator.createExportItem(linker);
         file.addItem(exportItem);
         categoryManagerConfig.addItem(exportItem);
         ContentActionItem importItem = ItemCreator.createImportItem(linker);
         file.addItem(importItem);
         categoryManagerConfig.addItem(importItem);
+        categoryManagerConfig.addItem(new ContentActionItemSeparator());
 
         ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
         ContentActionItem rename = ItemCreator.createRenameItem(linker);

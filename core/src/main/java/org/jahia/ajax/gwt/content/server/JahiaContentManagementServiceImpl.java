@@ -37,6 +37,7 @@ import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -415,15 +416,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public String getExportUrl(String path) throws GWTJahiaServiceException {
-        try {
-            return retrieveParamBean().composeEngineUrl(ExportEngine.ENGINE_NAME,"path="+path+"&exportformat=jcr");
-        } catch (JahiaException e) {
-            throw new GWTJahiaServiceException();
-        }
+        return retrieveParamBean().composeSiteUrl() + "/engineName/export" +path +".xml?path="+path+"&exportformat=jcr";
     }
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {
-        ContentManagerHelper.importContent(getUser(), parentPath, fileKey);
+        ContentManagerHelper.importContent(retrieveParamBean(), parentPath, fileKey);
     }
 
     public void moveOnTopOf(String sourcePath, String targetPath) throws GWTJahiaServiceException {

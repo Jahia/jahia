@@ -57,8 +57,11 @@ import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.acl.JahiaACLException;
 import org.jahia.services.captcha.CaptchaService;
 import org.jahia.services.categories.Category;
+import org.jahia.services.categories.CategoryService;
 import org.jahia.services.render.*;
 import org.jahia.services.render.Resource;
+import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.importexport.XMLFormatDetectionHandler;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
@@ -74,6 +77,7 @@ import org.jahia.utils.FileUtils;
 import org.jahia.bin.Jahia;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.StringValue;
@@ -88,6 +92,9 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
 import java.util.*;
 import java.io.IOException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -2332,14 +2339,47 @@ public class ContentManagerHelper {
     }
 
 
-    public static void importContent(JahiaUser user, String parentPath, String fileKey) {
+    public static void importContent(ProcessingContext jParams, String parentPath, String fileKey) throws GWTJahiaServiceException {
         GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
         try {
-            JCRSessionWrapper session = jcr.getThreadSession(user);
-            session.importXML(parentPath, item.file, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
-            session.save();
+            if ("application/zip".equals(item.contentType)) {
+
+            } else if ("application/xml".equals(item.contentType)) {
+                File tempFile = File.createTempFile("tmp", "");
+                FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
+                IOUtils.copy(item.file, fileOutputStream);
+                fileOutputStream.close();
+                FileInputStream inputStream = new FileInputStream(tempFile);
+                int format = ImportExportBaseService.getInstance().detectXmlFormat(inputStream);
+                inputStream.close();
+
+                try {
+                    switch (format) {
+                        case XMLFormatDetectionHandler.JCR_DOCVIEW: {
+                            JCRSessionWrapper session = jcr.getThreadSession(jParams.getUser());
+
+                            session.importXML(parentPath, new FileInputStream(tempFile), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+                            session.save();
+                            break;
+                        }
+
+                        case XMLFormatDetectionHandler.USERS: {
+                            ImportExportBaseService.getInstance().importUsers(tempFile);
+                            break;
+                        }
+                        case XMLFormatDetectionHandler.CATEGORIES: {
+                            Category cat = ServicesRegistry.getInstance().getCategoryService().getCategoryByPath(parentPath);
+                            ImportExportBaseService.getInstance().importCategories(jParams, cat, new FileInputStream(tempFile));
+                            break;
+                        }                            
+                    }
+                } finally {
+                    tempFile.delete();
+                }
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error when importing",e);
+            throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 

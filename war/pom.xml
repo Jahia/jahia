@@ -624,7 +624,20 @@
                   <groupId>de.odysseus.juel</groupId>
                   <artifactId>juel-api</artifactId>
               </exclusion>
-          </exclusions>
+              <exclusion>
+                  <groupId>xerces</groupId>
+                  <artifactId>xercesImpl</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>xerces</groupId>
+                  <artifactId>xmlParserAPIs</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>xerces</groupId>
+                  <artifactId>xerces</artifactId>
+              </exclusion>
+            </exclusions>
+
         </dependency>
         <dependency>
           <groupId>org.apache.shindig</groupId>

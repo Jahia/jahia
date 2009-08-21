@@ -10,5 +10,6 @@
     <template:module node="${subchild}" />
 </c:if>
 </c:forEach>
+    <template:module path="*" />
         <div class="clear"> </div>
 </div>

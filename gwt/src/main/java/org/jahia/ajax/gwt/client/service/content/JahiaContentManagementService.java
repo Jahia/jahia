@@ -169,4 +169,6 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void moveOnTopOf(String sourcePath, String targetPath) throws GWTJahiaServiceException;
 
+    public List<GWTJahiaNode> getNodes(List<String> list) throws GWTJahiaServiceException;
+
 }

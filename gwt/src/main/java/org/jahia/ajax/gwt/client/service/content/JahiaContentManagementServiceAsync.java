@@ -149,4 +149,6 @@ public interface JahiaContentManagementServiceAsync {
     void importContent(String parentPath, String fileKey, AsyncCallback async);
 
     void moveOnTopOf(String sourcePath, String targetPath, AsyncCallback asyncCallback);
+
+    void getNodes(List<String> list, AsyncCallback<List<GWTJahiaNode>> async);
 }

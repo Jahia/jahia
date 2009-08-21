@@ -65,6 +65,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+
 import org.jahia.engines.importexport.ExportEngine;
 
 /**
@@ -430,6 +432,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
+    }
+
+    public List<GWTJahiaNode> getNodes(List<String> list) throws GWTJahiaServiceException{
+        return new ArrayList<GWTJahiaNode>(0);
     }
 
 }

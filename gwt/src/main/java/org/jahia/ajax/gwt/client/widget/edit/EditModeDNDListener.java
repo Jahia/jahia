@@ -142,10 +142,9 @@ public class EditModeDNDListener extends DNDListener {
                 List<GWTJahiaNode> nodes = (List<GWTJahiaNode>) e.getStatus().getData(SOURCE_NODES);
                 String path = e.getStatus().getData(TARGET_PATH);
                 int i = path.lastIndexOf('/');
-                String name = path.substring(i +1);
 
                 e.getStatus().setData(OPERATION_CALLED, "true");
-                if ("*".equals(name)) {
+                if (nodes.size()>1) {
                     JahiaContentManagementService.App.getInstance().pasteReferencesOnTopOf(nodes, path, new AsyncCallback() {
                         public void onSuccess(Object result) {
                             editManager.getMainModule().refresh();
@@ -157,7 +156,8 @@ public class EditModeDNDListener extends DNDListener {
                     });
 
                 } else if (nodes.size() == 1) {
-                    JahiaContentManagementService.App.getInstance().pasteReferenceOnTopOf(nodes.get(0), path, name, new AsyncCallback() {
+                    final GWTJahiaNode node = nodes.get(0);
+                    JahiaContentManagementService.App.getInstance().pasteReferenceOnTopOf(node, path, node.getName(), new AsyncCallback() {
                         public void onSuccess(Object result) {
                             editManager.getMainModule().refresh();
                         }

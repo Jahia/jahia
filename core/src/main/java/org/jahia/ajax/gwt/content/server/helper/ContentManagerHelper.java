@@ -1046,66 +1046,12 @@ public class ContentManagerHelper {
     }
 
     public static void pasteReference(GWTJahiaNode aNode, String destinationPath, String name, JahiaUser user) throws GWTJahiaServiceException {
-        JCRNodeWrapper dest = jcr.getFileNode(destinationPath, user);
-        if (dest.isCollection() && dest.isWriteable()) {
-            JCRNodeWrapper node = jcr.getFileNode(aNode.getPath(), user);
-            if (node.hasPermission(JCRNodeWrapper.READ)) {
-                try {
-                    doPasteReference(dest, node, name);
-                    dest.save();
-                } catch (RepositoryException e) {
-                    logger.error("Exception", e);
-                    throw new GWTJahiaServiceException(e.getMessage());
-                } catch (JahiaException e) {
-                    logger.error("Exception", e);
-                    throw new GWTJahiaServiceException(e.getMessage());
-                }
-            }
-        }
-
+        pasteReferenceOnTopOf(aNode, destinationPath, name, user, false);
     }
 
 
     public static void pasteReferences(final List<GWTJahiaNode> pathsToCopy, String destinationPath, JahiaUser user) throws GWTJahiaServiceException {
-        List<String> missedPaths = new ArrayList<String>();
-        JCRNodeWrapper dest = jcr.getFileNode(destinationPath, user);
-        for (GWTJahiaNode aNode : pathsToCopy) {
-            JCRNodeWrapper node = jcr.getFileNode(aNode.getPath(), user);
-            String name = node.getName();
-            if (node.hasPermission(JCRNodeWrapper.READ)) {
-                if (dest.isCollection()) {
-                    name = findAvailableName(dest, name, user);
-                    if (dest.isWriteable()) {
-                        try {
-                            doPasteReference(dest, node, name);
-                        } catch (RepositoryException e) {
-                            logger.error("Exception", e);
-                            missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(dest.getPath()).toString());
-                        } catch (JahiaException e) {
-                            logger.error("Exception", e);
-                            missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(dest.getPath()).toString());
-                        }
-                    } else {
-                        missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(dest.getPath()).toString());
-                    }
-                }
-            } else {
-                missedPaths.add(new StringBuilder("Source file ").append(name).append(" could not be read by ").append(user.getUsername()).append(" - ACCESS DENIED").toString());
-            }
-        }
-        try {
-            dest.save();
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
-        if (missedPaths.size() > UPLOAD) {
-            StringBuilder errors = new StringBuilder("The following files could not have their reference pasted:");
-            for (String err : missedPaths) {
-                errors.append("\n").append(err);
-            }
-            throw new GWTJahiaServiceException(errors.toString());
-        }
+        pasteReferencesOnTopOf(pathsToCopy, destinationPath, user, false);
     }
 
     private static void doPasteReference(JCRNodeWrapper dest, JCRNodeWrapper node, String name) throws RepositoryException, JahiaException {
@@ -2398,15 +2344,19 @@ public class ContentManagerHelper {
         session.save();
     }
 
-    public static void pasteReferenceOnTopOf(GWTJahiaNode aNode, String destinationPath, String name, JahiaUser user) throws GWTJahiaServiceException {
+    public static void pasteReferenceOnTopOf(GWTJahiaNode aNode, String destinationPath, String name, JahiaUser user, boolean moveOnTop) throws GWTJahiaServiceException {
         try {
+            final JCRNodeWrapper targetParent;
             JCRNodeWrapper targetNode = jcr.getFileNode(destinationPath, user);
-            final JCRNodeWrapper targetParent = (JCRNodeWrapper) targetNode.getParent();
+            if(moveOnTop)
+            targetParent = (JCRNodeWrapper) targetNode.getParent();
+            else targetParent = targetNode;
             if (targetParent.isCollection() && targetParent.isWriteable()) {
                 JCRNodeWrapper node = jcr.getFileNode(aNode.getPath(), user);
                 if (node.hasPermission(JCRNodeWrapper.READ)) {
                     name = findAvailableName(targetParent, name, user);
                     doPasteReference(targetParent, node, name);
+                    if(moveOnTop)
                     targetParent.orderBefore(name, targetNode.getName());
                     targetParent.save();
                 }
@@ -2420,15 +2370,19 @@ public class ContentManagerHelper {
         }
     }
 
-    public static void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath, JahiaUser user) throws GWTJahiaServiceException {
+    public static void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath, JahiaUser user, boolean moveOnTop) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
 
         final JCRNodeWrapper targetParent;
         JCRNodeWrapper targetNode = jcr.getFileNode(destinationPath, user);
+        if(moveOnTop) {
         try {
             targetParent = (JCRNodeWrapper) targetNode.getParent();
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
+        }
+        } else {
+            targetParent = targetNode;
         }
 
         for (GWTJahiaNode aNode : pathsToCopy) {
@@ -2440,6 +2394,7 @@ public class ContentManagerHelper {
                         name = findAvailableName(targetParent, name, user);
                         if (targetParent.isWriteable()) {
                             doPasteReference(targetParent, node, name);
+                            if(moveOnTop)
                             targetParent.orderBefore(node.getName(), targetNode.getName());
                         } else {
                             missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ").append(targetParent.getPath()).toString());

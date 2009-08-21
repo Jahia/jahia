@@ -20,9 +20,12 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
+import com.extjs.gxt.ui.client.dnd.DragSource;
+import com.extjs.gxt.ui.client.dnd.DND;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.core.client.GWT;
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -57,7 +60,7 @@ public class SidePanel extends ContentPanel {
 
     private boolean init = false;
     private final ListStore<GWTJahiaNode> displayStore;
-    private final TabItem previewTabItem;
+    private final PreviewTabItem previewTabItem;
     private final TabItem propertiesTabItem;
     ListStore<GWTJahiaBasicDataBean> templateListStore;
 
@@ -236,10 +239,9 @@ public class SidePanel extends ContentPanel {
         displayPanel.setCollapsible(true);
         TabPanel displayTabs = new TabPanel();
 
-        previewTabItem = new TabItem("Preview");
+        previewTabItem = new PreviewTabItem("Preview");
         previewTabItem.setLayout(new FitLayout());
         displayTabs.add(previewTabItem);
-
         propertiesTabItem = new TabItem("Properties");
         propertiesTabItem.setLayout(new FitLayout());
         displayTabs.add(previewTabItem);
@@ -333,6 +335,8 @@ public class SidePanel extends ContentPanel {
                 public void onSuccess(String result) {
                     HTML html = new HTML(result);
                     previewTabItem.add(html);
+                    previewTabItem.setHtml(html);
+                    previewTabItem.setNode(node);
                     previewTabItem.layout();
 
                 }
@@ -414,7 +418,56 @@ public class SidePanel extends ContentPanel {
         // TODO retrieve selected node in the page and fill in the store with its available templates
     }
 
+    public class PreviewDragSource extends DragSource {
+        private final PreviewTabItem previewTabItem;
 
+        public PreviewDragSource(PreviewTabItem previewTabItem) {
+            super(previewTabItem);
+            this.previewTabItem = previewTabItem;
+        }
+
+        @Override
+        protected void onDragStart(DNDEvent e) {
+            e.setCancelled(false);
+            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(1);
+            nodes.add(previewTabItem.getNode());
+            e.setData(nodes);
+            e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, EditModeDNDListener.CONTENT_SOURCE_TYPE);
+
+            List<GWTJahiaNode> list = (List<GWTJahiaNode>) e.getData();
+            e.getStatus().setData("size", list.size());
+
+            e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, list);
+            if (getStatusText() == null) {
+                e.getStatus().update(DOM.clone(previewTabItem.getWidget(0).getElement(),true));
+            }
+            super.onDragStart(e);
+        }
+    }
+
+    private class PreviewTabItem extends TabItem {
+        HTML html;
+        GWTJahiaNode node;
+        public PreviewTabItem(String s) {
+            super(s);
+        }
+
+        public HTML getHtml() {
+            return html;
+        }
+
+        public void setHtml(HTML html) {
+            this.html = html;
+        }
+
+        public GWTJahiaNode getNode() {
+            return node;
+        }
+
+        public void setNode(GWTJahiaNode node) {
+            this.node = node;
+        }
+    }
 }
 
 

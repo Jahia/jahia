@@ -439,11 +439,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void pasteReferenceOnTopOf(GWTJahiaNode path, String destinationPath, String name) throws GWTJahiaServiceException {
-        ContentManagerHelper.pasteReferenceOnTopOf(path, destinationPath, name, getUser());
+        ContentManagerHelper.pasteReferenceOnTopOf(path, destinationPath, name, getUser(),true);
     }
 
     public void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException {
-        ContentManagerHelper.pasteReferencesOnTopOf(pathsToCopy, destinationPath, getUser());
+        ContentManagerHelper.pasteReferencesOnTopOf(pathsToCopy, destinationPath, getUser(),true);
     }
 
 }

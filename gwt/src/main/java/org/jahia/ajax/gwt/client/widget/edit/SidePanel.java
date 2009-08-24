@@ -69,9 +69,11 @@ public class SidePanel extends ContentPanel {
     ListStore<GWTJahiaBasicDataBean> templateListStore;
     private final Grid<GWTJahiaNode> displayGrid;
     private final Grid<GWTJahiaNodeType> displayTypesGrid;
+    private final EditManager editManager;
 
-    public SidePanel(EditManager editManager) {
+    public SidePanel(final EditManager editManager) {
         super();
+        this.editManager = editManager;
         setHeaderVisible(true);
         VBoxLayout layout = new VBoxLayout();
         layout.setPadding(new Padding(5));
@@ -114,6 +116,8 @@ public class SidePanel extends ContentPanel {
         createGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
 //        GridDragSource createGridSource = new CreateGridDragSource(createGrid);
 //        createGridSource.addDNDListener(editManager.getDndListener());
+        final EditLinker editLinker = editManager.getEditLinker();
+        editLinker.setCreateGrid(createGrid);
         create.add(createGrid);
         createGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNodeType>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNodeType> gwtJahiaNodeSelectionChangedEvent) {
@@ -124,6 +128,7 @@ public class SidePanel extends ContentPanel {
                 } else {
                     setDisplayTypesContent(null);
                 }
+                editLinker.onCreateGridSelection(selected);
             }
         });
 
@@ -159,11 +164,11 @@ public class SidePanel extends ContentPanel {
         m_tree.setIconProvider(ContentModelIconProvider.getInstance());
         m_tree.setDisplayProperty("displayName");
         m_tree.setBorders(false);
+        editLinker.setBrowseTree(m_tree);
         m_tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
                 GWTJahiaNode selected = gwtJahiaNodeSelectionChangedEvent.getSelectedItem();
                 if (selected != null) {
-                    displaySelection(selected);
                     if (selected.hasChildren()) {
                         JahiaContentManagementService.App.getInstance().ls(gwtJahiaNodeSelectionChangedEvent.getSelectedItem(), null, null, null, null, false, new AsyncCallback<List<GWTJahiaNode>>() {
                             public void onFailure(Throwable throwable) {
@@ -181,6 +186,7 @@ public class SidePanel extends ContentPanel {
                 } else {
                     setDisplayContent(null);
                 }
+                editLinker.onBrowseTreeSelection(selected);
             }
         });
         TreePanelDragSource contentTreeSource = new ContentTreeDragSource(m_tree);
@@ -245,11 +251,12 @@ public class SidePanel extends ContentPanel {
         displayGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         displayGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
-                displaySelection(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
+                editLinker.onDisplayGridSelection(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
             }
         });
         GridDragSource displayGridSource = new DisplayGridDragSource(displayGrid);
         displayGridSource.addDNDListener(editManager.getDndListener());
+        editLinker.setDisplayGrid(displayGrid);
         contentList.add(displayGrid);
 
         displayTypesStore = new ListStore<GWTJahiaNodeType>();
@@ -259,6 +266,7 @@ public class SidePanel extends ContentPanel {
         displayTypesGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         GridDragSource createGridSource = new CreateGridDragSource(displayTypesGrid);
         createGridSource.addDNDListener(editManager.getDndListener());
+        editLinker.setDisplayTypesGrid(displayTypesGrid);
         ToolBar toolbar = getToolbar();
         // displayPanel panel
         ContentPanel displayPanel = new ContentPanel();
@@ -274,11 +282,13 @@ public class SidePanel extends ContentPanel {
         previewTabItem.setLayout(new FitLayout());
         final PreviewDragSource source = new PreviewDragSource(previewTabItem);
         source.addDNDListener(editManager.getDndListener());
+        editLinker.setPreviewTabItem(previewTabItem);
         displayTabs.add(previewTabItem);
         propertiesTabItem = new TabItem("Properties");
         propertiesTabItem.setLayout(new FitLayout());
         displayTabs.add(previewTabItem);
         displayTabs.add(propertiesTabItem);
+        editLinker.setPropertiesTabItem(propertiesTabItem);
         displayPanel.add(displayTabs);
 
         // add to side panel
@@ -287,6 +297,7 @@ public class SidePanel extends ContentPanel {
         add(repository, vBoxData);
         add(contentList, vBoxData);
         add(displayPanel, vBoxData);
+
     }
 
     private ToolBar getToolbar() {
@@ -299,27 +310,26 @@ public class SidePanel extends ContentPanel {
         templateListStore.add(new GWTJahiaBasicDataBean("template1", "template1"));
         templateListStore.add(new GWTJahiaBasicDataBean("template2", "template2"));
         templateListStore.add(new GWTJahiaBasicDataBean("template3", "template3"));
+
         Button lock = new Button();
         lock.setIcon(ACTION_ICONS.lock());
         lock.setToolTip("lock");
+        lock.addSelectionListener(editManager.getEditLinker().getLockButtonListener(lock));
+        lock.setEnabled(false);
         Button edit = new Button();
         edit.setIcon(ACTION_ICONS.edit());
-        lock.setToolTip("edit");
-        Button remove = new Button();
-        remove.setIcon(ACTION_ICONS.remove());
-        lock.setToolTip("remove");
+        edit.setToolTip("edit");
+        edit.addSelectionListener(editManager.getEditLinker().getEditButtonListener(edit));
+        edit.setEnabled(false);
         Button delete = new Button();
         delete.setIcon(ACTION_ICONS.delete());
-        lock.setToolTip("delete");
-        Button undo = new Button();
-        undo.setIcon(ACTION_ICONS.undo());
-        lock.setToolTip("undo");
+        delete.addSelectionListener(editManager.getEditLinker().getDeleteButtonListener(delete));
+        delete.setToolTip("delete");
+        delete.setEnabled(false);
         toolbar.add(templateBox);
         toolbar.add(lock);
         toolbar.add(edit);
-        toolbar.add(remove);
         toolbar.add(delete);
-        toolbar.add(undo);
         return toolbar;
     }
 
@@ -366,96 +376,6 @@ public class SidePanel extends ContentPanel {
         contentList.layout();
     }
 
-    public void displaySelection(final GWTJahiaNode node) {
-        displayPreview(node);
-        displayProperties(node);
-    }
-
-    /**
-     * Display the rendered html of the given node in the preview panel
-     *
-     * @param node the node to render
-     */
-    private void displayPreview(final GWTJahiaNode node) {
-        previewTabItem.removeAll();
-        if (node != null) {
-            JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, false, new AsyncCallback<String>() {
-                public void onSuccess(String result) {
-                    HTML html = new HTML(result);
-                    previewTabItem.add(html);
-                    previewTabItem.setHtml(html);
-                    previewTabItem.setNode(node);
-                    previewTabItem.layout();
-
-                }
-
-                public void onFailure(Throwable caught) {
-                    Log.error("", caught);
-                    Window.alert("-->"+caught.getMessage());
-                }
-            });
-        }
-    }
-
-    /**
-     * Clear the properties panel and display the current node properties
-     *
-     * @param node the current node
-     */
-    private void displayProperties(final GWTJahiaNode node) {
-        propertiesTabItem.removeAll();
-        JahiaContentManagementService.App.getInstance().getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
-            public void onFailure(Throwable throwable) {
-                Log.debug("Cannot get properties", throwable);
-            }
-
-            public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
-                elements.add(node);
-
-                List<String> list = new ArrayList<String>();
-                list.add("jcr:content");
-                list.add("j:thumbnail");
-                final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, list, null);
-
-                ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
-                Button item = new Button(Messages.getResource("fm_save"));
-                item.setIconStyle("gwt-icons-save");
-                item.setEnabled(node.isWriteable() && !node.isLocked());
-                item.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent event) {
-                        JahiaContentManagementService.App.getInstance().saveProperties(elements, propertiesEditor.getProperties(), new AsyncCallback() {
-                            public void onFailure(Throwable throwable) {
-                                com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
-                                Log.error("failed", throwable);
-                            }
-
-                            public void onSuccess(Object o) {
-                                Info.display("", "Properties saved");
-                                //getLinker().refreshTable();
-                            }
-                        });
-                    }
-                });
-                toolBar.add(new FillToolItem());
-                toolBar.add(item);
-                item = new Button(Messages.getResource("fm_restore"));
-                item.setIconStyle("gwt-icons-restore");
-                item.setEnabled(node.isWriteable() && !node.isLocked());
-
-                item.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent event) {
-                        propertiesEditor.resetForm();
-                    }
-                });
-                toolBar.add(item);
-                toolBar.setVisible(true);
-                propertiesTabItem.add(propertiesEditor);
-                propertiesTabItem.layout();
-            }
-        });
-    }
-
     /**
      * This will update the template conbo box based on the page selected item
      *
@@ -493,7 +413,7 @@ public class SidePanel extends ContentPanel {
         }
     }
 
-    private class PreviewTabItem extends TabItem {
+    public class PreviewTabItem extends TabItem {
         HTML html;
         GWTJahiaNode node;
         public PreviewTabItem(String s) {

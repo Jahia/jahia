@@ -1,14 +1,10 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.Viewport;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.event.DNDListener;
-import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.Style;
-import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,13 +16,14 @@ import com.allen_sauer.gwt.log.client.Log;
 public class EditManager extends Viewport {
 
     private EditModeDNDListener dndListener;
-    private MainModule main;
+    private MainModule mainModule;
     private SidePanel sidePanel;
+    private EditLinker editLinker;
 
     public EditManager(String path, String template) {
         super();
         setLayout(new BorderLayout());
-
+        editLinker = new EditLinker(this);
         dndListener = new EditModeDNDListener(this);
 
         BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 340);
@@ -36,7 +33,7 @@ public class EditManager extends Viewport {
         add(sidePanel, data);
 
         setScrollMode(Style.Scroll.AUTO);
-        add(main = new MainModule(path, template, this), new BorderLayoutData(Style.LayoutRegion.CENTER));
+        add(mainModule = new MainModule(path, template, this), new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
 
     public EditModeDNDListener getDndListener() {
@@ -44,7 +41,11 @@ public class EditManager extends Viewport {
     }
 
     public MainModule getMainModule() {
-        return main;
+        return mainModule;
+    }
+
+    public EditLinker getEditLinker() {
+        return editLinker;
     }
 
     public SidePanel getSidePanel() {
@@ -60,7 +61,7 @@ public class EditManager extends Viewport {
         this.selection = selection;
         this.selection.setBorders(true);
         if(selection instanceof Module) {
-            sidePanel.displaySelection(((Module) selection).getNode());
+            editLinker.onSimpleModuleSelection(((Module) selection).getNode());
         }
     }
 }

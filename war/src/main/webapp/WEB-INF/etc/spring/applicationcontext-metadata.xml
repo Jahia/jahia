@@ -120,17 +120,4 @@
 		<property name="metadataName" value="lastPublishingDate" />
 	</bean>
 	
-	<!-- Metadata workflow bean -->
-	<!--
-	<bean id="lastContributorWorkflow" class="org.jahia.services.metadata.core.workflow.MetadataWorkflow">
-		<property name="actions">
-			<list>
-				<ref bean="lastContributorfillInCurrentUserAction" />
-			</list>
-		</property>
-	</bean>
-	
-	<bean id="fillInCurrentUserAction" class="org.jahia.services.metadata.core.workflow.actions.FillInCurrentUserAction">
-	</bean>
-	-->
 </beans>

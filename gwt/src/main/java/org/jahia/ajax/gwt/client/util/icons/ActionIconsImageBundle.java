@@ -52,4 +52,6 @@ public interface ActionIconsImageBundle extends ImageBundle {
     @Resource("icon-undo.png")
     public AbstractImagePrototype undo();
 
+    @Resource("icon-lock.png")
+    public AbstractImagePrototype unlock();
 }

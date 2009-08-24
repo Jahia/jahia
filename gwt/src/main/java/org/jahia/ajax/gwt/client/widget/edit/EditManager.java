@@ -21,6 +21,7 @@ public class EditManager extends Viewport {
 
     private EditModeDNDListener dndListener;
     private MainModule main;
+    private SidePanel sidePanel;
 
     public EditManager(String path, String template) {
         super();
@@ -31,7 +32,8 @@ public class EditManager extends Viewport {
         BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 340);
         data.setCollapsible(true);
         data.setSplit(true);
-        add(new SidePanel(this), data);
+        sidePanel = new SidePanel(this);
+        add(sidePanel, data);
 
         setScrollMode(Style.Scroll.AUTO);
         add(main = new MainModule(path, template, this), new BorderLayoutData(Style.LayoutRegion.CENTER));
@@ -45,6 +47,10 @@ public class EditManager extends Viewport {
         return main;
     }
 
+    public SidePanel getSidePanel() {
+        return sidePanel;
+    }
+
     private ContentPanel selection;
 
     public void setSelection(ContentPanel selection) {
@@ -53,6 +59,8 @@ public class EditManager extends Viewport {
         }
         this.selection = selection;
         this.selection.setBorders(true);
-
+        if(selection instanceof Module) {
+            sidePanel.displaySelection(((Module) selection).getNode());
+        }
     }
 }

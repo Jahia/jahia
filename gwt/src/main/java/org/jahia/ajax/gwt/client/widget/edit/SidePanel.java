@@ -259,16 +259,21 @@ public class SidePanel extends ContentPanel {
         displayTypesGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         GridDragSource createGridSource = new CreateGridDragSource(displayTypesGrid);
         createGridSource.addDNDListener(editManager.getDndListener());
-
+        ToolBar toolbar = getToolbar();
         // displayPanel panel
         ContentPanel displayPanel = new ContentPanel();
         displayPanel.setHeading("Display");
-        displayPanel.setLayout(new FitLayout());
+        final VBoxLayout vBoxLayout = new VBoxLayout();
+        vBoxLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
+        displayPanel.setLayout(vBoxLayout);
         displayPanel.setCollapsible(true);
+        displayPanel.add(toolbar);
         TabPanel displayTabs = new TabPanel();
 
         previewTabItem = new PreviewTabItem("Preview");
         previewTabItem.setLayout(new FitLayout());
+        final PreviewDragSource source = new PreviewDragSource(previewTabItem);
+        source.addDNDListener(editManager.getDndListener());
         displayTabs.add(previewTabItem);
         propertiesTabItem = new TabItem("Properties");
         propertiesTabItem.setLayout(new FitLayout());
@@ -282,7 +287,9 @@ public class SidePanel extends ContentPanel {
         add(repository, vBoxData);
         add(contentList, vBoxData);
         add(displayPanel, vBoxData);
+    }
 
+    private ToolBar getToolbar() {
         ToolBar toolbar = new ToolBar();
         templateListStore = new ListStore<GWTJahiaBasicDataBean>();
         ComboBox<GWTJahiaBasicDataBean> templateBox = new ComboBox<GWTJahiaBasicDataBean>();
@@ -313,7 +320,7 @@ public class SidePanel extends ContentPanel {
         toolbar.add(remove);
         toolbar.add(delete);
         toolbar.add(undo);
-        setBottomComponent(toolbar);
+        return toolbar;
     }
 
     /**
@@ -359,7 +366,7 @@ public class SidePanel extends ContentPanel {
         contentList.layout();
     }
 
-    private void displaySelection(final GWTJahiaNode node) {
+    public void displaySelection(final GWTJahiaNode node) {
         displayPreview(node);
         displayProperties(node);
     }

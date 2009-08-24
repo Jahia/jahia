@@ -189,6 +189,10 @@ public class ModuleTag extends BodyTagSupport {
                             }
                             printPlaceholderModuleStart(type, node.getPath());
                             render(renderContext, resource);
+                            if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
+                                printPlaceholderModuleStart("placeholder", node.getPath()+"/*");
+                                printPlaceholderModuleEnd();
+                            }
                             printPlaceholderModuleEnd();
                         }
                     } catch (RepositoryException e) {

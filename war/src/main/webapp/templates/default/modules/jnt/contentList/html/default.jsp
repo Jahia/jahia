@@ -9,5 +9,3 @@
     <template:module node="${subchild}" />
 </p>
 </c:forEach>
-
-<template:module path="*" />

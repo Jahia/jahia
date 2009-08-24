@@ -12,4 +12,3 @@
 </c:if>
 </c:forEach>
 
-<template:module path="*" />

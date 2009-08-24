@@ -98,32 +98,16 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
         });
     }
 
-// --------------------- GETTER / SETTER METHODS ---------------------
-
-    public void setProvidersTable(Map<String, JahiaGroupManagerProvider> providersTable) {
-        this.providersTable = providersTable;
-    }
-
 // -------------------------- OTHER METHODS --------------------------
 
 
     public void start() throws JahiaInitializationException {
-        findDefaultProvider();
-        sortedProviders.addAll (providersTable.values ());
+    	// do nothing
     }
 
     public void stop() throws JahiaException {
+    	// do nothing
     }
-
-    private void findDefaultProvider() {
-        Iterator<? extends JahiaGroupManagerProvider> providerIter = providersTable.values().iterator();
-        while (providerIter.hasNext()) {
-            JahiaGroupManagerProvider curProvider = (JahiaGroupManagerProvider) providerIter.next();
-            if (curProvider.isDefaultProvider()) {
-                this.defaultProviderInstance = curProvider;
-            }
-        }
-    }    
 
     public JahiaGroup createGroup(final int siteID, final String name, final Properties properties, final boolean hidden) {
         return (JahiaGroup) routeCallOne(new Command() {
@@ -550,5 +534,14 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
 
     interface Command {
         Object execute(JahiaGroupManagerProvider p);
+    }
+
+	@Override
+    public void registerProvider(JahiaGroupManagerProvider provider) {
+	    providersTable.put(provider.getKey(), provider);
+	    sortedProviders.add(provider);
+	    if (defaultProviderInstance == null || provider.isDefaultProvider()) {
+	    	defaultProviderInstance = provider;
+	    }
     }
 }

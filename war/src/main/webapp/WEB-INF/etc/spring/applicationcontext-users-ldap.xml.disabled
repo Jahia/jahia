@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="JahiaUserManagerLDAPProvider" class="org.jahia.services.usermanager.JahiaUserManagerLDAPProvider" parent="JahiaUserManagerProvider" factory-method="getInstance">
+        <property name="cacheService" ref="JahiaCacheService"/>
+        <property name="key" value="ldap"/>
+        <property name="defaultProvider" value="false"/>
+        <property name="readOnly" value="true"/>
+        <property name="priority" value="2"/>
+        <property name="jcrUserManagerProvider" ref="JCRUserManagerProvider"/>
+        <property name="ldapProperties">
+            <map>
+                <entry key="context.factory" value="com.sun.jndi.ldap.LdapCtxFactory"/>
+                <entry key="url" value="ldap://127.0.0.1:389/"/>
+                <entry key="authentification.mode" value="simple"/>
+                <entry key="public.bind.dn" value=""/>
+                <entry key="public.bind.password" value=""/>
+                <entry key="uid.search.attribute" value="cn"/>
+                <entry key="uid.search.name" value="dc=jahia"/>
+                <entry key="search.countlimit" value="100"/>
+                <entry key="search.objectclass" value="person"/>
+                <entry key="search.wildcards.attributes" value="ou, cn, o, c, mail, uid, uniqueIdentifier, givenName, sn, dn"/>
+                <entry key="firstname.attribute.map" value="givenName"/>
+                <entry key="lastname.attribute.map" value="sn"/>
+                <entry key="email.attribute.map" value="mail"/>
+                <entry key="organization.attribute.map" value="ou"/>
+            </map>
+        </property>
+    </bean>
+    
+</beans>

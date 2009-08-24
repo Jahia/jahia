@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.jahia.services.JahiaService;
 import org.jahia.services.sites.JahiaSite;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * <p>Title: </p>
@@ -50,7 +51,7 @@ import org.jahia.services.sites.JahiaSite;
  * @version 1.0
  */
 
-public abstract class JahiaGroupManagerProvider extends JahiaService {
+public abstract class JahiaGroupManagerProvider extends JahiaService implements InitializingBean {
 // ------------------------------ FIELDS ------------------------------
 
     private static Logger logger = Logger
@@ -62,6 +63,7 @@ public abstract class JahiaGroupManagerProvider extends JahiaService {
     private boolean readOnly = false;
     private int priority = 99;
     private String key;
+    private JahiaGroupManagerService groupManagerService;
 
     protected static Pattern getGroupNamePattern() {
 		if (groupNamePattern == null) {
@@ -136,6 +138,10 @@ public abstract class JahiaGroupManagerProvider extends JahiaService {
     }
 
 // -------------------------- OTHER METHODS --------------------------
+
+    public void afterPropertiesSet() throws Exception {
+    	groupManagerService.registerProvider(this);
+    }
 
 //-------------------------------------------------------------------------
     /**
@@ -283,4 +289,22 @@ public abstract class JahiaGroupManagerProvider extends JahiaService {
      * @param jahiaGroup JahiaGroup the group to be updated in the cache.
      */
     public abstract void updateCache(JahiaGroup jahiaGroup);
+
+	/**
+	 * Returns an instance of the group manager.
+	 * 
+	 * @return an instance of the group manager
+	 */
+	protected JahiaGroupManagerService getGroupManagerService() {
+    	return groupManagerService;
+    }
+
+	/**
+	 * Injects the group management service instance.
+	 * 
+	 * @param groupManagerService an instance of the group management service
+	 */
+	public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
+    	this.groupManagerService = groupManagerService;
+    }
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="JahiaUserManagerService" class="org.jahia.services.usermanager.JahiaUserManagerRoutingService" parent="jahiaServiceTemplate" factory-method="getInstance"/>
+
+	<bean id="JahiaUserManagerProvider" class="org.jahia.services.usermanager.JahiaUserManagerProvider" parent="jahiaServiceTemplate" abstract="true">
+		<property name="userManagerService" ref="JahiaUserManagerService"/>
+	</bean>
+	
+    <!-- 
+    <bean id="JahiaUserManagerDBProvider" class="org.jahia.services.usermanager.JahiaUserManagerDBProvider" parent="JahiaUserManagerProvider" factory-method="getInstance">
+        <property name="key" value="jahia_db"/>
+        <property name="aclService" ref="JahiaACLManagerService"/>
+        <property name="cacheService" ref="JahiaCacheService"/>
+        <property name="userManager" ref="org.jahia.hibernate.manager.JahiaUserManager"/>
+        <property name="defaultProvider" value="false"/>
+        <property name="readOnly" value="false"/>
+        <property name="priority" value="1"/>
+    </bean>
+     -->
+
+    <bean id="JCRUserManagerProvider" class="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" parent="JahiaUserManagerProvider" factory-method="getInstance">
+        <property name="key" value="jahia_jcr"/>
+        <property name="jcrStoreService" ref="JCRStoreService"/>
+        <property name="cacheService" ref="JahiaCacheService"/>
+        <property name="defaultProvider" value="true"/>
+        <property name="readOnly" value="false"/>
+        <property name="priority" value="1"/>
+    </bean>
+    
+    <bean id="JahiaSiteUserManagerService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.usermanager.JahiaSiteUserManagerDBService" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="userManager" ref="org.jahia.hibernate.manager.JahiaUserManager" />
+            </bean>
+        </property>
+    </bean>
+    
+</beans>

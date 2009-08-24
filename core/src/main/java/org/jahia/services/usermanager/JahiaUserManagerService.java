@@ -174,10 +174,10 @@ public abstract class JahiaUserManagerService extends JahiaService {
             throws JahiaException;
 
     /**
-     * Returns a List of UserManagerProviderBean object describing the
+     * Returns a List of {@link JahiaUserManagerProvider} objects, describing the
      * available user management providers
      *
-     * @return result a List of UserManagerProviderBean objects that describe
+     * @return result a List of {@link JahiaUserManagerProvider} objects that describe
      *         the providers. This will never be null but may be empty if no providers
      *         are available.
      */
@@ -288,4 +288,12 @@ public abstract class JahiaUserManagerService extends JahiaService {
 	 *         validation pattern
 	 */
 	public abstract boolean isUsernameSyntaxCorrect(String name);
+
+	/**
+	 * Adds the specified user provider to the registry.
+	 * 
+	 * @param jahiaUserManagerProvider
+	 *            an instance of the user provider to register
+	 */
+	public abstract void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider);
 }

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <!-- You can change here the cache implementation that Jahia will use, notably for it's HTML cache, internal
+         caches. For DB caches, this is now managed by the Hibernate implementation, and is configured in the
+         applicationcontext-hibernate.xml file.
+    -->
+    <!--bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.jboss.cache.TreeCacheProvider" /-->
+    <!--bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider" /-->
+    <!-- For no cache use this provider -->
+    <!--bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.dummy.DummyCacheProvider" /-->
+    <bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.clusterservice.batch.BatchingClusterServiceCacheProvider">
+        <property name="clusterService" ref="clusterService"/>
+    </bean>
+
+    <bean id="JahiaCacheService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.cache.CacheFactory" parent="jahiaServiceTemplate" factory-method="getInstance" init-method="start">
+                <property name="cacheProviders">
+                    <map>
+                        <entry key="DEFAULT_CACHE" value-ref="org.jahia.services.cache.CacheProvider"/>
+                        <entry key="EH_CACHE">
+                            <bean class="org.jahia.services.cache.ehcache.EhCacheProvider">
+                                <!-- This property allows to fix a limit for cache entries dependencies management,
+                                if an entry have more than this value of dependencies then
+                                when we flush this entry we will flush the whole cache-->
+                                <!-- Configure WEB-INF/classes/ehcache-hibernate.xml to activate cluster-->
+                                <property name="groupsSizeLimit" value="100"/>
+                            </bean>
+                        </entry>
+                    </map>
+                </property>
+                <property name="cacheProviderForCache">
+                    <map>
+                        <entry key="SkeletonCache" value="EH_CACHE"/>
+                        <entry key="ContainerHTMLCache" value="EH_CACHE"/>
+                        <entry key="LockAlreadyAcquiredMap" value="EH_CACHE"/>
+                        <entry key="LockPrerequisitesResultMap" value="EH_CACHE"/>
+                        <entry key="WebdavCache" value="EH_CACHE"/>
+                    </map>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="CacheKeyGeneratorService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.cache.CacheKeyGeneratorService" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="jahiaACLManagerService">
+                    <ref bean="JahiaACLManagerService"/>
+                </property>
+                <property name="groupManagerService">
+                    <ref bean="JahiaGroupManagerService"/>
+                </property>
+                <property name="cacheService">
+                    <ref local="JahiaCacheService"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+</beans>

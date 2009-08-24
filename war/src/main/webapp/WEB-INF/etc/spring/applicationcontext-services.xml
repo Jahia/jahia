@@ -14,7 +14,6 @@
     </bean>
 
    <bean id="jahiaServiceTemplate" class="org.jahia.services.JahiaService" abstract="true" init-method="start" destroy-method="stop">
-   <!--<bean id="jahiaServiceTemplate" class="org.jahia.services.JahiaService" abstract="true">-->
       <property name="settingsBean" ref="settingsBean"/>
    </bean>
 
@@ -38,48 +37,6 @@ pbcast.GMS(join_timeout=5000;shun=true;print_local_addr=true):
 VIEW_SYNC(avg_send_interval=60000):
 FC(max_credits=2000000;min_threshold=0.10):
 FRAG2(frag_size=60000)</value>
-                </property>
-            </bean>
-        </property>
-    </bean>
-
-    <!-- You can change here the cache implementation that Jahia will use, notably for it's HTML cache, internal
-         caches. For DB caches, this is now managed by the Hibernate implementation, and is configured in the
-         applicationContext-hibernate.xml file.
-    -->
-    <!--bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.jboss.cache.TreeCacheProvider" /-->
-    <!--bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider" /-->
-    <!-- For no cache use this provider -->
-    <!--bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.dummy.DummyCacheProvider" /-->
-    <bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.clusterservice.batch.BatchingClusterServiceCacheProvider">
-        <property name="clusterService" ref="clusterService"/>
-    </bean>
-
-    <bean id="JahiaCacheService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.cache.CacheFactory" parent="jahiaServiceTemplate" factory-method="getInstance" init-method="start">
-                <property name="cacheProviders">
-                    <map>
-                        <entry key="DEFAULT_CACHE" value-ref="org.jahia.services.cache.CacheProvider"/>
-                        <entry key="EH_CACHE">
-                            <bean class="org.jahia.services.cache.ehcache.EhCacheProvider">
-                                <!-- This property allows to fix a limit for cache entries dependencies management,
-                                if an entry have more than this value of dependencies then
-                                when we flush this entry we will flush the whole cache-->
-                                <!-- Configure WEB-INF/classes/ehcache-hibernate.xml to activate cluster-->
-                                <property name="groupsSizeLimit" value="100"/>
-                            </bean>
-                        </entry>
-                    </map>
-                </property>
-                <property name="cacheProviderForCache">
-                    <map>
-                        <entry key="SkeletonCache" value="EH_CACHE"/>
-                        <entry key="ContainerHTMLCache" value="EH_CACHE"/>
-                        <entry key="LockAlreadyAcquiredMap" value="EH_CACHE"/>
-                        <entry key="LockPrerequisitesResultMap" value="EH_CACHE"/>
-                        <entry key="WebdavCache" value="EH_CACHE"/>
-                    </map>
                 </property>
             </bean>
         </property>
@@ -195,138 +152,6 @@ FRAG2(frag_size=60000)</value>
         </property>
     </bean>
 
-    <!--<bean id="JahiaUserManagerDBProvider" class="org.jahia.services.usermanager.JahiaUserManagerDBProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
-        <property name="aclService" ref="JahiaACLManagerService"/>
-        <property name="cacheService" ref="JahiaCacheService"/>
-        <property name="userManager" ref="org.jahia.hibernate.manager.JahiaUserManager"/>
-        <property name="key" value="jahia_db"/>
-        <property name="defaultProvider" value="false"/>
-        <property name="readOnly" value="false"/>
-        <property name="priority" value="1"/>
-    </bean>-->
-
-    <bean id="JCRUserManagerProvider" class="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
-        <property name="jcrStoreService" ref="JCRStoreService"/>
-        <property name="cacheService" ref="JahiaCacheService"/>
-        <property name="key" value="jahia_jcr"/>
-        <property name="defaultProvider" value="true"/>
-        <property name="readOnly" value="false"/>
-        <property name="priority" value="1"/>
-    </bean>
-<!--
-    <bean id="JahiaUserManagerLDAPProvider" class="org.jahia.services.usermanager.JahiaUserManagerLDAPProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
-        <property name="cacheService" ref="JahiaCacheService"/>
-        <property name="key" value="ldap"/>
-        <property name="defaultProvider" value="false"/>
-        <property name="readOnly" value="true"/>
-        <property name="priority" value="2"/>
-        <property name="jcrUserManagerProvider" ref="JCRUserManagerProvider"/>
-        <property name="ldapProperties">
-            <map>
-                <entry key="context.factory" value="com.sun.jndi.ldap.LdapCtxFactory"/>
-                <entry key="url" value="ldap://127.0.0.1:389/"/>
-                <entry key="authentification.mode" value="simple"/>
-                <entry key="public.bind.dn" value=""/>
-                <entry key="public.bind.password" value=""/>
-                <entry key="uid.search.attribute" value="cn"/>
-                <entry key="uid.search.name" value="dc=jahia"/>
-                <entry key="search.countlimit" value="100"/>
-                <entry key="search.objectclass" value="person"/>
-                <entry key="search.wildcards.attributes" value="ou, cn, o, c, mail, uid, uniqueIdentifier, givenName, sn, dn"/>
-                <entry key="firstname.attribute.map" value="givenName"/>
-                <entry key="lastname.attribute.map" value="sn"/>
-                <entry key="email.attribute.map" value="mail"/>
-                <entry key="organization.attribute.map" value="ou"/>
-            </map>
-        </property>
-    </bean>
--->
-
-    <bean id="JahiaUserManagerService" class="org.jahia.services.usermanager.JahiaUserManagerRoutingService" parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
-                <property name="providersTable">
-                    <map>
-                        <!--<entry key="jahia_db" value-ref="JahiaUserManagerDBProvider"/>-->
-                        <entry key="jahia_jcr" value-ref="JCRUserManagerProvider"/>
-                        <!--<entry key="ldap" value-ref="JahiaUserManagerLDAPProvider"/>-->
-                    </map>
-                </property>
-            </bean>
-
-    <!--<bean id="JahiaGroupManagerDBProvider" class="org.jahia.services.usermanager.JahiaGroupManagerDBProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
-        <property name="key" value="jahia_db"/>
-        <property name="userService" ref="JahiaUserManagerService"/>
-        <property name="groupManager" ref="org.jahia.hibernate.manager.JahiaGroupManager"/>
-        <property name="defaultProvider" value="false"/>
-        <property name="readOnly" value="true"/>
-        <property name="priority" value="1"/>
-    </bean>-->
-
-    <bean id="JCRGroupManagerProvider" class="org.jahia.services.usermanager.jcr.JCRGroupManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
-        <property name="jcrStoreService" ref="JCRStoreService"/>
-        <property name="sitesService" ref="JahiaSitesService"/>
-        <property name="cacheService" ref="JahiaCacheService"/>
-        <property name="key" value="jahia_jcr"/>
-        <property name="defaultProvider" value="true"/>
-        <property name="readOnly" value="false"/>
-        <property name="priority" value="1"/>
-    </bean>
-<!--
-    <bean id="JahiaGroupManagerLDAPProvider" class="org.jahia.services.usermanager.JahiaGroupManagerLDAPProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
-        <property name="cacheService" ref="JahiaCacheService"/>
-        <property name="key" value="ldap"/>
-        <property name="defaultProvider" value="false"/>
-        <property name="readOnly" value="true"/>
-        <property name="priority" value="2"/>
-        <property name="groupManager" ref="org.jahia.hibernate.manager.JahiaGroupManager"/>
-        <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
-        <property name="ldapProperties">
-            <map>
-                <entry key="context.factory" value="com.sun.jndi.ldap.LdapCtxFactory"/>
-                <entry key="url" value="ldap://127.0.0.1:389/"/>
-                <entry key="authentification.mode" value="simple"/>
-                <entry key="public.bind.dn" value=""/>
-                <entry key="public.bind.password" value=""/>
-                <entry key="search.attribute" value="cn"/>
-                <entry key="search.name" value="dc=jahia"/>
-                <entry key="search.countlimit" value="100"/>
-                <entry key="search.objectclass" value="groupOfUniqueNames"/>
-                <entry key="members.attribute" value="uniqueMember"/>
-                <entry key="dynamic.search.objectclass" value="groupOfURLs"/>
-                <entry key="dynamic.members.attribute" value="memberurl"/>
-                <entry key="preload" value="true"/>
-                <entry key="search.wildcards.attributes" value="cn,description,uniqueMember"/>
-                <entry key="groupname.attribute.map" value="cn"/>
-                <entry key="description.attribute.map" value="description"/>
-                <entry key="ad.range.step" value="0"/>
-            </map>
-        </property>
-    </bean>
-    -->
-    <bean id="JahiaGroupManagerService" class="org.jahia.services.usermanager.JahiaGroupManagerRoutingService"
-          parent="jahiaServiceTemplate" factory-method="getInstance" lazy-init="true">
-        <property name="providersTable">
-            <map>
-                <!--<entry key="jahia_db" value-ref="JahiaGroupManagerDBProvider"/>-->
-                <entry key="jahia_jcr" value-ref="JCRGroupManagerProvider"/>
-                <!--<entry key="ldap" value-ref="JahiaGroupManagerLDAPProvider"/>-->
-            </map>
-        </property>
-    </bean>
-
-    <bean id="JahiaSiteUserManagerService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.usermanager.JahiaSiteUserManagerDBService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="userManager" ref="org.jahia.hibernate.manager.JahiaUserManager" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="JahiaSiteGroupManagerService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.usermanager.JahiaSiteGroupManagerDBService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="groupManager" ref="org.jahia.hibernate.manager.JahiaGroupManager" />
-            </bean>
-        </property>
-    </bean>
     <bean id="JahiaACLManagerService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.acl.JahiaACLManagerService" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -956,22 +781,6 @@ FRAG2(frag_size=60000)</value>
                             <ref bean="JahiaSearchFilterCreator" />
                         </entry>
                     </map>
-                </property>
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="CacheKeyGeneratorService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.cache.CacheKeyGeneratorService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="jahiaACLManagerService">
-                    <ref local="JahiaACLManagerService"/>
-                </property>
-                <property name="groupManagerService">
-                    <ref local="JahiaGroupManagerService"/>
-                </property>
-                <property name="cacheService">
-                    <ref local="JahiaCacheService"/>
                 </property>
             </bean>
         </property>

@@ -274,4 +274,12 @@ public abstract class JahiaGroupManagerService extends JahiaService {
 	 */
 	public abstract boolean isGroupNameSyntaxCorrect(String name);
 
+
+	/**
+	 * Adds the specified group provider to the registry.
+	 * 
+	 * @param jahiaGroupManagerProvider
+	 *            an instance of the group provider to register
+	 */
+	public abstract void registerProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider);
 }

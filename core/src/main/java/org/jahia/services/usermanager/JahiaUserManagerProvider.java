@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.jahia.services.JahiaService;
 import org.jahia.utils.Base64;
+import org.springframework.beans.factory.InitializingBean;
 
 
 /**
@@ -51,7 +52,7 @@ import org.jahia.utils.Base64;
  * @author Fulco Houkes
  * @version 2.0
  */
-public abstract class JahiaUserManagerProvider extends JahiaService {
+public abstract class JahiaUserManagerProvider extends JahiaService implements InitializingBean {
 // ------------------------------ FIELDS ------------------------------
 
     /**
@@ -70,6 +71,8 @@ public abstract class JahiaUserManagerProvider extends JahiaService {
     private boolean readOnly = false;
     private int priority = 99;
     private String key;
+    
+    private JahiaUserManagerService userManagerService;
 
 // -------------------------- STATIC METHODS --------------------------
 
@@ -162,6 +165,10 @@ public abstract class JahiaUserManagerProvider extends JahiaService {
     }
 
 // -------------------------- OTHER METHODS --------------------------
+    
+    public void afterPropertiesSet() throws Exception {
+    	userManagerService.registerProvider(this);
+    }
 
     //-------------------------------------------------------------------------
     /**
@@ -173,8 +180,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService {
     public abstract JahiaUser createUser(String name, String password,
                                          Properties properties);
 
-
-    //-------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
     /**
      * This method removes a user from the system. All the user's attributes are
      * remove, and also all the related objects belonging to the user. On success,
@@ -299,4 +305,22 @@ public abstract class JahiaUserManagerProvider extends JahiaService {
      *         return false on any failure.
      */
     public abstract boolean userExists(String name);
+
+	/**
+	 * Returns an instance of the user manager.
+	 * 
+	 * @return an instance of the user manager
+	 */
+	protected JahiaUserManagerService getUserManagerService() {
+		return userManagerService;
+	}
+
+	/**
+	 * Injects the user management service instance.
+	 * 
+	 * @param userManagerService an instance of the user management service
+	 */
+	public void setUserManagerService(JahiaUserManagerService userManagerService) {
+		this.userManagerService = userManagerService;
+	}
 }

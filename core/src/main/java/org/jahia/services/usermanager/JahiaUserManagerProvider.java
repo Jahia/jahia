@@ -167,7 +167,9 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
 // -------------------------- OTHER METHODS --------------------------
     
     public void afterPropertiesSet() throws Exception {
-    	userManagerService.registerProvider(this);
+    	if (userManagerService != null) {
+        	userManagerService.registerProvider(this);
+    	}
     }
 
     //-------------------------------------------------------------------------

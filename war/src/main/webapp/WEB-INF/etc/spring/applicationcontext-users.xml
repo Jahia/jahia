@@ -3,12 +3,23 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <bean id="JahiaUserManagerService" class="org.jahia.services.usermanager.JahiaUserManagerRoutingService" parent="jahiaServiceTemplate" factory-method="getInstance"/>
+    <bean id="JahiaUserManagerService" class="org.jahia.services.usermanager.JahiaUserManagerRoutingService" parent="jahiaServiceTemplate" factory-method="getInstance">
+    	<property name="defaultProvider" ref="JCRUserManagerProvider"/>
+    </bean>
 
 	<bean id="JahiaUserManagerProvider" class="org.jahia.services.usermanager.JahiaUserManagerProvider" parent="jahiaServiceTemplate" abstract="true">
 		<property name="userManagerService" ref="JahiaUserManagerService"/>
 	</bean>
 	
+    <bean id="JCRUserManagerProvider" class="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
+        <property name="key" value="jahia_jcr"/>
+        <property name="jcrStoreService" ref="JCRStoreService"/>
+        <property name="cacheService" ref="JahiaCacheService"/>
+        <property name="defaultProvider" value="true"/>
+        <property name="readOnly" value="false"/>
+        <property name="priority" value="1"/>
+    </bean>
+    
     <!-- 
     <bean id="JahiaUserManagerDBProvider" class="org.jahia.services.usermanager.JahiaUserManagerDBProvider" parent="JahiaUserManagerProvider" factory-method="getInstance">
         <property name="key" value="jahia_db"/>
@@ -21,15 +32,6 @@
     </bean>
      -->
 
-    <bean id="JCRUserManagerProvider" class="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" parent="JahiaUserManagerProvider" factory-method="getInstance">
-        <property name="key" value="jahia_jcr"/>
-        <property name="jcrStoreService" ref="JCRStoreService"/>
-        <property name="cacheService" ref="JahiaCacheService"/>
-        <property name="defaultProvider" value="true"/>
-        <property name="readOnly" value="false"/>
-        <property name="priority" value="1"/>
-    </bean>
-    
     <bean id="JahiaSiteUserManagerService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.usermanager.JahiaSiteUserManagerDBService" parent="jahiaServiceTemplate" factory-method="getInstance">

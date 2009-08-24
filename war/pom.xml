@@ -714,7 +714,6 @@
                             <includes>
                                 <include>WEB-INF/web.xml</include>
                                 <include>WEB-INF/etc/struts/struts-config.xml</include>
-                                <include>WEB-INF/etc/spring/applicationcontext-services.xml</include>
                                 <include>html/startup/javascript_start.html</include>
                                 <include>html/startup/loadingjahia.html</include>
                             </includes>

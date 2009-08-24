@@ -544,4 +544,10 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
 	    	defaultProviderInstance = provider;
 	    }
     }
+
+	public void setDefaultProvider(JahiaGroupManagerProvider defaultProvider) {
+		defaultProvider.setDefaultProvider(true);
+		defaultProvider.setGroupManagerService(this);
+		registerProvider(defaultProvider);
+    }
 }

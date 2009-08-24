@@ -140,7 +140,9 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
 // -------------------------- OTHER METHODS --------------------------
 
     public void afterPropertiesSet() throws Exception {
-    	groupManagerService.registerProvider(this);
+    	if (groupManagerService != null) {
+    		groupManagerService.registerProvider(this);
+    	}
     }
 
 //-------------------------------------------------------------------------
@@ -148,7 +150,7 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
      * Create a new group in the system.
      *
      * @param hidden
-     * @return Retrun a reference on a group object on success, or if the groupname
+     * @return a reference on a group object on success, or if the groupname
      *         already exists or another error occured, null is returned.
      */
     public abstract JahiaGroup createGroup(int siteID, String name, Properties properties, boolean hidden);
@@ -158,7 +160,7 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
     /**
      * Get all JahiaSite objects where the user has an access.
      *
-     * @param JahiaUser user, the user you want to get his access grantes sites list.
+     * @param JahiaUser user, the user you want to get his access grants sites list.
      *
      * @return Return a List containing all JahiaSite objects where the user has an access.
      *
@@ -245,9 +247,9 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
     public abstract boolean groupExists (int siteID, String name);
 
     /**
-     * Lookup the group information from the underlaying system (DB, LDAP, ... )
+     * Lookup the group information from the underlying system (DB, LDAP, ... )
      * Try to lookup the group into the cache, if it's not in the cache, then
-     * load it into the cahce from the database.
+     * load it into the cache from the database.
      *
      * @param String groupKey Group's unique identification key.
      *
@@ -258,9 +260,9 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
 
     //-------------------------------------------------------------------------
     /**
-     * Lookup the group information from the underlaying system (DB, LDAP, ... )
+     * Lookup the group information from the underlying system (DB, LDAP, ... )
      * Try to lookup the group into the cache, if it's not in the cache, then
-     * load it into the cahce from the database.
+     * load it into the cache from the database.
      *
      * @param int  siteID the site id
      * @param name Group's unique identification name.

@@ -1608,6 +1608,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         String ctxPath = servletContext.getInitParameter(CTX_PARAM_CONTEXT_PATH);
         Jahia.jahiaContextPath = ctxPath.equals("/") ? "" : ctxPath;
         Jahia.jahiaServletPath = getDefaultServletPath(servletContext);
+        System.setProperty("jahia.deploy.war.contextPath", Jahia.jahiaContextPath);
     }
 
 } // end Jahia

@@ -3,12 +3,24 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <bean id="JahiaGroupManagerService" class="org.jahia.services.usermanager.JahiaGroupManagerRoutingService" parent="jahiaServiceTemplate" factory-method="getInstance"/>
+    <bean id="JahiaGroupManagerService" class="org.jahia.services.usermanager.JahiaGroupManagerRoutingService" parent="jahiaServiceTemplate" factory-method="getInstance">
+    	<property name="defaultProvider" ref="JCRGroupManagerProvider"/>
+    </bean>
 
 	<bean id="JahiaGroupManagerProvider" class="org.jahia.services.usermanager.JahiaGroupManagerProvider" parent="jahiaServiceTemplate" abstract="true">
 		<property name="groupManagerService" ref="JahiaGroupManagerService"/>
 	</bean>
 	
+    <bean id="JCRGroupManagerProvider" class="org.jahia.services.usermanager.jcr.JCRGroupManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
+        <property name="key" value="jahia_jcr"/>
+        <property name="jcrStoreService" ref="JCRStoreService"/>
+        <property name="sitesService" ref="JahiaSitesService"/>
+        <property name="cacheService" ref="JahiaCacheService"/>
+        <property name="defaultProvider" value="true"/>
+        <property name="readOnly" value="false"/>
+        <property name="priority" value="1"/>
+    </bean>
+
     <!-- 
     <bean id="JahiaGroupManagerDBProvider" class="org.jahia.services.usermanager.JahiaGroupManagerDBProvider" parent="JahiaGroupManagerProvider" factory-method="getInstance">
         <property name="key" value="jahia_db"/>
@@ -19,16 +31,6 @@
         <property name="priority" value="1"/>
     </bean>
     -->
-
-    <bean id="JCRGroupManagerProvider" class="org.jahia.services.usermanager.jcr.JCRGroupManagerProvider" parent="JahiaGroupManagerProvider" factory-method="getInstance">
-        <property name="key" value="jahia_jcr"/>
-        <property name="jcrStoreService" ref="JCRStoreService"/>
-        <property name="sitesService" ref="JahiaSitesService"/>
-        <property name="cacheService" ref="JahiaCacheService"/>
-        <property name="defaultProvider" value="true"/>
-        <property name="readOnly" value="false"/>
-        <property name="priority" value="1"/>
-    </bean>
 
     <bean id="JahiaSiteGroupManagerService" parent="proxyTemplate">
         <property name="target">

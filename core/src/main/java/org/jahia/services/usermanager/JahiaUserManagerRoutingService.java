@@ -80,7 +80,7 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
 
 // -------------------------- STATIC METHODS --------------------------
 
-    /**
+	/**
      * Create an new instance of the User Manager Service if the instance do not
      * exist, or return the existing instance.
      *
@@ -435,6 +435,12 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
 		}
 	}
 	
+    public void setDefaultProvider(JahiaUserManagerProvider defaultProvider) {
+    	defaultProvider.setDefaultProvider(true);
+    	defaultProvider.setUserManagerService(this);
+    	registerProvider(defaultProvider);
+    }
+
 // -------------------------- INNER CLASSES --------------------------
 
     interface Command<T> {

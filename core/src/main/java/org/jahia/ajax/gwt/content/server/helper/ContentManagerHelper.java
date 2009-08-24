@@ -2329,18 +2329,39 @@ public class ContentManagerHelper {
         }
     }
 
+    public static void move(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
+        JCRSessionWrapper session = jcr.getThreadSession(user);
+        session.getWorkspace().move(sourcePath, targetPath);
+    }
+
     public static void moveOnTopOf(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
         JCRSessionWrapper session = jcr.getThreadSession(user);
         final JCRNodeWrapper srcNode = session.getNode(sourcePath);
         final JCRNodeWrapper targetNode = session.getNode(targetPath);
-        final Node targetParent = targetNode.getParent();
+        final JCRNodeWrapper targetParent = (JCRNodeWrapper) targetNode.getParent();
         if (srcNode.getParent().getPath().equals(targetParent.getPath())) {
             targetParent.orderBefore(srcNode.getName(), targetNode.getName());
         } else {
-            session.getWorkspace().move(sourcePath, targetParent.getPath());
-            targetParent.orderBefore(srcNode.getName(), targetNode.getName());
+            String newname = findAvailableName(targetParent, srcNode.getName(), user);
+            session.getWorkspace().move(sourcePath, targetParent.getPath()+ "/"+ newname);
+            targetParent.orderBefore(newname, targetNode.getName());
         }
         targetParent.save();
+        session.save();
+    }
+
+    public static void moveAtEnd(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
+        JCRSessionWrapper session = jcr.getThreadSession(user);
+        final JCRNodeWrapper srcNode = session.getNode(sourcePath);
+        final JCRNodeWrapper targetNode = session.getNode(targetPath);
+        if (srcNode.getParent().getPath().equals(targetNode.getPath())) {
+            targetNode.orderBefore(srcNode.getName(), null);
+        } else {
+            String newname = findAvailableName(targetNode, srcNode.getName(), user);
+            session.getWorkspace().move(sourcePath, targetNode.getPath()+ "/" + newname);
+            targetNode.orderBefore(newname, null);
+        }
+        targetNode.save();
         session.save();
     }
 

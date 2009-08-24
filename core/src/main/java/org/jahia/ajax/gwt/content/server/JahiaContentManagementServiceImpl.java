@@ -420,9 +420,25 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         ContentManagerHelper.importContent(retrieveParamBean(), parentPath, fileKey);
     }
 
+    public void move(String sourcePath, String targetPath) throws GWTJahiaServiceException {
+        try {
+            ContentManagerHelper.move(getUser(),sourcePath,targetPath);
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
     public void moveOnTopOf(String sourcePath, String targetPath) throws GWTJahiaServiceException {
         try {
             ContentManagerHelper.moveOnTopOf(getUser(),sourcePath,targetPath);
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+    public void moveAtEnd(String sourcePath, String targetPath) throws GWTJahiaServiceException {
+        try {
+            ContentManagerHelper.moveAtEnd(getUser(),sourcePath,targetPath);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }

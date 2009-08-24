@@ -17,6 +17,8 @@ import com.google.gwt.user.client.DOM;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
@@ -103,11 +105,27 @@ public class SimpleModule extends ContentPanel implements Module {
         public SimpleModuleDragSource(SimpleModule simpleModule) {
             super(simpleModule);
         }
+
+        @Override
+        protected void onDragStart(DNDEvent e) {
+            e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
+            List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
+            l.add(getModule().getNode());
+            e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);
+            super.onDragStart(e);
+        }
     }
 
     public class SimpleModuleDropTarget extends ModuleDropTarget {
         public SimpleModuleDropTarget(SimpleModule simpleModule) {
             super(simpleModule);
+        }
+
+        @Override
+        protected void onDragEnter(DNDEvent e) {
+            e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
+            e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
+            super.onDragEnter(e);
         }
     }
 }

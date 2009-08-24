@@ -2,15 +2,10 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.event.DNDEvent;
-import com.extjs.gxt.ui.client.data.BaseTreeModel;
-import com.extjs.gxt.ui.client.dnd.GridDragSource;
-import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
 
 import java.util.List;
-import java.util.ArrayList;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -26,10 +21,18 @@ public class EditModeDNDListener extends DNDListener {
     private EditManager editManager;
 
     public static final String SOURCE_TYPE = "sourceType";
+
     public static final String CONTENT_SOURCE_TYPE = "content";
+    public static final String CREATE_CONTENT_SOURCE_TYPE = "createContent";
+
+    public static final String SIMPLEMODULE_TYPE = "simpleModule";
+    public static final String PLACEHOLDER_TYPE = "placeholder";
+
     public static final String TARGET_TYPE = "targetType";
     public static final String TARGET_PATH = "targetPath";
+
     public static final String SOURCE_NODES = "sourceNodes";
+    public static final String SOURCE_NODETYPE = "sourceNodeType";
     public static final String OPERATION_CALLED = "operationCalled";
 
     public EditModeDNDListener(EditManager editManager) {
@@ -37,141 +40,76 @@ public class EditModeDNDListener extends DNDListener {
     }
 
     @Override
-    public void dragMove(DNDEvent e) {
-        super.dragMove(e);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void dragStart(DNDEvent e) {
-        if (e.getSource() instanceof ContentTreeDragSource) {
-            e.getStatus().setData(SOURCE_TYPE, CONTENT_SOURCE_TYPE);
-
-            List list = (List) e.getData();
-            e.getStatus().setData("size", list.size());
-
-            List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
-            for (Object o : list) {
-                l.add((GWTJahiaNode) ((BaseTreeModel) o).get("model"));
-            }
-            e.getStatus().setData(SOURCE_NODES, l);
-
-        } else if (e.getSource() instanceof DisplayGridDragSource) {
-            e.getStatus().setData(SOURCE_TYPE, CONTENT_SOURCE_TYPE);
-
-            List<GWTJahiaNode> list = (List<GWTJahiaNode>) e.getData();
-            e.getStatus().setData("size", list.size());
-
-            e.getStatus().setData(SOURCE_NODES, list);
-
-        }
-
-        super.dragStart(e);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void dragEnter(DNDEvent e) {
-        if (e.getDropTarget().getComponent() instanceof PlaceholderModule) {
-            e.getStatus().setData(TARGET_TYPE, "placeholder");
-            e.getStatus().setData(TARGET_PATH, ((PlaceholderModule)e.getDropTarget().getComponent()).getPath());
-        }else if (e.getDropTarget() instanceof SimpleModule.SimpleModuleDropTarget) {
-            e.getStatus().setData(TARGET_TYPE, "simpleModule");
-            e.getStatus().setData(TARGET_PATH, ((SimpleModule.SimpleModuleDropTarget)e.getDropTarget()).getModule().getPath());
-        }
-        super.dragEnter(e);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void dragLeave(DNDEvent e) {
-        super.dragLeave(e);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-    @Override
     public void dragDrop(final DNDEvent e) {
-        if ("placeholder".equals(e.getStatus().getData(TARGET_TYPE))) {
+        if ("true".equals(e.getStatus().getData(OPERATION_CALLED))) {
+            return;
+        }
+        if (PLACEHOLDER_TYPE.equals(e.getStatus().getData(TARGET_TYPE))) {
+            String targetPath = e.getStatus().getData(TARGET_PATH);
+            int i = targetPath.lastIndexOf('/');
+            String name = targetPath.substring(i +1);
+            String parentPath = targetPath.substring(0,i);
+
+            // Drop into empty placeholder
             if (CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
-                List<GWTJahiaNode> nodes = (List<GWTJahiaNode>) e.getStatus().getData(SOURCE_NODES);
-                String path = e.getStatus().getData(TARGET_PATH);
-                int i = path.lastIndexOf('/');
-                String name = path.substring(i +1);
-                path = path.substring(0,i);
+                // Existing item from content list
+                List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
 
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 if ("*".equals(name)) {
-                    JahiaContentManagementService.App.getInstance().pasteReferences(nodes, path, new AsyncCallback() {
-                        public void onSuccess(Object result) {
-                            editManager.getMainModule().refresh();
-                        }
-
-                        public void onFailure(Throwable caught) {
-                            Window.alert("Failed : "+caught);
-                        }
-                    });
-
+                    JahiaContentManagementService.App.getInstance().pasteReferences(nodes, parentPath, new DropAsyncCallback());
                 } else if (nodes.size() == 1) {
-                    JahiaContentManagementService.App.getInstance().pasteReference(nodes.get(0), path, name, new AsyncCallback() {
-                        public void onSuccess(Object result) {
-                            editManager.getMainModule().refresh();
-                        }
-
-                        public void onFailure(Throwable caught) {
-                            Window.alert("Failed : "+caught);
-                        }
-                    });
-
+                    JahiaContentManagementService.App.getInstance().pasteReference(nodes.get(0), parentPath, name, new DropAsyncCallback());
                 }
 
+            } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
+                // Item move
+                List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
+                GWTJahiaNode selectedNode = nodes.get(0);
+
+                e.getStatus().setData(OPERATION_CALLED, "true");
+                if ("*".equals(name)) {
+                    JahiaContentManagementService.App.getInstance().moveAtEnd(selectedNode.getPath(), parentPath, new DropAsyncCallback());
+                } else {
+                    JahiaContentManagementService.App.getInstance().move(selectedNode.getPath(), targetPath, new DropAsyncCallback());
+                }
+            } else if (CREATE_CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
+                // Item creation
             }
-        } else if (e.getDragSource() instanceof SimpleModule.SimpleModuleDragSource &&
-                   e.getDropTarget() instanceof SimpleModule.SimpleModuleDropTarget) {
-            String sourcePath = ((SimpleModule.SimpleModuleDragSource) e.getDragSource()).getModule().getPath();
-            String targetPath = ((SimpleModule.SimpleModuleDropTarget) e.getDropTarget()).getModule().getPath();
-            e.getStatus().setData(OPERATION_CALLED, "true");
-            JahiaContentManagementService.App.getInstance().moveOnTopOf(sourcePath, targetPath, new AsyncCallback() {
-
-                public void onSuccess(Object o) {
-                    editManager.getMainModule().refresh();
-                }
-
-                public void onFailure(Throwable throwable) {
-                    Window.alert("Failed : "+throwable);
-                }
-
-            });
-        } else if("simpleModule".equals(e.getStatus().getData(TARGET_TYPE))){
+        } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(TARGET_TYPE))){
+            String targetPath = e.getStatus().getData(TARGET_PATH);
+            // Drop into an existing module
             if (CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 List<GWTJahiaNode> nodes = (List<GWTJahiaNode>) e.getStatus().getData(SOURCE_NODES);
-                String path = e.getStatus().getData(TARGET_PATH);
-                int i = path.lastIndexOf('/');
 
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 if (nodes.size()>1) {
-                    JahiaContentManagementService.App.getInstance().pasteReferencesOnTopOf(nodes, path, new AsyncCallback() {
-                        public void onSuccess(Object result) {
-                            editManager.getMainModule().refresh();
-                        }
-
-                        public void onFailure(Throwable caught) {
-                            Window.alert("Failed : "+caught);
-                        }
-                    });
-
+                    JahiaContentManagementService.App.getInstance().pasteReferencesOnTopOf(nodes, targetPath, new DropAsyncCallback());
                 } else if (nodes.size() == 1) {
                     final GWTJahiaNode node = nodes.get(0);
-                    JahiaContentManagementService.App.getInstance().pasteReferenceOnTopOf(node, path, node.getName(), new AsyncCallback() {
-                        public void onSuccess(Object result) {
-                            editManager.getMainModule().refresh();
-                        }
-
-                        public void onFailure(Throwable caught) {
-                            Window.alert("Failed : "+caught);
-                        }
-                    });
-
+                    JahiaContentManagementService.App.getInstance().pasteReferenceOnTopOf(node, targetPath, node.getName(), new DropAsyncCallback());
                 }
+            } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
+                // Item move
+                List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
 
+                e.getStatus().setData(OPERATION_CALLED, "true");
+                JahiaContentManagementService.App.getInstance().moveOnTopOf(nodes.get(0).getPath(), targetPath, new DropAsyncCallback());
+            } else if (CREATE_CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
+                // Item creation
             }
         }
-        Log.info("xx"+e.getStatus().getData("sourceNode"));
-        super.dragDrop(e);    //To change body of overridden methods use File | Settings | File Templates.
+        super.dragDrop(e);
+    }
+
+    private class DropAsyncCallback implements AsyncCallback {
+        public void onSuccess(Object o) {
+            editManager.getMainModule().refresh();
+        }
+
+        public void onFailure(Throwable throwable) {
+            Window.alert("Failed : "+throwable);
+        }
+
     }
 }

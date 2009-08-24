@@ -51,5 +51,4 @@ public class ModuleDropTarget extends DropTarget {
         insert.el().setBounds(rect.x, y, rect.width, 20);
     }
 
-
 }

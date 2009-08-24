@@ -19,7 +19,10 @@
 [jmix:keywords] > jmix:metadata mixin
  - j:keywords (string) multiple
 
-[jmix:contentmetadata] > jmix:metadata, mix:createdBy, mix:lastModified, mix:title, jmix:categorized, jmix:keywords mixin
+[jmix:thumbnail] > jmix:metadata mixin
+ + thumbnail (jnt:extraResource)
+
+[jmix:contentmetadata] > jmix:metadata, mix:createdBy, mix:lastModified, mix:title, jmix:categorized, jmix:keywords, jmix:thumbnail mixin
 
 //---------------------------------------------------------
 // Multi language
@@ -103,7 +106,6 @@
 [jmix:hierarchyNode] > mix:referenceable mixin
  - j:nodename (string) protected
  - j:fullpath (string) protected
- + thumbnail (jnt:extraResource)
 
 [jmix:collection] mixin
 
@@ -180,7 +182,7 @@
  - j:groupsFolderConfig (string)
  - j:groupsFolderSkeleton (string)
 
-[jnt:member] > nt:base, jmix:hierarchyNode, mix:created
+[jnt:member] > nt:base, jmix:hierarchyNode
  - j:member (weakreference) < jnt:user, jnt:group
 
 [jnt:members]  > nt:base, jmix:collection
@@ -214,7 +216,7 @@
  - j:virtualsitesFolderConfig (string)
  - j:virtualsitesFolderSkeleton (string)
 
-[jnt:virtualsite] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:contentmetadata
+[jnt:virtualsite] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:contentmetadata
  - j:title (string) protected
  - j:serverName (string) protected
  - j:description (string) protected

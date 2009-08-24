@@ -473,7 +473,7 @@ public class SidePanel extends ContentPanel {
             List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(1);
             nodes.add(previewTabItem.getNode());
             e.setData(nodes);
-            e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, EditModeDNDListener.CONTENT_SOURCE_TYPE);
+            e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.CONTENT_SOURCE_TYPE);
 
             List<GWTJahiaNode> list = (List<GWTJahiaNode>) e.getData();
             e.getStatus().setData("size", list.size());

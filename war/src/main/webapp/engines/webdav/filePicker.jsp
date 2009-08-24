@@ -73,6 +73,7 @@ function handleSelection(path) {
 </head>
 <body>
 <internal:contentManager rootPath='${not empty param.rootPath ? param.rootPath : "files"}' startPath='${not empty param.startPath ? param.startPath : ""}'
+                      selectedNodeUUIds='${param.selectedNodeUUIds}'   
                       nodeTypes='${not empty param.foldersOnly ? "nt:folder" : "nt:file"}' filters='${not empty param.filters ? param.filters : ""}'
                       mimeTypes='${not empty param.mimeTypes ? param.mimeTypes : ""}' callback="handleSelection" conf="filepicker" />
 <internal:gwtGenerateDictionary/>

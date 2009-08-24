@@ -31,24 +31,22 @@
  */
 package org.jahia.ajax.gwt.client.widget.category;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelComparer;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,7 +122,7 @@ public class PickedCategoriesGrid extends TopRightComponent {
         ColumnConfig column = new ColumnConfig();
         column.setRenderer(new GridCellRenderer<GWTJahiaCategoryNode>() {
             public Object render(GWTJahiaCategoryNode categoryNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaCategoryNode> gwtJahiaCategoryNodeListStore, Grid<GWTJahiaCategoryNode> gwtJahiaCategoryNodeGrid) {
-                return "<input type=\"hidden\" name=\"category_" + categoryNode.getCategoryId() + "\"/> " + categoryNode.getExtendedName();
+                return "<input type=\"hidden\" name=\"content_id\" value=\""+categoryNode.getCategoryId()+"\"/> " + categoryNode.getExtendedName();
             }
         });
         column.setId("name");

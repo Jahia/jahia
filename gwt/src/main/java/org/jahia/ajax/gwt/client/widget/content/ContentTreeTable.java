@@ -31,67 +31,67 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.allen_sauer.gwt.log.client.Log;
-import org.jahia.ajax.gwt.client.util.Formatter;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.util.Formatter;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
+import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
-import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 /**
  * TreeTable file picker for use within classic engines.
  */
 public class ContentTreeTable extends TopRightComponent {
 
-    private ManagerConfiguration configuration ;
+    private ManagerConfiguration configuration;
 
-    protected ContentPanel m_component ;
-    protected TreeLoader<GWTJahiaNode> loader ;
-    protected TreeGrid<GWTJahiaNode> m_treeTable ;
-    protected TreeTableStore<GWTJahiaNode> store ;
+    protected ContentPanel m_component;
+    protected TreeLoader<GWTJahiaNode> loader;
+    protected TreeGrid<GWTJahiaNode> m_treeTable;
+    protected TreeTableStore<GWTJahiaNode> store;
 //    private PreviousPathsOpener<GWTJahiaNode> previousPathsOpener = null ;
-//    private Listener<TreeEvent> tempListener = null ;
+    //    private Listener<TreeEvent> tempListener = null ;
     protected TreeGridSelectionModel<GWTJahiaNode> selectionModel;
     private String rootPath;
 
-    protected boolean init = true ;
+    protected boolean init = true;
 
-    protected String selectPathAfterUpload = null ;
+    protected String selectPathAfterUpload = null;
 
     protected TreeLoader<GWTJahiaNode> getTreeLoader(final String startPath) {
-        final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance() ;
+        final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
         // data proxy
         RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
@@ -103,7 +103,7 @@ public class ContentTreeTable extends TopRightComponent {
                     } else {
                         service.getRoot(JCRClientUtils.GLOBAL_REPOSITORY, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), startPath, listAsyncCallback);
                     }
-                    init = false ;
+                    init = false;
                 } else {
                     service.ls((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, false, listAsyncCallback);
                 }
@@ -114,12 +114,12 @@ public class ContentTreeTable extends TopRightComponent {
         return new CustomTreeLoader<GWTJahiaNode>(proxy) {
             @Override
             public boolean hasChildren(GWTJahiaNode parent) {
-                return parent.hasChildren() ;
+                return parent.hasChildren();
             }
 
             protected void onLoadSuccess(Object parent, List<GWTJahiaNode> children) {
                 super.onLoadSuccess(parent, children);
-                for (GWTJahiaNode n: children) {
+                for (GWTJahiaNode n : children) {
                     n.setParent((GWTJahiaNode) parent);
                 }
                 if (selectPathAfterUpload != null) {
@@ -133,49 +133,36 @@ public class ContentTreeTable extends TopRightComponent {
                 expandAllPreviousPaths(startPath);
             }
 
-            
+
         };
     }
-    
+
     public ContentTreeTable(String rootPath, String startPath, ManagerConfiguration config) {
         this.rootPath = rootPath != null && rootPath.length() > 0 ? rootPath : null;
-        m_component = new ContentPanel(new FitLayout()) ;
+        m_component = new ContentPanel(new FitLayout());
         m_component.setHeaderVisible(false);
         m_component.setBorders(false);
         m_component.setBodyBorder(false);
         loader = getTreeLoader(startPath);
 
         // tree store
-        store = new TreeTableStore<GWTJahiaNode>(loader) ;
+        store = new TreeTableStore<GWTJahiaNode>(loader);
 
-        configuration = config ;
+        configuration = config;
 
-        String columns = null ;
+        String columns = null;
         if (config.getTableColumns().size() > 0) {
-            StringBuilder cols = new StringBuilder(config.getTableColumns().get(0)) ;
-            for (int i=1; i<config.getTableColumns().size(); i++) {
-                cols.append(",").append(config.getTableColumns().get(i)) ;
+            StringBuilder cols = new StringBuilder(config.getTableColumns().get(0));
+            for (int i = 1; i < config.getTableColumns().size(); i++) {
+                cols.append(",").append(config.getTableColumns().get(i));
             }
-            columns = cols.toString() ;
+            columns = cols.toString();
         }
         m_treeTable = new TreeGrid<GWTJahiaNode>(store, getHeaders(columns));
         m_treeTable.setIconProvider(ContentModelIconProvider.getInstance());
-        m_treeTable.setBorders(false);        
-//        m_treeTable.setHorizontalScroll(true);
-//        m_treeTable.setAnimate(false);
-//        m_treeTable.getStyle().setLeafIconStyle("tree-folder");
-
-//        binder = new MyTreeTableBinder<GWTJahiaNode>(m_treeTable, store) ;
-//        binder.init() ;
-//        binder.setCaching(false);
-//        binder.setDisplayProperty("displayName");
-//        binder.setIconProvider(new ModelStringProvider<GWTJahiaNode>() {
-//            public String getStringValue(GWTJahiaNode modelData, String s) {
-//                return modelData.getExt() ;
-//            }
-//        });
+        m_treeTable.setBorders(false);
         m_treeTable.setSelectionModel(new SM());
-        m_component.add(m_treeTable) ;
+        m_component.add(m_treeTable);
     }
 
     protected void expandAllPreviousPaths(String path) {
@@ -188,11 +175,11 @@ public class ContentTreeTable extends TopRightComponent {
 
     public void setSelectPathAfterDataUpdate(String path) {
         if (path != null) {
-            Log.debug("set path to select : " + path) ;
+            Log.debug("set path to select : " + path);
         } else {
-            Log.debug("set path to select : null") ;
+            Log.debug("set path to select : null");
         }
-        selectPathAfterUpload = path ;
+        selectPathAfterUpload = path;
     }
 
     private void selectPath(String path) {
@@ -229,11 +216,11 @@ public class ContentTreeTable extends TopRightComponent {
 
     public void initWithLinker(BrowserLinker linker) {
         super.initWithLinker(linker);
-        loader.load() ;
+        loader.load();
     }
 
     public void initContextMenu() {
-         m_treeTable.setContextMenu(new ContentListContextMenu(getLinker(), configuration));
+        m_treeTable.setContextMenu(new ContentListContextMenu(getLinker(), configuration));
     }
 
     public void setContent(Object root) {
@@ -244,11 +231,11 @@ public class ContentTreeTable extends TopRightComponent {
     }
 
     public Object getSelection() {
-        List<GWTJahiaNode> elts = m_treeTable.getSelectionModel().getSelection() ;
-        if (elts != null && elts.size()>0) {
-            return elts ;
+        List<GWTJahiaNode> elts = m_treeTable.getSelectionModel().getSelection();
+        if (elts != null && elts.size() > 0) {
+            return elts;
         } else {
-            return null ;
+            return null;
         }
     }
 
@@ -311,13 +298,13 @@ public class ContentTreeTable extends TopRightComponent {
 //                }
 //            }
 //        } else {
-            Log.debug("reloading entire tree") ;
-            loader.load(null) ;
+        Log.debug("reloading entire tree");
+        loader.load(null);
 //        }
     }
 
     public Component getComponent() {
-        return m_component ;
+        return m_component;
     }
 
     public void clearSelection() {
@@ -326,32 +313,32 @@ public class ContentTreeTable extends TopRightComponent {
 
     private static ColumnModel getHeaders(String config) {
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
-        if (config == null || config.length()==0) {
+        if (config == null || config.length() == 0) {
             config = "name,size,date,version";
         }
 
         String[] s = config.split(",");
         for (String s1 : s) {
             if (s1.equals("name")) {
-                ColumnConfig col = new ColumnConfig("displayName", Messages.getResource("fm_column_name"), 300) ;
+                ColumnConfig col = new ColumnConfig("displayName", Messages.getResource("fm_column_name"), 300);
                 col.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
-                headerList.add(col) ;
+                headerList.add(col);
             } else if (s1.equals("size")) {
-                ColumnConfig col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 70) ;
+                ColumnConfig col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 70);
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                         if (gwtJahiaNode != null && gwtJahiaNode.getSize() != null) {
-                            long size = gwtJahiaNode.getSize().longValue() ;
-                            return Formatter.getFormattedSize(size) ;
+                            long size = gwtJahiaNode.getSize().longValue();
+                            return Formatter.getFormattedSize(size);
                         } else {
-                            return "-" ;
+                            return "-";
                         }
                     }
                 });
-                headerList.add(col) ;
+                headerList.add(col);
             } else if (s1.equals("date")) {
-                ColumnConfig col = new ColumnConfig("date", Messages.getResource("fm_column_date"), 80) ;
+                ColumnConfig col = new ColumnConfig("date", Messages.getResource("fm_column_date"), 80);
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
@@ -363,7 +350,7 @@ public class ContentTreeTable extends TopRightComponent {
                         }
                     }
                 });
-                headerList.add(col) ;
+                headerList.add(col);
             } else if (s1.equals("version")) {
                 ColumnConfig col = new ColumnConfig("version", Messages.getResource("fm_column_version"), 150);
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
@@ -385,8 +372,8 @@ public class ContentTreeTable extends TopRightComponent {
                                 public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> simpleComboValueSelectionChangedEvent) {
                                     SimpleComboValue<String> value = simpleComboValueSelectionChangedEvent.getSelectedItem();
                                     String value1 = value.getValue();
-                                    if(!s2.equals(value1))
-                                    gwtJahiaNode.setSelectedVersion(value1.split("\\(")[0].trim());
+                                    if (!s2.equals(value1))
+                                        gwtJahiaNode.setSelectedVersion(value1.split("\\(")[0].trim());
                                 }
                             });
                             combo.setDeferHeight(true);
@@ -404,6 +391,22 @@ public class ContentTreeTable extends TopRightComponent {
                     }
                 });
                 headerList.add(col);
+            } else if (s1.equals("picker")) {
+                ColumnConfig col = new ColumnConfig("picker", 150);
+                col.setAlignment(Style.HorizontalAlignment.CENTER);
+                col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+                    public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
+                        final Button pickContentButton = new Button("add");
+                        pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>(){
+                            public void componentSelected(ButtonEvent buttonEvent) {
+                                 // To implement and send the "add event"
+                            }
+                        });
+                        return pickContentButton;
+
+                    }
+                });
+                headerList.add(col);
             }
         }
         return new ColumnModel(headerList);
@@ -414,13 +417,13 @@ public class ContentTreeTable extends TopRightComponent {
      */
     private class TreeTableStore<M extends ModelData> extends TreeStore<M> {
         public TreeTableStore(TreeLoader<M> loader) {
-            super(loader) ;
+            super(loader);
         }
 
         protected void onBeforeLoad(LoadEvent e) {
             super.onBeforeLoad(e);
             if (getLinker() != null) {
-                getLinker().loading("loading...") ;
+                getLinker().loading("loading...");
             }
         }
 
@@ -428,9 +431,9 @@ public class ContentTreeTable extends TopRightComponent {
          * This allows selection after tree items have been loaded (asynchronous call is 'blocking' here)
          */
         protected void onLoad(TreeLoadEvent e) {
-            super.onLoad(e) ;
+            super.onLoad(e);
             if (getLinker() != null) {
-                getLinker().loaded() ;
+                getLinker().loaded();
             }
         }
     }
@@ -443,7 +446,11 @@ public class ContentTreeTable extends TopRightComponent {
         @Override
         protected void onSelectChange(ModelData modelData, boolean b) {
             super.onSelectChange(modelData, b);
-            ((ContentPickerContainer)getLinker().getTopRightObject()).handleNewSelection();
+            ((ContentPickerContainer) getLinker().getTopRightObject()).handleNewSelection();
         }
+    }
+
+    public void onSelectButtonClicked(Button pickContentButton){
+
     }
 }

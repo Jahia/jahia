@@ -31,20 +31,23 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.TabPanelEvent;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.TabPanelEvent;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.List;
 
@@ -59,6 +62,7 @@ public class ContentPickerContainer extends TopRightComponent {
     private ThumbView m_thumbs ;
     private SearchTable m_search ;
     private ContentPathBar pathBar ;
+    private ContentPickerGrid pickerGrid;
     private TabPanel tabs ;
     private TabItem treeTable ;
     private TabItem search ;
@@ -68,13 +72,18 @@ public class ContentPickerContainer extends TopRightComponent {
         m_treeTable = new ContentTreeTable(rootPath, startPath, config);
         m_search = new SearchTable(config) ;
         m_thumbs = new ThumbView(config) ;
-        m_component = new ContentPanel(new FitLayout()) ;
+        m_component = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL)) ;
         m_component.setBodyBorder(false);
         m_component.setBorders(false);
         m_component.setHeaderVisible(false);
+
         pathBar = new ContentPathBar(startPath, config, callback, allowThumbs) ;
 
+
+        pickerGrid = new ContentPickerGrid(config,callback);
+
         tabs = new TabPanel() ;
+        tabs.setHeight(400);
         tabs.setBodyBorder(false);
         tabs.setBorders(false);
         treeTable = new TabItem(Messages.getResource("fm_browse")) ;
@@ -125,7 +134,8 @@ public class ContentPickerContainer extends TopRightComponent {
             }
         });
 
-        m_component.add(tabs) ;
+        m_component.add(tabs,new RowData(1, -1, new Margins(0))) ;
+        m_component.add(pickerGrid,new RowData(1, 1, new Margins(0))) ;
         m_component.setTopComponent(pathBar.getComponent());
         m_component.setBottomComponent(new FilterStatusBar(config.getFilters(), config.getMimeTypes(), config.getNodeTypes()));
     }
@@ -136,6 +146,9 @@ public class ContentPickerContainer extends TopRightComponent {
 
     public void handleNewSelection() {
         pathBar.handleNewSelection(null, getSelection());
+
+        // TO Do: getSelection should alwas return a list of GWTJahiaNode
+        pickerGrid.setSelection((List<GWTJahiaNode>)getSelection());
     }
 
     public void initWithLinker(BrowserLinker linker) {
@@ -150,7 +163,7 @@ public class ContentPickerContainer extends TopRightComponent {
     }
 
     public void setContent(Object root) {
-        // ...
+        pickerGrid.setContent(root);
     }
 
     public void clearTable() {

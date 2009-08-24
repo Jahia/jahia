@@ -1,3 +1,10 @@
+<%@ tag import="org.jahia.params.ProcessingContext" %>
+<%@ tag import="org.jahia.registries.ServicesRegistry" %>
+<%@ tag import="org.jahia.services.content.JCRNodeWrapper" %>
+<%@ tag import="org.jahia.services.content.JCRStoreService" %>
+<%@ tag import="javax.jcr.RepositoryException" %>
+<%@ tag import="java.util.ArrayList" %>
+<%@ tag import="java.util.Iterator" %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
@@ -34,6 +41,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ attribute name="rootPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="startPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="enginemode" required="false" rtexprvalue="true" type="java.lang.Boolean" description="text" %>
@@ -42,28 +50,75 @@
 <%@ attribute name="mimeTypes" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="conf" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="embedded" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
-<%@ attribute name="enablePortletDeployment" required="false" rtexprvalue="true" type="java.lang.Boolean" description="text" %>
 <%@ attribute name="callback" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
+<%@ attribute name="selectedNodeUUIds" required="false" rtexprvalue="true" type="java.util.List" description="text" %>
 
-<link rel="stylesheet" type="text/css" media="screen" href="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/uvumi-crop.css"/>
-<style type="text/css" >
-.yellowSelection{
-border: 2px dotted #FFB82F;
-}
 
-.blueMask{
-background-color:#00f;
-cursor:pointer;
-}
+<link rel="stylesheet" type="text/css" media="screen"
+      href="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/uvumi-crop.css"/>
+<style type="text/css">
+    .yellowSelection {
+        border: 2px dotted #FFB82F;
+    }
+
+    .blueMask {
+        background-color: #00f;
+        cursor: pointer;
+    }
 </style>
 
-<script type="text/javascript" src="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/mootools-for-crop.js"> </script>
-<script type="text/javascript" src="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/UvumiCrop-compressed.js"> </script>
-<script type="text/javascript" > var crop=0; 	</script>
-<template:gwtJahiaModule id="contentmanager" jahiaType="contentmanager" rootPath="<%=rootPath%>" startPath="<%=startPath%>"
+<script type="text/javascript"
+        src="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/mootools-for-crop.js"></script>
+<script type="text/javascript"
+        src="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/UvumiCrop-compressed.js"></script>
+<script type="text/javascript"> var crop = 0;     </script>
+<%
+    final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
+    final JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
+
+%>
+
+<script type="text/javascript">
+    var sContentNodes = [
+        <%
+if(selectedNodeUUIds == null){
+ // case of single selection
+ selectedNodeUUIds = new ArrayList<String>();
+}
+
+final Iterator selectedNodeIter = selectedNodeUUIds.iterator();
+while (selectedNodeIter.hasNext()) {
+   final String uuid = (String) selectedNodeIter.next();
+   JCRNodeWrapper jcrNodeWrapper = null ;
+   try {
+        jcrNodeWrapper = service.getNodeByUUID(uuid, jParams.getUser());
+   } catch (RepositoryException e) {
+        jcrNodeWrapper = null;
+   }
+   if (jcrNodeWrapper != null) {
+        %>
+        {
+            uuid:"<%=jcrNodeWrapper.getUUID()%>",
+            name:"<%=jcrNodeWrapper.getName()%>",
+            displayName:"<%=jcrNodeWrapper.getName()%>",
+            path:"<%=jcrNodeWrapper.getPath()%>"
+        }<%if(selectedNodeIter.hasNext()){%>,
+        <%}%>
+        <%
+     }
+
+}%>
+    ];
+    var sLocale = '${locale}';
+
+    var sAutoSelectParent = '${autoSelectParent}';
+
+</script>
+<template:gwtJahiaModule id="contentmanager" jahiaType="contentmanager" rootPath="<%=rootPath%>"
+                         startPath="<%=startPath%>"
                          enginemode="<%=enginemode%>" nodeTypes="<%=nodeTypes%>" filters="<%=filters%>"
-                         mimeTypes="<%=mimeTypes%>" callback="<%=callback%>" config="<%=conf%>" embedded="<%=embedded%>"
-                         enablePortletDeployment="<%=enablePortletDeployment%>"/>
+                         mimeTypes="<%=mimeTypes%>" callback="<%=callback%>" config="<%=conf%>"
+                         embedded="<%=embedded%>"/>
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newDir.label"
                             aliasResourceName="fm_newdir"/>
@@ -130,7 +185,7 @@ cursor:pointer;
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.refresh.label"
                             aliasResourceName="fm_refresh"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newCategory.label"
-                            aliasResourceName="fm_newcategory"/>                            
+                            aliasResourceName="fm_newcategory"/>
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.statusbar.copying.label"
                             aliasResourceName="fm_copying"/>
@@ -204,8 +259,9 @@ cursor:pointer;
                             aliasResourceName="fm_failRotate"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.saveSearch.label"
                             aliasResourceName="fm_failSaveSearch"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.inUseSaveSearch.label"
-                            aliasResourceName="fm_inUseSaveSearch"/>
+<internal:gwtResourceBundle
+        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.inUseSaveSearch.label"
+        aliasResourceName="fm_inUseSaveSearch"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.unlock.label"
                             aliasResourceName="fm_failUnlock"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.failure.unmount.label"
@@ -369,26 +425,36 @@ cursor:pointer;
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label"
                             aliasResourceName="fm_column_provider"/>
 
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"
-                            aliasResourceName="fm_repository_myRepository"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.usersRepository.label"
-                            aliasResourceName="fm_repository_usersRepository"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myExternalRepository.label"
-                            aliasResourceName="fm_repository_myExternalRepository"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"
-                            aliasResourceName="fm_repository_sharedRepository"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteRepository.label"
-                            aliasResourceName="fm_repository_websiteRepository"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myMashupRepository.label"
-                            aliasResourceName="fm_repository_myMashupRepository"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedMashupRepository.label"
-                            aliasResourceName="fm_repository_sharedMashupRepository"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteMashupRepository.label"
-                            aliasResourceName="fm_repository_websiteMashupRepository"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.globalRepository.label"
-                            aliasResourceName="fm_repository_globalRepository"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.categoryRepository.label"
-                            aliasResourceName="fm_repository_categoryRepository"/>
+<internal:gwtResourceBundle
+        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"
+        aliasResourceName="fm_repository_myRepository"/>
+<internal:gwtResourceBundle
+        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.usersRepository.label"
+        aliasResourceName="fm_repository_usersRepository"/>
+<internal:gwtResourceBundle
+        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myExternalRepository.label"
+        aliasResourceName="fm_repository_myExternalRepository"/>
+<internal:gwtResourceBundle
+        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"
+        aliasResourceName="fm_repository_sharedRepository"/>
+<internal:gwtResourceBundle
+        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteRepository.label"
+        aliasResourceName="fm_repository_websiteRepository"/>
+<internal:gwtResourceBundle
+        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myMashupRepository.label"
+        aliasResourceName="fm_repository_myMashupRepository"/>
+<internal:gwtResourceBundle
+        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedMashupRepository.label"
+        aliasResourceName="fm_repository_sharedMashupRepository"/>
+<internal:gwtResourceBundle
+        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteMashupRepository.label"
+        aliasResourceName="fm_repository_websiteMashupRepository"/>
+<internal:gwtResourceBundle
+        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.globalRepository.label"
+        aliasResourceName="fm_repository_globalRepository"/>
+<internal:gwtResourceBundle
+        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.categoryRepository.label"
+        aliasResourceName="fm_repository_categoryRepository"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.savedSearch.label"
                             aliasResourceName="fm_repository_savedSearch"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.portletdef.label"

@@ -54,9 +54,7 @@ import org.jahia.services.webdav.JahiaWebdavBaseService;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Status;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -74,6 +72,7 @@ public class DAVFile_Field implements FieldSubEngine {
 
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(DAVFile_Field.class);
+    public static final String SELECTED_CONTENT_NODE_UUIDS = "selectedContentNodeUUIDs";
 
     /**
      * getInstance
@@ -100,7 +99,7 @@ public class DAVFile_Field implements FieldSubEngine {
         final String fieldsEditCallingEngineName = (String) engineMap.get("fieldsEditCallingEngineName");
         final JahiaField theField = (JahiaField) engineMap.get(fieldsEditCallingEngineName + "." + "theField");
         engineMap.put("filemanagerUrl", jParams.composeEngineUrl("filemanager", ""));
-        if  (logger.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             logger.debug("FieldID: " + theField.getID());
             logger.debug("mode is: " + mode);
         }
@@ -114,11 +113,11 @@ public class DAVFile_Field implements FieldSubEngine {
         }
 
         switch (mode) {
-            case (JahiaEngine.LOAD_MODE)            :
+            case (JahiaEngine.LOAD_MODE):
                 return composeEngineMap(jParams, engineMap, theField);
-            case (JahiaEngine.UPDATE_MODE)          :
+            case (JahiaEngine.UPDATE_MODE):
                 return getFormData(jParams, engineMap, theField);
-            case (JahiaEngine.SAVE_MODE)            :
+            case (JahiaEngine.SAVE_MODE):
                 return saveData(jParams, theField);
         }
         return false;
@@ -164,9 +163,9 @@ public class DAVFile_Field implements FieldSubEngine {
         if (object.isValid()) {
             engineMap.put("deniedUsers", object.comparePermsWithField(theField, theContainer));
             engineMap.put("canAdmin", Boolean.valueOf(object.hasPermission(JCRNodeWrapper.MANAGE)));
-            jParams.setParameter("select-file",object.getPath());
+            setSelectedNode(jParams, object);
         } else {
-            jParams.setParameter("select-file", JahiaField.NULL_STRING_MARKER);
+            setSelectedNode(jParams,null);
             engineMap.remove("deniedUsers");
             engineMap.remove("canAdmin");
         }
@@ -189,30 +188,30 @@ public class DAVFile_Field implements FieldSubEngine {
                 try {
                     object.save();
                 } catch (RepositoryException e) {
-                    logger.error("error",e);                    
+                    logger.error("error", e);
                 }
             } finally {
                 if (object.getTransactionStatus() == Status.STATUS_ACTIVE) {
                     try {
                         object.refresh(false);
                     } catch (RepositoryException e) {
-                        logger.error("error",e);
+                        logger.error("error", e);
                     }
                 }
-            }                
+            }
         }
 //        }
 
         //logger.debug ("getFormData for " +  jParams.getEngine() + " fileTitle is " + fileTitle);
 
         if (jParams.getParameter("ignoreWarnings") == null) {
-            if (engineMap.containsKey("deniedUsers") && ! "cancel".equals(jParams.getParameter("screen"))) {
+            if (engineMap.containsKey("deniedUsers") && !"cancel".equals(jParams.getParameter("screen"))) {
                 final Set<String> deniedUsers = (Set<String>) engineMap.get("deniedUsers");
                 if (deniedUsers.size() > 0) {
                     composeFileField(jParams, engineMap, theField);
                     final EngineLanguageHelper elh = (EngineLanguageHelper)
                             engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
-                    jParams.setParameter (EngineLanguageHelper.ENGINE_LANG_PARAM,elh.getPreviousLanguageCode());
+                    jParams.setParameter(EngineLanguageHelper.ENGINE_LANG_PARAM, elh.getPreviousLanguageCode());
                     elh.update(jParams);
                     return false;
                 }
@@ -221,6 +220,27 @@ public class DAVFile_Field implements FieldSubEngine {
 
         return out;
     } // end getFormData
+
+    /**
+     * Set selected node
+     * @param jParams
+     * @param object
+     */
+    private void setSelectedNode(ProcessingContext jParams, JCRNodeWrapper object) {
+        if (object != null) {
+            jParams.setParameter("select-file", object.getPath());
+            List<String> selectedContentNodeUUIDs = new ArrayList<String>();
+            try {
+                selectedContentNodeUUIDs.add(object.getUUID());
+                jParams.setAttribute(SELECTED_CONTENT_NODE_UUIDS, selectedContentNodeUUIDs);
+            } catch (RepositoryException e) {
+                logger.error(e, e);
+            }
+        } else {
+            jParams.setParameter("select-file", JahiaField.NULL_STRING_MARKER);
+            jParams.removeAttribute(SELECTED_CONTENT_NODE_UUIDS);
+        }
+    }
 
 
     /**
@@ -305,14 +325,14 @@ public class DAVFile_Field implements FieldSubEngine {
         if (rm.isValid() && davAction == null) {
             engineMap.put("deniedUsers", rm.comparePermsWithField(theField, theContainer));
             engineMap.put("canAdmin", Boolean.valueOf(rm.hasPermission(JCRNodeWrapper.MANAGE)));
-            jParams.setParameter("select-file", rm.getPath());
+            setSelectedNode(jParams, rm);
         } else {
-            jParams.setParameter("select-file", JahiaField.NULL_STRING_MARKER);
+            setSelectedNode(jParams,null);
             engineMap.remove("deniedUsers");
             engineMap.remove("canAdmin");
         }
 
-        if  (logger.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             logger.debug("select-file: " + jParams.getParameter("select-file"));
         }
 
@@ -330,14 +350,14 @@ public class DAVFile_Field implements FieldSubEngine {
         if (results != null) {
             if ("edit".equals(screen)) {
                 isLocked = results.getReadOnlyTabs().contains(LockPrerequisites.EDIT) ||
-                            results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT);
+                        results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT);
             } else if ("metadata".equals(screen)) {
                 isLocked = results.getReadOnlyTabs().contains(LockPrerequisites.METADATA) ||
-                            results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT);
+                        results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT);
             }
         }
         final boolean readOnly = (results != null && isLocked);
-        if (editable && ! readOnly) {
+        if (editable && !readOnly) {
             output = ServicesRegistry.getInstance().getJahiaFetcherService().fetchServlet((ParamBean) jParams, TREE_MANAGER_JSP);
         } else {
             output = ServicesRegistry.getInstance().getJahiaFetcherService().fetchServlet((ParamBean) jParams, READONLY_JSP);
@@ -372,7 +392,7 @@ public class DAVFile_Field implements FieldSubEngine {
             }
         }
 
-        engineMap.put("filename", TableEntry.javascriptEncode(fField.getRealName()));    
+        engineMap.put("filename", TableEntry.javascriptEncode(fField.getRealName()));
 
         if (fField.getRealName().equals("")) {
             engineMap.put("filenotloaded", fField.getType());

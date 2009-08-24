@@ -111,7 +111,6 @@ public class ContentPathBar extends TopBar {
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelection) {
         List<GWTJahiaNode> selection = (List<GWTJahiaNode>) topTableSelection ;
 
-        GWTJahiaNode node = selection.get(0);
         if (selection != null && selection.size() > 0 && (selection.get(0).getNodeTypes().contains(config.getNodeTypes()) || selection.get(0).getInheritedNodeTypes().contains(config.getNodeTypes()))) {
             final String path = selection.get(0).getPath();
             JahiaContentManagementService.App.getInstance().isFileAccessibleForCurrentContainer(path, new AsyncCallback<Boolean>() {

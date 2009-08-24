@@ -31,9 +31,6 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
-<%@ page import="org.jahia.services.categories.Category" %>
-<%@ page import="org.jahia.services.usermanager.JahiaUser" %>
 <%@ page import="org.jahia.bin.JahiaAdministration" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
@@ -77,7 +74,7 @@
                                 </div>
                             </div>
                             <div class="content-item-noborder">
-                                <internal:contentManager embedded="true" nodeTypes="jnt:portletDefinition" conf="portletdefinitionmanager" enablePortletDeployment=""/>
+                                <internal:contentManager embedded="true" nodeTypes="jnt:portletDefinition" conf="portletdefinitionmanager"/>
                             </div>
                         </div>
                     </div>

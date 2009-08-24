@@ -31,14 +31,18 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ page import="org.jahia.params.ParamBean"%>
-<%@ page import="org.jahia.data.fields.*" %>
-<%@ page import="org.jahia.registries.ServicesRegistry" %>
-<%@ page import="org.jahia.data.containers.ContainerFacadeInterface" %>
-<%@ page import="java.util.*" %>
+<%@ page import="org.jahia.data.containers.ContainerFacadeInterface"%>
+<%@ page import="org.jahia.data.fields.FieldsEditHelper" %>
+<%@ page import="org.jahia.data.fields.FieldsEditHelperAbstract" %>
+<%@ page import="org.jahia.data.fields.JahiaField" %>
+<%@ page import="org.jahia.engines.EngineLanguageHelper" %>
 <%@ page import="org.jahia.engines.JahiaEngine"%>
-<%@ page import="org.jahia.engines.EngineLanguageHelper"%>
-<%@ page import="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"%>
+<%@ page import="org.jahia.engines.shared.DAVFile_Field"%>
+<%@ page import="org.jahia.params.ParamBean"%>
+<%@ page import="org.jahia.registries.ServicesRegistry" %>
+<%@ page import="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
@@ -50,6 +54,7 @@
 <%
     final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
     String path = jParams.getParameter("select-file");
+    List<String> selectedContentNodeUUIDs = (List<String>)jParams.getAttribute(DAVFile_Field.SELECTED_CONTENT_NODE_UUIDS);
     if (path == null || path.equals("<empty>")) {
         path = "" ;
     }
@@ -107,5 +112,5 @@
     </tr>
   </table> 
 </div>
-<internal:contentManager startPath="<%=path%>" enginemode="true" nodeTypes="<%=nodeType%>" mimeTypes="<%=mimeTypes%>" filters="<%=filters%>" conf="filepicker" rootPath="files" />
+<internal:contentManager startPath="<%=path%>" selectedNodeUUIds="<%=selectedContentNodeUUIDs%>" enginemode="true" nodeTypes="<%=nodeType%>" mimeTypes="<%=mimeTypes%>" filters="<%=filters%>" conf="filepicker" rootPath="files" />
 

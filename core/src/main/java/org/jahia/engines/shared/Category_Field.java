@@ -78,7 +78,7 @@ public class Category_Field implements FieldSubEngine {
     public static final String CATEGORYTREE_ENGINEMAPKEY = "categoryTree";
     public static final String FLATCATEGORYLIST_ENGINEMAPKEY = "flatCategoryList";
 
-    public static final String CATEGORYPREFIX_HTMLPARAMETER = "category_";
+    public static final String CATEGORYPREFIX_HTMLPARAMETER = "content_id";
 
     public static final String DEFAULT_CATEGORY_RESERVED_DEFINITION_NAME = "defaultCategory";
 
@@ -353,19 +353,25 @@ public class Category_Field implements FieldSubEngine {
 
         final Iterator<String> paramNameIter = parameterMap.keySet().iterator();
         final List<String> newSelectedCategoryUUIDs = new ArrayList<String>();
-        
         while (paramNameIter.hasNext()) {
             String curParamName = paramNameIter.next();
             if (curParamName.startsWith(CATEGORYPREFIX_HTMLPARAMETER)) {
                 try {
                     final String curCategoryUUID = curParamName.substring(CATEGORYPREFIX_HTMLPARAMETER.length());
-                    logger.debug("Submitted category key : " + curCategoryUUID);                    
+                    logger.debug("Submitted category key : " + curCategoryUUID);
                     newSelectedCategoryUUIDs.add(curCategoryUUID);
                 } catch (final Exception e) {
                     logger.debug(e, e);
                 }
             }
         }
+
+        // get selected caetgories
+        String[] selectedCategories = jParams.getParameterValues(CATEGORYPREFIX_HTMLPARAMETER);
+        for(String currentCat :selectedCategories){
+          newSelectedCategoryUUIDs.add(currentCat);  
+        }
+
         engineMap.put(theField.getDefinition().getName() + CATEGORIESUPDATED_ENGINEMAPKEY, Boolean.TRUE);
         engineMap.put(theField.getDefinition().getName() + SELECTEDCATEGORIES_ENGINEMAPKEY, newSelectedCategoryUUIDs);
         return true;

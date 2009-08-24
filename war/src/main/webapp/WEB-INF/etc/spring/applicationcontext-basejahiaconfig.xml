@@ -30,18 +30,6 @@
       </constructor-arg>
   </bean>
 
-    <!-- configuration bean -->
-	<bean id="jahiaConfigBean" class="org.jahia.bin.JahiaConfig">
-		<property name="settings">
-			<props>
-                <!--
-				<prop key="org.jahia.services.htmlparser.HtmlParser">org.jahia.services.htmlparser.NekoHtmlParser</prop>
-				-->
-				<prop key="org.jahia.services.htmlparser.HtmlParser">org.jahia.services.htmlparser.TidyHtmlParser</prop>
-			</props>
-		</property>
-	</bean>
-
 	<bean id="JCRConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 		<property name="properties">
 			<props>

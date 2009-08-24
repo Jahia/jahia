@@ -232,8 +232,6 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
     private Map<String, Shutdownable> shutdownables = new HashMap<String, Shutdownable>();
 
-    private Properties clusterNodeSettings;
-
     private JahiaSitesService sitesService;
     private SchedulerService schedulerService;
     private ClusterService clusterService;
@@ -281,10 +279,6 @@ public class JahiaSearchBaseService extends JahiaSearchService
             }
         }
         return theObject;
-    }
-
-    public void setClusterNodeSettings(Properties clusterNodeSettings) {
-        this.clusterNodeSettings = clusterNodeSettings;
     }
 
     public void setSitesService(JahiaSitesService sitesService) {
@@ -548,7 +542,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
     }
 
     public void run(){
-        setServerId(clusterNodeSettings.getProperty("serverId"));
+        setServerId(clusterService.getServerId());
         boolean processedStartupLatencyTime = false;
         SpringContextSingleton instance = SpringContextSingleton.getInstance();
         Session session = null;
@@ -1968,7 +1962,6 @@ public class JahiaSearchBaseService extends JahiaSearchService
         }
         try {
             Iterator<JahiaSite> sites = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
-            SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
             while ( sites.hasNext() ){
                 JahiaUser user = null;
                 JahiaSite site = sites.next();

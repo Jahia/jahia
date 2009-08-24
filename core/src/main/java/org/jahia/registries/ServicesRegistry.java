@@ -73,7 +73,6 @@ import org.jahia.services.sso.CasService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
 import org.jahia.services.toolbar.JahiaToolbarService;
-import org.jahia.services.urlrewriting.URLRewritingService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteUserManagerService;
@@ -178,9 +177,6 @@ public class ServicesRegistry {
     // Jahia Workflow service
     private static final String WORKFLOW_SERVICE = "WorkflowService";
 
-    // Jahia Applications Share Service
-    private static final String JAHIA_APPS_SHARE_SERVICE = "AppsShareService";
-
     // Jahia Versioning Service
     private static final String JAHIA_VERSION_SERVICE = "JahiaVersionService";
 
@@ -200,8 +196,6 @@ public class ServicesRegistry {
     private static final String CATEGORY_SERVICE = "CategoryService";
 
     private static final String HTML_PARSER_SERVICE = "HtmlParserService";
-
-    private static final String URL_REWRITING_SERVICE = "URLRewritingService";
 
     private static final String METADATA_SERVICE = "MetadataService";
 
@@ -477,10 +471,6 @@ public class ServicesRegistry {
 
     public HtmlParserService getHtmlParserService() {
         return (HtmlParserService) getService(HTML_PARSER_SERVICE);
-    }
-
-    public URLRewritingService getURLRewritingService() {
-        return (URLRewritingService) getService(URL_REWRITING_SERVICE);
     }
 
     public WorkflowService getWorkflowService() {

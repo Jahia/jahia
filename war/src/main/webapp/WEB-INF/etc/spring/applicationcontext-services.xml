@@ -18,18 +18,6 @@
       <property name="settingsBean" ref="settingsBean"/>
    </bean>
 
-    <!-- You can change here the cache implementation that Jahia will use, notably for it's HTML cache, internal
-         caches. For DB caches, this is now managed by the Hibernate implementation, and is configured in the
-         applicationContext-hibernate.xml file.
-    -->
-	<bean id="ClusterNodeSettings" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-		<property name="properties">
-			<props>
-				<prop key="serverId">${cluster.node.serverId}</prop>
-			</props>
-		</property>
-	</bean>
-
     <bean id="clusterService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.cluster.JGroupsClusterService" parent="jahiaServiceTemplate">
@@ -55,6 +43,10 @@ FRAG2(frag_size=60000)</value>
         </property>
     </bean>
 
+    <!-- You can change here the cache implementation that Jahia will use, notably for it's HTML cache, internal
+         caches. For DB caches, this is now managed by the Hibernate implementation, and is configured in the
+         applicationContext-hibernate.xml file.
+    -->
     <!--bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.jboss.cache.TreeCacheProvider" /-->
     <!--bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider" /-->
     <!-- For no cache use this provider -->
@@ -156,8 +148,7 @@ FRAG2(frag_size=60000)</value>
             </bean>
         </property>
     </bean>
-    <bean id="PortletDispatchingProvider" class="org.jahia.services.applications.pluto.PlutoDispatchingProvider" init-method="start" destroy-method="stop">
-    </bean>
+    <bean id="PortletDispatchingProvider" class="org.jahia.services.applications.pluto.PlutoDispatchingProvider" init-method="start" destroy-method="stop"/>
     <bean id="DispatchingService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.applications.DispatchingServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -174,8 +165,7 @@ FRAG2(frag_size=60000)</value>
         <property name="cacheService" ref="JahiaCacheService"/>
         <property name="settingsBean" ref="settingsBean"/>
     </bean>
-    <bean id="ApplicationsManagerPortletProvider" class="org.jahia.services.applications.pluto.ApplicationsManagerPlutoProvider" init-method="start" destroy-method="stop">
-    </bean>
+    <bean id="ApplicationsManagerPortletProvider" class="org.jahia.services.applications.pluto.ApplicationsManagerPlutoProvider" init-method="start" destroy-method="stop"/>
     <bean id="ApplicationsManagerService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.applications.ApplicationsManagerServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -476,7 +466,6 @@ FRAG2(frag_size=60000)</value>
                 <property name="compass" ref="compass" />
                 <property name="compassResourceConverter" ref="compassResourceConverter" />
                 <property name="searchIndexProcessPipeline" ref="searchIndexProcessPipeline" />
-                <property name="clusterNodeSettings" ref="ClusterNodeSettings" />
                 <property name="savedSearchViewSettings" ref="savedSearchViewSettings" />
                 <property name="fieldsToCopyToSearchHit" ref="fieldsToCopyToSearchHit" />
                 <property name="fieldsToExcludeFromHighlighting" ref="fieldsToExcludeFromHighlighting" />
@@ -674,13 +663,10 @@ FRAG2(frag_size=60000)</value>
     <bean id="HtmlParserService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.htmlparser.HtmlParserBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="jahiaConfig" ref="jahiaConfigBean" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="URLRewritingService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.urlrewriting.URLRewritingService" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="parserClassName" value="org.jahia.services.htmlparser.TidyHtmlParser" />
+                <!-- 
+                <property name="parserClassName" value="org.jahia.services.htmlparser.NekoHtmlParser" />
+                 -->
             </bean>
         </property>
     </bean>
@@ -822,8 +808,7 @@ FRAG2(frag_size=60000)</value>
 
     <bean id="CasService" parent="proxyTemplate">
         <property name="target">
-            <bean class="org.jahia.services.sso.CasService" parent="jahiaServiceTemplate" factory-method="getInstance">
-            </bean>
+            <bean class="org.jahia.services.sso.CasService" parent="jahiaServiceTemplate" factory-method="getInstance"/>
         </property>
     </bean>
 
@@ -889,26 +874,26 @@ FRAG2(frag_size=60000)</value>
         <property name="settingsBean" ref="settingsBean" />
     </bean>
 
-            <bean id="JahiaTemplateManagerService" class="org.jahia.services.templates.JahiaTemplateManagerService" parent="jahiaServiceTemplate">
-                <property name="templatePackageDeployer">
-                    <bean class="org.jahia.services.templates.TemplatePackageDeployer" depends-on="FileListSync">
-                      <property name="settingsBean" ref="settingsBean" />
-                      <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
-                      <property name="fileListSync" ref="FileListSync" />
-                    </bean>
-                </property>
-                <property name="siteService" ref="JahiaSitesService" />
-                <property name="tplService" ref="JahiaPageTemplateService" />
-                <property name="pageService" ref="JahiaPageService" />
-                <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
-                <property name="pageDefinitionHelper">
-                    <bean id="PageDefinitionHelper" class="org.jahia.services.templates.PageDefinitionHelper" depends-on="JahiaContainerDefinitionsRegistry">
-                      <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
-                      <property name="containerDefRegistry" ref="JahiaContainerDefinitionsRegistry" />
-                      <property name="searchService" ref="JahiaSearchService" />                      
-                    </bean>
-                </property>
+   <bean id="JahiaTemplateManagerService" class="org.jahia.services.templates.JahiaTemplateManagerService" parent="jahiaServiceTemplate">
+        <property name="templatePackageDeployer">
+            <bean class="org.jahia.services.templates.TemplatePackageDeployer" depends-on="FileListSync">
+		    	<property name="settingsBean" ref="settingsBean" />
+		      	<property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
+		      	<property name="fileListSync" ref="FileListSync" />
             </bean>
+        </property>
+        <property name="siteService" ref="JahiaSitesService" />
+        <property name="tplService" ref="JahiaPageTemplateService" />
+        <property name="pageService" ref="JahiaPageService" />
+        <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
+        <property name="pageDefinitionHelper">
+            <bean id="PageDefinitionHelper" class="org.jahia.services.templates.PageDefinitionHelper" depends-on="JahiaContainerDefinitionsRegistry">
+		      	<property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
+		      	<property name="containerDefRegistry" ref="JahiaContainerDefinitionsRegistry" />
+		      	<property name="searchService" ref="JahiaSearchService" />      
+            </bean>
+        </property>
+    </bean>
 
     <bean id="JahiaFieldDefinitionsRegistry" class="org.jahia.registries.JahiaFieldDefinitionsRegistry" factory-method="getInstance" init-method="init">
         <property name="cacheService" ref="JahiaCacheService" />
@@ -922,7 +907,7 @@ FRAG2(frag_size=60000)</value>
         <property name="templateManagerService" ref="JahiaTemplateManagerService" />        
     </bean>
 
-    <bean id="FileListSync"  class="org.jahia.services.deamons.filewatcher.FileListSync" factory-method="getInstance">
+    <bean id="FileListSync" class="org.jahia.services.deamons.filewatcher.FileListSync" factory-method="getInstance">
         <property name="clusterService" ref="clusterService" />
         <property name="schedulerService" ref="SchedulerService" />
         <property name="syncDelay" value="10000" />
@@ -1106,18 +1091,15 @@ FRAG2(frag_size=60000)</value>
         <property name="extractors">
             <map>
                 <entry key="application/msword">
-                    <bean class="org.jahia.services.content.automation.OfficeExtractor">
-                    </bean>
+                    <bean class="org.jahia.services.content.automation.OfficeExtractor"/>
                 </entry>
 
                 <entry key="image/jpeg">
-                    <bean class="org.jahia.services.content.automation.ExifExtractor">
-                    </bean>
+                    <bean class="org.jahia.services.content.automation.ExifExtractor"/>
                 </entry>
 
                 <entry key="application/pdf">
-                    <bean class="org.jahia.services.content.automation.PdfExtractor">
-                    </bean>
+                    <bean class="org.jahia.services.content.automation.PdfExtractor"/>
                 </entry>
             </map>
         </property>

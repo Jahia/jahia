@@ -33,7 +33,6 @@
 package org.jahia.services.htmlparser;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.JahiaConfig;
 import org.jahia.data.FormDataManager;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
@@ -62,22 +61,13 @@ public class HtmlParserBaseService extends HtmlParserService {
     static private HtmlParserBaseService instance = null;
 
     private HtmlParser parser = null;
-
-    private JahiaConfig jahiaConfig;
+    
+    private String parserClassName;
 
     protected HtmlParserBaseService() {
     }
 
-    public JahiaConfig getJahiaConfig() {
-        return jahiaConfig;
-    }
-
-    public void setJahiaConfig(JahiaConfig jahiaConfig) {
-        this.jahiaConfig = jahiaConfig;
-    }
-
-    public void start()
-            throws JahiaInitializationException {
+    public void start() throws JahiaInitializationException {
 
         this.parser = loadHtmlParser();
     }
@@ -150,8 +140,8 @@ public class HtmlParserBaseService extends HtmlParserService {
      *
      * @param siteId
      */
-    public List getHtmlDOMVisitors(int siteId) throws JahiaException {
-        List v = new LinkedList();
+    public List<HtmlDOMVisitor> getHtmlDOMVisitors(int siteId) throws JahiaException {
+        List<HtmlDOMVisitor> v = new LinkedList<HtmlDOMVisitor>();
         JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService()
                 .getSite(siteId);
         if (site.isHtmlMarkupFilteringEnabled()) {
@@ -190,24 +180,22 @@ public class HtmlParserBaseService extends HtmlParserService {
      * @return HtmlParser
      */
     private HtmlParser loadHtmlParser() {
-        final String className = jahiaConfig.getProperty("org.jahia.services.htmlparser.HtmlParser");
-        if (className != null) {
+        HtmlParser parserImpl = null;
+        if (parserClassName != null) {
             try {
-                final Class c = Class.forName(className);
-                final HtmlParser parser = (HtmlParser) c.newInstance();
-                if (parser != null) {
-                    parser.init(this);
+                parserImpl = (HtmlParser) Class.forName(parserClassName).newInstance();
+                if (parserImpl != null) {
+                	parserImpl.init(this);
                 }
-                return parser;
-            } catch (ClassNotFoundException cnfe) {
+            } catch (Exception cnfe) {
                 logger.error(cnfe);
-            } catch (InstantiationException ie) {
-                logger.error(ie);
-            } catch (IllegalAccessException iae) {
-                logger.error(iae);
             }
         }
-        return null;
+        return parserImpl;
+    }
+
+	public void setParserClassName(String parserClassName) {
+    	this.parserClassName = parserClassName;
     }
 
 }

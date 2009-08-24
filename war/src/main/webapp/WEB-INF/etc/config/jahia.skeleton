@@ -505,6 +505,9 @@ processingServer                                       =   true
 # Check out the assignment ranges to see if they may conflict with
 # something that might be present on your network.
 
+# The cluster communication protocol: either TCP or UDP 
+cluster.communication.protocol                         = TCP
+
 # Here a default configuration for UDP Clustering
 # You will have to comment the TCP configuration and uncomment the UDP settings in the
 # following files :

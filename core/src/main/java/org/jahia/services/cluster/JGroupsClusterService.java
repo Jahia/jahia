@@ -31,6 +31,7 @@
  */
  package org.jahia.services.cluster;
 
+import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jgroups.Address;
@@ -40,7 +41,6 @@ import org.jgroups.blocks.NotificationBus;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -52,12 +52,14 @@ import java.util.Set;
  */
 public class JGroupsClusterService extends ClusterService implements NotificationBus.Consumer {
 
-    private static final org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (JGroupsClusterService.class);
+    private static final Logger logger = Logger.getLogger (JGroupsClusterService.class);
 
     boolean connected = false;
-    Set clusterListeners = new HashSet();
-    private String channelProperties = JChannel.DEFAULT_PROTOCOL_STACK;
+    Set<ClusterListener> clusterListeners = new HashSet<ClusterListener>();
+    private String channelProperties;
+    private String channelPropertiesTcp = JChannel.DEFAULT_PROTOCOL_STACK;
+	private String channelPropertiesUdp = JChannel.DEFAULT_PROTOCOL_STACK;
+    private String channelProtocol = "tcp";
     private String channelGroupName = "JahiaCluster";
     private String serverId;
 
@@ -67,9 +69,7 @@ public class JGroupsClusterService extends ClusterService implements Notificatio
         if (logger.isDebugEnabled()) {
             logger.debug("Handling notification : " + serializable.getClass().getName() + " on channel "+channelGroupName);
         }
-        Iterator clusterListenerIter = clusterListeners.iterator();
-        while (clusterListenerIter.hasNext()) {
-            ClusterListener curListener = (ClusterListener) clusterListenerIter.next();
+        for (ClusterListener curListener : clusterListeners) {
             curListener.messageReceived((ClusterMessage)serializable);
         }
     }
@@ -80,18 +80,14 @@ public class JGroupsClusterService extends ClusterService implements Notificatio
 
     public void memberJoined(Address address) {
         logger.debug("memberJoined " + address);
-        Iterator clusterListenerIter = clusterListeners.iterator();
-        while (clusterListenerIter.hasNext()) {
-            ClusterListener curListener = (ClusterListener) clusterListenerIter.next();
+        for (ClusterListener curListener : clusterListeners) {
             curListener.memberJoined(address);
         }
     }
 
     public void memberLeft(Address address) {
         logger.debug("memberLeft "+ address);
-        Iterator clusterListenerIter = clusterListeners.iterator();
-        while (clusterListenerIter.hasNext()) {
-            ClusterListener curListener = (ClusterListener) clusterListenerIter.next();
+        for (ClusterListener curListener : clusterListeners) {
             curListener.memberLeft(address);
         }
     }
@@ -104,12 +100,15 @@ public class JGroupsClusterService extends ClusterService implements Notificatio
         if (!isActivated()) {
             return;
         }
-
-        logger.debug("Creating channel with stack properties [" + channelProperties + "]");
+        String props = channelProperties;
+        if (props == null) {
+        	props = channelProtocol != null && "udp".equalsIgnoreCase(channelProtocol) ? channelPropertiesUdp : channelPropertiesTcp;        	
+        }
+        logger.debug("Creating channel with stack properties [" + props + "]");
 
         try {
-            if (channelProperties != null) {
-                notificationBus = new NotificationBus(channelGroupName, channelProperties);
+            if (props != null) {
+                notificationBus = new NotificationBus(channelGroupName, props);
             } else {
                 notificationBus = new NotificationBus(channelGroupName);                
             }
@@ -164,12 +163,16 @@ public class JGroupsClusterService extends ClusterService implements Notificatio
         clusterListeners.remove(listener);
     }
 
-    public String getChannelProperties() {
-        return channelProperties;
+    public void setChannelPropertiesTcp(String channelPropertiesTcp) {
+        this.channelPropertiesTcp = channelPropertiesTcp;
     }
 
     public void setChannelProperties(String channelProperties) {
         this.channelProperties = channelProperties;
+    }
+
+    public void setChannelPropertiesUdp(String channelPropertiesUdp) {
+        this.channelPropertiesUdp = channelPropertiesUdp;
     }
 
     public String getChannelGroupName() {
@@ -197,6 +200,10 @@ public class JGroupsClusterService extends ClusterService implements Notificatio
         }
         // we are now in the case where it is activated and connected.
         return notificationBus.getMembership().size();
+    }
+
+	public void setChannelProtocol(String channelProtocol) {
+    	this.channelProtocol = channelProtocol;
     }
 
 }

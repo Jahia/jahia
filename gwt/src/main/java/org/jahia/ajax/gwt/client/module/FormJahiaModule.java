@@ -50,7 +50,6 @@ import com.google.gwt.user.client.Window;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.Style;
@@ -96,7 +95,7 @@ public class FormJahiaModule extends JahiaModule {
                 public void onSuccess(GWTJahiaNodeType result) {
                     List<GWTJahiaNodeType> list = new ArrayList();
                     list.add(result);
-                    final PropertiesEditor pe = new PropertiesEditor(list,new HashMap<String, GWTJahiaNodeProperty>(),false, viewInherited, excludedItemsList, excludedTypesList);
+                    final PropertiesEditor pe = new PropertiesEditor(list,new HashMap<String, GWTJahiaNodeProperty>(),false, viewInherited, null, excludedItemsList, excludedTypesList);
                     final boolean isCaptcha = captcha != null && captcha.length() > 0;
                     final TextField captchaField = new TextField();
                     if (isCaptcha) {

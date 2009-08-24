@@ -8,7 +8,9 @@ import com.google.gwt.user.client.Window;
 import java.util.List;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,6 +32,7 @@ public class EditModeDNDListener extends DNDListener {
 
     public static final String TARGET_TYPE = "targetType";
     public static final String TARGET_PATH = "targetPath";
+    public static final String TARGET_NODE = "targetNode";
 
     public static final String SOURCE_NODES = "sourceNodes";
     public static final String SOURCE_NODETYPE = "sourceNodeType";
@@ -49,6 +52,7 @@ public class EditModeDNDListener extends DNDListener {
             int i = targetPath.lastIndexOf('/');
             String name = targetPath.substring(i +1);
             String parentPath = targetPath.substring(0,i);
+            GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
 
             // Drop into empty placeholder
             if (CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
@@ -75,6 +79,8 @@ public class EditModeDNDListener extends DNDListener {
                 }
             } else if (CREATE_CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
+                GWTJahiaNodeType type = e.getStatus().getData(SOURCE_NODETYPE);
+                new AddContentWizardWindow(null, parent, type).show();
             }
         } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(TARGET_TYPE))){
             String targetPath = e.getStatus().getData(TARGET_PATH);

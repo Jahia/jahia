@@ -51,9 +51,13 @@ public class GWTJahiaItemDefinition implements Serializable {
     private boolean mandatory = false;
     private boolean hidden = false;
     private String declaringNodeType;
+    private String dataType;
 
     private int selector = 0;
     private Map<String,String> selectorOptions = new HashMap<String,String>();
+    public static final String SYSTEM = "system";
+    public static final String METADATA = "metadata";
+    public static final String CONTENT = "content";
 
     public GWTJahiaItemDefinition() {
     }
@@ -134,4 +138,11 @@ public class GWTJahiaItemDefinition implements Serializable {
         this.selectorOptions = selectorOptions;
     }
 
+    public String getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
 }

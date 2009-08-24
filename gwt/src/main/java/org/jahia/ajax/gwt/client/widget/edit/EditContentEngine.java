@@ -36,6 +36,7 @@ import java.util.List;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -105,12 +106,15 @@ public class EditContentEngine extends Window {
 		tabs.setBodyBorder(false);
 		tabs.setBorders(false);
 
-		createContentTab();
+        contentTab = new AsyncTabItem(Messages.get("ece_content", "Content"));
+        contentTab.setLayout(new FitLayout());
 		tabs.add(contentTab);
 
 		metadataTab = new AsyncTabItem(Messages.get("ece_metadata", "Metadata"));
 		metadataTab.setLayout(new FitLayout());
 		tabs.add(metadataTab);
+
+        createContentTab();
 
 		rightsTab = new AsyncTabItem(Messages.get("ece_rights", "Rights"));
 		rightsTab.setLayout(new FitLayout());
@@ -128,66 +132,61 @@ public class EditContentEngine extends Window {
 	}
 
 	private AsyncTabItem createContentTab() {
-		contentTab = new AsyncTabItem(Messages.get("ece_content", "Content"));
-		contentTab.setLayout(new FitLayout());
-		
+
 		contentService.getProperties(contentPath, new AsyncCallback<GWTJahiaGetPropertiesResult>() {
             public void onFailure(Throwable throwable) {
                 Log.debug("Cannot get properties", throwable);
             }
 
             public void onSuccess(GWTJahiaGetPropertiesResult result) {
-            	GWTJahiaNode selectedNode = result.getNode();
-                final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
-                elements.add(selectedNode);
-
-                List<String> list = new ArrayList<String>();
-                list.add("jcr:content");
-                list.add("j:thumbnail");
-                final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, list, null);
-
-                ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
-                Button item = new Button(Messages.getResource("fm_save"));
-                item.setIconStyle("gwt-icons-save");
-                item.setEnabled(selectedNode.isWriteable() && !selectedNode.isLocked());
-                item.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent event) {
-                        JahiaContentManagementService.App.getInstance().saveProperties(elements, propertiesEditor.getProperties(), new AsyncCallback<Object>() {
-                            public void onFailure(Throwable throwable) {
-                                com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
-                                Log.error("failed", throwable);
-                            }
-
-                            public void onSuccess(Object o) {
-                                Info.display("", "Properties saved");
-                                //getLinker().refreshTable();
-                            }
-                        });
-                    }
-                });
-                toolBar.add(new FillToolItem());
-                toolBar.add(item);
-                item = new Button(Messages.getResource("fm_restore"));
-                item.setIconStyle("gwt-icons-restore");
-                item.setEnabled(selectedNode.isWriteable() && !selectedNode.isLocked());
-
-                item.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent event) {
-                        propertiesEditor.resetForm();
-                    }
-                });
-                toolBar.add(item);
-                toolBar.setVisible(true);
+                PropertiesEditor propertiesEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.CONTENT);
                 contentTab.add(propertiesEditor);
-
                 contentTab.setProcessed(true);
+                contentTab.layout();
+
+                PropertiesEditor metadataEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.METADATA);
+                metadataTab.add(metadataEditor);
+                metadataTab.setProcessed(true);
+                metadataTab.layout();
             }
         });
 		
 	    return contentTab;
     }
 
-	/**
+    private PropertiesEditor createPropertiesEditor(GWTJahiaGetPropertiesResult result, String datatype) {
+        GWTJahiaNode selectedNode = result.getNode();
+        final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
+        elements.add(selectedNode);
+
+        List<String> list = new ArrayList<String>();
+//                list.add("jcr:content");
+//                list.add("j:thumbnail");
+
+        final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, datatype, null, null);
+
+        ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
+        Button item = new Button(Messages.getResource("fm_save"));
+        item.setIconStyle("gwt-icons-save");
+        item.setEnabled(selectedNode.isWriteable() && !selectedNode.isLocked());
+        item.addSelectionListener(new SaveSelectionListener(elements, propertiesEditor));
+        toolBar.add(new FillToolItem());
+        toolBar.add(item);
+        item = new Button(Messages.getResource("fm_restore"));
+        item.setIconStyle("gwt-icons-restore");
+        item.setEnabled(selectedNode.isWriteable() && !selectedNode.isLocked());
+
+        item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                propertiesEditor.resetForm();
+            }
+        });
+        toolBar.add(item);
+        toolBar.setVisible(true);
+        return propertiesEditor;
+    }
+
+    /**
 	 * Initializes basic window properties: size, state and title.
 	 */
 	private void initWindowProperties() {
@@ -199,4 +198,27 @@ public class EditContentEngine extends Window {
 		setHeading(contentPath);
 	}
 
+    private static class SaveSelectionListener extends SelectionListener<ButtonEvent> {
+        private final List<GWTJahiaNode> elements;
+        private final PropertiesEditor propertiesEditor;
+
+        public SaveSelectionListener(List<GWTJahiaNode> elements, PropertiesEditor propertiesEditor) {
+            this.elements = elements;
+            this.propertiesEditor = propertiesEditor;
+        }
+
+        public void componentSelected(ButtonEvent event) {
+            JahiaContentManagementService.App.getInstance().saveProperties(elements, propertiesEditor.getProperties(), new AsyncCallback<Object>() {
+                public void onFailure(Throwable throwable) {
+                    com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                    Log.error("failed", throwable);
+                }
+
+                public void onSuccess(Object o) {
+                    Info.display("", "Properties saved");
+                    //getLinker().refreshTable();
+                }
+            });
+        }
+    }
 }

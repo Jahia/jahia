@@ -58,17 +58,19 @@ public class PropertiesEditor extends FormPanel {
     private Map<String, GWTJahiaNodeProperty> currentProperties = null;
     private Map<String, GWTJahiaNodeProperty> originalProperties = null;
     private Map<String, Field> fields;
-    private ComboBox<GWTJahiaNodeType> combo;
-    private GWTJahiaNodeType nodeType;
+//    private ComboBox<GWTJahiaNodeType> combo;
+//    private GWTJahiaNodeType nodeType;
     private boolean isMultipleEdit = false;
     private boolean viewInheritedItems = false;
     private List<String> excludedItems;
     private List<String> excludedTypes;
+    private String dataType;
 
-    public PropertiesEditor(List<GWTJahiaNodeType> types, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, List<String> excludedItems, List<String> excludedTypes) {
+    public PropertiesEditor(List<GWTJahiaNodeType> types, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes) {
         super();
         nodeTypes = types;
         this.isMultipleEdit = isMultipleEdit;
+        this.dataType = datatype;
         originalProperties = properties;
         cloneProperties();
         this.viewInheritedItems = viewInheritedItems;
@@ -99,71 +101,77 @@ public class PropertiesEditor extends FormPanel {
         setFrame(false);
         setButtonAlign(Style.HorizontalAlignment.CENTER);
 
-        final ListStore<GWTJahiaNodeType> listStore = new ListStore<GWTJahiaNodeType>();
-        listStore.add(nodeTypes);
-        combo = new ComboBox<GWTJahiaNodeType>();
-        combo.setEmptyText("Select a state...");
-        combo.setDisplayField("label");
-        combo.setStore(listStore);
-        combo.setTypeAhead(true);
-        combo.setTriggerAction(ComboBox.TriggerAction.ALL);
-        combo.setWidth(200);
-        combo.addStyleName("gxt-fix-topcomponent-position"); // fix static position given by setTopComponent
+//        final ListStore<GWTJahiaNodeType> listStore = new ListStore<GWTJahiaNodeType>();
+//        listStore.add(nodeTypes);
+//        combo = new ComboBox<GWTJahiaNodeType>();
+//        combo.setEmptyText("Select a state...");
+//        combo.setDisplayField("label");
+//        combo.setStore(listStore);
+//        combo.setTypeAhead(true);
+//        combo.setTriggerAction(ComboBox.TriggerAction.ALL);
+//        combo.setWidth(200);
+//        combo.addStyleName("gxt-fix-topcomponent-position"); // fix static position given by setTopComponent
 
-        combo.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<GWTJahiaNodeType>>() {
-            public void handleEvent(SelectionChangedEvent<GWTJahiaNodeType> event) {
-                Log.debug("event !");
-
-                GWTJahiaNodeType selectedNodeType = event.getSelectedItem();
-                Log.debug("changed ? ");
-                if (nodeType != selectedNodeType) {
-                    nodeType = selectedNodeType;
-                    Log.debug("changed");
-                    renderForm();
-                    layout();
-//                    m_callback.rerenderProperties();
-                    Log.debug("end");
-                }
-                Log.debug("out");
-
-            }
-        });
-
-
-        List<GWTJahiaNodeType> s = new ArrayList<GWTJahiaNodeType>();
-        if (nodeTypes.size() > 0) {
-            nodeType = nodeTypes.get(0);
-            s.add(nodeType);
-        }
-        combo.setSelection(s);
-
+//        combo.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<GWTJahiaNodeType>>() {
+//            public void handleEvent(SelectionChangedEvent<GWTJahiaNodeType> event) {
+//                Log.debug("event !");
+//
+//                GWTJahiaNodeType selectedNodeType = event.getSelectedItem();
+//                Log.debug("changed ? ");
+//                if (nodeType != selectedNodeType) {
+//                    nodeType = selectedNodeType;
+//                    Log.debug("changed");
+//                    renderForm();
+//                    layout();
+////                    m_callback.rerenderProperties();
+//                    Log.debug("end");
+//                }
+//                Log.debug("out");
+//
+//            }
+//        });
+//
+//
+//        List<GWTJahiaNodeType> s = new ArrayList<GWTJahiaNodeType>();
+//        if (nodeTypes.size() > 0) {
+//            nodeType = nodeTypes.get(0);
+//            s.add(nodeType);
+//        }
+//        combo.setSelection(s);
+//
         ToolBar toolBar = new ToolBar();
-        toolBar.setVisible(false);
-
-        if (nodeTypes.size() > 1) {
-            toolBar.add(combo);
-            toolBar.setVisible(true);
-        }
-
+        toolBar.setVisible(true);
+//
+//        if (nodeTypes.size() > 1) {
+//            toolBar.add(combo);
+//            toolBar.setVisible(true);
+//        }
+//
         setTopComponent(toolBar);
         renderForm();
     }
 
     private void renderForm() {
-        if (combo.getSelection().size() > 0) {
+//        if (combo.getSelection().size() > 0) {
             removeAll();
             fields = new HashMap<String, Field>();
+
+        for (GWTJahiaNodeType nodeType : nodeTypes) {
             if (viewInheritedItems) {
                 addItems(nodeType.getInheritedItems());
             }
             addItems(nodeType.getItems());
         }
+//        }
     }
 
     private void addItems(List<GWTJahiaItemDefinition> items) {
         for (GWTJahiaItemDefinition definition : items) {
             if ((excludedTypes != null && excludedTypes.contains(definition.getDeclaringNodeType())) ||
                     (excludedItems != null && excludedItems.contains(definition.getName()))) {
+                continue;
+            }
+            if (dataType != null && !dataType.equals(definition.getDataType())) {
                 continue;
             }
             if (!currentProperties.containsKey(definition.getName())) {

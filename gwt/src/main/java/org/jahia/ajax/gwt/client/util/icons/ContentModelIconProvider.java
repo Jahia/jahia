@@ -119,56 +119,61 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public AbstractImagePrototype getIcon(GWTJahiaNode gwtJahiaNode) {
         if (gwtJahiaNode != null) {
             String ext = gwtJahiaNode.getExt();
-            if (ext != null) {
-                if (ext.equalsIgnoreCase(CONTENT)) {
-                    return CONTENT_ICONS.content();
-                } else if (ext.equalsIgnoreCase(DIR)) {
-                    return CONTENT_ICONS.dir();
-                } else if (ext.equalsIgnoreCase(DOC)) {
-                    return CONTENT_ICONS.doc();
-                } else if (ext.equalsIgnoreCase(EXE)) {
-                    return CONTENT_ICONS.exe();
-                } else if (ext.equalsIgnoreCase(FILE)) {
-                    return CONTENT_ICONS.file();
-                } else if (ext.equalsIgnoreCase(GEAR)) {
-                    return CONTENT_ICONS.gearth();
-                } else if (ext.equalsIgnoreCase(HTML)) {
-                    return CONTENT_ICONS.html();
-                } else if (ext.equalsIgnoreCase(IMG)) {
-                    return CONTENT_ICONS.img();
-                } else if (ext.equalsIgnoreCase(LIST)) {
-                    return CONTENT_ICONS.list();
-                } else if (ext.equalsIgnoreCase(MASHUP)) {
-                    return CONTENT_ICONS.mashup();
-                } else if (ext.equalsIgnoreCase(PAGE)) {
-                    return CONTENT_ICONS.page();
-                } else if (ext.equalsIgnoreCase(PDF)) {
-                    return CONTENT_ICONS.pdf();
-                } else if (ext.equalsIgnoreCase(PLACE_HOLDER)) {
-                    return CONTENT_ICONS.placeholder();
-                } else if (ext.equalsIgnoreCase(PORTLET)) {
-                    return CONTENT_ICONS.portlet();
-                } else if (ext.equalsIgnoreCase(PPT)) {
-                    return CONTENT_ICONS.ppt();
-                } else if (ext.equalsIgnoreCase(RAR)) {
-                    return CONTENT_ICONS.rar();
-                } else if (ext.equalsIgnoreCase(SOUND)) {
-                    return CONTENT_ICONS.sound();
-                } else if (ext.equalsIgnoreCase(TXT)) {
-                    return CONTENT_ICONS.txt();
-                } else if (ext.equalsIgnoreCase(USER_GROUP)) {
-                    return CONTENT_ICONS.userGroup();
-                } else if (ext.equalsIgnoreCase(USER)) {
-                    return CONTENT_ICONS.user();
-                } else if (ext.equalsIgnoreCase(VIDEO)) {
-                    return CONTENT_ICONS.video();
-                } else if (ext.equalsIgnoreCase(XLS)) {
-                    return CONTENT_ICONS.xls();
-                } else if (ext.equalsIgnoreCase(ZIP)) {
-                    return CONTENT_ICONS.zip();
-                } else if (ext.equalsIgnoreCase(LOCK)) {
-                    return CONTENT_ICONS.lock();
-                }
+            return getIcon(ext);
+        }
+        return CONTENT_ICONS.file();
+    }
+
+    public AbstractImagePrototype getIcon(String ext) {
+        if (ext != null) {
+            if (ext.equalsIgnoreCase(CONTENT)) {
+                return CONTENT_ICONS.content();
+            } else if (ext.equalsIgnoreCase(DIR)) {
+                return CONTENT_ICONS.dir();
+            } else if (ext.equalsIgnoreCase(DOC)) {
+                return CONTENT_ICONS.doc();
+            } else if (ext.equalsIgnoreCase(EXE)) {
+                return CONTENT_ICONS.exe();
+            } else if (ext.equalsIgnoreCase(FILE)) {
+                return CONTENT_ICONS.file();
+            } else if (ext.equalsIgnoreCase(GEAR)) {
+                return CONTENT_ICONS.gearth();
+            } else if (ext.equalsIgnoreCase(HTML)) {
+                return CONTENT_ICONS.html();
+            } else if (ext.equalsIgnoreCase(IMG)) {
+                return CONTENT_ICONS.img();
+            } else if (ext.equalsIgnoreCase(LIST)) {
+                return CONTENT_ICONS.list();
+            } else if (ext.equalsIgnoreCase(MASHUP)) {
+                return CONTENT_ICONS.mashup();
+            } else if (ext.equalsIgnoreCase(PAGE)) {
+                return CONTENT_ICONS.page();
+            } else if (ext.equalsIgnoreCase(PDF)) {
+                return CONTENT_ICONS.pdf();
+            } else if (ext.equalsIgnoreCase(PLACE_HOLDER)) {
+                return CONTENT_ICONS.placeholder();
+            } else if (ext.equalsIgnoreCase(PORTLET)) {
+                return CONTENT_ICONS.portlet();
+            } else if (ext.equalsIgnoreCase(PPT)) {
+                return CONTENT_ICONS.ppt();
+            } else if (ext.equalsIgnoreCase(RAR)) {
+                return CONTENT_ICONS.rar();
+            } else if (ext.equalsIgnoreCase(SOUND)) {
+                return CONTENT_ICONS.sound();
+            } else if (ext.equalsIgnoreCase(TXT)) {
+                return CONTENT_ICONS.txt();
+            } else if (ext.equalsIgnoreCase(USER_GROUP)) {
+                return CONTENT_ICONS.userGroup();
+            } else if (ext.equalsIgnoreCase(USER)) {
+                return CONTENT_ICONS.user();
+            } else if (ext.equalsIgnoreCase(VIDEO)) {
+                return CONTENT_ICONS.video();
+            } else if (ext.equalsIgnoreCase(XLS)) {
+                return CONTENT_ICONS.xls();
+            } else if (ext.equalsIgnoreCase(ZIP)) {
+                return CONTENT_ICONS.zip();
+            } else if (ext.equalsIgnoreCase(LOCK)) {
+                return CONTENT_ICONS.lock();
             }
         }
         return CONTENT_ICONS.file();

@@ -25,6 +25,10 @@ public interface Module {
     
     GWTJahiaNode getNode();
 
+    Module getParentModule();
+
+    void setParentModule(Module module);
+
     void setNode(GWTJahiaNode node);
 
 }

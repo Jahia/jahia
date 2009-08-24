@@ -100,4 +100,10 @@ public class MainModule extends LayoutContainer implements Module {
         this.node = node;
     }
 
+    public Module getParentModule() {
+        return null;
+    }
+
+    public void setParentModule(Module module) {
+    }
 }

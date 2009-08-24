@@ -92,7 +92,7 @@ public class PortletFormCard extends MashupWizardCard {
                     defaultValues.put("j:cacheScope", new GWTJahiaNodeProperty("j:cacheScope", value));
                 }
 
-                pe = new PropertiesEditor(list, defaultValues, false, true, null, Arrays.asList("jnt:portlet", "mix:createdBy", "mix:lastModified", "mix:created"));
+                pe = new PropertiesEditor(list, defaultValues, false, true, null, null, Arrays.asList("jnt:portlet", "mix:createdBy", "mix:lastModified", "mix:created"));
                 if (pe != null) {
                     setFormPanel(pe);
                     layout();

@@ -172,30 +172,15 @@ public class ExtendedItemDefinition implements ItemDefinition {
 
 
     public boolean isSystemItem() {
-        ExtendedNodeType dnt = getDeclaringNodeType();
-        final boolean b = dnt.getName().startsWith("mix:") || dnt.getName().startsWith("nt:");
-        return b;
+        return getDeclaringNodeType().isSystemType();
     }
 
     public boolean isMetadataItem() {
-        ExtendedNodeType dnt = getDeclaringNodeType();
-        try {
-            boolean b = Arrays.asList(NodeTypeRegistry.getInstance().getNodeType("jmix:hierarchyNode").getSupertypes()).contains(dnt);
-            b |= dnt.getName().equals("jmix:hierarchyNode");
-            b |= dnt.getName().equals("mix:created");
-            
-            return b;
-        } catch (NoSuchNodeTypeException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return false;
+        return getDeclaringNodeType().isMetadataType();
     }
 
     public boolean isJahiaContentItem() {
-        boolean b = true;
-        b &= !isSystemItem();
-        b &= !isMetadataItem();
-        return b;
+        return getDeclaringNodeType().isJahiaContentType();
     }
 
 

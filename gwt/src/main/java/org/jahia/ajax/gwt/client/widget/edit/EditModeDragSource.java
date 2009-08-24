@@ -37,6 +37,7 @@ public class EditModeDragSource extends DragSource {
         sp.setData(EditModeDNDListener.SOURCE_TYPE, null);
         sp.setData(EditModeDNDListener.CONTENT_SOURCE_TYPE, null);
         sp.setData(EditModeDNDListener.TARGET_TYPE, null);
+        sp.setData(EditModeDNDListener.TARGET_NODE, null);
         sp.setData(EditModeDNDListener.TARGET_PATH, null);
         sp.setData(EditModeDNDListener.SOURCE_NODES, null);
         sp.setData(EditModeDNDListener.OPERATION_CALLED, null);

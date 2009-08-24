@@ -39,6 +39,7 @@ import java.util.Map;
 
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -90,11 +91,7 @@ public class ContentFormCard extends ContentWizardCard {
                         Map<String, GWTJahiaNodeProperty> defaultValues = new HashMap<String, GWTJahiaNodeProperty>();
 
                         formEditor = new PropertiesEditor(types, defaultValues,
-                                false, true, null, Arrays.asList(
-                                        "mix:createdBy", "mix:lastModified",
-                                        "mix:created", "jmix:lastPublished",
-                                        "jmix:categorized", "jmix:description",
-                                        "jnt:jahiacontent"));
+                                false, true, GWTJahiaItemDefinition.CONTENT, null, null);
                         if (formEditor != null) {
                             setFormPanel(formEditor);
                             layout();

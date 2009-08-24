@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -42,6 +43,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -64,7 +66,7 @@ import java.util.ArrayList;
  *        Created : 24 août 2009
  */
 public class EditLinker {
-    private Grid<GWTJahiaNodeType> createGrid;
+    private ListView<GWTJahiaNodeType> createView;
     private TreePanel<GWTJahiaNode> browseTree;
     private Grid<GWTJahiaNode> displayGrid;
     private Grid<GWTJahiaNodeType> displayTypesGrid;
@@ -81,8 +83,8 @@ public class EditLinker {
         this.editManager = editManager;
     }
 
-    public void setCreateGrid(Grid<GWTJahiaNodeType> createGrid) {
-        this.createGrid = createGrid;
+    public void setCreateView(ListView<GWTJahiaNodeType> createView) {
+        this.createView = createView;
     }
 
     public void setBrowseTree(TreePanel<GWTJahiaNode> browseTree) {
@@ -155,10 +157,7 @@ public class EditLinker {
                 final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
                 elements.add(node);
 
-                List<String> list = new ArrayList<String>();
-                list.add("jcr:content");
-                list.add("j:thumbnail");
-                final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, list, null);
+                final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, GWTJahiaItemDefinition.METADATA, null, null);
 
                 ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
                 Button item = new Button(Messages.getResource("fm_save"));
@@ -222,7 +221,7 @@ public class EditLinker {
         } else {
             showUnlockButton();
         }
-        createGrid.getSelectionModel().deselectAll();
+        createView.getSelectionModel().deselectAll();
         displayGrid.getSelectionModel().deselectAll();
         displayTypesGrid.getSelectionModel().deselectAll();
         browseTree.getSelectionModel().deselectAll();

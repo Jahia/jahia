@@ -368,7 +368,7 @@ public class ContentDetails extends BottomRightComponent {
                         List<String> list = new ArrayList<String>();
                         list.add("jcr:content");
                         list.add("j:thumbnail");
-                        final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, list, null);
+                        final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, null, list, null);
 
                         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
                         Button item = new Button(Messages.getResource("fm_save"));
@@ -434,7 +434,7 @@ public class ContentDetails extends BottomRightComponent {
                     }
 
                     public void onSuccess(List<GWTJahiaNodeType> gwtJahiaNodeTypes) {
-                        final PropertiesEditor propertiesEditor = new PropertiesEditor(gwtJahiaNodeTypes, true, false);
+                        final PropertiesEditor propertiesEditor = new PropertiesEditor(gwtJahiaNodeTypes, true, true);
 
                         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
                         Button item = new Button(Messages.getResource("fm_save"));

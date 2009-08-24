@@ -99,7 +99,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             return RPC.invokeAndEncodeResponse(remoteService, rpcRequest
                     .getMethod(), rpcRequest.getParameters(), rpcRequest
                     .getSerializationPolicy());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error("An error occured calling the GWT service " + remoteServiceName + ". Cause: " + e.getMessage(), e);
             return RPC.encodeResponseForFailure(null, e);
         } finally {

@@ -144,6 +144,14 @@ public class ContentDefinitionHelper {
                 item.setDeclaringNodeType(def.getDeclaringNodeType().getName());
                 item.setSelector(def.getSelector());
                 item.setSelectorOptions(new HashMap<String, String>(def.getSelectorOptions()));
+                if (def.isJahiaContentItem()) {
+                    item.setDataType(GWTJahiaItemDefinition.CONTENT);
+                } else if (def.isMetadataItem())  {
+                    item.setDataType(GWTJahiaItemDefinition.METADATA);
+                } else if (def.isSystemItem()) {
+                    item.setDataType(GWTJahiaItemDefinition.SYSTEM);
+
+                }
                 if (def.getDeclaringNodeType().getName().equals(nodeType.getName())) {
                 items.add(item);
                 } else {

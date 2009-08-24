@@ -3,9 +3,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
@@ -21,7 +19,6 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.dnd.DragSource;
-import com.extjs.gxt.ui.client.dnd.DND;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Window;
@@ -37,6 +34,7 @@ import java.util.Map;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ActionIconsImageBundle;
@@ -51,9 +49,8 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  * User: romain
  * Date: Aug 19, 2009
  * Time: 11:56:07 AM
- *
+ * <p/>
  * This is the content browser / editor side panel.
- *
  */
 public class SidePanel extends ContentPanel {
 
@@ -97,8 +94,8 @@ public class SidePanel extends ContentPanel {
         final ListStore<GWTJahiaNodeType> createStore = new ListStore<GWTJahiaNodeType>();
         JahiaContentDefinitionService.App.getInstance().getNodeTypes(new AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
             public void onFailure(Throwable caught) {
-                MessageBox.alert("Alert","Unable to load content definitions. Cause: "
-                                + caught.getLocalizedMessage(),null);
+                MessageBox.alert("Alert", "Unable to load content definitions. Cause: "
+                        + caught.getLocalizedMessage(), null);
             }
 
             public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
@@ -111,15 +108,15 @@ public class SidePanel extends ContentPanel {
         List<ColumnConfig> createColumns = new ArrayList<ColumnConfig>();
         createColumns.add(new ColumnConfig("name", "Name", 150));
         createColumns.add(new ColumnConfig("label", "Label", 150));
-        final Grid<GWTJahiaNodeType> createGrid = new Grid<GWTJahiaNodeType>(createStore, new ColumnModel(createColumns));
-        createGrid.setBorders(false);
-        createGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-//        GridDragSource createGridSource = new CreateGridDragSource(createGrid);
-//        createGridSource.addDNDListener(editManager.getDndListener());
+
         final EditLinker editLinker = editManager.getEditLinker();
-        editLinker.setCreateGrid(createGrid);
-        create.add(createGrid);
-        createGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNodeType>() {
+
+        ListView<GWTJahiaNodeType> createView = new ListView<GWTJahiaNodeType>();
+        createView.setTemplate(getTemplate());
+        createView.setStore(createStore);
+        createView.setItemSelector("div.thumb-wrap");
+        createView.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        createView.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNodeType>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNodeType> gwtJahiaNodeSelectionChangedEvent) {
                 GWTJahiaNodeType selected = gwtJahiaNodeSelectionChangedEvent.getSelectedItem();
                 if (selected != null) {
@@ -131,6 +128,8 @@ public class SidePanel extends ContentPanel {
                 editLinker.onCreateGridSelection(selected);
             }
         });
+        editLinker.setCreateView(createView);
+        create.add(createView);
 
         // browsing
         TabItem browse = new TabItem("Browse");
@@ -142,20 +141,21 @@ public class SidePanel extends ContentPanel {
                 if (init) {
                     JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.GLOBAL_REPOSITORY, "", "", "", null, listAsyncCallback);
                 } else {
-                    JahiaContentManagementService.App.getInstance().ls((GWTJahiaNode) gwtJahiaFolder,"", "", "", null, false, listAsyncCallback);
+                    JahiaContentManagementService.App.getInstance().ls((GWTJahiaNode) gwtJahiaFolder, "", "", "", null, false, listAsyncCallback);
                 }
             }
         };
         TreeLoader<GWTJahiaNode> loader = new BaseTreeLoader<GWTJahiaNode>(privateProxy) {
             @Override
             public boolean hasChildren(GWTJahiaNode parent) {
-                return parent.hasFolderChildren() ;
+                return parent.hasFolderChildren();
             }
+
             protected void onLoadSuccess(Object gwtJahiaNode, List<GWTJahiaNode> gwtJahiaNodes) {
                 super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodes);
                 if (init) {
-                    Log.debug("setting init to false") ;
-                    init = false ;
+                    Log.debug("setting init to false");
+                    init = false;
                 }
             }
         };
@@ -174,6 +174,7 @@ public class SidePanel extends ContentPanel {
                             public void onFailure(Throwable throwable) {
                                 // TODO
                             }
+
                             public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                                 setDisplayContent(gwtJahiaNodes);
                             }
@@ -244,7 +245,16 @@ public class SidePanel extends ContentPanel {
         contentList.setCollapsible(true);
         displayStore = new ListStore<GWTJahiaNode>();
         List<ColumnConfig> displayColumns = new ArrayList<ColumnConfig>();
-        displayColumns.add(new ColumnConfig("name", "Name", 300));
+
+        ColumnConfig col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 40);
+        col.setAlignment(Style.HorizontalAlignment.CENTER);
+        col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
+                return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
+            }
+        });
+        displayColumns.add(col);
+        displayColumns.add(new ColumnConfig("name", "Name", 250));
 //        displayColumns.add(new ColumnConfig("path", "Path", 200));
         displayGrid = new Grid<GWTJahiaNode>(displayStore, new ColumnModel(displayColumns));
         displayGrid.setBorders(false);
@@ -260,6 +270,17 @@ public class SidePanel extends ContentPanel {
         contentList.add(displayGrid);
 
         displayTypesStore = new ListStore<GWTJahiaNodeType>();
+
+        displayColumns = new ArrayList<ColumnConfig>();
+        col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 40);
+        col.setAlignment(Style.HorizontalAlignment.CENTER);
+        col.setRenderer(new GridCellRenderer<GWTJahiaNodeType>() {
+            public Object render(GWTJahiaNodeType model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GWTJahiaNodeType> gwtJahiaNodeTypeListStore, Grid<GWTJahiaNodeType> gwtJahiaNodeTypeGrid) {
+                return ContentModelIconProvider.getInstance().getIcon(model.getIcon()).getHTML();
+            }
+        });
+        displayColumns.add(col);
+        displayColumns.add(new ColumnConfig("name", "Name", 250));
 
         displayTypesGrid = new Grid<GWTJahiaNodeType>(displayTypesStore, new ColumnModel(displayColumns));
         displayTypesGrid.setBorders(false);
@@ -336,8 +357,8 @@ public class SidePanel extends ContentPanel {
     /**
      * Method used by the search form
      *
-     * @param query the query string
-     * @param date search for items newer than date
+     * @param query      the query string
+     * @param date       search for items newer than date
      * @param searchRoot search within this path
      */
     private void search(String query, Date date, String searchRoot) {
@@ -345,6 +366,7 @@ public class SidePanel extends ContentPanel {
             public void onFailure(Throwable throwable) {
                 // TODO
             }
+
             public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                 setDisplayContent(gwtJahiaNodes);
             }
@@ -386,6 +408,16 @@ public class SidePanel extends ContentPanel {
         // TODO retrieve selected node in the page and fill in the store with its available templates
     }
 
+    private native String getTemplate() /*-{
+    return ['<tpl for=".">',
+        '<div class="thumb-wrap" id="{name}" style="border: 1px solid white">',
+        '<div class="thumb"><img src="{icon}" title="{label}"></div>',
+        '<span class="x-editable">{label}</span></div>',
+        '</tpl>',
+        '<div class="x-clear"></div>'].join("");
+
+}-*/;
+
     public class PreviewDragSource extends DragSource {
         private final PreviewTabItem previewTabItem;
 
@@ -407,7 +439,7 @@ public class SidePanel extends ContentPanel {
 
             e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, list);
             if (getStatusText() == null) {
-                e.getStatus().update(DOM.clone(previewTabItem.getWidget(0).getElement(),true));
+                e.getStatus().update(DOM.clone(previewTabItem.getWidget(0).getElement(), true));
             }
             super.onDragStart(e);
         }
@@ -416,6 +448,7 @@ public class SidePanel extends ContentPanel {
     public class PreviewTabItem extends TabItem {
         HTML html;
         GWTJahiaNode node;
+
         public PreviewTabItem(String s) {
             super(s);
         }

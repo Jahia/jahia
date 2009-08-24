@@ -122,5 +122,4 @@ public class GWTJahiaNodeType extends BaseModelData implements Serializable {
     public void setIcon(String ext) {
         set("icon", ext);
     }
-
 }

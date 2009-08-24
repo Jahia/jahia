@@ -657,19 +657,6 @@ public class ContentActions {
         }
     }
 
-    public static void createItem(final BrowserLinker linker, List<String> types) {
-        GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
-        if (parent == null) {
-            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
-            if (selectedItems != null && selectedItems.size() == 1) {
-                parent = selectedItems.get(0);
-            }
-        }
-        if (parent != null && !parent.isFile()) {
-            new NodeCreatorWindow(linker, parent, types);
-        }
-    }
-
     public static void remove(final BrowserLinker linker) {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() > 0) {

@@ -1,22 +1,12 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.dnd.Insert;
 import com.extjs.gxt.ui.client.event.DNDEvent;
-import com.extjs.gxt.ui.client.util.Rectangle;
-import com.extjs.gxt.ui.client.core.El;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-
-import java.util.List;
 
 
 /**
@@ -28,6 +18,7 @@ import java.util.List;
  */
 public class PlaceholderModule extends LayoutContainer implements Module {
     private String path;
+    private Module parentModule;
     private EditManager editManager;
 
     public PlaceholderModule(String path, EditManager editManager) {
@@ -71,6 +62,14 @@ public class PlaceholderModule extends LayoutContainer implements Module {
         
     }
 
+    public Module getParentModule() {
+        return parentModule;
+    }
+
+    public void setParentModule(Module parentModule) {
+        this.parentModule = parentModule;
+    }
+
     private class PlaceholderModuleDropTarget extends ModuleDropTarget {
         public PlaceholderModuleDropTarget() {
             super(PlaceholderModule.this);
@@ -85,6 +84,7 @@ public class PlaceholderModule extends LayoutContainer implements Module {
         protected void onDragEnter(DNDEvent e) {
             e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PLACEHOLDER_TYPE);
             e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
+            e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getParentModule().getNode());
         }
     }
     

@@ -3,17 +3,13 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.core.El;
-import com.extjs.gxt.ui.client.util.Rectangle;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
-import com.extjs.gxt.ui.client.dnd.Insert;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.DOM;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.Map;
@@ -35,7 +31,7 @@ public class SimpleModule extends ContentPanel implements Module {
     private Element element;
     private HTML html;
     private String path;
-
+    private Module parentModule;
     private EditManager editManager;
 
     public SimpleModule(final String path, String s, final EditManager editManager) {
@@ -101,6 +97,14 @@ public class SimpleModule extends ContentPanel implements Module {
         this.node = node;
     }
 
+    public Module getParentModule() {
+        return parentModule;
+    }
+
+    public void setParentModule(Module parentModule) {
+        this.parentModule = parentModule;
+    }
+
     public class SimpleModuleDragSource extends ModuleDragSource {
         public SimpleModuleDragSource(SimpleModule simpleModule) {
             super(simpleModule);
@@ -125,6 +129,7 @@ public class SimpleModule extends ContentPanel implements Module {
         protected void onDragEnter(DNDEvent e) {
             e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
             e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
+            e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getNode());
             super.onDragEnter(e);
         }
     }

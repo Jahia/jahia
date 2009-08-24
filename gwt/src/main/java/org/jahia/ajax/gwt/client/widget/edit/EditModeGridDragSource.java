@@ -1,6 +1,5 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.event.DragListener;
 import com.extjs.gxt.ui.client.event.DragEvent;
@@ -38,6 +37,7 @@ public class EditModeGridDragSource extends GridDragSource {
         sp.setData(EditModeDNDListener.SOURCE_TYPE, null);
         sp.setData(EditModeDNDListener.CONTENT_SOURCE_TYPE, null);
         sp.setData(EditModeDNDListener.TARGET_TYPE, null);
+        sp.setData(EditModeDNDListener.TARGET_NODE, null);
         sp.setData(EditModeDNDListener.TARGET_PATH, null);
         sp.setData(EditModeDNDListener.SOURCE_NODES, null);
         sp.setData(EditModeDNDListener.OPERATION_CALLED, null);

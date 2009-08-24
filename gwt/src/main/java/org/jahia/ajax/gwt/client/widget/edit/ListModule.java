@@ -21,7 +21,7 @@ public class ListModule extends ContentPanel implements Module {
     private GWTJahiaNode node;
     private HTML html;
     private String path;
-
+    private Module parentModule;
     private EditManager editManager;
 
     public ListModule(String path, String s, EditManager editManager) {
@@ -60,4 +60,11 @@ public class ListModule extends ContentPanel implements Module {
         this.node = node;
     }
 
+    public Module getParentModule() {
+        return parentModule;
+    }
+
+    public void setParentModule(Module parentModule) {
+        this.parentModule = parentModule;
+    }
 }

@@ -115,6 +115,7 @@ public class ModuleHelper {
                         m.put(divElement, subModule);
                         divElement.setInnerHTML("");
                         module.getContainer().add(subModule.getContainer());
+                        subModule.setParentModule(module);
                     }
                 }
             }

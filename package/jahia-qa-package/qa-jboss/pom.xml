@@ -78,6 +78,7 @@
                                     <type>war</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy/${jahia.deploy.war.dirName}</outputDirectory>
+                                    <excludes>**/WEB-INF/etc/config/log4j.xml</excludes>
                                 </artifactItem>
                                 <artifactItem>
 						            <groupId>org.jahia.prepackagedsites</groupId>

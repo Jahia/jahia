@@ -11,6 +11,7 @@
         <exclude>**/*.sh</exclude>
         <exclude>bin/run.bat</exclude>
         <exclude>bin/run.conf</exclude>
+        <exclude>server/default/conf/jboss-log4j.xml</exclude>
         <exclude>server/default/deploy/jboss-web.deployer/server.xml</exclude>
         <exclude>server/default/deploy/jboss-web.deployer/conf/web.xml</exclude>
       </excludes>
@@ -42,8 +43,12 @@
     </file>
     <file>
         <source>src/main/resources/conf/log4j.xml</source>
+        <outputDirectory>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}/server/default/conf</outputDirectory>
+        <destName>jboss-log4j.xml</destName>
+    </file>
+    <file>
+        <source>src/main/resources/conf/log4j.xml</source>
         <outputDirectory>Jahia_CE_v${jahia.package.version}_JBoss_${jahia.jboss.version}/server/default/deploy/${jahia.deploy.war.dirName}/WEB-INF/etc/config</outputDirectory>
-        <filtered>true</filtered>
     </file>
     <file>
         <source>${project.build.directory}/prepackagedSites/ACME.zip</source>

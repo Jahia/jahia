@@ -433,7 +433,7 @@ siteServerNameTestURLExpr                              = ${request.scheme}://${s
 
 # IP address of the server on the local network
 localIp                                                  =
-# IP address of the server on the local network
+# The HTTP port of the server on the local network
 localPort                                                = 8080
 
 # The following parameter allows for configuration of the connection timeout
@@ -512,6 +512,31 @@ cluster.tcp.ehcache.jahia.port                         =   7870
 # will send the batch anyway, in order to avoid consuming too much
 # memory as well as sending huge messages through the network.
 clusterCacheMaxBatchSize                               = 100000
+
+######################################################################
+### Indexing settings  ###############################################
+######################################################################
+# Set this parameter to true to completely deactivate indexing for
+# this cluster node.  
+indexing.disabled                                      = false
+# Should this server perform local indexing?
+# 1: index, 0: do not index ,just read (e.g. when sharing the 
+# same index directory in a clustered environment)
+indexing.localIndexing                                 = 1
+# The root directory for search indexes. In a clustered environment
+# with a single indexing node should point to the network share, where
+# the indexes are located
+indexing.dir                                           = $context/WEB-INF/var/search_indexes
+# 0: Only one indexing server mode:
+#    If you only have one single indexing server, then you should use this mode 
+#    so that the indexing jobs queue can be handled in an optimized way for better performance.
+# 1: Multiple indexing server mode:
+#    If you have more than one indexing server, then you MUST use this mode.
+indexing.multipleIndexingServer                        = 0
+# The server id (cluster.node.serverId in jahia.properties) of the cluster node
+# creating the index or empty if localIndexing is done
+indexing.searchIndexerServerId                         =
+
 
 ######################################################################
 ### EhCache settings  ###############################################

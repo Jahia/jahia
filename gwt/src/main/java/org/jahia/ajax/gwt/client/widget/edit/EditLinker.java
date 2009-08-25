@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public class EditLinker {
     private Button editButton;
     private ComboBox<GWTJahiaBasicDataBean> templateBox;
     private Button saveButton;
+    private Button createPageButton;
 
     public EditLinker(EditManager editManager) {
         //To change body of created methods use File | Settings | File Templates.
@@ -213,6 +215,10 @@ public class EditLinker {
         updateButtonsState(node);
         updateTemplateBox(node);
         displaySelection(node);
+        if (currentlySelectedNode.getInheritedNodeTypes().contains("jnt:page") ||
+            currentlySelectedNode.getNodeTypes().contains("jnt:page")) {
+            createPageButton.setEnabled(true);
+        }
     }
 
     private void updateButtonsState(GWTJahiaNode node) {
@@ -227,6 +233,7 @@ public class EditLinker {
         } else {
             showUnlockButton();
         }
+        createPageButton.setEnabled(false);
     }
 
     public void onCreateGridSelection(GWTJahiaNodeType selected) {
@@ -234,6 +241,7 @@ public class EditLinker {
         lockButton.setEnabled(false);
         editButton.setEnabled(false);
         saveButton.setEnabled(false);
+        createPageButton.setEnabled(false);
         displaySelection(null);
     }
 
@@ -327,7 +335,7 @@ public class EditLinker {
     public void onDisplayGridSelection(GWTJahiaNode selectedItem) {
         onBrowseTreeSelection(selectedItem);
     }
-
+    
     /**
      * This will update the template conbo box based on the page selected item
      *
@@ -370,6 +378,27 @@ public class EditLinker {
                         editManager.getMainModule().refresh();
                     }
                 });
+            }
+        };
+    }
+    
+    public SelectionListener<ButtonEvent> getCreatePageButtonListener(Button createPage) {
+        createPageButton = createPage;
+        return new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                if (currentlySelectedNode != null) {
+                    JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:page", new AsyncCallback<GWTJahiaNodeType>() {
+                        public void onFailure(Throwable throwable) {
+                            Log.error("", throwable);
+                            Window.alert("-->" + throwable.getMessage());
+                        }
+
+                        public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
+                            new EditContentEngine(editManager, currentlySelectedNode, gwtJahiaNodeType).show();
+                        }
+                    });
+                }
             }
         };
     }

@@ -57,4 +57,7 @@ public interface ActionIconsImageBundle extends ImageBundle {
 
     @Resource("icon-html.png")
     public AbstractImagePrototype save();
+    
+    @Resource("icon-page.png")
+    public AbstractImagePrototype createPage();
 }

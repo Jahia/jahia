@@ -127,10 +127,12 @@ public class SimpleModule extends ContentPanel implements Module {
 
         @Override
         protected void onDragEnter(DNDEvent e) {
+            super.onDragEnter(e);
             e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
             e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
             e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getNode());
-            super.onDragEnter(e);
+            e.setCancelled(false);
+            e.getStatus().setStatus(true);
         }
     }
 }

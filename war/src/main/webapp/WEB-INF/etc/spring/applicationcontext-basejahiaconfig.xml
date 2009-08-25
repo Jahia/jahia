@@ -30,26 +30,6 @@
       </constructor-arg>
   </bean>
 
-	<bean id="JCRConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-		<property name="properties">
-			<props>
-				<prop key="org.jahia.repository.name">jahia.repository</prop>
-				<prop key="org.jahia.repository.config">/WEB-INF/etc/repository/repository.xml</prop>
-				<prop key="org.jahia.repository.homedir">/WEB-INF/var/repository</prop>
-			</props>
-		</property>
-	</bean>
-
-	<bean id="JCRNamespaces" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-		<property name="properties">
-			<props>
-				<prop key="jahia">http://www.jahia.org/jahia/1.0</prop>
-                <prop key="jahiant">http://www.jahia.org/jahia/nt/1.0</prop>
-                <prop key="jahiamix">http://www.jahia.org/jahia/mix/1.0</prop>
-			</props>
-		</property>
-	</bean>
-
 	<bean id="settings" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 		<property name="properties">
 			<props>

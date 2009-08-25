@@ -275,10 +275,6 @@ considerPreferredLanguageAfterLogin                    =   false
 # Specifies whether we should preload ACLs from database on startup.
 org.jahia.acl.preload_active                           =   true
 
-# This variable controls whether all the members of a user group (in Jahia DB
-# not LDAP) are preloaded, when the group is loaded.
-preloadDBGroupMembersActivated                         = true
-
 # Enable ACL check when displaying the current page path
 # (using CurrentPagePathTag)
 checkAclInPagePath                                     = true

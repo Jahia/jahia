@@ -249,8 +249,6 @@ public class SettingsBean {
     private boolean containerCacheLiveModeOnly = false;
 
     private static SettingsBean instance = null;
-    private boolean preloadDBGroupMembersActivated;
-
     private boolean inlineEditingActivated = false;
 
     private boolean portletAJAXRenderingActivated = false;
@@ -554,8 +552,6 @@ public class SettingsBean {
 
             inlineEditingActivated = getBoolean("inlineEditingActivated", false);
             portletAJAXRenderingActivated = getBoolean("portletAJAXRenderingActivated", false);
-
-            preloadDBGroupMembersActivated = getBoolean(PRELOAD_DBGROUP_MEMBERS_ACTIVATED,true);
 
             gmailPasswordExported = getBoolean("gmailPasswordExported", true);
 
@@ -1405,10 +1401,6 @@ public class SettingsBean {
      */
     public int getDBMaxElementsForInClause() {
         return dBMaxElementsForInClause;
-    }
-
-    public boolean isPreloadDBGroupMembersActivated() {
-        return preloadDBGroupMembersActivated;
     }
 
     public boolean isDisplayMarkedForDeletedContentObjects() {

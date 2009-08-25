@@ -198,6 +198,7 @@
                 <property name="jahiaSiteDAO" ref="jahiaSiteDAO" />
                 <property name="jahiaUserDAO" ref="jahiaUserDAO" />
                 <property name="cacheService" ref="JahiaCacheService" />
+                <property name="preloadGroupMembers" value="true"/>
             </bean>
         </property>
     </bean>

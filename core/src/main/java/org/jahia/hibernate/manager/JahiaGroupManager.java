@@ -77,10 +77,16 @@ public class JahiaGroupManager {
     private Cache<String, List<String>> membership = null;
 
     private JahiaUserManagerService userService;
+    
+    private boolean preloadGroupMembers = true;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    public List<String> getGroupKeys() {
+    public void setPreloadGroupMembers(boolean preloadDBGroupMembersActivated) {
+    	this.preloadGroupMembers = preloadDBGroupMembersActivated;
+    }
+
+	public List<String> getGroupKeys() {
         return dao.getGroupKeys();
     }
 
@@ -224,8 +230,7 @@ public class JahiaGroupManager {
                 // Find Members                
                 Map<String, Principal> members = null;
                 boolean shouldPreload =
-                       org.jahia.settings.SettingsBean.getInstance()
-                        .isPreloadDBGroupMembersActivated()
+                       preloadGroupMembers
                         ||
                                 JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME
                                 .equals(jahiaGrp.getName());
@@ -274,8 +279,7 @@ public class JahiaGroupManager {
             if (jahiaGrp != null) {
                 // Find Members    
                 Map<String, Principal> members = null;
-                boolean shouldPreload = org.jahia.settings.SettingsBean.getInstance()
-                        .isPreloadDBGroupMembersActivated()
+                boolean shouldPreload = preloadGroupMembers
                         || JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME
                                 .equals(jahiaGrp.getName());
 //                boolean shouldPreload = false;

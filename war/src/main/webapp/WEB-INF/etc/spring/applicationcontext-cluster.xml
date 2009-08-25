@@ -35,7 +35,7 @@ FRAG2(frag_size=60000)</value>
         <property name="clusterService" ref="clusterService" />
         <property name="schedulerService" ref="SchedulerService" />
         <property name="syncDelay" value="10000" />
-        <property name="syncUrl" value="http://${localIp}:8080" />
+        <property name="syncUrl" value="http://${localIp}:${localPort}" />
         <property name="pathsToSync">
             <set>
                 <value>/templates</value>

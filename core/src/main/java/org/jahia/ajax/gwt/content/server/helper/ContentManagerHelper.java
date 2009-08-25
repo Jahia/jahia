@@ -600,6 +600,15 @@ public class ContentManagerHelper {
         }
     }
 
+    public static GWTJahiaNode getParentNode(String path, String workspace, ProcessingContext jParams) throws GWTJahiaServiceException {
+        try {
+            return getGWTJahiaNode((JCRNodeWrapper) jcr.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode(path).getParent(),true);
+        } catch (RepositoryException e) {
+            logger.error(e.toString(), e);
+            throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
+        }
+    }
+
     public static GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper f,boolean versionned) {
         List<String> list = f.getNodeTypes();
         List<String> inherited = new ArrayList<String>();

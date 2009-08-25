@@ -80,6 +80,7 @@ public class EditModeDNDListener extends DNDListener {
             } else if (CREATE_CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
                 GWTJahiaNodeType type = e.getStatus().getData(SOURCE_NODETYPE);
+                e.getStatus().setData(OPERATION_CALLED, "true");
                 new EditContentEngine(editManager, parent, type).show();
             }
         } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(TARGET_TYPE))){
@@ -103,6 +104,10 @@ public class EditModeDNDListener extends DNDListener {
                 JahiaContentManagementService.App.getInstance().moveOnTopOf(nodes.get(0).getPath(), targetPath, new DropAsyncCallback());
             } else if (CREATE_CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
+                GWTJahiaNodeType type = e.getStatus().getData(SOURCE_NODETYPE);
+                e.getStatus().setData(OPERATION_CALLED, "true");
+                GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
+                new EditContentEngine(editManager, parent, type,true).show();
             }
         }
         super.dragDrop(e);

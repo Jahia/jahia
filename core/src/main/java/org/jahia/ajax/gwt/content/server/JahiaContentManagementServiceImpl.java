@@ -462,4 +462,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         ContentManagerHelper.pasteReferencesOnTopOf(pathsToCopy, destinationPath, getUser(),true);
     }
 
+    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException {
+        ParamBean context = retrieveParamBean();
+        final GWTJahiaNode parentNode = ContentManagerHelper.getParentNode(path, "default", context);
+        final GWTJahiaNode jahiaNode = ContentManagerHelper.createNode(parentNode.getPath(), name, nodeType, properties, context);
+        try {
+            ContentManagerHelper.moveOnTopOf(context.getUser(),jahiaNode.getPath(),path);
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
 }

@@ -85,6 +85,7 @@ public class EditContentEngine extends Window {
     private EditManager editManager = null;
     private GWTJahiaNode parent = null;
     private GWTJahiaNodeType type = null;
+    private boolean createInParentAndMoveOnTop = false;
 
     /**
      * Initializes an instance of this class.
@@ -101,6 +102,15 @@ public class EditContentEngine extends Window {
         this.editManager = editManager;
         this.parent = parent;
         this.type = type;
+        initWindowProperties();
+        initTabs(false);
+    }
+
+    public EditContentEngine(EditManager editManager, GWTJahiaNode parent, GWTJahiaNodeType type, boolean createInParentAndMoveOnTop) {
+        this.editManager = editManager;
+        this.parent = parent;
+        this.type = type;
+        this.createInParentAndMoveOnTop = createInParentAndMoveOnTop;
         initWindowProperties();
         initTabs(false);
     }
@@ -183,7 +193,7 @@ public class EditContentEngine extends Window {
         if (fullMode) {
             item.addSelectionListener(new SaveSelectionListener(elements, propertiesEditor, this));
         } else {
-            item.addSelectionListener(new CreateSelectionListener(elements, propertiesEditor, this));
+            item.addSelectionListener(new CreateSelectionListener(propertiesEditor, this));
         }
         toolBar.add(new FillToolItem());
         toolBar.add(item);
@@ -252,30 +262,43 @@ public class EditContentEngine extends Window {
     }
 
     private class CreateSelectionListener extends SelectionListener<ButtonEvent> {
-        private final List<GWTJahiaNode> elements;
         private final PropertiesEditor propertiesEditor;
         private final EditContentEngine editContentEngine;
 
-        public CreateSelectionListener(List<GWTJahiaNode> elements, PropertiesEditor propertiesEditor, EditContentEngine editContentEngine) {
-            this.elements = elements;
+        public CreateSelectionListener(PropertiesEditor propertiesEditor, EditContentEngine editContentEngine) {
             this.propertiesEditor = propertiesEditor;
             this.editContentEngine = editContentEngine;
         }
 
 
         public void componentSelected(ButtonEvent event) {
-            JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), null, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback<GWTJahiaNode>() {
-                public void onFailure(Throwable throwable) {
-                    com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
-                    Log.error("failed", throwable);
-                }
+            if (createInParentAndMoveOnTop) {
+                JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), null, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback() {
+                    public void onFailure(Throwable throwable) {
+                        com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                        Log.error("failed", throwable);
+                    }
 
-                public void onSuccess(GWTJahiaNode node) {
-                    Info.display("", "Node created");
-                    editContentEngine.hide();
-                    editManager.getMainModule().refresh();
-                }
-            });
+                    public void onSuccess(Object o) {
+                        Info.display("", "Node created");
+                        editContentEngine.hide();
+                        editManager.getMainModule().refresh();
+                    }
+                });
+            } else {
+                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), null, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback<GWTJahiaNode>() {
+                    public void onFailure(Throwable throwable) {
+                        com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                        Log.error("failed", throwable);
+                    }
+
+                    public void onSuccess(GWTJahiaNode node) {
+                        Info.display("", "Node created");
+                        editContentEngine.hide();
+                        editManager.getMainModule().refresh();
+                    }
+                });
+            }
         }
     }
 }

@@ -54,16 +54,16 @@
     }
     final String fieldsEditCallingEngineName = (String) engineMap.get("fieldsEditCallingEngineName");
     final JahiaField theField = (JahiaField) engineMap.get(fieldsEditCallingEngineName + ".theField");
-    final int appID = ((Integer) engineMap.get(theField.getDefinition().getName() + "_appID")).intValue();
+    final String appID = (String) engineMap.get(theField.getDefinition().getName() + "_appID");
     final Iterator appList = (Iterator) engineMap.get("appList");
     final Integer userNameWidth = new Integer(15);
 
     String appName = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field.applicationNotSet.label", jParams.getLocale());
 
-    if (appID != -1) {
+    if (appID != null) {
         while (appList.hasNext()) {
             final ApplicationBean appBean = (ApplicationBean) appList.next();
-            if (appID == appBean.getID()) {
+            if (appID.equals(appBean.getID())) {
                 appName = appBean.getName();
             }
         }

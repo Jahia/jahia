@@ -120,7 +120,7 @@
                       <span class="dex-PushButton">
                         <span class="first-child">
                           <a class="ico-page-select"
-                             href="javascript:<%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.SELECT_ANY_PAGE_OPERATION, -1, -1, "setPid", jParams.getSiteID(), -1)%>"><fmt:message key="org.jahia.admin.selectAPage.label"/></a>
+                             href="javascript:<%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.SELECT_ANY_PAGE_OPERATION, -1, -1, "setPid", jParams.getSiteID(), -1, null)%>"><fmt:message key="org.jahia.admin.selectAPage.label"/></a>
                         </span>
                       </span>
                                                 </td>

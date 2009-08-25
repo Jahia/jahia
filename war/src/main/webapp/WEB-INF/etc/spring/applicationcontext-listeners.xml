@@ -37,9 +37,6 @@
     <bean id="TimeBasedPublishingEventListener" class="org.jahia.services.timebasedpublishing.TimeBasedPublishingEventListener" >
         <property name="tbpServ" ref="TimeBasedPublishingService" />
     </bean>
-    <!--
-    <bean id="EsiInvalidationEventListener" class="org.jahia.services.esi.EsiInvalidationEventListener" />
-    -->
     <bean id="CacheEventListener" class="org.jahia.services.cache.CacheEventListener" />
     <bean id="JCRSiteListener" class="org.jahia.services.content.JCRSiteListener" />
     <bean id="JCRListener" class="org.jahia.services.content.impl.jahia.JCRListener" />
@@ -103,11 +100,9 @@
                 <ref bean="ContainersChangeEventListener" />
                 <ref bean="SiteMapEventListener" />
                 <ref bean="WorkflowEventListener" />
-                <!-- ref bean="BlogPingListener" / -->
                 <!--ref bean="ChangeContentPickerListener" /-->
                 <ref bean="ActivationContentPickerListener" />
                 <ref bean="TimeBasedPublishingEventListener" />
-                <!--ref bean="EsiInvalidationEventListener" /-->
                 <ref bean="CacheEventListener" />
                 <ref bean="JCRSiteListener" />
                 <ref bean="JCRListener" />

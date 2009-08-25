@@ -518,15 +518,6 @@
         <property name="templateManagerService" ref="JahiaTemplateManagerService" />        
     </bean>
 
-    <bean id="JahiaPasswordPolicyService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="passwordPolicyManager" ref="org.jahia.hibernate.manager.JahiaPasswordPolicyManager" />
-                <property name="defaultPasswordPolicy" ref="defaultJahiaPasswordPolicy" />
-            </bean>
-        </property>
-    </bean>
-
     <bean id="JahiaDBFilterCreator" class="org.jahia.query.filtercreator.JahiaDBFilterCreator">
         <property name="name" value="JahiaDBFilterCreator" />
     </bean>

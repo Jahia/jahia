@@ -3,6 +3,16 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+       
+    <bean id="JahiaPasswordPolicyService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyService" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="passwordPolicyManager" ref="org.jahia.hibernate.manager.JahiaPasswordPolicyManager" />
+                <property name="defaultPasswordPolicy" ref="defaultJahiaPasswordPolicy" />
+            </bean>
+        </property>
+    </bean>
+
     <bean id="defaultJahiaPasswordPolicy" class="org.jahia.services.pwdpolicy.JahiaPasswordPolicy">
         <property name="name" value="Default Password Policy"/>
         <property name="rules">

@@ -113,7 +113,7 @@
                                     <groupId>lambdaprobe</groupId>
                                     <artifactId>lambdaprobe</artifactId>
                                     <version>1.7b</version>
-                                    <classifier>jboss</classifier>
+                                    <classifier>jahia-jboss</classifier>
                                     <type>war</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy</outputDirectory>

@@ -9,7 +9,6 @@
 		<property name="sourceList">
         <list>
             <value>classpath:org/jahia/services/search/compass/jahiaresource.cpm.xml</value>
-            <!--<value>file://${jahiaWebAppRoot}/WEB-INF/var/temp/jahiaresource.cpm.xml</value>-->
         </list>
 		</property>
 	</bean>

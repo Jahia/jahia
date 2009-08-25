@@ -530,4 +530,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
+
+    public void saveNodeTemplate(String path, String template) throws GWTJahiaServiceException {
+        JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
+        try {
+            JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
+            if (!node.isNodeType("jmix:renderable")) {
+               node.addMixin("jmix:renderable");
+               node.save();
+            }
+            node.setProperty("j:defaultTemplate",template);
+            node.save();
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

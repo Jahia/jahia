@@ -76,11 +76,13 @@ public class EditLinker {
     private SidePanel.PreviewTabItem previewTabItem;
     private TabItem propertiesTabItem;
     private GWTJahiaNode currentlySelectedNode;
+    private String currentrySelectedTemplate;
     private Button deleteButton;
     private final EditManager editManager;
     private Button lockButton;
     private Button editButton;
     private ComboBox<GWTJahiaBasicDataBean> templateBox;
+    private Button saveButton;
 
     public EditLinker(EditManager editManager) {
         //To change body of created methods use File | Settings | File Templates.
@@ -231,6 +233,7 @@ public class EditLinker {
         deleteButton.setEnabled(false);
         lockButton.setEnabled(false);
         editButton.setEnabled(false);
+        saveButton.setEnabled(false);
         displaySelection(null);
     }
 
@@ -241,6 +244,7 @@ public class EditLinker {
         displayGrid.getSelectionModel().deselectAll();
         displayTypesGrid.getSelectionModel().deselectAll();
         browseTree.getSelectionModel().deselectAll();
+        updateTemplateBox(node);
         displaySelection(node);
     }
 
@@ -346,6 +350,27 @@ public class EditLinker {
     }
 
     public void onTemplateBoxSelection(GWTJahiaBasicDataBean selectedItem) {
+         currentrySelectedTemplate = selectedItem.getValue();
          displayPreview(currentlySelectedNode, selectedItem.getValue());
+         saveButton.setEnabled(true);
+    }
+
+    public SelectionListener<ButtonEvent> getSaveButtonListener(Button save) {
+        saveButton = save;
+        return new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                JahiaContentManagementService.App.getInstance().saveNodeTemplate(currentlySelectedNode.getPath() , currentrySelectedTemplate,new AsyncCallback() {
+                    public void onFailure(Throwable throwable) {
+                        Log.error("", throwable);
+                        Window.alert("-->" + throwable.getMessage());
+
+                    }
+                    public void onSuccess(Object o) {
+                        editManager.getMainModule().refresh();
+                    }
+                });
+            }
+        };
     }
 }

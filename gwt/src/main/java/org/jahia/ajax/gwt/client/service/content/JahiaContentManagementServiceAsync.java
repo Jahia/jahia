@@ -164,4 +164,6 @@ public interface JahiaContentManagementServiceAsync {
 
     void getTemplatesPath(String path, AsyncCallback<List<String[]>> async);
 
+    void saveNodeTemplate(String path, String template , AsyncCallback async);
+
 }

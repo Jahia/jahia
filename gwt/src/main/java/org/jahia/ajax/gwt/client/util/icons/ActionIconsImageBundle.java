@@ -54,4 +54,7 @@ public interface ActionIconsImageBundle extends ImageBundle {
 
     @Resource("icon-lock.png")
     public AbstractImagePrototype unlock();
+
+    @Resource("icon-html.png")
+    public AbstractImagePrototype save();
 }

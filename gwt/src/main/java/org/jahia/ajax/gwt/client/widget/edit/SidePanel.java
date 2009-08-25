@@ -336,6 +336,11 @@ public class SidePanel extends ContentPanel {
         templateListStore.add(new GWTJahiaBasicDataBean("template2", "template2"));
         templateListStore.add(new GWTJahiaBasicDataBean("template3", "template3"));*/
         editManager.getEditLinker().setTemplateBox(templateBox);
+        Button save = new Button();
+        save.setIcon(ACTION_ICONS.save());
+        save.setToolTip("save");
+        save.addSelectionListener(editManager.getEditLinker().getSaveButtonListener(save));
+        save.setEnabled(false);
         Button lock = new Button();
         lock.setIcon(ACTION_ICONS.lock());
         lock.setToolTip("lock");
@@ -352,6 +357,7 @@ public class SidePanel extends ContentPanel {
         delete.setToolTip("delete");
         delete.setEnabled(false);
         toolbar.add(templateBox);
+        toolbar.add(save);
         toolbar.add(lock);
         toolbar.add(edit);
         toolbar.add(delete);

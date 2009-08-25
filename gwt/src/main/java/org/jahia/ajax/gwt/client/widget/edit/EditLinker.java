@@ -32,30 +32,30 @@
  */
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.Window;
-import com.allen_sauer.gwt.log.client.Log;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -135,7 +135,7 @@ public class EditLinker {
 
                 public void onFailure(Throwable caught) {
                     Log.error("", caught);
-                    Window.alert("-->"+caught.getMessage());
+                    Window.alert("-->" + caught.getMessage());
                 }
             });
         }
@@ -148,60 +148,74 @@ public class EditLinker {
      */
     private void displayProperties(final GWTJahiaNode node) {
         propertiesTabItem.removeAll();
-        JahiaContentManagementService.App.getInstance().getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
-            public void onFailure(Throwable throwable) {
-                Log.debug("Cannot get properties", throwable);
-            }
+        if (node != null) {
+            JahiaContentManagementService.App.getInstance().getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
+                public void onFailure(Throwable throwable) {
+                    Log.debug("Cannot get properties", throwable);
+                }
 
-            public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
-                elements.add(node);
+                public void onSuccess(GWTJahiaGetPropertiesResult result) {
+                    final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
+                    elements.add(node);
 
-                final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, GWTJahiaItemDefinition.METADATA, null, null);
+                    final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, GWTJahiaItemDefinition.METADATA, null, null);
 
-                ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
-                Button item = new Button(Messages.getResource("fm_save"));
-                item.setIconStyle("gwt-icons-save");
-                item.setEnabled(node.isWriteable() && !node.isLocked());
-                item.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent event) {
-                        JahiaContentManagementService.App.getInstance().saveProperties(elements, propertiesEditor.getProperties(), new AsyncCallback() {
-                            public void onFailure(Throwable throwable) {
-                                com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
-                                Log.error("failed", throwable);
-                            }
+                    ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
+                    Button item = new Button(Messages.getResource("fm_save"));
+                    item.setIconStyle("gwt-icons-save");
+                    item.setEnabled(node.isWriteable() && !node.isLocked());
+                    item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        public void componentSelected(ButtonEvent event) {
+                            JahiaContentManagementService.App.getInstance().saveProperties(elements, propertiesEditor.getProperties(), new AsyncCallback() {
+                                public void onFailure(Throwable throwable) {
+                                    com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                                    Log.error("failed", throwable);
+                                }
 
-                            public void onSuccess(Object o) {
-                                Info.display("", "Properties saved");
-                                //getLinker().refreshTable();
-                            }
-                        });
-                    }
-                });
-                toolBar.add(new FillToolItem());
-                toolBar.add(item);
-                item = new Button(Messages.getResource("fm_restore"));
-                item.setIconStyle("gwt-icons-restore");
-                item.setEnabled(node.isWriteable() && !node.isLocked());
+                                public void onSuccess(Object o) {
+                                    Info.display("", "Properties saved");
+                                    //getLinker().refreshTable();
+                                }
+                            });
+                        }
+                    });
+                    toolBar.add(new FillToolItem());
+                    toolBar.add(item);
+                    item = new Button(Messages.getResource("fm_restore"));
+                    item.setIconStyle("gwt-icons-restore");
+                    item.setEnabled(node.isWriteable() && !node.isLocked());
 
-                item.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent event) {
-                        propertiesEditor.resetForm();
-                    }
-                });
-                toolBar.add(item);
-                toolBar.setVisible(true);
-                propertiesTabItem.add(propertiesEditor);
-                propertiesTabItem.layout();
-            }
-        });
+                    item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        public void componentSelected(ButtonEvent event) {
+                            propertiesEditor.resetForm();
+                        }
+                    });
+                    toolBar.add(item);
+                    toolBar.setVisible(true);
+                    propertiesTabItem.add(propertiesEditor);
+                    propertiesTabItem.layout();
+                }
+            });
+        }
     }
 
-    public void onBrowseTreeSelection(GWTJahiaNode selected) {
-        deleteButton.setEnabled(true);
-        lockButton.setEnabled(true);
-        editButton.setEnabled(true);
-        displaySelection(selected);
+    public void onBrowseTreeSelection(GWTJahiaNode node) {
+        updateButtonsState(node);
+        displaySelection(node);
+    }
+
+    private void updateButtonsState(GWTJahiaNode node) {
+        if (node.isLockable()) {
+            lockButton.setEnabled(true);
+        }
+        if (!node.isLocked()) {
+            if (node.isWriteable()) {
+                deleteButton.setEnabled(true);
+                editButton.setEnabled(true);
+            }
+        } else {
+            showUnlockButton();
+        }
     }
 
     public void onCreateGridSelection(GWTJahiaNodeType selected) {
@@ -211,16 +225,9 @@ public class EditLinker {
         displaySelection(null);
     }
 
-    public void onSimpleModuleSelection(GWTJahiaNode node) {        
-        if(node.isLockable()) {
-        lockButton.setEnabled(true);
-        }
-        if(!node.isLocked()){
-            deleteButton.setEnabled(true);
-            editButton.setEnabled(true);
-        } else {
-            showUnlockButton();
-        }
+    public void onSimpleModuleSelection(GWTJahiaNode node) {
+        updateButtonsState(node);
+
         createView.getSelectionModel().deselectAll();
         displayGrid.getSelectionModel().deselectAll();
         displayTypesGrid.getSelectionModel().deselectAll();
@@ -262,7 +269,7 @@ public class EditLinker {
                     List<String> paths = new ArrayList<String>(1);
                     paths.add(currentlySelectedNode.getPath());
                     final boolean isLock = lockButton.getToolTip().getToolTipConfig().getText().equals("lock");
-                    JahiaContentManagementService.App.getInstance().setLock(paths, isLock,new AsyncCallback() {
+                    JahiaContentManagementService.App.getInstance().setLock(paths, isLock, new AsyncCallback() {
                         public void onFailure(Throwable throwable) {
                             Log.error("", throwable);
                             Window.alert("-->" + throwable.getMessage());

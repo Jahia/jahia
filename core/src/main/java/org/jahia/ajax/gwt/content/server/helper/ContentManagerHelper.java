@@ -38,6 +38,7 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.ajax.gwt.client.data.node.*;
@@ -1325,10 +1326,6 @@ public class ContentManagerHelper {
     }
 
     public static GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, ProcessingContext context) throws GWTJahiaServiceException {
-        checkName(name);
-        if (checkExistence(parentPath + "/" + name, context.getUser())) {
-            throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
-        }
         JCRNodeWrapper parentNode;
         try {
             parentNode = jcr.getThreadSession(context.getUser(), null, context.getLocale()).getNode(parentPath);
@@ -1336,6 +1333,14 @@ public class ContentManagerHelper {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
         }
+        if(name==null) {
+            name = findAvailableName(parentNode, nodeType.replaceAll(":","_"),context.getUser());
+        }
+        checkName(name);
+        if (checkExistence(parentPath + "/" + name, context.getUser())) {
+            throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
+        }
+
         JCRNodeWrapper childNode = addNode(parentNode, name, nodeType, props);
         try {
             parentNode.save();

@@ -31,18 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -55,130 +43,168 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Content editing widget.
- * 
+ *
  * @author Sergiy Shyrkov
- * 
  */
 public class EditContentEngine extends Window {
-	
-	private static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
 
-	private String contentPath;
-	
-	private ContentPanel contentPanel; 
+    private static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
 
-	private TabPanel tabs;
+    private String contentPath;
 
-	private AsyncTabItem contentTab;
+    private ContentPanel contentPanel;
 
-	private AsyncTabItem metadataTab;
+    private TabPanel tabs;
 
-	private AsyncTabItem rightsTab;
+    private AsyncTabItem contentTab;
 
-	private AsyncTabItem versionsTab;
+    private AsyncTabItem metadataTab;
 
-	private AsyncTabItem workflowTab;
+    private AsyncTabItem rightsTab;
 
-	/**
-	 * Initializes an instance of this class.
-	 * 
-	 * @param contentObjectPath
-	 *            the path of the content object to be edited
-	 */
-	public EditContentEngine(String contentObjectPath) {
-		contentPath = contentObjectPath;
-		initWindowProperties();
-		initTabs();
-	}
+    private AsyncTabItem versionsTab;
 
-	/**
-	 * Creates and initializes all window tabs.
-	 */
-	private void initTabs() {
-		contentPanel = new ContentPanel(new FitLayout());
-		contentPanel.setBodyBorder(false);
-		contentPanel.setBorders(true);
+    private AsyncTabItem workflowTab;
+    private EditManager editManager = null;
+    private GWTJahiaNode parent = null;
+    private GWTJahiaNodeType type = null;
 
-		tabs = new TabPanel();
-		tabs.setBodyBorder(false);
-		tabs.setBorders(false);
+    /**
+     * Initializes an instance of this class.
+     *
+     * @param contentObjectPath the path of the content object to be edited
+     */
+    public EditContentEngine(String contentObjectPath) {
+        contentPath = contentObjectPath;
+        initWindowProperties();
+        initTabs(true);
+    }
+
+    public EditContentEngine(EditManager editManager, GWTJahiaNode parent, GWTJahiaNodeType type) {
+        this.editManager = editManager;
+        this.parent = parent;
+        this.type = type;
+        initWindowProperties();
+        initTabs(false);
+    }
+
+    /**
+     * Creates and initializes all window tabs.
+     */
+    private void initTabs(boolean fullMode) {
+        tabs = new TabPanel();
+        tabs.setBodyBorder(false);
+        tabs.setBorders(false);
 
         contentTab = new AsyncTabItem(Messages.get("ece_content", "Content"));
         contentTab.setLayout(new FitLayout());
-		tabs.add(contentTab);
+        tabs.add(contentTab);
+        if (fullMode) {
+            metadataTab = new AsyncTabItem(Messages.get("ece_metadata", "Metadata"));
+            metadataTab.setLayout(new FitLayout());
+            tabs.add(metadataTab);
 
-		metadataTab = new AsyncTabItem(Messages.get("ece_metadata", "Metadata"));
-		metadataTab.setLayout(new FitLayout());
-		tabs.add(metadataTab);
+            rightsTab = new AsyncTabItem(Messages.get("ece_rights", "Rights"));
+            rightsTab.setLayout(new FitLayout());
+            tabs.add(rightsTab);
 
-        createContentTab();
+            workflowTab = new AsyncTabItem(Messages.get("ece_workflow", "Workflow"));
+            workflowTab.setLayout(new FitLayout());
+            tabs.add(workflowTab);
 
-		rightsTab = new AsyncTabItem(Messages.get("ece_rights", "Rights"));
-		rightsTab.setLayout(new FitLayout());
-		tabs.add(rightsTab);
-		
-		workflowTab = new AsyncTabItem(Messages.get("ece_workflow", "Workflow"));
-		workflowTab.setLayout(new FitLayout());
-		tabs.add(workflowTab);
-
-		versionsTab = new AsyncTabItem(Messages.get("ece_versions", "Versions"));
-		versionsTab.setLayout(new FitLayout());
-		tabs.add(versionsTab);
-
-		add(tabs);
-	}
-
-	private AsyncTabItem createContentTab() {
-
-		contentService.getProperties(contentPath, new AsyncCallback<GWTJahiaGetPropertiesResult>() {
-            public void onFailure(Throwable throwable) {
-                Log.debug("Cannot get properties", throwable);
-            }
-
-            public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                PropertiesEditor propertiesEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.CONTENT);
-                contentTab.add(propertiesEditor);
-                contentTab.setProcessed(true);
-                contentTab.layout();
-
-                PropertiesEditor metadataEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.METADATA);
-                metadataTab.add(metadataEditor);
-                metadataTab.setProcessed(true);
-                metadataTab.layout();
-            }
-        });
-		
-	    return contentTab;
+            versionsTab = new AsyncTabItem(Messages.get("ece_versions", "Versions"));
+            versionsTab.setLayout(new FitLayout());
+            tabs.add(versionsTab);
+        }
+        add(tabs);
+        createContentTab(fullMode);
     }
 
-    private PropertiesEditor createPropertiesEditor(GWTJahiaGetPropertiesResult result, String datatype) {
+    private AsyncTabItem createContentTab(final boolean fullMode) {
+        if (fullMode) {
+            contentService.getProperties(contentPath, new AsyncCallback<GWTJahiaGetPropertiesResult>() {
+                public void onFailure(Throwable throwable) {
+                    Log.debug("Cannot get properties", throwable);
+                }
+
+                public void onSuccess(GWTJahiaGetPropertiesResult result) {
+                    PropertiesEditor propertiesEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.CONTENT, fullMode);
+                    contentTab.add(propertiesEditor);
+                    contentTab.setProcessed(true);
+                    contentTab.layout();
+                    PropertiesEditor metadataEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.METADATA, fullMode);
+                    metadataTab.add(metadataEditor);
+                    metadataTab.setProcessed(true);
+                    metadataTab.layout();
+                }
+            });
+
+            return contentTab;
+        } else {
+            List<GWTJahiaNodeType> nodeTypes = new ArrayList<GWTJahiaNodeType>(1);
+            nodeTypes.add(type);
+            GWTJahiaGetPropertiesResult result = new GWTJahiaGetPropertiesResult(nodeTypes, new HashMap<String, GWTJahiaNodeProperty>());
+            result.setNode(parent);
+            contentTab.add(createPropertiesEditor(result, GWTJahiaItemDefinition.CONTENT, fullMode));
+            contentTab.setProcessed(true);
+            contentTab.layout();
+            return contentTab;
+        }
+    }
+
+    private PropertiesEditor createPropertiesEditor(GWTJahiaGetPropertiesResult result, String datatype, boolean fullMode) {
         GWTJahiaNode selectedNode = result.getNode();
         final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
         elements.add(selectedNode);
 
-        List<String> list = new ArrayList<String>();
-//                list.add("jcr:content");
-//                list.add("j:thumbnail");
-
         final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, datatype, null, null);
-
+        final EditContentEngine editContentEngine = this;
         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
         Button item = new Button(Messages.getResource("fm_save"));
         item.setIconStyle("gwt-icons-save");
         item.setEnabled(selectedNode.isWriteable() && !selectedNode.isLocked());
-        item.addSelectionListener(new SaveSelectionListener(elements, propertiesEditor));
+        if (fullMode) {
+            item.addSelectionListener(new SaveSelectionListener(elements, propertiesEditor, this));
+        } else {
+            item.addSelectionListener(new CreateSelectionListener(elements, propertiesEditor, this));
+        }
         toolBar.add(new FillToolItem());
         toolBar.add(item);
-        item = new Button(Messages.getResource("fm_restore"));
-        item.setIconStyle("gwt-icons-restore");
-        item.setEnabled(selectedNode.isWriteable() && !selectedNode.isLocked());
+        if (fullMode) {
+            item = new Button(Messages.getResource("fm_restore"));
+            item.setIconStyle("gwt-icons-restore");
+            item.setEnabled(selectedNode.isWriteable() && !selectedNode.isLocked());
 
+            item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
+                    propertiesEditor.resetForm();
+                }
+            });
+            toolBar.add(item);
+        }
+        item = new Button(Messages.getResource("fm_cancel"));
+        item.setIconStyle("gwt-icons-cancel");
         item.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                propertiesEditor.resetForm();
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                editContentEngine.hide();
             }
         });
         toolBar.add(item);
@@ -187,24 +213,26 @@ public class EditContentEngine extends Window {
     }
 
     /**
-	 * Initializes basic window properties: size, state and title.
-	 */
-	private void initWindowProperties() {
-		setSize(800, 600);
-		setClosable(true);
-		setResizable(true);
-		setModal(true);
-		setMaximizable(true);
-		setHeading(contentPath);
-	}
+     * Initializes basic window properties: size, state and title.
+     */
+    private void initWindowProperties() {
+        setSize(800, 600);
+        setClosable(true);
+        setResizable(true);
+        setModal(true);
+        setMaximizable(true);
+        setHeading(contentPath);
+    }
 
-    private static class SaveSelectionListener extends SelectionListener<ButtonEvent> {
+    private class SaveSelectionListener extends SelectionListener<ButtonEvent> {
         private final List<GWTJahiaNode> elements;
         private final PropertiesEditor propertiesEditor;
+        private final EditContentEngine editContentEngine;
 
-        public SaveSelectionListener(List<GWTJahiaNode> elements, PropertiesEditor propertiesEditor) {
+        public SaveSelectionListener(List<GWTJahiaNode> elements, PropertiesEditor propertiesEditor, EditContentEngine editContentEngine) {
             this.elements = elements;
             this.propertiesEditor = propertiesEditor;
+            this.editContentEngine = editContentEngine;
         }
 
         public void componentSelected(ButtonEvent event) {
@@ -216,7 +244,36 @@ public class EditContentEngine extends Window {
 
                 public void onSuccess(Object o) {
                     Info.display("", "Properties saved");
-                    //getLinker().refreshTable();
+                    editContentEngine.hide();
+                    editManager.getMainModule().refresh();
+                }
+            });
+        }
+    }
+
+    private class CreateSelectionListener extends SelectionListener<ButtonEvent> {
+        private final List<GWTJahiaNode> elements;
+        private final PropertiesEditor propertiesEditor;
+        private final EditContentEngine editContentEngine;
+
+        public CreateSelectionListener(List<GWTJahiaNode> elements, PropertiesEditor propertiesEditor, EditContentEngine editContentEngine) {
+            this.elements = elements;
+            this.propertiesEditor = propertiesEditor;
+            this.editContentEngine = editContentEngine;
+        }
+
+
+        public void componentSelected(ButtonEvent event) {
+            JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), null, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback<GWTJahiaNode>() {
+                public void onFailure(Throwable throwable) {
+                    com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                    Log.error("failed", throwable);
+                }
+
+                public void onSuccess(GWTJahiaNode node) {
+                    Info.display("", "Node created");
+                    editContentEngine.hide();
+                    editManager.getMainModule().refresh();
                 }
             });
         }

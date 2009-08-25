@@ -80,7 +80,7 @@ public class EditModeDNDListener extends DNDListener {
             } else if (CREATE_CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
                 GWTJahiaNodeType type = e.getStatus().getData(SOURCE_NODETYPE);
-                new AddContentWizardWindow(null, parent, type).show();
+                new EditContentEngine(editManager, parent, type).show();
             }
         } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(TARGET_TYPE))){
             String targetPath = e.getStatus().getData(TARGET_PATH);

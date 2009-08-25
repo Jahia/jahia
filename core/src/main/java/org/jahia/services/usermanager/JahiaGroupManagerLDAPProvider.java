@@ -56,6 +56,7 @@ import javax.naming.SizeLimitExceededException;
 import javax.naming.TimeLimitExceededException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
@@ -125,6 +126,8 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
 
     private static String LDAP_REFFERAL_PROP = "refferal";
 
+    private static String AD_RANGE_STEP = "ad.range.step";    
+    
     /**
      * Added to handle the fact that the attribute used to define group users is
      * not always a DN or named as a DN...
@@ -168,6 +171,115 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
         return instance;
     }
 
+    private static boolean containsMembersRange(Attributes attrs,
+            String membersAttribute) throws NamingException {
+        
+        boolean rangePresent = false;
+        String rangeAttribute = membersAttribute + ";range=";
+        NamingEnumeration<String> ids = attrs.getIDs();
+        while (ids.hasMore() && !rangePresent) {
+            String attrId = ids.next();
+            rangePresent = attrId.toLowerCase().startsWith(rangeAttribute);
+        }
+
+        return rangePresent;
+    }
+
+    private static String escapeFilterValue(String value) {
+        String filterValue = JahiaTools.replacePattern(value, "\\", "\\5c");
+        filterValue = JahiaTools.replacePattern(filterValue, "(", "\\28");
+        filterValue = JahiaTools.replacePattern(filterValue, ")", "\\29");
+
+        return filterValue;
+    }
+    
+    private static void loadMembersUsingRange(SearchResult sr, DirContext ctx, SearchControls searchCtl,
+            String filterString, String searchNameProp, String groupNameAttribute, String membersAttributeName,
+            int rangeStep) throws NamingException {
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug("Loading mambers for group entry '" + sr.getName() + "'");
+        }
+        
+        // backup originally requested attributes
+        String[] originalReturningAttributes = searchCtl.getReturningAttributes();
+
+        int lowRange = 0;
+        int highRange = lowRange + rangeStep;
+        boolean finished = false;
+        Attribute membersAttribute = new BasicAttribute(membersAttributeName);
+
+        while (!finished) {
+            finished = false;
+            // Specify the attributes to return
+            String rangeAttributeName = membersAttributeName + ";range=" + lowRange + "-" + highRange;
+            searchCtl.setReturningAttributes(new String[] { rangeAttributeName });
+            StringBuilder filter = new StringBuilder(filterString);
+            filter.insert(0, "(&").append("(").append(groupNameAttribute).append("=").append(
+                    escapeFilterValue(sr.getAttributes().get(groupNameAttribute).get().toString())).append("))");
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Retrieving attribute values range for attribute '" + rangeAttributeName + "'");
+            }
+
+            // Search for objects using the filter
+            NamingEnumeration<SearchResult> searchResults = ctx.search(searchNameProp, filter.toString(), searchCtl);
+            while (searchResults.hasMore()) {
+                SearchResult groupResult = (SearchResult) searchResults.next();
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Got result '" + groupResult.getName() + "' with attributes: " + groupResult.getAttributes());
+                }
+                
+                if (groupResult.getName().equals(sr.getName())) {
+                    NamingEnumeration<String> attributes = groupResult.getAttributes().getIDs();
+                    boolean memberAttributePresent = false;
+                    while (attributes.hasMore()) {
+                        String attrId = attributes.next();
+                        if (attrId.startsWith(membersAttributeName)) {
+                            memberAttributePresent = true;
+                            Attribute members = groupResult.getAttributes().get(attrId);
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Found attribute '" + attrId + "' with members: " + members.get());
+                            }
+                            for (NamingEnumeration<?> ae = members.getAll(); ae.hasMore();) {
+                                membersAttribute.add(ae.next());
+                            }
+                            if (attrId.endsWith("*")) {
+                                // finish if we got all members (* indicate last
+                                // range of values)
+                                finished = true;
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("We got last value chunk, so we are done");
+                                }
+                            }
+                        }
+                    }
+                    if (!memberAttributePresent) {
+                        // also finish if there are no members at all
+                        finished = true;
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("No members attribute found, so we are done");
+                        }
+                    }
+                } else {
+                    logger.warn("Search for a group '" + sr.getName() + "' (" + sr.getNameInNamespace() + " ::: "
+                            + groupNameAttribute + "=" + sr.getAttributes().get(groupNameAttribute).get().toString()
+                            + ") returned another entry: " + groupResult.getName());
+                }
+
+            }
+            // Changing the range
+            lowRange = highRange + 1;
+            highRange = lowRange + rangeStep;
+        }
+
+        // set found members
+        sr.getAttributes().put(membersAttribute);
+
+        // restore search attributes
+        searchCtl.setReturningAttributes(originalReturningAttributes);
+    }
+
 // --------------------------- CONSTRUCTORS ---------------------------
 
     /**
@@ -198,7 +310,7 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
         this.jahiaUserManagerService = jahiaUserManagerService;
     }
 
-    public void setLdapProperties(Map ldapProperties) {
+    public void setLdapProperties(Map<Object, Object> ldapProperties) {
         this.ldapProperties = new Properties();
         this.ldapProperties.putAll(ldapProperties);
     }
@@ -348,9 +460,7 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
         List<String> result = new ArrayList<String>();
 
         try {
-            NamingEnumeration<SearchResult> answer = getGroups (getPublicContext (false), null);
-            while (answer.hasMore ()) {
-                SearchResult sr = answer.next ();
+            for (SearchResult sr : getGroups (getPublicContext (false), null)) {
                 JahiaGroup curGroup = ldapToJahiaGroup (sr);
                 if (curGroup != null) {
                     result.add (curGroup.getGroupKey ());
@@ -383,9 +493,7 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
         List<String> result = new ArrayList<String>();
 
         try {
-            NamingEnumeration<SearchResult> answer = getGroups (getPublicContext (false), null);
-            while (answer.hasMore ()) {
-                SearchResult sr = answer.next ();
+            for (SearchResult sr : getGroups (getPublicContext (false), null)) {
                 JahiaGroup curGroup = ldapToJahiaGroup (sr);
                 if (curGroup != null) {
                     result.add (curGroup.getGroupname ());
@@ -412,22 +520,22 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
      * @param filters a set of name=value string that contain RFC 2254 format
      *                filters in the value, or null if we want to look in the full repository
      *
-     * @return NamingEnumeration a naming Iterator of SearchResult objects
+     * @return a list of SearchResult objects
      *         that contains the LDAP group entries that correspond to the filter
      *
      * @throws NamingException
      */
-    private NamingEnumeration<SearchResult> getGroups (DirContext ctx, Properties filters)
+    private List<SearchResult> getGroups (DirContext ctx, Properties filters)
             throws NamingException {
         if (ctx == null) {
             throw new NamingException ("Context is null !");
         }
 
-        StringBuffer filterString = new StringBuffer ("(|(objectClass="+
-                ldapProperties.getProperty (JahiaGroupManagerLDAPProvider.GROUP_OBJECTCLASS_ATTRIBUTE, "groupOfNames") +
-                ")(objectClass="+
-                ldapProperties.getProperty (JahiaGroupManagerLDAPProvider.DYNGROUP_OBJECTCLASS_ATTRIBUTE, "groupOfURLs") +
-                "))");
+        StringBuffer filterString = new StringBuffer();
+        filterString.append("(|(objectClass=").append(
+                ldapProperties.getProperty (JahiaGroupManagerLDAPProvider.GROUP_OBJECTCLASS_ATTRIBUTE, "groupOfNames")).append(
+                ")(objectClass=").append(
+                ldapProperties.getProperty (JahiaGroupManagerLDAPProvider.DYNGROUP_OBJECTCLASS_ATTRIBUTE, "groupOfURLs")).append("))");
 
         if (filters == null) {
             filters = new Properties ();
@@ -445,12 +553,7 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
                 String filterValue = filters.getProperty (filterName);
                 // we do all the RFC 2254 replacement *except* the "*" character
                 // since this is actually something we want to use.
-                filterValue = JahiaTools.replacePattern (filterValue, "\\",
-                        "\\5c");
-                filterValue = JahiaTools.replacePattern (filterValue, "(",
-                        "\\28");
-                filterValue = JahiaTools.replacePattern (filterValue, ")",
-                        "\\29");
+                filterValue = escapeFilterValue(filterValue);
 
                 if ("*".equals (filterName)) {
                     // we must match the value for all the attributes
@@ -535,9 +638,18 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
                 publicCtx = null;
             }
             if (publicCtx == null) {
-                logger.debug ("reconnect failed, returning null context...");
-                // we've tried everything, still can't connect...
-                return null;
+                logger.debug ("reconnect failed, retrying...");
+                try {
+                    publicCtx = connectToPublicDir ();
+                } catch (NamingException ne) {
+                    logger.warn ("JNDI warning",ne);
+                    publicCtx = null;
+                }
+                if (publicCtx == null) {
+                    logger.debug ("reconnect failed, returning null context...");
+                    // we've tried everything, still can't connect...
+                    return null;
+                }
             }
         }
         return publicCtx;
@@ -912,12 +1024,9 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
         String[] retattrs = new String[1];
         retattrs[0] = ldapProperties.getProperty (SEARCH_ATTRIBUTE_PROP);
         searchCtl.setReturningAttributes (retattrs);
-        NamingEnumeration<SearchResult> answer = null;
         try {
-            answer = getGroups(getPublicContext (false), searchCtl, filterBuffer);
-
-            while (answer.hasMore ()) {
-                String groupKey = ((SearchResult) answer.next ()).
+            for (SearchResult searchResult : getGroups(getPublicContext (false), searchCtl, filterBuffer)) {
+                String groupKey = searchResult.
                         getAttributes ().
                         get (ldapProperties.getProperty (
                                 SEARCH_ATTRIBUTE_PROP)).get ().
@@ -940,13 +1049,13 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
 
         searchCtl = new SearchControls ();
         searchCtl.setSearchScope (SearchControls.SUBTREE_SCOPE);
-        answer = null;
+        searchCtl.setReturningAttributes (new String [] {
+        		ldapProperties.getProperty(SEARCH_ATTRIBUTE_PROP),
+                ldapProperties.getProperty(DYNGROUP_MEMBERS_ATTRIBUTE, "memberurl")
+        });
 
         try {
-            answer = getGroups(getPublicContext (false), searchCtl, filterBuffer);
-
-            while (answer.hasMore ()) {
-                SearchResult sr = (SearchResult) answer.next ();
+            for (SearchResult sr : getGroups(getPublicContext (false), searchCtl, filterBuffer)) {
                 Attributes attr = sr.getAttributes ();
                 String groupKey = attr.
                         get (ldapProperties.getProperty (
@@ -983,38 +1092,93 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
         return result;
     }
 
-    private NamingEnumeration<SearchResult> getGroups(DirContext ctx,
-            SearchControls searchCtl, StringBuffer filterStringBuffer)
-            throws NamingException {
-        // Search for objects that have those matching attributes
-        String searchName = ldapProperties.getProperty(SEARCH_NAME_PROP);
-        String filterString = filterStringBuffer.toString();
-        
-        logger.debug("Using filter string [" + filterString + "]...");
-        
+    private List<SearchResult> getGroups(DirContext ctx, SearchControls searchCtl, StringBuffer filter) throws NamingException {
+        List<SearchResult> answerList = new ArrayList<SearchResult>();
+        boolean doRetry = true;
         try {
-            return ctx.search(searchName, filterString, searchCtl);
+            answerList = doGroupSearch(ctx, searchCtl, filter);
+            doRetry = false;
         } catch (NoInitialContextException nice) {
             logger.debug("Reconnection required", nice);
-            return getPublicContext(true).search(searchName, filterString,
-                searchCtl);
         } catch (CannotProceedException cpe) {
             logger.debug("Reconnection required", cpe);
-            return getPublicContext(true).search(searchName, filterString,
-                searchCtl);
         } catch (ServiceUnavailableException sue) {
             logger.debug("Reconnection required", sue);
-            return getPublicContext(true).search(searchName, filterString,
-                searchCtl);
         } catch (TimeLimitExceededException tlee) {
             logger.debug("Reconnection required", tlee);
-            return getPublicContext(true).search(searchName, filterString,
-                searchCtl);
         } catch (CommunicationException ce) {
             logger.debug("Reconnection required", ce);
-            return getPublicContext(true).search(searchName, filterString,
-                searchCtl);
+        } catch (javax.naming.SizeLimitExceededException limit) {
+            logger.warn("Search count limit reached", limit);
+            doRetry = false;
+        } catch (javax.naming.NamingException e) {
+            logger.warn("Unable to retrieve all LDAP groups. Cause: " + e.getMessage(), e);
+            doRetry = false;
         }
+        if (doRetry) {
+            answerList = doGroupSearch(getPublicContext(true), searchCtl, filter);
+        }
+
+        return answerList;
+    }
+    
+    private List<SearchResult> doGroupSearch(DirContext ctx, SearchControls searchCtl, StringBuffer filter)
+            throws NamingException {
+        
+        String filterString = filter.toString();
+        // Search for objects that have those matching attributes
+        if (logger.isDebugEnabled()) {
+            logger.debug("Using filter string [" + filterString + "]...");
+        }
+        List<SearchResult> answerList = new ArrayList<SearchResult>();
+        String searchNameProp = ldapProperties.getProperty(SEARCH_NAME_PROP);
+        String groupSearchAttributeName = ldapProperties.getProperty(SEARCH_ATTRIBUTE_PROP);
+
+        int rangeStep = Integer.parseInt(ldapProperties.getProperty(AD_RANGE_STEP, "0"));
+        if (rangeStep == 0 || searchCtl.getReturningAttributes() != null) {
+            NamingEnumeration<SearchResult> enumeration = ctx.search(searchNameProp, filterString, searchCtl);
+            try {
+	            while (enumeration.hasMore()) {
+	                answerList.add(enumeration.next());
+	            }
+            } catch (SizeLimitExceededException e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Search generated more than configured maximum search limit," + " limiting to "
+                            + this.ldapProperties.getProperty(SEARCH_COUNT_LIMIT_PROP) + " first results...", e);
+                } else {
+                    logger.warn("Search generated more than configured maximum search limit," + " limiting to "
+                            + this.ldapProperties.getProperty(SEARCH_COUNT_LIMIT_PROP) + " first results...");
+                }
+            }
+        } else {
+            String membersAttribute = ldapProperties.getProperty(GROUP_MEMBERS_ATTRIBUTE);
+
+            try {
+                NamingEnumeration<SearchResult> srcResults = ctx.search(searchNameProp, filterString, searchCtl);
+                while (srcResults.hasMore()) {
+                    SearchResult sr = (SearchResult) srcResults.next();
+                    Attributes attrs = sr.getAttributes();
+                    if (containsMembersRange(attrs, membersAttribute)) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Got range of members in group '" + sr.getName() + "'");
+                        }
+                        loadMembersUsingRange(sr, ctx, searchCtl, filterString, searchNameProp, groupSearchAttributeName,
+                                membersAttribute, rangeStep);
+                    }
+                    answerList.add(sr);
+                }
+            } catch (SizeLimitExceededException e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Search generated more than configured maximum search limit," + " limiting to "
+                            + this.ldapProperties.getProperty(SEARCH_COUNT_LIMIT_PROP) + " first results...", e);
+                } else {
+                    logger.warn("Search generated more than configured maximum search limit," + " limiting to "
+                            + this.ldapProperties.getProperty(SEARCH_COUNT_LIMIT_PROP) + " first results...");
+                }
+            }
+        }
+
+        return answerList;
     }
 
     private String removeKeyPrefix (String groupKey) {
@@ -1155,9 +1319,7 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
 
         // now we can search in the LDAP.
         try {
-            NamingEnumeration<SearchResult> ldapGroups = getGroups (getPublicContext (false), searchCriterias);
-            while (ldapGroups.hasMore ()) {
-                SearchResult sr = (SearchResult) ldapGroups.next ();
+            for (SearchResult sr : getGroups (getPublicContext (false), searchCriterias)) {
                 JahiaLDAPGroup group = ldapToJahiaGroup (sr);
                 if (group != null) {
                     result.add (group);
@@ -1313,21 +1475,14 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
 
         filters.setProperty (ldapProperties.getProperty (SEARCH_ATTRIBUTE_PROP),
                 cn);
-        NamingEnumeration<SearchResult> answer = getGroups (ctx, filters);
+        List<SearchResult> answer = getGroups (ctx, filters);
         SearchResult sr = null;
-        if (answer.hasMore ()) {
+        if (!answer.isEmpty()) {
             // we only take the first value if there are multiple answers, which
             // should normally NOT happend if the groupKey is unique !!
-            sr = (SearchResult) answer.next ();
+            sr = answer.get(0);
 
-            boolean hasMore = false;
-            try {
-                hasMore = answer.hasMore ();
-            } catch (PartialResultException pre) {
-                logger.warn (pre);
-            }
-
-            if (hasMore) {
+            if (answer.size() > 1) {
                 // there is at least a second result.
                 // throw new NamingException("GroupLDAPService.getPublicGroup>" +
                 //                           "Warning : multiple group with same groupKey in LDAP repository.");
@@ -1343,4 +1498,5 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
         mProvidersGroupCache.put ("k"+jahiaGroup.getGroupKey(), jahiaGroup);
         mProvidersGroupCache.put ("n"+jahiaGroup.getSiteID()+"_"+jahiaGroup.getGroupname(), jahiaGroup);
     }
+    
 }

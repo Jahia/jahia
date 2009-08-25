@@ -67,52 +67,6 @@
         </property>
     </bean>
 
-    <bean id="org.jahia.hibernate.manager.JahiaAclNameManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaAclNameManager">
-                <property name="aclNamesDao" ref="jahiaAclNamesDAO" />
-                <property name="aclDao" ref="jahiaAclDAO" />
-                <property name="aclNamesDefaultEntries">
-                    <map>
-                        <entry key="org.jahia.actions.sites.*.engines">
-                          <map>
-                            <entry key="g:users:0" value="RWA"/>
-                          </map>
-                        </entry>
-                        <entry key="org.jahia.actions.sites.*.toolbar">
-                          <map>
-                            <entry key="g:users:0" value="RWA"/>
-                          </map>
-                        </entry>
-                        <entry key="org.jahia.actions.sites.*.toolbar.subscriptions">
-                          <map/>
-                        </entry>
-                        <entry key="org.jahia.actions.sites.*.htmlsettings.toolbar.Full">
-                            <map/>
-                        </entry>
-                        <entry key="org.jahia.actions.sites.*.htmlsettings.toolbar.Basic">
-                            <map>
-                               <entry key="g:users:0" value="R"/>
-                            </map>
-                        </entry>
-                        <entry key="org.jahia.actions.sites.*.engines.actions.publishAll">
-                            <map/>
-                        </entry>
-                        <entry key="org.jahia.actions.sites.*.htmlsettings.toolbar.Light">
-                            <map>
-                               <entry key="g:users:0" value="R"/>
-                            </map>
-                        </entry>
-                        <entry key="org.jahia.actions.sites.*.integrity">
-                            <map/>
-                        </entry>
-                    </map>
-                </property>
-            </bean>
-        </property>
-    </bean>
-
-
     <bean id="org.jahia.hibernate.manager.JahiaAclManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaAclManager">

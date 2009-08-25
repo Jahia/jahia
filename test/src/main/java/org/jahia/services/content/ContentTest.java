@@ -381,7 +381,7 @@ public class ContentTest extends TestCase {
             Query query = qm.createQuery("//element(*,jnt:file)[(jcr:contains(jcr:content, '456bcd'))]", Query.XPATH);
             QueryResult queryResult = query.execute();
             RowIterator it = queryResult.getRows();
-            assertTrue("Bad result number ("+ queryResult.getRows().getSize() + " instead of 1)", (it.getSize() != 1));
+            assertTrue("Bad result number ("+ it.getSize() + " instead of 1)", (it.getSize() == 1));
             while (it.hasNext()) {
                 Row row = it.nextRow();
                 String path = row.getValue(JcrConstants.JCR_PATH).getString();

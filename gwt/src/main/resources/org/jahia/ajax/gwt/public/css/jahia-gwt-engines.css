@@ -359,6 +359,10 @@ fm-globalMashupRepository {
 }
 
 /*common*/
+.gwt-icons-add {
+    background-image: url( ../images/icons/tick.png ) !important;
+}
+
 .gwt-icons-delete {
     background-image: url( ../images/icons/remove.png ) !important;
 }

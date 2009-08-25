@@ -62,5 +62,5 @@
 
 %>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.contentpicker.ContentPicker"/>
-<internal:contentManager  selectedNodeUUIds="<%=selectedCategories%>" nodeTypes="jnt:category" enginemode="true" conf="filepicker" />
+<internal:contentManager rootPath="<%=startCategory%>" multiple="true" selectedNodeUUIds="<%=selectedCategories%>" enginemode="true" conf="categorypicker" />
 

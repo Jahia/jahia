@@ -70,12 +70,10 @@ public class ContentPickerGrid extends TabPanel {
     private ListStore<GWTJahiaNode> store;
     private Grid<GWTJahiaNode> grid;
     private ManagerConfiguration config;
-    private  String callback;
     private boolean readOnly= false;
 
-    public ContentPickerGrid(final ManagerConfiguration config,final String callback) {
+    public ContentPickerGrid(final ManagerConfiguration config) {
         this.config = config;
-        this.callback = callback;
         createUI();
     }
 
@@ -115,27 +113,12 @@ public class ContentPickerGrid extends TabPanel {
     public void setSelection(final List<GWTJahiaNode> selection) {
 
         if (selection != null && selection.size() > 0 && (selection.get(0).getNodeTypes().contains(config.getNodeTypes()) || selection.get(0).getInheritedNodeTypes().contains(config.getNodeTypes()))) {
-            final String path = selection.get(0).getPath();
-            JahiaContentManagementService.App.getInstance().isFileAccessibleForCurrentContainer(path, new AsyncCallback<Boolean>() {
-                public void onFailure(Throwable throwable) {
-                    Log.error("unable to check ACLs");
-                }
-
-                public void onSuccess(Boolean accessible) {
-                    boolean doIt = true;
-                    if (!accessible.booleanValue()) {
-                        doIt = com.google.gwt.user.client.Window.confirm("The file may not be readable by everyone, resulting in a broken link.\nDo you wish to continue ?");
-                    }
-                    if (doIt) {
-                        store.removeAll();
-                        store.add(selection);
-                        if (callback != null && callback.length() > 0) {
-                            //nativeCallback(callback, selectedPath.getRawValue());
-                        }
-                    }
-                }
-            });
-
+//            store.removeAll();
+            for (GWTJahiaNode n : selection) {
+                if (!store.contains(n)) {
+                    store.add(n);
+                }                
+            }
         }else{
             Log.error("********************* false"+config.getNodeTypes());
         }
@@ -198,14 +181,15 @@ public class ContentPickerGrid extends TabPanel {
         column.setHeader("");
         column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                final Button pickContentButton = new Button("remove");
+                final Button pickContentButton = new Button();
+                pickContentButton.setIconStyle("gwt-icons-delete");
+                pickContentButton.setBorders(false);
                 pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                     public void componentSelected(ButtonEvent buttonEvent) {
                         store.remove(gwtJahiaNode);
                     }
                 });
                 return pickContentButton;
-
             }
         });
         configs.add(column);
@@ -303,12 +287,6 @@ public class ContentPickerGrid extends TabPanel {
         });
         grid.setContextMenu(m);
     }
-
-     public static native void nativeCallback(String callback, String path) /*-{
-        try {
-            eval('$wnd.' + callback)(path);
-        } catch (e) {};
-    }-*/;
 
 }
 

@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * User: rfelden
@@ -68,8 +69,8 @@ public class ContentPickerContainer extends TopRightComponent {
     private TabItem search ;
     private TabItem thumbs;
 
-    public ContentPickerContainer(String rootPath, String startPath, ManagerConfiguration config, String callback, boolean allowThumbs) {
-        m_treeTable = new ContentTreeTable(rootPath, startPath, config);
+    public ContentPickerContainer(String rootPath, String startPath, ManagerConfiguration config, String callback, boolean multiple, boolean allowThumbs) {
+        m_treeTable = new ContentTreeTable(rootPath, startPath, multiple, config);
         m_search = new SearchTable(config) ;
         m_thumbs = new ThumbView(config) ;
         m_component = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL)) ;
@@ -80,7 +81,7 @@ public class ContentPickerContainer extends TopRightComponent {
         pathBar = new ContentPathBar(startPath, config, callback, allowThumbs) ;
 
 
-        pickerGrid = new ContentPickerGrid(config,callback);
+        pickerGrid = new ContentPickerGrid(config);
 
         tabs = new TabPanel() ;
         tabs.setHeight(400);
@@ -135,8 +136,11 @@ public class ContentPickerContainer extends TopRightComponent {
         });
 
         m_component.add(tabs,new RowData(1, -1, new Margins(0))) ;
-        m_component.add(pickerGrid,new RowData(1, 1, new Margins(0))) ;
-        m_component.setTopComponent(pathBar.getComponent());
+        if (multiple) {
+            m_component.add(pickerGrid,new RowData(1, 1, new Margins(0))) ;
+        } else {
+            m_component.setTopComponent(pathBar.getComponent());
+        }
         m_component.setBottomComponent(new FilterStatusBar(config.getFilters(), config.getMimeTypes(), config.getNodeTypes()));
     }
 
@@ -149,6 +153,15 @@ public class ContentPickerContainer extends TopRightComponent {
 
         // TO Do: getSelection should alwas return a list of GWTJahiaNode
         pickerGrid.setSelection((List<GWTJahiaNode>)getSelection());
+    }
+
+    public void handleNewSelection(GWTJahiaNode selection) {
+        List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
+        l.add(selection);
+        pathBar.handleNewSelection(null, l);
+
+        // TO Do: getSelection should alwas return a list of GWTJahiaNode
+        pickerGrid.setSelection(l);
     }
 
     public void initWithLinker(BrowserLinker linker) {

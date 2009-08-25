@@ -409,4 +409,16 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public String getSelectedVersion() {
         return selectedVersion;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GWTJahiaNode that = (GWTJahiaNode) o;
+
+        if (getPath() != null ? !getPath().equals(that.getPath()) : that.getPath() != null) return false;
+
+        return true;
+    }
 }

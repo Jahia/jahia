@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -81,7 +82,7 @@ public class ContentTreeTable extends TopRightComponent {
     protected TreeLoader<GWTJahiaNode> loader;
     protected TreeGrid<GWTJahiaNode> m_treeTable;
     protected TreeTableStore<GWTJahiaNode> store;
-//    private PreviousPathsOpener<GWTJahiaNode> previousPathsOpener = null ;
+    //    private PreviousPathsOpener<GWTJahiaNode> previousPathsOpener = null ;
     //    private Listener<TreeEvent> tempListener = null ;
     protected TreeGridSelectionModel<GWTJahiaNode> selectionModel;
     private String rootPath;
@@ -96,7 +97,7 @@ public class ContentTreeTable extends TopRightComponent {
         // data proxy
         RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
             @Override
-            protected void load(Object gwtJahiaFolder, AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
+            protected void load(Object gwtJahiaFolder, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (init) {
                     if (rootPath != null) {
                         service.getRoot(rootPath, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), startPath, listAsyncCallback);
@@ -137,7 +138,7 @@ public class ContentTreeTable extends TopRightComponent {
         };
     }
 
-    public ContentTreeTable(String rootPath, String startPath, ManagerConfiguration config) {
+    public ContentTreeTable(String rootPath, String startPath, boolean multiple, ManagerConfiguration config) {
         this.rootPath = rootPath != null && rootPath.length() > 0 ? rootPath : null;
         m_component = new ContentPanel(new FitLayout());
         m_component.setHeaderVisible(false);
@@ -156,12 +157,18 @@ public class ContentTreeTable extends TopRightComponent {
             for (int i = 1; i < config.getTableColumns().size(); i++) {
                 cols.append(",").append(config.getTableColumns().get(i));
             }
+            if (multiple) {
+                cols.append(",picker");
+            }
             columns = cols.toString();
         }
+
         m_treeTable = new TreeGrid<GWTJahiaNode>(store, getHeaders(columns));
         m_treeTable.setIconProvider(ContentModelIconProvider.getInstance());
         m_treeTable.setBorders(false);
-        m_treeTable.setSelectionModel(new SM());
+        if (!multiple) {
+            m_treeTable.setSelectionModel(new SM());
+        }
         m_component.add(m_treeTable);
     }
 
@@ -216,7 +223,7 @@ public class ContentTreeTable extends TopRightComponent {
 
     public void initWithLinker(BrowserLinker linker) {
         super.initWithLinker(linker);
-        loader.load();
+//        loader.load();
     }
 
     public void initContextMenu() {
@@ -311,7 +318,7 @@ public class ContentTreeTable extends TopRightComponent {
         m_treeTable.getSelectionModel().deselectAll();
     }
 
-    private static ColumnModel getHeaders(String config) {
+    private ColumnModel getHeaders(String config) {
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
         if (config == null || config.length() == 0) {
             config = "name,size,date,version";
@@ -396,14 +403,20 @@ public class ContentTreeTable extends TopRightComponent {
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                        final Button pickContentButton = new Button("add");
-                        pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>(){
-                            public void componentSelected(ButtonEvent buttonEvent) {
-                                 // To implement and send the "add event"
-                            }
-                        });
-                        return pickContentButton;
-
+                        if (gwtJahiaNode.getNodeTypes().contains(configuration.getNodeTypes()) ||
+                                gwtJahiaNode.getInheritedNodeTypes().contains(configuration.getNodeTypes())) {
+                            final Button pickContentButton = new Button();
+                            pickContentButton.setStyleName("gwt-icons-add");
+                            pickContentButton.setEnabled(true);
+                            pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                public void componentSelected(ButtonEvent buttonEvent) {
+                                    ((ContentPickerContainer) getLinker().getTopRightObject()).handleNewSelection(gwtJahiaNode);
+                                }
+                            });
+                            return pickContentButton;
+                        } else {
+                            return new Text("");
+                        }
                     }
                 });
                 headerList.add(col);
@@ -450,7 +463,7 @@ public class ContentTreeTable extends TopRightComponent {
         }
     }
 
-    public void onSelectButtonClicked(Button pickContentButton){
+    public void onSelectButtonClicked(Button pickContentButton) {
 
     }
 }

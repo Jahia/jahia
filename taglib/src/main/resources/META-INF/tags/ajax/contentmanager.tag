@@ -52,6 +52,7 @@
 <%@ attribute name="embedded" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="callback" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="selectedNodeUUIds" required="false" rtexprvalue="true" type="java.util.List" description="text" %>
+<%@ attribute name="multiple" required="false" rtexprvalue="true" type="java.lang.Boolean" description="text" %>
 
 
 <link rel="stylesheet" type="text/css" media="screen"
@@ -81,6 +82,9 @@
 <script type="text/javascript">
     var sContentNodes = [
         <%
+if (multiple == null) {
+    multiple = false;
+}
 if(selectedNodeUUIds == null){
  // case of single selection
  selectedNodeUUIds = new ArrayList<String>();
@@ -118,7 +122,7 @@ while (selectedNodeIter.hasNext()) {
                          startPath="<%=startPath%>"
                          enginemode="<%=enginemode%>" nodeTypes="<%=nodeTypes%>" filters="<%=filters%>"
                          mimeTypes="<%=mimeTypes%>" callback="<%=callback%>" config="<%=conf%>"
-                         embedded="<%=embedded%>"/>
+                         embedded="<%=embedded%>" multiple="<%=multiple%>"/>
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newDir.label"
                             aliasResourceName="fm_newdir"/>

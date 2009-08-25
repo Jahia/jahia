@@ -60,6 +60,7 @@ public class ContentPickerEntryPoint implements EntryPoint {
                         DOM.getElementAttribute(panel.getElement(), "filters"),
                         DOM.getElementAttribute(panel.getElement(), "mimeTypes"),
                         DOM.getElementAttribute(panel.getElement(), "config"),
+                        Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "multiple")),
                         Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs")),
                         callback));
             } else {
@@ -70,6 +71,7 @@ public class ContentPickerEntryPoint implements EntryPoint {
                         DOM.getElementAttribute(panel.getElement(), "filters"),
                         DOM.getElementAttribute(panel.getElement(), "mimeTypes"),
                         DOM.getElementAttribute(panel.getElement(), "config"),
+                        Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "multiple")),
                         Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs")),
                         callback));
             }

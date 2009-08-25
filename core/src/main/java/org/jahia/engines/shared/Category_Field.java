@@ -49,6 +49,8 @@ import org.jahia.services.lock.LockPrerequisites;
 import org.jahia.services.lock.LockPrerequisitesResult;
 import org.jahia.utils.JahiaTools;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**
@@ -260,24 +262,27 @@ public class Category_Field implements FieldSubEngine {
                 }
             }
         }
-        if (startCategory == null) {
-            logger.debug("Start category undefined --> Selecte first root category as start category");
-            List<Category> rootCategoryList = Category.getRootCategories(jParams.getUser());
-            if(rootCategoryList != null && !rootCategoryList.isEmpty()){
-                startCategory = rootCategoryList.get(0);
+        if (startCategory != null) {
+            logger.debug(START_CATEGORY+": " + startCategory.getCategoryPath());
+            engineMap.put(START_CATEGORY, startCategory.getCategoryPath());
+            engineMap.remove("NoCategories");
+        } else {
+            Node root = Category.getCategoriesRoot();
+            // still possible if the user has no rights to see even the root
+            // category.
+            if (root == null) {
+                engineMap.put("NoCategories", "NoCategories");
+                return false;
+            } else {
+                try {
+                    logger.debug(START_CATEGORY+": " + root.getPath());
+                    engineMap.put(START_CATEGORY, root.getPath());
+                    engineMap.remove("NoCategories");
+                } catch (RepositoryException e) {
+                    logger.error("Error",e);
+                }
             }
-            logger.debug("No categories");
         }
-
-        // still possible if the user has no rights to see even the root
-        // category.
-        if (startCategory == null) {
-            engineMap.put("NoCategories", "NoCategories");
-            return false;
-        }
-        logger.debug(START_CATEGORY+": " + startCategory.getID());
-        engineMap.put(START_CATEGORY, startCategory.getID());
-        engineMap.remove("NoCategories");
 
         if (selectedCategoryUUIDs == null) {
             selectedCategoryUUIDs = new ArrayList<String>();
@@ -368,8 +373,10 @@ public class Category_Field implements FieldSubEngine {
 
         // get selected caetgories
         String[] selectedCategories = jParams.getParameterValues(CATEGORYPREFIX_HTMLPARAMETER);
-        for(String currentCat :selectedCategories){
-          newSelectedCategoryUUIDs.add(currentCat);  
+        if (selectedCategories != null) {
+            for(String currentCat :selectedCategories){
+                newSelectedCategoryUUIDs.add(currentCat);
+            }
         }
 
         engineMap.put(theField.getDefinition().getName() + CATEGORIESUPDATED_ENGINEMAPKEY, Boolean.TRUE);

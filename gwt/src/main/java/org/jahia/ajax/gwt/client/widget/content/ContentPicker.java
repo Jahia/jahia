@@ -45,7 +45,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.TriPanelBrowserLayout;
  */
 public class ContentPicker extends TriPanelBrowserLayout {
 
-    public ContentPicker(final String rootPath, final String startPath, String types, String filters, String mimeTypes, String conf, boolean allowThumbs, String callback) {
+    public ContentPicker(final String rootPath, final String startPath, String types, String filters, String mimeTypes, String conf, boolean multiple, boolean allowThumbs, String callback) {
         super() ;
         //setWidth("714px");
         setHeight("700px");
@@ -69,7 +69,7 @@ public class ContentPicker extends TriPanelBrowserLayout {
 
         // construction of the UI components
         TopBar toolbar = new ContentToolbar(config) ;
-        TopRightComponent filepicker = new ContentPickerContainer(rootPath, startPath, config, callback, allowThumbs) ;
+        TopRightComponent filepicker = new ContentPickerContainer(rootPath, startPath, config, callback, multiple, allowThumbs) ;
 
         
 

@@ -56,14 +56,16 @@ public class ContentPickerField extends TriggerField<String> {
     private String filters;
     private String mimeTypes;
     private String configuration ;
+    private boolean multiple;
     private boolean allowThumbs;
 
-    public ContentPickerField(String rootPath, String types, String filters, String mimeTypes, String config, boolean allowThumbs) {
+    public ContentPickerField(String rootPath, String types, String filters, String mimeTypes, String config, boolean multiple, boolean allowThumbs) {
         this.rootPath = rootPath;
         this.types = types;
         this.filters = filters;
         this.mimeTypes = mimeTypes;
         this.configuration = config ;
+        this.multiple = multiple;
         this.allowThumbs = allowThumbs;
     }
 
@@ -75,7 +77,7 @@ public class ContentPickerField extends TriggerField<String> {
         }
         final Window w = new Window();
         w.setLayout(new FitLayout());
-        final ContentPicker contentPicker = new ContentPicker(rootPath, getValue()!=null?getValue():"", types, filters, mimeTypes, configuration, allowThumbs, "");
+        final ContentPicker contentPicker = new ContentPicker(rootPath, getValue()!=null?getValue():"", types, filters, mimeTypes, configuration, multiple, allowThumbs, "");
 
         w.setModal(true);
         w.setSize(800, 600);

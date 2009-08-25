@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Map;
-
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -327,11 +326,16 @@ public class SidePanel extends ContentPanel {
         ComboBox<GWTJahiaBasicDataBean> templateBox = new ComboBox<GWTJahiaBasicDataBean>();
         templateBox.setStore(templateListStore);
         templateBox.setDisplayField(GWTJahiaBasicDataBean.DISPLAY_NAME);
-        // TODO fill in real templates (see updateToolBar method below)
-        templateListStore.add(new GWTJahiaBasicDataBean("template1", "template1"));
+        templateBox.clearSelections();
+        templateBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaBasicDataBean>() {
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaBasicDataBean> gwtJahiaNodeSelectionChangedEvent) {
+                editManager.getEditLinker().onTemplateBoxSelection(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
+            }
+        });
+        /*templateListStore.add(new GWTJahiaBasicDataBean("template1", "template1"));
         templateListStore.add(new GWTJahiaBasicDataBean("template2", "template2"));
-        templateListStore.add(new GWTJahiaBasicDataBean("template3", "template3"));
-
+        templateListStore.add(new GWTJahiaBasicDataBean("template3", "template3"));*/
+        editManager.getEditLinker().setTemplateBox(templateBox);
         Button lock = new Button();
         lock.setIcon(ACTION_ICONS.lock());
         lock.setToolTip("lock");
@@ -405,6 +409,15 @@ public class SidePanel extends ContentPanel {
      */
     public void updateToolBar(GWTJahiaNode node) {
         templateListStore.removeAll();
+        JahiaContentManagementService.App.getInstance().getTemplatesPath(node.getPath(),new AsyncCallback<List<String[]>>() {
+            public void onFailure(Throwable throwable) {
+            }
+            public void onSuccess(List<String[]> strings) {
+                for(String[] template:strings) {
+                    templateListStore.add(new GWTJahiaBasicDataBean(template[0], template[1]));
+                }
+            }
+        });
         // TODO retrieve selected node in the page and fill in the store with its available templates
     }
 

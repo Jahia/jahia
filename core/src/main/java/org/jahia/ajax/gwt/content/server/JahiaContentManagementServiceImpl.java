@@ -52,20 +52,30 @@ import org.jahia.ajax.gwt.content.server.helper.ContentManagerHelper;
 import org.jahia.ajax.gwt.content.server.helper.JCRVersioningHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.render.Resource;
+import org.jahia.services.render.RenderContext;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
+import org.jahia.utils.i18n.ResourceBundleMarker;
+import org.jahia.data.beans.TemplatePathResolverFactory;
+import org.jahia.data.beans.TemplatePathResolverBean;
+import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.bin.Jahia;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.PropertyType;
+import javax.jcr.Value;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -452,6 +462,54 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             list.add(ContentManagerHelper.getNode(path, workspace, jParams));
         }
         return list;
+    }
+
+    public List<String[]> getTemplatesPath(String path) throws GWTJahiaServiceException {
+        List<String[]> templatesPath = new ArrayList<String[]>();
+        TemplatePathResolverFactory factory = (TemplatePathResolverFactory) SpringContextSingleton.getInstance().getContext().getBean("TemplatePathResolverFactory");
+        ProcessingContext threadParamBean = Jahia.getThreadParamBean();
+        TemplatePathResolverBean templatePathResolver = factory.getTemplatePathResolver(threadParamBean);
+        JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
+        try {
+            JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
+            ExtendedNodeType nt = (ExtendedNodeType) node.getPrimaryNodeType();
+            ParamBean context = retrieveParamBean();
+            Resource r = new Resource(node, "default", context.getCurrentLocale(), "html", null);
+            List<ExtendedNodeType> nodeTypeList = Arrays.asList(nt.getSupertypes());
+            Collections.reverse(nodeTypeList);
+            String templatePath = getTemplatePath(r, templatePathResolver, nt);
+            if (templatePath == null) {
+                for (ExtendedNodeType st : nodeTypeList) {
+                    templatePath = getTemplatePath(r, templatePathResolver, st);
+                    if (templatePath != null) {
+                        break;
+                    }
+                }
+            }
+            if (templatePath != null) {
+                File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(templatePath.substring(0, templatePath.lastIndexOf("/"))));
+                if (f.exists()) {
+                    File[] files = f.listFiles();
+                    for (File file : files) {
+                        if (!file.isDirectory()) {
+                            String filename = file.getName();
+                            templatesPath.add(new String[]{filename.substring(0, filename.lastIndexOf(".")), filename});
+                        }
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+
+        return templatesPath;
+    }
+
+    private String getTemplatePath(Resource resource, TemplatePathResolverBean templatePathResolver, ExtendedNodeType nt) {
+        return templatePathResolver.lookup("modules/" +
+                nt.getAlias().replace(':','/') +
+                "/" + resource.getTemplateType() +
+                "/" + resource.getTemplate().replace('.','/') + ".jsp");
     }
 
     public void pasteReferenceOnTopOf(GWTJahiaNode path, String destinationPath, String name) throws GWTJahiaServiceException {

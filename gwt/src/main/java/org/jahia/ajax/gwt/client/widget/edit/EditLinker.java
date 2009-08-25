@@ -32,12 +32,14 @@
  */
 package org.jahia.ajax.gwt.client.widget.edit;
 
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -50,6 +52,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -77,6 +80,7 @@ public class EditLinker {
     private final EditManager editManager;
     private Button lockButton;
     private Button editButton;
+    private ComboBox<GWTJahiaBasicDataBean> templateBox;
 
     public EditLinker(EditManager editManager) {
         //To change body of created methods use File | Settings | File Templates.
@@ -108,8 +112,12 @@ public class EditLinker {
         this.propertiesTabItem = propertiesTabItem;
     }
 
+    public void setTemplateBox(ComboBox<GWTJahiaBasicDataBean> templateBox) {
+        this.templateBox = templateBox;
+    }
+
     public void displaySelection(final GWTJahiaNode node) {
-        displayPreview(node);
+        displayPreview(node, null);
         displayProperties(node);
         currentlySelectedNode = node;
     }
@@ -119,11 +127,11 @@ public class EditLinker {
      *
      * @param node the node to render
      */
-    private void displayPreview(final GWTJahiaNode node) {
+    private void displayPreview(final GWTJahiaNode node,String template) {
         previewTabItem.setHtml(new HTML());
         previewTabItem.removeAll();
         if (node != null) {
-            JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, false, new AsyncCallback<String>() {
+            JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), template, false, new AsyncCallback<String>() {
                 public void onSuccess(String result) {
                     HTML html = new HTML(result);
                     previewTabItem.add(html);
@@ -201,6 +209,7 @@ public class EditLinker {
 
     public void onBrowseTreeSelection(GWTJahiaNode node) {
         updateButtonsState(node);
+        updateTemplateBox(node);
         displaySelection(node);
     }
 
@@ -313,5 +322,30 @@ public class EditLinker {
 
     public void onDisplayGridSelection(GWTJahiaNode selectedItem) {
         onBrowseTreeSelection(selectedItem);
+    }
+
+    /**
+     * This will update the template conbo box based on the page selected item
+     *
+     * @param node the selected node (item on the page)
+     */
+    public void updateTemplateBox(GWTJahiaNode node) {
+        templateBox.getStore().removeAll();
+        templateBox.clearSelections();
+        JahiaContentManagementService.App.getInstance().getTemplatesPath(node.getPath(),new AsyncCallback<List<String[]>>() {
+            public void onFailure(Throwable throwable) {
+                Log.error("", throwable);
+                Window.alert("-->" + throwable.getMessage());
+            }
+            public void onSuccess(List<String[]> strings) {
+                for(String[] template:strings) {
+                    templateBox.getStore().add(new GWTJahiaBasicDataBean(template[0], template[1]));
+                }
+            }
+        });
+    }
+
+    public void onTemplateBoxSelection(GWTJahiaBasicDataBean selectedItem) {
+         displayPreview(currentlySelectedNode, selectedItem.getValue());
     }
 }

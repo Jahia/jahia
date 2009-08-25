@@ -161,4 +161,7 @@ public interface JahiaContentManagementServiceAsync {
     void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath, AsyncCallback async);
 
     void createNodeAndMoveBefore(String path, String name, String nodeType, List<GWTJahiaNodeProperty> properties, String captcha, AsyncCallback asyncCallback);
+
+    void getTemplatesPath(String path, AsyncCallback<List<String[]>> async);
+
 }

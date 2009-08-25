@@ -65,7 +65,7 @@ import org.springframework.orm.ObjectRetrievalFailureException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Container entries persistent manager.
  * User: Rincevent
  * Date: 6 janv. 2005
  * Time: 14:37:48
@@ -92,6 +92,8 @@ public class JahiaContainerManager {
     private Cache<String, Object> contentCache;
     private Cache<Object, Object> containerCache;
     private Cache<GroupCacheKey, List<Integer>> idsCache;
+    
+    private int batchLoadingSize;
 // --------------------- GETTER / SETTER METHODS ---------------------
 
     public List<Integer> getAllContainersIds() {
@@ -639,7 +641,7 @@ public class JahiaContainerManager {
     }
 
     private JahiaContainer loadContainer(int containerId, EntryLoadRequest request, boolean checkCompareMode) {
-        return loadContainer(containerId, request, checkCompareMode, org.jahia.settings.SettingsBean.getInstance().isBatchLoadingEnabled());
+        return loadContainer(containerId, request, checkCompareMode, batchLoadingSize > 1);
     }
 
     /**
@@ -696,7 +698,7 @@ public class JahiaContainerManager {
                         if (enableBatchLoading) {
                             jahiaContainer = handleBatchLoading(containerId,
                                     dao.loadPublishedContainer((containerId),
-                                            org.jahia.settings.SettingsBean.getInstance().getBatchLoadingSize()), cache, request,
+                                    		batchLoadingSize), cache, request,
                                     checkCompareMode, compareMode);
                         } else {
                             jahiaContainer = convertToOldJahiaContainer(dao.loadPublishedContainer((containerId)));
@@ -716,7 +718,7 @@ public class JahiaContainerManager {
                         if (enableBatchLoading) {
                             jahiaContainer = handleBatchLoading(containerId,
                                     dao.loadStagingContainer((containerId), request,
-                                            org.jahia.settings.SettingsBean.getInstance().getBatchLoadingSize()), cache, request,
+                                    		batchLoadingSize), cache, request,
                                     checkCompareMode, compareMode);
                         } else {
                             jahiaContainer = convertToOldJahiaContainer(dao.loadStagingContainer((containerId),
@@ -895,7 +897,7 @@ public class JahiaContainerManager {
                         }
                     }
                     JahiaContainer container = this.loadContainer(id, staged, false,
-                            org.jahia.settings.SettingsBean.getInstance().isBatchLoadingEnabled());
+                    		batchLoadingSize > 1);
                     if (container == null
                             || (container.getWorkflowState() == EntryLoadRequest.STAGING_WORKFLOW_STATE
                             && container.getVersionID() == EntryLoadRequest.DELETED_WORKFLOW_STATE)) {
@@ -917,7 +919,7 @@ public class JahiaContainerManager {
                         }
                     }
                     JahiaContainer container = this.loadContainer(id, staged, false,
-                            org.jahia.settings.SettingsBean.getInstance().isBatchLoadingEnabled());
+                    		batchLoadingSize > 0);
                     if (container != null
                             && !(container.getVersionID() == -1 || container.getWorkflowState() == -1)) {
                         containers.put(id, container);
@@ -1370,6 +1372,10 @@ public class JahiaContainerManager {
 
     public Map<String, String> getVersions(int site) {
         return dao.getVersions(site);
+    }
+
+	public void setBatchLoadingSize(int batchLoadingSize) {
+    	this.batchLoadingSize = batchLoadingSize;
     }
 
 }

@@ -212,10 +212,6 @@ public class SettingsBean {
     private boolean aclDisp;
     private boolean integrityDisp;    
 
-    // hibernate batchloading
-    private boolean batchLoadingEnabled = true;
-    private int batchLoadingSize = 20;
-
     // pagination settings
     private int preloadedItemsForPagination = 100;
     private int paginationWindowSize;
@@ -535,10 +531,6 @@ public class SettingsBean {
             wflowDisp =getBoolean("workflow_display",false);
             integrityDisp =getBoolean("integrityChecks_display",false);
             connectionTimeoutForProductionJob = getInt("connectionTimeoutForProductionJob",60000);
-
-            // hibernate batchloading
-            batchLoadingEnabled = getBoolean("batchLoadingEnabled",true);
-            batchLoadingSize = getInt("batchLoadingSize",20);
 
             preloadedItemsForPagination = getInt("preloadedItemsForPagination",preloadedItemsForPagination);
             paginationWindowSize = getInt("paginationWindowSize", 20);
@@ -1330,24 +1322,7 @@ public class SettingsBean {
         return wflowDisp;
     }
 
-    public boolean isBatchLoadingEnabled() {
-        return batchLoadingEnabled;
-    }
-
-    public void setBatchLoadingEnabled(boolean batchLoadingEnabled) {
-        this.batchLoadingEnabled = batchLoadingEnabled;
-    }
-
-    public int getBatchLoadingSize() {
-        return batchLoadingSize;
-    }
-
-    public void setBatchLoadingSize(int batchLoadingSize) {
-        this.batchLoadingSize = batchLoadingSize;
-    }
-
-
-	public String getCacheClusterUnderlyingImplementation() {
+    public String getCacheClusterUnderlyingImplementation() {
 		return cacheClusterUnderlyingImplementation;
 	}
 

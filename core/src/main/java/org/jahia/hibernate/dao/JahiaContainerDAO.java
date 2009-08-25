@@ -725,16 +725,12 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
     }
 
     public List<JahiaContainer> loadPublishedContainer(Integer containerId, int batchSize) {
-        StringBuffer queryString = new StringBuffer(1024);
-        queryString.append("select c from JahiaContainer c ");
-        queryString.append(" left join fetch c.ctndef ctndef ");
-        queryString.append(" where c.comp_id.id between ? and ?  and c.comp_id.workflowState=1");
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        return template.find(queryString.toString(),
-                new Object[]{(containerId - batchSize),
-                        (containerId + batchSize)});
+		return template.find("select c from JahiaContainer c " + " left join fetch c.ctndef ctndef "
+		        + " where c.comp_id.id between ? and ?  and c.comp_id.workflowState=1", new Object[] {
+		        (containerId - batchSize), (containerId + batchSize) });
     }
 
     public JahiaContainer loadPublishedContainer(Integer containerId) {

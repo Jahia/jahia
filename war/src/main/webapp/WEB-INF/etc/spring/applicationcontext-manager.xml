@@ -88,6 +88,7 @@
                 <property name="workflowInstanceDAO" ref="nstepWorkflowInstanceDAO" />
                 <property name="groupManager" ref="org.jahia.hibernate.manager.JahiaGroupManager" />
                 <property name="cacheService" ref="JahiaCacheService" />
+                <property name="batchLoadingSize" value="20"/>
             </bean>
         </property>
     </bean>

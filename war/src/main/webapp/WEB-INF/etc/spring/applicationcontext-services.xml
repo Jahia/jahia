@@ -316,6 +316,7 @@
                 <property name="defaultRulesDef" ref="retentionRuleRefs" />
                 <property name="config" ref="settings" />
                 <property name="schedulerService" ref="SchedulerService" />
+                <property name="batchLoadingSize" value="20"/>
             </bean>
         </property>
     </bean>

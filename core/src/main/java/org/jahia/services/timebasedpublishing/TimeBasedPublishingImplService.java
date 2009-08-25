@@ -62,6 +62,8 @@ public class TimeBasedPublishingImplService extends TimeBasedPublishingService {
     JahiaContainerListManager containerListMgr;    
     SchedulerService schedulerService;
     Properties config;
+    
+    private int batchLoadingSize;
 
     public void setConfig(Properties config) {
         this.config = config;
@@ -740,9 +742,8 @@ public class TimeBasedPublishingImplService extends TimeBasedPublishingService {
             JahiaUser user, EntryLoadRequest loadRequest, String operationMode, Date date) throws JahiaException {
 
         JahiaObjectDelegate delegate = null;
-        if ( org.jahia.settings.SettingsBean.getInstance().isBatchLoadingEnabled() ){
-            delegate = jahiaObjectMgr.getJahiaObjectDelegate(objectKey,
-                        org.jahia.settings.SettingsBean.getInstance().getBatchLoadingSize());
+        if (batchLoadingSize > 1){
+            delegate = jahiaObjectMgr.getJahiaObjectDelegate(objectKey, batchLoadingSize);
         } else {
             delegate = jahiaObjectMgr.getJahiaObjectDelegate(objectKey);
         }
@@ -771,5 +772,9 @@ public class TimeBasedPublishingImplService extends TimeBasedPublishingService {
                     "Exception checking timebased publishing status",JahiaException.APPLICATION_ERROR,
                     JahiaException.ERROR_SEVERITY);
         }
+    }
+
+	public void setBatchLoadingSize(int batchLoadingSize) {
+    	this.batchLoadingSize = batchLoadingSize;
     }
 }

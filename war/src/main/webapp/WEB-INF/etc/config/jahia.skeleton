@@ -5,9 +5,8 @@
 #  This file contains some of the most important settings for configuration
 #  it's behavior.
 #  Other interesting files can be found elsewhere in the WEB-INF/etc
-#  directory, such as WEB-INF/etc/ldap for LDAP connection properties,
-#  or WEB-INF/etc/spring for LDAP connector activation, cache implementation
-#  configuration, Hibernate configuration, etc.
+#  directory, such as WEB-INF/etc/spring for LDAP connector activation,
+#  cache implementation configuration, Hibernate configuration, etc.
 
 ######################################################################
 ### Server  ##########################################################
@@ -427,13 +426,6 @@ ramSchedulerConfigFile                                 =   $context/WEB-INF/etc/
 # must be present for the siteServerName to be properly identified as a Jahia
 # server.
 siteServerNameTestURLExpr                              = ${request.scheme}://${siteServerName}:${request.serverPort}${request.contextPath}/isjahia.jsp
-# If you are using ESI caching, we cannot use the default port defined in
-# '${request.serverPort}' since this will resolve to Jahia's port instead
-# of the ESI server's port (or the load-balancer's port that forwards to a cluster
-# of ESI servers). Therefore, the '${request.serverPort}' string will be automatically
-# replaced by the first port defined in the esiServerPorts property
-# (defined above in "ESI fragment-based Output cache"). So be careful not to change
-# the '${request.serverPort}' string if you are using ESI caching.
 #
 # Instead of using absolute URLs (e.g. http://www.acme.com:8081/jahia/Jahia/site/mySite/pid/2)
 # for the "Exit Administration" button, as explained above, you can choose to generate
@@ -443,7 +435,7 @@ siteServerNameTestURLExpr                              = ${request.scheme}://${s
 # Url used by jahia to make HTTP request to itself.
 #localAccessUri                                          = http\://localhost\:8080
 
-# Ip address of the server on the local network
+# IP address of the server on the local network
 localIp                                                  =
 
 # The following parameter allows for configuration of the connection timeout
@@ -453,9 +445,9 @@ localIp                                                  =
 siteServerNameTestConnectTimeout                       = 500
 
 # The siteURLPortOverride allows to force the generation of siteURLs to a
-# certain port. This will bypass the request.getServerPort() calls, the
-# esiPort x-forward-port request headers and everything else. If it is set
-# to 0, the port override is inactive, but any other positive value will force the
+# certain port. This will bypass the request.getServerPort() calls
+# and everything else. If it is set to 0, the port override is inactive,
+# but any other positive value will force the
 # generation of the site URL (notably used in the Exit Administration button)
 # to use the port specified here. Be careful when setting this might cause
 # issues with cookies, or if you plan to access Jahia through multiple
@@ -492,10 +484,7 @@ cluster.communication.protocol                         = TCP
 
 # Here a default configuration for UDP Clustering
 # You will have to comment the TCP configuration and uncomment the UDP settings in the
-# following files :
-#../spring/applicationcontext-dao.xml, ../spring/applicationcontext-hibernate.xml,
-# ../spring/applicationcontext-services.xml
-
+# following file: ../spring/applicationcontext-hibernate.xml
 
 cluster.service.multicast.ip_address                   = 231.12.21.130
 cluster.service.multicast.port                         = 45000
@@ -506,9 +495,7 @@ cluster.hibernate.multicast.port                       = 45050
 # The example below uses two-nodes cluster: 192.168.1.100 and 192.168.1.200
 # Current node is 192.168.1.100
 #
-# See http://localhost:8080/jahia/html/startup/howto_cluster.html for more details
-#
-## Here your local ip address
+# Here your local ip address
 cluster.tcp.start.ip_address                           =   192.168.1.100
 # Here the minimum numbers of members in the group to be contacted for initial membership
 #(if your cluster is higher than two nodes then upgrade this to at least 3)
@@ -630,14 +617,6 @@ site.error.enabled 										= true
 # jahia instance to a distant jahia when using production job
 # The settings is in milliseconds
 connectionTimeoutForProductionJob                           = 60000
-
-######################################################################
-### hibernate batch loading #######################################
-######################################################################
-# These parameters are used to enable or disable batch loading with hibernate.
-#
-batchLoadingEnabled	                                      = true
-batchLoadingSize		                                  = 20
 
 ######################################################################
 ### container list pagination settings    ############################

@@ -94,7 +94,6 @@ public class SettingsBean {
     private String jahiaEtcDiskPath;
     private String jahiaVarDiskPath;
     private String jahiaFilesBigTextDiskPath;
-    private String jahiaCasDiskPath;
     private String jahiaHostHttpPath;
     private String jahiaTemplatesHttpPath;
     private String jahiaEnginesHttpPath;
@@ -359,7 +358,6 @@ public class SettingsBean {
             jahiaVarDiskPath = JahiaTools.convertContexted (getString("jahiaVarDiskPath"), pathResolver);
             jahiaFilesBigTextDiskPath = JahiaTools.convertContexted (getString("jahiaFilesBigTextDiskPath"), pathResolver);
             tmpContentDiskPath = JahiaTools.convertContexted (getString("tmpContentDiskPath"), pathResolver);
-            jahiaCasDiskPath = JahiaTools.convertContexted (getString("jahiaCasDiskPath"), pathResolver);
             jahiaNewWebAppsDiskPath = JahiaTools.convertContexted (getString("jahiaNewWebAppsDiskPath"), pathResolver);
             jahiaImportsDiskPath = JahiaTools.convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
             jahiaSharedTemplatesDiskPath = JahiaTools.convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
@@ -1053,15 +1051,6 @@ public class SettingsBean {
     public String getJahiaFilesDataDiskPath() {
         return jahiaFilesBigTextDiskPath;
     } // end getJahiaFilesDataDiskPath
-
-    /**
-     * Used to get the CAS configuration directory disk path.
-     *
-     * @return  The Cas configuration disk path.
-     */
-    public String getJahiaCasDiskPath() {
-        return jahiaCasDiskPath;
-    } // end getJahiaCasDiskPath
 
     /**
      * Used to get the shared templates disk path.

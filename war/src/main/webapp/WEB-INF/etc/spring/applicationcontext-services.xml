@@ -360,62 +360,6 @@
         </property>
     </bean>
 
-    <bean id="nstepSettings" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="location" value="WEB-INF/etc/services/workflow/nstep.properties"/>
-    </bean>
-
-    <bean id="WorkflowService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.workflow.WorkflowService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="workflowManager" ref="org.jahia.hibernate.manager.JahiaWorkflowManager" />
-                <property name="languagesStatesManager" ref="org.jahia.hibernate.manager.JahiaLanguagesStatesManager" />
-                <property name="cacheService" ref="JahiaCacheService" />
-                <property name="externals">
-                    <map>
-                        <entry>
-                            <key><value>N-Step</value></key>
-                            <bean class="org.jahia.workflow.nstep.NStepWorkflow" init-method="start">
-                                <property name="properties" ref="nstepSettings" />
-
-                                <!--<property >-->
-                                    <!--<map>-->
-                                        <!--<entry key="two_validation_step_workflow.steps">-->
-                                            <!--<list>-->
-                                                <!--<value>notify</value>-->
-                                                <!--<value>publish</value>-->
-                                            <!--</list>-->
-                                        <!--</entry>-->
-
-                                        <!--<entry key="three_validation_step_workflow.steps">-->
-                                            <!--<list>-->
-                                                <!--<value>notify</value>-->
-                                                <!--<value>first_validate</value>-->
-                                                <!--<value>publish</value>-->
-                                            <!--</list>-->
-                                        <!--</entry>-->
-                                        <!--<entry key="four_validation_step_workflow.steps">-->
-                                            <!--<list>-->
-                                                <!--<value>notify</value>-->
-                                                <!--<value>first_validate</value>-->
-                                                <!--<value>second_validate</value>-->
-                                                <!--<value>publish</value>-->
-                                            <!--</list>-->
-                                        <!--</entry>-->
-                                    <!--</map>-->
-
-                                <!--</property>-->
-
-                                <property name="workflowManager" ref="nstepWorkflowManager" />
-                                <property name="instanceManager" ref="nstepWorkflowInstanceManager" />
-                                <property name="historyManager" ref="nstepWorkflowHistoryManager" />
-                                <property name="transactionManager" ref="transactionManager" />
-                            </bean>
-                        </entry>
-                    </map>
-                </property>
-            </bean>
-        </property>
-    </bean>
     <bean id="JahiaVersionService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.version.JahiaVersionDBService" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -476,12 +420,6 @@
                 <property name="metadataEventListener" ref="eventListenerBean" />
                 <property name="fieldDefinitionsRegistry" ref="JahiaFieldDefinitionsRegistry" />
             </bean>
-        </property>
-    </bean>
-
-    <bean id="CasService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.sso.CasService" parent="jahiaServiceTemplate" factory-method="getInstance"/>
         </property>
     </bean>
 

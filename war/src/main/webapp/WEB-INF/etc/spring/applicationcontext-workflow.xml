@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="WorkflowService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.workflow.WorkflowService" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="workflowManager" ref="org.jahia.hibernate.manager.JahiaWorkflowManager" />
+                <property name="languagesStatesManager" ref="org.jahia.hibernate.manager.JahiaLanguagesStatesManager" />
+                <property name="cacheService" ref="JahiaCacheService" />
+                <property name="externals">
+                    <map>
+                        <entry>
+                            <key><value>N-Step</value></key>
+                            <bean class="org.jahia.workflow.nstep.NStepWorkflow" init-method="start">
+                                <property name="properties" ref="jahiaWorkflowConfig"/>
+                                <property name="workflowManager" ref="nstepWorkflowManager" />
+                                <property name="instanceManager" ref="nstepWorkflowInstanceManager" />
+                                <property name="historyManager" ref="nstepWorkflowHistoryManager" />
+                                <property name="transactionManager" ref="transactionManager" />
+                            </bean>
+                        </entry>
+                    </map>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="jahiaWorkflowConfig" class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+			<map>
+            	<entry key="two_validation_step_workflow">
+                	<list>
+                    	<value>notify</value>
+                        <value>publish</value>
+                    </list>
+                </entry>
+                <entry key="three_validation_step_workflow">
+					<list>
+                    	<value>notify</value>
+                        <value>first_validate</value>
+                        <value>publish</value>
+                    </list>
+                </entry>
+                <entry key="four_validation_step_workflow">
+                	<list>
+                    	<value>notify</value>
+                        <value>first_validate</value>
+                        <value>second_validate</value>
+                        <value>publish</value>
+                    </list>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="nstepWorkflowManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.workflow.nstep.service.impl.WorkflowManagerImpl">
+                <property name="nstepWorkflowDAO" ref="nstepWorkflowDAO" />
+                <property name="nstepWorkflowStepDAO" ref="nstepWorkflowStepDAO" />
+            </bean>
+        </property>
+    </bean>
+    <bean id="nstepWorkflowInstanceManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.workflow.nstep.service.impl.WorkflowInstanceManagerImpl">
+                <property name="nstepWorkflowDAO" ref="nstepWorkflowDAO" />
+                <property name="nstepUserDAO" ref="nstepUserDAO" />
+                <property name="nstepWorkflowInstanceDAO" ref="nstepWorkflowInstanceDAO" />
+            </bean>
+        </property>
+    </bean>
+    <bean id="nstepWorkflowHistoryManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.workflow.nstep.service.impl.WorkflowHistoryManagerImpl">
+                <property name="nstepWorkflowHistoryDAO" ref="nstepWorkflowHistoryDAO" />
+            </bean>
+        </property>
+    </bean>
+    
+</beans>

@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -159,39 +158,18 @@ public class NStepWorkflow implements ExternalWorkflow {
     private WorkflowHistoryManager historyManager = null;
     private WorkflowInstanceManager instanceManager = null;
     private WorkflowManager workflowManager = null;
-    private Properties properties = null;
-    private String propertiesRelativePath = "/WEB-INF/etc/services/workflow/nstep.properties";
+    private Map<String, List<String>> properties;
     private static final String ROLLBACK_ACTION_NAME = "rollback_to_previous_step";
     private static final String ROLLBACK_AUTHOR_ACTION_NAME = "rollback_to_author";
     private static final String UNLOCK_ACTION_NAME = "unlock";
     private static final String LOCK_ACTION_NAME = "lock";
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    /**
-     * Constructs a new NStepWorkflow.
-     */
-    public NStepWorkflow() {
-    }
-
-    public void setPropertiesRelativePath(String propertiesRelativePath) {
-        this.propertiesRelativePath = propertiesRelativePath;
-    }
-
-    public void setProperties(Properties properties) {
+    public void setProperties(Map<String, List<String>> properties) {
         this.properties = properties;
     }
 
     public void start() throws JahiaException {
-        /*
-        try {
-            properties = new Properties();
-            properties.load(new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getPathResolver().resolvePath(propertiesRelativePath)));
-        } catch (IOException e) {
-            log.error("Error during parsing of " + propertiesRelativePath, e);
-            throw new JahiaException(e.getLocalizedMessage(), e.getMessage(), JahiaException.CONFIG_ERROR,
-                    JahiaException.CRITICAL_SEVERITY);
-        }
-        */
         initializeWorkflows();
     }
 
@@ -917,41 +895,33 @@ public class NStepWorkflow implements ExternalWorkflow {
     }
 
     private void initializeWorkflows() throws JahiaException {
-        String workflowNamesList = properties.getProperty("workflowsName", "");
-        String[] workflowNamesArray = workflowNamesList.split(",");
-        List<String> workflowNames = new ArrayList<String>(workflowNamesArray.length);
-        for (int i = 0; i < workflowNamesArray.length; i++) {
-            String workflowName = workflowNamesArray[i].trim();
-            workflowNames.add(workflowName);
+        for (Map.Entry<String, List<String>> wf : properties.entrySet()) {
             org.jahia.workflow.nstep.model.Workflow workflow;
             try {
-                workflow = workflowManager.getWorkflowByName(workflowName);
+                workflow = workflowManager.getWorkflowByName(wf.getKey());
             } catch (ObjectRetrievalFailureException e) {
                 workflow = new org.jahia.workflow.nstep.model.Workflow();
-                workflow.setName(workflowName);
+                workflow.setName(wf.getKey());
             }
-            String stepNamesList = properties.getProperty(workflowName + ".steps", "");
-            if ("".equalsIgnoreCase(stepNamesList.trim())) {
-                final String errorMsg = "Error during parsing of " + propertiesRelativePath + " missing " + workflowName + ".steps property, or property is empty";
+            if (wf.getValue().isEmpty()) {
+                final String errorMsg = "Workflow '" + wf.getKey() + "' has no steps configured";
                 throw new JahiaException(errorMsg, errorMsg, JahiaException.CONFIG_ERROR, JahiaException.CRITICAL_SEVERITY);
             }
-            final String[] stepNamesArray = stepNamesList.split(",");
-            List<WorkflowStep> steps = new ArrayList<WorkflowStep>(stepNamesArray.length);
+            List<WorkflowStep> steps = new ArrayList<WorkflowStep>(wf.getValue().size());
             List<WorkflowStep> existingSteps = workflow.getSteps();
             if (existingSteps == null || existingSteps.size() == 0) {
                 org.jahia.workflow.nstep.model.WorkflowStep init = new org.jahia.workflow.nstep.model.WorkflowStep();
                 init.setName("InitStep");
                 steps.add(init);
-                for (int j = 0; j < stepNamesArray.length; j++) {
-                    String stepName = stepNamesArray[j].trim();
+                for (String stepName : wf.getValue()) {
                     org.jahia.workflow.nstep.model.WorkflowStep step = new WorkflowStep();
                     step.setName(stepName);
                     steps.add(step);
                 }
             } else {
                 steps.add(existingSteps.get(0));
-                for (int j = 0; j < stepNamesArray.length; j++) {
-                    String s1 = stepNamesArray[j].trim();
+                for (int j = 0; j < wf.getValue().size(); j++) {
+                    String s1 = wf.getValue().get(j);
                     WorkflowStep workflowStep;
                     try {
                         workflowStep = existingSteps.get(j + 1);
@@ -967,10 +937,10 @@ public class NStepWorkflow implements ExternalWorkflow {
             workflowManager.saveWorkflow(workflow);
         }
         List<org.jahia.workflow.nstep.model.Workflow> workflowList = workflowManager.getWorkflows();
-        if (workflowNames.size() != workflowList.size()) {
+        if (properties.size() != workflowList.size()) {
             for (int i = 0; i < workflowList.size(); i++) {
                 org.jahia.workflow.nstep.model.Workflow workflow = workflowList.get(i);
-                if (!workflowNames.contains(workflow.getName())) {
+                if (!properties.containsKey(workflow.getName())) {
                     workflowManager.removeWorkflow(workflow.getId().toString());
                 }
             }

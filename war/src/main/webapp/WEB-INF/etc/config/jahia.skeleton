@@ -47,8 +47,6 @@ jahiaSharedTemplatesDiskPath                           =
 jahiaImportsDiskPath                                   =
 jahiaWebAppsDiskPath                                   =
 
-jahiaCasDiskPath                                       =   $context/WEB-INF/etc/cas/
-
 classDiskPath                                          =   /WEB-INF/classes/
 
 
@@ -346,6 +344,12 @@ pageGenerationWaitTimeOnStartup                        = 10000
 # when it was triggered during server startup. It could be used also to trigger
 # an automatic reload (value in seconds).
 suggestedRetryTimeAfterTimeoutOnStartup                = 15
+
+######################################################################
+### CAS Authentication config ########################################
+######################################################################
+cas.loginUrl                                           = https://localhost:8443/cas/login
+cas.validateUrl                                        = https://localhost:8443/cas/serviceValidate
 
 ######################################################################
 ### Cookie authentication valve config #############################

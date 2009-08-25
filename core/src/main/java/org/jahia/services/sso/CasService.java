@@ -33,6 +33,7 @@
 
 import edu.yale.its.tp.cas.client.CASAuthenticationException;
 import edu.yale.its.tp.cas.client.ServiceTicketValidator;
+
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
@@ -40,12 +41,8 @@ import org.jahia.services.JahiaService;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Properties;
 
 /**
  * <p>Title: CAS service</p>
@@ -58,24 +55,12 @@ import java.util.Properties;
 
 public class CasService extends JahiaService {
 
-    /** a logger for this class. */
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger (CasService.class);
-
     /** a singleton to use a single instance. */
     private static CasService m_Instance;
 
-    /** the name of the configuration file. */
-    private static String CONFIGURATION_FILE = "cas.properties";
+    private String validateUrl;
 
-    /** the property that gives the URL to use to validate tickets. */
-    private static String SERVER_VALIDATE_URL_PROP = "cas.server.validateUrl";
-    /** the property that gives the service URL of the application. */
-    private static String JAHIA_SERVICE_URL_PROP = "cas.jahia.serviceUrl";
-    /** the property that gives the login URL of the CAS server. */
-    private static String SERVER_LOGIN_URL_PROP = "cas.server.loginUrl";
-
-    /** CAS properties. */
-    private Properties casProperties = null;
+    private String loginUrl;
 
     /**
      * return the singleton instance.
@@ -90,71 +75,28 @@ public class CasService extends JahiaService {
         return m_Instance;
     }
 
-    /** The name of the configuration file. */
-    private String configFileName;
-
     public void start() throws JahiaInitializationException {
-        configFileName = settingsBean.getJahiaCasDiskPath() + File.separator + CONFIGURATION_FILE;
-
-        File configFile = new File (configFileName);
-        if (configFile.exists()) {
-            try {
-                File casPropFile = new File (configFileName);
-                FileInputStream casPropInputStr = new FileInputStream (casPropFile);
-                casProperties = new Properties ();
-                casProperties.load (casPropInputStr);
-                casPropInputStr.close ();
-            } catch (FileNotFoundException fnfe) {
-                logger.error(fnfe);
-                throw new JahiaInitializationException(fnfe.getMessage(), fnfe);
-            } catch (IOException ioe) {
-                logger.error(ioe);
-                throw new JahiaInitializationException(ioe.getMessage(), ioe);
-            }
-        } else {
-            logger.error("Config file '" + configFileName + "' not found!");
-        }
+    	// do nothing
     }
 
     public void stop() {
-    }
-
-    /** constructor. */
-    protected CasService() {
-        super();
-    }
-
-    /**
-     * Return a property (throw an exception when not set).
-     * @param propName the name of the property
-     * @return a String.
-     * @throws JahiaInitializationException
-     */
-    private String getCasProperty(String propName) throws JahiaInitializationException {
-        if (casProperties == null) {
-            throw new JahiaInitializationException("no CAS property found, please check that '" + configFileName + "' exists!");
-        }
-        String prop = casProperties.getProperty(propName);
-        if (prop == null || "".equals(prop)) {
-            throw new JahiaInitializationException("Property '" + propName + "' is not set!");
-        }
-        return prop;
+    	// do nothing
     }
 
     /**
      * @return the URL to use to validate tickets.
      * @throws JahiaInitializationException
      */
-    public String getServerValidateUrl() throws JahiaInitializationException{
-        return getCasProperty(SERVER_VALIDATE_URL_PROP);
+    public String getValidateUrl() throws JahiaInitializationException{
+        return validateUrl;
     }
 
     /**
      * @return the login URL of the CAS server.
      * @throws JahiaInitializationException
      */
-    public String getServerLoginUrl() throws JahiaInitializationException{
-        return getCasProperty(SERVER_LOGIN_URL_PROP);
+    public String getLoginUrl() throws JahiaInitializationException{
+        return loginUrl;
     }
 
     /**
@@ -170,10 +112,6 @@ public class CasService extends JahiaService {
      */
     public String validateTicket(String ticket, ProcessingContext paramBean, String serviceUrl)
     throws IOException, SAXException, ParserConfigurationException, CASAuthenticationException, MalformedURLException, JahiaException {
-
-        String validateUrl = getServerValidateUrl();
-        logger.debug(SERVER_VALIDATE_URL_PROP + " = " + validateUrl);
-        logger.debug(JAHIA_SERVICE_URL_PROP + " = " + serviceUrl);
 
         // create a new ticket validator
         ServiceTicketValidator sv = new ServiceTicketValidator();
@@ -196,6 +134,14 @@ public class CasService extends JahiaService {
 
         return sv.getUser();
 
+    }
+
+	public void setValidateUrl(String serverValidateUrl) {
+    	this.validateUrl = serverValidateUrl;
+    }
+
+	public void setLoginUrl(String serverLoginUrl) {
+    	this.loginUrl = serverLoginUrl;
     }
 
 }

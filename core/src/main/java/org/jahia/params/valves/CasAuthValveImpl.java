@@ -97,7 +97,7 @@ public class CasAuthValveImpl extends SsoValve {
 
         String redirectUrl = getServiceUrl(processingContext);
 
-        return casService.getServerLoginUrl() + "?service=" + redirectUrl;
+        return casService.getLoginUrl() + "?service=" + redirectUrl;
     }
 
     private String getServiceUrl(ProcessingContext processingContext) {

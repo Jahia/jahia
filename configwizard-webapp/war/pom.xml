@@ -156,12 +156,6 @@
             <version>1.9.7</version>
 
         </dependency>
-        <dependency>
-            <groupId>ojb</groupId>
-            <artifactId>db-ojb</artifactId>
-            <version>1.0.3</version>
-
-        </dependency>
 
         <dependency>
             <groupId>com.google.gwt</groupId>

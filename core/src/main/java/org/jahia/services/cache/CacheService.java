@@ -80,10 +80,6 @@ public abstract class CacheService extends JahiaService {
      */
     public abstract boolean isClusterCache();
 
-    public abstract boolean isJMXEnabled();
-
-    public abstract void setJMXEnabled(boolean JMXEnabled);
-
     public abstract void enableClusterSync() throws JahiaInitializationException;
 
     public abstract void stopClusterSync();

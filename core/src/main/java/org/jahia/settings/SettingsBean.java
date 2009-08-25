@@ -169,24 +169,8 @@ public class SettingsBean {
 
     private DtdEntityResolver mResolver;
 
-    private boolean jmxHTTPAdaptorActivated = false;
-    private boolean jmxXSLProcessorActivated = false;
-    private boolean jmxRMIAdaptorActivated = false;
-
-    private String jmxHTTPHostname = null;
-    private int jmxHTTPPort = 8082;
-    private String jmxHTTPAutorizationMode = null;
-    private String jmxHTTPAuthorizationUser = null;
-    private String jmxHTTPAuthorizationPassword = null;
-    private String jmxHTTPProcessorNameString = null;
-    private String jmxHTTPSocketFactoryNameString = null;
-    private boolean jmxRMISSLServerSocketFactoryActivated = false;
-    private String jmxRMISSLServerSocketFactoryKeyStoreName = null;
-    private String jmxRMISSLServerSocketFactoryKeyStorePassword = null;
-    private String jmxRMISSLServerSocketFactoryKeyManagerPassword = null;
     private String defaultResponseBodyEncoding;
     private String defaultURIEncoding;
-    private boolean jmxActivated;
 
     private int cookieAuthIDLength;
     private String cookieAuthUserPropertyName;
@@ -448,22 +432,6 @@ public class SettingsBean {
 
             // paranoia settings...
             mail_paranoia = getString("mail_paranoia", "Disabled");
-
-            jmxActivated = getBoolean("org.jahia.jmx.activated", false);
-            jmxHTTPAdaptorActivated = getBoolean("org.jahia.jmx.httpAdaptorActivated", false);
-            jmxXSLProcessorActivated = getBoolean("org.jahia.jmx.xslProcessorActivated", false);
-            jmxRMIAdaptorActivated = getBoolean("org.jahia.jmx.rmiAdaptorActivated", false);
-            jmxHTTPHostname = getString("org.jahia.jmx.httpHostName", "localhost");
-            jmxHTTPPort = getInt("org.jahia.jmx.httpPort", 8082);
-            jmxHTTPAutorizationMode = getString("org.jahia.jmx.httpAuthorizationMode", null);
-            jmxHTTPAuthorizationUser = getString("org.jahia.jmx.httpAuthorizationUser", null);
-            jmxHTTPAuthorizationPassword = getString("org.jahia.jmx.httpAuthorizationPassword", null);
-            jmxHTTPProcessorNameString = getString("org.jahia.jmx.httpProcessorNameString", null);
-            jmxHTTPSocketFactoryNameString = getString("org.jahia.jmx.httpSocketFactoryNameString", null);
-            jmxRMISSLServerSocketFactoryActivated = getBoolean("org.jahia.jmx.rmiSSLServerSocketFactoryActivated", false);
-            jmxRMISSLServerSocketFactoryKeyStoreName = getString("org.jahia.jmx.rmiSSLServerSocketFactoryKeyStoreName", null);
-            jmxRMISSLServerSocketFactoryKeyStorePassword = getString("org.jahia.jmx.rmiSSLServerSocketFactoryKeyStorePassword", null);
-            jmxRMISSLServerSocketFactoryKeyManagerPassword = getString("org.jahia.jmx.rmiSSLServerSocketFactoryKeyManagerPassword", null);
 
             // load mime types
             initDtdEntityResolver ();
@@ -1194,51 +1162,6 @@ public class SettingsBean {
     }
     public String getMail_server() {
         return mail_server;
-    }
-    public boolean isJmxActivated() {
-        return jmxActivated;
-    }
-    public boolean isJmxHTTPAdaptorActivated() {
-        return jmxHTTPAdaptorActivated;
-    }
-    public String getJmxHTTPAuthorizationPassword() {
-        return jmxHTTPAuthorizationPassword;
-    }
-    public String getJmxHTTPAuthorizationUser() {
-        return jmxHTTPAuthorizationUser;
-    }
-    public String getJmxHTTPAutorizationMode() {
-        return jmxHTTPAutorizationMode;
-    }
-    public String getJmxHTTPHostname() {
-        return jmxHTTPHostname;
-    }
-    public int getJmxHTTPPort() {
-        return jmxHTTPPort;
-    }
-    public String getJmxHTTPProcessorNameString() {
-        return jmxHTTPProcessorNameString;
-    }
-    public String getJmxHTTPSocketFactoryNameString() {
-        return jmxHTTPSocketFactoryNameString;
-    }
-    public boolean isJmxRMIAdaptorActivated() {
-        return jmxRMIAdaptorActivated;
-    }
-    public boolean isJmxXSLProcessorActivated() {
-        return jmxXSLProcessorActivated;
-    }
-    public boolean isJmxRMISSLServerSocketFactoryActivated() {
-        return jmxRMISSLServerSocketFactoryActivated;
-    }
-    public String getJmxRMISSLServerSocketFactoryKeyStoreName() {
-        return jmxRMISSLServerSocketFactoryKeyStoreName;
-    }
-    public String getJmxRMISSLServerSocketFactoryKeyStorePassword() {
-        return jmxRMISSLServerSocketFactoryKeyStorePassword;
-    }
-    public String getJmxRMISSLServerSocketFactoryKeyManagerPassword() {
-        return jmxRMISSLServerSocketFactoryKeyManagerPassword;
     }
 
     public String getDefaultResponseBodyEncoding() {

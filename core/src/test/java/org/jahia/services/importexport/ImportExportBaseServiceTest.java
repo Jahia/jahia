@@ -52,7 +52,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.hibernate.manager.JahiaSiteManager;
 import org.jahia.hibernate.manager.JahiaSitePropertyManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.mbeans.JahiaMBeanServer;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.settings.SettingsBean;
@@ -95,7 +94,6 @@ public class ImportExportBaseServiceTest extends TestCase {
         logger.info("Loading Jahia configuration from " + jahiaCacheProperties.getAbsoluteFile().toString());
         SettingsBean settingsBean = new SettingsBean(pathResolver, jahiaCacheProperties.getAbsoluteFile().toString(), "", Jahia.getBuildNumber());
         settingsBean.load();
-        JahiaMBeanServer.getInstance().init(settingsBean);
         ServicesRegistry.getInstance().init(settingsBean);
         context = SpringContextSingleton.getInstance().getContext();
         importExportBaseService = (ImportExportBaseService) context.getBean("ImportExportService");

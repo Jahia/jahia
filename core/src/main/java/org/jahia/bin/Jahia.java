@@ -76,7 +76,6 @@ import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.hibernate.manager.JahiaFieldsDataManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.mbeans.JahiaMBeanServer;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
@@ -484,7 +483,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
 
         // Initialize all the registered services.
         try {
-            JahiaMBeanServer.getInstance().init(getSettings());
             if (initServicesRegistry()) {
                 try {
                     EnginesRegistry.getInstance().init();

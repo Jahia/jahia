@@ -184,28 +184,6 @@ containerCacheDefaultExpirationDelay = 14400
 containerCacheLiveModeOnly = false
 
 ######################################################################
-### JMX Settings #####################################################
-######################################################################
-# Jahia contains a JMX (see http://java.sun.com/products/JavaManagement/) server,
-# that is deactivated by default, as it may cause some problems on some application
-# server platforms. The following settings below configure the JMX server.
-org.jahia.jmx.activated                                 = false
-org.jahia.jmx.httpAdaptorActivated                      = false
-org.jahia.jmx.xslProcessorActivated                     = false
-org.jahia.jmx.rmiAdaptorActivated                       = false
-org.jahia.jmx.httpHostName                              = localhost
-org.jahia.jmx.httpPort                                  = 8082
-org.jahia.jmx.httpAuthorizationMode                     = basic
-org.jahia.jmx.httpAuthorizationUser                     = jmx
-org.jahia.jmx.httpAuthorizationPassword                 = jahiajmx
-org.jahia.jmx.httpProcessorNameString                   = Server:name=XSLTProcessor
-# org.jahia.jmx.httpSocketFactoryNameString               =
-org.jahia.jmx.rmiSSLServerSocketFactoryActivated        = false
-org.jahia.jmx.rmiSSLServerSocketFactoryKeyStoreName     =
-org.jahia.jmx.rmiSSLServerSocketFactoryKeyStorePassword =
-org.jahia.jmx.rmiSSLServerSocketFactoryKeyManagerPassword =
-
-######################################################################
 ### Template set #####################################################
 ######################################################################
 # Default value for template set

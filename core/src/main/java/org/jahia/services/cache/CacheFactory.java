@@ -33,7 +33,6 @@ package org.jahia.services.cache;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.mbeans.JahiaMBeanServer;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -65,7 +64,6 @@ public class CacheFactory extends CacheService {
     // hashmap containing the cache size limits specified in Jahia config.
     private Map<String, Long> cacheLimits = null;
     private Map<String, Long> cacheGroupsLimits = null;
-    private boolean JMXEnabled = false;
     private long freeMemoryLimit;
     public static final String DEFAULT_CACHE = "DEFAULT_CACHE";
 
@@ -189,11 +187,6 @@ public class CacheFactory extends CacheService {
         // Add the cache to the table
         caches.put (cache.getName (), cache);
 
-        if (isJMXEnabled()) {
-        // register the cache for JMX monitoring
-        JahiaMBeanServer.getInstance ().registerManagedInstance (
-                cache, "Cache", cache.getName ());
-        }
         return true;
     }
 
@@ -276,14 +269,6 @@ public class CacheFactory extends CacheService {
 
     public boolean isClusterCache() {
         return cacheProviders.get(DEFAULT_CACHE).isClusterCache();
-    }
-
-
-    public boolean isJMXEnabled() {
-        return JMXEnabled;
-    }
-    public void setJMXEnabled(boolean JMXEnabled) {
-        this.JMXEnabled = JMXEnabled;
     }
 
     public void enableClusterSync() throws JahiaInitializationException {

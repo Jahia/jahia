@@ -583,17 +583,6 @@
             <version>1.2.15</version>
             <scope>provided</scope>
         </dependency>
-        <!-- todo: migrate to 3.01 if we want to keep org.jahia.mbeans.JahiaMBeanServer -->
-        <dependency>
-            <groupId>mx4j</groupId>
-            <artifactId>mx4j-jmx</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>mx4j</groupId>
-            <artifactId>mx4j-tools</artifactId>
-            <version>1.1.1</version>
-        </dependency>
 
         <dependency>
             <groupId>hsqldb</groupId>

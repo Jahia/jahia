@@ -40,12 +40,17 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.bin.Jahia;
+import org.jahia.operations.valves.ThemeValve;
 import org.apache.log4j.Logger;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.Value;
 import javax.jcr.RepositoryException;
 import java.util.*;
+import java.io.File;
 
 /**
  * Helper class for accessing node types and definitions. 
@@ -117,12 +122,38 @@ public class ContentDefinitionHelper {
                     prop.setConstrained(constrained);
                     if (constrained) {
                         boolean useResourceBundle = epd.getSelectorOptions().containsKey("resourceBundle");
+                        String templatePackageName = context.getSite().getTemplatePackageName();
                         if (useResourceBundle && rb == null) {
-                            rb = new JahiaResourceBundle(null, context.getLocale(), context.getSite() != null ? context.getSite().getTemplatePackageName() : null);
+                            rb = new JahiaResourceBundle(null, context.getLocale(), context.getSite() != null ? templatePackageName : null);
                         }
                         List<GWTJahiaValueDisplayBean> l = new ArrayList<GWTJahiaValueDisplayBean>();
                         for (String s : constr) {
-                            l.add(new GWTJahiaValueDisplayBean(s, useResourceBundle ? rb.get(s, s) : s));
+                            GWTJahiaValueDisplayBean bean = new GWTJahiaValueDisplayBean(s, useResourceBundle ? rb.get(epd.getName().replace(':', '_') + "." + s, s) : s);
+                            l.add(bean);
+
+                            if (epd.getSelectorOptions().containsKey("image")) {
+                                String path = null;
+                                JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templatePackageName);
+                                for (Iterator iterator = pkg.getLookupPath().iterator(); iterator.hasNext();) {
+                                    String rootFolderPath = (String) iterator.next();
+                                    // look for theme png name
+                                    String lookupFile = Jahia.getStaticServletConfig().getServletContext().getRealPath(rootFolderPath+"/"+epd.getName()+"s/"+ s + "_" + context.getAttribute(ThemeValve.THEME_ATTRIBUTE_NAME + "_" + context.getSite().getID()) + ".png");
+                                    File ft = new File(lookupFile);
+                                    if (ft.exists()) {
+                                        path = rootFolderPath+"/"+epd.getName()+"s/"+ s+ "_" + context.getAttribute(ThemeValve.THEME_ATTRIBUTE_NAME + "_" + context.getSite().getID()) + ".png";
+                                    } else {
+                                        File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(rootFolderPath+"/"+epd.getName()+"s/"+s+".png"));
+                                        if (f.exists()) {
+                                            path = rootFolderPath+"/"+epd.getName()+"s/"+s+".png";
+                                        }
+                                    }
+                                }
+                                if (path != null) {
+                                    bean.set("image",context.getContextPath()+path);
+                                } else {
+                                    bean.set("image",context.getContextPath()+"/css/blank.gif");
+                                }
+                            }
                         }
                         prop.setValueConstraints(l);
                     } else {

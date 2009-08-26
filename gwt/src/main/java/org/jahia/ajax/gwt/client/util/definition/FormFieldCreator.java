@@ -152,6 +152,9 @@ public class FormFieldCreator {
                         combo.setTypeAhead(true);
                         combo.setTriggerAction(TriggerAction.ALL);
                         combo.setForceSelection(true);
+                        if (definition.getSelectorOptions().containsKey("image")) {
+                            combo.setTemplate(getComboTemplate());
+                        }
                         field = combo;
                     }
                     break;
@@ -266,4 +269,13 @@ public class FormFieldCreator {
         
         return str.toString();
     }
+
+
+  private static native String getComboTemplate()  /*-{
+    return  [
+    '<tpl for=".">',
+    '<div class="x-combo-list-item"><img src="{image}"/> {display}</div>',
+    '</tpl>'
+    ].join("");
+  }-*/; 
 }

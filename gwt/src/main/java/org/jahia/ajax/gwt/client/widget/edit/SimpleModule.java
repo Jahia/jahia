@@ -37,7 +37,7 @@ public class SimpleModule extends ContentPanel implements Module {
     public SimpleModule(final String path, String s, String template, final EditManager editManager) {
 //        super(new FitLayout());
         setHeaderVisible(false);
-        setScrollMode(Style.Scroll.AUTO);
+//        setScrollMode(Style.Scroll.AUTO);
         setBorders(false);
 
         this.path = path;

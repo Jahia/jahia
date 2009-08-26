@@ -34,7 +34,7 @@ public class ListModule extends ContentPanel implements Module {
         setCollapsible(true);
         setBodyStyleName("pad-text");
         setHeading("Content : "+path);
-        setScrollMode(Style.Scroll.AUTO);
+//        setScrollMode(Style.Scroll.AUTO);
         html = new HTML(s);
         add(html);
     }

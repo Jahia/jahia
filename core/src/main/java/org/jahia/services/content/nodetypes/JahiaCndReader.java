@@ -507,7 +507,7 @@ public class JahiaCndReader {
                 pdi.setDeclaringNodeType(ntd);
             } else if (currentTokenEquals(Lexer.JAHIA_CATEGORYFIELD)) {
                 ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
-                pdi.setRequiredType(PropertyType.STRING);
+                pdi.setRequiredType(PropertyType.REFERENCE);
                 pdi.setSelector(SelectorType.CATEGORY);
                 nextToken();
                 doPropertyDefinition(pdi, ntd);

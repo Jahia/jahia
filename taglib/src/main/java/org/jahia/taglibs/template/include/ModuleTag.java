@@ -1,10 +1,14 @@
 package org.jahia.taglibs.template.include;
 
 import org.jahia.data.beans.ContentBean;
+import org.jahia.data.beans.CategoryBean;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRNodeDecorator;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.apache.log4j.Logger;
@@ -14,9 +18,14 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.jcr.RepositoryException;
-import javax.jcr.PathNotFoundException;
+import javax.jcr.*;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.PropertyDefinition;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.lock.LockException;
+import javax.jcr.version.VersionException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -207,6 +216,15 @@ public class ModuleTag extends BodyTagSupport {
                                 type = "list";
                             }
                             printPlaceholderModuleStart(type, node.getPath());
+
+                            JCRNodeWrapper w = new JCRNodeDecorator(node) {
+                                @Override
+                                public Property getProperty(String s) throws PathNotFoundException, RepositoryException {
+                                    JCRPropertyWrapper p = (JCRPropertyWrapper) super.getProperty(s);
+                                    return new EditablePropertyWrapper(p);
+                                }
+                            };
+                            resource = new Resource(w, resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), resource.getTemplate());
                             render(renderContext, resource);
                             if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
                                 printPlaceholderModuleStart("placeholder", node.getPath()+"/*");
@@ -262,4 +280,223 @@ public class ModuleTag extends BodyTagSupport {
         }
 
     }
+
+    /**
+     * Wraps property to add editable placeholder around text values
+     */
+    class EditablePropertyWrapper implements JCRPropertyWrapper {
+        JCRPropertyWrapper p;
+
+        EditablePropertyWrapper(JCRPropertyWrapper p) {
+            this.p = p;
+        }
+
+        public CategoryBean getCategory() throws ValueFormatException, RepositoryException {
+            return p.getCategory();
+        }
+
+        public void setValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+            p.setValue(value);
+        }
+
+        public void setValue(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+            p.setValue(values);
+        }
+
+        public void setValue(String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+            p.setValue(value);
+        }
+
+        public void setValue(String[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+            p.setValue(values);
+        }
+
+        public void setValue(InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+            p.setValue(value);
+        }
+
+        public void setValue(long value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+            p.setValue(value);
+        }
+
+        public void setValue(double value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+            p.setValue(value);
+        }
+
+        public void setValue(Calendar value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+            p.setValue(value);
+        }
+
+        public void setValue(boolean value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+            p.setValue(value);
+        }
+
+        public void setValue(Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+            p.setValue(value);
+        }
+
+        public Value getValue() throws ValueFormatException, RepositoryException {
+            return new EditableValueWrapper((JCRValueWrapper) p.getValue());
+        }
+
+        public Value[] getValues() throws ValueFormatException, RepositoryException {
+            return p.getValues();
+        }
+
+        public String getString() throws ValueFormatException, RepositoryException {
+            return p.getString();
+        }
+
+        public InputStream getStream() throws ValueFormatException, RepositoryException {
+            return p.getStream();
+        }
+
+        public long getLong() throws ValueFormatException, RepositoryException {
+            return p.getLong();
+        }
+
+        public double getDouble() throws ValueFormatException, RepositoryException {
+            return p.getDouble();
+        }
+
+        public Calendar getDate() throws ValueFormatException, RepositoryException {
+            return p.getDate();
+        }
+
+        public boolean getBoolean() throws ValueFormatException, RepositoryException {
+            return p.getBoolean();
+        }
+
+        public Node getNode() throws ValueFormatException, RepositoryException {
+            return p.getNode();
+        }
+
+        public long getLength() throws ValueFormatException, RepositoryException {
+            return p.getLength();
+        }
+
+        public long[] getLengths() throws ValueFormatException, RepositoryException {
+            return p.getLengths();
+        }
+
+        public PropertyDefinition getDefinition() throws RepositoryException {
+            return p.getDefinition();
+        }
+
+        public int getType() throws RepositoryException {
+            return p.getType();
+        }
+
+        public String getPath() throws RepositoryException {
+            return p.getPath();
+        }
+
+        public String getName() throws RepositoryException {
+            return p.getName();
+        }
+
+        public Item getAncestor(int depth) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+            return p.getAncestor(depth);
+        }
+
+        public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+            return p.getParent();
+        }
+
+        public int getDepth() throws RepositoryException {
+            return p.getDepth();
+        }
+
+        public Session getSession() throws RepositoryException {
+            return p.getSession();
+        }
+
+        public boolean isNode() {
+            return p.isNode();
+        }
+
+        public boolean isNew() {
+            return p.isNew();
+        }
+
+        public boolean isModified() {
+            return p.isModified();
+        }
+
+        public boolean isSame(Item otherItem) throws RepositoryException {
+            return p.isSame(otherItem);
+        }
+
+        public void accept(ItemVisitor visitor) throws RepositoryException {
+            p.accept(visitor);
+        }
+
+        public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
+            p.save();
+        }
+
+        public void refresh(boolean keepChanges) throws InvalidItemStateException, RepositoryException {
+            p.refresh(keepChanges);
+        }
+
+        public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+            p.remove();
+        }
+
+        class EditableValueWrapper implements JCRValueWrapper {
+            private JCRValueWrapper v;
+
+            EditableValueWrapper(JCRValueWrapper v) {
+                this.v = v;
+            }
+
+            public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
+                return  "<div class=\"jahia-template-gxt\" jahiatype=\"placeholder\" " +
+                        "id=\"placeholder"+ UUID.randomUUID().toString()+"\" type=\"text\" path=\""+ path +"\" >" +
+                        v.getString() + "</div>";
+            }
+
+            public InputStream getStream() throws IllegalStateException, RepositoryException {
+                return v.getStream();
+            }
+
+            public long getLong() throws ValueFormatException, IllegalStateException, RepositoryException {
+                return v.getLong();
+            }
+
+            public double getDouble() throws ValueFormatException, IllegalStateException, RepositoryException {
+                return v.getDouble();
+            }
+
+            public Calendar getDate() throws ValueFormatException, IllegalStateException, RepositoryException {
+                return v.getDate();
+            }
+
+            public boolean getBoolean() throws ValueFormatException, IllegalStateException, RepositoryException {
+                return v.getBoolean();
+            }
+
+            public int getType() {
+                return v.getType();
+            }
+
+            public Node getNode() throws ValueFormatException, IllegalStateException, RepositoryException {
+                return v.getNode();
+            }
+
+            public CategoryBean getCategory() throws ValueFormatException, RepositoryException {
+                return v.getCategory();
+            }
+
+            public PropertyDefinition getDefinition() throws RepositoryException {
+                return v.getDefinition();
+            }
+
+            public Date getTime() throws ValueFormatException, RepositoryException {
+                return v.getTime();
+            }
+        }
+
+    }
+
 }

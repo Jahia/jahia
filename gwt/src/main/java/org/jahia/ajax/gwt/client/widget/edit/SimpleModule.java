@@ -30,10 +30,11 @@ public class SimpleModule extends ContentPanel implements Module {
     private GWTJahiaNode node;
     private HTML html;
     private String path;
+    private String template;
     private Module parentModule;
     private EditManager editManager;
 
-    public SimpleModule(final String path, String s, final EditManager editManager) {
+    public SimpleModule(final String path, String s, String template, final EditManager editManager) {
 //        super(new FitLayout());
         setHeaderVisible(false);
         setScrollMode(Style.Scroll.AUTO);
@@ -41,6 +42,7 @@ public class SimpleModule extends ContentPanel implements Module {
 
         this.path = path;
         this.editManager = editManager;
+        this.template = template;
 
         html = new HTML(s);
         add(html);
@@ -49,6 +51,16 @@ public class SimpleModule extends ContentPanel implements Module {
     public void parse() {
         Map<Element, Module> m = ModuleHelper.parse(this);
         boolean last = m.isEmpty();
+
+        if (!last) {
+            last = true;
+            for (Module module : m.values()) {
+                if (!(module instanceof TextModule)) {
+                    last = false;
+                    break;
+                }
+            }
+        }
 
         if (last) {
             Log.debug("Add drag source for simple module "+path);

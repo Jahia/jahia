@@ -3,9 +3,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HTML;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -37,13 +35,16 @@ public class ModuleHelper {
             if ("placeholder".equals(jahiatype)) {
                 String type = DOM.getElementAttribute(divElement, "type");
                 String path = DOM.getElementAttribute(divElement, "path");
+                String template = DOM.getElementAttribute(divElement, "template");
                 Module module = null;
                 if (type.equals("list")) {
                     module = new ListModule(path, divElement.getInnerHTML(), editManager);
                 } else if (type.equals("existingNode")) {
-                    module = new SimpleModule(path, divElement.getInnerHTML(), editManager);
+                    module = new SimpleModule(path, divElement.getInnerHTML(), template, editManager);
                 } else if (type.equals("placeholder")) {
                     module = new PlaceholderModule(path, editManager);
+//                } else if (type.equals("text")) {
+//                    module = new TextModule(path, divElement.getInnerHTML(), editManager);
                 }
                 if (module != null) {
                     modules.put(path, module);
@@ -53,7 +54,7 @@ public class ModuleHelper {
 
         ArrayList<String> list = new ArrayList<String>();
         for (String s : modules.keySet()) {
-            if (!s.endsWith("*")) {
+            if (!s.endsWith("*") && !(modules.get(s) instanceof TextModule)) {
                 list.add(s);
             }
         }

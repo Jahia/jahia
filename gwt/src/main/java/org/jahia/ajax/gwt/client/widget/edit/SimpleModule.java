@@ -28,7 +28,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 public class SimpleModule extends ContentPanel implements Module {
 
     private GWTJahiaNode node;
-    private Element element;
     private HTML html;
     private String path;
     private Module parentModule;
@@ -52,14 +51,12 @@ public class SimpleModule extends ContentPanel implements Module {
         boolean last = m.isEmpty();
 
         if (last) {
-
+            Log.debug("Add drag source for simple module "+path);
             DragSource source = new SimpleModuleDragSource(this);
             source.addDNDListener(editManager.getDndListener());
 
             DropTarget target = new SimpleModuleDropTarget(this);
-            target.setOperation(DND.Operation.COPY);
-            target.setFeedback(DND.Feedback.INSERT);
-
+            target.setAllowSelfAsSource(true);
             target.addDNDListener(editManager.getDndListener());
             sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
             Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
@@ -112,12 +109,13 @@ public class SimpleModule extends ContentPanel implements Module {
 
         @Override
         protected void onDragStart(DNDEvent e) {
+            super.onDragStart(e);
             e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
             List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
             l.add(getModule().getNode());
             e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);
-            super.onDragStart(e);
         }
+
     }
 
     public class SimpleModuleDropTarget extends ModuleDropTarget {

@@ -34,6 +34,7 @@ public class ModuleDragSource extends EditModeDragSource {
 
     @Override
     protected void onDragStart(DNDEvent e) {
+        super.onDragStart(e);
         e.setCancelled(false);
         e.setData(this);
         e.setOperation(DND.Operation.MOVE);
@@ -44,7 +45,6 @@ public class ModuleDragSource extends EditModeDragSource {
             DOM.setStyleAttribute(module.getHtml().getElement(), "display", "none");
 
         }
-
     }
 
 

@@ -32,6 +32,12 @@ public class EditModeDragSource extends DragSource {
 
     }
 
+    @Override
+    protected void onDragCancelled(DNDEvent dndEvent) {
+        super.onDragCancelled(dndEvent);
+        onDragEnd(dndEvent);
+    }
+
     protected void onDragEnd(DNDEvent e) {
         StatusProxy sp = e.getStatus();
         sp.setData(EditModeDNDListener.SOURCE_TYPE, null);

@@ -2,11 +2,11 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.dnd.Insert;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.util.Rectangle;
 import com.extjs.gxt.ui.client.core.El;
 import com.google.gwt.user.client.Element;
+import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,7 +30,25 @@ public class ModuleDropTarget extends DropTarget {
 
     @Override
     protected void onDragMove(DNDEvent event) {
+        super.onDragMove(event);
         event.setCancelled(false);
+        event.getStatus().setStatus(true);
+    }
+
+    @Override
+    protected void onDragEnter(DNDEvent dndEvent) {
+        super.onDragEnter(dndEvent);
+        dndEvent.setCancelled(false);
+        dndEvent.getStatus().setStatus(true);
+        Log.debug("On drag enter "+((ModuleDropTarget)dndEvent.getDropTarget()).getModule().getPath());
+    }
+
+    @Override
+    protected void onDragLeave(DNDEvent dndEvent) {
+        super.onDragLeave(dndEvent);
+        dndEvent.setCancelled(false);
+        dndEvent.getStatus().setStatus(false);
+        Log.debug("On drag enter "+((ModuleDropTarget)dndEvent.getDropTarget()).getModule().getPath());
     }
 
     @Override

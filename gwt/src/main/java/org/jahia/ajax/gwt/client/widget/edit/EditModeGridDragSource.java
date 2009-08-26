@@ -31,6 +31,12 @@ public class EditModeGridDragSource extends GridDragSource {
         draggable.addDragListener(listener);
 
     }
+    
+    @Override
+    protected void onDragCancelled(DNDEvent dndEvent) {
+        super.onDragCancelled(dndEvent);
+        onDragEnd(dndEvent);
+    }
 
     protected void onDragEnd(DNDEvent e) {
         StatusProxy sp = e.getStatus();

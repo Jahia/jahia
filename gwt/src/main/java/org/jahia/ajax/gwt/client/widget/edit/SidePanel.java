@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
@@ -432,7 +433,7 @@ public class SidePanel extends ContentPanel {
 
 }-*/;
 
-    public class PreviewDragSource extends DragSource {
+    public class PreviewDragSource extends EditModeDragSource {
         private final PreviewTabItem previewTabItem;
 
         public PreviewDragSource(PreviewTabItem previewTabItem) {
@@ -465,6 +466,25 @@ public class SidePanel extends ContentPanel {
 
         public PreviewTabItem(String s) {
             super(s);
+            sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
+            addListener(Events.OnDoubleClick, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent ce) {
+                    if (html != null && node != null) {
+                        Window w = new Window();
+                        final String text = "Preview of " + node.getPath();
+                        w.setHeading(text);
+                        w.setScrollMode(Style.Scroll.AUTO);
+                        w.setModal(true);
+                        w.setClosable(true);
+                        w.setSize(800, 600);
+                        w.setBlinkModal(true);
+                        w.setPlain(true);
+                        w.setToolTip(text);
+                        w.add(new HTML(html.getHTML()));
+                        w.show();                        
+                    }
+                }
+            });
         }
 
         public HTML getHtml() {

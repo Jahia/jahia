@@ -76,11 +76,6 @@ public class PlaceholderModule extends LayoutContainer implements Module {
         }
 
         @Override
-        protected void onDragMove(DNDEvent event) {
-            event.setCancelled(false);
-        }
-
-        @Override
         protected void onDragEnter(DNDEvent e) {
             e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PLACEHOLDER_TYPE);
             e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());

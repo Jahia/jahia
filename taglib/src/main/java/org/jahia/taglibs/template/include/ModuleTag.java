@@ -1,6 +1,8 @@
 package org.jahia.taglibs.template.include;
 
 import org.jahia.data.beans.ContentBean;
+import org.jahia.data.beans.TemplatePathResolverFactory;
+import org.jahia.data.beans.TemplatePathResolverBean;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
@@ -9,8 +11,11 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRNodeDecorator;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRValueWrapper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.params.ProcessingContext;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.JspException;
@@ -202,8 +207,17 @@ public class ModuleTag extends BodyTagSupport {
                     } catch (RepositoryException e) {
                         logger.error("error finding template in node : "+node,e);
                     }
+                    // check if template exists, unless set it as default
+                    TemplatePathResolverFactory factory = (TemplatePathResolverFactory) SpringContextSingleton.getInstance().getContext().getBean("TemplatePathResolverFactory");
+                    ProcessingContext threadParamBean = Jahia.getThreadParamBean();
+                    TemplatePathResolverBean templatePathResolver = factory.getTemplatePathResolver(threadParamBean);
+                    if (template != null && templatePathResolver.lookup("modules/" + ((ExtendedNodeType) node.getPrimaryNodeType()).getAlias().replace(':', '/') +
+                            "/" + templateType +
+                            "/" + template.replace('.', '/') + ".jsp") == null) {
+                        template = null;
+                    }
                 }
-                Resource resource = new Resource(node, workspace , locale, templateType, template);
+                Resource resource = new Resource(node, workspace, locale, templateType, template);
 
                 if (renderContext.isEditMode() && editable) {
                     try {
@@ -250,6 +264,8 @@ public class ModuleTag extends BodyTagSupport {
             nodeTypes = null;
         } catch (IOException ex) {
             throw new JspException(ex);
+        } catch (RepositoryException e) {
+            e.printStackTrace();
         } finally {
     		Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
     		pageContext.setAttribute("org.jahia.modules.level", level != null ? level -1 : 1, PageContext.REQUEST_SCOPE);

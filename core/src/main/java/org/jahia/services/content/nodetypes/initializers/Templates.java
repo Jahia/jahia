@@ -32,16 +32,21 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.params.ProcessingContext;
-import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.beans.TemplatePathResolverFactory;
+import org.jahia.data.beans.TemplatePathResolverBean;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.bin.Jahia;
 
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
 import java.util.*;
 import java.io.File;
+import java.net.MalformedURLException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,28 +55,53 @@ import java.io.File;
  * Time: 11:09:54 AM
  * To change this template use File | Settings | File Templates.
  */
-public class Skins implements ValueInitializer {
+public class Templates implements ValueInitializer {
 
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
+        ExtendedNodeType nt = (ExtendedNodeType) context.get("currentDefinition");
         String tplPkgName = jParams.getSite().getTemplatePackageName();
         JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(tplPkgName);
-        SortedSet skins = new TreeSet();
-        for (Iterator iterator = pkg.getLookupPath().iterator(); iterator.hasNext();) {
-            String rootFolderPath = (String) iterator.next();
-            File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(rootFolderPath+"/skins"));
-            if (f.exists()) {
-                File[] files = f.listFiles();
-                for (File file : files) {
-                    if (file.isDirectory()) skins.add(file.getName());
-                }
-            }
-        }
+        SortedSet<String> templates = getTemplatesSet(pkg, nt);
+
         List<Value> vs = new ArrayList<Value>();
-        for (Iterator iterator = skins.iterator(); iterator.hasNext();) {
+        for (Iterator iterator = templates.iterator(); iterator.hasNext();) {
             String skin = (String) iterator.next();
             vs.add(new ValueImpl(skin, PropertyType.STRING, false));
         }
         return vs.toArray(new Value[vs.size()]);
-
     }
+
+    public static SortedSet<String> getTemplatesSet(JahiaTemplatesPackage pkg, ExtendedNodeType nt) {
+        SortedSet<String> templates = new TreeSet<String>();
+
+
+        List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(nt.getSupertypes()));
+        nodeTypeList.add(nt);
+        Collections.reverse(nodeTypeList);
+        for (ExtendedNodeType t : nodeTypeList) {
+
+            if (pkg != null) {
+                for (String rootFolderPath : pkg.getLookupPath()) {
+                    StringBuffer buff = new StringBuffer(64);
+                    buff.append(rootFolderPath);
+                    buff.append("/");
+                    buff.append("modules/" + t.getAlias().replace(':','/') + "/html");
+                    String testPath = buff.toString();
+                    File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(testPath));
+                    if (f.exists()) {
+                        File[] files = f.listFiles();
+                        for (File file : files) {
+                            if (!file.isDirectory()) {
+                                String filename = file.getName();
+                                templates.add(filename.substring(0, filename.lastIndexOf(".")));
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        return templates;
+    }
+
 }

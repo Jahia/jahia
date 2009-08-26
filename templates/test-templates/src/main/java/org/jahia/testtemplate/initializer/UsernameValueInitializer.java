@@ -41,6 +41,7 @@ import javax.jcr.PropertyType;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,7 +51,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class UsernameValueInitializer implements ValueInitializer {
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
+    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
         if (jParams != null) {
             return new Value[] { new ValueImpl(jParams.getUser().getUsername() + new SimpleDateFormat("hh:mm:ss").format(new Date()),
                 PropertyType.STRING,false) };

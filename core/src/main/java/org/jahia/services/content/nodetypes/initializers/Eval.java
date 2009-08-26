@@ -48,6 +48,7 @@ import javax.servlet.jsp.el.ELException;
 import javax.servlet.jsp.el.FunctionMapper;
 import javax.servlet.jsp.el.ExpressionEvaluator;
 import java.util.List;
+import java.util.Map;
 import java.lang.reflect.Method;
 
 /**
@@ -58,7 +59,7 @@ import java.lang.reflect.Method;
  * To change this template use File | Settings | File Templates.
  */
 public class Eval implements ValueInitializer {
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
+    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
         if (jParams != null && jParams instanceof ParamBean && Jahia.getJahiaServlet()!= null) {
             ParamBean paramBean = (ParamBean) jParams;
             JspFactory jspFactory = JspFactory.getDefaultFactory();

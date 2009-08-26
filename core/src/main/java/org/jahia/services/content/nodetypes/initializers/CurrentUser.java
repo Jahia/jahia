@@ -34,12 +34,11 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
-import org.apache.jackrabbit.util.ISO8601;
 
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
 import java.util.List;
-import java.util.GregorianCalendar;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,7 +48,7 @@ import java.util.GregorianCalendar;
  * To change this template use File | Settings | File Templates.
  */
 public class CurrentUser implements ValueInitializer {
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
+    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
         if (jParams != null) {
             return new Value[] { new ValueImpl(jParams.getUser().getUsername(), PropertyType.STRING, false) };
         }

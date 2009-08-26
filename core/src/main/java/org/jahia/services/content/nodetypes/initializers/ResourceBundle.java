@@ -50,7 +50,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class ResourceBundle implements ValueInitializer {
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
+    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
         Locale currentLocale = Locale.getDefault();
         if (jParams != null) {
             currentLocale = jParams.getCurrentLocale();

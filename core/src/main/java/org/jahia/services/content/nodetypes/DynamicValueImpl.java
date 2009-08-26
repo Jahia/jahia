@@ -32,10 +32,7 @@
 package org.jahia.services.content.nodetypes;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -130,6 +127,10 @@ public class DynamicValueImpl implements Value {
 //    }
 
     public Value[] expand() {
+        return expand(new HashMap());
+    }
+
+    public Value[] expand(Map context) {
         Value[] v = null;
         String classname;
         if (fn.equals("useClass")) {
@@ -139,7 +140,7 @@ public class DynamicValueImpl implements Value {
         }
         try {
             ValueInitializer init = (ValueInitializer) Class.forName(classname).newInstance();
-            v = init.getValues(Jahia.getThreadParamBean(), declaringPropertyDefinition, getParams());
+            v = init.getValues(Jahia.getThreadParamBean(), declaringPropertyDefinition, getParams(), context);
         } catch (InstantiationException e) {
             logger.error(e.getMessage(), e);
         } catch (IllegalAccessException e) {
@@ -152,7 +153,7 @@ public class DynamicValueImpl implements Value {
             for (int i = 0; i < v.length; i++) {
                 Value value = v[i];
                 if (value instanceof DynamicValueImpl) {
-                    res.addAll(Arrays.asList(((DynamicValueImpl)value).expand()));
+                    res.addAll(Arrays.asList(((DynamicValueImpl)value).expand(context)));
                 } else {
                     res.add(value);
                 }

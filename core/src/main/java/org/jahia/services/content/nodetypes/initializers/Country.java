@@ -34,7 +34,6 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
-import org.apache.jackrabbit.value.StringValue;
 
 import javax.jcr.Value;
 import javax.jcr.RepositoryException;
@@ -49,7 +48,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class Country implements ValueInitializer {
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
+    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
         final Locale[] availableLocales = Locale.getAvailableLocales();
         SortedSet<Value> values = new TreeSet<Value>(new Comparator<Value>() {
             public int compare(Value o, Value o1) {

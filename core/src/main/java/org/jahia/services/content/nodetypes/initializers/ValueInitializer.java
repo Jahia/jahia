@@ -32,6 +32,7 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Value;
 
@@ -47,6 +48,6 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
  */
 public interface ValueInitializer {
 
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params);
+    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context);
 
 }

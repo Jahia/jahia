@@ -110,7 +110,9 @@ public class ContentDefinitionHelper {
                     prop.setInternationalized(epd.isInternationalized());
                     prop.setRequiredType(epd.getRequiredType());
                     prop.setMultiple(epd.isMultiple());
-                    String[] constr = epd.getValueConstraints() ;
+                    Map contextMap = new HashMap();
+                    contextMap.put("currentDefinition", nodeType);
+                    String[] constr = epd.getValueConstraints(contextMap) ;
                     boolean constrained = constr != null && constr.length > 0 ;
                     prop.setConstrained(constrained);
                     if (constrained) {
@@ -123,6 +125,8 @@ public class ContentDefinitionHelper {
                             l.add(new GWTJahiaValueDisplayBean(s, useResourceBundle ? rb.get(s, s) : s));
                         }
                         prop.setValueConstraints(l);
+                    } else {
+                        prop.setValueConstraints(new ArrayList<GWTJahiaValueDisplayBean>());
                     }
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
                     for (Value value : epd.getDefaultValues()) {

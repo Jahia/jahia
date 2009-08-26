@@ -39,10 +39,7 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
-import java.util.Comparator;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,7 +49,7 @@ import java.util.TreeSet;
  * To change this template use File | Settings | File Templates.
  */
 public class Category implements ValueInitializer {
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
+    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
         if (jParams != null) {
             try {
                 final org.jahia.services.categories.Category category = org.jahia.services.categories.Category.getCategory(params.get(0));

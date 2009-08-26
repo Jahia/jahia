@@ -100,10 +100,14 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     }
 
     public Value[] getValueConstraintsAsValue() {
+        return getValueConstraintsAsValue(new HashMap());
+    }
+
+    public Value[] getValueConstraintsAsValue(Map context) {
         List<Value> res = new ArrayList<Value>();
         for (int i = 0; i < valueConstraints.length; i++) {
             if (valueConstraints[i] instanceof DynamicValueImpl) {
-                Value[] v = ((DynamicValueImpl)valueConstraints[i]).expand();
+                Value[] v = ((DynamicValueImpl)valueConstraints[i]).expand(context);
                 for (Value value : v) {
                     res.add(value);
                 }
@@ -115,7 +119,11 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     }
 
     public String[] getValueConstraints() {
-        Value[] value = getValueConstraintsAsValue();
+        return getValueConstraints(new HashMap());
+    }
+
+    public String[] getValueConstraints(Map context) {
+        Value[] value = getValueConstraintsAsValue(context);
         String[] res = new String[value.length];
         for (int i = 0; i < value.length; i++) {
             try {

@@ -244,7 +244,7 @@
 [jmix:layout] mixin
 
 [jmix:renderable] > jmix:layout mixin
- - j:defaultTemplate (string)
+ - j:defaultTemplate (string, choicelist[resourceBundle,image]) < templates()
  - j:theme (string)
 
 [jmix:positionable] > jmix:layout mixin

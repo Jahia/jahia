@@ -32,23 +32,6 @@ public class ModuleDropTarget extends DropTarget {
     protected void onDragMove(DNDEvent event) {
         super.onDragMove(event);
         event.setCancelled(false);
-        event.getStatus().setStatus(true);
-    }
-
-    @Override
-    protected void onDragEnter(DNDEvent dndEvent) {
-        super.onDragEnter(dndEvent);
-        dndEvent.setCancelled(false);
-        dndEvent.getStatus().setStatus(true);
-        Log.debug("On drag enter "+((ModuleDropTarget)dndEvent.getDropTarget()).getModule().getPath());
-    }
-
-    @Override
-    protected void onDragLeave(DNDEvent dndEvent) {
-        super.onDragLeave(dndEvent);
-        dndEvent.setCancelled(false);
-        dndEvent.getStatus().setStatus(false);
-        Log.debug("On drag enter "+((ModuleDropTarget)dndEvent.getDropTarget()).getModule().getPath());
     }
 
     @Override

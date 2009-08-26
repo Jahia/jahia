@@ -244,7 +244,14 @@
                     }
                 }
             } else {
-                theList += cons[i].getString();
+                if (propDef.getSelectorOptions().get("resourceBundle") != null) {
+                    putRawValue = true;
+                    String resourceBundleMarker = ResourceBundleMarker.drawMarker(propDef.getResourceBundleId(), propDef.getName().replace(":","_")+"."+ cons[i].getString().replace(':', '_'), cons[i].getString().replace(':', '_'));
+                    theList += resourceBundleMarker;
+                    rawValues.put(resourceBundleMarker, cons[i].getString());
+                } else {
+                    theList += cons[i].getString();
+                }
             }
         }
     } else if (propDef.getName().equals(Constants.JCR_PRIMARYTYPE)) {
@@ -311,8 +318,6 @@
             //System.out.println("smalltext_field.jsp: added multi value[" + val +"]");
         }
     }
-
-
         if (theList.indexOf("<jahia-expression") == -1) {
             List resolvedList = new ArrayList(fieldValuesList.size());
             for (Iterator it = fieldValuesList.iterator(); it.hasNext(); ){

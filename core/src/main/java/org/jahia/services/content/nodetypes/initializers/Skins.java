@@ -70,7 +70,7 @@ public class Skins implements ValueInitializer {
         List<Value> vs = new ArrayList<Value>();
         for (Iterator iterator = skins.iterator(); iterator.hasNext();) {
             String skin = (String) iterator.next();
-            vs.add(new ValueImpl(ResourceBundleMarker.drawMarker(pkg.getResourceBundleName(),"skins."+skin,skin), PropertyType.STRING, false));
+            vs.add(new ValueImpl(skin, PropertyType.STRING, false));
         }
         return vs.toArray(new Value[vs.size()]);
 

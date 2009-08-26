@@ -10,7 +10,6 @@
                 /**/acl.gwt=aclServiceController
                 /**/actionmenus.gwt=actionMenuServiceController
                 /**/base.gwt=baseServiceController
-                /**/category.gwt=categoryServiceController
                 /**/contentLegacy.gwt=contentLegacyServiceController
                 /**/contentDefinition.gwt=contentDefinitionServiceController
                 /**/layoutmanager.gwt=layoutServiceController

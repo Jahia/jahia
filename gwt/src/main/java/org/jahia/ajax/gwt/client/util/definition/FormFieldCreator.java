@@ -121,7 +121,7 @@ public class FormFieldCreator {
                     ((DateField) field).setHideTrigger(propDefinition.isProtected());
                     break;
                 case GWTJahiaNodeSelectorType.PORTLET:
-                    field = new ContentPickerField("/content/mashups", "jnt:portlet","","",null,propDefinition.isMultiple(), false);
+                    field = new ContentPickerField(definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/content", "jnt:portlet","","",ManagerConfigurationFactory.MASHUPPICKER,propDefinition.isMultiple(), false);
                     break;
                 /*case GWTJahiaNodeSelectorType.PORTLETDEFINITION:
                     field = new PortletDefinitionField();

@@ -21,7 +21,7 @@
             of the web application
         </description>
         <param-name>contextConfigLocation</param-name>
-        <param-value>WEB-INF/etc/spring/applicationcontext-*.xml</param-value>
+        <param-value>WEB-INF/etc/spring/applicationcontext-*.xml,classpath:org/jahia/config/**/applicationcontext-*.xml</param-value>
     </context-param>
 
     <context-param>
@@ -498,10 +498,6 @@
         <init-param>
             <param-name>admin_servlet_path</param-name>
             <param-value>/administration/</param-value>
-        </init-param>
-        <init-param>
-            <param-name>config_servlet_path</param-name>
-            <param-value>/installation/</param-value>
         </init-param>
         <init-param>
             <param-name>webinf_path</param-name>

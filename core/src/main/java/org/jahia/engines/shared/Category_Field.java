@@ -455,9 +455,11 @@ public class Category_Field implements FieldSubEngine {
             StringBuffer multipleValue = new StringBuffer();
             while (selectedCategoryUUIDIter.hasNext()) {
                 String curCategoryUUID = selectedCategoryUUIDIter.next();
-                multipleValue.append(curCategoryUUID);
-                if (selectedCategoryUUIDIter.hasNext()) {
-                    multipleValue.append(JahiaField.MULTIPLE_VALUES_SEP);
+                if (!curCategoryUUID.equals("")) {
+                    multipleValue.append(curCategoryUUID);
+                    if (selectedCategoryUUIDIter.hasNext()) {
+                        multipleValue.append(JahiaField.MULTIPLE_VALUES_SEP);
+                    }
                 }
             }
             theField.setValue(multipleValue.toString());

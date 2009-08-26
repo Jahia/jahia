@@ -59,6 +59,7 @@ import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.engines.calendar.CalendarHandler;
 import org.jahia.api.Constants;
+import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
@@ -261,54 +262,7 @@ public class JahiaFieldDefinition extends ContentDefinition implements Serializa
         if (itemDef == null) {
             return -1;
         }
-        if (!itemDef.isNode()) {
-            ExtendedPropertyDefinition propDef = (ExtendedPropertyDefinition) itemDef;
-            switch (propDef.getRequiredType()) {
-                case PropertyType.STRING :
-                case PropertyType.NAME:
-                    switch (propDef.getSelector()) {
-                        case SelectorType.RICHTEXT:
-                            return FieldTypes.BIGTEXT;
-                        case SelectorType.FILEPICKER:
-                        case SelectorType.FILEUPLOAD:
-                            return FieldTypes.FILE;
-                        case SelectorType.CATEGORY:
-                            return FieldTypes.CATEGORY;
-                        case SelectorType.COLOR:
-                            return FieldTypes.COLOR;
-                        default:
-                            if (propDef.isInternationalized())
-                                return FieldTypes.SMALLTEXT;
-                            else
-                                return FieldTypes.SMALLTEXT_SHARED_LANG;
-                    }
-                case PropertyType.LONG :
-                    return FieldTypes.INTEGER;
-                case PropertyType.DOUBLE :
-                    return FieldTypes.FLOAT;
-                case PropertyType.DATE :
-                    return FieldTypes.DATE;
-                case PropertyType.BOOLEAN :
-                    return FieldTypes.BOOLEAN;
-                case ExtendedPropertyType.WEAKREFERENCE :
-                case PropertyType.REFERENCE :
-                    switch (propDef.getSelector()) {
-                        case SelectorType.PORTLET:
-                            return FieldTypes.APPLICATION;
-                        case SelectorType.FILEPICKER:
-                        case SelectorType.FILEUPLOAD:
-                            return FieldTypes.FILE;
-                    }
-            }
-        } else {
-            ExtendedNodeDefinition nodeDef = (ExtendedNodeDefinition) itemDef;
-            if (nodeDef.getRequiredPrimaryTypes()[0].isNodeType(Constants.JAHIANT_PORTLET)) {
-                return FieldTypes.APPLICATION;
-            } else if (nodeDef.getRequiredPrimaryTypes()[0].isNodeType(Constants.JAHIANT_PAGE_LINK)) {
-                return FieldTypes.PAGE;
-            }
-        }
-        return -1;
+        return JahiaContainerDefinitionsRegistry.getType(itemDef);
     }
 
     public boolean getIsMetadata() {

@@ -91,7 +91,7 @@ public class ContentTreeTable extends TopRightComponent {
 
     protected String selectPathAfterUpload = null;
 
-    protected TreeLoader<GWTJahiaNode> getTreeLoader(final String startPath) {
+    protected TreeLoader<GWTJahiaNode> getTreeLoader(final List<GWTJahiaNode> selectedNodes) {
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
         // data proxy
@@ -100,9 +100,9 @@ public class ContentTreeTable extends TopRightComponent {
             protected void load(Object gwtJahiaFolder, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (init) {
                     if (rootPath != null) {
-                        service.getRoot(rootPath, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), startPath, listAsyncCallback);
+                        service.getRoot(rootPath, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), "", listAsyncCallback);
                     } else {
-                        service.getRoot(JCRClientUtils.GLOBAL_REPOSITORY, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), startPath, listAsyncCallback);
+                        service.getRoot(JCRClientUtils.GLOBAL_REPOSITORY, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), "", listAsyncCallback);
                     }
                     init = false;
                 } else {
@@ -131,20 +131,20 @@ public class ContentTreeTable extends TopRightComponent {
             }
 
             protected void expandPreviousPaths() {
-                expandAllPreviousPaths(startPath);
+                expandAllPreviousPaths(selectedNodes);
             }
 
 
         };
     }
 
-    public ContentTreeTable(String rootPath, String startPath, boolean multiple, ManagerConfiguration config) {
+    public ContentTreeTable(String rootPath, List<GWTJahiaNode> selectedNodes, boolean multiple, ManagerConfiguration config) {
         this.rootPath = rootPath != null && rootPath.length() > 0 ? rootPath : null;
         m_component = new ContentPanel(new FitLayout());
         m_component.setHeaderVisible(false);
         m_component.setBorders(false);
         m_component.setBodyBorder(false);
-        loader = getTreeLoader(startPath);
+        loader = getTreeLoader(selectedNodes);
 
         // tree store
         store = new TreeTableStore<GWTJahiaNode>(loader);
@@ -172,7 +172,7 @@ public class ContentTreeTable extends TopRightComponent {
         m_component.add(m_treeTable);
     }
 
-    protected void expandAllPreviousPaths(String path) {
+    protected void expandAllPreviousPaths(List<GWTJahiaNode> selectedNodes) {
 //        if (previousPathsOpener == null) {
 //            previousPathsOpener = new PreviousPathsOpener<GWTJahiaNode>(m_treeTable, store, binder) ;
 //        }
@@ -406,7 +406,7 @@ public class ContentTreeTable extends TopRightComponent {
                         if (gwtJahiaNode.getNodeTypes().contains(configuration.getNodeTypes()) ||
                                 gwtJahiaNode.getInheritedNodeTypes().contains(configuration.getNodeTypes())) {
                             final Button pickContentButton = new Button();
-                            pickContentButton.setStyleName("gwt-icons-add");
+                            pickContentButton.setIconStyle("gwt-icons-add");
                             pickContentButton.setEnabled(true);
                             pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 public void componentSelected(ButtonEvent buttonEvent) {

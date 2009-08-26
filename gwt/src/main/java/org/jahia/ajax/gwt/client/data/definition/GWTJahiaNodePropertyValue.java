@@ -31,6 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.data.definition;
 
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -42,12 +44,19 @@ public class GWTJahiaNodePropertyValue implements Serializable {
 
     private String value ;
     private int type ;
+    private GWTJahiaNode reference;
 
      public GWTJahiaNodePropertyValue() {}
 
     public GWTJahiaNodePropertyValue(String value, int type) {
         this.type = type ;
         this.value = value ;
+    }
+
+    public GWTJahiaNodePropertyValue(GWTJahiaNode reference) {
+        this.type = GWTJahiaNodePropertyType.REFERENCE ;
+        this.reference = reference;
+        this.value = reference.getUUID();
     }
 
     public boolean equals(Object obj) {
@@ -113,6 +122,10 @@ public class GWTJahiaNodePropertyValue implements Serializable {
 
     public String getString() {
         return value ;
+    }
+
+    public GWTJahiaNode getNode() {
+        return reference;
     }
 
     @Override

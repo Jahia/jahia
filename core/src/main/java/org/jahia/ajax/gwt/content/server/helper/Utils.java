@@ -33,6 +33,9 @@ package org.jahia.ajax.gwt.content.server.helper;
 
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
+import org.jahia.services.content.JCRValueWrapper;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.apache.jackrabbit.value.*;
 
 import javax.jcr.Value;
@@ -103,10 +106,9 @@ public class Utils {
                 type = GWTJahiaNodePropertyType.PATH ;
                 theValue = val.getString() ;
                 break ;
+            case ExtendedPropertyType.WEAKREFERENCE:
             case PropertyType.REFERENCE:
-                type = GWTJahiaNodePropertyType.REFERENCE ;
-                theValue = val.getString() ;
-                break ;
+                return new GWTJahiaNodePropertyValue(ContentManagerHelper.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper)val).getNode(), false));
             case PropertyType.STRING:
                 type = GWTJahiaNodePropertyType.STRING ;
                 theValue = val.getString() ;
@@ -151,7 +153,7 @@ public class Utils {
                 value = PathValue.valueOf(val.getString());
                 break ;
             case GWTJahiaNodePropertyType.REFERENCE:
-                value = PathValue.valueOf(val.getString()) ;
+                value = ReferenceValue.valueOf(val.getString()) ;
                 break ;
             case GWTJahiaNodePropertyType.STRING:
                 value = new StringValue(val.getString()) ;

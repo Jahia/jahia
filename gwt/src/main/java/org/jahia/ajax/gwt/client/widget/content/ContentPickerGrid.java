@@ -71,9 +71,13 @@ public class ContentPickerGrid extends TabPanel {
     private Grid<GWTJahiaNode> grid;
     private ManagerConfiguration config;
     private boolean readOnly= false;
+    private boolean multiple;
+    private List<GWTJahiaNode> selectedNodes;
 
-    public ContentPickerGrid(final ManagerConfiguration config) {
+    public ContentPickerGrid(List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
         this.config = config;
+        this.selectedNodes = selectedNodes;
+        this.multiple = multiple;
         createUI();
     }
 
@@ -106,23 +110,25 @@ public class ContentPickerGrid extends TabPanel {
      *
      * @return
      */
-    public Object getSelection() {
+    public List<GWTJahiaNode> getSelection() {
         return store.getModels();
     }
 
     public void setSelection(final List<GWTJahiaNode> selection) {
-
         if (selection != null && selection.size() > 0 && (selection.get(0).getNodeTypes().contains(config.getNodeTypes()) || selection.get(0).getInheritedNodeTypes().contains(config.getNodeTypes()))) {
-//            store.removeAll();
-            for (GWTJahiaNode n : selection) {
-                if (!store.contains(n)) {
-                    store.add(n);
-                }                
+            if (multiple) {
+                for (GWTJahiaNode n : selection) {
+                    if (!store.contains(n)) {
+                        store.add(n);
+                    }
+                }
+            } else {
+                store.removeAll();
+                store.add(selection.get(0));
             }
-        }else{
+        } else {
             Log.error("********************* false"+config.getNodeTypes());
         }
-
     }
 
     /**
@@ -197,8 +203,7 @@ public class ContentPickerGrid extends TabPanel {
 
         // list loader
         store = new ListStore<GWTJahiaNode>();
-        final List<GWTJahiaNode> selectedContentNodes = ContentHelper.getSelectedContentNodesFromHTML();
-        store.add(selectedContentNodes);
+        store.add(selectedNodes);
         store.setModelComparer(new ModelComparer<GWTJahiaNode>() {
             public boolean equals(GWTJahiaNode gwtJahiaNode, GWTJahiaNode gwtJahiaNode1) {
                 String path = gwtJahiaNode.getPath();

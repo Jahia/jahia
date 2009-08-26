@@ -33,7 +33,9 @@ package org.jahia.ajax.gwt.client.widget.definition;
 
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.definition.*;
+import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.Field;
@@ -272,17 +274,19 @@ public class PropertiesEditor extends FormPanel {
             values.add(new GWTJahiaNodePropertyValue(fld.getValue().toString(), GWTJahiaNodePropertyType.ASYNC_UPLOAD));
         } else {
             GWTJahiaPropertyDefinition propDef = (GWTJahiaPropertyDefinition) itemDef;
-            if (propDef.isMultiple()) {
-                if (fld instanceof ListField) {
-                    List<GWTJahiaValueDisplayBean> selection = ((ListField<GWTJahiaValueDisplayBean>)fld).getSelection();
-                    for (GWTJahiaValueDisplayBean valueDisplayBean : selection) {
-                        GWTJahiaNodePropertyValue propertyValue = getPropertyValue(valueDisplayBean, propDef.getRequiredType());
-                        if (propertyValue != null) {
-                            values.add(propertyValue);
-                        }
+            if (fld instanceof ListField) {
+                List<GWTJahiaValueDisplayBean> selection = ((ListField<GWTJahiaValueDisplayBean>)fld).getSelection();
+                for (GWTJahiaValueDisplayBean valueDisplayBean : selection) {
+                    GWTJahiaNodePropertyValue propertyValue = getPropertyValue(valueDisplayBean, propDef.getRequiredType());
+                    if (propertyValue != null) {
+                        values.add(propertyValue);
                     }
-                } else {
-                    values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType()));
+                }
+            } else if (fld instanceof ContentPickerField) {
+                List<GWTJahiaNode> selection = ((ContentPickerField)fld).getValue();
+                for (GWTJahiaNode node : selection) {
+                    GWTJahiaNodePropertyValue propertyValue = new GWTJahiaNodePropertyValue(node);
+                    values.add(propertyValue);
                 }
             } else {
                 values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType()));

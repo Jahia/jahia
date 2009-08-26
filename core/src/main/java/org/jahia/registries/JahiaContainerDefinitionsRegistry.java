@@ -704,14 +704,13 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
             ExtendedPropertyDefinition propDef = (ExtendedPropertyDefinition) itemDef;
             switch (propDef.getRequiredType()) {
                 case PropertyType.STRING :
+                case PropertyType.NAME :
                     switch (propDef.getSelector()) {
                         case SelectorType.RICHTEXT:
                             return FieldTypes.BIGTEXT;
                         case SelectorType.FILEPICKER:
                         case SelectorType.FILEUPLOAD:
                             return FieldTypes.FILE;
-                        case SelectorType.CATEGORY:
-                            return FieldTypes.CATEGORY;
                         case SelectorType.COLOR:
                             return FieldTypes.COLOR;
                         default:
@@ -736,6 +735,8 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
                             return FieldTypes.FILE;
                         case SelectorType.PORTLET:
                             return FieldTypes.APPLICATION;
+                        case SelectorType.CATEGORY:
+                            return FieldTypes.CATEGORY;
                     }
             }
         } else {

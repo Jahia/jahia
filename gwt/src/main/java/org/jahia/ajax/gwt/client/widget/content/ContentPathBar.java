@@ -65,12 +65,12 @@ public class ContentPathBar extends TopBar {
 
     private ToolBar m_component ;
     private TextField selectedPath ;
-    private String startPath ;
+    List<GWTJahiaNode> selectedNodes ;
     private String callback ;
     private boolean allowThumbs;
     private ManagerConfiguration config;
 
-    public ContentPathBar(final String startPath, final ManagerConfiguration config, final String callback, final boolean allowThumbs) {
+    public ContentPathBar(List<GWTJahiaNode> selectedNodes, final ManagerConfiguration config, final String callback, final boolean allowThumbs) {
         m_component = new ToolBar() ;
         selectedPath = new TextField() ;
         selectedPath.setId("content_id");
@@ -93,7 +93,7 @@ public class ContentPathBar extends TopBar {
         });
         m_component.add(deselect) ;
         
-        this.startPath = startPath ;
+        this.selectedNodes = selectedNodes;
         this.config = config;
         this.callback = callback;
         this.allowThumbs = allowThumbs ;
@@ -103,7 +103,11 @@ public class ContentPathBar extends TopBar {
         super.initWithLinker(linker);
         DeferredCommand.addCommand(new Command() {
             public void execute() {
-                initPathField(startPath);
+                if (selectedNodes.isEmpty()) {
+                    initPathField("");
+                } else {
+                    initPathField(selectedNodes.get(0).getPath());
+                }
             }
         });
     }

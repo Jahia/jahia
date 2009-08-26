@@ -1143,33 +1143,8 @@ public class ContentManagerHelper {
                     }
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>(values.length);
 
-                    boolean stringValueIsNotEmpty = false;
                     for (Value val : values) {
                         gwtValues.add(Utils.convertValue(val));
-                        stringValueIsNotEmpty |= PropertyType.STRING == val
-                                .getType()
-                                && val.getString() != null
-                                && val.getString().length() > UPLOAD;
-                    }
-                    if (stringValueIsNotEmpty
-                            && SelectorType.CATEGORY == JCRContentUtils
-                            .getPropertyDefSelector(def)) {
-                        List<GWTJahiaNodePropertyValue> adjustedGwtValues = new ArrayList<GWTJahiaNodePropertyValue>(
-                                values.length);
-                        for (GWTJahiaNodePropertyValue jahiaNodePropertyValue : gwtValues) {
-                            if (jahiaNodePropertyValue.getString() != null
-                                    && jahiaNodePropertyValue.getString().length() > UPLOAD) {
-                                adjustedGwtValues
-                                        .add(new GWTJahiaNodePropertyValue(
-                                                Category
-                                                        .getCategoryKey(jahiaNodePropertyValue
-                                                        .getString()),
-                                                jahiaNodePropertyValue.getType()));
-                            } else {
-                                adjustedGwtValues.add(jahiaNodePropertyValue);
-                            }
-                        }
-                        gwtValues = adjustedGwtValues;
                     }
                     nodeProp.setValues(gwtValues);
                     props.put(nodeProp.getName(), nodeProp);
@@ -1241,11 +1216,7 @@ public class ContentManagerHelper {
                     if (prop.isMultiple()) {
                         List<Value> values = new ArrayList<Value>();
                         for (GWTJahiaNodePropertyValue val : prop.getValues()) {
-                            if (isCategory) {
-                                values.addAll(getCategoryPathValues(val.getString()));
-                            } else {
-                                values.add(Utils.convertValue(val));
-                            }
+                            values.add(Utils.convertValue(val));
                         }
                         Value[] finalValues = new Value[values.size()];
                         values.toArray(finalValues);
@@ -1280,15 +1251,8 @@ public class ContentManagerHelper {
                                     }
                                 }
                             } else {
-                                if (isCategory) {
-                                    List<Value> pathValues = getCategoryPathValues(propValue.getString());
-                                    Value[] values = new Value[pathValues.size()];
-                                    values = pathValues.toArray(values);
-                                    objectNode.setProperty(prop.getName(), values);
-                                } else {
-                                    Value value = Utils.convertValue(propValue);
-                                    objectNode.setProperty(prop.getName(), value);
-                                }
+                                Value value = Utils.convertValue(propValue);
+                                objectNode.setProperty(prop.getName(), value);
                             }
                         } else if (objectNode.hasProperty(prop.getName())) {
                             objectNode.getProperty(prop.getName()).remove();

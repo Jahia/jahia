@@ -57,7 +57,11 @@ public class GWTJahiaNodeProperty implements Serializable {
         prop.setMultiple(isMultiple());
         List<GWTJahiaNodePropertyValue> vals = new ArrayList<GWTJahiaNodePropertyValue>(values.size()) ;
         for (GWTJahiaNodePropertyValue aVal: values) {
-            vals.add(new GWTJahiaNodePropertyValue(aVal.getString(), aVal.getType())) ;
+            if (aVal.getNode() != null) {
+                vals.add(new GWTJahiaNodePropertyValue(aVal.getNode())) ;                
+            } else {
+                vals.add(new GWTJahiaNodePropertyValue(aVal.getString(), aVal.getType())) ;
+            }
         }
         prop.setValues(vals);
         return prop ;

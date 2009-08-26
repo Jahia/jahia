@@ -354,7 +354,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                         Value[] values = new Value[strings.length];
                         for (int i = 0; i < strings.length; i++) {
                             String string = strings[i];
-                            values[i] = new ValueImpl(string,PropertyType.STRING);
+                            values[i] = new ValueImpl(string,propertyDefinition.getRequiredType());
                         }
                         fields.add(new JahiaFieldPropertyImpl(getSession(), this, propertyDefinition, values, contentField, locale));
                     }

@@ -69,8 +69,8 @@ public class ContentPickerContainer extends TopRightComponent {
     private TabItem search ;
     private TabItem thumbs;
 
-    public ContentPickerContainer(String rootPath, String startPath, ManagerConfiguration config, String callback, boolean multiple, boolean allowThumbs) {
-        m_treeTable = new ContentTreeTable(rootPath, startPath, multiple, config);
+    public ContentPickerContainer(String rootPath, List<GWTJahiaNode> selectedNodes, ManagerConfiguration config, String callback, boolean multiple, boolean allowThumbs) {
+        m_treeTable = new ContentTreeTable(rootPath, selectedNodes, multiple, config);
         m_search = new SearchTable(config) ;
         m_thumbs = new ThumbView(config) ;
         m_component = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL)) ;
@@ -78,10 +78,10 @@ public class ContentPickerContainer extends TopRightComponent {
         m_component.setBorders(false);
         m_component.setHeaderVisible(false);
 
-        pathBar = new ContentPathBar(startPath, config, callback, allowThumbs) ;
+        pathBar = new ContentPathBar(selectedNodes, config, callback, allowThumbs) ;
 
 
-        pickerGrid = new ContentPickerGrid(config);
+        pickerGrid = new ContentPickerGrid(selectedNodes, multiple, config);
 
         tabs = new TabPanel() ;
         tabs.setHeight(400);
@@ -162,6 +162,10 @@ public class ContentPickerContainer extends TopRightComponent {
 
         // TO Do: getSelection should alwas return a list of GWTJahiaNode
         pickerGrid.setSelection(l);
+    }
+
+    public List<GWTJahiaNode> getSelectedNodes() {
+        return pickerGrid.getSelection();
     }
 
     public void initWithLinker(BrowserLinker linker) {

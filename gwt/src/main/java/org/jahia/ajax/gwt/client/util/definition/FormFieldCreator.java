@@ -41,7 +41,9 @@ import org.jahia.ajax.gwt.client.widget.form.FileUploadField ;
 import org.jahia.ajax.gwt.client.widget.category.CategoryField;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.definition.*;
+import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -131,10 +133,10 @@ public class FormFieldCreator {
                 case GWTJahiaNodeSelectorType.COLOR:
                     break;
                 case GWTJahiaNodeSelectorType.CATEGORY:
-                    field = new CategoryField();
+                    field = new ContentPickerField(definition.getSelectorOptions().get("root") != null ? definition.getSelectorOptions().get("root") : "/content/categories", "", "","", ManagerConfigurationFactory.CATEGORYPICKER, propDefinition.isMultiple(), false);
                     break;
                 case GWTJahiaNodeSelectorType.FILE:
-                    field = new ContentPickerField(definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/content", "", definition.getSelectorOptions().get("filters"), definition.getSelectorOptions().get("mime"), null, propDefinition.isMultiple(), false);
+                    field = new ContentPickerField(definition.getSelectorOptions().get("folder") != null ? definition.getSelectorOptions().get("folder") : "/content", "", definition.getSelectorOptions().get("filters"), definition.getSelectorOptions().get("mime"), ManagerConfigurationFactory.FILEPICKER, propDefinition.isMultiple(), false);
                     break;
                 case GWTJahiaNodeSelectorType.CHOICELIST:
                     ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
@@ -233,11 +235,17 @@ public class FormFieldCreator {
                     case GWTJahiaNodePropertyType.STRING:
                     case GWTJahiaNodePropertyType.NAME:
                     case GWTJahiaNodePropertyType.PATH:
-                    case GWTJahiaNodePropertyType.REFERENCE:
-                    case GWTJahiaNodePropertyType.WEAKREFERENCE:
                     case GWTJahiaNodePropertyType.URI:
                     case GWTJahiaNodePropertyType.UNDEFINED:
                         field.setValue(join(values));
+                        break;
+                    case GWTJahiaNodePropertyType.REFERENCE:
+                    case GWTJahiaNodePropertyType.WEAKREFERENCE:
+                        List<GWTJahiaNode> v = new ArrayList<GWTJahiaNode>();
+                        for (GWTJahiaNodePropertyValue value : values) {
+                            v.add(value.getNode());
+                        }
+                        field.setValue(v);
                         break;
                     default:
                 }

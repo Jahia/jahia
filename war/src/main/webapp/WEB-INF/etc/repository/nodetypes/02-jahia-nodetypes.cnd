@@ -14,7 +14,7 @@
 [jmix:metadata] mixin
 
 [jmix:categorized] > jmix:metadata mixin
- - j:defaultCategory (string, category[autoSelectParent=false]) multiple
+ - j:defaultCategory (reference, category[autoSelectParent=false]) multiple
 
 [jmix:keywords] > jmix:metadata mixin
  - j:keywords (string) multiple

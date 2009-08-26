@@ -57,7 +57,6 @@
 <body>
 <internal:contentManager enginemode="true"
                       rootPath="/content/categories"
-                      startPath="/content/categories"
                       nodeTypes="jnt:category"
                       conf="categorymanager"/>
 <internal:gwtGenerateDictionary/>

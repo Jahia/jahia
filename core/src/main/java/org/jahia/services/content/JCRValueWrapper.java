@@ -37,6 +37,7 @@ import org.jahia.data.beans.CategoryBean;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Node;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.util.Date;
 
@@ -50,4 +51,6 @@ public interface JCRValueWrapper extends Value {
     CategoryBean getCategory() throws ValueFormatException, RepositoryException;
     PropertyDefinition getDefinition() throws RepositoryException;
     Date getTime() throws ValueFormatException, RepositoryException;
+    Node getNode() throws ValueFormatException, IllegalStateException, RepositoryException;
+
 }

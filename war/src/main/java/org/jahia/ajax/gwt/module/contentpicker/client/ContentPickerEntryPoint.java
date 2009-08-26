@@ -34,9 +34,13 @@ package org.jahia.ajax.gwt.module.contentpicker.client;
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
 import org.jahia.ajax.gwt.client.widget.content.ContentPicker;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerViewport;
+import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.core.client.EntryPoint;
+
+import java.util.List;
 
 /**
  * File picker to embed in container edition engine or anywhere else you want,
@@ -52,10 +56,12 @@ public class ContentPickerEntryPoint implements EntryPoint {
         RootPanel panel = RootPanel.get("contentmanager");
         if (panel != null) {
             String callback = DOM.getElementAttribute(panel.getElement(), "callback") ;
+            final List<GWTJahiaNode> selectedContentNodes = ContentHelper.getSelectedContentNodesFromHTML();
+
             if (callback == null || callback.length() == 0) {
                 panel.add(new ContentPicker(
                         DOM.getElementAttribute(panel.getElement(), "rootPath"),
-                        DOM.getElementAttribute(panel.getElement(), "startPath"),
+                        selectedContentNodes,
                         DOM.getElementAttribute(panel.getElement(), "nodeTypes"),
                         DOM.getElementAttribute(panel.getElement(), "filters"),
                         DOM.getElementAttribute(panel.getElement(), "mimeTypes"),
@@ -66,7 +72,7 @@ public class ContentPickerEntryPoint implements EntryPoint {
             } else {
                 panel.add(new ContentPickerViewport(
                         DOM.getElementAttribute(panel.getElement(), "rootPath"),
-                        DOM.getElementAttribute(panel.getElement(), "startPath"),
+                        selectedContentNodes,
                         DOM.getElementAttribute(panel.getElement(), "nodeTypes"),
                         DOM.getElementAttribute(panel.getElement(), "filters"),
                         DOM.getElementAttribute(panel.getElement(), "mimeTypes"),

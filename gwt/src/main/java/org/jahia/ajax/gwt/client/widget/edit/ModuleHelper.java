@@ -36,13 +36,14 @@ public class ModuleHelper {
                 String type = DOM.getElementAttribute(divElement, "type");
                 String path = DOM.getElementAttribute(divElement, "path");
                 String template = DOM.getElementAttribute(divElement, "template");
+                String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
                 Module module = null;
                 if (type.equals("list")) {
                     module = new ListModule(path, divElement.getInnerHTML(), editManager);
                 } else if (type.equals("existingNode")) {
-                    module = new SimpleModule(path, divElement.getInnerHTML(), template, editManager);
+                    module = new SimpleModule(path, divElement.getInnerHTML(), template, nodetypes, editManager);
                 } else if (type.equals("placeholder")) {
-                    module = new PlaceholderModule(path, editManager);
+                    module = new PlaceholderModule(path, nodetypes, editManager);
 //                } else if (type.equals("text")) {
 //                    module = new TextModule(path, divElement.getInnerHTML(), editManager);
                 }

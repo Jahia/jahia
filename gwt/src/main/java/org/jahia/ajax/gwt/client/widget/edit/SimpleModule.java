@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,16 +34,17 @@ public class SimpleModule extends ContentPanel implements Module {
     private String template;
     private Module parentModule;
     private EditManager editManager;
+    private String nodetypes;
 
-    public SimpleModule(final String path, String s, String template, final EditManager editManager) {
+    public SimpleModule(final String path, String s, String template, String nodetypes, final EditManager editManager) {
 //        super(new FitLayout());
         setHeaderVisible(false);
 //        setScrollMode(Style.Scroll.AUTO);
         setBorders(false);
-
         this.path = path;
         this.editManager = editManager;
         this.template = template;
+        this.nodetypes = nodetypes;
 
         html = new HTML(s);
         add(html);
@@ -138,11 +140,44 @@ public class SimpleModule extends ContentPanel implements Module {
         @Override
         protected void onDragEnter(DNDEvent e) {
             super.onDragEnter(e);
-            e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
-            e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
-            e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getNode());
+
+            boolean allowed = true;
+
+            if (nodetypes != null && nodetypes.length() > 0) {
+                List<GWTJahiaNode> sources = e.getStatus().getData(EditModeDNDListener.SOURCE_NODES);
+                if (sources != null) {
+                    String[] allowedTypes = nodetypes.split(" ");
+                    for (GWTJahiaNode source : sources) {
+                        boolean nodeAllowed = false;
+                        for (String type : allowedTypes) {
+                            if (source.getNodeTypes().contains(type) || source.getInheritedNodeTypes().contains(type)) {
+                                nodeAllowed = true;
+                                break;
+                            }
+                        }
+                        allowed &= nodeAllowed;
+                    }
+                }
+                GWTJahiaNodeType type = e.getStatus().getData(EditModeDNDListener.SOURCE_NODETYPE);
+                if (type != null) {
+                    String[] allowedTypes = nodetypes.split(" ");
+                    boolean typeAllowed = false;
+                    for (String t : allowedTypes) {
+                        if (t.equals(type.getName())) {
+                            typeAllowed = true;
+                            break;
+                        }
+                    }
+                    allowed &= typeAllowed;
+                }
+            }
+            if (allowed) {
+                e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
+                e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
+                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getNode());
+            }
+            e.getStatus().setStatus(allowed);
             e.setCancelled(false);
-            e.getStatus().setStatus(true);
         }
     }
 }

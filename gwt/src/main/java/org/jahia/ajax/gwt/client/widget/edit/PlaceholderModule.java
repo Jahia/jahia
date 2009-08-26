@@ -6,6 +6,7 @@ import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.google.gwt.user.client.ui.HTML;
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 
@@ -20,11 +21,13 @@ public class PlaceholderModule extends LayoutContainer implements Module {
     private String path;
     private Module parentModule;
     private EditManager editManager;
+    private String nodetypes;
 
-    public PlaceholderModule(String path, EditManager editManager) {
+    public PlaceholderModule(String path, String nodetypes, EditManager editManager) {
         super(new FlowLayout());
         this.path = path;
         this.editManager = editManager;
+        this.nodetypes = nodetypes;
         setBorders(false);
         setHeight(20);
         

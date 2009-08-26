@@ -58,6 +58,7 @@ import org.jahia.services.mail.MailService;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jahia.services.mail.MailSettings;
 import org.jahia.services.mail.MailSettingsValidationResult;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.properties.PropertiesManager;
 import org.jahia.admin.AbstractAdministrationModule;
 
@@ -182,8 +183,10 @@ public class ManageServer extends AbstractAdministrationModule {
      */
     private void storeSettings(MailSettings cfg, ProcessingContext jParams,
             HttpServletRequest request) throws IOException, ServletException {
+        SettingsBean settings = SettingsBean.getInstance();
+
         // set new values in the properties manager...
-        PropertiesManager properties = new PropertiesManager( Jahia.getJahiaPropertiesFileName() );
+        PropertiesManager properties = new PropertiesManager(Jahia.getStaticServletConfig().getServletContext().getRealPath(SettingsBean.JAHIA_PROPERTIES_FILE_PATH));
         properties.setProperty("mail_service_activated", cfg.isServiceActivated() ? "true" : "false");
         properties.setProperty("mail_server", cfg.getHost());
         properties.setProperty("mail_administrator", cfg.getTo());
@@ -192,12 +195,13 @@ public class ManageServer extends AbstractAdministrationModule {
 
         // write in the jahia properties file...
         properties.storeProperties();
-        org.jahia.settings.SettingsBean.getInstance().mail_service_activated = cfg.isServiceActivated();
-        org.jahia.settings.SettingsBean.getInstance().mail_server = cfg.getHost();
-        org.jahia.settings.SettingsBean.getInstance().mail_administrator = cfg.getTo();
-        org.jahia.settings.SettingsBean.getInstance().mail_from = cfg.getFrom();
-        org.jahia.settings.SettingsBean.getInstance().mail_paranoia = cfg.getNotificationLevel();
-        
+
+        settings.setMail_service_activated(cfg.isServiceActivated());
+        settings.setMail_server(cfg.getHost());
+        settings.setMail_administrator(cfg.getTo());
+        settings.setMail_from(cfg.getFrom());
+        settings.setMail_paranoia(cfg.getNotificationLevel());
+
         // restart the mail service
         MailService mailSrv = ServicesRegistry.getInstance().getMailService();
         try {

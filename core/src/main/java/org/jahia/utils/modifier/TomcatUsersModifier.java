@@ -45,8 +45,8 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.keygenerator.JahiaKeyGen;
-import org.jahia.utils.properties.PropertiesManager;
 
 
 
@@ -77,17 +77,13 @@ public class TomcatUsersModifier
 	 * Load a complete properties file in memory by its filename.
 	 * @author Alexandre Kraft
 	 */
-    public static boolean ensureValidity( String pathJahiaProperties )
+    public static boolean ensureValidity()
     {
         boolean  pwdChanged   =  false;
 
         try {
-            PropertiesManager pm           =  new PropertiesManager( pathJahiaProperties );
-
-            if(pm.getProperty("server").indexOf("Tomcat")>-1)
-            {
                 // get tomcat-users.xml path...
-                StringBuffer tomXMLPath = new StringBuffer( pm.getProperty("serverHomeDiskPath") );
+                StringBuffer tomXMLPath = new StringBuffer( SettingsBean.getInstance().getServerHomeDiskPath() );
                 tomXMLPath.append( "conf" );
                 tomXMLPath.append( File.separator );
                 tomXMLPath.append( "tomcat-users.xml" );
@@ -162,8 +158,6 @@ public class TomcatUsersModifier
                 fileWriter     =  null;
                 fileReader     =  null;
                 tomXMLPath     =  null;
-            }
-            pm = null;
 
         } catch (Exception e) {
         }

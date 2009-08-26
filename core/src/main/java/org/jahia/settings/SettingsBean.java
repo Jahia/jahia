@@ -69,6 +69,8 @@ public class SettingsBean {
     private static final transient Logger logger =
             Logger.getLogger (SettingsBean.class);
     
+    public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
+    
     /** The map holding all the settings. */
     final private FastHashMap settings = new FastHashMap ();
 
@@ -157,15 +159,15 @@ public class SettingsBean {
     // The (optional) URL the user will be forwarded to after logout
     public String logoutForwardUrl;
     // Generally do a client side redirect instead of forward after logout 
-    public boolean doRedirectOnLogout = true;    
+    private boolean doRedirectOnLogout = true;    
 
     // this is the list of jahia.properties mail settings values...
-    public boolean mail_service_activated;
-    public String mail_server;
-    public String mail_administrator;
-    public String mail_from;
-    public String mail_paranoia;
-    public int mail_maxRegroupingOfPreviousException = 500;
+    private boolean mail_service_activated;
+    private String mail_server;
+    private String mail_administrator;
+    private String mail_from;
+    private String mail_paranoia;
+    private int mail_maxRegroupingOfPreviousException = 500;
 
     private DtdEntityResolver mResolver;
 
@@ -222,9 +224,6 @@ public class SettingsBean {
     private long pageGenerationWaitTimeOnStartup = 10000; // in milliseconds
     private int suggestedRetryTimeAfterTimeout = 60; // in seconds
     private int suggestedRetryTimeAfterTimeoutOnStartup = 15; // in seconds
-
-    // Preload group members when loading user groups from DB
-    final public static String PRELOAD_DBGROUP_MEMBERS_ACTIVATED = "preloadDBGroupMembersActivated";
 
     private int editModeSessionTimeout = 2*60*60; // 2 hours
 
@@ -291,10 +290,10 @@ public class SettingsBean {
     } // end constructor
 
     public SettingsBean(PathResolver pathResolver,
-                        Resource propertiesFile,
-                        Resource licenseFile) throws IOException {
+    					Properties props,
+    					Resource licenseFile) throws IOException {
         this.pathResolver = pathResolver;
-        this.propertiesFileName = propertiesFile.getFile().toString();
+        this.properties = props;
         this.licenseFilename = licenseFile.getFile().toString();
         instance = this;
     }
@@ -302,23 +301,15 @@ public class SettingsBean {
     public static SettingsBean getInstance() {
         return instance;
     }
-    /**
-     * Read the jahia.properties file.
-     *
-     * @return  On success return the Jahia properties, or null on any failure.
-     */
-    public Properties readJahiaPropertiesFile () {
-        PropertiesManager propertiesManager = new PropertiesManager (propertiesFileName);
-        return propertiesManager.getPropertiesObject ();
-    } // end readJahiaPropertiesFile
 
     /**
      * This method load and convert properties from the jahia.properties file,
      * and set some variables used by the SettingsBean class.
      */
     public void load () {
-        PropertiesManager propertiesManager = new PropertiesManager (propertiesFileName);
-        properties = propertiesManager.getPropertiesObject ();
+    	if (properties == null && propertiesFileName != null) {
+    		properties = new PropertiesManager(propertiesFileName).getPropertiesObject();
+    	}
 
         // try to get values from the properties object...
         try {
@@ -807,11 +798,6 @@ public class SettingsBean {
         mResolver = new DtdEntityResolver();
         String diskPath = this.jahiaEtcDiskPath;
 
-        // register local DTD
-        mResolver.registerDTD(
-                "-//Sun Microsystems, Inc.//DTD J2EE Application 1.2//EN",
-                new File(diskPath, "xml_dtd/application_1_2.dtd"));
-
         mResolver.registerSchema(
                 JahiaTemplatesPackageHandler.TEMPLATES_DESCRIPTOR_20_URI,
                 new File(diskPath, "xml_dtd/templates_2_0.xsd"));
@@ -1218,14 +1204,6 @@ public class SettingsBean {
         //throw new UnsupportedOperationException("jetspeedDeploymentDirectory no longer supported!");
     }
 
-    public String getPropertiesFileName() {
-        return propertiesFileName;
-    }
-
-    public void setPropertiesFileName(String propertiesFileName) {
-        this.propertiesFileName = propertiesFileName;
-    }
-
     public int getSiteURLPortOverride() {
         return siteURLPortOverride;
     }
@@ -1549,5 +1527,35 @@ public class SettingsBean {
     public void setHistoryUrlBased(boolean historyUrlBased) {
         this.historyUrlBased = historyUrlBased;
     }
-    
+ 
+    /**
+     * Saves the current configuration back to files. 
+     */
+    public void save() {
+    	
+    }
+
+	public boolean isMail_service_activated() {
+    	return mail_service_activated;
+    }
+
+	public void setMail_service_activated(boolean mailServiceActivated) {
+    	mail_service_activated = mailServiceActivated;
+    }
+
+	public void setMail_server(String mailServer) {
+    	mail_server = mailServer;
+    }
+
+	public void setMail_administrator(String mailAdministrator) {
+    	mail_administrator = mailAdministrator;
+    }
+
+	public void setMail_from(String mailFrom) {
+    	mail_from = mailFrom;
+    }
+
+	public void setMail_paranoia(String mailParanoia) {
+    	mail_paranoia = mailParanoia;
+    }
 }

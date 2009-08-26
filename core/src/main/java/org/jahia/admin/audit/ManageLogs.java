@@ -49,7 +49,6 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.audit.JahiaAuditLogManagerService;
 import org.jahia.services.audit.LoggingEventListener;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.properties.PropertiesManager;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.admin.AbstractAdministrationModule;
 
@@ -60,6 +59,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Calendar;
+import java.util.Map;
 
 
 /**
@@ -157,8 +157,6 @@ public class ManageLogs extends AbstractAdministrationModule {
             logEnabled = (lReg.getListenerByClassName(LOGGING_EVENT_LISTENER) != null) ;
 
             if(logEnabled) {
-                maxLogs  = org.jahia.settings.SettingsBean.getInstance().readJahiaPropertiesFile().getProperty("jahiaMaxLogs");
-
                 if(maxLogs == null)             maxLogs             = "0";
             }
 
@@ -228,7 +226,7 @@ public class ManageLogs extends AbstractAdministrationModule {
             // get logs
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.DATE, - viewLastDays.intValue());
-            List logData = lMgr.getLog(calendar.getTimeInMillis(), jParams);
+            List<Map<String, Object>> logData = lMgr.getLog(calendar.getTimeInMillis(), jParams);
 
             // set default values...
             if(jahiaDisplayMessage == null) jahiaDisplayMessage = Jahia.COPYRIGHT;
@@ -367,19 +365,19 @@ public class ManageLogs extends AbstractAdministrationModule {
             if (maxLogs == null) maxLogs  =  "500";
 
             // make sure we've got a valid number
-            int maxLogsInt;
+//            int maxLogsInt;
             JahiaData jData = (JahiaData) req.getAttribute("org.jahia.data.JahiaData");
             ProcessingContext jParams = null;
             if (jData != null) {
                 jParams = jData.getProcessingContext();
             }
             try {
-                maxLogsInt = Integer.parseInt(maxLogs.trim());
+//                maxLogsInt = Integer.parseInt(maxLogs.trim());
 
                 // update the config property...
-                PropertiesManager propertiesManager =  new PropertiesManager( Jahia.getJahiaPropertiesFileName() );
-                propertiesManager.setProperty( "jahiaMaxLogs", Integer.toString(maxLogsInt) );
-                propertiesManager.storeProperties();
+//                PropertiesManager propertiesManager =  new PropertiesManager( SettingsBean.getInstance().getPropertiesFileName() );
+//                propertiesManager.setProperty( "jahiaMaxLogs", Integer.toString(maxLogsInt) );
+//                propertiesManager.storeProperties();
 
                 // if needed, delete superfluous log entries
 

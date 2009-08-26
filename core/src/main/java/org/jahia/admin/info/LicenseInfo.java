@@ -52,13 +52,10 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.properties.PropertiesManager;
 import org.jahia.security.license.License;
-import org.jahia.security.license.LicenseConstants;
-import org.jahia.security.license.Limit;
 import org.jahia.security.license.LicenseManager;
 import org.jahia.security.license.LicensePackage;
-import org.jahia.security.license.CommonDaysLeftValidator;
+import org.jahia.settings.SettingsBean;
 import org.jahia.admin.AbstractAdministrationModule;
 
 import java.util.Date;
@@ -173,8 +170,7 @@ public class LicenseInfo extends AbstractAdministrationModule {
                 req.setAttribute("nbMaxTemplates",     maxTemplates                          );
                 req.setAttribute("nbCurrentPages",     Integer.toString(nbCurrentPages)      );
                 req.setAttribute("nbMaxPages",         maxPages                              );
-                PropertiesManager pm = new PropertiesManager(Jahia.getJahiaPropertiesFileName());
-                req.setAttribute("release", pm.getProperty("release"));
+                req.setAttribute("release", SettingsBean.getInstance().getPropertiesFile().getProperty("release"));
                 req.setAttribute("build", Integer.toString(Jahia.getBuildNumber())  );
                 req.setAttribute("jahiaEdition", licensePackage.getEdition());
                 req.setAttribute("licenses", licensePackage.getLicenses());

@@ -66,7 +66,7 @@ import org.jahia.services.pages.JahiaPageTemplateService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.properties.PropertiesManager;
+import org.jahia.settings.SettingsBean;
 import org.jahia.admin.AbstractAdministrationModule;
 
 /**
@@ -904,15 +904,9 @@ public class ManageTemplates extends AbstractAdministrationModule {
         templatesContext = (String)session.getAttribute(CLASS_NAME + "jahiaTemplatesDiskPath");
         if ( templatesContext == null ){
 
-            PropertiesManager props =  new PropertiesManager( Jahia.getJahiaPropertiesFileName() );
-
-            if ( props!= null ){
-
-                templatesContext = (String)props.getProperty("jahiaTemplatesDiskPath");
-
-                if ( templatesContext != null ){
-                    session.setAttribute(CLASS_NAME + "jahiaTemplatesDiskPath", templatesContext);
-                }
+            templatesContext = SettingsBean.getInstance().getJahiaTemplatesDiskPath();
+            if ( templatesContext != null ){
+                session.setAttribute(CLASS_NAME + "jahiaTemplatesDiskPath", templatesContext);
             }
         }
 

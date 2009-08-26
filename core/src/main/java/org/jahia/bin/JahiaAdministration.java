@@ -87,8 +87,6 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.JahiaTools;
-import org.jahia.utils.properties.PropertiesManager;
 import org.springframework.beans.factory.BeanFactory;
 
 import javax.servlet.ServletConfig;
@@ -226,21 +224,15 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
 
 
         // determine installation status...
-        if (Jahia.getJahiaPropertiesFileName() == null) { // jahia is not launched...
+        if (!Jahia.isInitiated()) { // jahia is not launched...
             request.setAttribute("jahiaLaunch", "administration"); // call jahia to init and re-launch admin...
             logger.debug("Redirecting to " + contentServletPath +
                     " in order to init Jahia first ...");
             doRedirect(request, response, session, contentServletPath);
         } else { // jahia is running...
-            if (JahiaTools.checkFileExists(Jahia.getJahiaPropertiesFileName())) {
-                PropertiesManager properties = new PropertiesManager(Jahia.
-                        getJahiaPropertiesFileName());
-                installerURL = request.getContextPath() +
-                        properties.getProperty("jahiaEnginesDiskPath");
-
-                // get the JahiaPrivate settings and config it with correct values
-                // change Jahia core http to JahiaAdministration instead of Jahia
-                jSettings = org.jahia.settings.SettingsBean.getInstance();
+        	jSettings = SettingsBean.getInstance();
+            if (jSettings != null) {
+                installerURL = jSettings.getJahiaEnginesHttpPath();
 
                 // set Jahia running mode to Admin
                 session.setAttribute(ProcessingContext.SESSION_JAHIA_RUNNING_MODE,

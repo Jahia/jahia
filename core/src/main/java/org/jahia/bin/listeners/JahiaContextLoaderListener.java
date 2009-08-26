@@ -34,6 +34,7 @@ package org.jahia.bin.listeners;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.settings.SettingsBean;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -42,11 +43,10 @@ import javax.servlet.ServletContext;
 import java.net.MalformedURLException;
 
 /**
- * Created by IntelliJ IDEA.
+ * Startup listener for the Spring's application context.
  * User: Serge Huber
  * Date: 22 juil. 2008
  * Time: 17:01:22
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaContextLoaderListener extends ContextLoaderListener {
     
@@ -60,7 +60,7 @@ public class JahiaContextLoaderListener extends ContextLoaderListener {
         Jahia.initContextData(servletContext);
         
         try {
-            if (event.getServletContext().getResource("/WEB-INF/etc/config/jahia.properties") != null) {
+            if (event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null) {
                 super.contextInitialized(event);
                 SpringContextSingleton
                         .getInstance()
@@ -75,8 +75,8 @@ public class JahiaContextLoaderListener extends ContextLoaderListener {
 
     public void contextDestroyed(ServletContextEvent event) {
         try {
-            if (event.getServletContext().getResource("/WEB-INF/etc/config/jahia.properties") != null) {
-                super.contextDestroyed(event);    //To change body of overridden methods use File | Settings | File Templates.
+            if (event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null) {
+                super.contextDestroyed(event);
             }
         } catch (MalformedURLException e) {
             logger.error(e.getMessage(), e);

@@ -173,11 +173,11 @@ public class MailServiceImpl extends MailService {
      *
      */
     public void start() {
-        settings = new MailSettings(settingsBean.mail_service_activated,
-                settingsBean.mail_server, settingsBean.mail_from,
-                settingsBean.mail_administrator, settingsBean.mail_paranoia);
+        settings = new MailSettings(settingsBean.isMail_service_activated(),
+                settingsBean.getMail_server(), settingsBean.getMail_from(),
+                settingsBean.getMail_administrator(), settingsBean.getMail_paranoia());
 
-        if (settingsBean.mail_service_activated) {
+        if (settingsBean.isMail_service_activated()) {
             MailSettingsValidationResult result = validateSettings(settings,
                     false);
             if (result.isSuccess()) {

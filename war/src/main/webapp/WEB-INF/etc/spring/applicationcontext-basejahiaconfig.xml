@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-  Application context definition.
-    -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
 	<!-- ========================= BUSINESS OBJECT DEFINITIONS ========================= -->
 
-
+  <bean name="jahiaProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+  	<property name="ignoreResourceNotFound" value="true"/>
+  	<property name="locations">
+  		<list>
+  			<value>/WEB-INF/etc/config/jahia.properties</value>
+  			<value>/WEB-INF/etc/config/jahia.custom.properties</value>
+  			<value>classpath:org/jahia/config/jahia.properties</value>
+  		</list>
+  	</property>
+  </bean>
   <!-- property placeholder post-processor -->
   <!-- jahiaWebAppRoot is built by the SpringSingleton and passed as a system property -->
   <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="location" value="WEB-INF/etc/config/jahia.properties"/>
+    <property name="properties">
+    	<ref bean="jahiaProperties"/>
+    </property>
   </bean>
 
   <bean id="pathResolver" class="org.jahia.utils.WebAppPathResolver" />
@@ -22,8 +30,8 @@
       <constructor-arg index="0">
           <ref bean="pathResolver" />
       </constructor-arg>
-      <constructor-arg index="1" type="org.springframework.core.io.Resource">
-          <value>WEB-INF/etc/config/jahia.properties</value>
+      <constructor-arg index="1" type="java.util.Properties">
+          <ref bean="jahiaProperties"/>
       </constructor-arg>
       <constructor-arg index="2" type="org.springframework.core.io.Resource">
           <value>WEB-INF/etc/config/license.xml</value>

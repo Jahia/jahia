@@ -131,16 +131,10 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
     static public final String CLASS_NAME = "Jahia";
 
     /** properties filename */
-    static private final String PROPERTIES_FILENAME = "jahia.properties";
-
-    /** properties filename */
     static private final String PRELOAD_CLASSES_FILENAME = "preloadclasses.xml";
 
     /** license filename */
     static private final String LICENSE_FILENAME = "license.xml";
-
-    /** skeleton properties filename */
-    static private final String PROPERTIES_BASIC = "jahia.skeleton";
 
     /** ... */
     static private final String JAHIA_LAUNCH = "jahiaLaunch";
@@ -154,9 +148,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
 
     static private final String INIT_PARAM_ADMIN_SERVLET_PATH =
         "admin_servlet_path";
-
-    static private final String INIT_PARAM_CONFIG_SERVLET_PATH =
-        "config_servlet_path";
 
     static private final String CTX_PARAM_CONTEXT_PATH =
         "contextPath";
@@ -187,7 +178,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
 
     static private int initTryCount = 0;
     static private boolean reInit = false;
-    static private boolean tomcatXMLRestart = false;
     static private boolean mInitError;
     static private boolean mInitWarning;
     static private boolean mInitiated = false;
@@ -203,7 +193,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
     static protected Exception initException; // used to catch exception on init, where we don't have request and response...
     static protected Exception initWarningException;
 
-    static private String jahiaPropertiesFileName;
     static protected String mLicenseFilename;
     static private String publicKeyStoreResourceName = "/jahiapublickeystore";
     static private String publicKeyStorePassword = "jahiapublickeystore";
@@ -220,7 +209,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
     static private int jahiaHttpPort = -1;
 
     static private String jahiaInitAdminServletPath;
-    static private String jahiaInitConfigServletPath;
 
     static private License coreLicense;
     static private ResourceMessage[] licenseErrorMessages;
@@ -319,8 +307,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             INIT_PARAM_SUPPORTED_JDK_VERSIONS);
         jahiaInitAdminServletPath = this.config.getInitParameter(
             INIT_PARAM_ADMIN_SERVLET_PATH);
-        jahiaInitConfigServletPath = this.config.getInitParameter(
-            INIT_PARAM_CONFIG_SERVLET_PATH);
 
         if ( (!supportedJDKWarningAlreadyShowed) &&
             (supportedJDKVersions != null)) {
@@ -372,23 +358,12 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             jahiaInitAdminServletPath = "/administration/";
         }
 
-        if (Jahia.jahiaInitConfigServletPath == null) {
-            logger.warn("Error in web.xml for init parameter " +
-                         INIT_PARAM_CONFIG_SERVLET_PATH +
-                ". Make sure it's set...Trying to use hardcoded /installation/ dispatching ...");
-            jahiaInitConfigServletPath = "/installation/";
-        }
-
         jahiaEtcFilesPath = context.getRealPath(webinf_path + "/etc");
         jahiaVarFilesPath = context.getRealPath(webinf_path + "/var");
 
         // set default paths...
         jahiaPropertiesPath = context.getRealPath(webinf_path +
             "/etc/config/");
-        jahiaPropertiesFileName = jahiaPropertiesPath + File.separator +
-                                  PROPERTIES_FILENAME;
-        jahiaBasicFileName = jahiaPropertiesPath + File.separator +
-                             PROPERTIES_BASIC;
         mLicenseFilename = jahiaPropertiesPath + File.separator +
                            LICENSE_FILENAME;
 
@@ -421,8 +396,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         // the classes, but this might cause problems elsewhere !
 
         // check if there is a jahia.properties file...
-        final File jahiaProperties = new File(jahiaPropertiesFileName);
-        boolean jahiaPropertiesExists = jahiaProperties.exists();
+        boolean jahiaPropertiesExists = SettingsBean.getInstance() != null && context.getResourceAsStream(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null;
 
         /* init the listener registry */
         //JahiaListenersRegistry.getInstance().init( this.config );
@@ -478,8 +452,9 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         }
 
         // check server type... and if it's tomcat, check the tomcat-users.xml file...
-        tomcatXMLRestart = TomcatUsersModifier.ensureValidity(
-            jahiaPropertiesFileName);
+        if (jSettings.getServer().toLowerCase().contains("tomcat")) {
+	        TomcatUsersModifier.ensureValidity();
+        }
 
         // Initialize all the registered services.
         try {
@@ -755,7 +730,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
                 logger.debug("Redirecting to Configuration Wizard...");
                 runInstaller = false;
                 reInit = true;
-                jahiaLaunch(request, response, Jahia.jahiaInitConfigServletPath);
+                response.sendRedirect("/config");
 
                 return;
 
@@ -763,8 +738,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
 
                 if (request.getAttribute(JAHIA_LAUNCH).equals("installation")) {
                     logger.debug("Redirecting to Configuration Wizard...");
-                    jahiaLaunch(request, response,
-                                Jahia.jahiaInitConfigServletPath);
+                    response.sendRedirect("/config");
                     return;
                     } else if (request.getAttribute(JAHIA_LAUNCH).equals(
                             "administration")) {
@@ -820,18 +794,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
                     return;
                 }
             }
-
-            // please restart tomcat... config has been modified...
-            /*if (tomcatXMLRestart) {
-                session = request.getSession();
-                if (session != null) {
-                    session.setAttribute(JahiaAdministration.CLASS_NAME +
-                            "jahiaDisplayMessage",
-                            "Web applications are being deployed...<br/>" +
-                            "Please wait a few moments until it is done<br/>" +
-                            "and then shutdown and restart Jahia");
-                }
-            }   */
 
             // create the parambean (jParams)...
             final ParamBean jParams = createParamBean(request,response,session);
@@ -993,9 +955,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
 
     /* static accessors...
      */
-    public static String getJahiaPropertiesFileName () {
-        return jahiaPropertiesFileName;
-    }
 
     public static String getServletPath () {
         return jahiaServletPath;
@@ -1015,10 +974,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
 
     public static String getInitAdminServletPath () {
         return jahiaInitAdminServletPath;
-    }
-
-    public static String getInitConfigServletPath () {
-        return jahiaInitConfigServletPath;
     }
 
     public static ProcessingContext getThreadParamBean () {

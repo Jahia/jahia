@@ -51,12 +51,12 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
  * @since : JAHIA 6.1
  *        Created : 13 août 2009
  */
-public class DaylyTimeBasedPublishingNode extends NodeImpl {
-    private transient static Logger logger = Logger.getLogger(DaylyTimeBasedPublishingNode.class);
+public class DailyTimeBasedPublishingNode extends NodeImpl {
+    private transient static Logger logger = Logger.getLogger(DailyTimeBasedPublishingNode.class);
     private final DayInWeekBean day;
     private final JahiaContentNodeImpl parent;
 
-    public DaylyTimeBasedPublishingNode(SessionImpl session, DayInWeekBean dayInWeekBean, JahiaContentNodeImpl node) {
+    public DailyTimeBasedPublishingNode(SessionImpl session, DayInWeekBean dayInWeekBean, JahiaContentNodeImpl node) {
         super(session);
         day = dayInWeekBean;
         parent = node;

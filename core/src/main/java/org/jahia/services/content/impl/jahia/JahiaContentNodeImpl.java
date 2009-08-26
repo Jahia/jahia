@@ -45,8 +45,6 @@ import org.jahia.content.ContentDefinition;
 import org.jahia.content.ContentObject;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaFieldDefinition;
-import org.jahia.data.fields.JahiaField;
-import org.jahia.data.beans.portlets.PortletWindowBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -495,7 +493,9 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                     final List days = rule.getDaysInWeek();
                     for (int i = 0; i < days.size(); i++) {
                         DayInWeekBean dayInWeekBean = (DayInWeekBean) days.get(i);
-                        initNode(new DaylyTimeBasedPublishingNode(getSession(),dayInWeekBean,this));
+                        if (dayInWeekBean.isSelected()) {
+                            initNode(new DailyTimeBasedPublishingNode(getSession(),dayInWeekBean,this));
+                        }
                     }
                 }
             }

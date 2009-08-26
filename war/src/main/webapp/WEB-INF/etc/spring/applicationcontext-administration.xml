@@ -292,7 +292,6 @@
         <property name="serverModules">
             <list>
                 <ref bean="sitesAdministrationModule" />
-                <ref bean="categoriesAdministrationModule" />
                 <ref bean="serverAdministrationModule" />
                 <ref bean="componentsAdministrationModule" />
                 <ref bean="logsAdministrationModule" />

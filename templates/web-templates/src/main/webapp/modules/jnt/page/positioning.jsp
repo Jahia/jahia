@@ -60,7 +60,7 @@
                         <h1 class="hide">${currentSite.title} : ${currentPage.title}</h1>
                         
 
-                        <template:module node="${rootPage}" template="nav.navBar" />
+                        <template:module node="${rootPage}" lockTemplate="nav.navBar" />
                     </div>
 
                     <div id="pageData">

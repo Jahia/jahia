@@ -51,6 +51,8 @@ public class ModuleTag extends BodyTagSupport {
 
     private Locale locale = null;
 
+    private String lockTemplate = null;
+
     public void setPath(String path) {
         this.path = path;
     }
@@ -81,6 +83,10 @@ public class ModuleTag extends BodyTagSupport {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
+    }
+
+    public void setLockTemplate(String lockTemplate) {
+        this.lockTemplate = lockTemplate;
     }
 
     @Override
@@ -175,6 +181,19 @@ public class ModuleTag extends BodyTagSupport {
                         return EVAL_PAGE;
                     }
                 }
+                // set user template if exists
+                if (lockTemplate != null) {
+                    template = lockTemplate;
+                }
+                else {
+                    try {
+                        if (node.hasProperty("j:defaultTemplate")) {
+                            template = node.getProperty("j:defaultTemplate").getValue().getString();
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error("error finding template in node : "+node,e);
+                    }
+                }
                 Resource resource = new Resource(node, workspace , locale, templateType, template);
 
                 if (renderContext.isEditMode() && editable) {
@@ -238,6 +257,9 @@ public class ModuleTag extends BodyTagSupport {
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
+        } catch (IOException io) {
+             pageContext.getOut().print(io);
         }
+
     }
 }

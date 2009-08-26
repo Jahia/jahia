@@ -413,11 +413,14 @@
         <tag-class>org.jahia.taglibs.template.include.ModuleTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>Use for displaying old jahia content</description>
             <name>contentBeanName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+            <type>org.jahia.data.beans.ContainerBean</type>
         </attribute>
         <attribute>
+            <description>nodeBean module will display</description>
             <name>node</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -433,7 +436,14 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default template use for displaying node</description>
             <name>template</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>This attribute will overide any template information to display the node</description>
+            <name>lockTemplate</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

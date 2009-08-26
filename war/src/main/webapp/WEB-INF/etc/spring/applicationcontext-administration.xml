@@ -23,16 +23,6 @@
         <property name="urlParams" value="&amp;sub=list" />
     </bean>
 
-    <bean id="categoriesAdministrationModule" class="org.jahia.admin.categories.ManageCategories" parent="abstractAdministrationModule">
-        <property name="urlKey" value="categories" />
-        <property name="permissionName" value="admin.categories.ManageCategories" />
-        <property name="name" value="categories" />
-        <property name="icon" value="branch" />
-        <property name="label" value="org.jahia.admin.manageCategories.label" />
-        <property name="urlAction" value="categories" />
-        <property name="urlParams" value="&amp;sub=display" />
-    </bean>
-
     <bean id="serverAdministrationModule" class="org.jahia.admin.server.ManageServer" parent="abstractAdministrationModule">
         <property name="urlKey" value="server" />
         <property name="permissionName" value="admin.server.ManageServer" />

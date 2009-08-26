@@ -78,7 +78,7 @@ public class SidePanel extends ContentPanel {
         Button createPage = new Button();
         createPage.setIcon(ACTION_ICONS.createPage());
         createPage.setToolTip("create New Page");
-        createPage.addSelectionListener(editManager.getEditLinker().getCreatePageButtonListener(createPage));
+        createPage.addSelectionListener(editManager.getEditLinker().getCreatePageButtonListener(createPage));        
         createPage.setEnabled(false);
         topToolbar.add(createPage);
         VBoxLayout vBoxLayout = new VBoxLayout();

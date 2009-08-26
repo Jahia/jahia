@@ -12,6 +12,8 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,6 +46,7 @@ public class MainModule extends LayoutContainer implements Module {
     }
 
     public void refresh() {
+        editManager.getEditLinker().getCreatePageButton().setEnabled(false);
         JahiaContentManagementService.App.getInstance().getRenderedContent(path, template, true, new AsyncCallback<String>() {
             public void onSuccess(String result) {
                 int i = getVScrollPosition();
@@ -59,6 +62,23 @@ public class MainModule extends LayoutContainer implements Module {
                 layout();
 
                 setVScrollPosition(i);
+                List<String> list = new ArrayList<String>(1);
+                list.add(path);
+                JahiaContentManagementService.App.getInstance().getNodes(list, new AsyncCallback<List<GWTJahiaNode>>() {
+                    public void onSuccess(List<GWTJahiaNode> result) {
+                        for (GWTJahiaNode gwtJahiaNode : result) {
+                            MainModule.this.setNode(gwtJahiaNode);
+                            if (gwtJahiaNode.getNodeTypes().contains("jnt:page") ||
+                                gwtJahiaNode.getInheritedNodeTypes().contains("jnt:page")) {
+                                editManager.getEditLinker().getCreatePageButton().setEnabled(true);
+                            }
+                        }
+                    }
+
+                    public void onFailure(Throwable caught) {
+
+                    }
+                });
             }
 
             public void onFailure(Throwable caught) {

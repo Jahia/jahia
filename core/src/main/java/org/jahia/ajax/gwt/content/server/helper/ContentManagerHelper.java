@@ -1307,7 +1307,9 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
         }
         if(name==null) {
-            name = findAvailableName(parentNode, nodeType.replaceAll(":","_"),context.getUser());
+            name = findAvailableName(parentNode, nodeType.replaceAll(":","_"), context.getUser());
+        } else {
+            name = findAvailableName(parentNode, name, context.getUser());
         }
         checkName(name);
         if (checkExistence(parentPath + "/" + name, context.getUser())) {

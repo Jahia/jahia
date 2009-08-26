@@ -215,10 +215,6 @@ public class EditLinker {
         updateButtonsState(node);
         updateTemplateBox(node);
         displaySelection(node);
-        if (currentlySelectedNode.getInheritedNodeTypes().contains("jnt:page") ||
-            currentlySelectedNode.getNodeTypes().contains("jnt:page")) {
-            createPageButton.setEnabled(true);
-        }
     }
 
     private void updateButtonsState(GWTJahiaNode node) {
@@ -233,7 +229,6 @@ public class EditLinker {
         } else {
             showUnlockButton();
         }
-        createPageButton.setEnabled(false);
     }
 
     public void onCreateGridSelection(GWTJahiaNodeType selected) {
@@ -241,7 +236,6 @@ public class EditLinker {
         lockButton.setEnabled(false);
         editButton.setEnabled(false);
         saveButton.setEnabled(false);
-        createPageButton.setEnabled(false);
         displaySelection(null);
     }
 
@@ -381,13 +375,17 @@ public class EditLinker {
             }
         };
     }
-    
+
+    public Button getCreatePageButton() {
+        return createPageButton;
+    }
+
     public SelectionListener<ButtonEvent> getCreatePageButtonListener(Button createPage) {
         createPageButton = createPage;
         return new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                if (currentlySelectedNode != null) {
+                if (editManager.getMainModule().getNode() != null) {
                     JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:page", new AsyncCallback<GWTJahiaNodeType>() {
                         public void onFailure(Throwable throwable) {
                             Log.error("", throwable);
@@ -395,7 +393,7 @@ public class EditLinker {
                         }
 
                         public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
-                            new EditContentEngine(editManager, currentlySelectedNode, gwtJahiaNodeType).show();
+                            new EditContentEngine(editManager, editManager.getMainModule().getNode(), gwtJahiaNodeType,null,false,true).show();
                         }
                     });
                 }

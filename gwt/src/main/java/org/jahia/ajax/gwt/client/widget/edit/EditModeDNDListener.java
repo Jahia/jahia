@@ -81,7 +81,7 @@ public class EditModeDNDListener extends DNDListener {
                 // Item creation
                 GWTJahiaNodeType type = e.getStatus().getData(SOURCE_NODETYPE);
                 e.getStatus().setData(OPERATION_CALLED, "true");
-                new EditContentEngine(editManager, parent, type).show();
+                new EditContentEngine(editManager, parent, type, targetPath.substring(targetPath.lastIndexOf("/")+1)).show();
             }
         } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(TARGET_TYPE))){
             String targetPath = e.getStatus().getData(TARGET_PATH);
@@ -107,7 +107,7 @@ public class EditModeDNDListener extends DNDListener {
                 GWTJahiaNodeType type = e.getStatus().getData(SOURCE_NODETYPE);
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
-                new EditContentEngine(editManager, parent, type,true).show();
+                new EditContentEngine(editManager, parent, type,targetPath.substring(targetPath.lastIndexOf("/")+1),true,false).show();
             }
         }
         super.dragDrop(e);

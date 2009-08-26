@@ -85,7 +85,9 @@ public class EditContentEngine extends Window {
     private EditManager editManager = null;
     private GWTJahiaNode parent = null;
     private GWTJahiaNodeType type = null;
+    private String targetPath = null;
     private boolean createInParentAndMoveOnTop = false;
+    private boolean showMetadataTitleInContentTab = false;
 
     /**
      * Initializes an instance of this class.
@@ -98,19 +100,20 @@ public class EditContentEngine extends Window {
         initTabs(true);
     }
 
-    public EditContentEngine(EditManager editManager, GWTJahiaNode parent, GWTJahiaNodeType type) {
-        this.editManager = editManager;
-        this.parent = parent;
-        this.type = type;
-        initWindowProperties();
-        initTabs(false);
+    public EditContentEngine(EditManager editManager, GWTJahiaNode parent, GWTJahiaNodeType type, String targetPath) {
+        this(editManager, parent, type, targetPath, false, false);
+
     }
 
-    public EditContentEngine(EditManager editManager, GWTJahiaNode parent, GWTJahiaNodeType type, boolean createInParentAndMoveOnTop) {
+    public EditContentEngine(EditManager editManager, GWTJahiaNode parent, GWTJahiaNodeType type, String targetPath, boolean createInParentAndMoveOnTop, boolean showMetadataTitleInContentTab) {
         this.editManager = editManager;
         this.parent = parent;
         this.type = type;
+        if (!"*".equals(targetPath)) {
+            this.targetPath = targetPath;
+        }
         this.createInParentAndMoveOnTop = createInParentAndMoveOnTop;
+        this.showMetadataTitleInContentTab = showMetadataTitleInContentTab;
         initWindowProperties();
         initTabs(false);
     }
@@ -155,11 +158,11 @@ public class EditContentEngine extends Window {
                 }
 
                 public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                    PropertiesEditor propertiesEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.CONTENT, fullMode);
+                    PropertiesEditor propertiesEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.CONTENT, fullMode, null);
                     contentTab.add(propertiesEditor);
                     contentTab.setProcessed(true);
                     contentTab.layout();
-                    PropertiesEditor metadataEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.METADATA, fullMode);
+                    PropertiesEditor metadataEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.METADATA, fullMode, null);
                     metadataTab.add(metadataEditor);
                     metadataTab.setProcessed(true);
                     metadataTab.layout();
@@ -172,19 +175,30 @@ public class EditContentEngine extends Window {
             nodeTypes.add(type);
             GWTJahiaGetPropertiesResult result = new GWTJahiaGetPropertiesResult(nodeTypes, new HashMap<String, GWTJahiaNodeProperty>());
             result.setNode(parent);
-            contentTab.add(createPropertiesEditor(result, GWTJahiaItemDefinition.CONTENT, fullMode));
+            if (showMetadataTitleInContentTab) {
+                List<String> excludedItems = new ArrayList<String>();
+                for (GWTJahiaItemDefinition definition : type.getInheritedItems()) {
+                    if (!GWTJahiaItemDefinition.CONTENT.equals(definition.getDataType()) &&
+                        !("jcr:title".equals(definition.getName()))) {
+                        excludedItems.add(definition.getName());
+                    }
+                }
+                contentTab.add(createPropertiesEditor(result, null, fullMode, excludedItems));
+            } else {
+                contentTab.add(createPropertiesEditor(result, GWTJahiaItemDefinition.CONTENT, fullMode, null));
+            }
             contentTab.setProcessed(true);
             contentTab.layout();
             return contentTab;
         }
     }
 
-    private PropertiesEditor createPropertiesEditor(GWTJahiaGetPropertiesResult result, String datatype, boolean fullMode) {
+    private PropertiesEditor createPropertiesEditor(GWTJahiaGetPropertiesResult result, String datatype, boolean fullMode, List<String> excludedItems) {
         GWTJahiaNode selectedNode = result.getNode();
         final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
         elements.add(selectedNode);
 
-        final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, datatype, null, null);
+        final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, datatype, excludedItems, null);
         final EditContentEngine editContentEngine = this;
         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
         Button item = new Button(Messages.getResource("fm_save"));
@@ -273,7 +287,7 @@ public class EditContentEngine extends Window {
 
         public void componentSelected(ButtonEvent event) {
             if (createInParentAndMoveOnTop) {
-                JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), null, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback() {
+                JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), targetPath, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
                         com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                         Log.error("failed", throwable);
@@ -286,7 +300,7 @@ public class EditContentEngine extends Window {
                     }
                 });
             } else {
-                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), null, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback<GWTJahiaNode>() {
+                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), targetPath, type.getName(), propertiesEditor.getProperties(), null, new AsyncCallback<GWTJahiaNode>() {
                     public void onFailure(Throwable throwable) {
                         com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                         Log.error("failed", throwable);

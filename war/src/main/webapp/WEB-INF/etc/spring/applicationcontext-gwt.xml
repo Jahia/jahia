@@ -42,11 +42,6 @@
     </bean>
     <bean name="gwtJahiaService" class="org.jahia.ajax.gwt.commons.server.rpc.JahiaServiceImpl" scope="prototype"/>
 
-    <bean name="categoryServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
-        <property name="remoteServiceName" value="gwtCategoryService"/>
-    </bean>
-    <bean name="gwtCategoryService" class="org.jahia.ajax.gwt.engines.categories.server.CategoryServiceImpl" scope="prototype"/>
-
     <bean name="contentLegacyServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaContentLegacyService"/>
     </bean>

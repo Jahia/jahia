@@ -711,6 +711,10 @@ public class ContentManagerHelper {
             if (f.hasProperty("j:width")) {
                 n.setWidth(Long.valueOf(f.getProperty("j:width").getLong()).intValue());
             }
+            // add node template
+             if (f.hasProperty("j:defaultTemplate")) {
+                n.setTemplate(f.getProperty("j:defaultTemplate").getValue().getString());   
+             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

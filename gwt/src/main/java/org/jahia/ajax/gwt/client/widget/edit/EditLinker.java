@@ -77,6 +77,7 @@ public class EditLinker {
     private SidePanel.PreviewTabItem previewTabItem;
     private TabItem propertiesTabItem;
     private GWTJahiaNode currentlySelectedNode;
+    private String currentlySelectedNodeTemplate;
     private String currentrySelectedTemplate;
     private Button deleteButton;
     private final EditManager editManager;
@@ -120,8 +121,8 @@ public class EditLinker {
         this.templateBox = templateBox;
     }
 
-    public void displaySelection(final GWTJahiaNode node) {
-        displayPreview(node, null);
+    public void displaySelection(final GWTJahiaNode node, String template) {
+        displayPreview(node, template);
         displayProperties(node);
         currentlySelectedNode = node;
     }
@@ -214,7 +215,9 @@ public class EditLinker {
     public void onBrowseTreeSelection(GWTJahiaNode node) {
         updateButtonsState(node);
         updateTemplateBox(node);
-        displaySelection(node);
+        currentlySelectedNodeTemplate = node.getTemplate();
+        saveButton.setEnabled(false);
+        displaySelection(node, currentlySelectedNodeTemplate);
     }
 
     private void updateButtonsState(GWTJahiaNode node) {
@@ -236,18 +239,20 @@ public class EditLinker {
         lockButton.setEnabled(false);
         editButton.setEnabled(false);
         saveButton.setEnabled(false);
-        displaySelection(null);
+        displaySelection(null,null);
     }
 
-    public void onSimpleModuleSelection(GWTJahiaNode node) {
+    public void onSimpleModuleSelection(GWTJahiaNode node,String template) {
         updateButtonsState(node);
 
         createView.getSelectionModel().deselectAll();
+        currentlySelectedNodeTemplate = template;
         displayGrid.getSelectionModel().deselectAll();
         displayTypesGrid.getSelectionModel().deselectAll();
         browseTree.getSelectionModel().deselectAll();
         updateTemplateBox(node);
-        displaySelection(node);
+        saveButton.setEnabled(true);
+        displaySelection(node, currentlySelectedNodeTemplate);
     }
 
     public SelectionListener<ButtonEvent> getDeleteButtonListener(Button delete) {
@@ -345,6 +350,9 @@ public class EditLinker {
             }
             public void onSuccess(List<String[]> strings) {
                 for(String[] template:strings) {
+                    if (template[0].equals(currentlySelectedNodeTemplate)) {
+                        templateBox.setValue(new GWTJahiaBasicDataBean(currentlySelectedNodeTemplate,currentlySelectedNodeTemplate));
+                    }
                     templateBox.getStore().add(new GWTJahiaBasicDataBean(template[0], template[1]));
                 }
             }

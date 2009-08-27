@@ -62,6 +62,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private SortInfo sortInfo = new SortInfo("name", Style.SortDir.ASC);
     private List<GWTJahiaNodeVersion> versions;
     private String selectedVersion;
+    private String template;
 
     public GWTJahiaNode() {
         super();
@@ -408,6 +409,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public String getSelectedVersion() {
         return selectedVersion;
+    }
+
+    public String getTemplate() {
+        return get("template");
+    }
+
+    public void setTemplate(String template) {
+       set("template",template);
     }
 
     @Override

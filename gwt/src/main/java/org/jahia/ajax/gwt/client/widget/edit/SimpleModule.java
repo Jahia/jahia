@@ -116,6 +116,10 @@ public class SimpleModule extends ContentPanel implements Module {
         this.parentModule = parentModule;
     }
 
+    public String getTemplate() {
+        return template;
+    }
+
     public class SimpleModuleDragSource extends ModuleDragSource {
         public SimpleModuleDragSource(SimpleModule simpleModule) {
             super(simpleModule);

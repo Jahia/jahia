@@ -61,7 +61,7 @@ public class EditManager extends Viewport {
         this.selection = selection;
         this.selection.setBorders(true);
         if(selection instanceof Module) {
-            editLinker.onSimpleModuleSelection(((Module) selection).getNode());
+            editLinker.onSimpleModuleSelection(((Module) selection).getNode(),((SimpleModule) selection).getTemplate());
         }
     }
 }

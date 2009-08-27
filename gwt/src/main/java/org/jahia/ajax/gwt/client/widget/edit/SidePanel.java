@@ -113,7 +113,7 @@ public class SidePanel extends ContentPanel {
         displayPanel.add(displayTabs);
 
         // add to side panel
-        VBoxLayoutData vBoxData = new VBoxLayoutData(5, 5, 5, 5);
+        VBoxLayoutData vBoxData = new VBoxLayoutData(0, 0, 0, 0);
         vBoxData.setFlex(1);
         add(topToolbar);
         add(repository, vBoxData);

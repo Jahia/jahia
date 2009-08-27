@@ -2,6 +2,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.dnd.Insert;
+import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.util.Rectangle;
 import com.extjs.gxt.ui.client.core.El;
@@ -22,6 +23,7 @@ public class ModuleDropTarget extends DropTarget {
     public ModuleDropTarget(Module target) {
         super(target.getContainer());
         this.module = target;
+        setOperation(DND.Operation.COPY);
     }
 
     public Module getModule() {

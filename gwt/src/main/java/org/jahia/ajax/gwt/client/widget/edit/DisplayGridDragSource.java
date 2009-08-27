@@ -2,6 +2,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.dnd.DND;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.ArrayList;
@@ -28,8 +29,8 @@ public class DisplayGridDragSource extends EditModeGridDragSource {
         List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>(1);
         list.add((GWTJahiaNode) grid.getSelectionModel().getSelectedItem());
         e.getStatus().setData("size", list.size());
-
         e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, list);
+        e.setOperation(DND.Operation.COPY);
         super.onDragStart(e);
     }
 }

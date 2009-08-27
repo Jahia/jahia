@@ -6,9 +6,7 @@
 
 <div class="columns2"><!--start 2columns -->
     <c:forEach items="${currentNode.children}" var="subchild">
-<c:if test="${jcr:isNodeType(subchild, 'jnt:container')}">
     <template:module node="${subchild}" />
-</c:if>
 </c:forEach>
     
         <div class="clear"> </div>

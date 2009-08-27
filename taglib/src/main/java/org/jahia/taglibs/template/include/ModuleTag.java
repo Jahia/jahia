@@ -277,7 +277,7 @@ public class ModuleTag extends BodyTagSupport {
     private void printPlaceholderModuleStart(String type, String path) throws IOException {
         pageContext.getOut().print("<div class=\"jahia-template-gxt\" jahiatype=\"placeholder\" " +
                 "id=\"placeholder"+ UUID.randomUUID().toString()+"\" type=\""+type+"\" path=\""+ path +"\" " +
-                ((nodeTypes != null) ? "nodetypes=\""+nodeTypes+"\"" : "") + " template=\""+template+"\">");
+                ((nodeTypes != null) ? "nodetypes=\""+nodeTypes+"\"" : "") + ((template  != null) ?" template=\""+template+"\"":"")+">");
     }
 
     private void printPlaceholderModuleEnd() throws IOException {

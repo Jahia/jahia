@@ -1,6 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
+import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -23,6 +24,7 @@ public class CreateGridDragSource extends EditModeGridDragSource {
 
         e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.CREATE_CONTENT_SOURCE_TYPE);
         e.getStatus().setData(EditModeDNDListener.SOURCE_NODETYPE, grid.getSelectionModel().getSelectedItem());
+        e.setOperation(DND.Operation.COPY);
 
         super.onDragStart(e);
     }

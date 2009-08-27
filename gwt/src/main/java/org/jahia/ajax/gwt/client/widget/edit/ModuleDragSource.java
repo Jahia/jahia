@@ -37,7 +37,7 @@ public class ModuleDragSource extends EditModeDragSource {
         super.onDragStart(e);
         e.setCancelled(false);
         e.setData(this);
-        e.setOperation(DND.Operation.MOVE);
+        e.setOperation(DND.Operation.COPY);
         if (getStatusText() == null) {
             e.getStatus().update(DOM.clone(module.getHtml().getElement(),true));
 

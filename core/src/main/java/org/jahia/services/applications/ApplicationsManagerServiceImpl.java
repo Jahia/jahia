@@ -198,19 +198,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                                         File.separator + "applications" + File.separator + "window-states.xml");
         */
 
-        // register listener
-        plutoServices.getPortletRegistryService().addPortletRegistryListener(new PortletRegistryListener() {
-            public void portletApplicationRegistered(
-                    PortletRegistryEvent evt) {
-                servletContextManager.removeContextFromCache(evt.getApplicationName());
-            }
-
-            public void portletApplicationRemoved(
-                    PortletRegistryEvent evt) {
-                // do nothing
-            }
-        });
-
         this.isLoaded = true;
     }
 
@@ -877,5 +864,29 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         return supportedWindowStates;
     }
 
+    public void registerListeners() {
+        // register listener
+        plutoServices.getPortletRegistryService().addPortletRegistryListener(new PortletRegistryListener() {
+            public void portletApplicationRegistered(
+                    PortletRegistryEvent evt) {
+                servletContextManager.removeContextFromCache(evt.getApplicationName());
+                try {
+	                syncPlutoWithDB();
+                } catch (Exception e) {
+	                logger.error("Error registering application '" + evt.getApplicationName() + "'. Cause: " + e.getMessage(), e);
+                }
+            }
+
+            public void portletApplicationRemoved(
+                    PortletRegistryEvent evt) {
+            	// do nothing
+            }
+        });
+        try {
+            syncPlutoWithDB();
+        } catch (Exception e) {
+            logger.error("Error synchronizing deployed portlets state with the internal registry. Cause: " + e.getMessage(), e);
+        }
+    }
 
 } // end JahiaApplicationsService

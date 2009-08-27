@@ -33,16 +33,17 @@ package org.jahia.bin.listeners;
 
 import org.apache.log4j.Logger;
 import org.apache.pluto.driver.PortalStartupListener;
+import org.jahia.services.applications.ApplicationsManagerServiceImpl;
+import org.jahia.settings.SettingsBean;
 
 import javax.servlet.ServletContextEvent;
 import java.net.MalformedURLException;
 
 /**
- * Created by IntelliJ IDEA.
+ * Pluto Portal Driver startup listener.
  * User: Serge Huber
  * Date: 22 juil. 2008
  * Time: 17:03:45
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaPortalStartupListener extends PortalStartupListener {
     
@@ -51,8 +52,10 @@ public class JahiaPortalStartupListener extends PortalStartupListener {
     
     public void contextInitialized(ServletContextEvent event) {
         try {
-            if (event.getServletContext().getResource("/WEB-INF/etc/config/jahia.properties") != null) {
-                super.contextInitialized(event);    //To change body of overridden methods use File | Settings | File Templates.
+            if (event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null) {
+                super.contextInitialized(event);
+                // register listeners after the portal is started
+                ApplicationsManagerServiceImpl.getInstance().registerListeners();
             }
         } catch (MalformedURLException e) {
             logger.error(e.getMessage(), e);
@@ -61,8 +64,8 @@ public class JahiaPortalStartupListener extends PortalStartupListener {
 
     public void contextDestroyed(ServletContextEvent event) {
         try {
-            if (event.getServletContext().getResource("/WEB-INF/etc/config/jahia.properties") != null) {
-                super.contextDestroyed(event);    //To change body of overridden methods use File | Settings | File Templates.
+            if (event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null) {
+                super.contextDestroyed(event);
             }
         } catch (MalformedURLException e) {
             logger.error(e.getMessage(), e);

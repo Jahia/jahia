@@ -86,5 +86,11 @@ public class PlaceholderModule extends LayoutContainer implements Module {
         }
     }
     
-
+    public void setSelected(boolean b) {
+        setBorders(b);
+    }
+    public String getTemplate() {
+        return null;
+    }
+    
 }

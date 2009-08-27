@@ -26,7 +26,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
  * Time: 12:25:19 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SimpleModule extends ContentPanel implements Module {
+public class SimpleModule extends LayoutContainer implements Module {
 
     private GWTJahiaNode node;
     private HTML html;
@@ -38,7 +38,7 @@ public class SimpleModule extends ContentPanel implements Module {
 
     public SimpleModule(final String path, String s, String template, String nodetypes, final EditManager editManager) {
 //        super(new FitLayout());
-        setHeaderVisible(false);
+//        setHeaderVisible(false);
 //        setScrollMode(Style.Scroll.AUTO);
         setBorders(false);
         this.path = path;
@@ -114,6 +114,10 @@ public class SimpleModule extends ContentPanel implements Module {
 
     public void setParentModule(Module parentModule) {
         this.parentModule = parentModule;
+    }
+
+    public void setSelected(boolean b) {
+        setBorders(b);
     }
 
     public String getTemplate() {

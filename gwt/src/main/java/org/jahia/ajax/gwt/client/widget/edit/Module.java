@@ -31,4 +31,7 @@ public interface Module {
 
     void setNode(GWTJahiaNode node);
 
+    void setSelected(boolean b);
+
+    String getTemplate();
 }

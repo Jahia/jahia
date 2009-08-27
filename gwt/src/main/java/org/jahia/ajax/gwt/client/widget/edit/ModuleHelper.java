@@ -39,7 +39,7 @@ public class ModuleHelper {
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
                 Module module = null;
                 if (type.equals("list")) {
-                    module = new ListModule(path, divElement.getInnerHTML(), editManager);
+                    module = new ListModule(path, divElement.getInnerHTML(), template, editManager);
                 } else if (type.equals("existingNode")) {
                     module = new SimpleModule(path, divElement.getInnerHTML(), template, nodetypes, editManager);
                 } else if (type.equals("placeholder")) {

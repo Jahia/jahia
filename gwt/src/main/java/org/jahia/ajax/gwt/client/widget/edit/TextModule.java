@@ -76,4 +76,11 @@ public class TextModule extends ContentPanel implements Module {
     public void setNode(GWTJahiaNode node) {
 
     }
+
+    public void setSelected(boolean b) {
+    }
+
+    public String getTemplate() {
+        return null;
+    }
 }

@@ -1,7 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.Viewport;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.Style;
@@ -19,6 +18,7 @@ public class EditManager extends Viewport {
     private MainModule mainModule;
     private SidePanel sidePanel;
     private EditLinker editLinker;
+    private Module selection;
 
     public EditManager(String path, String template) {
         super();
@@ -52,17 +52,13 @@ public class EditManager extends Viewport {
         return sidePanel;
     }
 
-    private ContentPanel selection;
-
-    public void setSelection(ContentPanel selection) {
+    public void setSelection(Module selection) {
         if (this.selection != null) {
-            this.selection.setBorders(false);
+            this.selection.setSelected(false);
         }
         this.selection = selection;
-        this.selection.setBorders(true);
-        if(selection instanceof Module) {
-            String template = ((SimpleModule) selection).getTemplate();
-            editLinker.onSimpleModuleSelection(((Module) selection).getNode(),"null".equals(template)?null:template);
-        }
+        this.selection.setSelected(true);
+        String template = selection.getTemplate();
+        editLinker.onModuleSelection(selection.getNode(),"".equals(template)?null:template);
     }
 }

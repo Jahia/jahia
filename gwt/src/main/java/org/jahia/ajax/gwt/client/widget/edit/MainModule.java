@@ -126,4 +126,12 @@ public class MainModule extends LayoutContainer implements Module {
 
     public void setParentModule(Module module) {
     }
+
+    public void setSelected(boolean b) {
+    }
+
+    public String getTemplate() {
+        return null;
+    }
+    
 }

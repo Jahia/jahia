@@ -29,12 +29,14 @@ public class ListModule extends ContentPanel implements Module {
     private GWTJahiaNode node;
     private HTML html;
     private String path;
+    private String template;
     private Module parentModule;
     private EditManager editManager;
 
-    public ListModule(String path, String s, EditManager editManager) {
+    public ListModule(String path, String s, String template,EditManager editManager) {
 //        super(new FitLayout());
         this.path = path;
+        this.template = template;
         this.editManager = editManager;
         setCollapsible(true);
         setBodyStyleName("pad-text");
@@ -89,5 +91,13 @@ public class ListModule extends ContentPanel implements Module {
 
     public void setParentModule(Module parentModule) {
         this.parentModule = parentModule;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public void setSelected(boolean b) {
+        setBorders(b);
     }
 }

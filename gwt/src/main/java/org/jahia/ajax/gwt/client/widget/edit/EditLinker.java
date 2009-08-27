@@ -242,7 +242,7 @@ public class EditLinker {
         displaySelection(null,null);
     }
 
-    public void onSimpleModuleSelection(GWTJahiaNode node,String template) {
+    public void onModuleSelection(GWTJahiaNode node,String template) {
         updateButtonsState(node);
 
         createView.getSelectionModel().deselectAll();

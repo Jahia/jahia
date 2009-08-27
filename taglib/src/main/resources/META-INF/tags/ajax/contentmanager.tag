@@ -338,6 +338,8 @@ while (selectedNodeIter.hasNext()) {
                             aliasResourceName="fm_information"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.properties.label"
                             aliasResourceName="fm_properties"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.components.ManageComponents.applicationsList.label"
+                            aliasResourceName="fm_portlets"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.roles.label"
                             aliasResourceName="fm_roles"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.modes.label"

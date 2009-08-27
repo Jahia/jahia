@@ -363,7 +363,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException {
         try {
-            return ContentManagerHelper.searchPortlets(retrieveParamBean());
+            return ContentManagerHelper.searchPortlets(match, retrieveParamBean());
         } catch (Exception e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }

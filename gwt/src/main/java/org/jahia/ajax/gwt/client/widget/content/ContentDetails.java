@@ -57,6 +57,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
@@ -88,6 +89,7 @@ public class ContentDetails extends BottomRightComponent {
     private ContentPanel m_component;
     private AsyncTabItem infoTabItem;
     private AsyncTabItem propertiesTabItem;
+    private AsyncTabItem portletsTabItem;
     private AsyncTabItem authorizationsTabItem;
     private AsyncTabItem rolesTabItem;
     private AsyncTabItem modesTabItem;
@@ -129,6 +131,11 @@ public class ContentDetails extends BottomRightComponent {
         propertiesTabItem = new AsyncTabItem();
         propertiesTabItem.setLayout(new FitLayout());
         propertiesTabItem.setText(Messages.getResource("fm_properties"));
+        
+        // portlets
+        portletsTabItem = new AsyncTabItem();
+        portletsTabItem.setLayout(new FitLayout());
+        portletsTabItem.setText(Messages.get("fm_portlets", "Portlets"));
 
         // roles
         rolesTabItem = new AsyncTabItem();
@@ -163,6 +170,9 @@ public class ContentDetails extends BottomRightComponent {
         if (config.getTabs().contains(JCRClientUtils.ROLES_ACL)) {
             tabs.add(rolesTabItem);
         }
+        if (config.getTabs().contains("portlets")) {
+            tabs.add(portletsTabItem);
+        }
         if (config.getTabs().contains(JCRClientUtils.MODES_ACL)) {
             tabs.add(modesTabItem);
         }
@@ -190,6 +200,7 @@ public class ContentDetails extends BottomRightComponent {
         m_component.setHeading("&nbsp;");
         infoPanel.clear();
         propertiesTabItem.removeAll();
+        portletsTabItem.removeAll();
         rolesTabItem.removeAll();
         modesTabItem.removeAll();
         authorizationsTabItem.removeAll();
@@ -198,6 +209,7 @@ public class ContentDetails extends BottomRightComponent {
         selectedNodes = null;
         infoTabItem.setProcessed(false);
         propertiesTabItem.setProcessed(false);
+        portletsTabItem.setProcessed(false);
         rolesTabItem.setProcessed(false);
         modesTabItem.setProcessed(false);
         authorizationsTabItem.setProcessed(false);
@@ -236,6 +248,7 @@ public class ContentDetails extends BottomRightComponent {
             if (selectedNodes.size() == 1) {
                 infoTabItem.setEnabled(true);
                 propertiesTabItem.setEnabled(true);
+                portletsTabItem.setEnabled(true);
                 if (selectedNodes.get(0).isPortlet()) {
                     modesTabItem.setEnabled(true);
                     rolesTabItem.setEnabled(true);
@@ -248,6 +261,7 @@ public class ContentDetails extends BottomRightComponent {
             } else if (selectedNodes.size() > 1) {
                 infoTabItem.setEnabled(true);
                 propertiesTabItem.setEnabled(true);
+                portletsTabItem.setEnabled(false);
                 modesTabItem.setEnabled(false);
                 rolesTabItem.setEnabled(false);
                 authorizationsTabItem.setEnabled(false);
@@ -270,6 +284,8 @@ public class ContentDetails extends BottomRightComponent {
             displayInfo();
         } else if (currentTab == propertiesTabItem) {
             displayProperties();
+        } else if (currentTab == portletsTabItem) {
+            displayPortlets();
         } else if (currentTab == rolesTabItem) {
             displayRoles();
         } else if (currentTab == modesTabItem) {
@@ -284,7 +300,44 @@ public class ContentDetails extends BottomRightComponent {
     }
 
 
-    // INFO TAB
+    private void displayPortlets() {
+        if (!portletsTabItem.isProcessed() && selectedNodes.size() == 1) {
+
+            final ListStore<GWTJahiaPortletDefinition> store = new ListStore<GWTJahiaPortletDefinition>();
+            JahiaContentManagementService.App.getInstance().searchPortlets(selectedNodes.get(0).getUUID(), new AsyncCallback<List<GWTJahiaPortletDefinition>>() {
+                public void onSuccess(List<GWTJahiaPortletDefinition> result) {
+                    store.add(result);
+                }
+
+                public void onFailure(Throwable caught) {
+                	// do nothing
+                }
+            });
+
+            List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+            columns.add(new ColumnConfig("displayName", Messages.getNotEmptyResource("mw_name", "Name"), 170));
+            columns.add(new ColumnConfig("description", Messages.getNotEmptyResource("mw_description", "Description"), 330));
+
+            ColumnModel cm = new ColumnModel(columns);
+            com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaPortletDefinition> grid = new com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaPortletDefinition>(store, cm);
+            grid.setBorders(true);
+
+            ContentPanel panel = new ContentPanel();
+            panel.setLayout(new FitLayout());
+            panel.setHeaderVisible(false);
+            panel.setBodyBorder(false);
+            panel.setBorders(false);
+            panel.setFrame(false);
+            panel.setCollapsible(false);
+            panel.setButtonAlign(Style.HorizontalAlignment.CENTER);
+            panel.add(grid);
+            portletsTabItem.add(panel);
+            portletsTabItem.setProcessed(true);
+            portletsTabItem.layout();
+        }
+    }
+
+	// INFO TAB
     public void displayInfo() {
         if (!infoTabItem.isProcessed()) {
             Grid g = new Grid(1, 2);

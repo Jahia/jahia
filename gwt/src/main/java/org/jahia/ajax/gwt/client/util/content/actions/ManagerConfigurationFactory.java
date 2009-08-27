@@ -637,6 +637,8 @@ public class ManagerConfigurationFactory {
         portletDefinitionManagerConf.setNodeTypes(JCRClientUtils.PORTLET_DEFINITIONS_NODETYPES);
         portletDefinitionManagerConf.setFolderTypes(JCRClientUtils.FOLDER_NODETYPES);
 
+        portletDefinitionManagerConf.addTab("portlets");
+        
         return portletDefinitionManagerConf;
     }
 

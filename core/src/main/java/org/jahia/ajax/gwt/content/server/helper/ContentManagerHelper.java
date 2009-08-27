@@ -38,7 +38,6 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.ajax.gwt.client.data.node.*;
@@ -58,9 +57,7 @@ import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.acl.JahiaACLException;
 import org.jahia.services.captcha.CaptchaService;
 import org.jahia.services.categories.Category;
-import org.jahia.services.categories.CategoryService;
 import org.jahia.services.render.*;
-import org.jahia.services.render.Resource;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.XMLFormatDetectionHandler;
 import org.jahia.registries.ServicesRegistry;
@@ -1680,14 +1677,21 @@ public class ContentManagerHelper {
         }
     }
 
-    public static List<GWTJahiaPortletDefinition> searchPortlets(ProcessingContext jParams) {
+    public static List<GWTJahiaPortletDefinition> searchPortlets(String match, ProcessingContext jParams) {
         List<GWTJahiaPortletDefinition> results = new ArrayList<GWTJahiaPortletDefinition>();
         try {
-            List appList = ServicesRegistry.getInstance().getApplicationsManagerService().getApplications();
-            for (Iterator iterator = appList.iterator(); iterator.hasNext();) {
-                ApplicationBean appBean = (ApplicationBean) iterator.next();
-
-
+        	List<ApplicationBean> appList = new LinkedList<ApplicationBean>();
+        	if (match != null) {
+        		ApplicationBean app = ServicesRegistry.getInstance().getApplicationsManagerService().getApplication(match);
+        		if (app != null) {
+        			appList.add(app);
+        		} else {
+        			logger.warn("Application not found for the UUID '" + match + "'");
+        		}
+        	} else {
+        		appList.addAll(ServicesRegistry.getInstance().getApplicationsManagerService().getApplications());
+        	}
+        	for (ApplicationBean appBean : appList) {
                 if (JCRContentUtils.hasPermission(jParams.getUser(), Constants.JCR_READ_RIGHTS, appBean.getID())) {
                     List<EntryPointDefinition> l = appBean.getEntryPointDefinitions();
                     for (EntryPointDefinition aL : l) {

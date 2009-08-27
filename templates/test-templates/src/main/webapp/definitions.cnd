@@ -59,7 +59,6 @@
  sharedSmallText dropDownSorted (choicelist[sort='alpha']) = 'option2' < 'option1', 'option2', 'option3'
  sharedSmallText selectBoxSorted (choicelist[sort='alpha']) = option2 multiple < 'option1', 'option2', 'option3'
  category category
- category categoryWithDefault = cat1,cat2 multiple
  category categoryWithRoot (category[root='cat1']) multiple
  color color
  color colorWithBlueDefault = '#3333FF'

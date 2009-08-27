@@ -559,6 +559,30 @@ public class ContentManagerHelper {
         }
     }
 
+    public static GWTJahiaNode saveSearch(String searchString, String path, String name, ProcessingContext context) throws GWTJahiaServiceException {
+        try {
+            String workspace = "default";
+            if (name == null) {
+                throw new GWTJahiaServiceException("Could not store query with null name");
+            }
+
+            JCRNodeWrapper parent = jcr.getThreadSession(context.getUser(), workspace).getNode(path);
+            name = findAvailableName(parent, name, context.getUser());
+            Query q = createQuery(searchString, context);
+            q.storeAsNode(path + "/" + name);
+            parent.saveSession();
+
+            return getGWTJahiaNode(jcr.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(path+"/"+name),true);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException("Could not store query");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new GWTJahiaServiceException("Could not store query");
+        }
+    }
+
+
     private static Query createQuery(String searchString, ProcessingContext context) throws RepositoryException {
         String s = "//element(*, jmix:hierarchyNode)[jcr:contains(@j:nodename," + JCRContentUtils.stringToJCRSearchExp(searchString) + ")]";
         Query q = jcr.getQueryManager(context.getUser()).createQuery(s, Query.XPATH);

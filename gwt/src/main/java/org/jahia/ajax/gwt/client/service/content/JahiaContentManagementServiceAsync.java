@@ -162,6 +162,10 @@ public interface JahiaContentManagementServiceAsync {
 
     void createNodeAndMoveBefore(String path, String name, String nodeType, List<GWTJahiaNodeProperty> properties, String captcha, AsyncCallback asyncCallback);
 
+    void saveSearch(String searchString, String path, String name, AsyncCallback asyncCallback);
+
+    void saveSearchOnTopOf(String searchString, String path, String name, AsyncCallback asyncCallback);
+
     void getTemplatesPath(String path, AsyncCallback<List<String[]>> async);
 
     void saveNodeTemplate(String path, String template , AsyncCallback async);

@@ -180,6 +180,10 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void createNodeAndMoveBefore(String path, String name, String nodeType, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException;
 
+    public void saveSearch(String searchString, String path, String name) throws GWTJahiaServiceException;
+
+    public void saveSearchOnTopOf(String searchString, String path, String name) throws GWTJahiaServiceException;
+
     public List<String[]> getTemplatesPath(String path) throws GWTJahiaServiceException;
 
     public void saveNodeTemplate(String path, String template) throws GWTJahiaServiceException;

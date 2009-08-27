@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
+import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -326,6 +327,22 @@ public class SidePanel extends ContentPanel {
                 search(searchField.getValue(), date.getValue(), searchRoot.getValue());
             }
         });
+
+        Button drag = new Button("Drag");
+        DragSource source = new EditModeDragSource(drag) {
+            @Override
+            protected void onDragStart(DNDEvent e) {
+                e.setCancelled(false);
+                e.getStatus().update(searchField.getValue());
+                e.getStatus().setStatus(true);
+                e.setData(searchField);
+                e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.QUERY_SOURCE_TYPE);
+                e.getStatus().setData(EditModeDNDListener.SOURCE_QUERY, searchField.getValue());
+                super.onDragStart(e);
+            }
+        };
+        source.addDNDListener(editManager.getDndListener());
+
         searchForm.add(searchField);
         searchForm.add(tags);
         searchForm.add(nameDesc);
@@ -334,6 +351,7 @@ public class SidePanel extends ContentPanel {
         searchForm.add(date);
         searchForm.add(searchRoot);
         searchForm.add(ok);
+        searchForm.add(drag);
         search.add(searchForm);
 
         repositoryTabs.add(create);
@@ -459,6 +477,7 @@ public class SidePanel extends ContentPanel {
             e.getStatus().setData("size", list.size());
 
             e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, list);
+            e.getStatus().setData(EditModeDNDListener.SOURCE_TEMPLATE, editManager.getEditLinker().getCurrentrySelectedTemplate());
             if (getStatusText() == null) {
                 e.getStatus().update(DOM.clone(previewTabItem.getWidget(0).getElement(), true));
             }

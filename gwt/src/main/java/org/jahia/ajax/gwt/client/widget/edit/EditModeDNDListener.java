@@ -27,6 +27,8 @@ public class EditModeDNDListener extends DNDListener {
     public static final String CONTENT_SOURCE_TYPE = "content";
     public static final String CREATE_CONTENT_SOURCE_TYPE = "createContent";
 
+    public static final String QUERY_SOURCE_TYPE = "query";
+
     public static final String SIMPLEMODULE_TYPE = "simpleModule";
     public static final String PLACEHOLDER_TYPE = "placeholder";
 
@@ -34,7 +36,10 @@ public class EditModeDNDListener extends DNDListener {
     public static final String TARGET_PATH = "targetPath";
     public static final String TARGET_NODE = "targetNode";
 
+    public static final String SOURCE_QUERY = "query";
+
     public static final String SOURCE_NODES = "sourceNodes";
+    public static final String SOURCE_TEMPLATE = "sourceTemplate";
     public static final String SOURCE_NODETYPE = "sourceNodeType";
     public static final String OPERATION_CALLED = "operationCalled";
 
@@ -82,6 +87,15 @@ public class EditModeDNDListener extends DNDListener {
                 GWTJahiaNodeType type = e.getStatus().getData(SOURCE_NODETYPE);
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 new EditContentEngine(editManager, parent, type, targetPath.substring(targetPath.lastIndexOf("/")+1)).show();
+            } else if (QUERY_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
+                // Item creation
+                String q = e.getStatus().getData(SOURCE_QUERY);
+                e.getStatus().setData(OPERATION_CALLED, "true");
+                if ("*".equals(name)) {
+                    JahiaContentManagementService.App.getInstance().saveSearch(q, parentPath, "jnt_query", new DropAsyncCallback());
+                } else {
+                    JahiaContentManagementService.App.getInstance().saveSearch(q, parentPath, name, new DropAsyncCallback());
+                }
             }
         } else if (SIMPLEMODULE_TYPE.equals(e.getStatus().getData(TARGET_TYPE))){
             String targetPath = e.getStatus().getData(TARGET_PATH);
@@ -108,6 +122,11 @@ public class EditModeDNDListener extends DNDListener {
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
                 new EditContentEngine(editManager, parent, type,targetPath.substring(targetPath.lastIndexOf("/")+1),true,false).show();
+            } else if (QUERY_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
+                // Item creation
+                String q = e.getStatus().getData(SOURCE_QUERY);
+                e.getStatus().setData(OPERATION_CALLED, "true");
+                JahiaContentManagementService.App.getInstance().saveSearchOnTopOf(q, targetPath, "jnt_query", new DropAsyncCallback());
             }
         }
         super.dragDrop(e);

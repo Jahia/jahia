@@ -81,7 +81,12 @@ public class RenderService extends JahiaService {
             }
         }
         if (script == null) {
-            script = resolveScript(resource, context);
+            if (resource.getNode().getPrimaryNodeTypeName().equals("jnt:nodeReference")) {
+                Resource wrappedResource = new Resource(resource.getNode(), resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), "default");
+                script = resolveScript(wrappedResource, context);
+            } else {
+                script = resolveScript(resource, context);
+            }
         }
 
         Object old = request.getAttribute("currentNode");

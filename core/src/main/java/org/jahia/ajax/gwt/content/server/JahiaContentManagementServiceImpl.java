@@ -57,23 +57,13 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.initializers.Templates;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.RenderContext;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
-import org.jahia.utils.i18n.ResourceBundleMarker;
-import org.jahia.data.beans.TemplatePathResolverFactory;
-import org.jahia.data.beans.TemplatePathResolverBean;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.bin.Jahia;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.PropertyType;
-import javax.jcr.Value;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -475,6 +465,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
             JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
             ExtendedNodeType nt = (ExtendedNodeType) node.getPrimaryNodeType();
+            if (node.getPrimaryNodeTypeName().equals("jnt:nodeReference")) {
+                nt = (ExtendedNodeType) node.getProperty("j:node").getNode().getPrimaryNodeType();
+            }
             SortedSet<String> set = Templates.getTemplatesSet(pkg, nt);
             for (String s : set) {
                 templatesPath.add(new String[]{s,s});
@@ -504,6 +497,23 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
+
+    public void saveSearch(String searchString, String path, String name) throws GWTJahiaServiceException  {
+        ParamBean context = retrieveParamBean();
+        final GWTJahiaNode jahiaNode = ContentManagerHelper.saveSearch(searchString, path, name, context);
+    }
+
+    public void saveSearchOnTopOf(String searchString, String path, String name) throws GWTJahiaServiceException  {
+        ParamBean context = retrieveParamBean();
+        final GWTJahiaNode parentNode = ContentManagerHelper.getParentNode(path, "default", context);
+        final GWTJahiaNode jahiaNode = ContentManagerHelper.saveSearch(searchString, parentNode.getPath(), name, context);
+        try {
+            ContentManagerHelper.moveOnTopOf(context.getUser(),jahiaNode.getPath(),path);
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
 
     public void saveNodeTemplate(String path, String template) throws GWTJahiaServiceException {
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();

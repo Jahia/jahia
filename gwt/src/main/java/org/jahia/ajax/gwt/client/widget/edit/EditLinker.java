@@ -121,7 +121,7 @@ public class EditLinker {
         this.templateBox = templateBox;
     }
 
-    public void displaySelection(final GWTJahiaNode node, String template) {
+    public void setSelection(final GWTJahiaNode node, String template) {
         displayPreview(node, template);
         displayProperties(node);
         currentlySelectedNode = node;
@@ -212,15 +212,30 @@ public class EditLinker {
         }
     }
 
-    public void onBrowseTreeSelection(GWTJahiaNode node) {
+    public void onDisplayGridSelection(GWTJahiaNode node) {
         updateButtonsState(node);
         updateTemplateBox(node);
-        currentlySelectedNodeTemplate = node.getTemplate();
+        currentlySelectedNodeTemplate = node != null ? node.getTemplate() : null;
         saveButton.setEnabled(false);
-        displaySelection(node, currentlySelectedNodeTemplate);
+        setSelection(node, currentlySelectedNodeTemplate);
+    }
+
+    public void onBrowseTreeSelection(GWTJahiaNode node) {
+//        updateButtonsState(node);
+//        updateTemplateBox(node);
+//        currentlySelectedNodeTemplate = node.getTemplate();
+//        saveButton.setEnabled(false);
+//        setSelection(node, currentlySelectedNodeTemplate);
     }
 
     private void updateButtonsState(GWTJahiaNode node) {
+        if (node == null) {
+            deleteButton.setEnabled(false);
+            lockButton.setEnabled(false);
+            editButton.setEnabled(false);
+            saveButton.setEnabled(false);
+            return;
+        }
         if (node.isLockable()) {
             lockButton.setEnabled(true);
         }
@@ -239,20 +254,20 @@ public class EditLinker {
         lockButton.setEnabled(false);
         editButton.setEnabled(false);
         saveButton.setEnabled(false);
-        displaySelection(null,null);
+        setSelection(null,null);
     }
 
     public void onModuleSelection(GWTJahiaNode node,String template) {
-        updateButtonsState(node);
-
         createView.getSelectionModel().deselectAll();
-        currentlySelectedNodeTemplate = template;
         displayGrid.getSelectionModel().deselectAll();
         displayTypesGrid.getSelectionModel().deselectAll();
         browseTree.getSelectionModel().deselectAll();
+
+        currentlySelectedNodeTemplate = template;
+        updateButtonsState(node);
         updateTemplateBox(node);
         saveButton.setEnabled(true);
-        displaySelection(node, currentlySelectedNodeTemplate);
+        setSelection(node, currentlySelectedNodeTemplate);
     }
 
     public SelectionListener<ButtonEvent> getDeleteButtonListener(Button delete) {
@@ -331,10 +346,6 @@ public class EditLinker {
         };
     }
 
-    public void onDisplayGridSelection(GWTJahiaNode selectedItem) {
-        onBrowseTreeSelection(selectedItem);
-    }
-    
     /**
      * This will update the template conbo box based on the page selected item
      *
@@ -343,18 +354,20 @@ public class EditLinker {
     public void updateTemplateBox(GWTJahiaNode node) {
         templateBox.getStore().removeAll();
         templateBox.clearSelections();
-        JahiaContentManagementService.App.getInstance().getTemplatesPath(node.getPath(),new AsyncCallback<List<String[]>>() {
-            public void onFailure(Throwable throwable) {
-                Log.error("", throwable);
-                Window.alert("-->" + throwable.getMessage());
-            }
-            public void onSuccess(List<String[]> strings) {
-                for(String[] template:strings) {
-                    templateBox.getStore().add(new GWTJahiaBasicDataBean(template[0], template[1]));
+        if (node != null) {
+            JahiaContentManagementService.App.getInstance().getTemplatesPath(node.getPath(),new AsyncCallback<List<String[]>>() {
+                public void onFailure(Throwable throwable) {
+                    Log.error("", throwable);
+                    Window.alert("-->" + throwable.getMessage());
                 }
-                templateBox.setValue(new GWTJahiaBasicDataBean(currentlySelectedNodeTemplate,currentlySelectedNodeTemplate));
-            }
-        });
+                public void onSuccess(List<String[]> strings) {
+                    for(String[] template:strings) {
+                        templateBox.getStore().add(new GWTJahiaBasicDataBean(template[0], template[1]));
+                    }
+                    templateBox.setValue(new GWTJahiaBasicDataBean(currentlySelectedNodeTemplate,currentlySelectedNodeTemplate));
+                }
+            });
+        }
     }
 
     public void onTemplateBoxSelection(GWTJahiaBasicDataBean selectedItem) {
@@ -379,6 +392,10 @@ public class EditLinker {
                 });
             }
         };
+    }
+
+    public String getCurrentrySelectedTemplate() {
+        return currentrySelectedTemplate;
     }
 
     public Button getCreatePageButton() {

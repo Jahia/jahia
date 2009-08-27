@@ -57,7 +57,7 @@
             <div class="categorySelectionDiv">
                 <fmt:message key="categoryFilter"/>:
                 <!-- displayCategorySelection (start) -->
-                <query:categoryFilter startingCategoryKey="root"
+                <query:categoryFilter startingCategoryKey=""
                                       display="selectBoxSingle"
                                       name="listCategories"
                                       level="1"

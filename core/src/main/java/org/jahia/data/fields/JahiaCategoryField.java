@@ -92,6 +92,23 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
 
     public void load(int loadFlag, ProcessingContext jParams, EntryLoadRequest loadRequest)
             throws JahiaException {
+        final ContentCategoryField contentBigTextField = (ContentCategoryField)
+                ContentCategoryField.getField(getID());
+
+        String val;
+
+        if (this.getWorkflowState() >
+                ContentObjectEntryState.WORKFLOW_STATE_ACTIVE
+                && this.getVersionID() == EntryLoadRequest.DELETED_WORKFLOW_STATE) {
+            ContentObjectEntryState entryState =
+                    new ContentObjectEntryState(ContentObjectEntryState.
+                            WORKFLOW_STATE_START_STAGING,
+                            0, this.getLanguageCode());
+            val = contentBigTextField.getValue(entryState);
+        } else {
+            val = contentBigTextField.getValue(jParams, loadRequest);
+        }
+        setValue(val);
         switch (this.getConnectType()) {
             case (ConnectionTypes.LOCAL) :
                 //this.setValue(this.getValue());
@@ -243,7 +260,7 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
                         if (curSetting.isActivated()) {
                             Locale tempLocale = LanguageCodeConverters
                                 .languageCodeToLocale(curSetting.getCode());
-                            Category curCategory = Category.getCategory(
+                            Category curCategory = Category.getCategoryByUUID(
                                 curFieldRawValue, null);
                             if (curCategory == null) {
                                 logger
@@ -297,7 +314,7 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
         List<String> vals = new ArrayList<String>();
         for (String val : fieldRawValues) {
             if (val.trim().length() > 0) {
-                Category curCategory = Category.getCategory(val, null);
+                Category curCategory = Category.getCategoryByUUID(val, null);
                 if (curCategory == null) {
                     logger.warn("Couldn't find category " + val
                             + " when indexing field, ignoring entry...");

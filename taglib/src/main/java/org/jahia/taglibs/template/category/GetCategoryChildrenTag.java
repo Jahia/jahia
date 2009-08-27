@@ -95,20 +95,25 @@ public class GetCategoryChildrenTag extends AbstractJahiaTag {
 
     public int doStartTag() {
         try {
-            if (startingCategoryKey.length() == 0) {
-                throw new JspTagException("startingCategoryKey attribute cannot be empty");
-            }
-
+            final List<Category> children;
             final ServletRequest request = pageContext.getRequest();
             final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
             final ProcessingContext jParams = jData.getProcessingContext();
-            final Category startingCategory = Category.getCategory(startingCategoryKey, jParams.getUser());
+            Category startingCategory = null;
+            if (startingCategoryKey.length() == 0) {
+                children = Category.getRootCategories(jParams.getUser());
+                displayRootCategory = false;
+            }
+            else {            
+                startingCategory = Category.getCategoryByPath(startingCategoryKey, jParams.getUser());
 
-            if (startingCategory == null) {
+                if (startingCategory == null) {
                 logger.warn("getCategoryChildrenTag: startingCategory is null");
                 return SKIP_BODY;
             }
-            final List<Category> children = startingCategory.getChildCategories(jParams.getUser());
+            children = startingCategory.getChildCategories(jParams.getUser());
+            }
+
             final JspWriter out = pageContext.getOut();
             final Locale locale = jParams.getCurrentLocale();
             if (children != null && children.size() > 0) {

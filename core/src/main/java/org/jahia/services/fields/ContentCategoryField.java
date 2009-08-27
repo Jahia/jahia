@@ -40,6 +40,7 @@ import org.jahia.engines.shared.Category_Field;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
@@ -112,11 +113,23 @@ public class ContentCategoryField extends ContentField {
         if (entryState == null) {
             return "";
         }
-        String result = this.getDBValue (entryState);
+        final JahiaFieldDefinition theDef = JahiaFieldDefinitionsRegistry.
+                getInstance().getDefinition(this.getFieldDefID());
 
-        if (result == null || result.equals ("<empty>")) {
-            result = new String ();
+        String result;
+        result = ServicesRegistry.getInstance().getJahiaTextFileService().
+                loadBigTextValue(this.getSiteID(),
+                                 this.getPageID(),
+                                 this.getID(),
+                                 theDef.getDefaultValue(),
+                                 entryState.getVersionID(),
+                                 entryState.getWorkflowState(),
+                                 entryState.getLanguageCode());
+
+        if (result == null || result.equals("<empty>") || result.equals("<text>")) {
+            result = "";
         }
+
         return result;
     }
 
@@ -124,12 +137,38 @@ public class ContentCategoryField extends ContentField {
      * Sets the String representation of this field.
      * This method should call preSet and postSet.
      */
-    public void setCategories (String value, EntrySaveRequest saveRequest) throws JahiaException {
-        if (!ContentField.SHARED_LANGUAGE.equals (saveRequest.getLanguageCode ())) {
-            logger.debug ("Found non shared language in setting, enforcing shared language...");
-            saveRequest.setLanguageCode (ContentField.SHARED_LANGUAGE);
+    public void setCategories(final String value, EntrySaveRequest saveRequest) throws JahiaException {
+        if (!ContentField.SHARED_LANGUAGE.equals(saveRequest.getLanguageCode())) {
+            logger.debug("Found non shared language in setting, enforcing shared language...");
+            saveRequest.setLanguageCode(ContentField.SHARED_LANGUAGE);
         }
-        preSet (value, saveRequest);
+        if ("".equals(value)) {
+            final ContentObjectEntryState verInfo = preSet("<empty>", saveRequest);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Saving big text field..." + verInfo.toString());
+            }
+            ServicesRegistry.getInstance().getJahiaTextFileService().deleteFile(this.getSiteID(),
+                                                                                this.getPageID(),
+                                                                                this.getID(),
+                                                                                verInfo.getVersionID(),
+                                                                                verInfo.getWorkflowState(),
+                                                                                verInfo.getLanguageCode());
+
+        } else {
+            final ContentObjectEntryState verInfo = preSet("<text>", saveRequest);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Saving big text field..." + verInfo.toString());
+            }
+
+            ServicesRegistry.getInstance().getJahiaTextFileService().saveContents(
+                    this.getSiteID(),
+                    this.getPageID(),
+                    this.getID(),
+                    value.replaceAll("<text>",""),
+                    verInfo.getVersionID(),
+                    verInfo.getWorkflowState(),
+                    verInfo.getLanguageCode());
+        }
         postSet(saveRequest);
     }
 
@@ -211,7 +250,7 @@ public class ContentCategoryField extends ContentField {
                         // categories.
                         List<String> catKeys = JahiaTools.getTokensList(newStagedValue, JahiaField.MULTIPLE_VALUES_SEP);
                         for (String curCategoryKey : catKeys){
-                            Category curCategory = Category.getCategory(curCategoryKey, user);
+                            Category curCategory = Category.getCategoryByUUID(curCategoryKey, user);
                             if (curCategory != null) {
                               curCategory.addChildObjectKey(targetObjectKey);
                             }

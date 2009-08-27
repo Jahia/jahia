@@ -375,7 +375,7 @@ public class FieldTag extends AbstractFieldTag {
                     if (categoryValues != null && categoryValues.length > 0) {
                         final List<CategoryBean> result = new ArrayList<CategoryBean>();
                         for (String categoryKey : categoryValues) {
-                            final Category curCategory = Category.getCategory(
+                            final Category curCategory = Category.getCategoryByUUID(
                                     categoryKey, jData.getProcessingContext()
                                             .getUser());
                             if (curCategory != null) {

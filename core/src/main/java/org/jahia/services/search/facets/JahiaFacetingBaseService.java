@@ -151,7 +151,7 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
             if (fieldDef.getType() == FieldTypes.CATEGORY) {
                 String rootCategory = fieldDef.getItemDefinition().getSelectorOptions().get("root");
                 Category startCategory = rootCategory != null ? Category
-                        .getCategory(rootCategory, jParams.getUser()) : null;
+                        .getCategoryByPath(rootCategory, jParams.getUser()) : null;
                 for (Category category : startCategory != null ? startCategory
                         .getChildCategories(jParams.getUser()) : Category
                         .getRootCategories(jParams.getUser())) {

@@ -350,19 +350,16 @@ public class EditLinker {
             }
             public void onSuccess(List<String[]> strings) {
                 for(String[] template:strings) {
-                    if (template[0].equals(currentlySelectedNodeTemplate)) {
-                        templateBox.setValue(new GWTJahiaBasicDataBean(currentlySelectedNodeTemplate,currentlySelectedNodeTemplate));
-                    }
                     templateBox.getStore().add(new GWTJahiaBasicDataBean(template[0], template[1]));
                 }
+                templateBox.setValue(new GWTJahiaBasicDataBean(currentlySelectedNodeTemplate,currentlySelectedNodeTemplate));
             }
         });
     }
 
     public void onTemplateBoxSelection(GWTJahiaBasicDataBean selectedItem) {
          currentrySelectedTemplate = selectedItem.getValue();
-         displayPreview(currentlySelectedNode, selectedItem.getValue());
-         saveButton.setEnabled(true);
+         displayPreview(currentlySelectedNode, currentrySelectedTemplate);
     }
 
     public SelectionListener<ButtonEvent> getSaveButtonListener(Button save) {

@@ -94,9 +94,9 @@ public class PropertiesEditor extends FormPanel {
     }
 
     public void renderNewFormPanel() {
-        setFieldWidth(300);
+        setFieldWidth(550);
         setLabelWidth(180);
-        setScrollMode(Style.Scroll.AUTO);
+        setScrollMode(Style.Scroll.NONE);
         setBorders(false);
         setBodyBorder(false);
         setHeaderVisible(false);

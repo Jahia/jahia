@@ -1497,6 +1497,22 @@ public class ImportHandler extends DefaultHandler {
             String rawValue = JahiaBigTextField.rewriteURLs(value, jParams);
             field.setValue(rawValue);
             field.setRawValue(rawValue);
+        } else if(fieldType == FieldTypes.CATEGORY) {
+            String v = "";
+            if (value != null && value.length() > 0) {
+                StringTokenizer st = new StringTokenizer(value, "$$$");
+                while (st.hasMoreTokens()) {
+                    String catString = st.nextToken();
+                    Category cat = Category.getCategory(catString);
+                    if (cat != null) {
+                        if (v.length()>0) {
+                            v += "$$$";
+                        }
+                        v += cat.getID();
+                    }
+                }
+            }
+            field.setValue(v);
         } else if(fieldType == FieldTypes.DATE) {
             field.setValue(value);
             field.setObject(value);

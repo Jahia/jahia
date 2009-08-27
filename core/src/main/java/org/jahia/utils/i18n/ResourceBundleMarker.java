@@ -44,6 +44,7 @@ import java.util.regex.Matcher;
 
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.comparator.NumericStringComparator;
@@ -161,7 +162,8 @@ public class ResourceBundleMarker {
         String result = this.getDefaultValue();
 
         try {
-            final String packageName = Jahia.getThreadParamBean().getSite().getTemplatePackageName();
+        	JahiaSite site = Jahia.getThreadParamBean().getSite();
+            final String packageName = site != null ? site.getTemplatePackageName() : null;
             result = JahiaResourceBundle.getString(this.getResourceBundleID(),
                     this.getResourceKey(), locale, packageName,
                     JahiaTemplatesRBLoader.getInstance(Thread.currentThread().getContextClassLoader(), packageName));

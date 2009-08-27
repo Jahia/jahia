@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.core.client.GWT;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
 /**
  * Created by IntelliJ IDEA.
@@ -95,6 +96,13 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
 
     public static final String LOCK = "lock";
 
+    public static final String QUERY = "icon-query";
+
+    public static final String INTERACTIVE = "icon-interactive";
+
+    public static final String STRUCTURED = "icon-structured";
+
+    public static final String CONTENTLIST = "icon-contentlist";
 
     private static ContentModelIconProvider iconProvider = new ContentModelIconProvider();
 
@@ -119,6 +127,14 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public AbstractImagePrototype getIcon(GWTJahiaNode gwtJahiaNode) {
         if (gwtJahiaNode != null) {
             String ext = gwtJahiaNode.getExt();
+            return getIcon(ext);
+        }
+        return CONTENT_ICONS.file();
+    }
+
+    public AbstractImagePrototype getIcon(GWTJahiaNodeType gwtJahiaNodeType) {
+        if (gwtJahiaNodeType != null) {
+            String ext = gwtJahiaNodeType.getIcon();
             return getIcon(ext);
         }
         return CONTENT_ICONS.file();
@@ -174,6 +190,14 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
                 return CONTENT_ICONS.zip();
             } else if (ext.equalsIgnoreCase(LOCK)) {
                 return CONTENT_ICONS.lock();
+            } else if (ext.equalsIgnoreCase(QUERY)) {
+                return CONTENT_ICONS.query();
+            } else if (ext.equalsIgnoreCase(INTERACTIVE)) {
+                return CONTENT_ICONS.interactive();
+            } else if (ext.equalsIgnoreCase(STRUCTURED)) {
+                return CONTENT_ICONS.structured();
+            } else if (ext.equalsIgnoreCase(CONTENTLIST)) {
+                return CONTENT_ICONS.contentlist();
             }
         }
         return CONTENT_ICONS.file();

@@ -114,6 +114,18 @@ public interface ContentIconsImageBundle extends ImageBundle {
     @Resource("lock.png")
     public AbstractImagePrototype lock();
 
+    @Resource("icon-query.png")
+    public AbstractImagePrototype query();
+
+    @Resource("icon-interactive.png")
+    public AbstractImagePrototype interactive();
+
+    @Resource("icon-structured.png")
+    public AbstractImagePrototype structured();
+
+    @Resource("icon-contentlist.png")
+    public AbstractImagePrototype contentlist();
+    
 
 }
 

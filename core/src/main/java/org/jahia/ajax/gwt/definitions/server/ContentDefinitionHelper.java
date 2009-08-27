@@ -40,11 +40,14 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.FileUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.bin.Jahia;
 import org.jahia.operations.valves.ThemeValve;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.apache.log4j.Logger;
+import org.apache.commons.collections.FastHashMap;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.Value;
@@ -72,6 +75,7 @@ public class ContentDefinitionHelper {
             return o1.getName().compareTo(o2.getName());
         }
     };
+    public static Map<String,String> nodetypeIcons;
 
     public static GWTJahiaNodeType getNodeType(String name, ProcessingContext context) {
         ExtendedNodeType nodeType = null;
@@ -196,6 +200,15 @@ public class ContentDefinitionHelper {
         }
         gwt.setItems(items);
         gwt.setInheritedItems(inheritedItems);
+
+        String icon = getNodetypeIcons().get(nodeType.getName());
+        if (icon != null) {
+            gwt.setIcon("icon-"+icon);
+        } else {
+            gwt.setIcon("icon-"+getNodetypeIcons().get("default"));
+        }
+
+
         return gwt;
     }
 
@@ -309,4 +322,22 @@ public class ContentDefinitionHelper {
         return gwtNodeTypes;
     }
 
+    public static Map<String, String> getNodetypeIcons() {
+        if (nodetypeIcons == null) {
+            synchronized (FileUtils.class) {
+                if (nodetypeIcons == null) {
+                    SpringContextSingleton ctxHolder = SpringContextSingleton
+                            .getInstance();
+                    if (ctxHolder.isInitialized()) {
+                        Map<String, String> icons = (Map) ctxHolder.getContext().getBean("nodetypeIcons");
+                        FastHashMap mappings = new FastHashMap(icons);
+                        mappings.setFast(true);
+                        nodetypeIcons = mappings;
+                    }
+                }
+            }
+        }
+
+        return nodetypeIcons;
+    }
 }

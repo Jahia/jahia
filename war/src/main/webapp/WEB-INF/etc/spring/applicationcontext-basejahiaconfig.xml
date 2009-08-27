@@ -290,6 +290,21 @@
         </property>
     </bean>
 
+    <bean id="nodetypeIcons" class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+            <map>
+                <entry key="unknown" value="file"/>
+                <entry key="jmix:queryContent" value="query"/>
+                <entry key="jmix:interactiveContent" value="interactive"/>
+                <entry key="jmix:structuredContent" value="structured"/>
+                <entry key="jmix:containerContent" value="contentlist"/>
+                <entry key="jnt:page" value="page"/>
+                <entry key="jnt:user" value="user"/>
+                <entry key="jnt:group" value="user-group"/>
+            </map>
+        </property>
+    </bean>
+
     <bean id="sharedSessionAttributeNames" class="org.springframework.beans.factory.config.ListFactoryBean">
         <property name="sourceList">
             <list>

@@ -43,6 +43,7 @@ import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 import org.jahia.ajax.gwt.utils.JahiaGWTUtils;
+import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
 
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -741,21 +742,20 @@ public class ContentManagerHelper {
                 } catch (RepositoryException e) {
                     n.setExt("icon-portlet");
                 }
-            } else if (f.isNodeType("jnt:page")) {
-                n.setExt("icon-page");
-            } else if (f.isNodeType("jnt:user")) {
-                n.setExt("icon-user");
-            } else if (f.isNodeType("jnt:group")) {
-                n.setExt("icon-user-group");
-            } else if (f.isCollection()) {
-                n.setExt("icon-dir");
             } else {
-                n.setExt("icon-list");
+                Map<String,String> map = ContentDefinitionHelper.getNodetypeIcons();
+                for (String nt : map.keySet()) {
+                    if (f.isNodeType(nt)) {
+                        n.setExt("icon-"+map.get(nt));
+                        break;
+                    }
+                }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
     }
+
 
     public static void setLock(List<String> paths, boolean locked, JahiaUser user) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();

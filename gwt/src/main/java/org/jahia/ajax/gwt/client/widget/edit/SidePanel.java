@@ -5,7 +5,6 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
 import com.extjs.gxt.ui.client.event.*;
@@ -56,61 +55,31 @@ public class SidePanel extends ContentPanel {
     private boolean init = false;
     private ListStore<GWTJahiaNode> displayStore;
     private ListStore<GWTJahiaNodeType> displayTypesStore;
-    private final PreviewTabItem previewTabItem;
-    private final TabItem propertiesTabItem;
     private ContentPanel contentList;
     private Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> definitions;
     ListStore<GWTJahiaBasicDataBean> templateListStore;
     private Grid<GWTJahiaNode> displayGrid;
     private Grid<GWTJahiaNodeType> displayTypesGrid;
     private final EditManager editManager;
+    private ContentPanel displayPanel;
+    private ContentPanel repository;
+    private ToolBar topToolbar;
 
     public SidePanel(final EditManager editManager) {
         super();
         this.editManager = editManager;
         final EditLinker editLinker = editManager.getEditLinker();
         setHeaderVisible(true);
+
         VBoxLayout layout = new VBoxLayout();
         layout.setPadding(new Padding(5));
         layout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(layout);
-        ToolBar topToolbar = new ToolBar();
-        Button createPage = new Button();
-        createPage.setIcon(ACTION_ICONS.createPage());
-        createPage.setToolTip("create New Page");
-        createPage.addSelectionListener(editManager.getEditLinker().getCreatePageButtonListener(createPage));        
-        createPage.setEnabled(false);
-        topToolbar.add(createPage);
-        VBoxLayout vBoxLayout = new VBoxLayout();
-        vBoxLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-//        ContentPanel panel = new ContentPanel(vBoxLayout);
-//        panel.add(topToolbar);
-        ContentPanel repository = getRepositoryPanel(editManager, editLinker);
-        getContentListPanel(editManager, editLinker);
 
-        ToolBar toolbar = getToolbar();
-        // displayPanel panel
-        ContentPanel displayPanel = new ContentPanel();
-        displayPanel.setHeading("Display");
-        vBoxLayout = new VBoxLayout();
-        vBoxLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-        displayPanel.setLayout(vBoxLayout);
-        displayPanel.setCollapsible(true);
-        displayPanel.add(toolbar);
-        TabPanel displayTabs = new TabPanel();
-
-        previewTabItem = new PreviewTabItem("Preview");
-        previewTabItem.setLayout(new FitLayout());
-        final PreviewDragSource source = new PreviewDragSource(previewTabItem);
-        source.addDNDListener(editManager.getDndListener());
-        editLinker.setPreviewTabItem(previewTabItem);
-        displayTabs.add(previewTabItem);
-        propertiesTabItem = new TabItem("Properties");
-        propertiesTabItem.setLayout(new FitLayout());
-        displayTabs.add(previewTabItem);
-        displayTabs.add(propertiesTabItem);
-        editLinker.setPropertiesTabItem(propertiesTabItem);
-        displayPanel.add(displayTabs);
+        createToolbar(editManager);
+        createRepositoryPanel(editManager, editLinker);
+        createContentListPanel(editManager, editLinker);
+        createDisplayPanel(editManager, editLinker);
 
         // add to side panel
         VBoxLayoutData vBoxData = new VBoxLayoutData(0, 0, 0, 0);
@@ -122,7 +91,45 @@ public class SidePanel extends ContentPanel {
 
     }
 
-    private void getContentListPanel(EditManager editManager, final EditLinker editLinker) {
+    private void createToolbar(EditManager editManager) {
+        topToolbar = new ToolBar();
+        Button createPage = new Button();
+        createPage.setIcon(ACTION_ICONS.createPage());
+        createPage.setToolTip("create New Page");
+        createPage.addSelectionListener(editManager.getEditLinker().getCreatePageButtonListener(createPage));
+        createPage.setEnabled(false);
+        topToolbar.add(createPage);
+        VBoxLayout vBoxLayout = new VBoxLayout();
+        vBoxLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
+    }
+
+    private void createDisplayPanel(EditManager editManager, EditLinker editLinker) {
+        VBoxLayout vBoxLayout;// displayPanel panel
+        displayPanel = new ContentPanel();
+        displayPanel.setHeading("Display");
+        vBoxLayout = new VBoxLayout();
+        vBoxLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
+        displayPanel.setLayout(vBoxLayout);
+        displayPanel.setCollapsible(true);
+        ToolBar toolbar = getToolbar();
+        displayPanel.add(toolbar);
+        TabPanel displayTabs = new TabPanel();
+
+        PreviewTabItem previewTabItem = new PreviewTabItem("Preview");
+        previewTabItem.setLayout(new FitLayout());
+        final PreviewDragSource source = new PreviewDragSource(previewTabItem);
+        source.addDNDListener(editManager.getDndListener());
+        editLinker.setPreviewTabItem(previewTabItem);
+        displayTabs.add(previewTabItem);
+        TabItem propertiesTabItem = new TabItem("Properties");
+        propertiesTabItem.setLayout(new FitLayout());
+        displayTabs.add(previewTabItem);
+        displayTabs.add(propertiesTabItem);
+        editLinker.setPropertiesTabItem(propertiesTabItem);
+        displayPanel.add(displayTabs);
+    }
+
+    private void createContentListPanel(EditManager editManager, final EditLinker editLinker) {
         // content list panel
         contentList = new ContentPanel();
         contentList.setHeading("Content list");
@@ -131,7 +138,7 @@ public class SidePanel extends ContentPanel {
         displayStore = new ListStore<GWTJahiaNode>();
         List<ColumnConfig> displayColumns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 40);
+        ColumnConfig col = new ColumnConfig("ext", "", 40);
         col.setAlignment(Style.HorizontalAlignment.CENTER);
         col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
@@ -154,11 +161,12 @@ public class SidePanel extends ContentPanel {
         editLinker.setDisplayGrid(displayGrid);
         contentList.add(displayGrid);
 
+        // Second grid : display types
 
         displayTypesStore = new ListStore<GWTJahiaNodeType>();
 
         displayColumns = new ArrayList<ColumnConfig>();
-        col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 40);
+        col = new ColumnConfig("ext", "", 40);
         col.setAlignment(Style.HorizontalAlignment.CENTER);
         col.setRenderer(new GridCellRenderer<GWTJahiaNodeType>() {
             public Object render(GWTJahiaNodeType model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GWTJahiaNodeType> gwtJahiaNodeTypeListStore, Grid<GWTJahiaNodeType> gwtJahiaNodeTypeGrid) {
@@ -166,7 +174,7 @@ public class SidePanel extends ContentPanel {
             }
         });
         displayColumns.add(col);
-        displayColumns.add(new ColumnConfig("name", "Name", 250));
+        displayColumns.add(new ColumnConfig("label", "Name", 250));
 
         displayTypesGrid = new Grid<GWTJahiaNodeType>(displayTypesStore, new ColumnModel(displayColumns));
         displayTypesGrid.setBorders(false);
@@ -176,9 +184,9 @@ public class SidePanel extends ContentPanel {
         editLinker.setDisplayTypesGrid(displayTypesGrid);
     }
 
-    private ContentPanel getRepositoryPanel(EditManager editManager, final EditLinker editLinker) {
+    private ContentPanel createRepositoryPanel(EditManager editManager, final EditLinker editLinker) {
         // repository panel
-        ContentPanel repository = new ContentPanel();
+        repository = new ContentPanel();
         repository.setHeading("Repository");
         repository.setLayout(new FitLayout());
         repository.setBorders(false);
@@ -188,7 +196,7 @@ public class SidePanel extends ContentPanel {
 
         TabPanel repositoryTabs = new TabPanel();
 
-        // creating
+        // First tab : creating
         TabItem create = new TabItem("Create");
         create.setLayout(new FitLayout());
         final ListStore<GWTJahiaNodeType> createStore = new ListStore<GWTJahiaNodeType>();
@@ -201,18 +209,18 @@ public class SidePanel extends ContentPanel {
             public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
                 definitions = result;
                 List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>(result.keySet());
+                for (GWTJahiaNodeType type : list) {
+                    type.set("iconHtml", ContentModelIconProvider.getInstance().getIcon(type).getHTML());
+                }
                 createStore.add(list);
             }
 
         });
-        List<ColumnConfig> createColumns = new ArrayList<ColumnConfig>();
-        createColumns.add(new ColumnConfig("name", "Name", 150));
-        createColumns.add(new ColumnConfig("label", "Label", 150));
 
         ListView<GWTJahiaNodeType> createView = new ListView<GWTJahiaNodeType>();
         createView.setTemplate(getTemplate());
         createView.setStore(createStore);
-        createView.setItemSelector("div.thumb-wrap");
+        createView.setItemSelector("div.thumb");
         createView.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         createView.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNodeType>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNodeType> gwtJahiaNodeSelectionChangedEvent) {
@@ -229,7 +237,7 @@ public class SidePanel extends ContentPanel {
         editLinker.setCreateView(createView);
         create.add(createView);
 
-        // browsing
+        // Second tab : browse
         TabItem browse = new TabItem("Browse");
         browse.setLayout(new FitLayout());
         // data proxy
@@ -425,9 +433,7 @@ public class SidePanel extends ContentPanel {
 
     private native String getTemplate() /*-{
     return ['<tpl for=".">',
-        '<div class="thumb-wrap" id="{name}" style="border: 1px solid white">',
-        '<div class="thumb"><img src="{icon}" title="{label}"></div>',
-        '<span class="x-editable">{label}</span></div>',
+        '<div class="thumb" >{iconHtml} {label}</div>',
         '</tpl>',
         '<div class="x-clear"></div>'].join("");
 

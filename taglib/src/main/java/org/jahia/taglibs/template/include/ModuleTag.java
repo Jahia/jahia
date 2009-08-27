@@ -467,9 +467,10 @@ public class ModuleTag extends BodyTagSupport {
             }
 
             public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
-                return  "<div class=\"jahia-template-gxt\" jahiatype=\"placeholder\" " +
-                        "id=\"placeholder"+ UUID.randomUUID().toString()+"\" type=\"text\" path=\""+ path +"\" >" +
-                        v.getString() + "</div>";
+                return v.getString();
+//                return  "<div class=\"jahia-template-gxt\" jahiatype=\"placeholder\" " +
+//                        "id=\"placeholder"+ UUID.randomUUID().toString()+"\" type=\"text\" path=\""+ path +"\" >" +
+//                        v.getString() + "</div>";
             }
 
             public InputStream getStream() throws IllegalStateException, RepositoryException {

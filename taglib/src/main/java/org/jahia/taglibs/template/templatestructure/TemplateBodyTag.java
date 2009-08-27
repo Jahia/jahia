@@ -156,6 +156,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
     public int doStartTag() {
         try {
+            RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
 
             useGwt = false;
             ServletRequest request = pageContext.getRequest();
@@ -205,16 +206,17 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                 }
 
                 if (isLogged()) {
-                    addToolbarMessageResources();
-                    // jahia module entry for toolbar
-                    buf.append("\n\t<div id=\"gwt-jahiatoolbar\" class=\"jahia-admin-gxt " + JahiaType.TOOLBARS_MANAGER + "-gxt\" jahiatype=\"").append(JahiaType.TOOLBARS_MANAGER).append("\" content=\"").append(DEFAULT_CONTENT).append("\"></div>\n");
+                    if (renderContext == null || !renderContext.isEditMode()) {
+                        addToolbarMessageResources();
+                        // jahia module entry for toolbar
+                        buf.append("\n\t<div id=\"gwt-jahiatoolbar\" class=\"jahia-admin-gxt " + JahiaType.TOOLBARS_MANAGER + "-gxt\" jahiatype=\"").append(JahiaType.TOOLBARS_MANAGER).append("\" content=\"").append(DEFAULT_CONTENT).append("\"></div>\n");
+                    }
                 }
             }
             buf.append("\t<div id=\"").append(DEFAULT_CONTENT).append("\">");
 
             pageContext.getOut().println(buf.toString());
 
-            RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
             if (renderContext != null && renderContext.isEditMode()) {
                 Resource r = (Resource) pageContext.getRequest().getAttribute("currentResource");
                 pageContext.getRequest().setAttribute("jahia.engines.gwtModuleIncluded", Boolean.TRUE);

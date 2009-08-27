@@ -221,7 +221,7 @@ public class ContentDefinitionHelper {
             for (ExtendedNodeType mainType : nts) {
                 List<GWTJahiaNodeType> l = new ArrayList<GWTJahiaNodeType>();
                 map.put(getGWTJahiaNodeType(ctx,mainType), l);
-                for (ExtendedNodeType subType : mainType.getSubtypes()) {
+                for (ExtendedNodeType subType : mainType.getDeclaredSubtypes()) {
                     l.add(getGWTJahiaNodeType(ctx,subType));
                 };
             }

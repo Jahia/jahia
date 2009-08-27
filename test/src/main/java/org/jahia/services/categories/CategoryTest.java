@@ -136,7 +136,13 @@ public class CategoryTest extends TestCase {
         Category rootCategory = Category.createCategory("firstRoot", null);
         Category newCategory = Category.createCategory("rootChild", rootCategory);
         buildCategoryTree(newCategory, 4, 3);
-        deleteCategoryWithChildren(rootCategory);
+        int sizeOfTree=0;
+        for(int i =1; i <=4;i++) {
+            sizeOfTree += Math.pow(3,i);
+        }
+        final List<Category> childCategories = newCategory.getChildCategories(true);
+        assertTrue(childCategories.size()==sizeOfTree);
+        deleteCategoryWithChildren(rootCategory);       
     }
 
     public void testCategoryPath() throws Exception {

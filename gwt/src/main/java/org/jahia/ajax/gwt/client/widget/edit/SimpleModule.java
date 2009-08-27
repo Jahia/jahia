@@ -167,7 +167,7 @@ public class SimpleModule extends ContentPanel implements Module {
                     String[] allowedTypes = nodetypes.split(" ");
                     boolean typeAllowed = false;
                     for (String t : allowedTypes) {
-                        if (t.equals(type.getName())) {
+                        if (t.equals(type.getName()) || type.getSuperTypes().contains(t)) {
                             typeAllowed = true;
                             break;
                         }

@@ -47,6 +47,7 @@ public class GWTJahiaNodeType extends BaseModelData implements Serializable {
 
     private List<GWTJahiaItemDefinition> inheritedItems;
     private List<GWTJahiaItemDefinition> items;
+    private List<String> superTypes;
 
     public GWTJahiaNodeType() {
         super();
@@ -121,5 +122,13 @@ public class GWTJahiaNodeType extends BaseModelData implements Serializable {
 
     public void setIcon(String ext) {
         set("icon", ext);
+    }
+
+    public List<String> getSuperTypes() {
+        return superTypes;
+    }
+
+    public void setSuperTypes(List<String> superTypes) {
+        this.superTypes = superTypes;
     }
 }

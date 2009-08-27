@@ -200,7 +200,12 @@ public class ContentDefinitionHelper {
         }
         gwt.setItems(items);
         gwt.setInheritedItems(inheritedItems);
-
+        List<String> supertypesNames = new ArrayList<String>();
+        ExtendedNodeType[] nodeTypes = nodeType.getSupertypes();
+        for (ExtendedNodeType type : nodeTypes) {
+            supertypesNames.add(type.getName());
+        }
+        gwt.setSuperTypes(supertypesNames);
         String icon = getNodetypeIcons().get(nodeType.getName());
         if (icon != null) {
             gwt.setIcon("icon-"+icon);

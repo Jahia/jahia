@@ -5,8 +5,6 @@
 <%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:statement" var="query"/>
-<h2>Saved search: ${currentNode.name}</h2>
-<p>Query&nbsp;(<jcr:nodeProperty node="${currentNode}" name="jcr:language"/>): ${fn:escapeXml(query.string)}</p>
 <jcr:xpath var="savedSearchIterator" xpath="${query.string}"/>
 <c:if test="${savedSearchIterator.size == 0}">
     <p>No search results found</p>
@@ -21,7 +19,7 @@
         <ol start="${itemsPerPage * (currentPageNumber - 1) + 1}">
         <c:forEach items="${savedSearchIterator}" var="hit">
             <pg:item>
-                <li><a href="${baseUrl}${hit.path}.html">${hit.name}</a></li>
+                <li><template:module node="${hit}" lockTemplate="link" editable="false"/></li>
             </pg:item>
         </c:forEach>
         </ol>

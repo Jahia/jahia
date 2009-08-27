@@ -183,7 +183,7 @@ public class ContentCategoryField extends ContentField {
     public String getValueForSearch (ProcessingContext jParams,
                                      ContentObjectEntryState entryState) throws JahiaException {
         //return FormDataManager.formDecode(getDBValue(entryState));
-        return getDBValue (entryState);
+        return getValue (entryState);
     }
 
     /**

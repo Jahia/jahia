@@ -248,7 +248,7 @@ public class CategoryServiceImpl extends CategoryService {
                     if (value.length() > 0) {
                         value += JahiaField.MULTIPLE_VALUES_SEP;
                     }
-                    value += parentCategory.getKey();
+                    value += parentCategory.getID();
                     metadata.setValue(value);
                     metadata.save(Jahia.getThreadParamBean());
                 }

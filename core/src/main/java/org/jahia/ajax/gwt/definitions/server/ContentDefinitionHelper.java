@@ -166,7 +166,7 @@ public class ContentDefinitionHelper {
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
                     for (Value value : epd.getDefaultValues()) {
                         try {
-                            gwtValues.add(Utils.convertValue(value));
+                            gwtValues.add(Utils.convertValue(value,epd.getRequiredType()));
                         } catch (RepositoryException e) {
                             e.printStackTrace();
                         }

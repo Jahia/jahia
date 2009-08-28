@@ -152,7 +152,7 @@ containerList   paragraph (web_templates:paragraphContainer)
 [web_templates:promoAdvancedContainer] > web_templates:promoContainer, web_templates:title
 smallText      abstract (text[multiline])
 
-[web_templates:newsContainer] > jnt:newsContainer
+[web_templates:newsContainer] > jnt:newsContainer, jmix:structuredContent
 
 // Web templates Box
 

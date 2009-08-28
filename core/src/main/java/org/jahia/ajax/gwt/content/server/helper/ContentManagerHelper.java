@@ -1169,7 +1169,7 @@ public class ContentManagerHelper {
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>(values.length);
 
                     for (Value val : values) {
-                        gwtValues.add(Utils.convertValue(val));
+                        gwtValues.add(Utils.convertValue(val,def.getRequiredType()));
                     }
                     nodeProp.setValues(gwtValues);
                     props.put(nodeProp.getName(), nodeProp);

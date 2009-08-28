@@ -82,7 +82,7 @@ public class SimpleModule extends LayoutContainer implements Module {
             addListener(Events.OnClick, listener);
             addListener(Events.OnDoubleClick, new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent ce) {
-                    new EditContentEngine(path).show();
+                    new EditContentEngine(node).show();
                 }
             });
         }

@@ -115,7 +115,16 @@ public class ContentPickerGrid extends TabPanel {
     }
 
     public void setSelection(final List<GWTJahiaNode> selection) {
-        if (selection != null && selection.size() > 0 && (selection.get(0).getNodeTypes().contains(config.getNodeTypes()) || selection.get(0).getInheritedNodeTypes().contains(config.getNodeTypes()))) {
+        String[] nt = config.getNodeTypes().split(",");
+        if (selection != null && selection.size() > 0) {
+            boolean found = false;
+            for (String s : nt) {
+                if ((selection.get(0).getNodeTypes().contains(s) || selection.get(0).getInheritedNodeTypes().contains(s))) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
             if (multiple) {
                 for (GWTJahiaNode n : selection) {
                     if (!store.contains(n)) {
@@ -125,6 +134,7 @@ public class ContentPickerGrid extends TabPanel {
             } else {
                 store.removeAll();
                 store.add(selection.get(0));
+            }
             }
         } else {
             Log.error("********************* false"+config.getNodeTypes());

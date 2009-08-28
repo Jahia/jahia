@@ -340,7 +340,7 @@ public class EditLinker {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 if (currentlySelectedNode != null) {
-                    new EditContentEngine(currentlySelectedNode.getPath()).show();
+                    new EditContentEngine(currentlySelectedNode).show();
                 }
             }
         };

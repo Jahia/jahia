@@ -115,7 +115,16 @@ public class ContentPathBar extends TopBar {
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelection) {
         List<GWTJahiaNode> selection = (List<GWTJahiaNode>) topTableSelection ;
 
-        if (selection != null && selection.size() > 0 && (selection.get(0).getNodeTypes().contains(config.getNodeTypes()) || selection.get(0).getInheritedNodeTypes().contains(config.getNodeTypes()))) {
+        String[] n = config.getNodeTypes().split(",");
+        if (selection != null && selection.size() > 0) {
+            boolean found = false;
+            for (String s : n) {
+                if ((selection.get(0).getNodeTypes().contains(s) || selection.get(0).getInheritedNodeTypes().contains(s))) {
+                    found = true;
+                    break;
+                }                
+            }
+            if (found) {
             final String path = selection.get(0).getPath();
             JahiaContentManagementService.App.getInstance().isFileAccessibleForCurrentContainer(path, new AsyncCallback<Boolean>() {
                 public void onFailure(Throwable throwable) {
@@ -134,6 +143,7 @@ public class ContentPathBar extends TopBar {
                     }
                 }
             });
+            }
 
         }
     }

@@ -46,6 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -88,14 +89,18 @@ public class EditContentEngine extends Window {
     private String targetPath = null;
     private boolean createInParentAndMoveOnTop = false;
     private boolean showMetadataTitleInContentTab = false;
+    private boolean isReference = false;
 
     /**
      * Initializes an instance of this class.
      *
-     * @param contentObjectPath the path of the content object to be edited
+     * @param node the content object to be edited
      */
-    public EditContentEngine(String contentObjectPath) {
-        contentPath = contentObjectPath;
+    public EditContentEngine(GWTJahiaNode node) {
+        contentPath = node.getPath();
+        if (node.getNodeTypes().contains("jnt:nodeReference")) {
+            isReference = true;
+        }
         initWindowProperties();
         initTabs(true);
     }
@@ -158,10 +163,27 @@ public class EditContentEngine extends Window {
                 }
 
                 public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                    PropertiesEditor propertiesEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.CONTENT, fullMode, null);
-                    contentTab.add(propertiesEditor);
-                    contentTab.setProcessed(true);
-                    contentTab.layout();
+                    if (isReference) {
+                        GWTJahiaNodeProperty ref = result.getProperties().get("j:node");
+                        GWTJahiaNodePropertyValue v = ref.getValues().iterator().next();
+                        
+                        contentService.getProperties(v.getNode().getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
+                            public void onFailure(Throwable throwable) {
+                                Log.debug("Cannot get properties", throwable);
+                            }
+                            public void onSuccess(GWTJahiaGetPropertiesResult result) {
+                                PropertiesEditor propertiesEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.CONTENT, fullMode, null);
+                                contentTab.add(propertiesEditor);
+                                contentTab.setProcessed(true);
+                                contentTab.layout();
+                            }
+                        });
+                    } else {
+                        PropertiesEditor propertiesEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.CONTENT, fullMode, null);
+                        contentTab.add(propertiesEditor);
+                        contentTab.setProcessed(true);
+                        contentTab.layout();
+                    }
                     PropertiesEditor metadataEditor = createPropertiesEditor(result, GWTJahiaItemDefinition.METADATA, fullMode, null);
                     metadataTab.add(metadataEditor);
                     metadataTab.setProcessed(true);

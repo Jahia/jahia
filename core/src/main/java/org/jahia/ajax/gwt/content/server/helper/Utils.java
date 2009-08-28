@@ -73,11 +73,11 @@ public class Utils {
         }
     }
 
-    public static GWTJahiaNodePropertyValue convertValue(Value val) throws RepositoryException {
+    public static GWTJahiaNodePropertyValue convertValue(Value val, int requiredType) throws RepositoryException {
         String theValue ;
         int type ;
 
-        switch (val.getType()) {
+        switch (requiredType) {
             case PropertyType.BINARY:
                 type = GWTJahiaNodePropertyType.BINARY ;
                 theValue = val.getString() ;

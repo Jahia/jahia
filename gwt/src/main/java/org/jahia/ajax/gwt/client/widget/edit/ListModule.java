@@ -59,7 +59,7 @@ public class ListModule extends ContentPanel implements Module {
         getHeader().addListener(Events.OnClick, listener);
         getHeader().addListener(Events.OnDoubleClick, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
-                new EditContentEngine(path).show();
+                new EditContentEngine(node).show();
             }
         });
 

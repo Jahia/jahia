@@ -309,22 +309,9 @@ public class SidePanel extends ContentPanel {
         searchForm.setBodyBorder(false);
         final TextField<String> searchField = new TextField<String>();
         searchField.setFieldLabel("Search for");
-        final CheckBox tags = new CheckBox();
-        tags.setFieldLabel("Within");
-        tags.setBoxLabel("tag");
-        final CheckBox nameDesc = new CheckBox();
-        nameDesc.setBoxLabel("name and description");
-        final CheckBox props = new CheckBox();
-        props.setBoxLabel("all properties");
-        final CheckBox content = new CheckBox();
-        content.setBoxLabel("file content");
-        final DateField date = new DateField();
-        date.setFieldLabel("Newer than");
-        final TextField<String> searchRoot = new TextField<String>();
-        searchRoot.setFieldLabel("Search in");
         Button ok = new Button("Search", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
-                search(searchField.getValue(), date.getValue(), searchRoot.getValue());
+                search(searchField.getValue(), null,null);
             }
         });
 
@@ -344,14 +331,10 @@ public class SidePanel extends ContentPanel {
         source.addDNDListener(editManager.getDndListener());
 
         searchForm.add(searchField);
-        searchForm.add(tags);
-        searchForm.add(nameDesc);
-        searchForm.add(props);
-        searchForm.add(content);
-        searchForm.add(date);
-        searchForm.add(searchRoot);
-        searchForm.add(ok);
-        searchForm.add(drag);
+        HorizontalPanel h = new HorizontalPanel();
+        h.add(ok);
+        h.add(drag);        
+        searchForm.add(h);
         search.add(searchForm);
 
         repositoryTabs.add(create);

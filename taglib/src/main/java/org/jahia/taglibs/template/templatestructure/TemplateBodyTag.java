@@ -219,6 +219,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
             if (renderContext != null && renderContext.isEditMode()) {
                 Resource r = (Resource) pageContext.getRequest().getAttribute("currentResource");
+                addEditModeResources();
                 pageContext.getRequest().setAttribute("jahia.engines.gwtModuleIncluded", Boolean.TRUE);
                 pageContext.getOut().println(GWTIncluder.generateGWTImport(pageContext, "org.jahia.ajax.gwt.module.edit.Edit"));
                 pageContext.getOut().println("<div class=\"jahia-template-gxt editmode-gxt\" id=\"editmode\" jahiatype=\"editmode\" path=\""+r.getNode().getPath()+"\" template=\""+r.getTemplate()+"\"></div>");
@@ -280,7 +281,249 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("uniquePageviews", getMessage("toolbar.analytics.uniquePageviews"));
         addGwtDictionaryMessage("geographicMap", getMessage("toolbar.analytics.geographicMap"));
         addGwtDictionaryMessage("annotatedTimelime", getMessage("toolbar.analytics.annotatedTimelime"));
-                                      
+
+    }
+    
+    private void addEditModeResources() {
+        addGwtDictionaryMessage("fm_newdir", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newDir.label"));
+        addGwtDictionaryMessage("fm_newdirname", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newDirName.label"));
+        addGwtDictionaryMessage("fm_newcontent", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newContent.label"));
+        addGwtDictionaryMessage("fm_newpage", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newPage.label"));
+        addGwtDictionaryMessage("fm_newmashup", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newMashup.label"));
+        addGwtDictionaryMessage("fm_newrssmashup", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newRssMashup.label"));
+        addGwtDictionaryMessage("fm_newgadgetmashup", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newGoogleGadgetMashup.label"));
+        addGwtDictionaryMessage("fm_copy", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.copyFile.label"));
+        addGwtDictionaryMessage("fm_cut", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.cutFile.label"));
+        addGwtDictionaryMessage("fm_paste", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.pasteFile.label"));
+        addGwtDictionaryMessage("fm_pasteref", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.pasteRef.label"));
+        addGwtDictionaryMessage("fm_lock", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.lockFile.label"));
+        addGwtDictionaryMessage("fm_unlock", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.unlockFile.label"));
+        addGwtDictionaryMessage("fm_remove", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.deleteFile.label"));
+        addGwtDictionaryMessage("fm_rename", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.renameFile.label"));
+        addGwtDictionaryMessage("fm_zip", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.zipFile.label"));
+        addGwtDictionaryMessage("fm_unzip", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.unzipFile.label"));
+        addGwtDictionaryMessage("fm_download", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.downloadFile.label"));
+        addGwtDictionaryMessage("fm_preview", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.previewFile.label"));
+        addGwtDictionaryMessage("fm_downloadMessage", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.downloadMessage.label"));
+        addGwtDictionaryMessage("fm_upload", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.upload.label"));
+        addGwtDictionaryMessage("fm_webfolder", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.openIEfolder.label"));
+        addGwtDictionaryMessage("fm_webfolderMessage", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.webFolderMessage.label"));
+        addGwtDictionaryMessage("fm_thumbs", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.thumbs.label"));
+        addGwtDictionaryMessage("fm_icons_detailed", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.icons.detailed.label"));
+        addGwtDictionaryMessage("fm_list", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.list.label"));
+        addGwtDictionaryMessage("fm_crop", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.crop.label"));
+        addGwtDictionaryMessage("fm_resize", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.resize.label"));
+        addGwtDictionaryMessage("fm_rotate", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.rotate.label"));
+        addGwtDictionaryMessage("fm_rotateLeft", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.rotateLeft.label"));
+        addGwtDictionaryMessage("fm_rotateRight", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.rotateRight.label"));
+        addGwtDictionaryMessage("fm_refresh", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.refresh.label"));
+        addGwtDictionaryMessage("fm_newcategory", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newCategory.label"));
+
+        addGwtDictionaryMessage("fm_copying", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.copying.label"));
+        addGwtDictionaryMessage("fm_cutting", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.cutting.label"));
+        addGwtDictionaryMessage("fm_downloading", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.downloading.label"));
+        addGwtDictionaryMessage("fm_locking", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.locking.label"));
+        addGwtDictionaryMessage("fm_mounting", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.mounting.label"));
+        addGwtDictionaryMessage("fm_newfoldering", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.newfoldering.label"));
+        addGwtDictionaryMessage("fm_pasting", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.pasting.label"));
+        addGwtDictionaryMessage("fm_pastingref", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.pastingref.label"));
+        addGwtDictionaryMessage("fm_removing", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.removing.label"));
+        addGwtDictionaryMessage("fm_renaming", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.renaming.label"));
+        addGwtDictionaryMessage("fm_unlocking", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.unlocking.label"));
+        addGwtDictionaryMessage("fm_unmounting", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.unmounting.label"));
+        addGwtDictionaryMessage("fm_unzipping", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.unzipping.label"));
+        addGwtDictionaryMessage("fm_webfoldering", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.webfoldering.label"));
+        addGwtDictionaryMessage("fm_zipping", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.zipping.label"));
+
+        addGwtDictionaryMessage("fm_confArchiveName", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.confirm.archiveName.label"));
+        addGwtDictionaryMessage("fm_confMultiRemove", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.confirm.multiRemove.label"));
+        addGwtDictionaryMessage("fm_confNewName", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.confirm.newName.label"));
+        addGwtDictionaryMessage("fm_confOverwrite", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"));
+        addGwtDictionaryMessage("fm_confRemove", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.confirm.remove.label"));
+        addGwtDictionaryMessage("fm_confUnlock", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.confirm.unlock.label"));
+        addGwtDictionaryMessage("fm_confUnmount", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.confirm.unmount.label"));
+
+        addGwtDictionaryMessage("fm_failCopy", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.copy.label"));
+        addGwtDictionaryMessage("fm_failCrop", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.crop.label"));
+        addGwtDictionaryMessage("fm_failCut", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.cut.label"));
+        addGwtDictionaryMessage("fm_failDelete", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.delete.label"));
+        addGwtDictionaryMessage("fm_failDownload", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.download.label"));
+        addGwtDictionaryMessage("fm_failMount", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.mount.label"));
+        addGwtDictionaryMessage("fm_failNewdir", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.newDir.label"));
+        addGwtDictionaryMessage("fm_failPaste", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.paste.label"));
+        addGwtDictionaryMessage("fm_failPasteref", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.pasteref.label"));
+        addGwtDictionaryMessage("fm_failRename", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.rename.label"));
+        addGwtDictionaryMessage("fm_failResize", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.resize.label"));
+        addGwtDictionaryMessage("fm_failRotate", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.rotate.label"));
+        addGwtDictionaryMessage("fm_failSaveSearch", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.saveSearch.label"));
+        addGwtDictionaryMessage("fm_failUnlock", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.unlock.label"));
+        addGwtDictionaryMessage("fm_failUnmount", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.unmount.label"));
+        addGwtDictionaryMessage("fm_failUnmountLock1", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.unmountLock1.label"));
+        addGwtDictionaryMessage("fm_failUnmountLock2", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.unmountLock2.label"));
+        addGwtDictionaryMessage("fm_failUnzip", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.unzip.label"));
+        addGwtDictionaryMessage("fm_failWebfolder", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.webfolder.label"));
+        addGwtDictionaryMessage("fm_failZip", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.failure.zip.label"));
+
+        addGwtDictionaryMessage("fm_warningLock", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.warning.lock.label"));
+        addGwtDictionaryMessage("fm_warningSystemLock", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.warning.systemLock.label"));
+
+        addGwtDictionaryMessage("fm_selection", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.selection.label"));
+        addGwtDictionaryMessage("fm_deselect", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.deselect.label"));
+        addGwtDictionaryMessage("fm_width", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.width.label"));
+        addGwtDictionaryMessage("fm_height", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.height.label"));
+        addGwtDictionaryMessage("fm_ratio", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.ratio.label"));
+        addGwtDictionaryMessage("fm_newname", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newname.label"));
+        addGwtDictionaryMessage("fm_mount", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.mount.label"));
+        addGwtDictionaryMessage("fm_unmount", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.unmount.label"));
+        addGwtDictionaryMessage("fm_mountpoint", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.mountpoint.label"));
+        addGwtDictionaryMessage("fm_mountDisclaimerLabel", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.mount.disclaimer.label"));
+        addGwtDictionaryMessage("fm_mountDisclaimer", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.mount.disclaimer"));
+        addGwtDictionaryMessage("fm_serveraddress", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.serveraddress.label"));
+        addGwtDictionaryMessage("fm_fileMenu", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"));
+        addGwtDictionaryMessage("fm_editMenu", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.editMenu.label"));
+        addGwtDictionaryMessage("fm_remoteMenu", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.remoteMenu.label"));
+        addGwtDictionaryMessage("fm_imageMenu", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.imageMenu.label"));
+        addGwtDictionaryMessage("fm_viewMenu", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"));
+        addGwtDictionaryMessage("fm_browse", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.browse.label"));
+        addGwtDictionaryMessage("fm_saveSearch", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.saveSearch.label"));
+        addGwtDictionaryMessage("fm_saveSearchName", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.saveSearchName.label"));
+        addGwtDictionaryMessage("fm_search", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.search.label"));
+        addGwtDictionaryMessage("fm_filters", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.filters.label"));
+        addGwtDictionaryMessage("fm_mimes", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.mimes.label"));
+        addGwtDictionaryMessage("fm_nodes", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.nodes.label"));
+        addGwtDictionaryMessage("fm_information", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.information.label"));
+        addGwtDictionaryMessage("fm_properties", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.properties.label"));
+        addGwtDictionaryMessage("fm_portlets", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.applicationsList.label"));
+        addGwtDictionaryMessage("fm_roles", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.roles.label"));
+        addGwtDictionaryMessage("fm_modes", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.modes.label"));
+        addGwtDictionaryMessage("fm_authorizations", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.authorizations.label"));
+
+        addGwtDictionaryMessage("fm_alreadyExists", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label"));
+
+        addGwtDictionaryMessage("fm_usages", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.usages.label"));
+
+        addGwtDictionaryMessage("fm_info_name", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.info.name.label"));
+        addGwtDictionaryMessage("fm_info_path", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.info.path.label"));
+        addGwtDictionaryMessage("fm_info_size", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.info.size.label"));
+        addGwtDictionaryMessage("fm_info_lastModif", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.info.lastModif.label"));
+        addGwtDictionaryMessage("fm_info_lock", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.info.lock.label"));
+        addGwtDictionaryMessage("fm_info_nbFiles", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.info.nbFiles.label"));
+        addGwtDictionaryMessage("fm_info_nbFolders", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.info.nbFolders.label"));
+        addGwtDictionaryMessage("fm_info_totalSize", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.info.totalSize.label"));
+
+        addGwtDictionaryMessage("fm_save", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.properties.save.label"));
+        addGwtDictionaryMessage("fm_restore", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.properties.restore.label"));
+
+        addGwtDictionaryMessage("fm_page", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.usages.page.label"));
+        addGwtDictionaryMessage("fm_language", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.usages.language.label"));
+        addGwtDictionaryMessage("fm_workflow", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.usages.workflow.label"));
+        addGwtDictionaryMessage("fm_versioned", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.usages.versioned.label"));
+        addGwtDictionaryMessage("fm_live", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.usages.live.label"));
+        addGwtDictionaryMessage("fm_staging", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.usages.staging.label"));
+        addGwtDictionaryMessage("fm_notify", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.usages.notify.label"));
+
+        addGwtDictionaryMessage("fm_uploadFiles", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.uploadFile.label"));
+        addGwtDictionaryMessage("fm_autoUnzip", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.autoUnzip.label"));
+        addGwtDictionaryMessage("fm_addFile", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.addFile.label"));
+        addGwtDictionaryMessage("fm_cancel", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.cancel.label"));
+        addGwtDictionaryMessage("fm_ok", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.ok.label"));
+        addGwtDictionaryMessage("fm_checkUploads", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.checkUploads.label"));
+
+        addGwtDictionaryMessage("fm_thumbFilter", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.thumbFilter.label"));
+        addGwtDictionaryMessage("fm_thumbSort", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.thumbSort.label"));
+        addGwtDictionaryMessage("fm_thumbSortName", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.thumbSortName.label"));
+        addGwtDictionaryMessage("fm_thumbSortSize", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.thumbSortSize.label"));
+        addGwtDictionaryMessage("fm_thumbSortLastModif", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.thumbSortLastModif.label"));
+        addGwtDictionaryMessage("fm_invertSort", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.invertSort.label"));
+
+        addGwtDictionaryMessage("fm_column_type", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.column.type.label"));
+        addGwtDictionaryMessage("fm_column_locked", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.column.locked.label"));
+        addGwtDictionaryMessage("fm_column_name", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.column.name.label"));
+        addGwtDictionaryMessage("fm_column_path", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.column.path.label"));
+        addGwtDictionaryMessage("fm_column_size", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.column.size.label"));
+        addGwtDictionaryMessage("fm_column_date", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.column.date.label"));
+        addGwtDictionaryMessage("fm_column_provider", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label"));
+
+        addGwtDictionaryMessage("fm_repository_savedSearch", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.savedSearch.label"));
+        addGwtDictionaryMessage("fm_repository_portletDefinitionRepository", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.portletdef.label"));
+        addGwtDictionaryMessage("fm_select_portlet", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.portletdef.description.label"));
+
+
+        addGwtDictionaryMessage("fm_portlet_ready", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.portletReady.label"));
+        addGwtDictionaryMessage("fm_portlet_deploy", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.deployNewComponents.label"));
+        addGwtDictionaryMessage("fm_portlet_preparewar", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.deploy.preparewar.label"));
+
+
+        addGwtDictionaryMessage("fm_login", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.login.label"));
+        addGwtDictionaryMessage("fm_logout", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.logout.label"));
+        addGwtDictionaryMessage("fm_username", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.username.label"));
+        addGwtDictionaryMessage("fm_password", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.password.label"));
+        addGwtDictionaryMessage("fm_import", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.import.label"));
+        addGwtDictionaryMessage("fm_importfile", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.importfile.label"));
+        addGwtDictionaryMessage("fm_export", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.export.label"));
+        addGwtDictionaryMessage("fm_exportlink", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.exportlink.label"));
+
+        addGwtDictionaryMessage("ae_principal", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.principal.label"));
+        addGwtDictionaryMessage("ae_restore_inheritance", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.restoreInheritance.label"));
+        addGwtDictionaryMessage("ae_inherited_from", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.inheritedFrom.label"));
+        addGwtDictionaryMessage("ae_inherited", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.inherited.label"));
+        addGwtDictionaryMessage("ae_restore_all_inheritance", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.restoreAllInheritance.label"));
+        addGwtDictionaryMessage("ae_break_all_inheritance", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.breakAllInheritance.label"));
+        addGwtDictionaryMessage("ae_remove", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.remove.label"));
+        addGwtDictionaryMessage("ae_save", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.save.label"));
+        addGwtDictionaryMessage("ae_restore", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.restore.label"));
+        addGwtDictionaryMessage("um_adduser", getJahiaInternalResourceValue("org.jahia.engines.users.SelectUG_Engine.newUsers.label"));
+        addGwtDictionaryMessage("um_addgroup", getJahiaInternalResourceValue("org.jahia.engines.users.SelectUG_Engine.newGroups.label"));
+
+        addGwtDictionaryMessage("mw_mashups", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.portletdef.label"));
+        addGwtDictionaryMessage("mw_select_portlet_def", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.portletdef.label"));
+        addGwtDictionaryMessage("mw_ok", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.ok.label"));
+        addGwtDictionaryMessage("mw_params", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.parameters.label"));
+        addGwtDictionaryMessage("mw_edit_params", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.parameters.edit.label"));
+        addGwtDictionaryMessage("mw_prop_load_error", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.props.load.error.label"));
+        addGwtDictionaryMessage("mw_modes_permissions", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.modesperm.label"));
+        addGwtDictionaryMessage("mw_modes_permissions_description", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.modesperm.description.label"));
+        addGwtDictionaryMessage("mw_modes_adduser", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.modes.adduser.label"));
+        addGwtDictionaryMessage("mw_modes_addgroup", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.modes.addgroup.label"));
+        addGwtDictionaryMessage("mw_roles_adduser", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.roles.adduser.label"));
+        addGwtDictionaryMessage("mw_roles_addgroup", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.roles.addgroup.label"));
+        addGwtDictionaryMessage("mw_roles_perm", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.rolesperm.label"));
+        addGwtDictionaryMessage("mw_roles_perm_desc", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.rolesperm.description.label"));
+        addGwtDictionaryMessage("mw_finish", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.finish.label"));
+        addGwtDictionaryMessage("mw_save_as", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.saveas.label"));
+
+        addGwtDictionaryMessage("mw_name", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.applicationName.label"));
+        addGwtDictionaryMessage("mw_description", getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.applicationDesc.label"));
+        addGwtDictionaryMessage("mw_finish_description", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.saveas.label"));
+        addGwtDictionaryMessage("mw_no_role", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.roles.any"));
+
+        addGwtDictionaryMessage("wizard_button_cancel", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.cancel"));
+        addGwtDictionaryMessage("wizard_button_finish", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.finish"));
+        addGwtDictionaryMessage("wizard_button_next", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.next"));
+        addGwtDictionaryMessage("wizard_button_prev", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.prev"));
+        addGwtDictionaryMessage("wizard_steps_of", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.steps.of"));
+        addGwtDictionaryMessage("wizard_steps_current", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.steps.current"));
+        addGwtDictionaryMessage("wizard_header_title", getJahiaInternalResourceValue("org.jahia.engines.wizard.title"));
+
+        addGwtDictionaryMessage("add_content_wizard_column_label", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.column.label"));
+        addGwtDictionaryMessage("add_content_wizard_column_name", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.column.name"));
+        addGwtDictionaryMessage("add_content_wizard_card_defs_text", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.defsCard.text"));
+        addGwtDictionaryMessage("add_content_wizard_card_defs_title", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.defsCard.title"));
+        addGwtDictionaryMessage("add_content_wizard_card_form_error_props", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.formCard.error.props"));
+        addGwtDictionaryMessage("add_content_wizard_card_form_error_title", getJahiaInternalResourceValue("org.jahia.admin.error.label"));
+        addGwtDictionaryMessage("add_content_wizard_card_form_error_save", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.formCard.error.save"));
+        addGwtDictionaryMessage("add_content_wizard_card_form_success_title", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.formCard.success"));
+        addGwtDictionaryMessage("add_content_wizard_card_form_success_save", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.formCard.success.save"));
+        addGwtDictionaryMessage("add_content_wizard_card_form_text", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.formCard.text"));
+        addGwtDictionaryMessage("add_content_wizard_card_form_title", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.formCard.title"));
+        addGwtDictionaryMessage("add_content_wizard_card_name_node_name", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.nameCard.nodeName"));
+        addGwtDictionaryMessage("add_content_wizard_card_name_node_type", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.nameCard.nodeType"));
+        addGwtDictionaryMessage("add_content_wizard_card_name_text", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.nameCard.text"));
+        addGwtDictionaryMessage("add_content_wizard_card_name_title", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.nameCard.title"));
+        addGwtDictionaryMessage("add_content_wizard_title", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.title"));
+        addGwtDictionaryMessage("add_content_wizard_title", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.title"));
+
+
     }
 
     /**

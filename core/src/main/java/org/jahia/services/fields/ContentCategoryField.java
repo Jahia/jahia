@@ -45,10 +45,9 @@ import org.jahia.services.categories.Category;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
 import org.jahia.utils.JahiaTools;
+import org.jahia.utils.LanguageCodeConverters;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User: Serge Huber
@@ -207,7 +206,34 @@ public class ContentCategoryField extends ContentField {
                                                    ProcessingContext jParams,
                                                    StateModificationContext stateModifContext)
             throws JahiaException {
-        return new ActivationTestResults ();
+        if (logger.isDebugEnabled()) {
+            logger.debug("From " + fromEntryState.toString()
+                    + " To " + toEntryState.toString());
+        }
+
+        final ActivationTestResults activationResults = new ActivationTestResults();
+        try {
+            ServicesRegistry.getInstance().getJahiaTextFileService().
+                    renameFile(
+                            this.getSiteID(),
+                            this.getPageID(),
+                            this.getID(),
+                            fromEntryState.getVersionID(),
+                            fromEntryState.getWorkflowState(),
+                            fromEntryState.getLanguageCode(),
+                            this.getSiteID(),
+                            this.getPageID(),
+                            this.getID(),
+                            toEntryState.getVersionID(),
+                            toEntryState.getWorkflowState(),
+                            toEntryState.getLanguageCode()
+                    );
+            activationResults.setStatus(ActivationTestResults.COMPLETED_OPERATION_STATUS);
+        } catch (Exception t) {
+            logger.error("Unable to change Entry State !", t);
+            activationResults.setStatus(ActivationTestResults.FAILED_OPERATION_STATUS);
+        }
+        return activationResults;
     }
 
     public RestoreVersionTestResults restoreVersion (JahiaUser user,
@@ -306,4 +332,110 @@ public class ContentCategoryField extends ContentField {
         return true;
     }
 
+    /**
+     * This method is called when a entry should be copied into a new entry
+     * it is called when an    old version -> active version   move occurs
+     * This method should not write/change the DBValue, the service handles that.
+     *
+     * @param fromEntryState the entry state that is currently was in the database
+     * @param toEntryState   the entry state that will be written to the database
+     */
+    @Override
+    protected void copyEntry(EntryStateable fromEntryState, EntryStateable toEntryState) throws JahiaException {
+        int fromVersionID = fromEntryState.getVersionID();
+
+        if (fromEntryState.getWorkflowState() ==
+                ContentObjectEntryState.WORKFLOW_STATE_VERSIONING_DELETED) {
+            // lookup for the last archive done before the deleted entryState
+            // and restore it.
+            final ContentObjectEntryState entryState =
+                    new ContentObjectEntryState(fromEntryState);
+            final ContentObjectEntryState archiveEntryState =
+                    getClosestVersionedEntryState(entryState, true);
+            if (archiveEntryState != null) {
+                fromVersionID = archiveEntryState.getVersionID();
+            }
+        }
+
+        ServicesRegistry.getInstance().getJahiaTextFileService().copyFile(
+                this.getSiteID(),
+                this.getPageID(),
+                this.getID(),
+                fromVersionID,
+                fromEntryState.getWorkflowState(),
+                fromEntryState.getLanguageCode(),
+                this.getSiteID(),
+                this.getPageID(),
+                this.getID(),
+                toEntryState.getVersionID(),
+                toEntryState.getWorkflowState(),
+                toEntryState.getLanguageCode()
+        );
+
+        super.copyEntry(fromEntryState, toEntryState);
+    }
+
+    /**
+     * This method is called when an entry should be deleted for real.
+     * It is called when a object is deleted, and versioning is disabled, or
+     * when staging values are undone.
+     * For a bigtext content fields for instance, this method should delete
+     * the text file corresponding to the field entry
+     *
+     * @param deleteEntryState the entry state to delete
+     * @param jParams          ProcessingContext needed to destroy page related data such as
+     *                         fields, sub pages, as well as generated JahiaEvents.
+     */
+    @Override
+    protected void deleteEntry(EntryStateable deleteEntryState) throws JahiaException {
+        ServicesRegistry.getInstance().getJahiaTextFileService().deleteFile(
+                this.getSiteID(),
+                this.getPageID(),
+                this.getID(),
+                deleteEntryState.getVersionID(),
+                deleteEntryState.getWorkflowState(),
+                deleteEntryState.getLanguageCode());
+
+        super.deleteEntry(deleteEntryState);
+    }
+
+    /**
+     * Called when marking a language for deletion on a field. This is done
+     * first to allow field implementation to provide a custom behavior when
+     * marking fields for deletion. It isn't abstract because most fields will
+     * not need to redefine this method.
+     *
+     * @param user              the user performing the operation
+     * @param languageCode      the language to mark for deletion.
+     * @param stateModifContext used to detect loops in deletion marking.
+     * @throws org.jahia.exceptions.JahiaException
+     *          in the case there was an error processing the
+     *          marking of the content.
+     */
+    @Override
+    protected void markContentLanguageForDeletion(JahiaUser user, String languageCode, StateModificationContext stateModifContext) throws JahiaException {
+        final List<Locale> locales = new ArrayList<Locale>();
+        locales.add(LanguageCodeConverters.languageCodeToLocale(languageCode));
+        final EntryLoadRequest loadRequest = new EntryLoadRequest(
+                EntryLoadRequest.ACTIVE_WORKFLOW_STATE, 0, locales);
+        final ContentObjectEntryState fromEntryState = getEntryState(loadRequest);
+        final ContentObjectEntryState toEntryState = new ContentObjectEntryState(
+                ContentObjectEntryState.WORKFLOW_STATE_START_STAGING, -1, languageCode);
+        if (fromEntryState != null) {
+            ServicesRegistry.getInstance().getJahiaTextFileService().copyFile(
+                    this.getSiteID(),
+                    this.getPageID(),
+                    this.getID(),
+                    fromEntryState.getVersionID(),
+                    fromEntryState.getWorkflowState(),
+                    fromEntryState.getLanguageCode(),
+                    this.getSiteID(),
+                    this.getPageID(),
+                    this.getID(),
+                    toEntryState.getVersionID(),
+                    toEntryState.getWorkflowState(),
+                    toEntryState.getLanguageCode()
+            );
+        }
+    }
 }

@@ -610,3 +610,6 @@ while (selectedNodeIter.hasNext()) {
                             aliasResourceName="add_content_wizard_title"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.contentmanager.addContentWizard.title"
                             aliasResourceName="add_content_wizard_title"/>
+                            
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newMashup.label"
+                            aliasResourceName="mw_title"/>

@@ -33,24 +33,16 @@ package org.jahia.taglibs.template.layoutmanager;
 
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.params.ProcessingContext;
-import org.jahia.data.JahiaData;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.jcr.Node;
 import java.io.IOException;
-import java.util.Locale;
-import java.util.MissingResourceException;
 
 /**
  * Created by Jahia.
  * User: ktlili
  * Date: 21 nov. 2007
  * Time: 11:43:22
- * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
 public class LayoutManagerAreaTag extends AbstractJahiaTag {
@@ -107,9 +99,19 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             addGwtDictionaryMessage("p_mashup_create", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newMashup.label"));
             addGwtDictionaryMessage("p_my_portal", getJahiaInternalResourceValue("org.jahia.myportal.myPortal"));
             addGwtDictionaryMessage("p_mashup_added_myPortal", getJahiaInternalResourceValue("org.jahia.myportal.mashupAdded"));
+            addGwtDictionaryMessage("p_mashup_added", getJahiaInternalResourceValue("org.jahia.myportal.mashupAddedLabel"));
+            addGwtDictionaryMessage("p_add_mashup_to_portal", getJahiaInternalResourceValue("org.jahia.myportal.addToPortal"));
+            addGwtDictionaryMessage("p_delete_confirm", getJahiaInternalResourceValue("org.jahia.myportal.delete.confirm"));
 
+            addGwtDictionaryMessage("wizard_button_cancel", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.cancel"));
+            addGwtDictionaryMessage("wizard_button_finish", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.finish"));
+            addGwtDictionaryMessage("wizard_button_next", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.next"));
+            addGwtDictionaryMessage("wizard_button_prev", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.prev"));
+            addGwtDictionaryMessage("wizard_steps_of", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.steps.of"));
+            addGwtDictionaryMessage("wizard_steps_current", getJahiaInternalResourceValue("org.jahia.engines.wizard.button.steps.current"));
+            addGwtDictionaryMessage("wizard_header_title", getJahiaInternalResourceValue("org.jahia.engines.wizard.title"));
 
-
+            addGwtDictionaryMessage("mw_title", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newMashup.label"));
         } catch (Exception e) {
             logger.error(e, e);
         }

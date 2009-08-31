@@ -48,10 +48,8 @@ import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.layoutmanager.JahiaPropertyHelper;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.JahiaPortalManager;
-import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
 import org.jahia.ajax.gwt.client.service.layoutmanager.LayoutmanagerService;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
@@ -153,7 +151,7 @@ public class JahiaPortletPicker extends ContentPanel {
 
     private void initListView() {
         listView = new JahiaPortletInstanceListView();
-        listView.setTemplate(getTemplate());
+        listView.setTemplate(Messages.get("p_add_mashup_to_portal","Add to my portal").toUpperCase());
     }
 
     private void initPortletFolderView() {
@@ -246,10 +244,10 @@ public class JahiaPortletPicker extends ContentPanel {
         return listView.getSelectionModel().getSelectedItems();
     }
 
-    public native String getTemplate() /*-{
+    public native String getTemplate(String label) /*-{
         return ['<tpl for=".">',
                 '<div style="padding: 0 0 10px 0;margin-bottom: 12px;border-bottom: 1px solid D9E2F4;float: left;width: 100%;" class="thumb-wrap" id="{name}">',
-                '<div style="width: 100px; float: left; text-align: center;" class="thumb"><p><img  style="width: 100%; heigth:75px;", src="{preview}" title="{name}"></p><p><input id="{uuid}" style="width: 125px;" onclick="return addToMyPortal(\'{uuid}\');" type="button" tabindex="9" value="ADD TO MY PORTAL" class="button" id="submit"/></p></div>',
+                '<div style="width: 100px; float: left; text-align: center;" class="thumb"><p><img  style="width: 100%; heigth:75px;", src="{preview}" title="{name}"></p><p><input id="{uuid}" style="width: 140px;" onclick="return addToMyPortal(\'{uuid}\');" type="button" tabindex="9" value="' + label + '" class="button" id="submit"/></p></div>',
                 '<div style="margin-left: 150px; margin-right: 110px;"><p style="font:bold;">{name}</p><br/><p> {description}</p></div></div>',
                 '</tpl>',
                 '<div class="x-clear"></div>'].join("");
@@ -263,7 +261,7 @@ public class JahiaPortletPicker extends ContentPanel {
     public static void addToMyPortal(String nodeUuid) {
         Element ele = DOM.getElementById(nodeUuid);
         DOM.setElementAttribute(ele, "disabled", "disabled");
-        DOM.setElementAttribute(ele, "value", "added !");
+        DOM.setElementAttribute(ele, "value", Messages.get("p_mashup_added", "added!"));
         GWTJahiaNode gwtJahiaNode = new GWTJahiaNode();
         gwtJahiaNode.setUUID(nodeUuid);
         GWTJahiaLayoutItem gwtLayoutItem = new GWTJahiaLayoutItem();

@@ -39,8 +39,8 @@ import com.google.gwt.user.client.Window;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.JahiaPortalManager;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.portlet.JahiaPortlet;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.layoutmanager.LayoutmanagerService;
-import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
 
 /**
  * User: ktlili
@@ -71,7 +71,7 @@ public class OnPortletRemoved extends SelectionListener<IconButtonEvent> {
         box.setIcon(MessageBox.QUESTION);
         box.setTitle(jahiaPortlet.getHeading());
         box.addCallback(confirmBoxListener);
-        box.setMessage("Do you really want to remove: <br/> " + jahiaPortlet.getHeading() + "?");
+        box.setMessage(Messages.get("p_delete_confirm", "Do you really want to remove:") + "<br/> " + jahiaPortlet.getHeading() + "?");
         box.show();
 
     }

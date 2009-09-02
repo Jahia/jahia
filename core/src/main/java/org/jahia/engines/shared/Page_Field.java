@@ -242,7 +242,7 @@ public class Page_Field implements FieldSubEngine {
                 // this can happen if we don't have the rights to the page
                 // or if the page field has a corrupted value.
                 output = ServicesRegistry.getInstance().getJahiaFetcherService().fetchServlet((ParamBean) jParams, ACCESSDENIED_JSP);
-                engineMap.put("fieldForm", output);
+                engineMap.put(fieldsEditCallingEngineName + "." + "fieldForm", output);
                 return true;
             }
             engineMap.put("pageTempBean", pageBean);
@@ -619,6 +619,11 @@ public class Page_Field implements FieldSubEngine {
             pageBean.setTitle(locale.toString(), title);
         } else {
             pageBean.removeTitle(locale.toString());
+        }
+        if (!RESET_LINK.equals(operation)) {
+            theField.setValue("created");
+        } else {
+            theField.setValue("");
         }
         checkTimeBasedPublishingStatus(jParams, pageBean);
         return result;

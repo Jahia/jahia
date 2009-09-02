@@ -80,9 +80,12 @@ public class PlaceholderModule extends LayoutContainer implements Module {
 
         @Override
         protected void onDragEnter(DNDEvent e) {
-            e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PLACEHOLDER_TYPE);
-            e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
-            e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getParentModule().getNode());
+            boolean allowed = checkNodeType(e, nodetypes);
+            if (allowed) {
+                e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PLACEHOLDER_TYPE);
+                e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
+                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getParentModule().getNode());
+            }
         }
     }
     

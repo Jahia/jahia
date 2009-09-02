@@ -5,9 +5,9 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <div class="columns2"><!--start 2columns -->
-    <c:forEach items="${currentNode.children}" var="subchild">
-    <template:module node="${subchild}" />
-</c:forEach>
-    
-        <div class="clear"> </div>
+    <c:forEach items="${currentNode.editableChildren}" var="subchild">
+        <template:module node="${subchild}" nodeTypes="web_templates:promoAdvancedContainer" />
+    </c:forEach>
+
+    <div class="clear"> </div>
 </div>

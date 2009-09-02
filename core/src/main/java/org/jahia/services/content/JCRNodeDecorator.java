@@ -182,6 +182,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getChildren();
     }
 
+    public List<JCRNodeWrapper> getEditableChildren() {
+        return node.getEditableChildren();
+    }
+
     public boolean isVisible() {
         return node.isVisible();
     }

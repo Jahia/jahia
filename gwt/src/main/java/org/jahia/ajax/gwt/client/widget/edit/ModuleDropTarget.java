@@ -8,6 +8,10 @@ import com.extjs.gxt.ui.client.util.Rectangle;
 import com.extjs.gxt.ui.client.core.El;
 import com.google.gwt.user.client.Element;
 import com.allen_sauer.gwt.log.client.Log;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -53,5 +57,40 @@ public class ModuleDropTarget extends DropTarget {
         int y = !before ? (rect.y + rect.height - 4) : rect.y - 2;
         insert.el().setBounds(rect.x, y, rect.width, 20);
     }
+
+    protected boolean checkNodeType(DNDEvent e, String nodetypes) {
+        boolean allowed = true;
+
+        if (nodetypes != null && nodetypes.length() > 0) {
+            List<GWTJahiaNode> sources = e.getStatus().getData(EditModeDNDListener.SOURCE_NODES);
+            if (sources != null) {
+                String[] allowedTypes = nodetypes.split(" ");
+                for (GWTJahiaNode source : sources) {
+                    boolean nodeAllowed = false;
+                    for (String type : allowedTypes) {
+                        if (source.getNodeTypes().contains(type) || source.getInheritedNodeTypes().contains(type)) {
+                            nodeAllowed = true;
+                            break;
+                        }
+                    }
+                    allowed &= nodeAllowed;
+                }
+            }
+            GWTJahiaNodeType type = e.getStatus().getData(EditModeDNDListener.SOURCE_NODETYPE);
+            if (type != null) {
+                String[] allowedTypes = nodetypes.split(" ");
+                boolean typeAllowed = false;
+                for (String t : allowedTypes) {
+                    if (t.equals(type.getName()) || type.getSuperTypes().contains(t)) {
+                        typeAllowed = true;
+                        break;
+                    }
+                }
+                allowed &= typeAllowed;
+            }
+        }
+        return allowed;
+    }
+    
 
 }

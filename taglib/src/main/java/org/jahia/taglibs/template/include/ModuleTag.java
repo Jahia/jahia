@@ -177,6 +177,15 @@ public class ModuleTag extends BodyTagSupport {
                 }
             }
             if (node != null) {
+                if (node.getPath().endsWith("/*")) {
+                    if (renderContext.isEditMode() && editable) {
+                        printPlaceholderModuleStart("placeholder", node.getPath());
+                        printPlaceholderModuleEnd();
+                    }
+                    
+                    return EVAL_PAGE;
+                }
+
                 if (nodeTypes != null) {
                     StringTokenizer st = new StringTokenizer(nodeTypes, " ");
                     boolean found = false;
@@ -240,10 +249,6 @@ public class ModuleTag extends BodyTagSupport {
                             };
                             resource = new Resource(w, resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), resource.getTemplate());
                             render(renderContext, resource);
-                            if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
-                                printPlaceholderModuleStart("placeholder", node.getPath()+"/*");
-                                printPlaceholderModuleEnd();
-                            }
                             printPlaceholderModuleEnd();
                         }
                     } catch (RepositoryException e) {
@@ -254,6 +259,11 @@ public class ModuleTag extends BodyTagSupport {
                 }
 
             }
+        } catch (IOException ex) {
+            throw new JspException(ex);
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        } finally {
             path = null;
             contentBeanName = null;
             node = null;
@@ -262,11 +272,7 @@ public class ModuleTag extends BodyTagSupport {
             templateType = "html";
             workspace = null;
             nodeTypes = null;
-        } catch (IOException ex) {
-            throw new JspException(ex);
-        } catch (RepositoryException e) {
-            e.printStackTrace();
-        } finally {
+
     		Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
     		pageContext.setAttribute("org.jahia.modules.level", level != null ? level -1 : 1, PageContext.REQUEST_SCOPE);
         	

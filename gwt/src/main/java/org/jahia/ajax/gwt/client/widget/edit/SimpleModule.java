@@ -1,11 +1,8 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.dnd.DragSource;
-import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Element;
@@ -149,36 +146,7 @@ public class SimpleModule extends LayoutContainer implements Module {
         protected void onDragEnter(DNDEvent e) {
             super.onDragEnter(e);
 
-            boolean allowed = true;
-
-            if (nodetypes != null && nodetypes.length() > 0) {
-                List<GWTJahiaNode> sources = e.getStatus().getData(EditModeDNDListener.SOURCE_NODES);
-                if (sources != null) {
-                    String[] allowedTypes = nodetypes.split(" ");
-                    for (GWTJahiaNode source : sources) {
-                        boolean nodeAllowed = false;
-                        for (String type : allowedTypes) {
-                            if (source.getNodeTypes().contains(type) || source.getInheritedNodeTypes().contains(type)) {
-                                nodeAllowed = true;
-                                break;
-                            }
-                        }
-                        allowed &= nodeAllowed;
-                    }
-                }
-                GWTJahiaNodeType type = e.getStatus().getData(EditModeDNDListener.SOURCE_NODETYPE);
-                if (type != null) {
-                    String[] allowedTypes = nodetypes.split(" ");
-                    boolean typeAllowed = false;
-                    for (String t : allowedTypes) {
-                        if (t.equals(type.getName()) || type.getSuperTypes().contains(t)) {
-                            typeAllowed = true;
-                            break;
-                        }
-                    }
-                    allowed &= typeAllowed;
-                }
-            }
+            boolean allowed = checkNodeType(e, nodetypes);
             if (allowed) {
                 e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
                 e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
@@ -187,5 +155,6 @@ public class SimpleModule extends LayoutContainer implements Module {
             e.getStatus().setStatus(allowed);
             e.setCancelled(false);
         }
+
     }
 }

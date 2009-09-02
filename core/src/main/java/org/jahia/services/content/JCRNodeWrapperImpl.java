@@ -470,6 +470,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return list;
     }
 
+    public List<JCRNodeWrapper> getEditableChildren() {
+        List list = getChildren();
+        list.add(provider.getNodeWrapper(getPath()+"/*", session));
+        return list;
+    }
+
     public List<JCRNodeWrapper> getChildren(String name) {
         List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
         if (provider.getService() != null) {

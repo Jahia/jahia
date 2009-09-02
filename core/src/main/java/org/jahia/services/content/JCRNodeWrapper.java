@@ -142,6 +142,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     List<JCRNodeWrapper> getChildren();
 
+    List<JCRNodeWrapper> getEditableChildren();
+
     boolean isVisible();
 
     Map<String, String> getPropertiesAsString();

@@ -278,6 +278,14 @@ public class JCRStoreProvider {
             initObservers();
             initContent();
 
+            if (rmibind != null) {
+                try {
+                    Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(repo));
+                } catch (MalformedURLException e) {
+                } catch (RemoteException e) {
+                }
+            }
+
             initialized = true;
             authenticationType = tmpAuthenticationType;
         } catch (Exception e){

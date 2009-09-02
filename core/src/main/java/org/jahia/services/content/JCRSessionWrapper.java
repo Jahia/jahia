@@ -32,6 +32,7 @@
 package org.jahia.services.content;
 
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.jaas.JahiaLoginModule;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.apache.jackrabbit.commons.xml.Exporter;
@@ -289,6 +290,10 @@ public class JCRSessionWrapper implements Session {
         for (Session session : sessions.values()) {
             session.logout();
         }
+        if (credentials instanceof SimpleCredentials) {
+            SimpleCredentials simpleCredentials = (SimpleCredentials) credentials;
+            JahiaLoginModule.removeToken(simpleCredentials.getUserID(), new String(simpleCredentials.getPassword()));
+        }
         isLive = false;
     }
 
@@ -321,11 +326,18 @@ public class JCRSessionWrapper implements Session {
     public Session getProviderSession(JCRStoreProvider provider) throws RepositoryException {
         if (sessions.get(provider) == null) {
             Session s = null;
-            try {
+
+            if (credentials instanceof SimpleCredentials) {
+                SimpleCredentials simpleCredentials = (SimpleCredentials) credentials;
+                JahiaLoginModule.Token t = JahiaLoginModule.getToken(simpleCredentials.getUserID(), new String(simpleCredentials.getPassword()));
+
                 s = provider.getSession(credentials, workspace.getName());
-            } catch (NoSuchWorkspaceException e) {
-                s = provider.getSession(credentials, null);
+
+                credentials = JahiaLoginModule.getCredentials(simpleCredentials.getUserID(), t != null ? t.deniedPath : null);
+            } else {
+                s = provider.getSession(credentials, workspace.getName());
             }
+
             sessions.put(provider, s);
             for (String token : tokens) {
                 s.addLockToken(token);

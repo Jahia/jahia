@@ -100,6 +100,14 @@ public class SidePanel extends ContentPanel {
         createPage.addSelectionListener(editManager.getEditLinker().getCreatePageButtonListener(createPage));
         createPage.setEnabled(false);
         topToolbar.add(createPage);
+
+        Button publish = new Button();
+        publish.setIcon(ACTION_ICONS.createPage());
+        publish.setToolTip("publish");
+        publish.addSelectionListener(editManager.getEditLinker().getPublishPageListener(publish));
+        topToolbar.add(publish);
+
+
         VBoxLayout vBoxLayout = new VBoxLayout();
         vBoxLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
     }

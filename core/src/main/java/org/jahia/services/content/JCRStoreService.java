@@ -647,8 +647,10 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         }, sharedState, options);
 
         try {
+            JahiaLoginModule.Token t = JahiaLoginModule.getToken(simpleCreds.getUserID(), new String(simpleCreds.getPassword()));
             m.login();
             m.commit();
+            credentials = JahiaLoginModule.getCredentials(simpleCreds.getUserID(), t != null ? t.deniedPath : null);
         } catch (javax.security.auth.login.LoginException e) {
             throw new LoginException(e);
         }

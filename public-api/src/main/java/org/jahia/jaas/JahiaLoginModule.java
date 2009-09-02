@@ -42,13 +42,8 @@ import javax.security.auth.callback.*;
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
-import javax.naming.NamingException;
-import javax.naming.InitialContext;
-import javax.naming.Context;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -62,7 +57,7 @@ public class JahiaLoginModule implements LoginModule {
     public static final String GUEST = " guest ";
 
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
-    private static Map systemPass = new HashMap();
+    private static Map<String, Token> systemPass = new HashMap<String, Token>();
 
     private static JahiaUserService userService;
 
@@ -89,23 +84,23 @@ public class JahiaLoginModule implements LoginModule {
             if (name != null) {
                 if (SYSTEM.equals(name)) {
                     String key = new String(pass);
-                    if (validateTicket(name, key)) {
-//                        systemPass.remove(key);
-                        user = new JahiaPrincipal(SYSTEM, true, false);
+                    Token token = removeToken(name, key);
+                    if (token != null) {
+                        user = new JahiaPrincipal(SYSTEM, true, false, token.deniedPath);
                     }
                 } else if (name.startsWith(SYSTEM)) {
                     String key = new String(pass);
-                    if (validateTicket(name, key)) {
-//                        systemPass.remove(key);
-                        user = new JahiaPrincipal(name.substring(SYSTEM.length()), true, false);
+                    Token token = removeToken(name, key);
+                    if (token != null) {
+                        user = new JahiaPrincipal(name.substring(SYSTEM.length()), true, false, token.deniedPath);
                     }
                 } else if (GUEST.equals(name)) {
-                    user = new JahiaPrincipal(GUEST, false, true);
+                    user = new JahiaPrincipal(GUEST, false, true, null);
                 } else {
                     String key = new String(pass);
-                    if (validateTicket(name, key) || getUserService().checkPassword(name,key)) {
-//                        systemPass.remove(key);
-                        user = new JahiaPrincipal(name);
+                    Token token = removeToken(name, key);
+                    if ((token != null) || getUserService().checkPassword(name,key)) {
+                        user = new JahiaPrincipal(name, token != null ? token.deniedPath : null);
                     }
                 }
                 if (user == null) {
@@ -120,8 +115,18 @@ public class JahiaLoginModule implements LoginModule {
         return user != null;
     }
 
-    public static boolean validateTicket(String name, String key) {
-        return key.equals(systemPass.get(name));
+    public static Token removeToken(String name, String key) {
+        if (systemPass.get(key) != null && systemPass.get(key).username.equals(name)) {
+            return systemPass.remove(key);
+        }
+        return null;
+    }
+
+    public static Token getToken(String name, String key) {
+        if (systemPass.get(key) != null && systemPass.get(key).username.equals(name)) {
+            return systemPass.get(key);
+        }
+        return null;
     }
 
     public boolean commit() throws LoginException {
@@ -149,24 +154,28 @@ public class JahiaLoginModule implements LoginModule {
         return true;
     }
 
-    private static synchronized String getSystemPass(String user) {
-        if (systemPass.containsKey(user)) {
-            return (String) systemPass.get(user);
-        }
+    private static synchronized String getSystemPass(String user, List<String> deniedPathes) {
         String p = idGen.nextIdentifier().toString();
-        systemPass.put( user, p);
+        systemPass.put(p, new Token(user, deniedPathes));
         return p;
     }
 
     public static Credentials getSystemCredentials() {
-        return new SimpleCredentials(JahiaLoginModule.SYSTEM, getSystemPass(JahiaLoginModule.SYSTEM).toCharArray());
+        return new SimpleCredentials(JahiaLoginModule.SYSTEM, getSystemPass(JahiaLoginModule.SYSTEM, null).toCharArray());
     }
 
     public static Credentials getSystemCredentials(String username) {
         if (username == null) {
             return getSystemCredentials();
         }
-        return new SimpleCredentials(JahiaLoginModule.SYSTEM + username, getSystemPass(JahiaLoginModule.SYSTEM + username).toCharArray());
+        return new SimpleCredentials(JahiaLoginModule.SYSTEM + username, getSystemPass(JahiaLoginModule.SYSTEM + username, null).toCharArray());
+    }
+
+    public static Credentials getSystemCredentials(String username, List<String> deniedPathes) {
+        if (username == null) {
+            return getSystemCredentials();
+        }
+        return new SimpleCredentials(JahiaLoginModule.SYSTEM + username, getSystemPass(JahiaLoginModule.SYSTEM + username, deniedPathes).toCharArray());
     }
 
     public static Credentials getGuestCredentials() {
@@ -174,7 +183,11 @@ public class JahiaLoginModule implements LoginModule {
     }
 
     public static Credentials getCredentials(String username) {
-        return new SimpleCredentials(username, getSystemPass(username).toCharArray());
+        return new SimpleCredentials(username, getSystemPass(username, null).toCharArray());
+    }
+
+    public static Credentials getCredentials(String username, List<String> deniedPathes) {
+        return new SimpleCredentials(username, getSystemPass(username, deniedPathes).toCharArray());
     }
 
 //    public JahiaUserService getJahiaUserService() throws NamingException {
@@ -195,5 +208,15 @@ public class JahiaLoginModule implements LoginModule {
 
     public static void setUserService(JahiaUserService userService) {
         JahiaLoginModule.userService = userService;
+    }
+
+    public static class Token {
+        public String username;
+        public List<String> deniedPath;
+
+        Token(String username, List<String> deniedPath) {
+            this.username = username;
+            this.deniedPath = deniedPath;
+        }
     }
 }

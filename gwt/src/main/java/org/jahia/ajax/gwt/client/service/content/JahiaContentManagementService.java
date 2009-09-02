@@ -187,5 +187,7 @@ public interface JahiaContentManagementService extends RemoteService {
     public List<String[]> getTemplatesPath(String path) throws GWTJahiaServiceException;
 
     public void saveNodeTemplate(String path, String template) throws GWTJahiaServiceException;
-    
+
+    public void publish(String path) throws GWTJahiaServiceException;
+
 }

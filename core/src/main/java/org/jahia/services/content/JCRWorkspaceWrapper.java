@@ -123,7 +123,6 @@ public class JCRWorkspaceWrapper implements Workspace {
             }
             session.getProviderSession(provider).getWorkspace().clone(srcWs,source,dest,removeExisting);
         }
-        throw new UnsupportedRepositoryOperationException();
     }
 
     public void move(String source, String dest) throws ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {

@@ -422,4 +422,23 @@ public class EditLinker {
             }
         };
     }
+
+    public SelectionListener<ButtonEvent> getPublishPageListener(Button createPage) {
+        return new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                if (editManager.getMainModule().getNode() != null) {
+                    JahiaContentManagementService.App.getInstance().publish(editManager.getMainModule().getNode().getPath(), new AsyncCallback() {
+                        public void onFailure(Throwable caught) {
+                            //To change body of implemented methods use File | Settings | File Templates.
+                        }
+
+                        public void onSuccess(Object result) {
+                            //To change body of implemented methods use File | Settings | File Templates.
+                        }
+                    });
+                }
+            };
+        };
+    }
 }

@@ -52,10 +52,7 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.naming.NamingException;
 import javax.security.auth.Subject;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -171,7 +168,8 @@ public class JahiaAccessManager implements AccessManager {
 
 
     public boolean isGranted(Path absPath, int permissions) throws RepositoryException {
-        if (p.isSystem()) {
+
+        if (p.isSystem() && p.getDeniedPathes() == null) {
             return true;
         }
 
@@ -183,6 +181,13 @@ public class JahiaAccessManager implements AccessManager {
             PathResolver pr = new DefaultNamePathResolver(nr);
             String jcrPath = pr.getJCRPath(absPath);
 
+            if (p.getDeniedPathes() != null && p.getDeniedPathes().contains(jcrPath)) {
+                return false;
+            }
+
+            if (p.isSystem()) {
+                return true;
+            }
             // Always deny write access on system folders
             if (s.itemExists(jcrPath)) {
                 Item i = s.getItem(jcrPath);

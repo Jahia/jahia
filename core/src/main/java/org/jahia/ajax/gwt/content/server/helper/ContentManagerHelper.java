@@ -74,6 +74,7 @@ import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.FileUtils;
 import org.jahia.bin.Jahia;
+import org.jahia.jaas.JahiaLoginModule;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
@@ -2458,4 +2459,102 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(errors.toString());
         }
     }
+
+    /**
+     * Search in all sub nodes and properties the referenced nodes and get the list of nodes where the publication
+     * should stop ( currently sub pages, sub folders and sub files ).
+     *
+     * @param start The root node where to start the search
+     * @param pruneNodes Empty list, will be filled with the list of sub nodes that should not be part of the publication
+     * @param referencedNode Empty list, will be filled with the list of nodes referenced in the sub tree
+     * @throws RepositoryException
+     */
+    private static void getBlockedAndReferencesList(Node start, List<Node> pruneNodes, List<Node> referencedNode) throws RepositoryException {
+        PropertyIterator pi = start.getProperties();
+        while (pi.hasNext()) {
+            Property p = pi.nextProperty();
+            if (p.getType() == PropertyType.REFERENCE && !p.getName().startsWith("jcr:")) {
+                if (p.getDefinition().isMultiple()) {
+                    Value[] vs = p.getValues();
+                    for (Value v : vs) {
+                        referencedNode.add(start.getSession().getNodeByUUID(v.getString()));
+                    }
+                } else {
+                    referencedNode.add(p.getNode());
+                }
+            }
+        }
+        NodeIterator ni = start.getNodes();
+        while (ni.hasNext()) {
+            Node n = ni.nextNode();
+            if (n.isNodeType("jnt:page") || n.isNodeType("jnt:folder") || n.isNodeType("jnt:file")) {
+                pruneNodes.add(n);
+            } else {
+                getBlockedAndReferencesList(n, pruneNodes, referencedNode);
+            }
+        }
+    }
+
+    /**
+     * Publish a node into the live workspace.
+     * Referenced nodes will also be published.
+     * Parent node must be published, or will be published if publishParent is true.
+     *
+     * @param path Path of the node to publish
+     * @param ctx ProcessingContext
+     * @param publishParent Recursively publish the parents
+     */
+    public static void publish(String path, ProcessingContext ctx, boolean publishParent) {
+        try {
+            JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser());
+            JCRNodeWrapper w = session.getNode(path);
+
+            String parentPath = w.getParent().getPath();
+            JCRSessionWrapper liveSession = jcr.getThreadSession(ctx.getUser(), "live");
+            try {
+                liveSession.getNode(parentPath);
+            } catch (PathNotFoundException e) {
+                if (publishParent) {
+                    publish(parentPath, ctx, true);
+                } else {
+                    return;
+                }
+            }
+
+            try {
+                liveSession.getNode(path);
+                // Node already published
+                //todo : need to update it
+                return;
+            } catch (PathNotFoundException e) {
+            }
+
+            List<Node> blocked = new ArrayList<Node>();
+            List<Node> referencedNodes = new ArrayList<Node>();
+
+            getBlockedAndReferencesList(w, blocked, referencedNodes);
+
+            for (Node node : referencedNodes) {
+                publish(node.getPath(), ctx, true);
+            }
+
+            List<String> deniedPathes = new ArrayList<String>();
+            for (Node node : blocked) {
+                deniedPathes.add(node.getPath());
+            }
+
+            JCRSessionWrapper liveSessionForPublish = jcr.login(JahiaLoginModule.getSystemCredentials(ctx.getUser().getUsername(), deniedPathes), "live");
+
+            try {
+                liveSessionForPublish.getWorkspace().clone("default",path, path, true);
+            } catch (RepositoryException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+
+            liveSessionForPublish.logout();
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
 }

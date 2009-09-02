@@ -170,4 +170,6 @@ public interface JahiaContentManagementServiceAsync {
 
     void saveNodeTemplate(String path, String template , AsyncCallback async);
 
+    void publish(String path, AsyncCallback async);
+
 }

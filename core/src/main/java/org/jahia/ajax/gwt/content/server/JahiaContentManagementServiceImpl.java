@@ -530,4 +530,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
     }
+
+    public void publish(String path) throws GWTJahiaServiceException {
+        ContentManagerHelper.publish(path,  retrieveParamBean(), false);
+    }
 }

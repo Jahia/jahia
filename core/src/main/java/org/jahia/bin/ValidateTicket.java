@@ -33,7 +33,6 @@ package org.jahia.bin;
 
 import org.jahia.jaas.JahiaLoginModule;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -107,7 +106,7 @@ public class ValidateTicket extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String user = req.getParameter("user");
         String pass = req.getParameter("pass");
-        if (!JahiaLoginModule.validateTicket(user, pass)) {
+        if (JahiaLoginModule.getToken(user, pass) == null) {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else {
             resp.setStatus(HttpServletResponse.SC_OK);

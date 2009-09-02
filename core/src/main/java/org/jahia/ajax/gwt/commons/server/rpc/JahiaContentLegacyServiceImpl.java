@@ -258,24 +258,22 @@ public class JahiaContentLegacyServiceImpl extends JahiaRemoteService implements
             JahiaUser user = getRemoteJahiaUser();
             UserProperties userProperties = user.getUserProperties();
             UserProperties missingProperties = new UserProperties();
-            if (userProperties.size() < UserProperties.DEFAULT_PROPERTIES_NAME.size()) {
-                for (String propName : UserProperties.DEFAULT_PROPERTIES_NAME) {
-                    if (!userProperties.getProperties().containsKey(propName)) {
-                        final UserProperty missingProp;
-                        if ("emailNotificationsDisabled".equals(propName)) {
-                            missingProp = new UserProperty(propName, "false", false, UserProperty.CHECKBOX);
+			for (String propName : UserProperties.DEFAULT_PROPERTIES_NAME) {
+				if (!userProperties.getProperties().containsKey(propName)) {
+					final UserProperty missingProp;
+					if ("emailNotificationsDisabled".equals(propName)) {
+						missingProp = new UserProperty(propName, "false", false, UserProperty.CHECKBOX);
 
-                        } else if ("preferredLanguage".equals(propName)) {
-                            missingProp = new UserProperty(propName, getPreferredLocale(user).toString(), false,
-                                    UserProperty.SELECT_BOX);
+					} else if ("preferredLanguage".equals(propName)) {
+						missingProp = new UserProperty(propName, getPreferredLocale(user).toString(), false,
+						        UserProperty.SELECT_BOX);
 
-                        } else {
-                            missingProp = new UserProperty(propName, "", false);
-                        }
-                        missingProperties.setUserProperty(propName, missingProp);
-                    }
-                }
-            }
+					} else {
+						missingProp = new UserProperty(propName, "", false);
+					}
+					missingProperties.setUserProperty(propName, missingProp);
+				}
+			}
 
             // add password
             final UserProperties all = new UserProperties();

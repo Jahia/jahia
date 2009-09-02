@@ -5,6 +5,6 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 
-<c:forEach items="${currentNode.children}" var="subchild">
-        <template:module node="${subchild}" />
+<c:forEach items="${currentNode.editableChildren}" var="subchild">
+        <template:module node="${subchild}" template="${currentResource.resolvedTemplate}" />
 </c:forEach>

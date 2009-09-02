@@ -86,6 +86,8 @@ public class PlaceholderModule extends LayoutContainer implements Module {
                 e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
                 e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getParentModule().getNode());
             }
+            e.getStatus().setStatus(allowed);
+            e.setCancelled(false);
         }
     }
     

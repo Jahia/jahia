@@ -18,7 +18,7 @@
     <templates default="Simple" homepage="TestUnitHome">
         <template name="TestUnitHome" display-name="template.name.testUnitHome" filename="home/testunitshome.jsp"
                   visible="false" page-type="test_templates:home"/>
-        <template name="Simple" display-name="template.name.simple" filename="generic.jsp"
+        <template name="Simple" display-name="template.name.simple" filename="simple.jsp"
                   page-type="test_templates:generic"/>
         <template name="Container-types" display-name="template.name.containerTypes"
                   filename="contentdef/conttype.jsp" page-type="test_templates:contType"

@@ -39,4 +39,9 @@
 <jsp:include page="positioning.jsp">
     <jsp:param name="position" value="position2"/>    
     <jsp:param name="mainArea" value="areas/sitemap.jsp"/>
+    <jsp:param name="areaA" value=""/>
+    <jsp:param name="areaB" value=""/>
+    <jsp:param name="areaC" value=""/>
+    <jsp:param name="gwtScript" value=""/>
+
 </jsp:include>

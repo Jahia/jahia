@@ -39,6 +39,9 @@
 <jsp:include page="positioning.jsp">
     <jsp:param name="position" value="position2"/>
     <jsp:param name="mainArea" value="areas/jobslist.jsp"/>
+    <jsp:param name="areaA" value=""/>
     <jsp:param name="areaB" value="areas/search_nav_boxes.jsp"/>
+    <jsp:param name="areaC" value=""/>
     <jsp:param name="footerNav" value="true"/>
+    <jsp:param name="gwtScript" value=""/>
 </jsp:include>

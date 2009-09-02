@@ -55,6 +55,9 @@
   String objectKey = jBean.getSite().getHomeContentPage().getObjectKey().getKey();
   SubscriptionService service = SubscriptionService.getInstance();
   
+  // disable caching for this page 
+  jBean.getProcessingContext().setCacheExpirationDelay(0);
+  
   
   String action = request.getParameter("action");
   if (action != null) {

@@ -920,7 +920,7 @@
                             <mainContentBody jahia:value="&lt;p&gt;Following pages show the usage of the subscriptions:&lt;/p&gt;
 &lt;ul&gt;
 	&lt;li&gt;         &lt;a href=&quot;###page:/lang/en/ref/a6cfce7d-e51d-4ad8-b301-40b09ad7b492&quot; title=&quot;Newsletter management&quot;&gt;Newsletter&lt;/a&gt; - subscription to a newsltter, creating of a newsletter issues and sending them to the subscribers     &lt;/li&gt;
-	&lt;li&gt;         &lt;a href=&quot;###page:/lang/fr/ref/0a556393-896e-44ff-b43a-a9615c79054a&quot; title=&quot;Subscription API&quot;&gt;Subscription API&lt;/a&gt; - direct usage of the Jahia Subscription API feaures     &lt;/li&gt;
+	&lt;li&gt;         &lt;a href=&quot;###page:/lang/en/ref/0a556393-896e-44ff-b43a-a9615c79054a&quot; title=&quot;Subscription API&quot;&gt;Subscription API&lt;/a&gt; - direct usage of the Jahia Subscription API feaures     &lt;/li&gt;
 &lt;/ul&gt;
 " jcr:uuid="561b47ec-c955-4072-a4e3-b1f8589f24a2" jahia:originalUuid="401595af-9c6c-4eff-a35c-7a0ee1c1ca99"></mainContentBody>
                             <mainContentTitle jahia:value="" jcr:uuid="acb2e0cf-1f30-49d0-b7ff-4cd524d07513" jahia:originalUuid="63783629-9cd8-4184-b4b3-2d56fcbf0ff1"></mainContentTitle>

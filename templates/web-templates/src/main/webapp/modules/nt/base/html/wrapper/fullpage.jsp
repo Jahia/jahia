@@ -51,7 +51,7 @@
     </template:templateHead>
     <template:templateBody gwtScript="${param.gwtScript}">
 
-        <template:module node="${currentNode}" lockTemplate="${currentResource.template}" />        
+        <template:module node="${currentNode}" lockTemplate="${currentResource.resolvedTemplate}" />        
 
     </template:templateBody>
 </template:template>

@@ -20,7 +20,6 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
-import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -368,7 +367,7 @@ public class Render extends HttpServlet {
             } catch (PathNotFoundException e) {
             }
         }
-        Resource r = new Resource(node, workspace, locale, ext, tpl);
+        Resource r = new Resource(node, workspace, locale, ext, null, tpl);
         if (logger.isDebugEnabled()) {
         	logger.debug("Resolved resource: " + r);
         }

@@ -50,6 +50,7 @@ public class Resource {
     private Locale locale;
     private String templateType;
     private String template;
+    private String forcedTemplate;
 
     private List<JCRNodeWrapper> dependencies;
 
@@ -61,11 +62,13 @@ public class Resource {
      * @param node The node to display
      * @param templateType template type
      * @param template the template name, null if default
+     * @param forcedTemplate the template name, null if default
      */
-    public Resource(JCRNodeWrapper node, String workspace, Locale locale, String templateType, String template) {
+    public Resource(JCRNodeWrapper node, String workspace, Locale locale, String templateType, String template, String forcedTemplate) {
         this.node = node;
         this.templateType = templateType;
         this.template = template;
+        this.forcedTemplate = forcedTemplate;
         this.locale = locale;
         this.workspace = workspace;
         dependencies = new ArrayList<JCRNodeWrapper>();
@@ -92,17 +95,35 @@ public class Resource {
     }
 
     public String getTemplate() {
-        if (template == null) {
-            try {
-                if (node.isNodeType("jmix:renderable") && node.hasProperty("j:defaultTemplate")) {
-                    return node.getProperty("j:defaultTemplate").getString();
-                }
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
-            return "default";
-        }
         return template;
+    }
+
+    public String getForcedTemplate() {
+        return forcedTemplate;
+    }
+
+    public List<String> getTemplates() {
+        List<String> l = new ArrayList<String>();
+
+        if (forcedTemplate != null && forcedTemplate.length() > 0) {
+            l.add(forcedTemplate);
+        }
+        try {
+            if (node.isNodeType("jmix:renderable") && node.hasProperty("j:defaultTemplate")) {
+                l.add( node.getProperty("j:defaultTemplate").getString() );
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        if (template != null && template.length() > 0) {
+            l.add(template);
+        }
+        l.add("default");
+        return l;
+    }
+
+    public String getResolvedTemplate() {
+        return getTemplates().iterator().next();
     }
 
     public List<JCRNodeWrapper> getDependencies() {

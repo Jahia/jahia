@@ -82,24 +82,8 @@ public class RequestDispatcherScript implements Script {
      * @throws IOException if template cannot be found, or something wrong happens
      */
     public RequestDispatcherScript(Resource resource, RenderContext context) throws IOException {
-        TemplatePathResolverFactory factory = (TemplatePathResolverFactory) SpringContextSingleton.getInstance().getContext().getBean("TemplatePathResolverFactory");
-        ProcessingContext threadParamBean = Jahia.getThreadParamBean();
-        TemplatePathResolverBean templatePathResolver = factory.getTemplatePathResolver(threadParamBean);
-
         try {
-            ExtendedNodeType nt = (ExtendedNodeType) resource.getNode().getPrimaryNodeType();
-            String templatePath = getTemplatePath(resource, context, templatePathResolver, nt);
-
-            if (templatePath == null) {
-                List<ExtendedNodeType> nodeTypeList = Arrays.asList(nt.getSupertypes());
-                Collections.reverse(nodeTypeList);
-                for (ExtendedNodeType st : nodeTypeList) {
-                    templatePath = getTemplatePath(resource, context, templatePathResolver, st);
-                    if (templatePath != null) {
-                        break;
-                    }
-                }
-            }
+            String templatePath = getTemplatePath(resource, context);
             if (templatePath == null) {
                 throw new IOException("Template not found for : "+resource);
             } else {
@@ -119,11 +103,36 @@ public class RequestDispatcherScript implements Script {
         }
     }
 
-    private String getTemplatePath(Resource resource, RenderContext context, TemplatePathResolverBean templatePathResolver, ExtendedNodeType nt) {
+    private String getTemplatePath(Resource resource, RenderContext context) throws RepositoryException {
+        TemplatePathResolverFactory factory = (TemplatePathResolverFactory) SpringContextSingleton.getInstance().getContext().getBean("TemplatePathResolverFactory");
+        ProcessingContext threadParamBean = Jahia.getThreadParamBean();
+        TemplatePathResolverBean templatePathResolver = factory.getTemplatePathResolver(threadParamBean);
+        ExtendedNodeType nt = (ExtendedNodeType) resource.getNode().getPrimaryNodeType();
+
+        for (String template : resource.getTemplates()) {
+            String templatePath = getTemplatePath(context, resource.getTemplateType(), template, templatePathResolver, nt);
+            if (templatePath != null) {
+                return templatePath;
+            }
+
+            List<ExtendedNodeType> nodeTypeList = Arrays.asList(nt.getSupertypes());
+            Collections.reverse(nodeTypeList);
+            for (ExtendedNodeType st : nodeTypeList) {
+                templatePath = getTemplatePath(context, resource.getTemplateType(), template, templatePathResolver, st);
+                if (templatePath != null) {
+                    return templatePath;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private String getTemplatePath(RenderContext context, String templateType, String template, TemplatePathResolverBean templatePathResolver, ExtendedNodeType nt) {
         return templatePathResolver.lookup("modules/" +
                 nt.getAlias().replace(':','/') +
-                "/" + resource.getTemplateType() +
-                "/" + resource.getTemplate().replace('.','/') + ".jsp");
+                "/" + templateType +
+                "/" + template.replace('.','/') + ".jsp");
     }
 
     /**

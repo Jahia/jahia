@@ -6,7 +6,7 @@
 
 <c:forEach items="${currentNode.editableChildren}" var="subchild">
 <p>
-    <template:module node="${subchild}" />
+    <template:module node="${subchild}" template="${currentResource.resolvedTemplate}" />
 </p>
 </c:forEach>
 

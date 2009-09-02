@@ -52,16 +52,12 @@ import org.jahia.ajax.gwt.content.server.helper.ContentManagerHelper;
 import org.jahia.ajax.gwt.content.server.helper.JCRVersioningHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.initializers.Templates;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
@@ -457,27 +453,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public List<String[]> getTemplatesPath(String path) throws GWTJahiaServiceException {
-        List<String[]> templatesPath = new ArrayList<String[]>();
-        ProcessingContext jParams = retrieveParamBean();
-        String tplPkgName = jParams.getSite().getTemplatePackageName();
-        JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(tplPkgName);
-        try {
-            JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
-            JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
-            ExtendedNodeType nt = (ExtendedNodeType) node.getPrimaryNodeType();
-            if (node.getPrimaryNodeTypeName().equals("jnt:nodeReference")) {
-                nt = (ExtendedNodeType) node.getProperty("j:node").getNode().getPrimaryNodeType();
-            }
-            SortedSet<String> set = Templates.getTemplatesSet(pkg, nt);
-            for (String s : set) {
-                templatesPath.add(new String[]{s,s});
-            }
-        } catch (RepositoryException e) {
-            e.printStackTrace();
-        }
-
-        return templatesPath;
+        return ContentManagerHelper.getTemplatesSet(path, retrieveParamBean());
     }
+
 
     public void pasteReferenceOnTopOf(GWTJahiaNode path, String destinationPath, String name) throws GWTJahiaServiceException {
         ContentManagerHelper.pasteReferenceOnTopOf(path, destinationPath, name, getUser(),true);
@@ -519,11 +497,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
         try {
             JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
-            if (!node.isNodeType("jmix:renderable")) {
-               node.addMixin("jmix:renderable");
-               node.save();
+            if ("--unset--".equals(template)) {
+                if (node.hasProperty("j:defaultTemplate")) {
+                    node.getProperty("j:defaultTemplate").remove();
+                }
+            } else {
+                if (!node.isNodeType("jmix:renderable")) {
+                    node.addMixin("jmix:renderable");
+                    node.save();
+                }
+                node.setProperty("j:defaultTemplate",template);
             }
-            node.setProperty("j:defaultTemplate",template);
             node.save();
         } catch (RepositoryException e) {
             e.printStackTrace();

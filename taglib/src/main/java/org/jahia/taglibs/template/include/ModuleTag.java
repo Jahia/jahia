@@ -1,8 +1,6 @@
 package org.jahia.taglibs.template.include;
 
 import org.jahia.data.beans.ContentBean;
-import org.jahia.data.beans.TemplatePathResolverFactory;
-import org.jahia.data.beans.TemplatePathResolverBean;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
@@ -11,11 +9,8 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRNodeDecorator;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRValueWrapper;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.params.ProcessingContext;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.JspException;
@@ -153,7 +148,7 @@ public class ModuleTag extends BodyTagSupport {
                             Map<String, Object> extraParams = new HashMap<String, Object>();
 
                             if (renderContext.isEditMode()) {
-                                printPlaceholderModuleStart("placeholder", nodeWrapper.getPath()+"/"+path);
+                                printPlaceholderModuleStart("placeholder", nodeWrapper.getPath()+"/"+path, null);
                                 printPlaceholderModuleEnd();
                             }
                         }
@@ -167,7 +162,7 @@ public class ModuleTag extends BodyTagSupport {
                             }
 
                             if (renderContext.isEditMode()) {
-                                printPlaceholderModuleStart("placeholder", path);
+                                printPlaceholderModuleStart("placeholder", path, null);
                                 printPlaceholderModuleEnd();
                             }
                         }
@@ -179,7 +174,7 @@ public class ModuleTag extends BodyTagSupport {
             if (node != null) {
                 if (node.getPath().endsWith("/*")) {
                     if (renderContext.isEditMode() && editable) {
-                        printPlaceholderModuleStart("placeholder", node.getPath());
+                        printPlaceholderModuleStart("placeholder", node.getPath(), null);
                         printPlaceholderModuleEnd();
                     }
                     
@@ -204,29 +199,8 @@ public class ModuleTag extends BodyTagSupport {
                         return EVAL_PAGE;
                     }
                 }
-                // set user template if exists
-                if (lockTemplate != null) {
-                    template = lockTemplate;
-                }
-                else {
-                    try {
-                        if (node.hasProperty("j:defaultTemplate")) {
-                            template = node.getProperty("j:defaultTemplate").getValue().getString();
-                        }
-                    } catch (RepositoryException e) {
-                        logger.error("error finding template in node : "+node,e);
-                    }
-                    // check if template exists, unless set it as default
-                    TemplatePathResolverFactory factory = (TemplatePathResolverFactory) SpringContextSingleton.getInstance().getContext().getBean("TemplatePathResolverFactory");
-                    ProcessingContext threadParamBean = Jahia.getThreadParamBean();
-                    TemplatePathResolverBean templatePathResolver = factory.getTemplatePathResolver(threadParamBean);
-                    if (template != null && templatePathResolver.lookup("modules/" + ((ExtendedNodeType) node.getPrimaryNodeType()).getAlias().replace(':', '/') +
-                            "/" + templateType +
-                            "/" + template.replace('.', '/') + ".jsp") == null) {
-                        template = null;
-                    }
-                }
-                Resource resource = new Resource(node, workspace, locale, templateType, template);
+
+                Resource resource = new Resource(node, workspace, locale, templateType, template, lockTemplate);
 
                 if (renderContext.isEditMode() && editable) {
                     try {
@@ -238,7 +212,7 @@ public class ModuleTag extends BodyTagSupport {
                             if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
                                 type = "list";
                             }
-                            printPlaceholderModuleStart(type, node.getPath());
+                            printPlaceholderModuleStart(type, node.getPath(), resource.getResolvedTemplate());
 
                             JCRNodeWrapper w = new JCRNodeDecorator(node) {
                                 @Override
@@ -247,7 +221,7 @@ public class ModuleTag extends BodyTagSupport {
                                     return new EditablePropertyWrapper(p);
                                 }
                             };
-                            resource = new Resource(w, resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), resource.getTemplate());
+                            resource = new Resource(w, resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), resource.getTemplate(), resource.getForcedTemplate());
                             render(renderContext, resource);
                             printPlaceholderModuleEnd();
                         }
@@ -261,13 +235,12 @@ public class ModuleTag extends BodyTagSupport {
             }
         } catch (IOException ex) {
             throw new JspException(ex);
-        } catch (RepositoryException e) {
-            e.printStackTrace();
         } finally {
             path = null;
             contentBeanName = null;
             node = null;
             template = null;
+            lockTemplate = null;
             editable = true;
             templateType = "html";
             workspace = null;
@@ -280,10 +253,10 @@ public class ModuleTag extends BodyTagSupport {
         return EVAL_PAGE;
     }
 
-    private void printPlaceholderModuleStart(String type, String path) throws IOException {
+    private void printPlaceholderModuleStart(String type, String path, String resolvedTemplate) throws IOException {
         pageContext.getOut().print("<div class=\"jahia-template-gxt\" jahiatype=\"placeholder\" " +
                 "id=\"placeholder"+ UUID.randomUUID().toString()+"\" type=\""+type+"\" path=\""+ path +"\" " +
-                ((nodeTypes != null) ? "nodetypes=\""+nodeTypes+"\"" : "") + ((template  != null) ?" template=\""+template+"\"":"")+">");
+                ((nodeTypes != null) ? "nodetypes=\""+nodeTypes+"\"" : "") + ((resolvedTemplate != null) ?" template=\""+resolvedTemplate+"\"":"")+">");
     }
 
     private void printPlaceholderModuleEnd() throws IOException {

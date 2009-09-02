@@ -6,7 +6,7 @@
 
 <div class="columns2"><!--start 2columns -->
     <c:forEach items="${currentNode.editableChildren}" var="subchild">
-        <template:module node="${subchild}" nodeTypes="web_templates:promoAdvancedContainer" />
+        <template:module node="${subchild}" template="${currentResource.resolvedTemplate}" nodeTypes="web_templates:promoAdvancedContainer" />
     </c:forEach>
 
     <div class="clear"> </div>

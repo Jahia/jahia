@@ -50,6 +50,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.SelectorType;
+import org.jahia.services.content.nodetypes.initializers.Templates;
 
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -69,6 +70,7 @@ import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.PortletEntryPointDefinition;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.containers.JahiaContainer;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -250,7 +252,7 @@ public class ContentManagerHelper {
 
         try {
             if (viewTemplateAreas && node.isNodeType("jmix:renderable") && node.hasProperty("j:defaultTemplate")) {
-                Resource r = new Resource(node, workspace, locale, "html", null);
+                Resource r = new Resource(node, workspace, locale, "html", null, null);
                 final HashMap<String, List<String>> listHashMap = new HashMap<String, List<String>>();
                 RenderContext renderContext = new RenderContext(((ParamBean) context).getRequest(), ((ParamBean) context).getResponse());
                 renderContext.setIncludeSubModules(false);
@@ -2136,7 +2138,7 @@ public class ContentManagerHelper {
         try {
             JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser(), "default", ctx.getCurrentLocale());
             JCRNodeWrapper node = session.getNode(path);
-            Resource r = new Resource(node, "default", ctx.getCurrentLocale(), "html", template);
+            Resource r = new Resource(node, "default", ctx.getCurrentLocale(), "html", null, template);
             ctx.getRequest().setAttribute("mode", "edit");
             RenderContext renderContext = new RenderContext(ctx.getRequest(), ctx.getResponse());
             renderContext.setEditMode(editMode);
@@ -2376,6 +2378,51 @@ public class ContentManagerHelper {
         }
         targetNode.save();
         session.save();
+    }
+
+    public static List<String[]> getTemplatesSet(String path, ProcessingContext ctx) throws GWTJahiaServiceException {
+        List<String[]> templatesPath = new ArrayList<String[]>();
+        String tplPkgName = ctx.getSite().getTemplatePackageName();
+        JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(tplPkgName);
+        try {
+            JCRNodeWrapper node = jcr.getThreadSession(ctx.getUser()).getNode(path);
+            String def = null;
+            if (node.hasProperty("j:defaultTemplate")) {
+                templatesPath.add(new String[]{"--unset--","--unset--"});
+                def = node.getProperty("j:defaultTemplate").getString();
+            }
+
+            SortedSet<String> set = getTemplatesSet(pkg, node);
+            for (String s : set) {
+                if (s.equals(def)) {
+                    templatesPath.add(new String[]{s,"* " + s});                    
+                } else {
+                    templatesPath.add(new String[]{s,s});
+                }
+            }
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+
+        return templatesPath;
+    }
+
+    private static SortedSet<String> getTemplatesSet(JahiaTemplatesPackage pkg, JCRNodeWrapper node) throws RepositoryException {
+        ExtendedNodeType nt = (ExtendedNodeType) node.getPrimaryNodeType();
+        SortedSet<String> set;
+        if (node.getPrimaryNodeTypeName().equals("jnt:nodeReference")) {
+
+            set = getTemplatesSet(pkg, (JCRNodeWrapper) node.getProperty("j:node").getNode());
+        } else if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
+            set = Templates.getTemplatesSet(pkg, nt);
+            List<JCRNodeWrapper> l = node.getChildren();
+            for (JCRNodeWrapper c : l) {
+                set.addAll(getTemplatesSet(pkg, c));
+            }
+        } else {
+            set = Templates.getTemplatesSet(pkg, nt);
+        }
+        return set;
     }
 
     public static void pasteReferenceOnTopOf(GWTJahiaNode aNode, String destinationPath, String name, JahiaUser user, boolean moveOnTop) throws GWTJahiaServiceException {

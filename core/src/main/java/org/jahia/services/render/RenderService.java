@@ -72,7 +72,7 @@ public class RenderService extends JahiaService {
 
         Script script = null;
         if (context.getTemplateWrapper() != null) {
-            Resource wrappedResource = new Resource(resource.getNode(), resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), "wrapper."+context.getTemplateWrapper());
+            Resource wrappedResource = new Resource(resource.getNode(), resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), null, "wrapper."+context.getTemplateWrapper());
             context.setTemplateWrapper(null);
             try {
                 script = resolveScript(wrappedResource, context);
@@ -81,12 +81,12 @@ public class RenderService extends JahiaService {
             }
         }
         if (script == null) {
-            if (resource.getNode().getPrimaryNodeTypeName().equals("jnt:nodeReference")) {
-                Resource wrappedResource = new Resource(resource.getNode(), resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), "default");
-                script = resolveScript(wrappedResource, context);
-            } else {
+//            if (resource.getNode().getPrimaryNodeTypeName().equals("jnt:nodeReference")) {
+//                Resource wrappedResource = new Resource(resource.getNode(), resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), "default", true);
+//                script = resolveScript(wrappedResource, context);
+//            } else {
                 script = resolveScript(resource, context);
-            }
+//            }
         }
 
         Object old = request.getAttribute("currentNode");

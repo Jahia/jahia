@@ -26,6 +26,7 @@ import java.util.Map;
  */
 public class ListModule extends ContentPanel implements Module {
 
+    private String id;
     private GWTJahiaNode node;
     private HTML html;
     private String path;
@@ -33,8 +34,9 @@ public class ListModule extends ContentPanel implements Module {
     private Module parentModule;
     private EditManager editManager;
 
-    public ListModule(String path, String s, String template,EditManager editManager) {
+    public ListModule(String id, String path, String s, String template, EditManager editManager) {
 //        super(new FitLayout());
+        this.id = id;
         this.path = path;
         this.template = template;
         this.editManager = editManager;
@@ -46,9 +48,7 @@ public class ListModule extends ContentPanel implements Module {
         add(html);
     }
 
-    public void parse() {
-        Map<Element, Module> m = ModuleHelper.parse(this);
-
+    public void onParsed() {
         getHeader().sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
@@ -63,6 +63,10 @@ public class ListModule extends ContentPanel implements Module {
             }
         });
 
+    }
+
+    public String getModuleId() {
+        return id;
     }
 
     public HTML getHtml() {
@@ -98,6 +102,12 @@ public class ListModule extends ContentPanel implements Module {
     }
 
     public void setSelected(boolean b) {
-        setBorders(b);
+        if (b) {
+            Selection l = Selection.getInstance();
+            l.hide();
+            l.setCurrentContainer(this);
+            l.show();
+            l.layout();
+        }
     }
 }

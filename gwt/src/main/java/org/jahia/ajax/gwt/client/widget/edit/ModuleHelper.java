@@ -4,6 +4,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -23,46 +24,64 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
  * To change this template use File | Settings | File Templates.
  */
 public class ModuleHelper {
+    private static Map<String, List<Module>> modulesByPath;
     private static Map<String, Module> modules;
 
     private static Map<String, List<String>> children;
 
-    public static void initAllModules(HTML html, EditManager editManager) {
+    public static void initAllModules(MainModule m, HTML html, EditManager editManager) {
         modules = new HashMap<String, Module>();
+        modulesByPath = new HashMap<String, List<Module>>();
+
+        modules.put(m.getModuleId(), m);
+        ArrayList<Module> moduleArrayList = new ArrayList<Module>();
+        modulesByPath.put(m.getPath(), moduleArrayList);
+        moduleArrayList.add(m);
+
         List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(html.getElement());
         for (Element divElement : el) {
             String jahiatype = DOM.getElementAttribute(divElement, JahiaType.JAHIA_TYPE);
-            if ("placeholder".equals(jahiatype)) {
+            if ("module".equals(jahiatype)) {
+                String id = DOM.getElementAttribute(divElement, "id");
                 String type = DOM.getElementAttribute(divElement, "type");
                 String path = DOM.getElementAttribute(divElement, "path");
                 String template = DOM.getElementAttribute(divElement, "template");
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
                 Module module = null;
                 if (type.equals("list")) {
-                    module = new ListModule(path, divElement.getInnerHTML(), template, editManager);
+                    module = new ListModule(id, path, divElement.getInnerHTML(), template, editManager);
                 } else if (type.equals("existingNode")) {
-                    module = new SimpleModule(path, divElement.getInnerHTML(), template, nodetypes, editManager);
+                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, nodetypes, editManager);
                 } else if (type.equals("placeholder")) {
-                    module = new PlaceholderModule(path, nodetypes, editManager);
+                    module = new PlaceholderModule(id, path, nodetypes, editManager);
 //                } else if (type.equals("text")) {
 //                    module = new TextModule(path, divElement.getInnerHTML(), editManager);
                 }
                 if (module != null) {
-                    modules.put(path, module);
+                    if (!modulesByPath.containsKey(path)) {
+                        modulesByPath.put(path, new ArrayList<Module>());
+                    }
+                    modulesByPath.get(path).add(module);
+                    modules.put(id, module);
                 }
             }
         }
 
         ArrayList<String> list = new ArrayList<String>();
-        for (String s : modules.keySet()) {
-            if (!s.endsWith("*") && !(modules.get(s) instanceof TextModule)) {
+        for (String s : modulesByPath.keySet()) {
+            if (!s.endsWith("*") && !(modulesByPath.get(s) instanceof TextModule)) {
                 list.add(s);
             }
         }
+        Log.info("all pathes "+list);
         JahiaContentManagementService.App.getInstance().getNodes(list,new AsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {
                 for (GWTJahiaNode gwtJahiaNode : result) {
-                    modules.get(gwtJahiaNode.getPath()).setNode(gwtJahiaNode);
+                    for (Module module : modulesByPath.get(gwtJahiaNode.getPath())) {
+                        Log.info("set object for "+module.getModuleId());
+                        module.setNode(gwtJahiaNode);
+
+                    }
                 }
             }
 
@@ -73,7 +92,7 @@ public class ModuleHelper {
     }
 
     public static void buildTree(Module module) {
-        String rootPath = module.getPath();
+        String rootId = module.getModuleId();
         Element element = module.getHtml().getElement();
         children = new HashMap<String, List<String>>();
 
@@ -83,19 +102,17 @@ public class ModuleHelper {
             while (currentEl != null) {
                 currentEl = DOM.getParent(currentEl);
                 if (currentEl == element) {
-                    if (!children.containsKey(rootPath)) {
-                        children.put(rootPath, new ArrayList<String>());
+                    if (!children.containsKey(rootId)) {
+                        children.put(rootId, new ArrayList<String>());
                     }
-                    children.get(rootPath).add(divElement.getAttribute("path"));
-
+                    children.get(rootId).add(divElement.getAttribute("id"));
                     break;
-                } else if ("placeholder".equals(currentEl.getAttribute(JahiaType.JAHIA_TYPE))) {
-                    String path = currentEl.getAttribute("path");
-                    if (!children.containsKey(path)) {
-                        children.put(path, new ArrayList<String>());
+                } else if ("module".equals(currentEl.getAttribute(JahiaType.JAHIA_TYPE))) {
+                    String id = currentEl.getAttribute("id");
+                    if (!children.containsKey(id)) {
+                        children.put(id, new ArrayList<String>());
                     }
-                    children.get(path).add(divElement.getAttribute("path"));
-
+                    children.get(id).add(divElement.getAttribute("id"));
                     break;
                 }
             }
@@ -104,16 +121,19 @@ public class ModuleHelper {
 
     public static Map<Element, Module> parse(Module module) {
         Map<Element, Module> m = new HashMap<Element, Module>();
+        if (module.getHtml() == null) {
+            return m;
+        }
         List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(module.getHtml().getElement());
         for (Element divElement : el) {
             String jahiatype = DOM.getElementAttribute(divElement, JahiaType.JAHIA_TYPE);
-            if ("placeholder".equals(jahiatype)) {
-                String path = DOM.getElementAttribute(divElement, "path");
-                if (children.get(module.getPath()).contains(path)) {
-                    Module subModule = modules.get(path);
+            if ("module".equals(jahiatype)) {
+                String id = DOM.getElementAttribute(divElement, "id");
+                if (children.get(module.getModuleId()).contains(id)) {
+                    Module subModule = modules.get(id);
 
                     if (subModule != null) {
-                        subModule.parse();
+                        m.putAll(parse(subModule));                        
                         m.put(divElement, subModule);
                         divElement.setInnerHTML("");
                         module.getContainer().add(subModule.getContainer());
@@ -122,6 +142,7 @@ public class ModuleHelper {
                 }
             }
         }
+        module.onParsed();
         return m;
     }
 

@@ -22,13 +22,15 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
  * To change this template use File | Settings | File Templates.
  */
 public class TextModule extends ContentPanel implements Module {
+    private String id;
     private String path;
     private Module parentModule;
     private EditManager editManager;
     private HTML html;
 
-    public TextModule(String path, String stringhtml, EditManager editManager) {
+    public TextModule(String id, String path, String stringhtml, EditManager editManager) {
         super(new FlowLayout()) ;
+        this.id = id;
         this.path = path;
         this.editManager = editManager;
         setBorders(true);
@@ -41,7 +43,7 @@ public class TextModule extends ContentPanel implements Module {
         return path;
     }
 
-    public void parse() {
+    public void onParsed() {
         sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
@@ -51,6 +53,11 @@ public class TextModule extends ContentPanel implements Module {
         };
         addListener(Events.OnClick, listener);
         
+    }
+
+
+    public String getModuleId() {
+        return id;
     }
 
     public HTML getHtml() {

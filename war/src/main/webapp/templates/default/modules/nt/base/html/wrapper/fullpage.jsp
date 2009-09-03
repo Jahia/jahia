@@ -40,7 +40,7 @@
 	</template:templateHead>
     <template:templateBody>
     	<div id="render">
-        <template:module node="${currentNode}" lockTemplate="${currentResource.resolvedTemplate}" />
+        <template:module node="${currentNode}" forcedTemplate="${currentResource.resolvedTemplate}" />
         </div>
     </template:templateBody>
 </template:template>

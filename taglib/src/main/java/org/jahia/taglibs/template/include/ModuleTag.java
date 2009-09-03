@@ -60,7 +60,9 @@ public class ModuleTag extends BodyTagSupport {
 
     private Locale locale = null;
 
-    private String lockTemplate = null;
+    private String forcedTemplate = null;
+
+    private String autoCreateType = null;
 
     public void setPath(String path) {
         this.path = path;
@@ -94,8 +96,12 @@ public class ModuleTag extends BodyTagSupport {
         this.editable = editable;
     }
 
-    public void setLockTemplate(String lockTemplate) {
-        this.lockTemplate = lockTemplate;
+    public void setForcedTemplate(String forcedTemplate) {
+        this.forcedTemplate = forcedTemplate;
+    }
+
+    public void setAutoCreateType(String autoCreateType) {
+        this.autoCreateType = autoCreateType;
     }
 
     @Override
@@ -143,13 +149,16 @@ public class ModuleTag extends BodyTagSupport {
                         JCRNodeWrapper nodeWrapper = currentResource.getNode();
                         if (!path.equals("*") && nodeWrapper.hasNode(path)) {
                             node = (JCRNodeWrapper) nodeWrapper.getNode(path);
+                        } else if (!path.equals("*") && renderContext.isEditMode() && autoCreateType != null) {
+                            node = nodeWrapper.addNode(path, autoCreateType);
+                            nodeWrapper.save();
                         } else {
                             currentResource.getMissingResources().add(path);
                             Map<String, Object> extraParams = new HashMap<String, Object>();
 
                             if (renderContext.isEditMode()) {
-                                printPlaceholderModuleStart("placeholder", nodeWrapper.getPath()+"/"+path, null);
-                                printPlaceholderModuleEnd();
+                                printModuleStart("placeholder", nodeWrapper.getPath()+"/"+path, null);
+                                printModuleEnd();
                             }
                         }
                     } else if (path.startsWith("/")) {
@@ -162,8 +171,8 @@ public class ModuleTag extends BodyTagSupport {
                             }
 
                             if (renderContext.isEditMode()) {
-                                printPlaceholderModuleStart("placeholder", path, null);
-                                printPlaceholderModuleEnd();
+                                printModuleStart("placeholder", path, null);
+                                printModuleEnd();
                             }
                         }
                     }
@@ -174,8 +183,8 @@ public class ModuleTag extends BodyTagSupport {
             if (node != null) {
                 if (node.getPath().endsWith("/*")) {
                     if (renderContext.isEditMode() && editable) {
-                        printPlaceholderModuleStart("placeholder", node.getPath(), null);
-                        printPlaceholderModuleEnd();
+                        printModuleStart("placeholder", node.getPath(), null);
+                        printModuleEnd();
                     }
                     
                     return EVAL_PAGE;
@@ -184,23 +193,31 @@ public class ModuleTag extends BodyTagSupport {
                 if (nodeTypes != null) {
                     StringTokenizer st = new StringTokenizer(nodeTypes, " ");
                     boolean found = false;
-                    while (st.hasMoreTokens()) {
-                        String tok = st.nextToken();
-                        try {
-                            if (node.isNodeType(tok)) {
-                                found = true;
-                                break;
-                            }
-                        } catch (RepositoryException e) {
-                            logger.error("Cannot test on "+tok,e);
+                    Node displayedNode = node;
+                    try {
+                        if (node.isNodeType("jnt:nodeReference") && node.hasProperty("j:node")) {
+                            displayedNode = node.getProperty("j:node").getNode();
                         }
+                        while (st.hasMoreTokens()) {
+                            String tok = st.nextToken();
+                            try {
+                                if (displayedNode.isNodeType(tok)) {
+                                    found = true;
+                                    break;
+                                }
+                            } catch (RepositoryException e) {
+                                logger.error("Cannot test on "+tok,e);
+                            }
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error(e,e);
                     }
                     if (!found) {
                         return EVAL_PAGE;
                     }
                 }
 
-                Resource resource = new Resource(node, workspace, locale, templateType, template, lockTemplate);
+                Resource resource = new Resource(node, workspace, locale, templateType, template, forcedTemplate);
 
                 if (renderContext.isEditMode() && editable) {
                     try {
@@ -212,7 +229,7 @@ public class ModuleTag extends BodyTagSupport {
                             if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
                                 type = "list";
                             }
-                            printPlaceholderModuleStart(type, node.getPath(), resource.getResolvedTemplate());
+                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate());
 
                             JCRNodeWrapper w = new JCRNodeDecorator(node) {
                                 @Override
@@ -223,7 +240,7 @@ public class ModuleTag extends BodyTagSupport {
                             };
                             resource = new Resource(w, resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), resource.getTemplate(), resource.getForcedTemplate());
                             render(renderContext, resource);
-                            printPlaceholderModuleEnd();
+                            printModuleEnd();
                         }
                     } catch (RepositoryException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -240,11 +257,12 @@ public class ModuleTag extends BodyTagSupport {
             contentBeanName = null;
             node = null;
             template = null;
-            lockTemplate = null;
+            forcedTemplate = null;
             editable = true;
             templateType = "html";
             workspace = null;
             nodeTypes = null;
+            autoCreateType = null;
 
     		Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
     		pageContext.setAttribute("org.jahia.modules.level", level != null ? level -1 : 1, PageContext.REQUEST_SCOPE);
@@ -253,13 +271,13 @@ public class ModuleTag extends BodyTagSupport {
         return EVAL_PAGE;
     }
 
-    private void printPlaceholderModuleStart(String type, String path, String resolvedTemplate) throws IOException {
-        pageContext.getOut().print("<div class=\"jahia-template-gxt\" jahiatype=\"placeholder\" " +
-                "id=\"placeholder"+ UUID.randomUUID().toString()+"\" type=\""+type+"\" path=\""+ path +"\" " +
+    private void printModuleStart(String type, String path, String resolvedTemplate) throws IOException {
+        pageContext.getOut().print("<div class=\"jahia-template-gxt\" jahiatype=\"module\" " +
+                "id=\"module"+ UUID.randomUUID().toString()+"\" type=\""+type+"\" path=\""+ path +"\" " +
                 ((nodeTypes != null) ? "nodetypes=\""+nodeTypes+"\"" : "") + ((resolvedTemplate != null) ?" template=\""+resolvedTemplate+"\"":"")+">");
     }
 
-    private void printPlaceholderModuleEnd() throws IOException {
+    private void printModuleEnd() throws IOException {
         pageContext.getOut().print("</div>");
     }
 

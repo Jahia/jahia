@@ -19,7 +19,7 @@
         <ol start="${itemsPerPage * (currentPageNumber - 1) + 1}">
         <c:forEach items="${savedSearchIterator}" var="hit">
             <pg:item>
-                <li><template:module node="${hit}" lockTemplate="link" editable="false"/></li>
+                <li><template:module node="${hit}" forcedTemplate="link" editable="false"/></li>
             </pg:item>
         </c:forEach>
         </ol>

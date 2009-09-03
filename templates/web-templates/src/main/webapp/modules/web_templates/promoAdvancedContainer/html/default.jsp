@@ -10,7 +10,6 @@
  <jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
 
 
-            <div class="column-item">
                 <div class="spacer">
                     <!--start box -->
                     <div class="box2 "><!--start box 2 default-->
@@ -31,4 +30,3 @@
                 </div>
 
                 <div class="clear"> </div>
-            </div>

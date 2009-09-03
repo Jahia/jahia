@@ -1,12 +1,21 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
+import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.util.BaseEventPreview;
+import com.extjs.gxt.ui.client.fx.Draggable;
+import com.extjs.gxt.ui.client.core.El;
+import com.extjs.gxt.ui.client.core.XDOM;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Accessibility;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Command;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.Map;
@@ -25,6 +34,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
  */
 public class SimpleModule extends LayoutContainer implements Module {
 
+    private String id;
     private GWTJahiaNode node;
     private HTML html;
     private String path;
@@ -33,10 +43,8 @@ public class SimpleModule extends LayoutContainer implements Module {
     private EditManager editManager;
     private String nodetypes;
 
-    public SimpleModule(final String path, String s, String template, String nodetypes, final EditManager editManager) {
-//        super(new FitLayout());
-//        setHeaderVisible(false);
-//        setScrollMode(Style.Scroll.AUTO);
+    public SimpleModule(String id, final String path, String s, String template, String nodetypes, final EditManager editManager) {
+        this.id = id;
         setBorders(false);
         this.path = path;
         this.editManager = editManager;
@@ -47,21 +55,7 @@ public class SimpleModule extends LayoutContainer implements Module {
         add(html);
     }
 
-    public void parse() {
-        Map<Element, Module> m = ModuleHelper.parse(this);
-        boolean last = m.isEmpty();
-
-        if (!last) {
-            last = true;
-            for (Module module : m.values()) {
-                if (!(module instanceof TextModule)) {
-                    last = false;
-                    break;
-                }
-            }
-        }
-
-        if (last) {
+    public void onParsed() {
             Log.debug("Add drag source for simple module "+path);
             DragSource source = new SimpleModuleDragSource(this);
             source.addDNDListener(editManager.getDndListener());
@@ -82,7 +76,10 @@ public class SimpleModule extends LayoutContainer implements Module {
                     new EditContentEngine(node).show();
                 }
             });
-        }
+    }
+
+    public String getModuleId() {
+        return id;
     }
 
     public HTML getHtml() {
@@ -114,7 +111,14 @@ public class SimpleModule extends LayoutContainer implements Module {
     }
 
     public void setSelected(boolean b) {
-        setBorders(b);
+//        setBorders(b);
+        if (b) {
+            Selection l = Selection.getInstance();
+            l.hide();
+            l.setCurrentContainer(this);
+            l.show();
+            l.layout();
+        }
     }
 
     public String getTemplate() {
@@ -129,6 +133,7 @@ public class SimpleModule extends LayoutContainer implements Module {
         @Override
         protected void onDragStart(DNDEvent e) {
             super.onDragStart(e);
+            Selection.getInstance().hide();
             e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
             List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
             l.add(getModule().getNode());

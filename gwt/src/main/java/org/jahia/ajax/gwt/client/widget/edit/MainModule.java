@@ -8,6 +8,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
@@ -42,6 +43,8 @@ public class MainModule extends LayoutContainer implements Module {
         this.path = path;
         this.template = template;
 
+        Selection.getInstance().setMainModule(this);
+
         refresh();
     }
 
@@ -56,7 +59,7 @@ public class MainModule extends LayoutContainer implements Module {
                 html = new HTML(result);
                 add(html);
 
-                ModuleHelper.initAllModules(html, editManager);
+                ModuleHelper.initAllModules(MainModule.this, html, editManager);
                 ModuleHelper.buildTree(MainModule.this);
                 parse();
                 layout();
@@ -64,21 +67,6 @@ public class MainModule extends LayoutContainer implements Module {
                 setVScrollPosition(i);
                 List<String> list = new ArrayList<String>(1);
                 list.add(path);
-                JahiaContentManagementService.App.getInstance().getNodes(list, new AsyncCallback<List<GWTJahiaNode>>() {
-                    public void onSuccess(List<GWTJahiaNode> result) {
-                        for (GWTJahiaNode gwtJahiaNode : result) {
-                            MainModule.this.setNode(gwtJahiaNode);
-                            if (gwtJahiaNode.getNodeTypes().contains("jnt:page") ||
-                                gwtJahiaNode.getInheritedNodeTypes().contains("jnt:page")) {
-                                editManager.getEditLinker().getCreatePageButton().setEnabled(true);
-                            }
-                        }
-                    }
-
-                    public void onFailure(Throwable caught) {
-
-                    }
-                });
             }
 
             public void onFailure(Throwable caught) {
@@ -100,6 +88,13 @@ public class MainModule extends LayoutContainer implements Module {
         m = ModuleHelper.parse(this);
     }
 
+    public void onParsed() {        
+    }
+
+    public String getModuleId() {
+        return "main";
+    }
+
     public HTML getHtml() {
         return html;
     }
@@ -118,6 +113,9 @@ public class MainModule extends LayoutContainer implements Module {
 
     public void setNode(GWTJahiaNode node) {
         this.node = node;
+        if (node.getNodeTypes().contains("jnt:page") || node.getInheritedNodeTypes().contains("jnt:page")) {
+            editManager.getEditLinker().getCreatePageButton().setEnabled(true);
+        }
     }
 
     public Module getParentModule() {

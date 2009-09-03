@@ -18,13 +18,15 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
  * To change this template use File | Settings | File Templates.
  */
 public class PlaceholderModule extends LayoutContainer implements Module {
+    private String id;
     private String path;
     private Module parentModule;
     private EditManager editManager;
     private String nodetypes;
 
-    public PlaceholderModule(String path, String nodetypes, EditManager editManager) {
+    public PlaceholderModule(String id, String path, String nodetypes, EditManager editManager) {
         super(new FlowLayout());
+        this.id = id;
         this.path = path;
         this.editManager = editManager;
         this.nodetypes = nodetypes;
@@ -42,7 +44,11 @@ public class PlaceholderModule extends LayoutContainer implements Module {
 
     }
 
-    public void parse() {
+    public void onParsed() {
+    }
+
+    public String getModuleId() {
+        return id;
     }
 
     public HTML getHtml() {

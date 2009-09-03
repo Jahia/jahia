@@ -407,58 +407,69 @@
 
 
     <tag>
-        <description>Module include
+        <description>Includes a node as a module into the page. The node to display is determined either by nodeName, contentBeanName, path or node attribute. Only one these attributes must be specified.
+            templateType / template / forcedTemplate attributes determine the way the node is rendered.
         </description>
         <name>module</name>
         <tag-class>org.jahia.taglibs.template.include.ModuleTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>Use for displaying old jahia content</description>
-            <name>contentBeanName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>org.jahia.data.beans.ContainerBean</type>
-        </attribute>
-        <attribute>
-            <description>nodeBean module will display</description>
+            <description>Node to include in the page</description>
             <name>node</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Name of the node attribute to be found in page context</description>
             <name>nodeName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Relative or absolute path to the node to include</description>
             <name>path</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>default template use for displaying node</description>
-            <name>template</name>
+            <description>Use for displaying old jahia content. Name of the content bean attribute to be found in page context</description>
+            <name>contentBeanName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>This attribute will overide any template information to display the node</description>
-            <name>lockTemplate</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
+            <description>The template type to use. By default, inherited from parent module, or HTML.</description>
             <name>templateType</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>The default template used for displaying the node. Can be overriden with template of the node itself.</description>
+            <name>template</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The template used for displaying the node. Overriden the template defined in the node itself.</description>
+            <name>forcedTemplate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Enable or disable edition of this module in edit mode. Mainly used for absolute or references.</description>
             <name>editable</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Space separated list of allowed node types. If the node does not match any node type, it won't be displayed. Edit mode will forbid drop of any incompatible node.</description>
             <name>nodeTypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>If used with a relative path in path attribute, a node of the specified type wil be automatically created at this path. Has no effect if path is not specified or if path is absolute.</description>
+            <name>autoCreateType</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

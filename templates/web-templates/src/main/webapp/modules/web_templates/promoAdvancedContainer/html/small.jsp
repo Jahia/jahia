@@ -9,7 +9,6 @@
  <jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
  <%--<jcr:nodeProperty node="${currentNode}" name="link" var="link"/>--%>
 
-    <div class="column-item"><!--start column-item -->
         <div class="spacer"><!--start spacer -->
             <div class="box box-fixed-height"><!--start box -->
                 <img src="${image.node.url}" class="floatleft"/>
@@ -23,4 +22,3 @@
             </div><!--stop box -->
         <div class="clear"> </div>
         </div><!--stop spacer -->
-    </div><!--stop column-item -->

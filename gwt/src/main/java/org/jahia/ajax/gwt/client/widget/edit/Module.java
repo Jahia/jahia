@@ -15,11 +15,13 @@ import com.google.gwt.user.client.Element;
  */
 public interface Module {
 
-    void parse();
+    void onParsed();
 
     HTML getHtml();
 
     LayoutContainer getContainer();
+
+    String getModuleId();
 
     String getPath();
     

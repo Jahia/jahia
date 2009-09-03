@@ -634,7 +634,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public static GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper f,boolean versionned) {
+    public static GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper f,boolean versioned) {
         List<String> list = f.getNodeTypes();
         List<String> inherited = new ArrayList<String>();
         for (String s : list) {
@@ -744,11 +744,18 @@ public class ContentManagerHelper {
             logger.error(e.getMessage(), e);
         }
         n.setNormalizedName(JCRStoreService.removeDiacritics(n.getName()));
-        if (versionned) {
+        if (versioned) {
             List<GWTJahiaNodeVersion> gwtJahiaNodeVersions = JCRVersioningHelper.getVersions(f, null);
             if (gwtJahiaNodeVersions != null && gwtJahiaNodeVersions.size() > 0) {
                 n.setVersions(gwtJahiaNodeVersions);
             }
+        }
+        try {
+            if (f.isNodeType("jnt:nodeReference") && f.hasProperty("j:node")) {
+                n.setReferencedNode(getGWTJahiaNode((JCRNodeWrapper) f.getProperty("j:node").getNode(), versioned));
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
         return n;
     }
@@ -1109,6 +1116,9 @@ public class ContentManagerHelper {
             }
         } else {
             Node reference = dest.addNode(name, "jnt:nodeReference");
+            if (node.isNodeType("jnt:nodeReference")) {
+                node = (JCRNodeWrapper) node.getProperty("j:node").getNode();
+            }
             reference.setProperty("j:node", node.getUUID());
         }
     }

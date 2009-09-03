@@ -72,7 +72,7 @@ public class RenderService extends JahiaService {
 
         Script script = null;
         if (context.getTemplateWrapper() != null) {
-            Resource wrappedResource = new Resource(resource.getNode(), resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), null, "wrapper."+context.getTemplateWrapper());
+            Resource wrappedResource = new Resource(resource.getNode(), resource.getTemplateType(), null, "wrapper."+context.getTemplateWrapper());
             context.setTemplateWrapper(null);
             try {
                 script = resolveScript(wrappedResource, context);

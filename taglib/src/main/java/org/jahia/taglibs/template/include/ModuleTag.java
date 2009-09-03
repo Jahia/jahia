@@ -56,10 +56,6 @@ public class ModuleTag extends BodyTagSupport {
 
     private String nodeTypes;
 
-    private String workspace = null;
-
-    private Locale locale = null;
-
     private String forcedTemplate = null;
 
     private String autoCreateType = null;
@@ -121,18 +117,6 @@ public class ModuleTag extends BodyTagSupport {
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
             if (currentResource != null) {
                 templateType = currentResource.getTemplateType();
-                workspace = currentResource.getWorkspace();
-                locale = currentResource.getLocale();
-            }
-            if (locale == null) {
-                locale = Jahia.getThreadParamBean().getCurrentLocale();
-            }
-            if (workspace == null) {
-                if (Jahia.getThreadParamBean().getOperationMode().equals("normal")) {
-                    workspace = "live";
-                } else {
-                    workspace = "default";
-                }
             }
             if (nodeName != null) {
                 node = (JCRNodeWrapper) pageContext.findAttribute(nodeName);
@@ -217,7 +201,7 @@ public class ModuleTag extends BodyTagSupport {
                     }
                 }
 
-                Resource resource = new Resource(node, workspace, locale, templateType, template, forcedTemplate);
+                Resource resource = new Resource(node, templateType, template, forcedTemplate);
 
                 if (renderContext.isEditMode() && editable) {
                     try {
@@ -238,7 +222,7 @@ public class ModuleTag extends BodyTagSupport {
                                     return new EditablePropertyWrapper(p);
                                 }
                             };
-                            resource = new Resource(w, resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), resource.getTemplate(), resource.getForcedTemplate());
+                            resource = new Resource(w, resource.getTemplateType(), resource.getTemplate(), resource.getForcedTemplate());
                             render(renderContext, resource);
                             printModuleEnd();
                         }
@@ -260,7 +244,6 @@ public class ModuleTag extends BodyTagSupport {
             forcedTemplate = null;
             editable = true;
             templateType = "html";
-            workspace = null;
             nodeTypes = null;
             autoCreateType = null;
 

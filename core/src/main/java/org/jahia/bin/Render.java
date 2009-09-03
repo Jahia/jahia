@@ -367,7 +367,7 @@ public class Render extends HttpServlet {
             } catch (PathNotFoundException e) {
             }
         }
-        Resource r = new Resource(node, workspace, locale, ext, null, tpl);
+        Resource r = new Resource(node, ext, null, tpl);
         if (logger.isDebugEnabled()) {
         	logger.debug("Resolved resource: " + r);
         }

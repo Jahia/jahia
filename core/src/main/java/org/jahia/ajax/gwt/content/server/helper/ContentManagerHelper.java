@@ -252,7 +252,7 @@ public class ContentManagerHelper {
 
         try {
             if (viewTemplateAreas && node.isNodeType("jmix:renderable") && node.hasProperty("j:defaultTemplate")) {
-                Resource r = new Resource(node, workspace, locale, "html", null, null);
+                Resource r = new Resource(node, "html", null, null);
                 final HashMap<String, List<String>> listHashMap = new HashMap<String, List<String>>();
                 RenderContext renderContext = new RenderContext(((ParamBean) context).getRequest(), ((ParamBean) context).getResponse());
                 renderContext.setIncludeSubModules(false);
@@ -2138,7 +2138,7 @@ public class ContentManagerHelper {
         try {
             JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser(), "default", ctx.getCurrentLocale());
             JCRNodeWrapper node = session.getNode(path);
-            Resource r = new Resource(node, "default", ctx.getCurrentLocale(), "html", null, template);
+            Resource r = new Resource(node, "html", null, template);
             ctx.getRequest().setAttribute("mode", "edit");
             RenderContext renderContext = new RenderContext(ctx.getRequest(), ctx.getResponse());
             renderContext.setEditMode(editMode);

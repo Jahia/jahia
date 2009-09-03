@@ -32,6 +32,7 @@
 package org.jahia.services.render;
 
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.apache.log4j.Logger;
 
 import javax.jcr.RepositoryException;
@@ -46,8 +47,6 @@ import java.util.*;
 public class Resource {
     private static Logger logger = Logger.getLogger(Resource.class);
     private JCRNodeWrapper node;
-    private String workspace;
-    private Locale locale;
     private String templateType;
     private String template;
     private String forcedTemplate;
@@ -64,13 +63,11 @@ public class Resource {
      * @param template the template name, null if default
      * @param forcedTemplate the template name, null if default
      */
-    public Resource(JCRNodeWrapper node, String workspace, Locale locale, String templateType, String template, String forcedTemplate) {
+    public Resource(JCRNodeWrapper node, String templateType, String template, String forcedTemplate) {
         this.node = node;
         this.templateType = templateType;
         this.template = template;
         this.forcedTemplate = forcedTemplate;
-        this.locale = locale;
-        this.workspace = workspace;
         dependencies = new ArrayList<JCRNodeWrapper>();
         dependencies.add(node);
 
@@ -87,11 +84,21 @@ public class Resource {
     }
 
     public String getWorkspace() {
-        return workspace;
+        try {
+            return node.getSession().getWorkspace().getName();
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return null;
     }
 
     public Locale getLocale() {
-        return locale;
+        try {
+            return ((JCRSessionWrapper) node.getSession()).getLocale();
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return null;
     }
 
     public String getTemplate() {
@@ -142,8 +149,6 @@ public class Resource {
     public String toString() {
         return "Resource{" +
                 "node=" + node.getPath() +
-                ", workspace='" + workspace + '\'' +
-                ", locale=" + locale +
                 ", templateType='" + templateType + '\'' +
                 ", template='" + template + '\'' +
                 '}';

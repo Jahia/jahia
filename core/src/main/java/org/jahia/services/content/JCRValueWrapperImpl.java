@@ -120,7 +120,11 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
 
     public Node getNode() throws ValueFormatException, IllegalStateException, RepositoryException {
         if (definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
-            return session.getNodeByUUID(value.getString());
+            try {
+                return session.getNodeByUUID(value.getString());
+            } catch (ItemNotFoundException e) {
+                return null;
+            }
         } else {
             // TODO: The specification suggests using value conversion
             throw new ValueFormatException("property must be of type REFERENCE");

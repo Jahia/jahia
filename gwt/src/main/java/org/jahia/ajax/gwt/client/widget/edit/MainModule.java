@@ -50,7 +50,7 @@ public class MainModule extends LayoutContainer implements Module {
 
     public void refresh() {
         editManager.getEditLinker().getCreatePageButton().setEnabled(false);
-        JahiaContentManagementService.App.getInstance().getRenderedContent(path, template, true, new AsyncCallback<String>() {
+        JahiaContentManagementService.App.getInstance().getRenderedContent(path, null, editManager.getLocale(), template, true, new AsyncCallback<String>() {
             public void onSuccess(String result) {
                 int i = getVScrollPosition();
 

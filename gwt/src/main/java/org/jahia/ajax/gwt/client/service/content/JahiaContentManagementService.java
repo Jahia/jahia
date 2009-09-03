@@ -45,6 +45,7 @@ import org.jahia.ajax.gwt.client.util.URL;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -154,7 +155,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion) throws GWTJahiaServiceException;    
 
-    public String getRenderedContent(String path, String template, boolean editMode) throws GWTJahiaServiceException;
+    public String getRenderedContent(String path, String workspace, String locale, String template, boolean editMode) throws GWTJahiaServiceException;
 
     public Boolean isFileAccessibleForCurrentContainer(String path) throws GWTJahiaServiceException;
 

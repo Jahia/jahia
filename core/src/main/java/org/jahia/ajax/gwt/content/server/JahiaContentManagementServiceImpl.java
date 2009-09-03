@@ -58,6 +58,7 @@ import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
+import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
@@ -394,8 +395,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         ContentManagerHelper.uploadedFile(location, tmpName, operation, newName, retrieveParamBean());
     }
 
-    public String getRenderedContent(String path, String template, boolean editMode) throws GWTJahiaServiceException {
-        return ContentManagerHelper.getRenderedContent(path, template, editMode, retrieveParamBean());
+    public String getRenderedContent(String path, String workspace, String locale, String template, boolean editMode) throws GWTJahiaServiceException {
+        return ContentManagerHelper.getRenderedContent(path, workspace, LanguageCodeConverters.languageCodeToLocale(locale), template, editMode, retrieveParamBean());
     }
 
     public Boolean isFileAccessibleForCurrentContainer(String path) throws GWTJahiaServiceException {
@@ -516,6 +517,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void publish(String path) throws GWTJahiaServiceException {
-        ContentManagerHelper.publish(path,  retrieveParamBean(), false);
+        long l = System.currentTimeMillis();
+        ContentManagerHelper.publish(path, null, retrieveParamBean(), false);
+        System.out.println("-->"+(System.currentTimeMillis() - l));
     }
 }

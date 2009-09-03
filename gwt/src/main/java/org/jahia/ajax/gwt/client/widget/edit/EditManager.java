@@ -5,6 +5,8 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.Style;
 
+import java.util.Locale;
+
 /**
  * Created by IntelliJ IDEA.
  * User: toto
@@ -19,13 +21,14 @@ public class EditManager extends Viewport {
     private SidePanel sidePanel;
     private EditLinker editLinker;
     private Module selection;
+    private String locale;
 
-    public EditManager(String path, String template) {
+    public EditManager(String path, String template, String locale) {
         super();
         setLayout(new BorderLayout());
         editLinker = new EditLinker(this);
         dndListener = new EditModeDNDListener(this);
-
+        this.locale = locale;
         BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 340);
         data.setCollapsible(true);
         data.setSplit(true);
@@ -50,6 +53,10 @@ public class EditManager extends Viewport {
 
     public SidePanel getSidePanel() {
         return sidePanel;
+    }
+
+    public String getLocale() {
+        return locale;
     }
 
     public void setSelection(Module selection) {

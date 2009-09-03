@@ -136,7 +136,7 @@ public class EditLinker {
         previewTabItem.setHtml(new HTML());
         previewTabItem.removeAll();
         if (node != null) {
-            JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), template, false, new AsyncCallback<String>() {
+            JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, editManager.getLocale(), template, false, new AsyncCallback<String>() {
                 public void onSuccess(String result) {
                     HTML html = new HTML(result);
                     previewTabItem.add(html);

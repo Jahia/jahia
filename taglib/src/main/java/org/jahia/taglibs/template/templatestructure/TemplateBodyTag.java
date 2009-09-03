@@ -222,7 +222,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                 addEditModeResources();
                 pageContext.getRequest().setAttribute("jahia.engines.gwtModuleIncluded", Boolean.TRUE);
                 pageContext.getOut().println(GWTIncluder.generateGWTImport(pageContext, "org.jahia.ajax.gwt.module.edit.Edit"));
-                pageContext.getOut().println("<div class=\"jahia-template-gxt editmode-gxt\" id=\"editmode\" jahiatype=\"editmode\" path=\""+r.getNode().getPath()+"\" template=\""+r.getTemplate()+"\"></div>");
+                pageContext.getOut().println("<div class=\"jahia-template-gxt editmode-gxt\" id=\"editmode\" jahiatype=\"editmode\" path=\""+r.getNode().getPath()+"\" locale=\""+r.getLocale()+"\" template=\""+r.getTemplate()+"\"></div>");
                 return SKIP_BODY;
             }
 

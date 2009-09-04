@@ -33,7 +33,9 @@
         <div class="column-item2">
             <div class="spacer"><!--start bottomshortcuts-->
                 <div id="bottomshortcuts">
-
+                    <c:if test="${editUrl != null}">
+                        <a href="${editUrl}.html"> <fmt:message key="edit"/> </a>
+                    </c:if>
                 </div><!--stop bottomshortcuts-->
 <div class="clear"> </div>
                 <!--start copyright-->

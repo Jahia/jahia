@@ -92,11 +92,19 @@ public class RenderService extends JahiaService {
         Object old = request.getAttribute("currentNode");
         request.setAttribute("currentNode", resource.getNode());
 
+        String editBaseUrl = context.getRequest().getContextPath()+Edit.getEditServletPath()+ "/"+resource.getWorkspace()+"/"+resource.getLocale();
         if (request.getAttribute("baseUrl") == null) {
             if (context.isEditMode()) {
-                request.setAttribute("baseUrl", context.getRequest().getContextPath()+Edit.getEditServletPath()+ "/"+resource.getWorkspace()+"/"+resource.getLocale());
+                request.setAttribute("baseUrl", editBaseUrl);
             } else {
                 request.setAttribute("baseUrl", context.getRequest().getContextPath()+Render.getRenderServletPath()+ "/"+resource.getWorkspace()+"/"+resource.getLocale());
+            }
+        }
+
+        // TODO: add acl and permission checking
+        if(request.getAttribute("editUrl") == null){
+            if(!context.isEditMode()){
+                request.setAttribute("editUrl", editBaseUrl+resource.getNode().getPath());
             }
         }
 

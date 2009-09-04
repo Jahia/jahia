@@ -406,13 +406,17 @@ try the following:
 /** Jahia server release number */
     private static double RELEASE_NUMBER = x.x;
 
-2. Change the following attributes in ALL pom.xml files
+2. Change the following variable in \config\src\main\java\org\jahia\bin\JahiaConfigurationWizard.java
+
+    public static final String VERSION = "x.x";
+
+3. Change the following attributes in ALL pom.xml files
 
 <version>x.x-SNAPSHOT</version>
 
-3. In the pom.xml located at the root level also change the jahia.package.version
+4. In the pom.xml located at the root level also change the jahia.package.version
 
 <jahia.package.version>x.x-SNAPSHOT</jahia.package.version>
 
 
-4. Create the adequate license.xml files
+5. Create the adequate license.xml files

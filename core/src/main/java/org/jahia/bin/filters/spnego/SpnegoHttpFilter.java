@@ -47,6 +47,7 @@ package org.jahia.bin.filters.spnego;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Properties;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -59,10 +60,9 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import jcifs.Config;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.security.spnego.SpnegoAuthenticator;
 
 /**
@@ -76,13 +76,13 @@ public class SpnegoHttpFilter implements Filter {
      * reason for this, if client is out of domain it can be authenticate in some
      * other way (not NTLM or SPNEGO).
      */
-    private static final Logger LOG = Logger.getLogger("org.jahia.bin.filters.spnego.SpnegoHttpFilter");
+    private static final Logger logger = Logger.getLogger("org.jahia.bin.filters.spnego.SpnegoHttpFilter");
 
     public static final String SSOAUTHENTICATOR_KEY = "SSOAuthenticator";
     
     private boolean skipAuthentification;
     private boolean useBasic;    
-
+    
     /**
      * {@inheritDoc}
      */
@@ -93,42 +93,48 @@ public class SpnegoHttpFilter implements Filter {
     /**
      * {@inheritDoc}
      */
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-        ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response,
+            FilterChain chain) throws IOException, ServletException {
 
-      HttpServletResponse resp = (HttpServletResponse) response;
-      HttpServletRequest req = (HttpServletRequest) request;
-      Principal principal = null;
-      
-      if ((principal = authenticate(req, resp)) == null) {
-          if (!skipAuthentification) {
-              return;
-          }
-      }
+        HttpServletResponse resp = (HttpServletResponse) response;
+        HttpServletRequest req = (HttpServletRequest) request;
+        Principal principal = null;
+        if ((principal = authenticate(req, resp)) == null) {
+            if (!skipAuthentification || resp.isCommitted()) {
+                if (!resp.isCommitted()) {
+                    if (useBasic) {
+                        resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                    } else {
+                        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                                "SPNEGO could not authenticate and authentication is configured to not be skipped");
+                    }
+                }
+                return;
+            }
+        }
 
-      Boolean isBasicBool = (Boolean) request.getAttribute("isBasic");
-      if (isBasicBool == null) {
-          isBasicBool = Boolean.FALSE;
-      }
-      boolean useSpnegoRequest = false;
-      if (principal != null) {
-          useSpnegoRequest = true;
-      }
-      if (isBasicBool.booleanValue() && !useBasic) {
-          useSpnegoRequest = false;
-      }
+        Boolean isBasicBool = (Boolean) request.getAttribute("isBasic");
+        if (isBasicBool == null) {
+            isBasicBool = Boolean.FALSE;
+        }
+        boolean useSpnegoRequest = principal != null
+                && !(isBasicBool.booleanValue() && !useBasic) ? true : false;
 
-      chain.doFilter( useSpnegoRequest ? new SpnegoHttpServletRequest(req, principal) : req, response );
+        chain.doFilter(useSpnegoRequest ? new SpnegoHttpServletRequest(req,
+            principal) : req, response);
     }
 
     /**
      * {@inheritDoc}
      */
     public void init(FilterConfig filterConfig) throws ServletException {
+        Properties spnegoConfig = (Properties) SpringContextSingleton
+                .getInstance().getContext().getBean("spnegoProperties");
         skipAuthentification = Boolean.valueOf(
-                Config.getProperty("http.skipAuthentification")).booleanValue();
-        useBasic = Boolean.valueOf(
-                Config.getProperty("http.useBasic")).booleanValue();        
+                spnegoConfig.getProperty("http.skipAuthentification"))
+                .booleanValue();
+        useBasic = Boolean.valueOf(spnegoConfig.getProperty("http.useBasic"))
+                .booleanValue();        
     }
 
     /**
@@ -138,20 +144,8 @@ public class SpnegoHttpFilter implements Filter {
      * @return Principal id authentication complete and success and null  otherwise.
      * @throws IOException if i/o error occurs.
      */
-    public static final Principal authenticate(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    public final Principal authenticate(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
         throws IOException {
-      /*
-       * Request is authenticated in some other way. Usually must not be happen.
-       */
-      Principal principal = httpRequest.getUserPrincipal();
-      if (principal != null) {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("User " + principal + " already authenticated.");
-        }
-
-        return principal;
-      }
-
       // Try get authenticator from session first.
       SpnegoAuthenticator auth = null;
       HttpSession session = httpRequest.getSession(false);
@@ -160,8 +154,8 @@ public class SpnegoHttpFilter implements Filter {
 
       // Authenticator found in session
       if (auth != null) {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Get authenticator from HTTP session." + " principal : " + auth.getPrincipal()
+        if (logger.isDebugEnabled()) {
+          logger.debug("Get authenticator from HTTP session." + " principal : " + auth.getPrincipal()
               + " authentication complete: " + auth.isComplete()
               + " authentication success: " + auth.isSuccess());
         }
@@ -181,18 +175,17 @@ public class SpnegoHttpFilter implements Filter {
 
       if (authHeader == null) {
         // Authentication process is not started yet.
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("No authorization headers, send WWW-Authenticate header.");
+        if (logger.isDebugEnabled()) {
+          logger.debug("No authorization headers, send WWW-Authenticate header.");
         }
 
         /*
          * Few WWW-Authenticate headers. WWW-Authenticate: Negotiate
-         * WWW-Authenticate: NTLM NTLM should be used only if Negotiate is not
-         * supported.
+         * WWW-Authenticate: NTLM NTLM nut suported yet
          */
 //        for (String mech : Config.getSupportedAuthenticationMechanisms())
           httpResponse.addHeader("WWW-Authenticate", "Negotiate");
-          httpResponse.addHeader("WWW-Authenticate", "NTLM");          
+//          httpResponse.addHeader("WWW-Authenticate", "NTLM");          
 
         // return HTTP status 401
         httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -206,8 +199,11 @@ public class SpnegoHttpFilter implements Filter {
       byte[] token = Base64.decodeBase64(authHeader.substring(endSignature + 1).getBytes());
 
       // If authenticator not initialized yet.
-      if (auth == null)
+      if ("Negotiate".equalsIgnoreCase(authMechanism))
         auth = new SpnegoAuthenticator();
+      else if ("NTLM".equalsIgnoreCase(authMechanism)) {
+          logger.warn("NTLM fallback in SPNEGO is not supported yet!!!");
+      }
 
       // Do authentication here.
       if (auth != null) {

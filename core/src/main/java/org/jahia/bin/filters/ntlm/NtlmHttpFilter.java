@@ -74,10 +74,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * This servlet Filter can be used to negotiate password hashes with
@@ -106,20 +107,17 @@ public class NtlmHttpFilter implements Filter {
     private boolean skipAuthentification;
 
     public void init( FilterConfig filterConfig ) throws ServletException {
-        String name;
         int level;
 
         /* Set jcifs properties we know we want; soTimeout and cachePolicy to 10min.
          */
         Config.setProperty( "jcifs.smb.client.soTimeout", "300000" );
         Config.setProperty( "jcifs.netbios.cachePolicy", "1200" );
-
-        Iterator e = new EnumerationIterator(filterConfig.getInitParameterNames());
-        while( e.hasNext() ) {
-            name = (String)e.next();
-            if( name.startsWith( "jcifs." )) {
-                Config.setProperty( name, filterConfig.getInitParameter( name ));
-            }
+        for (Map.Entry<Object, Object> property : ((Properties) SpringContextSingleton
+                .getInstance().getContext().getBean("jcifsProperties"))
+                .entrySet()) {
+            Config.setProperty((String) property.getKey(), (String) property
+                    .getValue());
         }
         defaultDomain = Config.getProperty("jcifs.smb.client.domain");
         domainController = Config.getProperty( "jcifs.http.domainController" );

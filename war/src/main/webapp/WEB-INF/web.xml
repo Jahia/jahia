@@ -42,36 +42,6 @@
     </context-param>
 
     <context-param>
-        <param-name>javax.servlet.jsp.jstl.fmt.fallbackLocale</param-name>
-        <param-value>en</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>hsqldb.location</param-name>
-        <param-value>/WEB-INF/var/dbdata/hsqldbjahia</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>hsqldb.port</param-name>
-        <param-value>9001</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>hsqldb.silent</param-name>
-        <param-value>true</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>hsqldb.trace</param-name>
-        <param-value>false</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>jahia.config</param-name>
-        <param-value>/WEB-INF/etc/config/jahia.properties</param-value>
-    </context-param>
-    
-    <context-param>
         <param-name>log4jConfigLocation</param-name>
         <param-value>/WEB-INF/etc/config/log4j.xml</param-value>
     </context-param>
@@ -97,76 +67,23 @@
 <!-- End of Shindig configuration -->    
 
     <!--
-      Configure the following filters to use NTLM Domain authentification.
+      The following filter to use NTLM Domain authentification is
+      configured in applicationcontext-ntlmfilter.xml.
       Also don't forget to uncomment the filter-mapping entry below.
     -->
     <filter>
         <filter-name>NtlmHttpFilter</filter-name>
         <filter-class>org.jahia.bin.filters.ntlm.NtlmHttpFilter</filter-class>
-
-        <init-param>
-            <param-name>jcifs.smb.client.domain</param-name>
-            <param-value>JAHIA</param-value>
-        </init-param>
-        <init-param>
-            <param-name>jcifs.netbios.wins</param-name>
-            <param-value>192.168.2.3</param-value>
-        </init-param>
-        <init-param>
-            <!-- Use this parameter to deactivate NTLM authentification. If
-                 NTLM authentification is activated, you will only be able
-                 to log on using this method, or by using Basic authentification
-                 if the enableBasic parameter is set to true.
-            -->
-            <param-name>jcifs.http.skipAuthentification</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <init-param>
-            <!-- Activates HTTP Basic authentification if NTLM is not available
-            -->
-            <param-name>jcifs.http.enableBasic</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <init-param>
-            <!-- If this parameter is true, it means we will allow BASIC authentification
-                 over regular HTTP connections. If it is false, this means that only
-                 HTTPS session will be accepted for BASIC authentification.
-            -->
-            <param-name>jcifs.http.insecureBasic</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <init-param>
-            <!-- This parameter controls whether the detected BASIC authentification passed
-                 over to the filter will be used to do an SMB login. Set this to true if
-                 you want to use BASIC authentification to login on your domain controller,
-                 and set to false if you want Jahia to handle the basic authentification.
-            -->
-            <param-name>jcifs.http.useBasic</param-name>
-            <param-value>false</param-value>
-        </init-param>
     </filter>
 
+    <!--
+      The following filter to use SPNEGO authentification is
+      configured in applicationcontext-spnegofilter.xml.
+      Also don't forget to uncomment the filter-mapping entry below.
+    -->
     <filter>
         <filter-name>SpnegoHttpFilter</filter-name>
         <filter-class>org.jahia.bin.filters.spnego.SpnegoHttpFilter</filter-class>
-        <init-param>
-            <!-- Use this parameter to deactivate NTLM authentification. If
-                 NTLM authentification is activated, you will only be able
-                 to log on using this method, or by using Basic authentification
-                 if the enableBasic parameter is set to true.
-            -->
-            <param-name>http.skipAuthentification</param-name>
-            <param-value>false</param-value>
-        </init-param>
-        <init-param>
-            <!-- This parameter controls whether the detected BASIC authentification passed
-                 over to the filter will be used to do an SMB login. Set this to true if
-                 you want to use BASIC authentification to login on your domain controller,
-                 and set to false if you want Jahia to handle the basic authentification.
-            -->
-            <param-name>http.useBasic</param-name>
-            <param-value>true</param-value>
-        </init-param>        
     </filter>
 
     <!-- Filter for displaytag export options -->

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+       
+  <bean name="spnegoProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="properties">
+      <props>
+        <!-- Use this parameter to deactivate SPNEGO authentification. If
+             SPNEGO authentification is activated, you will only be able
+             to log on using this method, or by using Basic authentification
+             if the enableBasic parameter is set to true.
+        -->
+        <prop key="http.skipAuthentification">true</prop>
+        <!-- This parameter controls whether the detected BASIC authentification passed
+             over to the filter will be used to do an SMB login. Set this to true if
+             you want to use BASIC authentification to login on your domain controller,
+             and set to false if you want Jahia to handle the basic authentification.
+        -->              
+        <prop key="http.useBasic">true</prop>
+      </props>
+  	</property>
+  </bean>
+         
+</beans>

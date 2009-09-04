@@ -2,7 +2,7 @@
 # | Jahia main configuration file.                                            |
 # +---------------------------------------------------------------------------+
 #
-#  This file contains some of the most important settings for configuration
+#  This file contains some of the most important settings for configuring
 #  it's behavior.
 #  Other interesting files can be found elsewhere in the WEB-INF/etc
 #  directory, such as WEB-INF/etc/spring for LDAP connector activation,
@@ -82,7 +82,8 @@ siteIDInSearchHitPageURL                               =   true
 ### Mail Service Configuration #######################################
 ######################################################################
 # These settings configure how Jahia will send messages for
-# error reports.
+# error reports. They are configured via the configuration
+# wizard upon initial installation of Jahia.
 mail_service_activated                                 =   false
 mail_server                                            =
 mail_administrator                                     =
@@ -102,7 +103,12 @@ mail_maxRegroupingOfPreviousException                  = 500
 # these can be found in the following file:
 # <jahia-web-app-dir>/META-INF/context.xml
 db_script                                              =   hypersonic.script
+# The following setting should be set to false if you are not using
+# HsqlDB (=Hypersonic) as your database.
 db_starthsqlserver                                     =   true
+# The following setting is used to limit the number of in values passed
+# in SELECT * FROM XXX WHERE XXXX IN (VALUE_LIST) because some databases
+# have limitations. Normally you shouldn't need to modify this parameter.
 db_max_elements_for_in_clause                          =   1000
 
 ######################################################################
@@ -180,6 +186,10 @@ outputContainerCacheActivated                          =   true
 
 containerCacheDefaultExpirationDelay = 14400
 
+# specifies whether the container cache should be only activated in
+# live mode. You might want to activate this if you are doing very
+# fancy checks in templates and are running into issues with cache
+# invalidation in live mode.
 containerCacheLiveModeOnly = false
 
 ######################################################################
@@ -321,7 +331,17 @@ suggestedRetryTimeAfterTimeoutOnStartup                = 15
 ######################################################################
 ### CAS Authentication config ########################################
 ######################################################################
+# You can configure here the CAS authentification sub-system. First
+# you must add the CAS valve in the WEB-INF/etc/spring/applicationcontext-pipelines.xml
+# file in the authPipeline with the following section, add the end
+# of the pipeline :
+# <bean class="org.jahia.params.valves.CASAuthValveImpl" />
+#
+# The following setting configures the redirect URL to the CAS server
+# for login
 cas.loginUrl                                           = https://localhost:8443/cas/login
+# The following setting configures the URL on which we validate the
+# ticket.
 cas.validateUrl                                        = https://localhost:8443/cas/serviceValidate
 
 ######################################################################
@@ -379,8 +399,12 @@ doRedirectOnLogout                                     = true
 ######################################################################
 ### Scheduler config  ################################################
 ######################################################################
-# Path to scheduler configuration. The scheduler is used notably for processing
+# Path to scheduler configurations. The scheduler is used notably for processing
 # background jobs such as the XML imports, workflow activation, etc.
+# The RAM scheduler is a configuration of a scheduler that will not
+# be persistent between application restarts, and is mostly used
+# for non-critical tasks such as file listeners, cluster file
+# synchronization
 schedulerConfigFile                                    =   $context/WEB-INF/etc/config/quartz.properties
 ramSchedulerConfigFile                                 =   $context/WEB-INF/etc/config/quartz-ram.properties
 
@@ -431,7 +455,10 @@ siteServerNameTestURLExpr                              = ${request.scheme}://${s
 # Url used by jahia to make HTTP request to itself.
 #localAccessUri                                          = http\://localhost\:8080
 
-# IP address of the server on the local network
+# IP address of the server on the local network. The following two settings
+# are used by the file synchronization service when configured in cluster
+# to make sure that new templates and resources are properly deployed on
+# each node.
 localIp                                                  =
 # The HTTP port of the server on the local network
 localPort                                                = 8080
@@ -467,7 +494,7 @@ cluster.node.serverId                                  = jahiaServer1
 # etc. In the current implementation only one cluster node may be a
 # processing server, while all others must have this settings to the
 # value "false".
-processingServer                                       =   true
+processingServer                                       = true
 
 # The following settings may be changed in order to avoid conflicts with
 # existing multicast IP broadcasts on a network, or to change them to
@@ -723,6 +750,16 @@ gmailPasswordExported = true
 ######################################################################
 ### History (breadcrumbs) settings ###################################
 ######################################################################
-# These are the breadcrumbs settings
+# The history settings (aka breadcrumbs), allows users to be able to
+# quickly retrace their navigation in the Jahia web site. The settings
+# below allow system administrators to configure this subsystem.
+#
+# the following setting specifies the length of the history stored
+# in the session for each user, when the history toolbar is activated.
 historySize = 5
+# If the history tracking should be URL based, activate the setting
+# below, otherwise Jahia will reconstruct the page URLs on each request.
+# In general it is recommended to use the full URL based history
+# tracking, which will conserve edition mode and other URL-based
+# parameters.
 historyUrlBased = true

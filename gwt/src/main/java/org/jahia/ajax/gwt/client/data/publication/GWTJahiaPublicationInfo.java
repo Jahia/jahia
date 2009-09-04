@@ -15,6 +15,9 @@ public class GWTJahiaPublicationInfo implements Serializable {
     public static final int PUBLISHED = 1;
     public static final int MODIFIED = 2;
 
+    public static final int UNPUBLISHABLE = 3;
+
+
     private int status;
     private boolean isVersioned;
     private String liveVersion;
@@ -33,5 +36,15 @@ public class GWTJahiaPublicationInfo implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "GWTJahiaPublicationInfo{" +
+                "status=" + status +
+                ", isVersioned=" + isVersioned +
+                ", liveVersion='" + liveVersion + '\'' +
+                ", stagingVersion='" + stagingVersion + '\'' +
+                '}';
     }
 }

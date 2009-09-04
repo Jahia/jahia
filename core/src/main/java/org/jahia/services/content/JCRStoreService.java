@@ -31,8 +31,8 @@
  */
 package org.jahia.services.content;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
 import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
+import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -43,6 +43,7 @@ import org.jahia.jaas.JahiaLoginModule;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.sites.JahiaSite;
@@ -50,7 +51,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.webdav.UsageEntry;
-import org.jahia.api.Constants;
 import org.springframework.web.context.ServletContextAware;
 import org.xml.sax.ContentHandler;
 
@@ -62,10 +62,10 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.*;
 import javax.servlet.ServletContext;
 import java.io.IOException;
-import java.util.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.*;
 
 /**
  *
@@ -708,5 +708,106 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         return namespaceRegistry;
     }
 
+    /**
+     * Search in all sub nodes and properties the referenced nodes and get the list of nodes where the publication
+     * should stop ( currently sub pages, sub folders and sub files ).
+     *
+     * @param start The root node where to start the search
+     * @param pruneNodes Empty list, will be filled with the list of sub nodes that should not be part of the publication
+     * @param referencedNode Empty list, will be filled with the list of nodes referenced in the sub tree
+     * @param languages The list of languages to publish, null to publish all
+     * @throws RepositoryException
+     */
+    private void getBlockedAndReferencesList(Node start, Set<String> pruneNodes, Set<String> referencedNode, Set<String> languages) throws RepositoryException {
+        PropertyIterator pi = start.getProperties();
+        while (pi.hasNext()) {
+            Property p = pi.nextProperty();
+            if ((p.getType() == PropertyType.REFERENCE || p.getType() == ExtendedPropertyType.WEAKREFERENCE) && !p.getName().startsWith("jcr:")) {
+                if (p.getDefinition().isMultiple()) {
+                    Value[] vs = p.getValues();
+                    for (Value v : vs) {
+                        referencedNode.add(start.getSession().getNodeByUUID(v.getString()).getPath());
+                    }
+                } else {
+                    referencedNode.add(p.getNode().getPath());
+                }
+            } else if ((p.getType() == PropertyType.REFERENCE || p.getType() == ExtendedPropertyType.WEAKREFERENCE)) {
+                System.out.println("-->"+p.getName());
+            }
+        }
+        NodeIterator ni = start.getNodes();
+        while (ni.hasNext()) {
+            Node n = ni.nextNode();
+            if (n.isNodeType("jnt:page") || n.isNodeType("jnt:folder") || n.isNodeType("jnt:file")) {
+                pruneNodes.add(n.getPath());
+            } else if (languages != null && n.isNodeType("jnt:translation")) {
+                String lang = n.getProperty("jcr:language").getString();
+                if (languages.contains(lang)) {
+                    getBlockedAndReferencesList(n, pruneNodes, referencedNode, languages);
+                } else {
+                    pruneNodes.add(n.getPath());
+                }
+            } else {
+                getBlockedAndReferencesList(n, pruneNodes, referencedNode, languages);
+            }
+        }
+    }
+
+    /**
+     * Publish a node into the live workspace.
+     * Referenced nodes will also be published.
+     * Parent node must be published, or will be published if publishParent is true.
+     *
+     * @param path Path of the node to publish
+     * @param languages
+     * @param user the user
+     * @param publishParent Recursively publish the parents
+     */
+    public void publish(String path, Set<String> languages, JahiaUser user,  boolean publishParent) throws RepositoryException {
+        JCRSessionWrapper session = getThreadSession(user);
+        JCRNodeWrapper w = session.getNode(path);
+
+        String parentPath = w.getParent().getPath();
+        JCRSessionWrapper liveSession = getThreadSession(user, "live");
+        try {
+            liveSession.getNode(parentPath);
+        } catch (PathNotFoundException e) {
+            if (publishParent) {
+                publish(parentPath, languages, user, true);
+            } else {
+                return;
+            }
+        }
+
+        Set<String> blocked = new HashSet<String>();
+        Set<String> referencedNodes = new HashSet<String>();
+
+        getBlockedAndReferencesList(w, blocked, referencedNodes, languages);
+
+        for (String node : referencedNodes) {
+            publish(node, languages, user, true);
+        }
+
+        List<String> deniedPathes = new ArrayList<String>();
+        for (String node : blocked) {
+            deniedPathes.add(node);
+        }
+
+        JCRSessionWrapper liveSessionForPublish = login(JahiaLoginModule.getSystemCredentials(user.getUsername(), deniedPathes), "live");
+
+        try {
+            Node liveNode = liveSessionForPublish.getNode(path);
+
+            liveNode.update("default");
+        } catch (PathNotFoundException e) {
+            try {
+                liveSessionForPublish.getWorkspace().clone("default", path, path, true);
+            } catch (RepositoryException ee) {
+                ee.printStackTrace();
+            }
+        }
+
+        liveSessionForPublish.logout();
+    }
 
 }

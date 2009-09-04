@@ -2519,50 +2519,6 @@ public class ContentManagerHelper {
         }
     }
 
-    /**
-     * Search in all sub nodes and properties the referenced nodes and get the list of nodes where the publication
-     * should stop ( currently sub pages, sub folders and sub files ).
-     *
-     * @param start The root node where to start the search
-     * @param pruneNodes Empty list, will be filled with the list of sub nodes that should not be part of the publication
-     * @param referencedNode Empty list, will be filled with the list of nodes referenced in the sub tree
-     * @param languages The list of languages to publish, null to publish all
-     * @throws RepositoryException
-     */
-    private static void getBlockedAndReferencesList(Node start, Set<String> pruneNodes, Set<String> referencedNode, Set<String> languages) throws RepositoryException {
-        PropertyIterator pi = start.getProperties();
-        while (pi.hasNext()) {
-            Property p = pi.nextProperty();
-            if ((p.getType() == PropertyType.REFERENCE || p.getType() == ExtendedPropertyType.WEAKREFERENCE) && !p.getName().startsWith("jcr:")) {
-                if (p.getDefinition().isMultiple()) {
-                    Value[] vs = p.getValues();
-                    for (Value v : vs) {
-                        referencedNode.add(start.getSession().getNodeByUUID(v.getString()).getPath());
-                    }
-                } else {
-                    referencedNode.add(p.getNode().getPath());
-                }
-            } else if ((p.getType() == PropertyType.REFERENCE || p.getType() == ExtendedPropertyType.WEAKREFERENCE)) {
-                System.out.println("-->"+p.getName());
-            }
-        }
-        NodeIterator ni = start.getNodes();
-        while (ni.hasNext()) {
-            Node n = ni.nextNode();
-            if (n.isNodeType("jnt:page") || n.isNodeType("jnt:folder") || n.isNodeType("jnt:file")) {
-                pruneNodes.add(n.getPath());
-            } else if (languages != null && n.isNodeType("jnt:translation")) {
-                String lang = n.getProperty("jcr:language").getString();
-                if (languages.contains(lang)) {
-                    getBlockedAndReferencesList(n, pruneNodes, referencedNode, languages);
-                } else {
-                    pruneNodes.add(n.getPath());
-                }
-            } else {
-                getBlockedAndReferencesList(n, pruneNodes, referencedNode, languages);
-            }
-        }
-    }
 
     /**
      * Publish a node into the live workspace.
@@ -2576,50 +2532,7 @@ public class ContentManagerHelper {
      */
     public static void publish(String path, Set<String> languages, ProcessingContext ctx, boolean publishParent) throws GWTJahiaServiceException {
         try {
-            JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser());
-            JCRNodeWrapper w = session.getNode(path);
-
-            String parentPath = w.getParent().getPath();
-            JCRSessionWrapper liveSession = jcr.getThreadSession(ctx.getUser(), "live");
-            try {
-                liveSession.getNode(parentPath);
-            } catch (PathNotFoundException e) {
-                if (publishParent) {
-                    publish(parentPath, languages, ctx, true);
-                } else {
-                    return;
-                }
-            }
-
-            Set<String> blocked = new HashSet<String>();
-            Set<String> referencedNodes = new HashSet<String>();
-
-            getBlockedAndReferencesList(w, blocked, referencedNodes, languages);
-
-            for (String node : referencedNodes) {
-                publish(node, languages, ctx, true);
-            }
-
-            List<String> deniedPathes = new ArrayList<String>();
-            for (String node : blocked) {
-                deniedPathes.add(node);
-            }
-
-            JCRSessionWrapper liveSessionForPublish = jcr.login(JahiaLoginModule.getSystemCredentials(ctx.getUser().getUsername(), deniedPathes), "live");
-
-            try {
-                Node liveNode = liveSessionForPublish.getNode(path);
-
-                liveNode.update("default");
-            } catch (PathNotFoundException e) {
-                try {
-                    liveSessionForPublish.getWorkspace().clone("default",path, path, true);
-                } catch (RepositoryException ee) {
-                    ee.printStackTrace();
-                }
-            }
-
-            liveSessionForPublish.logout();
+            jcr.publish(path, languages, ctx.getUser(), publishParent);
         } catch (RepositoryException e) {
             logger.error("repository exception",e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -2638,21 +2551,38 @@ public class ContentManagerHelper {
             try {
                 publishedNode = liveSession.getNode(path);
             } catch (PathNotFoundException e) {
-                info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.UNPUBLISHED);
             }
-
-            info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.PUBLISHED);
 
             JCRNodeWrapper stageNode = null;
             try {
                 stageNode = session.getNode(path);
             } catch (PathNotFoundException e) {
-
             }
 
+            if (publishedNode == null) {
+                // node has not been published yet, check if parent is published
+                try {
+                    liveSession.getNode(stageNode.getParent().getPath());
+                    info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.UNPUBLISHED);
+                } catch (PathNotFoundException e) {
+                    // parent not published, can only be published if home page
+                    if (stageNode.getParent().isNodeType("jnt:virtualSite")) {
+                        info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.UNPUBLISHED);
+                    }
+                    info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.UNPUBLISHABLE);
+
+                }
+            }
+            info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.PUBLISHED);
+
+            long s = stageNode.getProperty("jcr:lastModified").getValue().getLong();
+            long p = publishedNode.getProperty("jcr:lastModified").getValue().getLong();
+            if (s > p) {
+                info.setStatus(GWTJahiaPublicationInfo.MODIFIED);
+            }
             System.out.println("--> "+stageNode);
             System.out.println("--> "+publishedNode);
-
+            System.out.println("---> info:"+info.getStatus());
             return info;
         } catch (RepositoryException e) {
             logger.error("repository exception",e);

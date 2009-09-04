@@ -1440,10 +1440,9 @@ public class JahiaConfigurationWizard extends HttpServlet {
             // database configuration. We do this last as it has for effect
             // of restarting the web application.
             String serverInfo = context.getServerInfo();
+            String deployToDir = context.getInitParameter("dirName");
+                        
             if (serverInfo.contains(SERVER_TOMCAT)) {
-                // update the XML context descriptor file configuration
-                String jahiaXml = pathResolver.resolvePath("/WEB-INF/jahia/META-INF");
-                String deployToDir = context.getInitParameter("dirName");
                 String fullDestinationPath = (String) values.get("server_home")+"webapps"+System.getProperty("file.separator")+deployToDir;
                 if  (dbUrl.startsWith("jdbc:hsqldb:file:") && dbUrl.indexOf("WEB-INF") != -1) {
                     String path = dbUrl.substring(dbUrl.indexOf("WEB-INF"));
@@ -1453,7 +1452,9 @@ public class JahiaConfigurationWizard extends HttpServlet {
                                     || fullDestinationPath.endsWith("\\") ? ""
                                     : System.getProperty("file.separator"))
                             + path);
-                }
+                } 
+                // update the XML context descriptor file configuration
+                String jahiaXml = pathResolver.resolvePath("/WEB-INF/jahia/META-INF");
                 JahiaDataSourceConfigurator.updateDataSourceConfiguration(jahiaXml+"/context.xml", jahiaXml,
                                 values);
                 logger.info("updating to context file in "+jahiaXml);
@@ -1468,13 +1469,17 @@ public class JahiaConfigurationWizard extends HttpServlet {
                 
                 logger.info("Moved "+ oldDir.getCanonicalFile()+ " to "+newDir + " in " + (System.currentTimeMillis() - startTime) + " ms");
             } else if (serverInfo.contains(SERVER_JBOSS)) {
-                String deployToDir = context.getInitParameter("dirName");
-                String datasource = pathResolver.resolvePath("WEB-INF/jahia-jboss-config.sar/jahia-ds.xml");
-                String fullDestinationPath = (String) values.get("server_home")+"deploy/"+deployToDir;
+                String fullDestinationPath = (String) values.get("server_home")+"deploy"+System.getProperty("file.separator")+deployToDir;
                 if  (dbUrl.startsWith("jdbc:hsqldb:file:") && dbUrl.indexOf("WEB-INF") != -1) {
                     String path = dbUrl.substring(dbUrl.indexOf("WEB-INF"));
-                    values.put("database_url", "jdbc:hsqldb:file:" + fullDestinationPath + path);
-                }                
+                    values.put("database_url", "jdbc:hsqldb:file:"
+                            + fullDestinationPath
+                            + (fullDestinationPath.endsWith("/")
+                                    || fullDestinationPath.endsWith("\\") ? ""
+                                    : System.getProperty("file.separator"))
+                            + path);
+                } 
+                String datasource = pathResolver.resolvePath("WEB-INF/jahia-jboss-config.sar/jahia-ds.xml");
                 JahiaDataSourceConfigurator.updateDataSourceConfiguration(datasource, datasource, values);
                 logger.info("updating datasource configuration in  file " + datasource);
                 

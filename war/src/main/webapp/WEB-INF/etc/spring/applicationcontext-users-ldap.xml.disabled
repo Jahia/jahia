@@ -26,6 +26,7 @@
                 <entry key="lastname.attribute.map" value="sn"/>
                 <entry key="email.attribute.map" value="mail"/>
                 <entry key="organization.attribute.map" value="ou"/>
+                <entry key="ldap.connect.pool" value="true"/>
             </map>
         </property>
     </bean>

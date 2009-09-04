@@ -31,10 +31,6 @@
  */
 package org.jahia.services.usermanager;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -121,12 +117,12 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
 
     private static String LDAP_USERNAME_ATTRIBUTE =
         "username.attribute.map";
-
+    private static String USE_CONNECTION_POOL = "users.ldap.connect.pool"; 
+    
     private static JahiaUserManagerLDAPProvider instance;
 
     private Properties ldapProperties = null;
 
-    private DirContext publicCtx = null;
     private List<String> searchWildCardAttributeList = null;
 
     private Cache<String, Serializable> mUserCache;
@@ -195,14 +191,6 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
         if (!ldapProperties.containsKey(LDAP_USERNAME_ATTRIBUTE)) {
             ldapProperties.put(LDAP_USERNAME_ATTRIBUTE, ldapProperties.get(UID_SEARCH_ATTRIBUTE_PROP));
         }
-        try {
-            getPublicContext (true);
-        } catch (NamingException ne) {
-            logger.error(
-                "Error while initializing public browsing connection to LDAP repository",
-                ne);
-            invalidatePublicCtx();
-        }
 
         String wildCardAttributeStr = ldapProperties.getProperty(
             JahiaUserManagerLDAPProvider.SEARCH_WILDCARD_ATTRIBUTE_LIST);
@@ -220,7 +208,6 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
     }
 
     public void stop() {
-        invalidatePublicCtx();
     }
 
     /**
@@ -281,10 +268,12 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
     public List<String> getUserList () {
         List<String> result = new ArrayList<String>();
 
+
+        DirContext ctx = null;
         try {
-            NamingEnumeration<?> answer = getUsers(getPublicContext(false), new Properties(), ldapProperties.getProperty (UID_SEARCH_NAME_PROP), SearchControls.SUBTREE_SCOPE);
-            while (answer.hasMore()) {
-                SearchResult sr = (SearchResult) answer.next();
+            ctx = getPublicContext();
+            List<SearchResult> answer = getUsers(ctx, new Properties(), ldapProperties.getProperty (UID_SEARCH_NAME_PROP), SearchControls.SUBTREE_SCOPE);
+            for (SearchResult sr : answer) {
                 JahiaUser curUser = ldapToJahiaUser(sr);
                 if (curUser != null) {
                     result.add(curUser.getUserKey());
@@ -298,8 +287,9 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
                 " first results...");
         } catch (NamingException ne) {
             logger.warn ("JNDI warning",ne);
-            invalidatePublicCtx ();
             result = new ArrayList<String>();
+        } finally {
+            invalidateCtx(ctx);
         }
 
         return result;
@@ -314,10 +304,11 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
     public List<String> getUsernameList() {
         List<String> result = new ArrayList<String>();
 
+        DirContext ctx = null;
         try {
-            NamingEnumeration<SearchResult> answer = getUsers(getPublicContext(false), new Properties(), ldapProperties.getProperty (UID_SEARCH_NAME_PROP), SearchControls.SUBTREE_SCOPE);
-            while (answer.hasMore()) {
-                SearchResult sr = (SearchResult) answer.next();
+            ctx = getPublicContext();
+            List<SearchResult> answer = getUsers(ctx, new Properties(), ldapProperties.getProperty (UID_SEARCH_NAME_PROP), SearchControls.SUBTREE_SCOPE);
+            for (SearchResult sr : answer) {
                 JahiaUser curUser = ldapToJahiaUser(sr);
                 if (curUser != null) {
                     result.add (curUser.getUsername ());
@@ -330,8 +321,9 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
                     " first results...");
         } catch (NamingException ne) {
             logger.warn ("JNDI warning",ne);
-            invalidatePublicCtx ();
             result = new ArrayList<String>();
+        } finally {
+            invalidateCtx(ctx);
         }
 
         return result;
@@ -351,7 +343,7 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
      *
      * @throws NamingException
      */
-    NamingEnumeration<SearchResult> getUsers (DirContext ctx, Properties filters, String searchBase, int scope)
+    private List<SearchResult> getUsers (DirContext ctx, Properties filters, String searchBase, int scope)
         throws NamingException {
         if (ctx == null) {
             throw new NamingException("Context is null !");
@@ -486,34 +478,19 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
      *
      * @throws NamingException
      */
-    public DirContext getPublicContext (boolean forceRefresh) throws NamingException {
-        if (forceRefresh || (publicCtx == null)) {
-            // this shouldn't happen... but timeouts have to be checked.
-            try {
-                publicCtx = connectToPublicDir ();
-            } catch (NamingException ne) {
-                logger.warn ("JNDI warning",ne);
-                publicCtx = null;
-            }
-            if (publicCtx == null) {
-                logger.debug ("reconnect failed, returning null context...");
-                // we've tried everything, still can't connect...
-                return null;
-            }
+    public DirContext getPublicContext() throws NamingException {
+        DirContext publicCtx = null;
+        try {
+            publicCtx = connectToPublicDir();
+        } catch (NamingException ne) {
+            logger.warn("JNDI warning", ne);
         }
         return publicCtx;
     }
 
+
     private DirContext connectToPublicDir ()
             throws NamingException {
-        /*// EP : 2004/29/06 : implement reconnection mechanism on ldap...
-        if (((JahiaUserManagerRoutingService) ServicesRegistry
-             .getInstance()
-             .getJahiaUserManagerService())
-            .getServerList(PROVIDER_NAME) != null) {
-            return connectToAllPublicDir();
-        }*/
-
         // Identify service provider to use
         logger.debug ("Attempting connection to LDAP repository on " +
                 ldapProperties.getProperty (LDAP_URL_PROP) + "...");
@@ -529,6 +506,9 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
                 ldapProperties.getProperty (PUBLIC_BIND_DN_PROP));
         publicEnv.put (Context.REFERRAL,
                        ldapProperties.getProperty (LDAP_REFFERAL_PROP, "ignore"));
+        // Enable connection pooling
+        publicEnv.put("com.sun.jndi.ldap.connect.pool", ldapProperties
+                .getProperty(USE_CONNECTION_POOL, "true"));        
         if (ldapProperties.getProperty (PUBLIC_BIND_PASSWORD_PROP) != null) {
             logger.debug ("Using authentification mode to connect to public dir...");
             publicEnv.put (Context.SECURITY_CREDENTIALS,
@@ -538,48 +518,6 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
         // Create the initial directory context
         return new InitialDirContext (publicEnv);
     }
-
-    /*private DirContext connectToAllPublicDir ()
-            throws NamingException {
-        DirContext ctx = null;
-    TreeSet servers = ((JahiaUserManagerRoutingService)ServicesRegistry
-                            .getInstance()
-                            .getJahiaUserManagerService())
-                            .getServerList(PROVIDER_NAME);
-
-    for (Iterator ite = servers.iterator(); ite.hasNext();) {
-        ServerBean sb = (ServerBean) ite.next();
-        String sbUrl = (String)sb.getPublicConnectionParameters()
-                        .get(Context.PROVIDER_URL);
-
-        int tryNumber = 1;
-        while (tryNumber <= sb.getMaxReconnection()) {
-                // Identify service provider to use
-                logger.debug ("Attempting public connection "
-                            + tryNumber
-                            + " to LDAP repository on "
-                            + sbUrl
-                            + "...");
-
-                // Create the initial directory context
-                try {
-                    ctx = new InitialDirContext (sb.getPublicConnectionParameters());
-                    if (isContextValid(ctx))
-                        return ctx;
-                } catch (NamingException ne) {
-                    // all others exception lead to try another connection...
-                    logger.error("Erreur while getting public context on " + sbUrl, ne);
-                }
-                tryNumber++;
-        }
-    }
-
-    if (ctx == null) {
-        throw new NamingException("All servers used without success...");
-    }
-
-        return ctx;
-    }*/
 
     /**
      * Translates LDAP attributes to a JahiaUser properties set. Multi-valued
@@ -599,45 +537,37 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
         return ldapToJahiaUser(attrs, dn);
     }
 
-    private void invalidatePublicCtx () {
-        try {
-            invalidateCtx (getPublicContext(false));
-        } catch (NamingException ne) {
-            logger.error("Couldn't invalidate public LDAP context", ne);
-        }
-    }
-
-    private NamingEnumeration<SearchResult> getUsers (DirContext ctx, String filterString, String searchBase, int scope)
+    private List<SearchResult> getUsers (DirContext ctx, String filterString, String searchBase, int scope)
             throws NamingException {
         // Search for objects that have those matching attributes
         SearchControls searchCtl = new SearchControls ();
         searchCtl.setSearchScope (scope);
+        List<SearchResult> answerList = new ArrayList<SearchResult>();
         int countLimit = Integer.parseInt (
                 ldapProperties.getProperty (
                         JahiaUserManagerLDAPProvider.SEARCH_COUNT_LIMIT_PROP));
         searchCtl.setCountLimit (countLimit);
         logger.debug ("Using filter string [" + filterString.toString () + "]...");
         try {
-            return ctx.search (
+            NamingEnumeration<SearchResult> enumeration = ctx.search (
                     searchBase,
                     filterString.toString (),
                     searchCtl);
+            while (enumeration.hasMore()) {
+                answerList.add(enumeration.next());
+            } 
         } catch (javax.naming.NoInitialContextException nice) {
-            logger.debug("Reconnection required", nice);
-            return getUsers(getPublicContext(true), filterString, searchBase, scope);
+            logger.warn("Reconnection required", nice);
         } catch (javax.naming.CannotProceedException cpe) {
-            logger.debug("Reconnection required", cpe);
-            return getUsers(getPublicContext(true), filterString, searchBase, scope);
+            logger.warn("Reconnection required", cpe);
         } catch (javax.naming.ServiceUnavailableException sue) {
-            logger.debug("Reconnection required", sue);
-            return getUsers(getPublicContext(true), filterString, searchBase, scope);
+            logger.warn("Reconnection required", sue);
         } catch (javax.naming.TimeLimitExceededException tlee) {
-            logger.debug("Reconnection required", tlee);
-            return getUsers(getPublicContext(true), filterString, searchBase, scope);
+            logger.warn("Reconnection required", tlee);
         } catch (javax.naming.CommunicationException ce) {
-            logger.debug("Reconnection required", ce);
-            return getUsers(getPublicContext(true), filterString, searchBase, scope);
+            logger.warn("Reconnection required", ce);
         }
+        return answerList;
     }
 
     /**
@@ -664,50 +594,27 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
 
         try {
             dn = ((JahiaLDAPUser) lookupUserByKey(userFinalKey)).getDN();
-            // invalidatePublicCtx ();
 
             privateCtx = connectToPrivateDir (dn, userPassword);
 
             if (privateCtx == null) {
                 dn = null;
             }
-
-            invalidateCtx (privateCtx);
-
-            // reconnect to public context
-            // getPublicContext (true);
         } catch (javax.naming.CommunicationException ce) {
             logger.warn ("CommunicationException", ce);
             logger.debug ("Invalidading connection to public LDAP context...");
-            invalidateCtx (privateCtx);
-            // invalidatePublicCtx ();
             dn = null;
         } catch (NamingException ne) {
             logger.debug("Login refused, server message : " + ne.getMessage());
             dn = null;
-
-            invalidateCtx (privateCtx);
-            // reconnect to public context
-            /*
-            try {
-                getPublicContext(true);
-            } catch (NamingException ne2) {
-                logger.error("Error reconnecting to public LDAP context", ne2);
-            }
-            */
+        } finally {
+            invalidateCtx (privateCtx);            
         }
         return (dn != null);
     }
 
     private DirContext connectToPrivateDir (String dn, String personPassword)
             throws NamingException {
-        /*// EP : 2004/29/06 : implement reconnection mechanism on ldap...
-        if (((JahiaUserManagerRoutingService)ServicesRegistry
-             .getInstance()
-             .getJahiaUserManagerService())
-            .getServerList(PROVIDER_NAME) != null) {
-            return connectToAllPrivateDir(dn, personPassword);
-        }*/
 
         // Identify service provider to use
         Hashtable<String, String> privateEnv = new Hashtable<String, String> (11);
@@ -724,51 +631,6 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
         // Create the initial directory context
         return new InitialDirContext (privateEnv);
     }
-
-    /*private DirContext connectToAllPrivateDir (String username, String password)
-            throws NamingException {
-        DirContext ctx = null;
-    TreeSet servers = ((JahiaUserManagerRoutingService)ServicesRegistry
-                            .getInstance()
-                            .getJahiaUserManagerService())
-                            .getServerList(PROVIDER_NAME);
-
-    for (Iterator ite = servers.iterator(); ite.hasNext();) {
-        ServerBean sb = (ServerBean) ite.next();
-        Map parameters = sb.getPrivateConnectionParameters(
-                        username,
-                        password);
-
-        String sbUrl = (String)parameters.get(Context.PROVIDER_URL);
-
-        int tryNumber = 1;
-        while (tryNumber <= sb.getMaxReconnection()) {
-                // Identify service provider to use
-                logger.debug ("Attempting private connection "
-                            + tryNumber
-                            + " to LDAP repository on "
-                            + sbUrl
-                            + "...");
-
-                // Create the initial directory context
-                try {
-                    return new InitialDirContext (parameters);
-                } catch (NamingSecurityException nse) {
-                    // exception while authenticating
-                    return null;
-                } catch (NamingException ne) {
-                    // all others exception lead to try another connection...
-                }
-                tryNumber++;
-        }
-    }
-
-    if (ctx == null) {
-        throw new NamingException("All servers used without success...");
-    }
-
-        return ctx;
-    }*/
 
     private void invalidateCtx (DirContext ctx) {
         if (ctx == null) {
@@ -844,8 +706,10 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
     private JahiaLDAPUser lookupUserInLDAP (String userKey, String searchAttributeName) {
         JahiaLDAPUser user = null;
 
+        DirContext ctx = null;
         try {
-            SearchResult sr = getPublicUser (getPublicContext (false), searchAttributeName, userKey);
+            ctx = getPublicContext();
+            SearchResult sr = getPublicUser (ctx, searchAttributeName, userKey);
             if (sr == null) {
                 return null;
             }
@@ -857,8 +721,9 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
             user = null;
         } catch (NamingException ne) {
             logger.warn ("JNDI warning",ne);
-            invalidatePublicCtx ();
             user = null;
+        } finally {
+            invalidateCtx(ctx);
         }
         return user;
     }
@@ -872,8 +737,10 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
                 return result;
             }
         }
+        DirContext ctx = null;
         try {
-            Attributes attributes = getUser (getPublicContext(false), dn);
+            ctx = getPublicContext();
+            Attributes attributes = getUser (ctx, dn);
             user = ldapToJahiaUser (attributes, dn);
             if (user != null) {
                 mUserCache.put("d"+dn, user);
@@ -886,35 +753,33 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
             mUserCache.put("d"+dn, null);
         } catch (NamingException ne) {
             logger.warn ("JNDI warning",ne);
-            invalidatePublicCtx ();
             user = null;
+        } finally {
+            invalidateCtx(ctx);
         }
         return user;
     }
 
     private Attributes getUser (DirContext ctx, String dn)
             throws NamingException {
+        Attributes attributes = null;
         try {
             if (dn != null && dn.indexOf('/') != -1) {
                 dn = JahiaTools.replacePattern(dn, "/", "\\/");
             }
-            return ctx.getAttributes(dn);
+            attributes = ctx.getAttributes(dn);
         } catch (javax.naming.NoInitialContextException nice) {
             logger.debug("Reconnection required", nice);
-            return getUser(getPublicContext(true), dn);
         } catch (javax.naming.CannotProceedException cpe) {
             logger.debug("Reconnection required", cpe);
-            return getUser(getPublicContext(true), dn);
         } catch (javax.naming.ServiceUnavailableException sue) {
             logger.debug("Reconnection required", sue);
-            return getUser(getPublicContext(true), dn);
         } catch (javax.naming.TimeLimitExceededException tlee) {
             logger.debug("Reconnection required", tlee);
-            return getUser(getPublicContext(true), dn);
         } catch (javax.naming.CommunicationException ce) {
             logger.debug("Reconnection required", ce);
-            return getUser(getPublicContext(true), dn);
         }
+        return attributes;
     }
 
     private JahiaLDAPUser ldapToJahiaUser(Attributes attrs, String dn) {
@@ -1087,11 +952,12 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
         }
 
         // now let's lookup in LDAP properties.
+        DirContext ctx = null;
         try {
-            NamingEnumeration<SearchResult> ldapUsers = getUsers(getPublicContext(false),
+            ctx = getPublicContext();
+            List<SearchResult> ldapUsers = getUsers(ctx,
                 searchCriterias, ldapProperties.getProperty (UID_SEARCH_NAME_PROP), SearchControls.SUBTREE_SCOPE);
-            while (ldapUsers.hasMore()) {
-                SearchResult sr = ldapUsers.next();
+            for (SearchResult sr : ldapUsers) {
                 JahiaLDAPUser user = ldapToJahiaUser(sr);
                 if (user != null) {
                     result.add(user);
@@ -1108,8 +974,9 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
                 " first results...");
         } catch (NamingException ne) {
             logger.warn ("JNDI warning",ne);
-            invalidatePublicCtx ();
             result = new HashSet<JahiaUser>();
+        } finally {
+            invalidateCtx(ctx);
         }
         return result;
     }
@@ -1220,8 +1087,10 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
     private JahiaLDAPUser lookupUserInLDAP (String userKey) {
         JahiaLDAPUser user = null;
 
+        DirContext ctx = null;
         try {
-            SearchResult sr = getPublicUser (getPublicContext (false), ldapProperties.getProperty (UID_SEARCH_ATTRIBUTE_PROP), userKey);
+            ctx = getPublicContext();
+            SearchResult sr = getPublicUser (ctx, ldapProperties.getProperty (UID_SEARCH_ATTRIBUTE_PROP), userKey);
             if (sr == null) {
                 return null;
             }
@@ -1233,8 +1102,9 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
             user = null;
         } catch (NamingException ne) {
             logger.warn ("JNDI warning",ne);
-            invalidatePublicCtx ();
             user = null;
+        } finally {
+            invalidateCtx(ctx);
         }
         return user;
     }
@@ -1256,20 +1126,13 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
         Properties filters = new Properties();
 
         filters.setProperty(prop, val);
-        NamingEnumeration<SearchResult> answer = getUsers(ctx, filters, ldapProperties.getProperty (UID_SEARCH_NAME_PROP), SearchControls.SUBTREE_SCOPE);
+        List<SearchResult> answer = getUsers(ctx, filters, ldapProperties.getProperty (UID_SEARCH_NAME_PROP), SearchControls.SUBTREE_SCOPE);
         SearchResult sr = null;
-        if (answer.hasMore()) {
+        if (!answer.isEmpty()) {
             // we only take the first value if there are multiple answers, which
             // should normally NOT happend if the uid is unique !!
-            sr = answer.next ();
-            boolean hasMore = false;
-            try {
-                hasMore = answer.hasMore ();
-            } catch (PartialResultException pre) {
-                logger.warn (pre);
-            }
-
-            if (hasMore) {                // there is at least a second result.
+            sr = answer.get(0);
+            if (answer.size() > 1) {                // there is at least a second result.
                 logger.debug(
                     "Warning : multiple users with same UID in LDAP repository.");
             }

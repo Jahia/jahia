@@ -125,6 +125,7 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
     private static String DYNGROUP_MEMBERS_ATTRIBUTE = "dynamic.members.attribute";
 
     private static String LDAP_REFFERAL_PROP = "refferal";
+    private static String USE_CONNECTION_POOL = "groups.ldap.connect.pool";
 
     private static String AD_RANGE_STEP = "ad.range.step";    
     
@@ -134,12 +135,10 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
      */
     private static String SEARCH_USER_ATTRIBUTE_NAME = "members.user.attibute.map";
 
-    private Cache<String, JahiaGroupWrapper> mGroupCache;
     private Cache<String, JahiaGroup> mProvidersGroupCache;
 
     private Properties ldapProperties = null;
 
-    private DirContext publicCtx = null;
     private List<String> searchWildCardAttributeList = null;
 
     //in order to avoid the continuous LDAP lookups due to lookupGroup("administrators:0,1,..")
@@ -318,17 +317,7 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
     public void start()
             throws JahiaInitializationException {
         // instanciates the cache
-        mGroupCache = cacheService.createCacheInstance(LDAP_GROUP_CACHE);
         mProvidersGroupCache = cacheService.createCacheInstance(PROVIDERS_GROUP_CACHE);
-
-        try {
-            getPublicContext (true);
-        } catch (NamingException ne) {
-            logger.error (
-                    "Error while initializing public browsing connection to LDAP repository",
-                    ne);
-            invalidatePublicCtx ();
-        }
 
         String wildCardAttributeStr = ldapProperties.getProperty (JahiaGroupManagerLDAPProvider.
                 SEARCH_WILDCARD_ATTRIBUTE_LIST);
@@ -429,11 +418,15 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
      */
     public Map<String, Principal> getGroupMembers (String groupKey, boolean dynamic) {
         Map<String, Principal> members = null;
+        DirContext ctx = null;
         try {
-            SearchResult sr = getPublicGroup (getPublicContext (false), groupKey);
+            ctx = getPublicContext ();
+            SearchResult sr = getPublicGroup (ctx, groupKey);
             members = getGroupMembers(sr, dynamic);
         } catch (NamingException ne) {
             logger.warn ("JNDI warning",ne);
+        } finally {
+            invalidateCtx(ctx);
         }
         return members;
     }
@@ -459,8 +452,10 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
     public List<String> getGroupList () {
         List<String> result = new ArrayList<String>();
 
+        DirContext ctx = null;
         try {
-            for (SearchResult sr : getGroups (getPublicContext (false), null)) {
+            ctx = getPublicContext ();
+            for (SearchResult sr : getGroups (ctx, null)) {
                 JahiaGroup curGroup = ldapToJahiaGroup (sr);
                 if (curGroup != null) {
                     result.add (curGroup.getGroupKey ());
@@ -473,8 +468,9 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
                     " first results...");
         } catch (NamingException ne) {
             logger.warn ("JNDI warning",ne);
-            invalidatePublicCtx ();
             result = new ArrayList<String>();
+        } finally {
+            invalidateCtx(ctx);
         }
 
         return result;
@@ -492,8 +488,10 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
     public List<String> getGroupnameList (int siteID) {
         List<String> result = new ArrayList<String>();
 
+        DirContext ctx = null;
         try {
-            for (SearchResult sr : getGroups (getPublicContext (false), null)) {
+            ctx = getPublicContext ();
+            for (SearchResult sr : getGroups (ctx, null)) {
                 JahiaGroup curGroup = ldapToJahiaGroup (sr);
                 if (curGroup != null) {
                     result.add (curGroup.getGroupname ());
@@ -506,8 +504,9 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
                     " first results...");
         } catch (NamingException ne) {
             logger.warn ("JNDI warning",ne);
-            invalidatePublicCtx ();
             result = new ArrayList<String>();
+        } finally {
+            invalidateCtx(ctx);
         }
 
         return result;
@@ -628,29 +627,12 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
      *
      * @return DirContext the current public context.
      */
-    public DirContext getPublicContext (boolean forceRefresh) throws NamingException {
-        if (forceRefresh || (publicCtx == null)) {
-            // this shouldn't happen... but timeouts have to be checked.
-            try {
-                publicCtx = connectToPublicDir ();
-            } catch (NamingException ne) {
-                logger.warn ("JNDI warning",ne);
-                publicCtx = null;
-            }
-            if (publicCtx == null) {
-                logger.debug ("reconnect failed, retrying...");
-                try {
-                    publicCtx = connectToPublicDir ();
-                } catch (NamingException ne) {
-                    logger.warn ("JNDI warning",ne);
-                    publicCtx = null;
-                }
-                if (publicCtx == null) {
-                    logger.debug ("reconnect failed, returning null context...");
-                    // we've tried everything, still can't connect...
-                    return null;
-                }
-            }
+    public DirContext getPublicContext() throws NamingException {
+        DirContext publicCtx = null;
+        try {
+            publicCtx = connectToPublicDir();
+        } catch (NamingException ne) {
+            logger.warn("JNDI warning", ne);
         }
         return publicCtx;
     }
@@ -680,6 +662,9 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
                 ldapProperties.getProperty (PUBLIC_BIND_DN_PROP));
         publicEnv.put (Context.REFERRAL,
                 ldapProperties.getProperty (LDAP_REFFERAL_PROP, "ignore"));
+        // Enable connection pooling
+        publicEnv.put("com.sun.jndi.ldap.connect.pool", ldapProperties
+                .getProperty(USE_CONNECTION_POOL, "true"));                
         if (ldapProperties.getProperty (PUBLIC_BIND_PASSWORD_PROP) != null) {
             logger.debug ("Using authentification mode to connect to public dir...");
             publicEnv.put (Context.SECURITY_CREDENTIALS,
@@ -689,51 +674,6 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
         // Create the initial directory context
         return new InitialDirContext (publicEnv);
     }
-
-    /*private DirContext connectToAllPublicDir ()
-            throws NamingException {
-        DirContext ctx = null;
-	TreeSet servers = ((JahiaGroupManagerRoutingService)ServicesRegistry
-        					.getInstance()
-        					.getJahiaGroupManagerService())
-        					.getServerList(PROVIDER_NAME);
-
-	for (Iterator ite = servers.iterator(); ite.hasNext();) {
-		ServerBean sb = (ServerBean) ite.next();
-		String sbUrl = (String)sb.getPublicConnectionParameters()
-	        			.get(Context.PROVIDER_URL);
-
-		int tryNumber = 1;
-		while (tryNumber <= sb.getMaxReconnection()) {
-	        	// Identify service provider to use
-	        	logger.debug ("Attempting connection "
-	        				+ tryNumber
-	        				+ " to LDAP repository on "
-	        				+ sbUrl
-	        				+ "...");
-
-		        // Create the initial directory context
-		        try {
-		        	ctx = new InitialDirContext (sb.getPublicConnectionParameters());
-		        	if (isContextValid(ctx))
-		            		return ctx;
-		        } catch (NamingSecurityException nse) {
-		        	// exception while athenticating, forward the exception...
-		        	return null;
-		        } catch (NamingException ne) {
-		        	// all others exception lead to try another connection...
-		        	logger.error("Erreur while getting public context on " + sbUrl, ne);
-		        }
-		        tryNumber++;
-		}
-	}
-
-	if (ctx == null) {
-		throw new NamingException("All servers used without success...");
-	}
-
-        return ctx;
-    }*/
 
     /**
      * Translates LDAP attributes to a JahiaGroup properties set. Multi-valued
@@ -936,14 +876,6 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
         return members;
     }
 
-    private void invalidatePublicCtx () {
-    	try {
-        	invalidateCtx (getPublicContext(false));
-        } catch (NamingException ne) {
-        	logger.error("Couldn't invalidate public LDAP context", ne);
-        }
-    }
-
     private void invalidateCtx (DirContext ctx) {
         if (ctx == null) {
             logger.debug ("Context passed is null, ignoring it...");
@@ -1024,43 +956,42 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
         String[] retattrs = new String[1];
         retattrs[0] = ldapProperties.getProperty (SEARCH_ATTRIBUTE_PROP);
         searchCtl.setReturningAttributes (retattrs);
+
+        DirContext ctx = null;
         try {
-            for (SearchResult searchResult : getGroups(getPublicContext (false), searchCtl, filterBuffer)) {
+            ctx = getPublicContext();
+            for (SearchResult searchResult : getGroups(ctx, searchCtl, filterBuffer)) {
                 String groupKey = searchResult.
                         getAttributes ().
                         get (ldapProperties.getProperty (
                                 SEARCH_ATTRIBUTE_PROP)).get ().
                         toString ();
                 result.add ("{ldap}"+groupKey);
-                logger.debug ("groupKey=" + groupKey);
+                logger.debug("groupKey=" + groupKey);
             }
-        } catch (NamingException e) {
-            logger.warn (e);
-            invalidatePublicCtx ();
-            return new ArrayList<String>();
-        }
 
-        // Now look for dynamic groups
-        filterBuffer = new StringBuffer ();
-        filterBuffer.append ("(objectclass=");
-        filterBuffer.append (ldapProperties.getProperty (JahiaGroupManagerLDAPProvider.
-                DYNGROUP_OBJECTCLASS_ATTRIBUTE, "groupOfURLs"));
-        filterBuffer.append (")");
+            // Now look for dynamic groups
+            filterBuffer = new StringBuffer();
+            filterBuffer.append("(objectclass=");
+            filterBuffer
+                    .append(ldapProperties
+                            .getProperty(
+                                    JahiaGroupManagerLDAPProvider.DYNGROUP_OBJECTCLASS_ATTRIBUTE,
+                                    "groupOfURLs"));
+            filterBuffer.append(")");
 
-        searchCtl = new SearchControls ();
-        searchCtl.setSearchScope (SearchControls.SUBTREE_SCOPE);
-        searchCtl.setReturningAttributes (new String [] {
-        		ldapProperties.getProperty(SEARCH_ATTRIBUTE_PROP),
-                ldapProperties.getProperty(DYNGROUP_MEMBERS_ATTRIBUTE, "memberurl")
-        });
+            searchCtl = new SearchControls();
+            searchCtl.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            searchCtl.setReturningAttributes(new String[] {
+                    ldapProperties.getProperty(SEARCH_ATTRIBUTE_PROP),
+                    ldapProperties.getProperty(DYNGROUP_MEMBERS_ATTRIBUTE,
+                            "memberurl") });
 
-        try {
-            for (SearchResult sr : getGroups(getPublicContext (false), searchCtl, filterBuffer)) {
-                Attributes attr = sr.getAttributes ();
-                String groupKey = attr.
-                        get (ldapProperties.getProperty (
-                                SEARCH_ATTRIBUTE_PROP)).get ().
-                        toString ();
+            for (SearchResult sr : getGroups(ctx, searchCtl, filterBuffer)) {
+                Attributes attr = sr.getAttributes();
+                String groupKey = attr.get(
+                        ldapProperties.getProperty(SEARCH_ATTRIBUTE_PROP))
+                        .get().toString();
 
                 logger.debug ("groupKey=" + groupKey);
                 NamingEnumeration<?> answer2 = null;
@@ -1085,8 +1016,9 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
             }
         } catch (NamingException e) {
             logger.warn (e);
-            invalidatePublicCtx ();
             return new ArrayList<String>();
+        } finally {
+            invalidateCtx(ctx);
         }
         ((JahiaLDAPUser)user).setGroups(result);
         return result;
@@ -1094,10 +1026,8 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
 
     private List<SearchResult> getGroups(DirContext ctx, SearchControls searchCtl, StringBuffer filter) throws NamingException {
         List<SearchResult> answerList = new ArrayList<SearchResult>();
-        boolean doRetry = true;
         try {
             answerList = doGroupSearch(ctx, searchCtl, filter);
-            doRetry = false;
         } catch (NoInitialContextException nice) {
             logger.debug("Reconnection required", nice);
         } catch (CannotProceedException cpe) {
@@ -1110,13 +1040,8 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
             logger.debug("Reconnection required", ce);
         } catch (javax.naming.SizeLimitExceededException limit) {
             logger.warn("Search count limit reached", limit);
-            doRetry = false;
         } catch (javax.naming.NamingException e) {
             logger.warn("Unable to retrieve all LDAP groups. Cause: " + e.getMessage(), e);
-            doRetry = false;
-        }
-        if (doRetry) {
-            answerList = doGroupSearch(getPublicContext(true), searchCtl, filter);
         }
 
         return answerList;
@@ -1230,37 +1155,30 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
      * @return Return a reference on a the specified group name. Return null
      *         if the group doesn't exist or when any error occured.
      */
-    public JahiaGroup lookupGroup (int siteID, String name) {
+    public JahiaGroup lookupGroup(int siteID, String name) {
         // try to avoid a NullPointerException
         if (name == null) {
             return null;
         }
 
-//        String tmpGroupName = removeKeyPrefix (name);
+        // String tmpGroupName = removeKeyPrefix (name);
 
-		/* 2004-16-06 : update by EP
-		new cache to browse : cross providers ...  */
-	    JahiaGroup group = mProvidersGroupCache.get ("n"+siteID+"_"+name);
-	    if (group == null) {
-			// 2004-23-07 : use wrappers
-			JahiaGroupWrapper jgw = mGroupCache.get ("n"+siteID+"_"+name);
-        	if (jgw == null) {
-	            group = lookupGroupInLDAP (siteID, name);
-		        if (group != null) {
-					/* 2004-16-06 : update by EP
-					new cache to populate : cross providers ...  */
-					mProvidersGroupCache.put ("k"+group.getGroupKey(), group);
-	                // with name for speed
-	                mProvidersGroupCache.put ("n"+group.getSiteID()+"_"+group.getGroupname (), group);
-	                // 2004-23-07 : use wrappers
-	                mGroupCache.put("k"+group.getGroupKey (), new JahiaGroupWrapper(group));
-		        }
-				// 2004-23-07 : use wrappers
-				mGroupCache.put("n"+siteID+"_"+name, new JahiaGroupWrapper(group));
-	        } else {
-	        	group = jgw.getGroup();
-	        }
-		}
+        /*
+         * 2004-16-06 : update by EP new cache to browse : cross providers ...
+         */
+        JahiaGroup group = mProvidersGroupCache.get("n" + siteID + "_" + name);
+        if (group == null) {
+            group = lookupGroupInLDAP(siteID, name);
+            if (group != null) {
+                /*
+                 * 2004-16-06 : update by EP new cache to populate : cross providers ...
+                 */
+                mProvidersGroupCache.put("k" + group.getGroupKey(), group);
+                // with name for speed
+                mProvidersGroupCache.put("n" + group.getSiteID() + "_"
+                        + group.getGroupname(), group);
+            }
+        }
 
         return group;
     }
@@ -1318,8 +1236,10 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
         }
 
         // now we can search in the LDAP.
+        DirContext ctx = null;
         try {
-            for (SearchResult sr : getGroups (getPublicContext (false), searchCriterias)) {
+            ctx = getPublicContext ();
+            for (SearchResult sr : getGroups (ctx, searchCriterias)) {
                 JahiaLDAPGroup group = ldapToJahiaGroup (sr);
                 if (group != null) {
                     result.add (group);
@@ -1333,8 +1253,9 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
             logger.warn (pre);
         } catch (NamingException ne) {
             logger.warn ("JNDI warning",ne);
-            invalidatePublicCtx ();
             result = new HashSet<JahiaGroup>();
+        } finally {
+            invalidateCtx(ctx);
         }
         return result;
     }
@@ -1394,34 +1315,28 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
      * @return Return a reference on a the specified group name. Return null
      *         if the group doesn't exist or when any error occured.
      */
-    public JahiaGroup lookupGroup (String groupKey) {
-//        String tmpGroupKey = removeKeyPrefix (groupKey);
+    public JahiaGroup lookupGroup(String groupKey) {
+        // String tmpGroupKey = removeKeyPrefix (groupKey);
 
-		/* 2004-16-06 : update by EP
-		new cache to browse : cross providers ... */
-        JahiaGroup group = mProvidersGroupCache.get ("k"+groupKey);
-		if (group == null) {
-			// 2004-23-07 : use wrappers
-	    	JahiaGroupWrapper jgw = mGroupCache.get ("k"+groupKey);
-	    	if (jgw == null) {
-	            //logger.debug(" group with key=" + tmpGroupKey + " is not found in cache");
-	            group = lookupGroupInLDAP (removeKeyPrefix(groupKey));
+        /*
+         * 2004-16-06 : update by EP new cache to browse : cross providers ...
+         */
+        JahiaGroup group = mProvidersGroupCache.get("k" + groupKey);
+        if (group == null) {
+            // logger.debug(" group with key=" + tmpGroupKey + " is not found in cache");
+            group = lookupGroupInLDAP(removeKeyPrefix(groupKey));
 
-	            if (group != null) {
-					/* 2004-16-06 : update by EP
-					new cache to populate : cross providers ... */
-	                mProvidersGroupCache.put ("k"+groupKey, group);
-	                // with name for speed
-	                mProvidersGroupCache.put ("n"+group.getSiteID()+"_"+group.getGroupname (), group);
-	                // 2004-23-07 : store wrappers
-	                mGroupCache.put("n"+group.getSiteID()+"_"+group.getGroupname (), new JahiaGroupWrapper(group));
-				}
-				// 2004-23-07 : store wrappers
-				mGroupCache.put("k"+groupKey, new JahiaGroupWrapper(group));
-			} else {
-				group = jgw.getGroup();
-			}
-		}
+            if (group != null) {
+                /*
+                 * 2004-16-06 : update by EP new cache to populate : cross providers ...
+                 */
+                mProvidersGroupCache.put("k" + groupKey, group);
+                // with name for speed
+                mProvidersGroupCache.put("n" + group.getSiteID() + "_"
+                        + group.getGroupname(), group);
+                // 2004-23-07 : store wrappers
+            }
+        }
         return group;
     }
 
@@ -1437,8 +1352,10 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
                 return group;
         }
         //
+        DirContext ctx = null;
         try {
-            SearchResult sr = getPublicGroup (getPublicContext (false), groupKey);
+            ctx = getPublicContext ();
+            SearchResult sr = getPublicGroup (ctx, groupKey);
             if (sr == null) {
                 return null;
             }
@@ -1452,8 +1369,9 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
             logger.warn (pre);
         } catch (NamingException ne) {
             logger.warn ("JNDI warning",ne);
-            invalidatePublicCtx ();
             group = null;
+        } finally {
+            invalidateCtx(ctx);
         }
         return group;
     }
@@ -1493,8 +1411,6 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
     }
 
     public void updateCache(JahiaGroup jahiaGroup) {
-        mGroupCache.put("k"+jahiaGroup.getGroupKey(), new JahiaGroupWrapper(jahiaGroup));
-        mGroupCache.put("n"+jahiaGroup.getSiteID()+"_"+jahiaGroup.getGroupname(), new JahiaGroupWrapper(jahiaGroup));
         mProvidersGroupCache.put ("k"+jahiaGroup.getGroupKey(), jahiaGroup);
         mProvidersGroupCache.put ("n"+jahiaGroup.getSiteID()+"_"+jahiaGroup.getGroupname(), jahiaGroup);
     }

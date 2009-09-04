@@ -30,6 +30,7 @@
                 <entry key="groupname.attribute.map" value="cn"/>
                 <entry key="description.attribute.map" value="description"/>
                 <entry key="ad.range.step" value="0"/>
+                <entry key="ldap.connect.pool" value="true"/>                
             </map>
         </property>
     </bean>

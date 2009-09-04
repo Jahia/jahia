@@ -16,7 +16,7 @@
     <spring.version>2.5.5</spring.version>
     <jackrabbit.version>1.5.0</jackrabbit.version>
     <lucene.version>2.3.2</lucene.version>
-    <jahia.package.version>7.0-SNAPSHOT</jahia.package.version>
+    <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
 
     <driver.derby.version>10.4.2.0</driver.derby.version>
     <driver.hsqldb.version>1.8.0.7</driver.hsqldb.version>

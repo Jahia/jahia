@@ -78,7 +78,7 @@
         </property>
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.dialect">@HIBERNATE_DIALECT@</prop>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                 <prop key="hibernate.hbm2ddl.auto">none</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <!-- prop key="hibernate.cache.provider_class">org.jahia.hibernate.cache.TreeCacheProvider</prop-->
@@ -125,7 +125,7 @@
     <!-- Uncomment this to use JOTM Transaction Manager with Tomcat and comment the other
     <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
         <property name="userTransactionName" value="java:comp/UserTransaction" />
-        <property name="nestedTransactionAllowed" value="@NESTED_TRANSACTION_ALLOWED@" />
+        <property name="nestedTransactionAllowed" value="${nested.transaction.allowed}" />
     </bean>
     -->
 
@@ -133,6 +133,6 @@
         <property name="sessionFactory">
             <ref local="sessionFactory"/>
         </property>
-        <property name="nestedTransactionAllowed" value="@NESTED_TRANSACTION_ALLOWED@" />
+        <property name="nestedTransactionAllowed" value="${nested.transaction.allowed}" />
     </bean>
 </beans>

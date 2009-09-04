@@ -19,13 +19,11 @@ jahia.jackrabbit.schema = mysql
 jahia.database.schemascriptdir = sql/schema/mysql
 jahia.database.transactions = false
 jahia.database.hibernate.dialect = org.hibernate.dialect.MySQLDialect
-jahia.transaction_isolation_level = ISOLATION_READ_UNCOMMITTED
 jahia.nested_transaction_allowed = true
 
 # uncomment this to use JTA transactions
 #jahia.database.schemascriptdir = sql/schema/mysql-tx
 #jahia.database.transactions = true
 #jahia.database.hibernate.dialect = org.hibernate.dialect.MySQLInnoDBDialect
-#jahia.transaction_isolation_level = ISOLATION_DEFAULT
 #jahia.nested_transaction_allowed = false
 jahia.jboss.datasource.typeMapping = mySQL

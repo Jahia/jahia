@@ -107,6 +107,10 @@ db_script                                              =   hypersonic.script
 # in SELECT * FROM XXX WHERE XXXX IN (VALUE_LIST) because some databases
 # have limitations. Normally you shouldn't need to modify this parameter.
 db_max_elements_for_in_clause                          =   1000
+# The DB dialect to be used by the Hibernate
+hibernate.dialect                                      =   @HIBERNATE_DIALECT@
+# Should nested transaction be allowed?
+nested.transaction.allowed                             =   @NESTED_TRANSACTION_ALLOWED@
 
 ######################################################################
 ### Characters encoding ##############################################

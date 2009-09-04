@@ -1383,26 +1383,14 @@ public class JahiaConfigurationWizard extends HttpServlet {
             if (values.get("storeFilesInDB") != null) {
                 dbProperties.put("storeFilesInDB", values.get("storeFilesInDB"));
             }
-            String pathToSpringManagerFile = pathResolver.resolvePath("WEB-INF/jahia/WEB-INF/etc/spring/applicationcontext-manager.xml");
-            SpringManagerConfigurator.updateDataSourceConfiguration(pathToSpringManagerFile, dbProperties);
-            String pathToSpringHibernateFile = pathResolver.resolvePath("WEB-INF/jahia/WEB-INF/etc/spring/applicationcontext-hibernate.xml");
-            SpringHibernateConfigurator.updateDataSourceConfiguration(pathToSpringHibernateFile, dbProperties);
+            SpringHibernateConfigurator.updateDataSourceConfiguration(getJahiaPropertiesFileName(), dbProperties);
             String pathToQuartzFile = pathResolver.resolvePath("WEB-INF/jahia/WEB-INF/etc/config/quartz.properties");
             QuartzConfigurator.updateDataSourceConfiguration(pathToQuartzFile, dbProperties);
             String pathToJRFile = pathResolver.resolvePath("WEB-INF/jahia/WEB-INF/etc/repository/jackrabbit/repository.xml");
             JackrabbitConfigurator.updateDataSourceConfiguration(pathToJRFile, dbProperties);
             String pathToRootJRFile = pathResolver.resolvePath("WEB-INF/jahia/WEB-INF/etc/repository/root.xml");
             RootUserConfigurator.updateRootUserConfiguration(pathToRootJRFile,values);
-// Copy slide files to default site
             final ServletContext context = config.getServletContext();
-//final PathResolver pathResolver = new WebAppPathResolver(context);
-
-            final String slideContentDiskPath = "WEB-INF/jahia/WEB-INF/var/content/slide/";
-            JahiaTools.copyFolderContent(
-                    pathResolver.resolvePath(slideContentDiskPath + "myjahiasite" + File.separator + "store"),
-                    pathResolver.resolvePath(slideContentDiskPath + properties.getProperty("defautSite") + File.separator + "store"));
-            final File dir = new File(pathResolver.resolvePath(slideContentDiskPath + "myjahiasite"));
-            JahiaTools.deleteFile(dir);
 
 // now let's install the selected license file.
             String selectedLicenseFileName = "license-free.xml";

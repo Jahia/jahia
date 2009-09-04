@@ -17,24 +17,24 @@
  USING THIS SOURCE CODE (QUICKSTART)
 ------------------------------------------------------------------------------
 
- Requirements : 
+ Requirements :
  - JDK 1.5 or later (1.6 is not yet supported for compilation)
  - Maven 2
  - Subversion client (for Windows at http://www.collab.net/downloads/subversion/
-   for Mac OS X from http://www.finkproject.org/ or Xcode tools, under 
+   for Mac OS X from http://www.finkproject.org/ or Xcode tools, under
    Linux install a subversion client from your package repository). Basically,
    you need to have an "svn" command available in your PATH so that the build
    system can calculate the build number
  - (Optional) JetBrains IntelliJ IDEA 7.0.3 or later
 
  Here is quick start steps to use this source code :
- 
+
     1. Make sure you have all the above requirements, especially the Subversion
        client !
 
     2. Code to checkout:
        http://subversion.jahia.org/svn/jahia/trunk/
-      
+
        For more information, please check the template developer guide.
 
     3. Download and Install Maven 2.x (http://maven.apache.org), and set an
@@ -65,35 +65,35 @@
 
     5. Copy the settings.xml.example file into ${USER_HOME}/.m2 directory, renaming
        it to settings.xml, and modify it to your environment.
-       As there are problems with JSP compilation on path with spaces on Windows environments, it is 
-       recommended you specify a default location for your local repository 
-       that DOESN'T CONTAIN ANY SPACES IN THE PATH, for example : 
+       As there are problems with JSP compilation on path with spaces on Windows environments, it is
+       recommended you specify a default location for your local repository
+       that DOESN'T CONTAIN ANY SPACES IN THE PATH, for example :
          C:/java/m2repository
 
-    6. In the main directory, type : 
+    6. In the main directory, type :
        mvn install jahia:deploy jahia:configure
-     
+
        This should compile and deploy into your local repository all of Jahia, deploy and install everything in the
        application server configured in your settings.xml file.
-   
-       An purely indicative time of initial compilation time (including all 
-       dependency download) is 16 minutes. A "mvn clean install" on the same 
-       machine takes 2 minutes 40 seconds. These times do not include JSP or 
+
+       An purely indicative time of initial compilation time (including all
+       dependency download) is 16 minutes. A "mvn clean install" on the same
+       machine takes 2 minutes 40 seconds. These times do not include JSP or
        GWT compilation.
 
     7. Point your browser to http://localhost:8080/cms (in case you have not chosen option 10 ).
     	 Default root password is root1234
 
     8. Create your first virtual site and enjoy.
-       
-    9.Alternatively if you want to test Jahia's configuration from scratch, simply add the 
+
+    9.Alternatively if you want to test Jahia's configuration from scratch, simply add the
        configwizard-webapp module in your root pom.xml, in order to have something like
-			 
-			 <module>configwizard-webapp</module> 
-			 
-			 and then simply do 
+
+			 <module>configwizard-webapp</module>
+
+			 and then simply do
 			 mvn install jahia:deploy
-			 
+
 			 in this case you will have to point your browser to http://localhost:8080/config
 			 the first time then afterwards just head to  http://localhost:8080/cms as usual
 
@@ -118,25 +118,25 @@
  WAR and EAR files.
 
  The new "ear" project generates a jahia-*.ear file that can be used to
- deploy Jahia onto JEE application servers. The file can be found in the 
- following directory : 
- 
+ deploy Jahia onto JEE application servers. The file can be found in the
+ following directory :
+
    ear/target
 
  Using IDEs
 ------------------------------------------------------------------------------
 
-  IDEA : 
-  
-    1. IDEA has direct support for Maven 2, so you can simply open the project 
-       using the IDE. 
-       
-       Here are the steps to create the new project : 
-       
+  IDEA :
+
+    1. IDEA has direct support for Maven 2, so you can simply open the project
+       using the IDE.
+
+       Here are the steps to create the new project :
+
        - Open File -> New Project ...
        - Select Import project from external model
        - Click Next
-       - Select Maven 
+       - Select Maven
        - Click Next
        - Select directory where source was checked out and check the box
          named "Automatically synchronize maven structure on startup"
@@ -144,39 +144,39 @@
        - Click next
        - For the project name you can leave the default
        - Click finish
-       
-       If you have trouble with the above procedure, you can also generate
-       the IDEA project structure using the Maven 2 IDEA plugin this way : 
-       
-         mvn idea
-       
-       You can find the plugin documentation here : 
-       
-       http://maven.apache.org/plugins/maven-idea-plugin/         
 
-  Eclipse : 
-  
-    1. Add a new 'M2_REPO' classpath variable in Eclipse, pointing to your 
+       If you have trouble with the above procedure, you can also generate
+       the IDEA project structure using the Maven 2 IDEA plugin this way :
+
+         mvn idea
+
+       You can find the plugin documentation here :
+
+       http://maven.apache.org/plugins/maven-idea-plugin/
+
+  Eclipse :
+
+    1. Add a new 'M2_REPO' classpath variable in Eclipse, pointing to your
        Maven 2 repository folder (either using Maven or manually):
-       
+
         a) Using Maven: execute:
               mvn -Declipse.workspace=<path-to-eclipse-workspace> eclipse:add-maven-repo
            where <path-to-eclipse-workspace> is the path to your Eclipse workspace
-           
-        b) Manually: in Eclipse open 
-             Window / Preferences -> Java -> Build Path -> Classpath Variables. 
+
+        b) Manually: in Eclipse open
+             Window / Preferences -> Java -> Build Path -> Classpath Variables.
            Click on 'New...'
-           and enter M2_REPO as a name of the variable and full path to your 
+           and enter M2_REPO as a name of the variable and full path to your
            Maven 2 repository as path value
-           
+
     2. In the Jahia root folder execute the following command:
           mvn eclipse:eclipse
-       This will generate '.project' and '.classpath' files for the seven 
+       This will generate '.project' and '.classpath' files for the seven
        projects in Jahia (jackrabbit-core-ext, jackrabbit-server-ext,
        jahia-api, jahia-ear, jahia-impl, jahia-war, etc.)
-       
-    3. Open Eclipse and use import 'Existing Projects into Workspace'. 
-       Using 'Browse...' select the Jahia root folder. A list of  available 
+
+    3. Open Eclipse and use import 'Existing Projects into Workspace'.
+       Using 'Browse...' select the Jahia root folder. A list of  available
        projects will be shown. Import projects into the workspace.
 
  Deploying new JARs to maven.jahia.org
@@ -186,35 +186,35 @@
  - on Windows : putty SSH applications (puttygen.exe)
  - on Linux/Mac OS X/UNIX : OpenSSH for JAR deployment to maven.jahia.org
 
- First check if the JAR is not available by googling for it (ex using the 
- command: 
-   maven2 YOURJAR 
- as a search criteria). It is better to use a public resource, which will 
+ First check if the JAR is not available by googling for it (ex using the
+ command:
+   maven2 YOURJAR
+ as a search criteria). It is better to use a public resource, which will
  probably include transitive dependencies.
 
- You should always remember to send your new JARs to the maven.jahia.org 
+ You should always remember to send your new JARs to the maven.jahia.org
  repository. Here is the procedure on how to do it.
 
-    1. Generate an OpenSSH public/private DSA key pair (on Windows this can be 
+    1. Generate an OpenSSH public/private DSA key pair (on Windows this can be
        done with puttygen and export to OpenSSH format)
-       
-    2. Send the public key to the Jahia IT admin and ask for it to be 
+
+    2. Send the public key to the Jahia IT admin and ask for it to be
        installed on the maven.jahia.org server
-       
-    3. Use the mvndeploy.bat file on Windows to deploy your JAR, or use the 
-       equivalent command line. Also, if you have a POM for your JAR that 
-       includes dependencies this is a better than letter Maven generate one 
+
+    3. Use the mvndeploy.bat file on Windows to deploy your JAR, or use the
+       equivalent command line. Also, if you have a POM for your JAR that
+       includes dependencies this is a better than letter Maven generate one
        for you.
 
  XDoclet deprecation
 ------------------------------------------------------------------------------
  As XDoclet is a dying project since Java introduced annotations, we no longer
  support XDoclet in the Maven 2 project structure. We have pre-generated all
- the *.hbm.xml files. From now on the preferred way of adding Hibernate 
+ the *.hbm.xml files. From now on the preferred way of adding Hibernate
  configuration is to use Java annotations (not yet integrated in the Maven 2
  projects), or simply by modifying the *.hbm.xml files by hand. These files
- can be found in the following location : 
- 
+ can be found in the following location :
+
    war/src/main/hibernate-resources
 
  ParamBean refactoring notes
@@ -353,7 +353,7 @@ The plugin will use the url set in the parameter " <jahia.test.url> " in your se
 ------------------------------------------------------------------------------
 Jahia's maven project structure is now integrated with the Atlassian Clover
 reporting tool. The new "code-coverage" profile must be activated in your
-settings.xml. You must also add the following plugin group in the same file: 
+settings.xml. You must also add the following plugin group in the same file:
 
     <pluginGroup>com.atlassian.maven.plugins</pluginGroup>
 
@@ -397,3 +397,22 @@ try the following:
    is usually located in the "privacy options".
 2. Close all browsers windows.
 3. Restart your browser and try again. If the problem persists, please contact us.
+
+
+ How to change license number
+------------------------------------------------------------------------------
+1. Change the following variable in \core\src\main\java\org\jahia\bin\Jahia.java
+
+/** Jahia server release number */
+    private static double RELEASE_NUMBER = x.x;
+
+2. Change the following attributes in ALL pom.xml files
+
+<version>x.x-SNAPSHOT</version>
+
+3. In the pom.xml located at the root level also change the jahia.package.version
+
+<jahia.package.version>x.x-SNAPSHOT</jahia.package.version>
+
+
+4. Create the adequate license.xml files

@@ -113,7 +113,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
     private static Logger logger = Logger.getLogger(JahiaConfigurationWizard.class);
     static public final String COPYRIGHT =
             "&copy; Copyright 2002-2009  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
-    public static final String VERSION = "7.0";
+    public static final String VERSION = "6.5";
 
     private  ServletContext context;
     private  ServletConfig config;

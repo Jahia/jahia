@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+    <bean id="authPipeline" class="org.jahia.pipelines.impl.GenericPipeline">
+        <property name="name" value="authPipeline" />
+        <property name="valves">
+            <list>
+                <bean class="org.jahia.params.valves.HttpBasicAuthValveImpl" />
+                <bean class="org.jahia.params.valves.TokenAuthValveImpl" />
+                <bean class="org.jahia.params.valves.LoginEngineAuthValveImpl" />
+                <bean class="org.jahia.params.valves.UserAliasingEngineAuthValveImpl" />
+                <bean class="org.jahia.params.valves.SessionAuthValveImpl" />
+                <bean class="org.jahia.params.valves.CookieAuthValveImpl" />
+                <bean class="org.jahia.params.valves.ContainerAuthValveImpl" />
+                <bean class="org.jahia.params.valves.JCIFSAuthValveImpl" />
+            </list>
+        </property>
+    </bean>
+
+</beans>

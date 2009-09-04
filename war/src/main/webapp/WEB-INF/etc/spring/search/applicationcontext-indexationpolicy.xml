@@ -85,6 +85,78 @@
 		</property>                                                                                                                        
 	</bean>
 	
+    <bean id="searchConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+			<props>
+                <prop key="org.jahia.engines.search.searchViewHandler.default">org.jahia.engines.search.SearchViewHandlerImpl</prop>
+				<prop key="org.jahia.engines.search.searchViewHandler.search">org.jahia.engines.search.SearchViewHandlerImpl</prop>
+				<prop key="org.jahia.engines.search.searchViewHandler.advSearch">org.jahia.engines.search.AdvSearchViewHandler</prop>
+                <prop key="org.jahia.engines.search.searchViewHandler.files">org.jahia.engines.search.FileSearchViewHandler</prop>
+                <prop key="org.jahia.engines.search.searchViewHandler.pages">org.jahia.engines.search.PagesSearchViewHandler</prop>
+
+				<prop key="defaultSearchHandlerClass">org.jahia.services.search.lucene.fs.LuceneSearchHandlerImpl</prop>
+				<!--
+				<prop key="defaultSearchHandlerClass">org.jahia.services.search.compass.CompassSearchHandler</prop>
+				-->
+
+				<prop key="maxWarmingSearchers">2</prop><!-- maximum number of searchers to be warmed in parallel -->
+				<prop key="useColdSearcher">true</prop><!-- use cold - not warmed up - searcher -->
+				
+				<prop key="searchMaxLuceneDocs">200000</prop><!-- max lucene documents allowed to evaluate for computing hits. Unlimited = -1. --> 
+				<prop key="searchMaxHits">100</prop><!-- max hits to return when hit are not grouped by page. Unlimited = -1. --> 
+				<prop key="searchMaxPages">100</prop><!-- max different pages. Unlimited = -1. --> 
+				<prop key="searchMaxHitsByPage">10</prop><!-- max different hit by page. Unlimited = -1. -->
+				
+				<prop key="enableJcrSearch">true</prop> 
+              </props>  
+		</property>
+	</bean>
+    <bean id="fieldsToCopyToSearchHit" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value>jahia.field_id</value>
+                <value>jahia.object_key</value>
+                <value>jahia.content_type</value>
+                <value>jahia.definition_name</value>
+                <value>jahia.container_alias</value>
+                <value>jahia.page_id</value>
+                <value>jahia.id</value>
+                <value>jahia.language_code</value>
+                <value>jahia.workflow_state</value>
+                <value>jahia.version</value>
+                <value>jahia.jahia_id</value>
+                <value>jahia.acl_id</value>
+                <value>jahia.parent_id</value>
+                <value>jahia.file_realname</value>
+                <value>jahia.definition_primarytype</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="fieldsToExcludeFromHighlighting" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">                
+            <list>
+                <value>jahia.metadata_creationdate</value>
+                <value>jahia.metadata_lastmodificationdate</value>
+                <value>jahia.metadata_lastpublishingdate</value>
+                <value>jahia.metadata_pagepath</value>
+                <value>jahia.containerfield_date</value>
+            </list>
+        </property>
+    </bean>                
+				
+    <bean id="filterCacheConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <props>
+                <prop key="name">FilterCache</prop>
+                <prop key="class">org.jahia.services.search.lucene.fs.LRUCache</prop>
+                <prop key="size">32</prop>
+                <prop key="initialSize">32</prop>
+                <prop key="autowarmCount">16</prop>
+                <prop key="regenerator"></prop>
+			</props>
+		</property>
+	</bean>
+	
     <!-- sample indexation rule to delay indexation of all Jahia Content at specified times -->
     <bean id="delayedContentIndexationRule" class="org.jahia.services.search.indexingscheduler.impl.rule.BaseIndexationRule">
         <property name="id" value="1"/><!-- a unique id must be assigned to each rule -->
@@ -160,39 +232,6 @@
                     <property name="startMinute" value="00"/>
                     <property name="endHour" value="3"/>
                     <property name="endMinute" value="00"/>
-                </bean>
-            </list>                
-        </property>
-    </bean>
-
-    <!-- sample indexation rule used to schedule Blog Content for immediate indexation ( as soon as possible, using the indexation normal flow ) -->
-    <bean id="blogContentIndexationRule" class="org.jahia.services.search.indexingscheduler.impl.rule.BaseIndexationRule">
-        <property name="id" value="3"/><!-- a unique id must be assigned to each rule -->
-        <property name="namedID" value="blogContentIndexationRule"/><!-- optional unique name used for declarative rule. -->
-        <property name="name" value="Blog Content Indexation Rule"/><!-- human readable name or description -->
-        <property name="indexationMode" value="2"/><!-- Indexation mode :
-                                                        0 = don't index, 
-                                                        1 = index immediately ( as soon as possible ), 
-                                                        2 = scheduled at specified time -->
-        <property name="conditions"><!-- a rule returns true only if all its conditions evaluate to true -->
-            <list>
-                <bean class="org.jahia.services.search.indexingscheduler.impl.condition.ContentTypeRuleCondition">
-                    <property name="allowAll" value="false"/>
-                    <!-- In case allowAll is set to false, more precise content type regular expression pattern can be defined
-                         "ContentPage" : match all pages
-                         "ContentContainer" : match all containers
-                         "ContentPage[|]name_news" : match all pages with the definition name "news"
-                         "ContentContainer[|]name_.*news" : match all containers using a definition name, which ends with news
-                         "ContentContainer[|]id_43" : match all containers using the definition with the given ID=43
-                    -->
-                    <property name="allowedContentTypes">
-                        <list>
-                            <value>ContentPage[|]name_blog</value>
-                            <value>ContentPage[|]name_blogListing</value>
-                            <value>ContentContainer[|]name_.*blogEntries</value>
-                            <value>ContentContainer[|]name_.*comments</value>
-                        </list>
-                    </property>
                 </bean>
             </list>                
         </property>
@@ -274,7 +313,6 @@
                 <ref bean="synchronizedIndexationRule"/>
                 <!-- uncomment each rule bean you want to use -->
                 <!--ref bean="delayedContentIndexationRule"/-->
-                <!--ref bean="blogContentIndexationRule"/-->
                 <!--ref bean="excludedSubTreeIndexationRule"/-->
             </list>
         </property>

@@ -16,8 +16,7 @@
   		</list>
   	</property>
   </bean>
-  <!-- property placeholder post-processor -->
-  <!-- jahiaWebAppRoot is built by the SpringSingleton and passed as a system property -->
+
   <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="properties">
     	<ref bean="jahiaProperties"/>
@@ -60,78 +59,6 @@
 				<prop key="org.jahia.services.versioning.style.compareAddedDifference">background-color:aqua !important;color:black !important;</prop>
 				<prop key="org.jahia.services.versioning.style.compareChangedDifference">background-color:lime !important;color:black !important;</prop>
 				<prop key="org.jahia.services.versioning.style.compareDeletedDifference">background-color:red !important; text-decoration:line-through !important; color:black !important;</prop>
-			</props>
-		</property>
-	</bean>
-
-    <bean id="searchConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="properties">
-			<props>
-                <prop key="org.jahia.engines.search.searchViewHandler.default">org.jahia.engines.search.SearchViewHandlerImpl</prop>
-				<prop key="org.jahia.engines.search.searchViewHandler.search">org.jahia.engines.search.SearchViewHandlerImpl</prop>
-				<prop key="org.jahia.engines.search.searchViewHandler.advSearch">org.jahia.engines.search.AdvSearchViewHandler</prop>
-                <prop key="org.jahia.engines.search.searchViewHandler.files">org.jahia.engines.search.FileSearchViewHandler</prop>
-                <prop key="org.jahia.engines.search.searchViewHandler.pages">org.jahia.engines.search.PagesSearchViewHandler</prop>
-
-				<prop key="defaultSearchHandlerClass">org.jahia.services.search.lucene.fs.LuceneSearchHandlerImpl</prop>
-				<!--
-				<prop key="defaultSearchHandlerClass">org.jahia.services.search.compass.CompassSearchHandler</prop>
-				-->
-
-				<prop key="maxWarmingSearchers">2</prop><!-- maximum number of searchers to be warmed in parallel -->
-				<prop key="useColdSearcher">true</prop><!-- use cold - not warmed up - searcher -->
-				
-				<prop key="searchMaxLuceneDocs">200000</prop><!-- max lucene documents allowed to evaluate for computing hits. Unlimited = -1. --> 
-				<prop key="searchMaxHits">100</prop><!-- max hits to return when hit are not grouped by page. Unlimited = -1. --> 
-				<prop key="searchMaxPages">100</prop><!-- max different pages. Unlimited = -1. --> 
-				<prop key="searchMaxHitsByPage">10</prop><!-- max different hit by page. Unlimited = -1. -->
-				
-				<prop key="enableJcrSearch">true</prop> 
-              </props>  
-		</property>
-	</bean>
-    <bean id="fieldsToCopyToSearchHit" class="org.springframework.beans.factory.config.ListFactoryBean">
-        <property name="sourceList">
-            <list>
-                <value>jahia.field_id</value>
-                <value>jahia.object_key</value>
-                <value>jahia.content_type</value>
-                <value>jahia.definition_name</value>
-                <value>jahia.container_alias</value>
-                <value>jahia.page_id</value>
-                <value>jahia.id</value>
-                <value>jahia.language_code</value>
-                <value>jahia.workflow_state</value>
-                <value>jahia.version</value>
-                <value>jahia.jahia_id</value>
-                <value>jahia.acl_id</value>
-                <value>jahia.parent_id</value>
-                <value>jahia.file_realname</value>
-                <value>jahia.definition_primarytype</value>
-            </list>
-        </property>
-    </bean>
-    <bean id="fieldsToExcludeFromHighlighting" class="org.springframework.beans.factory.config.ListFactoryBean">
-        <property name="sourceList">                
-            <list>
-                <value>jahia.metadata_creationdate</value>
-                <value>jahia.metadata_lastmodificationdate</value>
-                <value>jahia.metadata_lastpublishingdate</value>
-                <value>jahia.metadata_pagepath</value>
-                <value>jahia.containerfield_date</value>
-            </list>
-        </property>
-    </bean>                
-				
-    <bean id="filterCacheConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="properties">
-            <props>
-                <prop key="name">FilterCache</prop>
-                <prop key="class">org.jahia.services.search.lucene.fs.LRUCache</prop>
-                <prop key="size">32</prop>
-                <prop key="initialSize">32</prop>
-                <prop key="autowarmCount">16</prop>
-                <prop key="regenerator"></prop>
 			</props>
 		</property>
 	</bean>

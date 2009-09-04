@@ -16,22 +16,6 @@
         </property>
     </bean>
 
-    <bean id="authPipeline" class="org.jahia.pipelines.impl.GenericPipeline">
-        <property name="name" value="authPipeline" />
-        <property name="valves">
-            <list>
-                <bean class="org.jahia.params.valves.HttpBasicAuthValveImpl" />
-                <bean class="org.jahia.params.valves.TokenAuthValveImpl" />
-                <bean class="org.jahia.params.valves.LoginEngineAuthValveImpl" />
-                <bean class="org.jahia.params.valves.UserAliasingEngineAuthValveImpl" />
-                <bean class="org.jahia.params.valves.SessionAuthValveImpl" />
-                <bean class="org.jahia.params.valves.CookieAuthValveImpl" />
-                <bean class="org.jahia.params.valves.ContainerAuthValveImpl" />
-                <bean class="org.jahia.params.valves.JCIFSAuthValveImpl" />
-            </list>
-        </property>
-    </bean>
-
     <bean id="org.jahia.operations.valves.SkeletonAggregatorValve" class="org.jahia.operations.valves.SkeletonAggregatorValve">
         <property name="cacheKeyGeneratorService" ref="CacheKeyGeneratorService"/>
         <property name="eventService" ref="JahiaEventService"/>

@@ -34,7 +34,9 @@ package org.jahia.services.notification;
 import org.jahia.params.ProcessingContext;
 import org.jahia.utils.JahiaTools;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -70,7 +72,12 @@ public class HtmlHelper {
         }
         URL url = new URL(SettingsBean.getInstance().getLocalAccessUri() + s);
 
-        InputStream is = JahiaTools.makeJahiaRequest(url, user, null, null, 5);
+        JahiaUser pageUser = user;
+        if (user instanceof SubscriptionUser) {
+            // replace the unregistered user with guest
+            pageUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerService.GUEST_USERNAME);
+        }
+        InputStream is = JahiaTools.makeJahiaRequest(url, pageUser, null, null, 5);
         StringWriter out = new StringWriter();
         IOUtils.copy(is,out);
         return out.toString();

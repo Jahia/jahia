@@ -33,10 +33,10 @@ package org.jahia.taglibs.uicomponents.i18n;
 
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.comparator.LanguageCodesComparator;
 import org.jahia.utils.comparator.LanguageSettingsComparator;
@@ -52,7 +52,7 @@ import java.util.*;
  * @author Xavier Lawrence
  */
 @SuppressWarnings("serial")
-public class LanguageSwitchTag extends AbstractJahiaTag {
+public class  LanguageSwitchTag extends AbstractJahiaTag {
 
     private static final transient org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(LanguageSwitchTag.class);

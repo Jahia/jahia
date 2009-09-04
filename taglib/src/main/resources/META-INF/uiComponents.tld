@@ -610,6 +610,12 @@
         </attribute>
     </tag>
     <tag>
+        <description>Display edit mode link if allowed</description>
+        <name>editModeLink</name>
+        <tag-class>org.jahia.taglibs.uicomponents.mode.EditModeLinkTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+    <tag>
         <description>Generates links in order to be able to switch languages when browsing the site</description>
         <name>languageSwitchingLinks</name>
         <tag-class>org.jahia.taglibs.uicomponents.i18n.LanguageSwitchTag</tag-class>

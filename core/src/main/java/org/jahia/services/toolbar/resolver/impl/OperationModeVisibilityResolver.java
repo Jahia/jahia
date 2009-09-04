@@ -48,13 +48,19 @@ import org.jahia.services.usermanager.JahiaUserManagerProvider;
 public class OperationModeVisibilityResolver implements VisibilityResolver {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(OperationModeVisibilityResolver.class);
 
-    private static final String COMPARE = "compare";
-    private static final String LIVE = "live";
-    private static final String PREVIEW = "preview";
-    private static final String EDIT = "edit";
-    private static final String ALL = "all";
+    public static final String COMPARE = "compare";
+    public static final String LIVE = "live";
+    public static final String PREVIEW = "preview";
+    public static final String EDIT = "edit";
+    public static final String ALL = "all";
 
 
+    /**
+     * Chech visibility of the current type
+     * @param jData
+     * @param type
+     * @return
+     */
     public boolean isVisible(JahiaData jData, String type) {
         // type unknown
         if (type == null || jData == null) {
@@ -124,6 +130,12 @@ public class OperationModeVisibilityResolver implements VisibilityResolver {
         return false;
     }
 
+
+    /**
+     * Check if preview link can be displayed
+     * @param jData
+     * @return
+     */
     private boolean displayPreview(JahiaData jData) {
         final ProcessingContext processingContext = jData.getProcessingContext();
 
@@ -145,6 +157,11 @@ public class OperationModeVisibilityResolver implements VisibilityResolver {
     }
 
 
+    /**
+     * Check if page is available
+     * @param jData
+     * @return
+     */
     private boolean isPageAvailabe(JahiaData jData) {
         final ProcessingContext processingContext = jData.getProcessingContext();
 
@@ -162,6 +179,11 @@ public class OperationModeVisibilityResolver implements VisibilityResolver {
         return isAvailable;
     }
 
+    /**
+     * Check if current content page gas active entries
+     * @param jData
+     * @return
+     */
     private boolean hasActiveEntries(JahiaData jData) {
         final ProcessingContext processingContext = jData.getProcessingContext();
 
@@ -180,6 +202,11 @@ public class OperationModeVisibilityResolver implements VisibilityResolver {
         return hasActiveEntries;
     }
 
+    /**
+     * Check admin access
+     * @param jData
+     * @return
+     */
     private boolean isAdminAccess(JahiaData jData) {
         final ProcessingContext processingContext = jData.getProcessingContext();
 
@@ -197,6 +224,11 @@ public class OperationModeVisibilityResolver implements VisibilityResolver {
         return isAdminAccess;
     }
 
+    /**
+     * Check write access
+     * @param jData
+     * @return
+     */
     private boolean isWriteAccess(JahiaData jData) {
         final ProcessingContext processingContext = jData.getProcessingContext();
 
@@ -215,6 +247,11 @@ public class OperationModeVisibilityResolver implements VisibilityResolver {
         return writeAccess;
     }
 
+    /**
+     * Check if edit mode permission
+     * @param processingContext
+     * @return
+     */
     private boolean isEditModeAllowed(ProcessingContext processingContext) {
         // get from attribute for performance reason
         final String attr = "OperationModeVisibilityResolver.isEditModeAllowed";
@@ -231,10 +268,22 @@ public class OperationModeVisibilityResolver implements VisibilityResolver {
         return editModePermission;
     }
 
+    /**
+     * Set attribute as a boolean
+     * @param processingContext
+     * @param displayPreviewAttr
+     * @param displayPreview
+     */
     private void setBooleanAttribute(ProcessingContext processingContext, String displayPreviewAttr, boolean displayPreview) {
         processingContext.setAttribute(displayPreviewAttr, new Boolean(displayPreview));
     }
 
+    /**
+     * Get attrinute as a boolean
+     * @param attr
+     * @param processingContext
+     * @return
+     */
     private Boolean getBooleanAttribute(String attr, ProcessingContext processingContext) {
         final Object o = processingContext.getAttribute(attr);
         if (o != null) {

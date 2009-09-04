@@ -21,7 +21,7 @@
             of the web application
         </description>
         <param-name>contextConfigLocation</param-name>
-        <param-value>WEB-INF/etc/spring/applicationcontext-*.xml,classpath:org/jahia/config/**/applicationcontext-*.xml</param-value>
+        <param-value>WEB-INF/etc/spring/**/applicationcontext-*.xml,classpath:org/jahia/config/**/applicationcontext-*.xml</param-value>
     </context-param>
 
     <context-param>
@@ -432,10 +432,6 @@
             <param-name>config</param-name>
             <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>
         </init-param>
-        <init-param>
-            <param-name>application</param-name>
-            <param-value>ApplicationResources</param-value>
-        </init-param>
         <load-on-startup>8</load-on-startup>
     </servlet>
 
@@ -652,10 +648,6 @@
             <param-name>config</param-name>
             <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>
         </init-param>
-        <init-param>
-            <param-name>application</param-name>
-            <param-value>ApplicationResources</param-value>
-        </init-param>
         <load-on-startup>7</load-on-startup>
     </servlet>
 
@@ -675,10 +667,6 @@
         <init-param>
             <param-name>config</param-name>
             <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>
-        </init-param>
-        <init-param>
-            <param-name>application</param-name>
-            <param-value>ApplicationResources</param-value>
         </init-param>
         <!--- start before Jahia to be sure to use JahiaAction for custom struts actions -->
         <load-on-startup>6</load-on-startup>

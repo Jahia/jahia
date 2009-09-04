@@ -1,6 +1,8 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
+import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -51,13 +53,16 @@ public class EditModeToolBar extends HorizontalPanel {
         toolbar.add(createPage.getTextToolitem());
         buttons.add(createPage);
 
+        toolbar.add(new SeparatorMenuItem());
+
         EditActionItem publish = new EditActionItem("publish", "fm-newcontent") {
             public void onSelection() {
                 EditActions.publish(editLinker);
             }
 
             public void enableOnConditions(Module selectedModule, GWTJahiaNode selectedNode) {
-                setEnabled(selectedModule != null && selectedModule.getNode().isWriteable());
+//                setEnabled(selectedModule != null && selectedModule.getNode().isWriteable());
+                setEnabled(true);
             }
         };
         toolbar.add(publish.getTextToolitem());
@@ -69,11 +74,14 @@ public class EditModeToolBar extends HorizontalPanel {
             }
 
             public void enableOnConditions(Module selectedModule, GWTJahiaNode selectedNode) {
-                setEnabled(selectedModule != null && selectedModule.getNode().isWriteable());
+//                setEnabled(selectedModule != null && selectedModule.getNode().isWriteable());
+                setEnabled(true);
             }
         };
         toolbar.add(unpublish.getTextToolitem());
         buttons.add(unpublish);
+
+        toolbar.add(new SeparatorMenuItem());
 
         EditActionItem lock = new EditActionItem(Messages.getResource("fm_lock"), "fm-lock") {
             public void onSelection() {
@@ -81,7 +89,7 @@ public class EditModeToolBar extends HorizontalPanel {
             }
 
             public void enableOnConditions(Module selectedModule, GWTJahiaNode selectedNode) {
-                setEnabled(selectedModule != null && !selectedModule.getNode().isLocked());
+                setEnabled(selectedModule != null && selectedModule.getNode().isLockable() && !selectedModule.getNode().isLocked());
             }
         };
         toolbar.add(lock.getTextToolitem());
@@ -93,7 +101,7 @@ public class EditModeToolBar extends HorizontalPanel {
             }
 
             public void enableOnConditions(Module selectedModule, GWTJahiaNode selectedNode) {
-                setEnabled(selectedModule != null && selectedModule.getNode().isLocked());
+                setEnabled(selectedModule != null && selectedModule.getNode().isLockable() && selectedModule.getNode().isLocked());
             }
         };
         toolbar.add(unlock.getTextToolitem());
@@ -125,59 +133,6 @@ public class EditModeToolBar extends HorizontalPanel {
 
         add(toolbar);
     }
-
-//    private void updateButtonsState(GWTJahiaNode node) {
-//        if (node == null) {
-//            deleteButton.setEnabled(false);
-//            lockButton.setEnabled(false);
-//            editButton.setEnabled(false);
-//            saveButton.setEnabled(false);
-//            return;
-//        }
-//        if (node.isLockable()) {
-//            lockButton.setEnabled(true);
-//        }
-//        if (!node.isLocked()) {
-//            if (node.isWriteable()) {
-//                deleteButton.setEnabled(true);
-//                editButton.setEnabled(true);
-//            }
-//        } else {
-//            showUnlockButton();
-//        }
-//    }
-//
-
-
-//    public void onTemplateBoxSelection(GWTJahiaBasicDataBean selectedItem) {
-//         currentrySelectedTemplate = selectedItem.getValue();
-//         displayPreview(currentlySelectedNode, currentrySelectedTemplate);
-//    }
-
-//    /**
-//     * This will update the template conbo box based on the page selected item
-//     *
-//     * @param node the selected node (item on the page)
-//     */
-//    public void updateTemplateBox(GWTJahiaNode node) {
-//        templateBox.getStore().removeAll();
-//        templateBox.clearSelections();
-//        if (node != null) {
-//            JahiaContentManagementService.App.getInstance().getTemplatesPath(node.getPath(),new AsyncCallback<List<String[]>>() {
-//                public void onFailure(Throwable throwable) {
-//                    Log.error("", throwable);
-//                    com.google.gwt.user.client.Window.alert("-->" + throwable.getMessage());
-//                }
-//                public void onSuccess(List<String[]> strings) {
-//                    for(String[] template:strings) {
-//                        templateBox.getStore().add(new GWTJahiaBasicDataBean(template[0], template[1]));
-//                    }
-//                    templateBox.setValue(new GWTJahiaBasicDataBean(currentlySelectedNodeTemplate,currentlySelectedNodeTemplate));
-//                }
-//            });
-//        }
-//    }
-//
 
     public void initWithLinker(EditLinker editLinker) {
         this.editLinker = editLinker;

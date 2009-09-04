@@ -2,11 +2,17 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.Events;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
@@ -21,7 +27,7 @@ import java.util.ArrayList;
  * Time: 12:34:18 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MainModule extends LayoutContainer implements Module {
+public class MainModule extends ContentPanel implements Module {
 
     private GWTJahiaNode node;
     private HTML html;
@@ -34,7 +40,7 @@ public class MainModule extends LayoutContainer implements Module {
 
     public MainModule(final String path, final String template) {
         super(new FlowLayout());
-
+        setHeading("Page : "+path);
         setScrollMode(Style.Scroll.AUTO);
 
         this.path = path;
@@ -47,6 +53,20 @@ public class MainModule extends LayoutContainer implements Module {
     public void initWithLinker(EditLinker linker) {
         this.editLinker = linker;
         refresh();
+
+        getHeader().sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
+        Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent ce) {
+                Log.info("click" + path);
+                editLinker.onModuleSelection(MainModule.this);
+            }
+        };
+        getHeader().addListener(Events.OnClick, listener);
+        getHeader().addListener(Events.OnDoubleClick, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent ce) {
+                new EditContentEngine(node).show();
+            }
+        });                
     }
 
     public EditLinker getEditLinker() {

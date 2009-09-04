@@ -22,12 +22,7 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -36,7 +31,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.icons.ActionIconsImageBundle;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
@@ -65,14 +59,14 @@ public class SidePanel extends ContentPanel {
     private EditLinker editLinker;
     private ContentPanel displayPanel;
     private ContentPanel repository;
-    private PreviewTabItem previewTabItem;
+    private PreviewPanel preview;
     private TabItem propertiesTabItem;
+    private TabItem previewTabItem;
 
     private GridDragSource createGridSource;
     private TreePanelDragSource contentTreeSource;
     private GridDragSource displayGridSource;
     private DragSource querySource;
-    private PreviewDragSource previewDragSource;
     private TabPanel displayTabs;
 
     public SidePanel() {
@@ -105,30 +99,34 @@ public class SidePanel extends ContentPanel {
         createGridSource.addDNDListener(editLinker.getDndListener());
         contentTreeSource.addDNDListener(editLinker.getDndListener());
         querySource.addDNDListener(editLinker.getDndListener());
-        previewDragSource.addDNDListener(editLinker.getDndListener());
+
+        preview.initWithLinker(editLinker);
     }
 
     private void createDisplayPanel() {
-        VBoxLayout vBoxLayout;// displayPanel panel
         displayPanel = new ContentPanel();
         displayPanel.setHeading("Display");
-        vBoxLayout = new VBoxLayout();
-        vBoxLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-        displayPanel.setLayout(vBoxLayout);
+        displayPanel.setLayout(new FitLayout());
+        displayPanel.setBorders(false);
+        displayPanel.setBodyBorder(false);
+        displayPanel.getHeader().setBorders(false);
         displayPanel.setCollapsible(true);
-        ToolBar toolbar = getToolbar();
-        displayPanel.add(toolbar);
 
         displayTabs = new TabPanel();
-        previewTabItem = new PreviewTabItem("Preview");
+        previewTabItem = new TabItem("Preview");
         previewTabItem.setLayout(new FitLayout());
-        previewDragSource = new PreviewDragSource(previewTabItem);
+
+        preview = new PreviewPanel();
+        previewTabItem.add(preview);
+
+//        previewDragSource = new PreviewDragSource(previewTabItem);
+
         displayTabs.add(previewTabItem);
         propertiesTabItem = new TabItem("Properties");
         propertiesTabItem.setLayout(new FitLayout());
         displayTabs.add(previewTabItem);
         displayTabs.add(propertiesTabItem);
-        displayPanel.add(displayTabs);
+        displayPanel.add(displayTabs);        
     }
 
     private void createContentListPanel() {
@@ -337,11 +335,6 @@ public class SidePanel extends ContentPanel {
         return repository;
     }
 
-    private ToolBar getToolbar() {
-        ToolBar toolbar = new ToolBar();
-        return toolbar;
-    }
-
     /**
      * Method used by the search form
      *
@@ -395,41 +388,18 @@ public class SidePanel extends ContentPanel {
 }-*/;
 
     public void handleNewModuleSelection(Module selectedModule) {
-        displayPreview(selectedModule.getNode(), selectedModule.getTemplate());
-        displayProperties(selectedModule.getNode());
+        preview.handleNewModuleSelection(selectedModule);
+        if (selectedModule != null) {
+            displayProperties(selectedModule.getNode());
+        } else {
+            displayProperties(null);
+        }
     }
 
     public void handleNewSidePanelSelection(GWTJahiaNode node) {
-        displayPreview(node, null);
+        preview.handleNewSidePanelSelection(node);
         displayProperties(node);
 
-    }
-
-    /**
-     * Display the rendered html of the given node in the preview panel
-     *
-     * @param node the node to render
-     */
-    private void displayPreview(final GWTJahiaNode node,String template) {
-        previewTabItem.setHtml(new HTML());
-        previewTabItem.removeAll();
-        if (node != null) {
-            JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, editLinker.getLocale(), template, false, new AsyncCallback<String>() {
-                public void onSuccess(String result) {
-                    HTML html = new HTML(result);
-                    previewTabItem.add(html);
-                    previewTabItem.setHtml(html);
-                    previewTabItem.setNode(node);
-                    previewTabItem.layout();
-
-                }
-
-                public void onFailure(Throwable caught) {
-                    Log.error("", caught);
-                    com.google.gwt.user.client.Window.alert("-->" + caught.getMessage());
-                }
-            });
-        }
     }
 
     /**
@@ -490,95 +460,6 @@ public class SidePanel extends ContentPanel {
         }
     }
 
-
-    public class PreviewDragSource extends EditModeDragSource {
-        private final PreviewTabItem previewTabItem;
-
-        public PreviewDragSource(PreviewTabItem previewTabItem) {
-            super(previewTabItem);
-            this.previewTabItem = previewTabItem;
-        }
-
-        @Override
-        protected void onDragStart(DNDEvent e) {
-            e.setCancelled(false);
-            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(1);
-            nodes.add(previewTabItem.getNode());
-            e.setData(nodes);
-            e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.CONTENT_SOURCE_TYPE);
-
-            List<GWTJahiaNode> list = (List<GWTJahiaNode>) e.getData();
-            e.getStatus().setData("size", list.size());
-
-            e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, list);
-//            e.getStatus().setData(EditModeDNDListener.SOURCE_TEMPLATE, editManager.getEditLinker().getCurrentrySelectedTemplate());
-            if (getStatusText() == null) {
-                e.getStatus().update(DOM.clone(previewTabItem.getWidget(0).getElement(), true));
-            }
-            super.onDragStart(e);
-        }
-    }
-
-    public class PreviewTabItem extends TabItem {
-        HTML html;
-        GWTJahiaNode node;
-
-        public PreviewTabItem(String s) {
-            super(s);
-
-            ToolBar toolbar = new ToolBar();
-            ListStore<GWTJahiaBasicDataBean> templateListStore = new ListStore<GWTJahiaBasicDataBean>();
-            ComboBox<GWTJahiaBasicDataBean> templateBox = new ComboBox<GWTJahiaBasicDataBean>();
-            templateBox.setStore(templateListStore);
-            templateBox.setDisplayField(GWTJahiaBasicDataBean.DISPLAY_NAME);
-            templateBox.clearSelections();
-            templateBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaBasicDataBean>() {
-                public void selectionChanged(SelectionChangedEvent<GWTJahiaBasicDataBean> gwtJahiaNodeSelectionChangedEvent) {
-//                    e.onTemplateBoxSelection(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
-                }
-            });
-            setTopComponent(toolbar);
-            /*templateListStore.add(new GWTJahiaBasicDataBean("template1", "template1"));
-        templateListStore.add(new GWTJahiaBasicDataBean("template2", "template2"));
-        templateListStore.add(new GWTJahiaBasicDataBean("template3", "template3"));*/
-            
-            sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
-            addListener(Events.OnDoubleClick, new Listener<ComponentEvent>() {
-                public void handleEvent(ComponentEvent ce) {
-                    if (html != null && node != null) {
-                        Window w = new Window();
-                        final String text = "Preview of " + node.getPath();
-                        w.setHeading(text);
-                        w.setScrollMode(Style.Scroll.AUTO);
-                        w.setModal(true);
-                        w.setClosable(true);
-                        w.setSize(800, 600);
-                        w.setBlinkModal(true);
-                        w.setPlain(true);
-                        w.setToolTip(text);
-                        w.add(new HTML(html.getHTML()));
-                        w.show();
-                    }
-                }
-            });
-        }
-
-        public HTML getHtml() {
-            return html;
-        }
-
-        public void setHtml(HTML html) {
-            this.html = html;
-        }
-
-        public GWTJahiaNode getNode() {
-            return node;
-        }
-
-        public void setNode(GWTJahiaNode node) {
-            this.node = node;
-        }
-    }
 }
 
 

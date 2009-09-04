@@ -8,10 +8,7 @@ jahia.database.pass     =
 jahia.database.transactions = false
 jahia.database.schemascriptdir = sql/schema/hypersonic
 jahia.database.popuplationscriptdir = sql/population
-jahia.database.starthsqlserver=false
-jahia.database.datasource = java:comp/env/jdbc/jetspeed
-#jahia.database.datasource=
-jahia.database.ojbplatform = Hsqldb
+jahia.database.datasource = jdbc/jahia
 jahia.database.hibernate.dialect = org.hibernate.dialect.HSQLDialect
 jahia.nested_transaction_allowed = false
 jahia.quartz.selectWithLockSQL = SELECT * FROM {0}LOCKS WHERE LOCK_NAME = ?

@@ -6,9 +6,7 @@ jahia.database.url      =  jdbc:mysql://localhost/jahia?useUnicode=true&characte
 jahia.database.user     =  jahia
 jahia.database.pass     =  jahia
 jahia.database.popuplationscriptdir = sql/population
-jahia.database.starthsqlserver = false
-jahia.database.datasource = java:comp/env/jdbc/jahia
-jahia.database.ojbplatform = MySQL
+jahia.database.datasource = jdbc/jahia
 jahia.database.max_elements_for_in_clause = 9000
 jahia.quartz.jdbcDelegate = org.quartz.impl.jdbcjobstore.StdJDBCDelegate
 jahia.quartz.serializable = false

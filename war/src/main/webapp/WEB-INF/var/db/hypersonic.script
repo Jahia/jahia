@@ -3,16 +3,13 @@
 jahia.database.name     =  HSQL database engine (embedded)
 jahia.database.driver   =  org.hsqldb.jdbcDriver
 #jahia.database.url      =  jdbc:hsqldb:$context/WEB-INF/var/dbdata/hsqldbjahia
-jahia.database.url      =  jdbc:hsqldb:hsql://localhost/hsqldbjahia
+jahia.database.url      =  jdbc:hsqldb:file:$context/WEB-INF/var/dbdata/hsqldbjahia
 jahia.database.user     =  sa
 jahia.database.pass     =
 jahia.database.transactions = false
 jahia.database.schemascriptdir = sql/schema/hypersonic
 jahia.database.popuplationscriptdir = sql/population
-jahia.database.starthsqlserver=true
-jahia.database.datasource = java:comp/env/jdbc/jetspeed
-#jahia.database.datasource=
-jahia.database.ojbplatform = Hsqldb
+jahia.database.datasource = jdbc/jahia
 jahia.database.hibernate.dialect = org.hibernate.dialect.HSQLDialect
 jahia.nested_transaction_allowed = false
 jahia.quartz.selectWithLockSQL = SELECT * FROM {0}LOCKS WHERE LOCK_NAME = ?

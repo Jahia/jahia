@@ -153,7 +153,6 @@ public class JahiaConfigurationWizard extends HttpServlet {
     private static final String STEPS = "10";
     private  String jahiaPropertiesFileName;
 
-    private HypersonicManager hsql;
     private static int BUILD_NUMBER=-1;
     /** Jahia server release number */
     private static double RELEASE_NUMBER = 6.0;
@@ -183,11 +182,6 @@ public class JahiaConfigurationWizard extends HttpServlet {
         };
         // get server informations...
         serverInfos = ServletContainerUtils.getServerInformations(config);
-
-        hsql = new HypersonicManager();
-        File hsqldir = new File(context.getRealPath("WEB-INF/dbdata"));
-        hsqldir.mkdirs();
-        hsql.startup(new File(hsqldir, "hsqldbjahia").getPath());
 
         if(!jahiaExists()){
 
@@ -1129,7 +1123,6 @@ public class JahiaConfigurationWizard extends HttpServlet {
         values.put("database_url",  request.getParameter("dburl").trim());
         values.put("database_user",  request.getParameter("user").trim());
         values.put("database_pwd",  request.getParameter("pwd").trim());
-        values.put("db_starthsqlserver",  request.getParameter("starthsqlserver").trim());
         values.put("datasource.name",  request.getParameter("datasource").trim());
         values.put("hibernate_dialect",  request.getParameter("hibernate_dialect").trim());
         values.put("database_type_mapping",  request.getParameter("database_type_mapping").trim());
@@ -1361,12 +1354,13 @@ public class JahiaConfigurationWizard extends HttpServlet {
 
             // close the connection with the database connection admin manager...
             db.databaseClose();
-
-            hsql.stop();
-
-            if  (values.get("database_url").equals("jdbc:hsqldb:hsql://localhost/hsqldbjahia")) {
+            String dbUrl = (String)values.get("database_url");
+            if  (dbUrl.startsWith("jdbc:hsqldb:file:") && dbUrl.indexOf("WEB-INF") != -1) {
+                db.getConnection().createStatement().execute("SHUTDOWN");
                 // default embedded hsql
-                FileUtils.copyDirectory(new File(context.getRealPath("WEB-INF/dbdata")), new File(context.getRealPath("WEB-INF/jahia/WEB-INF/var/dbdata")));
+                int lastSlashIndex = dbUrl.lastIndexOf(System.getProperty("file.separator"));
+                String path = dbUrl.substring(dbUrl.indexOf("WEB-INF"), lastSlashIndex != -1 ? lastSlashIndex : dbUrl.length());
+                FileUtils.copyDirectory(new File(context.getRealPath(path)), new File(context.getRealPath("WEB-INF/jahia/" + path)));
             }
 
 
@@ -1450,6 +1444,16 @@ public class JahiaConfigurationWizard extends HttpServlet {
                 // update the XML context descriptor file configuration
                 String jahiaXml = pathResolver.resolvePath("/WEB-INF/jahia/META-INF");
                 String deployToDir = context.getInitParameter("dirName");
+                String fullDestinationPath = (String) values.get("server_home")+"webapps"+System.getProperty("file.separator")+deployToDir;
+                if  (dbUrl.startsWith("jdbc:hsqldb:file:") && dbUrl.indexOf("WEB-INF") != -1) {
+                    String path = dbUrl.substring(dbUrl.indexOf("WEB-INF"));
+                    values.put("database_url", "jdbc:hsqldb:file:"
+                            + fullDestinationPath
+                            + (fullDestinationPath.endsWith("/")
+                                    || fullDestinationPath.endsWith("\\") ? ""
+                                    : System.getProperty("file.separator"))
+                            + path);
+                }
                 JahiaDataSourceConfigurator.updateDataSourceConfiguration(jahiaXml+"/context.xml", jahiaXml,
                                 values);
                 logger.info("updating to context file in "+jahiaXml);
@@ -1458,7 +1462,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
                 long startTime = System.currentTimeMillis();
 
                 File oldDir = new File(pathResolver.resolvePath("WEB-INF/jahia"));
-                File newDir = new File((String) values.get("server_home")+"webapps/"+deployToDir);
+                File newDir = new File(fullDestinationPath);
 
                 FileUtils.moveDirectory(oldDir, newDir);
                 
@@ -1466,6 +1470,11 @@ public class JahiaConfigurationWizard extends HttpServlet {
             } else if (serverInfo.contains(SERVER_JBOSS)) {
                 String deployToDir = context.getInitParameter("dirName");
                 String datasource = pathResolver.resolvePath("WEB-INF/jahia-jboss-config.sar/jahia-ds.xml");
+                String fullDestinationPath = (String) values.get("server_home")+"deploy/"+deployToDir;
+                if  (dbUrl.startsWith("jdbc:hsqldb:file:") && dbUrl.indexOf("WEB-INF") != -1) {
+                    String path = dbUrl.substring(dbUrl.indexOf("WEB-INF"));
+                    values.put("database_url", "jdbc:hsqldb:file:" + fullDestinationPath + path);
+                }                
                 JahiaDataSourceConfigurator.updateDataSourceConfiguration(datasource, datasource, values);
                 logger.info("updating datasource configuration in  file " + datasource);
                 
@@ -1473,7 +1482,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
                 long startTime = System.currentTimeMillis();
                 
                 File oldDir = new File(pathResolver.resolvePath("WEB-INF/jahia"));
-                File newDir = new File((String) values.get("server_home")+"deploy/"+deployToDir);
+                File newDir = new File(fullDestinationPath);
 
                 FileUtils.moveDirectory(new File(pathResolver.resolvePath("WEB-INF/jahia-jboss-config.sar")), new File((String) values.get("server_home")+"deploy/jahia-jboss-config.sar"));
                 FileUtils.moveDirectory(oldDir, newDir);
@@ -1860,9 +1869,6 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
         }
 
         properties.setProperty("db_script", (String) values.get("database_script"));
-        if( !((String)values.get("database_script")).equals("hypersonic.script")){
-            properties.setProperty("db_starthsqlserver", "false");
-        }
         String utf8Encoding = (String) values.get("utf8Encoding");
         properties.setProperty("utf8Encoding", utf8Encoding);
         if ("true".equalsIgnoreCase(utf8Encoding)) {
@@ -1963,7 +1969,6 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
                         values.put("database_pwd", ((String) curDatabaseHash.get("jahia.database.pass")).trim());
                         values.put("database_transactions", ((String) curDatabaseHash.get("jahia.database.transactions")).trim());
                         copyStringSetting(curDatabaseHash, "jahia.database.datasource", values, "datasource.name", "");
-                        copyStringSetting(curDatabaseHash, "jahia.database.starthsqlserver", values, "db_starthsqlserver", "false");
                         copyStringSetting(curDatabaseHash, "jahia.database.hibernate.dialect", values, "hibernate_dialect", "");
                         copyStringSetting(curDatabaseHash, "jahia.jboss.datasource.typeMapping", values, "database_type_mapping", "");
                     }

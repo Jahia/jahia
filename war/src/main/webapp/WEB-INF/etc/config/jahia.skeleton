@@ -103,9 +103,6 @@ mail_maxRegroupingOfPreviousException                  = 500
 # these can be found in the following file:
 # <jahia-web-app-dir>/META-INF/context.xml
 db_script                                              =   hypersonic.script
-# The following setting should be set to false if you are not using
-# HsqlDB (=Hypersonic) as your database.
-db_starthsqlserver                                     =   true
 # The following setting is used to limit the number of in values passed
 # in SELECT * FROM XXX WHERE XXXX IN (VALUE_LIST) because some databases
 # have limitations. Normally you shouldn't need to modify this parameter.

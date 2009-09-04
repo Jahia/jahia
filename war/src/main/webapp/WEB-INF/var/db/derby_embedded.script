@@ -8,9 +8,7 @@ jahia.database.pass     =
 jahia.database.transactions = false
 jahia.database.schemascriptdir = sql/schema/derby
 jahia.database.popuplationscriptdir = sql/population
-jahia.database.starthsqlserver=true
-jahia.database.datasource = java:comp/env/jdbc/jetspeed
-jahia.database.ojbplatform = Derby
+jahia.database.datasource = jdbc/jahia
 jahia.database.hibernate.dialect = org.hibernate.dialect.DerbyDialect
 jahia.nested_transaction_allowed = false
 jahia.quartz.selectWithLockSQL = SELECT * FROM {0}LOCKS WHERE LOCK_NAME = ?

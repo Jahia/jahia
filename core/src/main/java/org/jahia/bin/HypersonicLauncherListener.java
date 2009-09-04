@@ -37,14 +37,10 @@ import org.hsqldb.DatabaseManager;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-import java.util.Properties;
+import java.util.Vector;
 
 public class HypersonicLauncherListener implements ServletContextListener {
 
@@ -59,95 +55,25 @@ public class HypersonicLauncherListener implements ServletContextListener {
     boolean startHSQLServer = false;
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        ServletContext servletContext = servletContextEvent.getServletContext();
-        jahiaConfigFileName = servletContext.getInitParameter("jahia.config");
-        servletContext.log("jahia.config=" + jahiaConfigFileName);
-        String realJahiaConfigFileName = servletContext.getRealPath(jahiaConfigFileName);
-        File jahiaConfigFile = new File(realJahiaConfigFileName);
-        if (jahiaConfigFile.exists()) {
-            Properties jahiaConfigProps = new Properties();
-            try {
-                jahiaConfigProps.load(new FileInputStream(jahiaConfigFile));
-                String startHSQLServerStr = jahiaConfigProps.getProperty("db_starthsqlserver");
-                if (startHSQLServerStr == null) {
-                    startHSQLServerStr = "false";
-                }
-                startHSQLServer = Boolean.valueOf(startHSQLServerStr).booleanValue();
-                if (!startHSQLServer) {
-                    servletContext.log("HSQL server will not be started.");
-                    return;
-                }
-
-            } catch (FileNotFoundException fnfe) {
-                servletContext.log("Problem finding file " + jahiaConfigFileName, fnfe);
-            } catch (IOException ioe) {
-                servletContext.log("Problem while loading file " + jahiaConfigFileName, ioe);
-            }
-        }
-
-        dbLocation = servletContext.getInitParameter("hsqldb.location");
-        dbPortStr = servletContext.getInitParameter("hsqldb.port");
-        dbSilent = servletContext.getInitParameter("hsqldb.silent");
-        dbTrace = servletContext.getInitParameter("hsqldb.trace");
-
-        servletContext.log("dbLocation=" + dbLocation);
-        String realPath = servletContext.getRealPath(dbLocation);
-        servletContext.log("realPath = " + realPath);
-
-        hsqldbServer = new Server();
-        hsqldbServer.setDatabaseName(0,"hsqldbjahia");
-        hsqldbServer.setDatabasePath(0, "file:" + realPath);
-        hsqldbServer.setAddress("127.0.0.1");
-        //hsqldbServer.setLogWriter(null);
-        //hsqldbServer.setErrWriter(null);
-        hsqldbServer.setNoSystemExit(true);
-        hsqldbServer.setPort(Integer.parseInt(dbPortStr));
-        hsqldbServer.setTrace(Boolean.valueOf(dbTrace).booleanValue());
-        hsqldbServer.setSilent(Boolean.valueOf(dbSilent).booleanValue());
-        servletContext.log("Starting HSQLDB server");
-        hsqldbServer.start();
-
-        startHSQLServer = true;
-
-        // now let's wait until the database is ready.
-        servletContext.log("Waiting for database to start...");
-        boolean starting = true;
-        while (starting) {
-            Thread.yield();
-            try {
-                Class.forName("org.hsqldb.jdbcDriver");
-                String url = "jdbc:hsqldb:hsql://127.0.0.1:" + dbPortStr+"/hsqldbjahia";
-                Connection con = DriverManager.getConnection(url, "sa", "");
-                String sql = "COMMIT";
-                Statement stmt = con.createStatement();
-                stmt.executeUpdate(sql);
-                stmt.close();
-                starting = false;
-            } catch (Exception e) {
-                starting = false;
-            }
-        }
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        if (startHSQLServer) {
-            ServletContext servletContext = servletContextEvent.getServletContext();
-            kill(Integer.parseInt(dbPortStr), "sa", "");
-            DatabaseManager.getTimer().shutDown();
-            servletContext.log("HSQLDB server stopping, waiting...");
-//            hsqldbServer.shutdown();
-//            while (hsqldbServer.getState() != ServerConstants.SERVER_STATE_SHUTDOWN) {
-//                // loop
-//            }
-            servletContext.log("HSQLDB now properly shutdown.");
-            startHSQLServer = false;
+        ServletContext servletContext = servletContextEvent.getServletContext();
+        String servletPath = servletContext.getRealPath("");        
+        for (String databaseURI : ((Vector<String>)DatabaseManager.getDatabaseURIs())) {
+           if (databaseURI.startsWith("file:") && databaseURI.contains(servletPath)) {
+               kill("jdbc:hsqldb:" + databaseURI, "sa", "");
+               DatabaseManager.getTimer().shutDown();
+               servletContext.log("HSQLDB server stopping, waiting...");
+               servletContext.log("HSQLDB now properly shutdown.");
+               break;
+           }
         }
     }
 
-    private void kill(int port, String user, String password) {
+    private void kill(String url, String user, String password) {
         try {
             Class.forName("org.hsqldb.jdbcDriver");
-            String url = "jdbc:hsqldb:hsql://127.0.0.1:" + port + "/hsqldbjahia";
             Connection con = DriverManager.getConnection(url, user, password);
             String sql = "SHUTDOWN";
             Statement stmt = con.createStatement();

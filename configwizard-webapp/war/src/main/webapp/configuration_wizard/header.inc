@@ -112,7 +112,6 @@ final boolean openReadmeFile = jsp.equals("site_values.jsp"); %>
                       document.mainForm.dburl.value = '<%=JahiaTools.replacePattern((String)js.get("jahia.database.url"), "\\", "\\\\")%>';
                       document.mainForm.user.value = '<%=js.get("jahia.database.user")%>';
                       document.mainForm.pwd.value = '<%=js.get("jahia.database.pass")%>';
-                      document.mainForm.starthsqlserver.value = '<%=js.get("jahia.database.starthsqlserver")%>';
                       document.mainForm.datasource.value = '<%=js.get("jahia.database.datasource")%>';
                       document.mainForm.hibernate_dialect.value = '<%=js.get("jahia.database.hibernate.dialect")%>';
                       document.mainForm.database_type_mapping.value = '<%=js.get("jahia.jboss.datasource.typeMapping")%>';

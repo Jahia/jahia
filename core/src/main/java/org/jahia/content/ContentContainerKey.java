@@ -46,10 +46,6 @@ public class  ContentContainerKey extends ContentObjectKey {
 
     public static final String CONTAINER_TYPE = "ContentContainer";
 
-    static {
-        ObjectKey.registerType(CONTAINER_TYPE, ContentContainerKey.class);
-    }
-
     /**
      * Protected constructor to use this class also as a factory by calling
      * the getChildInstance method
@@ -66,18 +62,6 @@ public class  ContentContainerKey extends ContentObjectKey {
 
     public int getContainerID() {
         return getIdInType();
-    }
-
-    /**
-     * @deprecated This method should not be called directly, but rather it
-     * should be replace by a call to the constructor with the proper IDInType.
-     * This has been deprecated because the new getChildInstance() is much
-     * faster
-     * @param IDInType the IDInType
-     * @return the ObjectKey corresponding to the ID for this class type
-     */
-    public static ObjectKey getChildInstance(String IDInType) {
-        return new ContentContainerKey(Integer.parseInt(IDInType));
     }
 
     public ObjectKey getChildInstance(String IDInType, String objectKey) {

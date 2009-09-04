@@ -45,10 +45,6 @@ public class EntryPointObjectKey extends ObjectKey {
     
     public static final String ENTRY_POINT_TYPE = "entrypoint";
     
-    static {
-        ObjectKey.registerType(ENTRY_POINT_TYPE, EntryPointObjectKey.class);
-    }
-
     /*TO DO: ckeck value of this IDInType */
     private String IDInType = "100";
     private int idInType;
@@ -84,18 +80,6 @@ public class EntryPointObjectKey extends ObjectKey {
             }
         }
         return idInType;
-    }
-
-    /**
-     * @deprecated This method should not be called directly, but rather it
-     * should be replace by a call to the constructor with the proper IDInType.
-     * This has been deprecated because the new getChildInstance() is much
-     * faster
-     * @param IDInType the IDInType
-     * @return the ObjectKey corresponding to the ID for this class type
-     */
-    public static ObjectKey getChildInstance(String IDInType) {
-        return new EntryPointObjectKey(IDInType);
     }
 
     public ObjectKey getChildInstance(String IDInType, String objectKey) {

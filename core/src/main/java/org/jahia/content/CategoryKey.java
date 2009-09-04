@@ -49,10 +49,6 @@ public class CategoryKey extends ObjectKey {
     
     public static final String CATEGORY_TYPE = "Category";
 
-    static {
-        ObjectKey.registerType(CATEGORY_TYPE, CategoryKey.class);
-    }
-
     /**
      * Protected constructor to use this class also as a factory by calling
      * the getChildInstance method
@@ -69,18 +65,6 @@ public class CategoryKey extends ObjectKey {
 
     public int getCategoryID() {
         return getIdInType();
-    }
-
-    /**
-     * @deprecated This method should not be called directly, but rather it
-     * should be replace by a call to the constructor with the proper IDInType.
-     * This has been deprecated because the new getChildInstance() is much
-     * faster
-     * @param IDInType the IDInType
-     * @return the ObjectKey corresponding to the ID for this class type
-     */
-    public static ObjectKey getChildInstance(String IDInType) {
-        return new CategoryKey(IDInType);
     }
 
     public ObjectKey getChildInstance(String IDInType, String objectKey) {

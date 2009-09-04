@@ -40,14 +40,12 @@
  */
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Properties;
 
 import junit.framework.TestCase;
 
 import org.apache.axis.encoding.Base64;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.jahia.bin.ClassesPreloadManager;
 import org.jahia.bin.Jahia;
 import org.jahia.hibernate.manager.JahiaSiteManager;
 import org.jahia.hibernate.manager.JahiaSitePropertyManager;
@@ -58,7 +56,6 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.FilePathResolver;
 import org.jahia.utils.PathResolver;
 import org.springframework.context.ApplicationContext;
-import org.xml.sax.SAXException;
 
 public class ImportExportBaseServiceTest extends TestCase {
     ImportExportBaseService importExportBaseService;
@@ -72,18 +69,9 @@ public class ImportExportBaseServiceTest extends TestCase {
                                             "production" + File.separator +
                                             "jahia_productiontest.properties";
 
-    private static final String PRELOAD_CLASSES_FILENAME = "src" + File.separator +
-                                                           "test" + File.separator +
-                                                           "etc" + File.separator +
-                                                           "production" + File.separator +
-                                                           "preloadclasses.xml";
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(ImportExportBaseService.class);
 
-    private final static String springRelativePath = "src" + File.separator +
-                                                     "test" + File.separator +
-                                                     "etc" + File.separator +
-                                                     "production";
     private ApplicationContext context;
 
     protected synchronized void setUp() throws Exception {
@@ -102,25 +90,6 @@ public class ImportExportBaseServiceTest extends TestCase {
 //        schedulerService.start();
 //        ((JahiaACLManagerService)context.getBean("JahiaACLManagerService")).start();
         logger.info("Waiting for wake-up of all nodes...");
-        // now let's preload some classes that have static initializations
-        // that need to be performed before we go further...
-        String preloadConfigurationFileName = PRELOAD_CLASSES_FILENAME;
-        try {
-            // the constructor does everything, including loading the classes,
-            // so we don't need to do anything besides creating an instance that
-            // we can dispose of immediately after.
-            ClassesPreloadManager preloadManager = new ClassesPreloadManager(preloadConfigurationFileName);
-            preloadManager = null;
-        } catch (IOException ioe) {
-            logger.debug("IO exception raised while trying to load classes preload XML configuration file [" +
-                         preloadConfigurationFileName + "]", ioe);
-        } catch (SAXException saxe) {
-            logger.debug("IO exception while trying to parse classes preload XML configuration file [" +
-                         preloadConfigurationFileName + "]", saxe);
-        } catch (ClassNotFoundException cnfe) {
-            logger.debug("Could not preload class because it couldn't be found",
-                         cnfe);
-        }
     }
 
     public void testStartProductionJob() throws Exception {

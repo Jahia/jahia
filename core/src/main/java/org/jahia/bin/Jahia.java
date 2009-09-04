@@ -130,9 +130,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
     /** this class name */
     static public final String CLASS_NAME = "Jahia";
 
-    /** properties filename */
-    static private final String PRELOAD_CLASSES_FILENAME = "preloadclasses.xml";
-
     /** license filename */
     static private final String LICENSE_FILENAME = "license.xml";
 
@@ -370,30 +367,6 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         jahiaBaseFilesPath = context.getRealPath(webinf_path + "/var");
         jahiaTemplatesScriptsPath = jahiaBaseFilesPath + File.separator +
                                     "templates";
-
-        // now let's preload some classes that have static initializations
-        // that need to be performed before we go further...
-        String preloadConfigurationFileName = jahiaPropertiesPath +
-                                              File.separator +
-                                              PRELOAD_CLASSES_FILENAME;
-        try {
-            // the constructor does everything, including loading the classes,
-            // so we don't need to do anything besides creating an instance that
-            // we can dispose of immediately after.
-            new ClassesPreloadManager(preloadConfigurationFileName);
-        } catch (IOException ioe) {
-            logger.warn("IO exception raised while trying to load classes preload XML configuration file [" +
-                         preloadConfigurationFileName + "]", ioe);
-        } catch (SAXException saxe) {
-            logger.warn(
-                "IO exception while trying to parse classes preload XML configuration file [" +
-                preloadConfigurationFileName + "]", saxe);
-        } catch (ClassNotFoundException cnfe) {
-            logger.warn("Could not preload class because it couldn't be found",
-                         cnfe);
-        }
-        // none of the above exceptions are fatal, they just don't preload all
-        // the classes, but this might cause problems elsewhere !
 
         // check if there is a jahia.properties file...
         boolean jahiaPropertiesExists = SettingsBean.getInstance() != null && context.getResourceAsStream(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null;

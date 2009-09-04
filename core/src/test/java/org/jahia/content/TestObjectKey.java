@@ -38,7 +38,6 @@ import junit.framework.TestCase;
  * User: Serge Huber
  * Date: 23 mars 2007
  * Time: 09:23:32
- * To change this template use File | Settings | File Templates.
  */
 public class TestObjectKey extends TestCase {
     private static final int INSTANCE_LOOP_COUNT = 100000;
@@ -73,7 +72,7 @@ public class TestObjectKey extends TestCase {
                 ObjectKey.getInstance(ContainerDefinitionKey.CONTAINER_TYPE + ObjectKey.KEY_SEPARATOR + Integer.toString(i));
                 ObjectKey.getInstance(PageDefinitionKey.PAGE_TYPE + ObjectKey.KEY_SEPARATOR + Integer.toString(i));
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         }
         long stopTime = System.currentTimeMillis();
@@ -85,29 +84,5 @@ public class TestObjectKey extends TestCase {
         ContentPageKey pageKey = new ContentPageKey(1);
         assertEquals(ObjectKey.getInstance(pageKey.getKey()).getKey(), ObjectKey.toObjectKeyString(pageKey.getType(), pageKey.getIDInType()));
         assertEquals(ContentPageKey.toObjectKeyString(pageKey.getIDInType()), ObjectKey.toObjectKeyString(pageKey.getType(), pageKey.getIDInType()));
-    }
-
-    public void testChildInstance() {
-        // compatibility check, to see if deprecated API still works properly.
-        ObjectKey fieldKey = ContentFieldKey.getChildInstance("1");
-        assertEquals(fieldKey.getIDInType(), "1");
-        ObjectKey containerKey = ContentContainerKey.getChildInstance("1");
-        assertEquals(containerKey.getIDInType(), "1");
-        ObjectKey containerListKey = ContentContainerListKey.getChildInstance("1");
-        assertEquals(containerListKey.getIDInType(), "1");
-        ObjectKey pageKey = ContentPageKey.getChildInstance("1");
-        assertEquals(pageKey.getIDInType(), "1");        
-        ObjectKey metadataKey = ContentMetadataKey.getChildInstance("1");
-        assertEquals(metadataKey.getIDInType(), "1");
-
-        ObjectKey categoryKey = CategoryKey.getChildInstance("1");
-        assertEquals(categoryKey.getIDInType(), "1");
-
-        ObjectKey fieldDefinitionKey = FieldDefinitionKey.getChildInstance("1");
-        assertEquals(fieldDefinitionKey.getIDInType(), "1");
-        ObjectKey containerDefinitionKey = ContainerDefinitionKey.getChildInstance("1");
-        assertEquals(containerDefinitionKey.getIDInType(), "1");
-        ObjectKey pageDefinitionKey = PageDefinitionKey.getChildInstance("1");
-        assertEquals(pageDefinitionKey.getIDInType(), "1");
     }
 }

@@ -58,10 +58,6 @@ public class  ContentPageKey extends ContentObjectKey {
 
     public static final String PAGE_TYPE = "ContentPage";
 
-    static {
-        ObjectKey.registerType(PAGE_TYPE, ContentPageKey.class);
-    }
-
     private transient int pageType = -1;
 
     /**
@@ -81,18 +77,6 @@ public class  ContentPageKey extends ContentObjectKey {
 
     public int getPageID() {
         return getIdInType();
-    }
-
-    /**
-     * @deprecated This method should not be called directly, but rather it
-     * should be replace by a call to the constructor with the proper IDInType.
-     * This has been deprecated because the new getChildInstance() is much
-     * faster
-     * @param IDInType the IDInType
-     * @return the ObjectKey corresponding to the ID for this class type
-     */
-    public static ObjectKey getChildInstance(String IDInType) {
-        return new ContentPageKey(Integer.parseInt(IDInType));
     }
 
     public ObjectKey getChildInstance(String IDInType, String objectKey) {

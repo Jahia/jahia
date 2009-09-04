@@ -46,10 +46,6 @@ public class PageDefinitionKey extends ContentDefinitionKey {
     
     public static final String PAGE_TYPE = "PageDefinition";
 
-    static {
-        ObjectKey.registerType(PAGE_TYPE, PageDefinitionKey.class);
-    }
-
     /**
      * Protected constructor to use this class also as a factory by calling
      * the getChildInstance method
@@ -66,18 +62,6 @@ public class PageDefinitionKey extends ContentDefinitionKey {
 
     public int getPageDefID() {
         return getIdInType();
-    }
-
-    /**
-     * @deprecated This method should not be called directly, but rather it
-     * should be replace by a call to the constructor with the proper IDInType.
-     * This has been deprecated because the new getChildInstance() is much
-     * faster
-     * @param IDInType the IDInType
-     * @return the ObjectKey corresponding to the ID for this class type
-     */
-    public static ObjectKey getChildInstance(String IDInType) {
-        return new PageDefinitionKey(Integer.parseInt(IDInType));
     }
 
     public ObjectKey getChildInstance(String IDInType, String objectKey) {

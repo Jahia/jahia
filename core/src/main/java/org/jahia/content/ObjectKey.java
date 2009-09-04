@@ -35,6 +35,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+import org.jahia.data.applications.EntryPointObjectKey;
+
 /**
  * The purpose of this class is to construct ContentObject references that can
  * be used both externally and internally to references Jahia content objects
@@ -45,7 +48,7 @@ import java.util.Map;
  *
  * type_IDInType
  *
- * where type is a String specifiyng the type of the object, while the IDInType
+ * where type is a String specifying the type of the object, while the IDInType
  * is an integer that specifies which instances of the specific object type.
  *
  * @author Serge Huber
@@ -54,14 +57,27 @@ public abstract class ObjectKey implements
     ObjectKeyInterface,
     Serializable, Comparable<ObjectKey> {
 
-    private static final org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(ObjectKey.class);
+    private static final Logger logger = Logger.getLogger(ObjectKey.class);
 
     private static final long serialVersionUID = 7375719911472500146L;
 
-    private static Map<String, Object> keyTypeInstances = new HashMap<String, Object>();
+    private static Map<String, ObjectKeyInterface> keyTypeInstances;
     
     public static final String OBJECT_TYPE = "object";
+    
+    static {
+    	keyTypeInstances = new HashMap<String, ObjectKeyInterface>();
+    	registerType(CategoryKey.CATEGORY_TYPE, CategoryKey.class);
+    	registerType(ContainerDefinitionKey.CONTAINER_TYPE, ContainerDefinitionKey.class);
+    	registerType(ContentContainerKey.CONTAINER_TYPE, ContentContainerKey.class);
+    	registerType(ContentContainerListKey.CONTAINERLIST_TYPE, ContentContainerListKey.class);
+    	registerType(ContentFieldKey.FIELD_TYPE, ContentFieldKey.class);
+    	registerType(ContentMetadataKey.METADATA_TYPE, ContentMetadataKey.class);
+    	registerType(ContentPageKey.PAGE_TYPE, ContentPageKey.class);
+    	registerType(FieldDefinitionKey.FIELD_TYPE, FieldDefinitionKey.class);
+    	registerType(PageDefinitionKey.PAGE_TYPE, PageDefinitionKey.class);
+    	registerType(EntryPointObjectKey.ENTRY_POINT_TYPE, EntryPointObjectKey.class);
+    }
 
     protected final String key;
     private String type = OBJECT_TYPE;
@@ -132,7 +148,7 @@ public abstract class ObjectKey implements
      * similar to ObjectKey.class (replacing the ObjectKey with the
      * subclass of course.
      */
-    public static void registerType(String type, Class<? extends ObjectKey> klass) {
+    private static void registerType(String type, Class<? extends ObjectKey> klass) {
         logger.debug("Registering type [" + type + "] with class [" +
                      klass + "]");
         try {
@@ -252,7 +268,6 @@ public abstract class ObjectKey implements
      * @return an unique hash code for a unique key.
      */
     public int hashCode() {
-        // logger.debug("Returning hashcode=" + key.hashCode());
         return key.hashCode();
     }
 
@@ -274,11 +289,7 @@ public abstract class ObjectKey implements
      */
     public static String toObjectKeyString(String type,
                              String IDInType) {
-        StringBuffer buf = new StringBuffer(50);
-        buf.append(type);
-        buf.append(KEY_SEPARATOR);
-        buf.append(IDInType);
-        return buf.toString();
+        return new StringBuilder(50).append(type).append(KEY_SEPARATOR).append(IDInType).toString();
     }
 
 }

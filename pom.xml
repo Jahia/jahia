@@ -4,7 +4,7 @@
   <artifactId>jahia-root</artifactId>
   <name>Jahia Project Root</name>
   <groupId>org.jahia.server</groupId>
-  <version>7.0-SNAPSHOT</version>
+  <version>6.5-SNAPSHOT</version>
   <packaging>pom</packaging>
   <inceptionYear>2004</inceptionYear>
   <!--logo>/images/jahia.gif</logo-->
@@ -17,14 +17,14 @@
     <jackrabbit.version>1.5.0</jackrabbit.version>
     <lucene.version>2.3.2</lucene.version>
     <jahia.package.version>7.0-SNAPSHOT</jahia.package.version>
-    
+
     <driver.derby.version>10.4.2.0</driver.derby.version>
     <driver.hsqldb.version>1.8.0.7</driver.hsqldb.version>
     <driver.mssql.version>1.2-fixed</driver.mssql.version>
     <driver.mysql.version>5.1.6</driver.mysql.version>
     <driver.oracle.version>11.1.0.7.0</driver.oracle.version>
     <driver.postgresql.version>8.3-603.jdbc3</driver.postgresql.version>
-    
+
     <drivers.libs.scope>compile</drivers.libs.scope> <!-- include DB driver JARs into jahia.war/WEB-INF/lib -->
     <jboss.libs.scope>compile</jboss.libs.scope> <!-- include jboss-*.jar files into jahia.war/WEB-INF/lib -->
     <jahia.war.classifier></jahia.war.classifier>
@@ -35,7 +35,7 @@
     <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</developerConnection>
     <url>http://10.8.37.111/svn/jahia/trunk</url>
   </scm>
-  
+
   <repositories>
     <repository>
       <releases>
@@ -185,7 +185,7 @@
                 <module>deployments</module>
             </modules>
         </profile>
-        
+
         <profile>
             <id>qa-build</id>
             <modules>

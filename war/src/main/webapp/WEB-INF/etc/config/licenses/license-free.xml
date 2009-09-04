@@ -1,120 +1,120 @@
 <jahia-licenses>
-  <license-package format="1.1" product="Jahia" release="7.0" edition="pro">
-    <license component="org.jahia.core" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFBLHHREl+pjfkbF2Mgc1NOhvpG6ZAhRRVi/LRQTqPwZnnBf6SiuGdnUY9g==" certAlias="jahiaCert">
-      <limit class="org.jahia.security.license.ReleaseNumberValidator" name="release" value="7.0 to 7.1"/>
+  <license-package format="1.1" product="Jahia" release="6.5" edition="pro">
+    <license component="org.jahia.core" licensee="Jahia 6.5 R&amp;D GPL License" signature="MC0CFQCPFLsaK0/UiVqIs86kQUbLOsnkGgIUUY+Y+aN6BIMcFF6GCucZmflEdOg=" certAlias="jahiaCert">
+      <limit class="org.jahia.security.license.ReleaseNumberValidator" name="release" value="6.5 to 7.0"/>
     </license>
-    <license component="org.jahia.engines.search.advancedSearch" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFBCgEpS+j5KAax8Ng3bmTiOc7RAgAhR9uPQYDeUy2ghVLWsY4FXnGRVvkw==" certAlias="jahiaCert">
+    <license component="org.jahia.engines.search.advancedSearch" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFFYrvaDnkLM99NZHO3RuZ5RFjNipAhRO0FxlAUDJK8LYvwtePcv7sufpag==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.engines.actions.copy" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFFWdsZGUrWV2X3By47NAmHTdRkfvAhRZAeJberFKR22e1pTAXUxHBmb08A==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.engines.actions.copy" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFDZQZs651tWYfEyTRIBm9+wLvA7yAhRd80dGwbrKTxWVeWfr6D7nE8BvIw==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.engines.actions.paste" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFBvAp+8Jkzsrvpfs7iXn0JY3KLbaAhQC9Sn6Nc3ZyLTYvSUTR3CQnewlBw==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.engines.actions.paste" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFAZhHu5ooj0YLNcC24zFBTmbUQjrAhQmshOSGKhDkU8HH6LcFZtNyHkC3Q==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.engines.versioning.PagesVersioningAction" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFDQ6VTJsAY74lJvzKFxMrG8CPe+iAhRgAPUHuL8avrPTnuvRPh9iwHW8mw==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.engines.versioning.PagesVersioningAction" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFE7WcgZJXYVDml6LKjrAsLKP0fCyAhQTZt64PKC5vdqAmkkk5i8EN3I89w==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.engines.metadata.Metadata_Engine" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFCW2DY2PaVJq4ihqquhCn7LbkZfdAhQozm5VGQvxUVYygebUaQgRtcWlHw==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.engines.metadata.Metadata_Engine" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFFsS380n/a4Q3neZ8JdppnD5Z+uvAhQKjnwxEg6nVVMAqjfUVznlF5uRsA==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.engines.importexport.ManageContentPicker" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFD7MRIdEyrWxK8ZfWKUtAxW94y1GAhRH/yihS4SQJFCV+QUcl7xmBkKWKg==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.engines.importexport.ManageContentPicker" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFBpZ9Y3e8hcWA0T83lJeBmrn+rETAhQGEAZ83+VSgCy63WuIKJSWkaTx+w==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.engines.importexport.ManageImport" licensee="Jahia 7 R&amp;D GPL License" signature="MC4CFQCAddPfVYPZLS4rziC8AChrm92YfwIVAIaskkriFmV59fGI2EXr6Vx8Zrn8" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.engines.importexport.ManageImport" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFGpzrk25Kj5iOygtIEYrYW6gHSsKAhQ4Lgxxv1ol7h65WPrjU5wdC1VgRQ==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.engines.importexport.ManageExport" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFBoxIUyhxd19BxPqcC+HsqE3FrfcAhQefxMx42373uqi+t/lprV28ebsxg==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.engines.importexport.ManageExport" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFGQAWdpVsqzZU4XzADBr01sMY+7IAhQfLcvcysmcZjJKZ6crqYuWUDFJbA==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.engines.timebasedpublishing.TimeBasedPublishingEngine" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFC16UGM3tHmu7E7aMmX06K8MhaFVAhQdR8LtLPq1rfkhoAnWZSMNYwkCPA==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.engines.timebasedpublishing.TimeBasedPublishingEngine" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFFyGBI/Qw+DIoCuGJfUokpxC18oHAhRd5c0LfGp6Avk9KPLSI/UEO9qe9Q==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.engines.workflow.ManageWorkflow" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFDXUTBmVAtyQqXBHEh6SxBQF6QS/AhRBxlU121Vt3DEhc20eWk0PflilsQ==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.engines.workflow.ManageWorkflow" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFB9ZcZUQ3g42VfDZjbdN8dR0EYb/AhQWChogLp56birTZ4tdWFpsoiE3XQ==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.engines.workflow.MailNotifications" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFFSxnJFkaTy1LFDtF7Pkg5p5B1RbAhQjuZkpWdOAGuSm/y1poAQoa61YGg==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.engines.workflow.MailNotifications" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFAGAXE9RXQDTOLMQAm5dAyJZk4vhAhRjsJk9lNDwSb0x8TdZXpj1NivB5A==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.admin.permissions.ManageSitePermissions" licensee="Jahia 7 R&amp;D GPL License" signature="MC0CFC/6eEPeVImw6fDz16ZCrLsLKaN7AhUAg5GUp5OvPFxiRvnLM89F1wcVLwI=" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.admin.permissions.ManageSitePermissions" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFGKYcy3TVN02wWIUw+2vWMfMvExvAhQKAmo9qeINECr80Hj8MT86mNlJqg==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.admin.languages.ManageSiteLanguages" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFGWlaypM67Cyet/3385Y64cE5tumAhQ7WExYaZeJlyF5jG+47ACwQMePIQ==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.admin.languages.ManageSiteLanguages" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFG9W/f2MMIdozXmxDUFpGGAyQh/wAhROpxKbtP/uPvA9JMnwjf6QRTk5lg==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.admin.production.ManageSiteProduction" licensee="Jahia 7 R&amp;D GPL License" signature="MC0CFQCMEXT9fW4h2yu03utFnXaaOpIDZAIUNqC/Xpzq3IrODBcWrgUQ+YZCieg=" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.admin.production.ManageSiteProduction" licensee="Jahia 6.5 R&amp;D GPL License" signature="MC0CFQCNyxInFX+nlC3rDf+6hvQYmgEYOQIUAY+spz/slPqNk5tcfFAkfZ9ktEY=" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.admin.templates.ManageTemplateRights" licensee="Jahia 7 R&amp;D GPL License" signature="MC0CFHGd46hhUBeoN7ZkyiTSzUntU+hXAhUAiyRE2DFNjIjxyGSqkGyDXAfnLNE=" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.admin.templates.ManageTemplateRights" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFCfQfrB+aJTr/Fvt7o/JIxjDOZ6TAhQv30rgz3oa8jJw8N/Wi/ssdhvMcg==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.engines.actions.editMode" licensee="Jahia 7 R&amp;D GPL License" signature="MC0CFQCHyqYMp7NT+qGvcV5+QI+MLNPhswIUb1d9hnyepsE5Wf6wjD79ivM0GbU=" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.engines.actions.editMode" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFHcc0oC242Gy8nnvxkNGRFUSFI6WAhQX1a4lGPzKJhJFrQqL5CRk/6pHqA==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.server.admin.patches.ManagePatches" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFE9PiTiFi/fBovte6+zRZfBkNtrXAhQJrdFtdA8ix4oq3ayfVz/1t0tMRw==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.server.admin.patches.ManagePatches" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFDvhtoOzXpQPQmhRWgK5Y6wGKKvdAhRZcqsBKQ57FkOfUF++K+OV+YMgEQ==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.server.admin.components.ManageShareComponents" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFDZ6i+SXj+tx1BLs8te5B+w2o1tPAhRcN4Pot669I4ht0/QGQMepgheVHg==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.server.admin.components.ManageShareComponents" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFAdYwL7FeLivjnmqNCmsP6e1yggvAhRx9Mag6VLqZOkZmi5IucUhbOupeA==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.server.admin.audit.ManageLogs" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFDvqp9QkSMGnojkweghUpt+fo8LeAhRF+v19v8zkhb1FjXfa0m08lNnyWg==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.server.admin.audit.ManageLogs" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFE20sdpL9d0VF1vf5IJss9skI9JJAhRzUW7scz2tmrYSk9K70PErvv7jIQ==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.admin.pages.ManagePages" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFAtLBJQR9ohBfyAe7ChbUPixEPUVAhRxPXFgc4WW4mp2sZ9cJrwckTzzvg==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.admin.pages.ManagePages" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFB5Y9bEw7aywGA4vFG44eYrf4ybQAhQ/xrldC7WuI7wCmTqVe9yeWy208g==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.admin.users.ManageUsers" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFGkX8f5V/6olkxEj4/GruKebfDMyAhRrxQYgUZKtymK3Aw9g62c6E9qxew==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.admin.users.ManageUsers" licensee="Jahia 6.5 R&amp;D GPL License" signature="MC0CFCH7VInH3yBrfqT9ODVIt/80lJOhAhUAkDJlMkjPJSlP+pjRc+i0R1GLUuA=" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.admin.users.ManageGroups" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFDu1OYqDDAAkm3OUP+mckj9hwf96AhQKK0nuYj7amAPNpacxAOleamL70g==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.admin.users.ManageGroups" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFFqG1uC/tLWHG2Y6hS8x++/OpZL/AhQwNGUj5R9WEmkB8TVTAbXWQieYtA==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.admin.search.ManageSearch" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFBInDdQFnN8qNeM/u/MTDoeDKNYvAhRSw0aG3h4j7ZCN6bEOtS3dF+xElA==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.sites.*.admin.search.ManageSearch" licensee="Jahia 6.5 R&amp;D GPL License" signature="MC0CFB8l54SYqbJXQ1fagoQKQzTroqMcAhUAg9lJIj1ceBYqeCu9TRQABwxrAow=" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.server.admin.server.ViewPatches" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFFP+hyAGpw8FF4ZyJKXGjs/bUaYiAhRnLu57L7duTN7eqr6V09jgsPT46Q==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.server.admin.server.ViewPatches" licensee="Jahia 6.5 R&amp;D GPL License" signature="MC0CFCS3HU5I5MzfaY/f/SbMwIfWvexEAhUAhIlqDwpr7/GR3r/ywl/t++vdovE=" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.server.admin.users.ManageSuperAdminProps" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFFSBl8Kh8Epwc1nQ9vhS3x13VhfIAhQrtL3uI9VTVwkfFa4BmC23IJLGOQ==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.server.admin.users.ManageSuperAdminProps" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFBKZ/Cz7KfMRJNhil4MXp3pF5KGtAhRK0yFz+pG9MPcl6KCLCkA9kC0EgA==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.server.admin.permissions.ManageServerPermissions" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFFt1Iukpo1STf+30S8PX461IrznHAhRxyfvyCqgcBmAZ84kyQhLpk96xMg==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.server.admin.permissions.ManageServerPermissions" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFELhRqEjF0BvevDIYOEPlQqN8aCRAhQIuFmbOvdzx8bJblKtwuz+1u0OJg==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.server.admin.categories.ManageCategories" licensee="Jahia 7 R&amp;D GPL License" signature="MC0CFBI6wT3FpK4v3geN5D13zyqlPSjSAhUAjftwyHmPs05197w3rWEN2O/ONaU=" certAlias="jahiaCert">
+    <license component="org.jahia.actions.server.admin.categories.ManageCategories" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFGq9VlWYrDo2yJ9Wiixrs1jv8RoMAhRW2ChMH0DvVIq4gjQT5RtbCR/VJQ==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.server.admin.sites.ManageSites" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFAqNkX2m2qqY4ssdwSZDMlAz4gYfAhRw1Mr8ViyNw8dDq16ObiJoVim+Bg==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.server.admin.sites.ManageSites" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFCkAV/wQgtfZYi2gaFzlb4W6GTMhAhRYtQcSSOVftp8yjNG+BcPfjg7DdA==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.server.admin.components.ManageComponentRights" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFDeJEwaBTbxNbUttxZ5Rqb5LsNoAAhRGFndthmTx8BAaeTBwGCgEygS9CA==" certAlias="jahiaCert">
+    <license component="org.jahia.actions.server.admin.components.ManageComponentRights" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFH3pw2EEB6JG+thTjJgdyRQakQn1AhRosvf77hlIcbpVvEFyVsH1SmyPww==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.server.admin.htmleditors.HtmlEditorsAdmin" licensee="Jahia 7 R&amp;D GPL License" signature="MC0CFQCFjcYiw+rPPtflC7OEA6FuGkU7OQIUIrMzRfsAgR98ioHfMqrDCsgyfTg=" certAlias="jahiaCert">
+    <license component="org.jahia.actions.server.admin.htmleditors.HtmlEditorsAdmin" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFBeMlnQxbROw9GpGbDqdlUnXHirJAhRM4eAV5NF32NuYUUVCJnWtHO67UA==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.server.admin.pwdpolicy.ManagePasswordPolicies" licensee="Jahia 7 R&amp;D GPL License" signature="MC0CFHUD4DERAtk/y4I8gGBHtgEKyNZnAhUAkGoFCAhz8R5oEM8C3zOASJceofw=" certAlias="jahiaCert">
+    <license component="org.jahia.actions.server.admin.pwdpolicy.ManagePasswordPolicies" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFBnuPBJ8M6cjgYofmKNb8owLJ+rEAhRKWjj87Hjy1ba40zpGSEZAsZapvA==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.services.usermanager.JahiaUserManagerLDAPProvider" licensee="Jahia 7 R&amp;D GPL License" signature="MC4CFQCRjBBD5MWq0j8qhENv5DGik56WfgIVAIocMUQSTvTeGPdO/V5QTE6NjsvN" certAlias="jahiaCert">
+    <license component="org.jahia.services.usermanager.JahiaUserManagerLDAPProvider" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFAfgwFnKOQRe+eq4p2D4uIQpClY8AhR9kQDlaF8J5FbUL5+b2nwQcsd0Lg==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.engines.workflow.ExternalWorkflows" licensee="Jahia 7 R&amp;D GPL License" signature="MC0CFFpex4PmrsrDp9KlCHFw3eczntxgAhUAhtEjG2MwtP2YtCWa2MjfOeXHDLM=" certAlias="jahiaCert">
+    <license component="org.jahia.engines.workflow.ExternalWorkflows" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFHUpS8f67uhMkk/UsloKNhxwqnNDAhR4G7YEH8dG7NoA8Z96t2iAQeGReQ==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.params.valves.SsoValve" licensee="Jahia 7 R&amp;D GPL License" signature="MC0CFF4HqS1bzxjfSRVYcb5t0HUQ4ixIAhUAjigYmAuB8D8SDVahdl1iYrQMcak=" certAlias="jahiaCert">
+    <license component="org.jahia.params.valves.SsoValve" licensee="Jahia 6.5 R&amp;D GPL License" signature="MC0CFQCFpUAbyvw2+jUpDnl0CvTG8RXVhAIUcpeDaj1we9u2+uwWG/41gxceSXY=" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.params.valves.JCIFSAuthValve" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFCcWi7/im0UmwlQDB/iwqxWeoqNJAhRWwO0zJfALgAmll7T+QZKqF2Ab+g==" certAlias="jahiaCert">
+    <license component="org.jahia.params.valves.JCIFSAuthValve" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFA/fk8S6x6kvj35HYQDbaPT1+gqMAhRHaJs/2oYrsw0KOUToAA+PtpLkTA==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.params.valves.LemonLdapAuthValve" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFEzV2fKAQ1DPZazBB55LTXEshjswAhQrcZKTawTQvL7YKn3p03N8G7qjag==" certAlias="jahiaCert">
+    <license component="org.jahia.params.valves.LemonLdapAuthValve" licensee="Jahia 6.5 R&amp;D GPL License" signature="MC0CFQCEOOPxymcG8kpTgp4yGcE4KDfytAIUHpdKS+/cB+DBX2X+5kQIBpHWuH0=" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.params.valves.JaasAuthValve" licensee="Jahia 7 R&amp;D GPL License" signature="MCwCFDf7eBkB3y1uoWPipNnpaHGl1FrJAhQlCjpziwH7CVFDBMh/iWLabrsI4w==" certAlias="jahiaCert">
+    <license component="org.jahia.params.valves.JaasAuthValve" licensee="Jahia 6.5 R&amp;D GPL License" signature="MCwCFETAQtt4g4Pq6fwAD/2ILmm7vrLcAhQOiWRIvN6K7K+LzAD4Kvv29m6G2w==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.services.content.ucb" licensee="Jahia 7 R&amp;D GPL License" signature="MC0CFC/vBpAOQ083E5YkX2X+aFQMYEByAhUAjhY7JwSj+aLfD9NSC4yY3JKADBI=" certAlias="jahiaCert">
+    <license component="org.jahia.services.content.ucb" licensee="Jahia 6.5 R&amp;D GPL License" signature="MC0CFB4ZrgKhPhHdG3vWjUOzd/4OH1TvAhUAgjWBCA6x3ZAGoeGeYKeX+d+ShpI=" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
   </license-package>

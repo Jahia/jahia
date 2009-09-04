@@ -3,13 +3,13 @@
   <parent>
     <groupId>org.jahia.templates</groupId>
     <artifactId>jahia-templates</artifactId>
-    <version>7.0-SNAPSHOT</version>
+    <version>6.5-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>test-templates</artifactId>
   <name>Test Templates</name>
   <packaging>war</packaging>
-    
+
     <build>
       <plugins>
         <!-- Due to a bug in the Maven WAR plugin version 2.1-alpha-2 (http://jira.codehaus.org/browse/MWAR-169), we

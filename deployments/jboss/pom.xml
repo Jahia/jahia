@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-deployments</artifactId>
-        <version>7.0-SNAPSHOT</version>
+        <version>6.5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-jboss-config</artifactId>
@@ -36,7 +36,7 @@
             <artifactId>ccpp</artifactId>
             <version>1.0</version>
         </dependency>
-        
+
         <!-- Portal Bridges Dependencies -->
         <dependency>
             <groupId>org.apache.portals.bridges</groupId>
@@ -80,7 +80,7 @@
             <artifactId>postgresql</artifactId>
             <version>${driver.postgresql.version}</version>
         </dependency>
-        
+
     </dependencies>
 
     <build>

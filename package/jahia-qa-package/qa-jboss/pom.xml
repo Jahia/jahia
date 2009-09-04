@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-qa-package</artifactId>
-        <version>7.0-SNAPSHOT</version>
+        <version>6.5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-qa-jboss</artifactId>
@@ -37,7 +37,7 @@
         <db.schema>jahia</db.schema>
         <db.user>jahia</db.user>
         <db.password>jahia</db.password>
-    </properties>            
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -165,7 +165,7 @@
                     <targetServerDirectory>${project.build.directory}/jboss-${jahia.jboss.version}</targetServerDirectory>
                     <targetServerType>jboss</targetServerType>
                     <targetServerVersion>4.2.x</targetServerVersion>
-                    <!-- 
+                    <!--
                     <siteImportLocation>
                         <param>/home/bamboo/bin/siteImport_testSite.zip</param>
                         <param>/home/bamboo/bin/siteImport_DemoSite.zip</param>
@@ -212,7 +212,7 @@
                     </execution>
                 </executions>
             </plugin>
-             
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -275,10 +275,10 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                    </execution>                    
+                    </execution>
                 </executions>
             </plugin>
-            
+
         </plugins>
     </build>
 </project>

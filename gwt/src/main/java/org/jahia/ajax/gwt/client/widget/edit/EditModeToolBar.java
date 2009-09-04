@@ -8,10 +8,13 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.util.icons.ActionIconsImageBundle;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -31,6 +34,13 @@ public class EditModeToolBar extends HorizontalPanel {
     private ToolBar toolbar;
 
     private List<EditActionItem> buttons;
+    private EditActionItem createPage;
+    private EditActionItem publish;
+    private EditActionItem unpublish;
+    private EditActionItem lock;
+    private EditActionItem unlock;
+    private EditActionItem edit;
+    private EditActionItem delete;
 
 //    ListStore<GWTJahiaBasicDataBean> templateListStore;
 
@@ -40,7 +50,7 @@ public class EditModeToolBar extends HorizontalPanel {
         toolbar = new ToolBar();
         buttons = new ArrayList<EditActionItem>();
 
-        EditActionItem createPage = new EditActionItem(Messages.getNotEmptyResource("fm_newpagecontent", "New page"), "fm-newcontent") {
+        createPage = new EditActionItem(Messages.getNotEmptyResource("fm_newpagecontent", "New page"), "fm-newcontent") {
             public void onSelection() {
                 EditActions.createPage(editLinker);
             }
@@ -55,27 +65,27 @@ public class EditModeToolBar extends HorizontalPanel {
 
         toolbar.add(new SeparatorMenuItem());
 
-        EditActionItem publish = new EditActionItem("publish", "fm-newcontent") {
+        publish = new EditActionItem("publish", "fm-newcontent") {
             public void onSelection() {
                 EditActions.publish(editLinker);
             }
 
             public void enableOnConditions(Module selectedModule, GWTJahiaNode selectedNode) {
 //                setEnabled(selectedModule != null && selectedModule.getNode().isWriteable());
-                setEnabled(true);
+                setEnabled(false);
             }
         };
         toolbar.add(publish.getTextToolitem());
         buttons.add(publish);
 
-        EditActionItem unpublish = new EditActionItem("unpublish", "fm-newcontent") {
+        unpublish = new EditActionItem("unpublish", "fm-newcontent") {
             public void onSelection() {
                 EditActions.unpublish(editLinker);
             }
 
             public void enableOnConditions(Module selectedModule, GWTJahiaNode selectedNode) {
 //                setEnabled(selectedModule != null && selectedModule.getNode().isWriteable());
-                setEnabled(true);
+                setEnabled(false);
             }
         };
         toolbar.add(unpublish.getTextToolitem());
@@ -83,7 +93,7 @@ public class EditModeToolBar extends HorizontalPanel {
 
         toolbar.add(new SeparatorMenuItem());
 
-        EditActionItem lock = new EditActionItem(Messages.getResource("fm_lock"), "fm-lock") {
+        lock = new EditActionItem(Messages.getResource("fm_lock"), "fm-lock") {
             public void onSelection() {
                 EditActions.switchLock(editLinker);
             }
@@ -95,7 +105,7 @@ public class EditModeToolBar extends HorizontalPanel {
         toolbar.add(lock.getTextToolitem());
         buttons.add(lock);
 
-        EditActionItem unlock = new EditActionItem(Messages.getResource("fm_unlock"), "fm-unlock") {
+        unlock = new EditActionItem(Messages.getResource("fm_unlock"), "fm-unlock") {
             public void onSelection() {
                 EditActions.switchLock(editLinker);
             }
@@ -107,7 +117,7 @@ public class EditModeToolBar extends HorizontalPanel {
         toolbar.add(unlock.getTextToolitem());
         buttons.add(unlock);
 
-        EditActionItem edit = new EditActionItem(Messages.getResource("fm_edit"), "fm-edit") {
+        edit = new EditActionItem(Messages.getResource("fm_edit"), "fm-edit") {
             public void onSelection() {
                 EditActions.edit(editLinker);
             }
@@ -119,7 +129,7 @@ public class EditModeToolBar extends HorizontalPanel {
         toolbar.add(edit.getTextToolitem());
         buttons.add(edit);
 
-        EditActionItem delete = new EditActionItem(Messages.getResource("fm_remove"), "fm-remove") {
+        delete = new EditActionItem(Messages.getResource("fm_remove"), "fm-remove") {
             public void onSelection() {
                 EditActions.delete(editLinker);
             }
@@ -131,8 +141,14 @@ public class EditModeToolBar extends HorizontalPanel {
         toolbar.add(delete.getTextToolitem());
         buttons.add(delete);
 
+        status = new Button("status : ");
+        status.disable();
+        toolbar.add(status);
+
         add(toolbar);
     }
+
+    private Button status;
 
     public void initWithLinker(EditLinker editLinker) {
         this.editLinker = editLinker;
@@ -146,6 +162,42 @@ public class EditModeToolBar extends HorizontalPanel {
         for (EditActionItem button : buttons) {
             button.enableOnConditions(selectedModule, null);
         }
+
+        if (selectedModule != null) {
+            final String s = selectedModule.getNode().getPath();
+            status.setText(s);
+            JahiaContentManagementService.App.getInstance().getPublicationInfo(s, new AsyncCallback<GWTJahiaPublicationInfo>() {
+                public void onFailure(Throwable caught) {
+
+                }
+
+                public void onSuccess(GWTJahiaPublicationInfo result) {
+                    switch (result.getStatus()) {
+                        case GWTJahiaPublicationInfo.MODIFIED:
+                            publish.setEnabled(true);
+                            unpublish.setEnabled(true);
+                            status.setText("status : " + s + " : modified");
+                            break;
+                        case GWTJahiaPublicationInfo.PUBLISHED:
+                            publish.setEnabled(false);
+                            unpublish.setEnabled(true);
+                            status.setText("status : " + s + " : published");
+                            break;
+                        case GWTJahiaPublicationInfo.UNPUBLISHED:
+                            publish.setEnabled(true);
+                            unpublish.setEnabled(false);
+                            status.setText("status : " + s + " : unpublished");
+                            break;
+                        case GWTJahiaPublicationInfo.UNPUBLISHABLE:
+                            publish.setEnabled(false);
+                            unpublish.setEnabled(false);
+                            status.setText("status : " + s + " : unpublishable / publish parent first");
+                            break;
+                    }
+                }
+            });
+        }
+
     }
 
     public void handleNewSidePanelSelection(GWTJahiaNode node) {

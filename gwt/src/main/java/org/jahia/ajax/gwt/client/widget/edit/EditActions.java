@@ -45,7 +45,7 @@ public class EditActions {
 
     public static void publish(EditLinker editLinker) {
         if (editLinker.getMainModule().getNode() != null) {
-            JahiaContentManagementService.App.getInstance().publish(editLinker.getMainModule().getNode().getPath(), new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().publish(editLinker.getSelectedModule().getNode().getPath(), new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
                     com.google.gwt.user.client.Window.alert("Cannot publish "+caught.getMessage());
@@ -60,7 +60,7 @@ public class EditActions {
 
     public static void unpublish(EditLinker editLinker) {
         if (editLinker.getMainModule().getNode() != null) {
-            JahiaContentManagementService.App.getInstance().unpublish(editLinker.getMainModule().getNode().getPath(), new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().unpublish(editLinker.getSelectedModule().getNode().getPath(), new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
                     com.google.gwt.user.client.Window.alert("Cannot unpublish "+caught.getMessage());

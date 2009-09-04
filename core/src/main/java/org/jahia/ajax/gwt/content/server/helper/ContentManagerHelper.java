@@ -2565,14 +2565,13 @@ public class ContentManagerHelper {
                     liveSession.getNode(stageNode.getParent().getPath());
                     info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.UNPUBLISHED);
                 } catch (PathNotFoundException e) {
-                    // parent not published, can only be published if home page
-                    if (stageNode.getParent().isNodeType("jnt:virtualSite")) {
-                        info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.UNPUBLISHED);
-                    }
                     info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.UNPUBLISHABLE);
-
                 }
+
+                System.out.println("---> info:"+info.getStatus());
+                return info;
             }
+
             info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.PUBLISHED);
 
             long s = stageNode.getProperty("jcr:lastModified").getValue().getLong();

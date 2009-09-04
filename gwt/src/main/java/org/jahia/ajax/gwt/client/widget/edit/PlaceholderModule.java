@@ -21,14 +21,14 @@ public class PlaceholderModule extends LayoutContainer implements Module {
     private String id;
     private String path;
     private Module parentModule;
-    private EditManager editManager;
+    private MainModule mainModule;
     private String nodetypes;
 
-    public PlaceholderModule(String id, String path, String nodetypes, EditManager editManager) {
+    public PlaceholderModule(String id, String path, String nodetypes, MainModule mainModule) {
         super(new FlowLayout());
         this.id = id;
         this.path = path;
-        this.editManager = editManager;
+        this.mainModule = mainModule;
         this.nodetypes = nodetypes;
         setBorders(false);
         setHeight(20);
@@ -40,7 +40,7 @@ public class PlaceholderModule extends LayoutContainer implements Module {
         target.setOperation(DND.Operation.COPY);
         target.setFeedback(DND.Feedback.INSERT);
 
-        target.addDNDListener(editManager.getDndListener());
+        target.addDNDListener(mainModule.getEditLinker().getDndListener());
 
     }
 
@@ -97,9 +97,6 @@ public class PlaceholderModule extends LayoutContainer implements Module {
         }
     }
     
-    public void setSelected(boolean b) {
-        setBorders(b);
-    }
     public String getTemplate() {
         return null;
     }

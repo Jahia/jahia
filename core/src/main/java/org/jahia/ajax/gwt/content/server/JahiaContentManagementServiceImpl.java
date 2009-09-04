@@ -43,6 +43,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.*;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -52,6 +53,7 @@ import org.jahia.ajax.gwt.content.server.helper.ContentManagerHelper;
 import org.jahia.ajax.gwt.content.server.helper.JCRVersioningHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
@@ -521,4 +523,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         ContentManagerHelper.publish(path, null, retrieveParamBean(), false);
         System.out.println("-->"+(System.currentTimeMillis() - l));
     }
+
+    public void unpublish(String path) throws GWTJahiaServiceException {
+        long l = System.currentTimeMillis();
+        System.out.println("-->"+(System.currentTimeMillis() - l));
+    }
+
+    public GWTJahiaPublicationInfo getPublicationInfo(String path) throws GWTJahiaServiceException {
+        return ContentManagerHelper.getPublicationInfo(path, retrieveParamBean());
+    }
+
 }

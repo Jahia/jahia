@@ -2,13 +2,11 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.core.client.GWT;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
@@ -30,27 +28,33 @@ public class MainModule extends LayoutContainer implements Module {
     private String path;
     private String template;
 
-    private EditManager editManager;
+    private EditLinker editLinker;
 
     Map<Element, Module> m;
 
-    public MainModule(final String path, final String template, final EditManager editManager) {
+    public MainModule(final String path, final String template) {
         super(new FlowLayout());
 
         setScrollMode(Style.Scroll.AUTO);
 
-        this.editManager = editManager;
         this.path = path;
         this.template = template;
 
         Selection.getInstance().setMainModule(this);
 
+    }
+
+    public void initWithLinker(EditLinker linker) {
+        this.editLinker = linker;
         refresh();
     }
 
+    public EditLinker getEditLinker() {
+        return editLinker;
+    }
+
     public void refresh() {
-        editManager.getEditLinker().getCreatePageButton().setEnabled(false);
-        JahiaContentManagementService.App.getInstance().getRenderedContent(path, null, editManager.getLocale(), template, true, new AsyncCallback<String>() {
+        JahiaContentManagementService.App.getInstance().getRenderedContent(path, null, editLinker.getLocale(), template, true, new AsyncCallback<String>() {
             public void onSuccess(String result) {
                 int i = getVScrollPosition();
 
@@ -59,7 +63,7 @@ public class MainModule extends LayoutContainer implements Module {
                 html = new HTML(result);
                 add(html);
 
-                ModuleHelper.initAllModules(MainModule.this, html, editManager);
+                ModuleHelper.initAllModules(MainModule.this, html);
                 ModuleHelper.buildTree(MainModule.this);
                 parse();
                 layout();
@@ -114,7 +118,7 @@ public class MainModule extends LayoutContainer implements Module {
     public void setNode(GWTJahiaNode node) {
         this.node = node;
         if (node.getNodeTypes().contains("jnt:page") || node.getInheritedNodeTypes().contains("jnt:page")) {
-            editManager.getEditLinker().getCreatePageButton().setEnabled(true);
+//            editManager.getEditLinker().getCreatePageButton().setEnabled(true);
         }
     }
 
@@ -125,11 +129,22 @@ public class MainModule extends LayoutContainer implements Module {
     public void setParentModule(Module module) {
     }
 
-    public void setSelected(boolean b) {
-    }
-
     public String getTemplate() {
         return null;
     }
-    
+
+    public void handleNewModuleSelection(Module selectedModule) {
+        Selection l = Selection.getInstance();
+        l.hide();
+        if (selectedModule != null) {
+            l.setCurrentContainer(selectedModule.getContainer());
+            l.show();
+        }
+        l.layout();
+    }
+
+    public void handleNewSidePanelSelection(GWTJahiaNode node) {
+
+    }
+
 }

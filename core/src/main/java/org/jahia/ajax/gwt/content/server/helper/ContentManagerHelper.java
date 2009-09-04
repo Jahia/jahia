@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.ajax.gwt.client.data.node.*;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 import org.jahia.ajax.gwt.utils.JahiaGWTUtils;
 import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
@@ -2573,7 +2574,7 @@ public class ContentManagerHelper {
      * @param ctx ProcessingContext
      * @param publishParent Recursively publish the parents
      */
-    public static void publish(String path, Set<String> languages, ProcessingContext ctx, boolean publishParent) {
+    public static void publish(String path, Set<String> languages, ProcessingContext ctx, boolean publishParent) throws GWTJahiaServiceException {
         try {
             JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser());
             JCRNodeWrapper w = session.getNode(path);
@@ -2620,8 +2621,44 @@ public class ContentManagerHelper {
 
             liveSessionForPublish.logout();
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error("repository exception",e);
+            throw new GWTJahiaServiceException(e.getMessage());
         }
+    }
+
+
+    public static GWTJahiaPublicationInfo getPublicationInfo(String path, ProcessingContext ctx) throws GWTJahiaServiceException {
+
+        try {
+            JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser());
+            JCRSessionWrapper liveSession = jcr.getThreadSession(ctx.getUser(), "live");
+            GWTJahiaPublicationInfo info = null;
+
+            JCRNodeWrapper publishedNode = null;
+            try {
+                publishedNode = liveSession.getNode(path);
+            } catch (PathNotFoundException e) {
+                info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.UNPUBLISHED);
+            }
+
+            info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.PUBLISHED);
+
+            JCRNodeWrapper stageNode = null;
+            try {
+                stageNode = session.getNode(path);
+            } catch (PathNotFoundException e) {
+
+            }
+
+            System.out.println("--> "+stageNode);
+            System.out.println("--> "+publishedNode);
+
+            return info;
+        } catch (RepositoryException e) {
+            logger.error("repository exception",e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+
     }
 
 }

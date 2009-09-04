@@ -84,9 +84,6 @@ public class TextModule extends ContentPanel implements Module {
 
     }
 
-    public void setSelected(boolean b) {
-    }
-
     public String getTemplate() {
         return null;
     }

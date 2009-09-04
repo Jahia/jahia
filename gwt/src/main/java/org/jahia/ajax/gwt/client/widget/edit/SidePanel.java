@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
@@ -28,13 +29,16 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ActionIconsImageBundle;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,25 +55,28 @@ import java.util.Map;
  */
 public class SidePanel extends ContentPanel {
 
-    public static final ActionIconsImageBundle ACTION_ICONS = GWT.create(ActionIconsImageBundle.class);
-
     private boolean init = false;
     private ListStore<GWTJahiaNode> displayStore;
     private ListStore<GWTJahiaNodeType> displayTypesStore;
     private ContentPanel contentList;
     private Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> definitions;
-    ListStore<GWTJahiaBasicDataBean> templateListStore;
     private Grid<GWTJahiaNode> displayGrid;
     private Grid<GWTJahiaNodeType> displayTypesGrid;
-    private final EditManager editManager;
+    private EditLinker editLinker;
     private ContentPanel displayPanel;
     private ContentPanel repository;
-    private ToolBar topToolbar;
+    private PreviewTabItem previewTabItem;
+    private TabItem propertiesTabItem;
 
-    public SidePanel(final EditManager editManager) {
+    private GridDragSource createGridSource;
+    private TreePanelDragSource contentTreeSource;
+    private GridDragSource displayGridSource;
+    private DragSource querySource;
+    private PreviewDragSource previewDragSource;
+    private TabPanel displayTabs;
+
+    public SidePanel() {
         super();
-        this.editManager = editManager;
-        final EditLinker editLinker = editManager.getEditLinker();
         setHeaderVisible(true);
 
         VBoxLayout layout = new VBoxLayout();
@@ -77,42 +84,31 @@ public class SidePanel extends ContentPanel {
         layout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(layout);
 
-        createToolbar(editManager);
-        createRepositoryPanel(editManager, editLinker);
-        createContentListPanel(editManager, editLinker);
-        createDisplayPanel(editManager, editLinker);
+        createRepositoryPanel();
+        createContentListPanel();
+        createDisplayPanel();
 
         // add to side panel
         VBoxLayoutData vBoxData = new VBoxLayoutData(0, 0, 0, 0);
         vBoxData.setFlex(1);
-        add(topToolbar);
+
         add(repository, vBoxData);
         add(contentList, vBoxData);
         add(displayPanel, vBoxData);
 
     }
 
-    private void createToolbar(EditManager editManager) {
-        topToolbar = new ToolBar();
-        Button createPage = new Button();
-        createPage.setIcon(ACTION_ICONS.createPage());
-        createPage.setToolTip("create New Page");
-        createPage.addSelectionListener(editManager.getEditLinker().getCreatePageButtonListener(createPage));
-        createPage.setEnabled(false);
-        topToolbar.add(createPage);
+    public void initWithLinker(EditLinker editLinker) {
+        this.editLinker = editLinker;
 
-        Button publish = new Button();
-        publish.setIcon(ACTION_ICONS.createPage());
-        publish.setToolTip("publish");
-        publish.addSelectionListener(editManager.getEditLinker().getPublishPageListener(publish));
-        topToolbar.add(publish);
-
-
-        VBoxLayout vBoxLayout = new VBoxLayout();
-        vBoxLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
+        displayGridSource.addDNDListener(editLinker.getDndListener());
+        createGridSource.addDNDListener(editLinker.getDndListener());
+        contentTreeSource.addDNDListener(editLinker.getDndListener());
+        querySource.addDNDListener(editLinker.getDndListener());
+        previewDragSource.addDNDListener(editLinker.getDndListener());
     }
 
-    private void createDisplayPanel(EditManager editManager, EditLinker editLinker) {
+    private void createDisplayPanel() {
         VBoxLayout vBoxLayout;// displayPanel panel
         displayPanel = new ContentPanel();
         displayPanel.setHeading("Display");
@@ -122,23 +118,20 @@ public class SidePanel extends ContentPanel {
         displayPanel.setCollapsible(true);
         ToolBar toolbar = getToolbar();
         displayPanel.add(toolbar);
-        TabPanel displayTabs = new TabPanel();
 
-        PreviewTabItem previewTabItem = new PreviewTabItem("Preview");
+        displayTabs = new TabPanel();
+        previewTabItem = new PreviewTabItem("Preview");
         previewTabItem.setLayout(new FitLayout());
-        final PreviewDragSource source = new PreviewDragSource(previewTabItem);
-        source.addDNDListener(editManager.getDndListener());
-        editLinker.setPreviewTabItem(previewTabItem);
+        previewDragSource = new PreviewDragSource(previewTabItem);
         displayTabs.add(previewTabItem);
-        TabItem propertiesTabItem = new TabItem("Properties");
+        propertiesTabItem = new TabItem("Properties");
         propertiesTabItem.setLayout(new FitLayout());
         displayTabs.add(previewTabItem);
         displayTabs.add(propertiesTabItem);
-        editLinker.setPropertiesTabItem(propertiesTabItem);
         displayPanel.add(displayTabs);
     }
 
-    private void createContentListPanel(EditManager editManager, final EditLinker editLinker) {
+    private void createContentListPanel() {
         // content list panel
         contentList = new ContentPanel();
         contentList.setHeading("Content list");
@@ -165,9 +158,7 @@ public class SidePanel extends ContentPanel {
                 editLinker.onDisplayGridSelection(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
             }
         });
-        GridDragSource displayGridSource = new DisplayGridDragSource(displayGrid);
-        displayGridSource.addDNDListener(editManager.getDndListener());
-        editLinker.setDisplayGrid(displayGrid);
+        displayGridSource = new DisplayGridDragSource(displayGrid);
         contentList.add(displayGrid);
 
         // Second grid : display types
@@ -188,12 +179,10 @@ public class SidePanel extends ContentPanel {
         displayTypesGrid = new Grid<GWTJahiaNodeType>(displayTypesStore, new ColumnModel(displayColumns));
         displayTypesGrid.setBorders(false);
         displayTypesGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-        GridDragSource createGridSource = new CreateGridDragSource(displayTypesGrid);
-        createGridSource.addDNDListener(editManager.getDndListener());
-        editLinker.setDisplayTypesGrid(displayTypesGrid);
+        createGridSource = new CreateGridDragSource(displayTypesGrid);
     }
 
-    private ContentPanel createRepositoryPanel(EditManager editManager, final EditLinker editLinker) {
+    private ContentPanel createRepositoryPanel() {
         // repository panel
         repository = new ContentPanel();
         repository.setHeading("Repository");
@@ -243,7 +232,6 @@ public class SidePanel extends ContentPanel {
                 editLinker.onCreateGridSelection(selected);
             }
         });
-        editLinker.setCreateView(createView);
         create.add(createView);
 
         // Second tab : browse
@@ -279,7 +267,6 @@ public class SidePanel extends ContentPanel {
         m_tree.setIconProvider(ContentModelIconProvider.getInstance());
         m_tree.setDisplayProperty("displayName");
         m_tree.setBorders(false);
-        editLinker.setBrowseTree(m_tree);
         m_tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
                 GWTJahiaNode selected = gwtJahiaNodeSelectionChangedEvent.getSelectedItem();
@@ -305,8 +292,7 @@ public class SidePanel extends ContentPanel {
                 editLinker.onBrowseTreeSelection(selected);
             }
         });
-        TreePanelDragSource contentTreeSource = new ContentTreeDragSource(m_tree);
-        contentTreeSource.addDNDListener(editManager.getDndListener());
+        contentTreeSource = new ContentTreeDragSource(m_tree);
         browse.add(m_tree);
 
         // searching
@@ -324,7 +310,7 @@ public class SidePanel extends ContentPanel {
         });
 
         Button drag = new Button("Drag");
-        DragSource source = new EditModeDragSource(drag) {
+        querySource = new EditModeDragSource(drag) {
             @Override
             protected void onDragStart(DNDEvent e) {
                 e.setCancelled(false);
@@ -336,7 +322,6 @@ public class SidePanel extends ContentPanel {
                 super.onDragStart(e);
             }
         };
-        source.addDNDListener(editManager.getDndListener());
 
         searchForm.add(searchField);
         HorizontalPanel h = new HorizontalPanel();
@@ -354,45 +339,6 @@ public class SidePanel extends ContentPanel {
 
     private ToolBar getToolbar() {
         ToolBar toolbar = new ToolBar();
-        templateListStore = new ListStore<GWTJahiaBasicDataBean>();
-        ComboBox<GWTJahiaBasicDataBean> templateBox = new ComboBox<GWTJahiaBasicDataBean>();
-        templateBox.setStore(templateListStore);
-        templateBox.setDisplayField(GWTJahiaBasicDataBean.DISPLAY_NAME);
-        templateBox.clearSelections();
-        templateBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaBasicDataBean>() {
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaBasicDataBean> gwtJahiaNodeSelectionChangedEvent) {
-                editManager.getEditLinker().onTemplateBoxSelection(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
-            }
-        });
-        /*templateListStore.add(new GWTJahiaBasicDataBean("template1", "template1"));
-        templateListStore.add(new GWTJahiaBasicDataBean("template2", "template2"));
-        templateListStore.add(new GWTJahiaBasicDataBean("template3", "template3"));*/
-        editManager.getEditLinker().setTemplateBox(templateBox);
-        Button save = new Button();
-        save.setIcon(ACTION_ICONS.save());
-        save.setToolTip("save");
-        save.addSelectionListener(editManager.getEditLinker().getSaveButtonListener(save));
-        save.setEnabled(false);
-        Button lock = new Button();
-        lock.setIcon(ACTION_ICONS.lock());
-        lock.setToolTip("lock");
-        lock.addSelectionListener(editManager.getEditLinker().getLockButtonListener(lock));
-        lock.setEnabled(false);
-        Button edit = new Button();
-        edit.setIcon(ACTION_ICONS.edit());
-        edit.setToolTip("edit");
-        edit.addSelectionListener(editManager.getEditLinker().getEditButtonListener(edit));
-        edit.setEnabled(false);
-        Button delete = new Button();
-        delete.setIcon(ACTION_ICONS.delete());
-        delete.addSelectionListener(editManager.getEditLinker().getDeleteButtonListener(delete));
-        delete.setToolTip("delete");
-        delete.setEnabled(false);
-        toolbar.add(templateBox);
-        toolbar.add(save);
-        toolbar.add(lock);
-        toolbar.add(edit);
-        toolbar.add(delete);
         return toolbar;
     }
 
@@ -448,6 +394,103 @@ public class SidePanel extends ContentPanel {
 
 }-*/;
 
+    public void handleNewModuleSelection(Module selectedModule) {
+        displayPreview(selectedModule.getNode(), selectedModule.getTemplate());
+        displayProperties(selectedModule.getNode());
+    }
+
+    public void handleNewSidePanelSelection(GWTJahiaNode node) {
+        displayPreview(node, null);
+        displayProperties(node);
+
+    }
+
+    /**
+     * Display the rendered html of the given node in the preview panel
+     *
+     * @param node the node to render
+     */
+    private void displayPreview(final GWTJahiaNode node,String template) {
+        previewTabItem.setHtml(new HTML());
+        previewTabItem.removeAll();
+        if (node != null) {
+            JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, editLinker.getLocale(), template, false, new AsyncCallback<String>() {
+                public void onSuccess(String result) {
+                    HTML html = new HTML(result);
+                    previewTabItem.add(html);
+                    previewTabItem.setHtml(html);
+                    previewTabItem.setNode(node);
+                    previewTabItem.layout();
+
+                }
+
+                public void onFailure(Throwable caught) {
+                    Log.error("", caught);
+                    com.google.gwt.user.client.Window.alert("-->" + caught.getMessage());
+                }
+            });
+        }
+    }
+
+    /**
+     * Clear the properties panel and display the current node properties
+     *
+     * @param node the current node
+     */
+    private void displayProperties(final GWTJahiaNode node) {
+        propertiesTabItem.removeAll();
+        if (node != null) {
+            JahiaContentManagementService.App.getInstance().getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
+                public void onFailure(Throwable throwable) {
+                    Log.debug("Cannot get properties", throwable);
+                }
+
+                public void onSuccess(GWTJahiaGetPropertiesResult result) {
+                    final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
+                    elements.add(node);
+
+                    final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, GWTJahiaItemDefinition.METADATA, null, null);
+
+                    ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
+                    Button item = new Button(Messages.getResource("fm_save"));
+                    item.setIconStyle("gwt-icons-save");
+                    item.setEnabled(node.isWriteable() && !node.isLocked());
+                    item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        public void componentSelected(ButtonEvent event) {
+                            JahiaContentManagementService.App.getInstance().saveProperties(elements, propertiesEditor.getProperties(), new AsyncCallback() {
+                                public void onFailure(Throwable throwable) {
+                                    com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                                    Log.error("failed", throwable);
+                                }
+
+                                public void onSuccess(Object o) {
+                                    Info.display("", "Properties saved");
+                                    //getLinker().refreshTable();
+                                }
+                            });
+                        }
+                    });
+                    toolBar.add(new FillToolItem());
+                    toolBar.add(item);
+                    item = new Button(Messages.getResource("fm_restore"));
+                    item.setIconStyle("gwt-icons-restore");
+                    item.setEnabled(node.isWriteable() && !node.isLocked());
+
+                    item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        public void componentSelected(ButtonEvent event) {
+                            propertiesEditor.resetForm();
+                        }
+                    });
+                    toolBar.add(item);
+                    toolBar.setVisible(true);
+                    propertiesTabItem.add(propertiesEditor);
+                    propertiesTabItem.layout();
+                }
+            });
+        }
+    }
+
+
     public class PreviewDragSource extends EditModeDragSource {
         private final PreviewTabItem previewTabItem;
 
@@ -468,7 +511,7 @@ public class SidePanel extends ContentPanel {
             e.getStatus().setData("size", list.size());
 
             e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, list);
-            e.getStatus().setData(EditModeDNDListener.SOURCE_TEMPLATE, editManager.getEditLinker().getCurrentrySelectedTemplate());
+//            e.getStatus().setData(EditModeDNDListener.SOURCE_TEMPLATE, editManager.getEditLinker().getCurrentrySelectedTemplate());
             if (getStatusText() == null) {
                 e.getStatus().update(DOM.clone(previewTabItem.getWidget(0).getElement(), true));
             }
@@ -482,6 +525,23 @@ public class SidePanel extends ContentPanel {
 
         public PreviewTabItem(String s) {
             super(s);
+
+            ToolBar toolbar = new ToolBar();
+            ListStore<GWTJahiaBasicDataBean> templateListStore = new ListStore<GWTJahiaBasicDataBean>();
+            ComboBox<GWTJahiaBasicDataBean> templateBox = new ComboBox<GWTJahiaBasicDataBean>();
+            templateBox.setStore(templateListStore);
+            templateBox.setDisplayField(GWTJahiaBasicDataBean.DISPLAY_NAME);
+            templateBox.clearSelections();
+            templateBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaBasicDataBean>() {
+                public void selectionChanged(SelectionChangedEvent<GWTJahiaBasicDataBean> gwtJahiaNodeSelectionChangedEvent) {
+//                    e.onTemplateBoxSelection(gwtJahiaNodeSelectionChangedEvent.getSelectedItem());
+                }
+            });
+            setTopComponent(toolbar);
+            /*templateListStore.add(new GWTJahiaBasicDataBean("template1", "template1"));
+        templateListStore.add(new GWTJahiaBasicDataBean("template2", "template2"));
+        templateListStore.add(new GWTJahiaBasicDataBean("template3", "template3"));*/
+            
             sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
             addListener(Events.OnDoubleClick, new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent ce) {
@@ -497,7 +557,7 @@ public class SidePanel extends ContentPanel {
                         w.setPlain(true);
                         w.setToolTip(text);
                         w.add(new HTML(html.getHTML()));
-                        w.show();                        
+                        w.show();
                     }
                 }
             });

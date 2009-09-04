@@ -83,7 +83,7 @@ public class EditContentEngine extends Window {
     private AsyncTabItem versionsTab;
 
     private AsyncTabItem workflowTab;
-    private EditManager editManager = null;
+    private EditLinker editLinker = null;
     private GWTJahiaNode parent = null;
     private GWTJahiaNodeType type = null;
     private String targetPath = null;
@@ -105,13 +105,13 @@ public class EditContentEngine extends Window {
         initTabs(true);
     }
 
-    public EditContentEngine(EditManager editManager, GWTJahiaNode parent, GWTJahiaNodeType type, String targetPath) {
-        this(editManager, parent, type, targetPath, false, false);
+    public EditContentEngine(EditLinker editLinker, GWTJahiaNode parent, GWTJahiaNodeType type, String targetPath) {
+        this(editLinker, parent, type, targetPath, false, false);
 
     }
 
-    public EditContentEngine(EditManager editManager, GWTJahiaNode parent, GWTJahiaNodeType type, String targetPath, boolean createInParentAndMoveOnTop, boolean showMetadataTitleInContentTab) {
-        this.editManager = editManager;
+    public EditContentEngine(EditLinker editLinker, GWTJahiaNode parent, GWTJahiaNodeType type, String targetPath, boolean createInParentAndMoveOnTop, boolean showMetadataTitleInContentTab) {
+        this.editLinker = editLinker;
         this.parent = parent;
         this.type = type;
         if (!"*".equals(targetPath)) {
@@ -291,7 +291,7 @@ public class EditContentEngine extends Window {
                 public void onSuccess(Object o) {
                     Info.display("", "Properties saved");
                     editContentEngine.hide();
-                    editManager.getMainModule().refresh();
+                    editLinker.getMainModule().refresh();
                 }
             });
         }
@@ -318,7 +318,7 @@ public class EditContentEngine extends Window {
                     public void onSuccess(Object o) {
                         Info.display("", "Node created");
                         editContentEngine.hide();
-                        editManager.getMainModule().refresh();
+                        editLinker.getMainModule().refresh();
                     }
                 });
             } else {
@@ -331,7 +331,7 @@ public class EditContentEngine extends Window {
                     public void onSuccess(GWTJahiaNode node) {
                         Info.display("", "Node created");
                         editContentEngine.hide();
-                        editManager.getMainModule().refresh();
+                        editLinker.getMainModule().refresh();
                     }
                 });
             }

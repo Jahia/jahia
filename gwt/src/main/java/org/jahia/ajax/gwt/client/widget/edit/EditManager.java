@@ -5,8 +5,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.Style;
 
-import java.util.Locale;
-
 /**
  * Created by IntelliJ IDEA.
  * User: toto
@@ -16,56 +14,47 @@ import java.util.Locale;
  */
 public class EditManager extends Viewport {
 
-    private EditModeDNDListener dndListener;
     private MainModule mainModule;
     private SidePanel sidePanel;
+    private EditModeToolBar toolbar;
     private EditLinker editLinker;
-    private Module selection;
-    private String locale;
 
     public EditManager(String path, String template, String locale) {
         super();
         setLayout(new BorderLayout());
-        editLinker = new EditLinker(this);
-        dndListener = new EditModeDNDListener(this);
-        this.locale = locale;
+
         BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 340);
         data.setCollapsible(true);
         data.setSplit(true);
-        sidePanel = new SidePanel(this);
+        sidePanel = new SidePanel();
         add(sidePanel, data);
 
-        setScrollMode(Style.Scroll.AUTO);
-        add(mainModule = new MainModule(path, template, this), new BorderLayoutData(Style.LayoutRegion.CENTER));
-    }
+        data = new BorderLayoutData(Style.LayoutRegion.NORTH, 26);
+        toolbar = new EditModeToolBar();
+        add(toolbar, data);
 
-    public EditModeDNDListener getDndListener() {
-        return dndListener;
+        setScrollMode(Style.Scroll.AUTO);
+        add(mainModule = new MainModule(path, template), new BorderLayoutData(Style.LayoutRegion.CENTER));
+
+        editLinker = new EditLinker(mainModule, sidePanel, toolbar);
+        editLinker.setLocale(locale);
+
     }
 
     public MainModule getMainModule() {
         return mainModule;
     }
 
-    public EditLinker getEditLinker() {
-        return editLinker;
-    }
-
     public SidePanel getSidePanel() {
         return sidePanel;
     }
 
-    public String getLocale() {
-        return locale;
+    public EditModeToolBar getToolbar() {
+        return toolbar;
     }
 
-    public void setSelection(Module selection) {
-        if (this.selection != null) {
-            this.selection.setSelected(false);
-        }
-        this.selection = selection;
-        this.selection.setSelected(true);
-        String template = selection.getTemplate();
-        editLinker.onModuleSelection(selection.getNode(),"".equals(template)?null:template);
+    public EditLinker getEditLinker() {
+        return editLinker;
     }
+
 }

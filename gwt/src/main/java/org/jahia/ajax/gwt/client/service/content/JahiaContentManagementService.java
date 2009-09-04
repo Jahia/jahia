@@ -40,12 +40,12 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.*;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.URL;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -190,5 +190,9 @@ public interface JahiaContentManagementService extends RemoteService {
     public void saveNodeTemplate(String path, String template) throws GWTJahiaServiceException;
 
     public void publish(String path) throws GWTJahiaServiceException;
+
+    public void unpublish(String path) throws GWTJahiaServiceException;
+
+    public GWTJahiaPublicationInfo getPublicationInfo(String path) throws GWTJahiaServiceException;
 
 }

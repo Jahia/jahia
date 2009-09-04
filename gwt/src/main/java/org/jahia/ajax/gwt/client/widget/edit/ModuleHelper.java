@@ -29,7 +29,7 @@ public class ModuleHelper {
 
     private static Map<String, List<String>> children;
 
-    public static void initAllModules(MainModule m, HTML html, EditManager editManager) {
+    public static void initAllModules(MainModule m, HTML html) {
         modules = new HashMap<String, Module>();
         modulesByPath = new HashMap<String, List<Module>>();
 
@@ -49,11 +49,11 @@ public class ModuleHelper {
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
                 Module module = null;
                 if (type.equals("list")) {
-                    module = new ListModule(id, path, divElement.getInnerHTML(), template, editManager);
+                    module = new ListModule(id, path, divElement.getInnerHTML(), template, m);
                 } else if (type.equals("existingNode")) {
-                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, nodetypes, editManager);
+                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, nodetypes, m);
                 } else if (type.equals("placeholder")) {
-                    module = new PlaceholderModule(id, path, nodetypes, editManager);
+                    module = new PlaceholderModule(id, path, nodetypes, m);
 //                } else if (type.equals("text")) {
 //                    module = new TextModule(path, divElement.getInnerHTML(), editManager);
                 }

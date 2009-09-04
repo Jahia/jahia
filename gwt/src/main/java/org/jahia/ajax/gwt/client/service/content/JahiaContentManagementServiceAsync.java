@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.*;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import java.util.List;
@@ -171,5 +172,9 @@ public interface JahiaContentManagementServiceAsync {
     void saveNodeTemplate(String path, String template , AsyncCallback async);
 
     void publish(String path, AsyncCallback async);
+
+    void unpublish(String path, AsyncCallback async);
+
+    void getPublicationInfo(String path, AsyncCallback<GWTJahiaPublicationInfo> async);
 
 }

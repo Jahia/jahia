@@ -2,20 +2,13 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.dnd.DropTarget;
-import com.extjs.gxt.ui.client.dnd.DND;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,14 +25,14 @@ public class ListModule extends ContentPanel implements Module {
     private String path;
     private String template;
     private Module parentModule;
-    private EditManager editManager;
+    private MainModule mainModule;
 
-    public ListModule(String id, String path, String s, String template, EditManager editManager) {
+    public ListModule(String id, String path, String s, String template, MainModule mainModule) {
 //        super(new FitLayout());
         this.id = id;
         this.path = path;
         this.template = template;
-        this.editManager = editManager;
+        this.mainModule = mainModule;
         setCollapsible(true);
         setBodyStyleName("pad-text");
         setHeading("Content : "+path);
@@ -53,7 +46,7 @@ public class ListModule extends ContentPanel implements Module {
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
                 Log.info("click" + path);
-                editManager.setSelection(ListModule.this);
+                mainModule.getEditLinker().onModuleSelection(ListModule.this);
             }
         };
         getHeader().addListener(Events.OnClick, listener);
@@ -101,13 +94,4 @@ public class ListModule extends ContentPanel implements Module {
         return template;
     }
 
-    public void setSelected(boolean b) {
-        if (b) {
-            Selection l = Selection.getInstance();
-            l.hide();
-            l.setCurrentContainer(this);
-            l.show();
-            l.layout();
-        }
-    }
 }

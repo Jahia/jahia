@@ -20,7 +20,7 @@ import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow;
  * To change this template use File | Settings | File Templates.
  */
 public class EditModeDNDListener extends DNDListener {
-    private EditManager editManager;
+    private EditLinker editLinker;
 
     public static final String SOURCE_TYPE = "sourceType";
 
@@ -43,8 +43,8 @@ public class EditModeDNDListener extends DNDListener {
     public static final String SOURCE_NODETYPE = "sourceNodeType";
     public static final String OPERATION_CALLED = "operationCalled";
 
-    public EditModeDNDListener(EditManager editManager) {
-        this.editManager = editManager;
+    public EditModeDNDListener(EditLinker editLinker) {
+        this.editLinker = editLinker;
     }
 
     @Override
@@ -86,7 +86,7 @@ public class EditModeDNDListener extends DNDListener {
                 // Item creation
                 GWTJahiaNodeType type = e.getStatus().getData(SOURCE_NODETYPE);
                 e.getStatus().setData(OPERATION_CALLED, "true");
-                new EditContentEngine(editManager, parent, type, targetPath.substring(targetPath.lastIndexOf("/")+1)).show();
+                new EditContentEngine(editLinker, parent, type, targetPath.substring(targetPath.lastIndexOf("/")+1)).show();
             } else if (QUERY_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
                 String q = e.getStatus().getData(SOURCE_QUERY);
@@ -121,7 +121,7 @@ public class EditModeDNDListener extends DNDListener {
                 GWTJahiaNodeType type = e.getStatus().getData(SOURCE_NODETYPE);
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
-                new EditContentEngine(editManager, parent, type,targetPath.substring(targetPath.lastIndexOf("/")+1),true,false).show();
+                new EditContentEngine(editLinker, parent, type,targetPath.substring(targetPath.lastIndexOf("/")+1),true,false).show();
             } else if (QUERY_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
                 String q = e.getStatus().getData(SOURCE_QUERY);
@@ -134,7 +134,7 @@ public class EditModeDNDListener extends DNDListener {
 
     private class DropAsyncCallback implements AsyncCallback {
         public void onSuccess(Object o) {
-            editManager.getMainModule().refresh();
+            editLinker.getMainModule().refresh();
         }
 
         public void onFailure(Throwable throwable) {

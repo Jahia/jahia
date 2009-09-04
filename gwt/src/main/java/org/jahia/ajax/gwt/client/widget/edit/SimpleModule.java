@@ -4,26 +4,14 @@ import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
-import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.util.BaseEventPreview;
-import com.extjs.gxt.ui.client.fx.Draggable;
-import com.extjs.gxt.ui.client.core.El;
-import com.extjs.gxt.ui.client.core.XDOM;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Accessibility;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Command;
 import com.allen_sauer.gwt.log.client.Log;
 
-import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,14 +28,14 @@ public class SimpleModule extends LayoutContainer implements Module {
     private String path;
     private String template;
     private Module parentModule;
-    private EditManager editManager;
+    private MainModule mainModule;
     private String nodetypes;
 
-    public SimpleModule(String id, final String path, String s, String template, String nodetypes, final EditManager editManager) {
+    public SimpleModule(String id, final String path, String s, String template, String nodetypes, final MainModule mainModule) {
         this.id = id;
         setBorders(false);
         this.path = path;
-        this.editManager = editManager;
+        this.mainModule = mainModule;
         this.template = template;
         this.nodetypes = nodetypes;
 
@@ -58,16 +46,16 @@ public class SimpleModule extends LayoutContainer implements Module {
     public void onParsed() {
             Log.debug("Add drag source for simple module "+path);
             DragSource source = new SimpleModuleDragSource(this);
-            source.addDNDListener(editManager.getDndListener());
+            source.addDNDListener(mainModule.getEditLinker().getDndListener());
 
             DropTarget target = new SimpleModuleDropTarget(this);
             target.setAllowSelfAsSource(true);
-            target.addDNDListener(editManager.getDndListener());
+            target.addDNDListener(mainModule.getEditLinker().getDndListener());
             sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
             Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent ce) {
                     Log.info("click" + path);
-                    editManager.setSelection(SimpleModule.this);
+                    mainModule.getEditLinker().onModuleSelection(SimpleModule.this);
                 }
             };
             addListener(Events.OnClick, listener);
@@ -108,17 +96,6 @@ public class SimpleModule extends LayoutContainer implements Module {
 
     public void setParentModule(Module parentModule) {
         this.parentModule = parentModule;
-    }
-
-    public void setSelected(boolean b) {
-//        setBorders(b);
-        if (b) {
-            Selection l = Selection.getInstance();
-            l.hide();
-            l.setCurrentContainer(this);
-            l.show();
-            l.layout();
-        }
     }
 
     public String getTemplate() {

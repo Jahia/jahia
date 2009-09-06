@@ -6,7 +6,9 @@
     <bean id="CasService" parent="proxyTemplate">
         <property name="target">
             <bean id="jahiaCasService" class="org.jahia.services.sso.CasService" parent="jahiaServiceTemplate" factory-method="getInstance">
+				<!-- the redirect URL to the CAS server for login -->
 				<property name="loginUrl" value="${cas.loginUrl}"/>
+				<!-- the URL on which we validate the ticket -->
 				<property name="validateUrl" value="${cas.validateUrl}"/>
             </bean>
         </property>

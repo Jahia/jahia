@@ -9,24 +9,24 @@
       <props>
         <prop key="jcifs.smb.client.domain">JAHIA</prop>
         <prop key="jcifs.netbios.wins">192.168.2.3</prop>
-        <!-- Use this parameter to deactivate NTLM authentification. If
-             NTLM authentification is activated, you will only be able
-             to log on using this method, or by using Basic authentification
+        <!-- Use this parameter to deactivate NTLM authentication. If
+             NTLM authentication is activated, you will only be able
+             to log on using this method, or by using Basic authentication
              if the enableBasic parameter is set to true.
         -->        
         <prop key="jcifs.http.skipAuthentification">true</prop>
-        <!-- Activates HTTP Basic authentification if NTLM is not available
+        <!-- Activates HTTP Basic authentication if NTLM is not available
         -->        
         <prop key="jcifs.http.enableBasic">true</prop>
-        <!-- If this parameter is true, it means we will allow BASIC authentification
+        <!-- If this parameter is true, it means we will allow BASIC authentication
              over regular HTTP connections. If it is false, this means that only
-             HTTPS session will be accepted for BASIC authentification.
+             HTTPS session will be accepted for BASIC authentication.
         -->        
         <prop key="jcifs.http.insecureBasic">true</prop>
-        <!-- This parameter controls whether the detected BASIC authentification passed
+        <!-- This parameter controls whether the detected BASIC authentication passed
              over to the filter will be used to do an SMB login. Set this to true if
-             you want to use BASIC authentification to login on your domain controller,
-             and set to false if you want Jahia to handle the basic authentification.
+             you want to use BASIC authentication to login on your domain controller,
+             and set to false if you want Jahia to handle the basic authentication.
         -->                
         <prop key="jcifs.http.useBasic">false</prop>
       </props>

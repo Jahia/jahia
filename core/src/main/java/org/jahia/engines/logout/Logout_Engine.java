@@ -49,6 +49,7 @@ import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.SessionState;
+import org.jahia.params.valves.CookieAuthConfig;
 import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pages.ContentPage;
@@ -58,15 +59,13 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.settings.SettingsBean;
 
 
 /**
+ * Logout handler engine.
  * @author Eric Vassalli
  * @author Khue Nguyen
  * @author Fulco Houkes
- *         todo add some nice javadoc comment here
- *         todo (Fulco) : the toolBox attribute is initializedin the constructor, but never used.
  */
 public class Logout_Engine implements JahiaEngine {
 
@@ -81,6 +80,7 @@ public class Logout_Engine implements JahiaEngine {
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(Logout_Engine.class);
 
+    private CookieAuthConfig cookieAuthConfig;
 
     /**
      * Default constructor, creates a new <code>Logout_Engin</code> instance.
@@ -168,16 +168,15 @@ public class Logout_Engine implements JahiaEngine {
             JahiaEvent theEvent = new JahiaEvent(this, jParams, jParams.getUser());
             servicesRegistry.getJahiaEventService().fireLogout(theEvent);
 
-            // now let's destroy the cookie authentification if there was one
+            // now let's destroy the cookie authentication if there was one
             // set for this user.
             JahiaUser curUser = jParams.getUser();
-            SettingsBean settingsBean = org.jahia.settings.SettingsBean.getInstance();
-            String cookieAuthKey = curUser.getProperty(settingsBean.getCookieAuthUserPropertyName());
-            Cookie authCookie = new Cookie(settingsBean.getCookieAuthCookieName(), cookieAuthKey);
+            String cookieAuthKey = curUser.getProperty(cookieAuthConfig.getUserPropertyName());
+            Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey);
             authCookie.setPath(jParams.getContextPath());
             authCookie.setMaxAge(0); // means we want it deleted now !
             bean.getRealResponse().addCookie(authCookie);
-            curUser.removeProperty(settingsBean.getCookieAuthUserPropertyName());
+            curUser.removeProperty(cookieAuthConfig.getUserPropertyName());
 
             jParams.setUserGuest();
         }
@@ -321,7 +320,7 @@ public class Logout_Engine implements JahiaEngine {
 
     /**
      * Check for a "friendly" logout page instead of a "403 Forbidden " page, when the user
-     * loggout.
+     * logout.
      *
      * @param jData a page, can be null if no page available.
      */
@@ -367,7 +366,7 @@ public class Logout_Engine implements JahiaEngine {
             JahiaGroupManagerService grpServ =
                     ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
-            List v = grpServ.getUserMembership(user);
+            List<String> v = grpServ.getUserMembership(user);
             int size = v.size();
             String grpKey;
             JahiaGroup grp;
@@ -410,5 +409,9 @@ public class Logout_Engine implements JahiaEngine {
             logger.error(e.getMessage(), e);
         }
         return null; // no page available...
+    }
+
+	public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {
+    	this.cookieAuthConfig = cookieAuthConfig;
     }
 }

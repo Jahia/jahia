@@ -73,10 +73,9 @@ import java.util.Set;
 public class CookieAuthValveImpl implements Valve {
     private static final transient Logger logger = Logger
             .getLogger(CookieAuthValveImpl.class);
-
-    public CookieAuthValveImpl () {
-    }
-
+    
+    private CookieAuthConfig cookieAuthConfig;
+    
     public void invoke (Object context, ValveContext valveContext)
         throws PipelineException {
         ProcessingContext processingContext = (ProcessingContext) context;
@@ -90,12 +89,11 @@ public class CookieAuthValveImpl implements Valve {
             valveContext.invokeNext(context);
             return;
         }
-        SettingsBean settingsBean = org.jahia.settings.SettingsBean.getInstance();
         // we first need to find the authentication cookie in the list.
         Cookie authCookie = null;
         for (int i = 0; i < cookies.length; i++) {
             Cookie curCookie = cookies[i];
-            if (settingsBean.getCookieAuthCookieName().equals(curCookie.getName())) {
+            if (cookieAuthConfig.getCookieName().equals(curCookie.getName())) {
                 // found it.
                 authCookie = curCookie;
                 break;
@@ -105,8 +103,8 @@ public class CookieAuthValveImpl implements Valve {
             // now we need to look in the database to see if we have a
             // user that has the corresponding key.
             Properties searchCriterias = new Properties();
-            searchCriterias.setProperty(settingsBean.
-                                        getCookieAuthUserPropertyName(),
+            String userPropertyName = cookieAuthConfig.getUserPropertyName();
+            searchCriterias.setProperty(userPropertyName,
                                         authCookie.getValue());
             Set<Principal> foundUsers = ServicesRegistry.getInstance().
                              getJahiaUserManagerService().searchUsers(processingContext.
@@ -116,18 +114,14 @@ public class CookieAuthValveImpl implements Valve {
                 processingContext.getSessionState().setAttribute(ProcessingContext.
                     SESSION_USER, jahiaUser);
 
-                if (settingsBean.isCookieAuthRenewalActivated()) {
+                if (cookieAuthConfig.isRenewalActivated()) {
                     // we can now renew the cookie.
                     String cookieUserKey = null;
                     // now let's look for a free random cookie value key.
                     while (cookieUserKey == null) {
-                        cookieUserKey = JahiaString.generateRandomString(
-                            settingsBean.
-                            getCookieAuthIDLength());
+                        cookieUserKey = JahiaString.generateRandomString(cookieAuthConfig.getIdLength());
                         searchCriterias = new Properties();
-                        searchCriterias.setProperty(settingsBean.
-                            getCookieAuthUserPropertyName(),
-                            cookieUserKey);
+                        searchCriterias.setProperty(userPropertyName, cookieUserKey);
                         Set<Principal> usersWithKey = ServicesRegistry.getInstance().
                                            getJahiaUserManagerService().
                                            searchUsers(
@@ -137,16 +131,13 @@ public class CookieAuthValveImpl implements Valve {
                         }
                     }
                     // let's save the identifier for the user in the database
-                    jahiaUser.setProperty(settingsBean.
-                                          getCookieAuthUserPropertyName(),
+                    jahiaUser.setProperty(userPropertyName,
                                           cookieUserKey);
                     // now let's save the same identifier in the cookie.
                     authCookie.setValue(cookieUserKey);
                     authCookie.setPath(processingContext.getContextPath());
-                    authCookie.setMaxAge(settingsBean.
-                                         getCookieAuthMaxAgeInSeconds());
-                    HttpServletResponse realResponse = ((ParamBean)processingContext).
-                        getRealResponse();
+                    authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
+                    HttpServletResponse realResponse = ((ParamBean)processingContext).getRealResponse();
                     realResponse.addCookie(authCookie);
                 }
             }
@@ -165,7 +156,7 @@ public class CookieAuthValveImpl implements Valve {
             processingContext.setTheUser(jahiaUser);
 
             // do a switch to the user's preferred language
-            if (settingsBean.isConsiderPreferredLanguageAfterLogin()) {
+            if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
                 Locale preferredUserLocale = UserPreferencesHelper
                         .getPreferredLocale(jahiaUser, processingContext
                                 .getSite());
@@ -239,5 +230,9 @@ public class CookieAuthValveImpl implements Valve {
                 }
             }
         }
+    }
+
+	public void setCookieAuthConfig(CookieAuthConfig config) {
+    	this.cookieAuthConfig = config;
     }
 }

@@ -48,6 +48,7 @@ import org.jahia.engines.validation.EngineValidationHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.params.ProcessingContext;
+import org.jahia.params.valves.CookieAuthConfig;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pages.ContentPage;
@@ -76,6 +77,8 @@ public class Login_Engine implements JahiaEngine {
     private static final String CLOSE_JSP = "login_close";
 
     private EngineToolBox toolBox;
+    
+    private CookieAuthConfig cookieAuthConfig;
 
 
     /**
@@ -285,7 +288,7 @@ public class Login_Engine implements JahiaEngine {
         engineMap.put("javascriptUrl", jParams.settings().getJsHttpPath());
 
         // JSP Attribute
-        jParams.setAttribute("cookieAuthActivated", Boolean.valueOf(jParams.settings().isCookieAuthActivated()));
+        jParams.setAttribute("cookieAuthActivated", Boolean.valueOf(cookieAuthConfig.isActivated()));
         jParams.setAttribute("engineTitle", "Login");
         //jParams.getRequest().setAttribute( "engineMap", engineMap );
     }
@@ -364,6 +367,11 @@ public class Login_Engine implements JahiaEngine {
         }
 
         return null;
+    }
+
+
+	public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {
+    	this.cookieAuthConfig = cookieAuthConfig;
     }
 
 }

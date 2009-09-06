@@ -174,13 +174,6 @@ public class SettingsBean {
     private String defaultResponseBodyEncoding;
     private String defaultURIEncoding;
 
-    private int cookieAuthIDLength;
-    private String cookieAuthUserPropertyName;
-    private String cookieAuthCookieName;
-    private int cookieAuthMaxAgeInSeconds;
-    private boolean cookieAuthRenewalActivated;
-    private boolean cookieAuthActivated;
-
     private String tmpContentDiskPath;
     private long templatesObserverInterval;
     private String schedulerConfigFile;
@@ -472,13 +465,6 @@ public class SettingsBean {
                     }
                 }
             }
-
-            cookieAuthActivated = getBoolean("cookieAuthActivated", true);
-            cookieAuthIDLength = getInt("cookieAuthIDLength", 30);
-            cookieAuthUserPropertyName = getString("cookieAuthUserPropertyName", "org.jahia.user.cookieauth.id");
-            cookieAuthCookieName = getString("cookieAuthCookieName", "jid");
-            cookieAuthMaxAgeInSeconds = getInt("cookieAuthMaxAgeInSeconds", 60*60*24*30 /* 30 days expiration */);
-            cookieAuthRenewalActivated = getBoolean("cookieAuthRenewalActivated", true);
 
             schedulerConfigFile = JahiaTools.convertContexted (getString("schedulerConfigFile", "$context/WEB-INF/etc/config/quartz.properties"), pathResolver);
             ramSchedulerConfigFile = JahiaTools.convertContexted (getString("ramSchedulerConfigFile", "$context/WEB-INF/etc/config/quartz-ram.properties"), pathResolver);
@@ -1145,21 +1131,6 @@ public class SettingsBean {
         return defaultURIEncoding;
     }
 
-    public int getCookieAuthIDLength() {
-        return cookieAuthIDLength;
-    }
-    public String getCookieAuthUserPropertyName() {
-        return cookieAuthUserPropertyName;
-    }
-    public String getCookieAuthCookieName() {
-        return cookieAuthCookieName;
-    }
-    public int getCookieAuthMaxAgeInSeconds() {
-        return cookieAuthMaxAgeInSeconds;
-    }
-    public boolean isCookieAuthRenewalActivated() {
-        return cookieAuthRenewalActivated;
-    }
     public PathResolver getPathResolver() {
         return pathResolver;
     }
@@ -1168,9 +1139,6 @@ public class SettingsBean {
         this.pathResolver = pathResolver;
     }
 
-    public boolean isCookieAuthActivated() {
-        return cookieAuthActivated;
-    }
     public String getTmpContentDiskPath() {
     return tmpContentDiskPath;
   }

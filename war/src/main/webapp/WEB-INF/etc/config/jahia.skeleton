@@ -332,8 +332,8 @@ suggestedRetryTimeAfterTimeoutOnStartup                = 15
 ######################################################################
 ### CAS Authentication config ########################################
 ######################################################################
-# You can configure here the CAS authentification sub-system. First
-# you must add the CAS valve in the WEB-INF/etc/spring/applicationcontext-pipelines.xml
+# You can configure here the CAS authentication sub-system. First
+# you must add the CAS valve in the WEB-INF/etc/spring/auth/applicationcontext-auth-pipeline.xml
 # file in the authPipeline with the following section, add the end
 # of the pipeline :
 # <bean class="org.jahia.params.valves.CASAuthValveImpl" />
@@ -355,29 +355,6 @@ cas.validateUrl                                        = https://localhost:8443/
 #
 # Should we use cookie authentication for login ?
 cookieAuthActivated                                    =   true
-#
-# length of cookie identifier key for user. This is the actual value
-# stored in the cookie, so make sure it is long enough to improve security.
-cookieAuthIDLength                                     =   40
-# name of user property under which we store the cookie identifier key in
-# Jahia's database, for matching with the value coming from the cookie.
-cookieAuthUserPropertyName                             =   org.jahia.user.cookieauth.id
-# cookie name. It is a good idea to keep this name a bit cryptic so that
-# even if someone steals the cookie he doesn't necessarily understand it.
-cookieAuthCookieName                                   =   jid
-# age of cookie in seconds. So basically a value of 2592000 is 30 days
-# expiration, which means that if the user doesn't come back to the site during
-# 30 days he will then have to login again. The way the cookie is renewed
-# depends how the cookieAuthRenewalActivated setting is set.
-cookieAuthMaxAgeInSeconds                              =   2592000
-# Cookie renewal means that if a user is recognized using a cookie, the age in
-# seconds will be reset. So it means that every time the user comes in and is
-# recognized using a cookie, the cookie age will be reset to the value defined
-# in cookieAuthMaxAgeInSeconds. If this setting is false, cookies will not be
-# renewed, and after the cookie expires the user will have to login again.
-# For a more natural behavior, it is best to set this setting to true and leave
-# the age in seconds to a value in days.
-cookieAuthRenewalActivated                             =   true
 
 ######################################################################
 ### Logoff Redirect ##################################################

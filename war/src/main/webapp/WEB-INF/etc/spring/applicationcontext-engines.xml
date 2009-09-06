@@ -14,8 +14,12 @@
     </bean>
     <bean id="restoreContainerEngine" class="org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine" />
     <bean id="searchEngine" class="org.jahia.engines.search.Search_Engine" />
-    <bean id="loginEngine" class="org.jahia.engines.login.Login_Engine" />
-    <bean id="logoutEngine" class="org.jahia.engines.logout.Logout_Engine" />
+    <bean id="loginEngine" class="org.jahia.engines.login.Login_Engine">
+    	<property name="cookieAuthConfig" ref="cookieAuthConfig"/>
+    </bean>
+    <bean id="logoutEngine" class="org.jahia.engines.logout.Logout_Engine">
+    	<property name="cookieAuthConfig" ref="cookieAuthConfig"/>
+    </bean>
     <bean id="pagePropertiesEngine" class="org.jahia.engines.pages.PageProperties_Engine" >
         <property name="cacheService" ref="JahiaCacheService" />
         <property name="lockService" ref="LockService" />

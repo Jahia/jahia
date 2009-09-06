@@ -78,6 +78,8 @@ public class LoginEngineAuthValveImpl implements Valve {
     public static final String STAY_AT_CURRENT_PAGE = "1";
     public static final String GO_TO_HOMEPAGE = "2";    
 
+    private CookieAuthConfig cookieAuthConfig;
+    
     public void initialize() {
     }
 
@@ -130,9 +132,8 @@ public class LoginEngineAuthValveImpl implements Valve {
                 jParams.setAttribute(VALVE_RESULT, OK);
                 jParams.setUser(theUser);
 
-                SettingsBean settingsBean = org.jahia.settings.SettingsBean.getInstance();
                 // do a switch to the user's preferred language
-                if (settingsBean.isConsiderPreferredLanguageAfterLogin()) {
+                if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
                     Locale preferredUserLocale = UserPreferencesHelper
                             .getPreferredLocale(theUser, jParams
                                     .getSite());
@@ -166,9 +167,9 @@ public class LoginEngineAuthValveImpl implements Valve {
                     String cookieUserKey = null;
                     // now let's look for a free random cookie value key.
                     while (cookieUserKey == null) {
-                        cookieUserKey = JahiaString.generateRandomString(settingsBean.getCookieAuthIDLength());
+                        cookieUserKey = JahiaString.generateRandomString(cookieAuthConfig.getIdLength());
                         Properties searchCriterias = new Properties();
-                        searchCriterias.setProperty(settingsBean.getCookieAuthUserPropertyName(), cookieUserKey);
+                        searchCriterias.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
                         Set<Principal> foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(
                                 jParams.getSiteID(), searchCriterias);
                         if (foundUsers.size() > 0) {
@@ -176,11 +177,11 @@ public class LoginEngineAuthValveImpl implements Valve {
                         }
                     }
                     // let's save the identifier for the user in the database
-                    theUser.setProperty(settingsBean.getCookieAuthUserPropertyName(), cookieUserKey);
+                    theUser.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
                     // now let's save the same identifier in the cookie.
-                    Cookie authCookie = new Cookie(settingsBean.getCookieAuthCookieName(), cookieUserKey);
+                    Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieUserKey);
                     authCookie.setPath(jParams.getContextPath());
-                    authCookie.setMaxAge(settingsBean.getCookieAuthMaxAgeInSeconds());
+                    authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
                     if (paramBean != null) {
                         HttpServletResponse realResponse = paramBean.getRealResponse();
                         realResponse.addCookie(authCookie);
@@ -245,6 +246,10 @@ public class LoginEngineAuthValveImpl implements Valve {
                 }
             }
         }
+    }
+
+	public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {
+    	this.cookieAuthConfig = cookieAuthConfig;
     }
     
 }

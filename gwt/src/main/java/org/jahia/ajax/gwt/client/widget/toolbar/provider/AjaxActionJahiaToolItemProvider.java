@@ -93,21 +93,9 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
     private static final String CONFIRMATION = "confirmation";
     private static final String PROMPT = "prompt";
     private static final String MULTIPROMPT = "multiprompt";
-
-
     public static final String SITE_STATS = "siteStats";
     public static final String PAGE_STATS = "pageStats";
-
-    private static String getPropertyValue(GWTJahiaToolbarItem gwtToolbarItem,
-            String propertyName) {
-        Map properties = gwtToolbarItem.getProperties();
-        GWTJahiaProperty property = properties != null ? (GWTJahiaProperty) properties
-                .get(propertyName)
-                : null;
-        return property != null ? property.getValue() : null;
-    }
-    
-    Map<String, String> data = new HashMap<String, String>();
+    private Map<String, String> data = new HashMap<String, String>();
 
     public <T extends ComponentEvent> SelectionListener<T> getSelectListener(final GWTJahiaToolbarItem gwtToolbarItem) {
         // add listener

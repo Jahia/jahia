@@ -49,13 +49,13 @@ public class EditLinker {
     private Module selectedModule;
 
     private EditModeDNDListener dndListener;
-    private EditModeToolBar toolbar;
+    private EditModeToolbarContainer toolbar;
     private MainModule mainModule;
     private SidePanel sidePanel;
 
     private String locale;
 
-    public EditLinker(MainModule mainModule, SidePanel sidePanel, EditModeToolBar toolbar) {
+    public EditLinker(MainModule mainModule, SidePanel sidePanel, EditModeToolbarContainer toolbar) {
         this.dndListener = new EditModeDNDListener(this);
         this.mainModule = mainModule;
         this.sidePanel = sidePanel;
@@ -65,7 +65,7 @@ public class EditLinker {
     }
 
 
-    public EditModeToolBar getToolbar() {
+    public EditModeToolbarContainer getToolbar() {
         return toolbar;
     }
 

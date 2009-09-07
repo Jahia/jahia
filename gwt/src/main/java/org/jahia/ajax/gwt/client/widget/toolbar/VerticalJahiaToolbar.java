@@ -147,7 +147,7 @@ public class VerticalJahiaToolbar extends JahiaToolbar {
                         itemsGroupPanel.add(toolbarItemWidgetProvider.createWidget(gwtToolbarItemsGroup, gwtToolbarItem));
 
                     } else {
-                        final DataListItem item = toolbarItemWidgetProvider.createDataListItem(list, gwtToolbarItemsGroup, gwtToolbarItem);
+                     /*   final DataListItem item = toolbarItemWidgetProvider.createDataListItem(list, gwtToolbarItemsGroup, gwtToolbarItem);
 
                         //make list checkable
                         if (layout == ToolbarConstants.ITEMSGROUP_MENU_RADIO) {
@@ -160,7 +160,7 @@ public class VerticalJahiaToolbar extends JahiaToolbar {
                         // add item
                         if (item != null) {
                             list.add(item);
-                        }
+                        }  */
                     }
                 }
             }

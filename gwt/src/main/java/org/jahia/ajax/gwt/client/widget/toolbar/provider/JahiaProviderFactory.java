@@ -31,6 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.provider;
 
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+
 /**
  * User: jahia
  * Date: 4 avr. 2008

@@ -78,9 +78,6 @@ public class LanguageSwitcherProvider extends JahiaToolItemProvider {
         return null;
     }
 
-    public DataListItem createDataListItem (DataList itemsList, GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, GWTJahiaToolbarItem gwtToolbarItem) {
-        return null;
-    }
 
     public TabItem createTabItem (TabPanel tabPanel, GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, GWTJahiaToolbarItem gwtToolbarItem) {
         return null;

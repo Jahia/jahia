@@ -52,7 +52,9 @@ public class PreviewPanel extends ContentPanel {
         templateBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaBasicDataBean>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaBasicDataBean> gwtJahiaNodeSelectionChangedEvent) {
                 GWTJahiaBasicDataBean selectedItem = gwtJahiaNodeSelectionChangedEvent.getSelectedItem();
-                updatePreview(selectedItem.getValue());
+                if(selectedItem != null){
+                    updatePreview(selectedItem.getValue());
+                }
             }
         });
 

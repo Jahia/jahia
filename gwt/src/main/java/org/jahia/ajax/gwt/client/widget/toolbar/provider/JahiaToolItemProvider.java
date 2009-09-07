@@ -49,8 +49,6 @@ public abstract class JahiaToolItemProvider {
 
     public abstract Item createMenuItem(final GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, final GWTJahiaToolbarItem gwtToolbarItem);
 
-    public abstract DataListItem createDataListItem(final DataList itemsList,final GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, final GWTJahiaToolbarItem gwtToolbarItem);
-
     public abstract TabItem createTabItem(final TabPanel tabPanel,final GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, final GWTJahiaToolbarItem gwtToolbarItem);
 
 

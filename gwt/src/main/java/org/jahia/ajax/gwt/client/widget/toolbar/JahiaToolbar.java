@@ -244,6 +244,7 @@ public abstract class JahiaToolbar extends FocusPanel {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
+        if(toolbarManager != null){
         if (visible) {
             toolbarManager.incrementDiplayedToolbar();
             Widget parent = getParentContainer();
@@ -255,6 +256,7 @@ public abstract class JahiaToolbar extends FocusPanel {
         } else {
             toolbarManager.decrementDisplayedToolbar();
             removeFromParent();
+        }
         }
 
     }
@@ -287,7 +289,9 @@ public abstract class JahiaToolbar extends FocusPanel {
                     boolean display = gwtToolbar.getState().isDisplay();
                     if (display) {
                         createToolBarUI();
-                        toolbarManager.handleDraggable(JahiaToolbar.this);
+                        if(toolbarManager != null){
+                            toolbarManager.handleDraggable(JahiaToolbar.this);
+                        }
                     }
                 }
 

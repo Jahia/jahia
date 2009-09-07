@@ -1,6 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.extjs.gxt.ui.client.widget.Viewport;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.Style;
@@ -12,16 +12,16 @@ import com.extjs.gxt.ui.client.Style;
  * Time: 5:55:47 PM
  * To change this template use File | Settings | File Templates.
  */
-public class EditManager extends Viewport {
+public class EditManager extends ContentPanel {
 
     private MainModule mainModule;
     private SidePanel sidePanel;
-    private EditModeToolBar toolbar;
+    private EditModeToolbarContainer toolbar;
     private EditLinker editLinker;
 
     public EditManager(String path, String template, String locale) {
-        super();
-        setLayout(new BorderLayout());
+        super(new BorderLayout());
+        setHeaderVisible(false);
 
         BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 340);
         data.setCollapsible(true);
@@ -30,8 +30,12 @@ public class EditManager extends Viewport {
         add(sidePanel, data);
 
         data = new BorderLayoutData(Style.LayoutRegion.NORTH, 26);
-        toolbar = new EditModeToolBar();
-        add(toolbar, data);
+        toolbar =  new EditModeToolbarContainer();
+
+        setTopComponent(toolbar);
+
+
+        //setTopComponent(toolbar);
 
         setScrollMode(Style.Scroll.AUTO);
         add(mainModule = new MainModule(path, template), new BorderLayoutData(Style.LayoutRegion.CENTER));
@@ -49,12 +53,13 @@ public class EditManager extends Viewport {
         return sidePanel;
     }
 
-    public EditModeToolBar getToolbar() {
+    public EditModeToolbarContainer getToolbar() {
         return toolbar;
     }
 
     public EditLinker getEditLinker() {
         return editLinker;
     }
+
 
 }

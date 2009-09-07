@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.*;
@@ -47,6 +48,8 @@ import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.Map;
 
 /**
  * User: jahia
@@ -92,8 +95,8 @@ public abstract class AbstractJahiaToolItemProvider extends JahiaToolItemProvide
                 ((Button) toolbarItem).setIconStyle(gwtToolbarItem.getMinIconStyle());
             }
             if (layout == ToolbarConstants.ITEMSGROUP_BUTTON) {
-                ((Button) toolbarItem).setIconStyle(gwtToolbarItem.getMediumIconStyle());
-                toolbarItem.setHeight("30px");
+                ((Button) toolbarItem).setIconStyle(gwtToolbarItem.getMinIconStyle());
+                // toolbarItem.setHeight("30px");
             }
 
             // add listener
@@ -143,43 +146,6 @@ public abstract class AbstractJahiaToolItemProvider extends JahiaToolItemProvide
         return menuItem;
     }
 
-    /**
-     * Create a ContentPanel
-     *
-     * @param gwtToolbarItem
-     * @return
-     */
-    public DataListItem createDataListItem(final DataList list, final GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, final GWTJahiaToolbarItem gwtToolbarItem) {
-        // create a dataListitem
-        DataListItem item = new DataListItem();
-        item.setText(gwtToolbarItem.getTitle());
-        int layout = gwtToolbarItemsGroup.getLayout();
-        if (layout != ToolbarConstants.ITEMSGROUP_MENU_RADIO && layout != ToolbarConstants.ITEMSGROUP_MENU_CHECKBOX) {
-            item.setIconStyle(gwtToolbarItem.getMinIconStyle());
-        }
-
-        // description
-        String description = gwtToolbarItem.getDescription();
-        if (gwtToolbarItem.getDescription() != null && description.length() > 0) {
-            item.setToolTip(description);
-        }
-
-        // deal with check
-        item.setChecked(gwtToolbarItem.isSelected());
-
-        // add listener
-        SelectionListener listener = getSelectListener(gwtToolbarItem);
-        if (listener != null) {
-            list.addListener(Events.SelectionChange,new Listener<DataListEvent>(){
-                public void handleEvent(DataListEvent event) {
-                    if(list.getSelectedItem().getText().equalsIgnoreCase(gwtToolbarItem.getTitle())){
-                       getSelectListener(gwtToolbarItem).componentSelected(event);
-                    }
-                }
-            });
-        }
-        return item;
-    }
 
     /**
      * Create a tabItem
@@ -250,6 +216,20 @@ public abstract class AbstractJahiaToolItemProvider extends JahiaToolItemProvide
         page.setPid(JahiaGWTParameters.getPID());
         page.setMode(JahiaGWTParameters.getOperationMode());
         return page;
+    }
+
+    /**
+     * Het property value
+     * @param gwtToolbarItem
+     * @param propertyName
+     * @return
+     */
+    public String getPropertyValue(GWTJahiaToolbarItem gwtToolbarItem, String propertyName) {
+        Map properties = gwtToolbarItem.getProperties();
+        GWTJahiaProperty property = properties != null ? (GWTJahiaProperty) properties
+                .get(propertyName)
+                : null;
+        return property != null ? property.getValue() : null;
     }
 
 }

@@ -67,6 +67,7 @@ public class ToobarsJahiaToolItemProvider extends
     @Override
     public MenuItem createMenuItem(GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup,GWTJahiaToolbarItem gwtToolbarItem) {
         final MenuItem thisItem = new MenuItem(gwtToolbarItem.getTitle());
+        if(toolbarManager != null){
         toolbarManager.addContextMenuReadyListener(new Listener<MenuEvent>() {
             public void handleEvent(MenuEvent be) {
                 Menu ctxMenu = ((Menu) be.getSource());
@@ -78,7 +79,7 @@ public class ToobarsJahiaToolItemProvider extends
                     }
                 }
             }
-        });
+        });}
         return thisItem;
     }
 

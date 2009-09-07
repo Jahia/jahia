@@ -53,10 +53,6 @@ public class FiilJahiaToolItemProvider extends JahiaToolItemProvider {
         return menuItem;
     }
 
-    public DataListItem createDataListItem(final DataList list, final GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, final GWTJahiaToolbarItem gwtToolbarItem) {
-        return null;
-    }
-
     public Widget createWidget(GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, GWTJahiaToolbarItem gwtToolbarItem) {
         return new FillToolItem();
     }

@@ -106,6 +106,6 @@ public class LanguageSwitcher {
         } else {
             parentItem.setEnabled(false);
             parentItem.el().child("tr").removeStyleName("x-btn-with-menu");
-        }
+        } 
     }
 }

@@ -1,9 +1,9 @@
 <toolbars id="org.jahia.toolbars.default">
     <display>
-        <toolbar name="switchingmode" ref-type="org.jahia.toolbar.switchingmode" state="top" draggable="false"
-                 mandatory="true" display-title="false"/>
+        <toolbar name="editmode" ref-type="org.jahia.toolbar.editmode" state="top" draggable="false" displayed="true"
+                 mandatory="true" display-title="true"/>
 
-        <toolbar name="workflow" ref-type="org.jahia.toolbar.workflow" state="top" draggable="true"  displayed="false"
+        <!--<toolbar name="workflow" ref-type="org.jahia.toolbar.workflow" state="top" draggable="true" displayed="false"
                  mandatory="false" display-title="true"/>
 
         <toolbar name="bookmarks" ref-type="org.jahia.toolbar.bookmarks" state="top" draggable="true" displayed="false"
@@ -15,14 +15,29 @@
         <toolbar name="caches" ref-type="org.jahia.toolbar.caches" state="top" draggable="true" displayed="false"
                  mandatory="false" display-title="true"/>
 
-        <toolbar name="statistics" ref-type="org.jahia.toolbar.statistics" state="top" draggable="true" displayed="false"
+        <toolbar name="statistics" ref-type="org.jahia.toolbar.statistics" state="top" draggable="true"
+                 displayed="false"
                  mandatory="false" display-title="true"/>
 
-        <toolbar name="subscriptions" ref-type="org.jahia.toolbar.subscriptions" state="top" draggable="true" displayed="false"
-                 mandatory="false" display-title="true"/>
+        <toolbar name="subscriptions" ref-type="org.jahia.toolbar.subscriptions" state="top" draggable="true"
+                 displayed="false"
+                 mandatory="false" display-title="true"/>-->
     </display>
     <!-- define toolbar -->
     <custom-toolbar>
+        <!-- switching mode -->
+        <toolbar type="org.jahia.toolbar.editmode">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Switchingmode"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.PageProperties"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.LanguageSwitcher"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.EditAction"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Tools"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Workflow"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Cache"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Preview"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.User"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Admin"/>
+        </toolbar>
         <!-- switching mode -->
         <toolbar type="org.jahia.toolbar.switchingmode">
             <title-resourcebundle-key key="toolbar.switchingmode"/>
@@ -43,10 +58,11 @@
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.PreviewMode"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.CompareMode"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.EditAction"/>
 
         </toolbar>
 
-         <!-- workflow -->
+        <!-- workflow -->
         <toolbar type="org.jahia.toolbar.workflow">
             <title-resourcebundle-key key="toolbar.workflow"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.QuickWorkflow"/>
@@ -85,12 +101,6 @@
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.SimpleVisibilityResolver"
                                 input="statistics"/>
             </visibility>
-        </toolbar>
-
-        <!-- widgets-->
-        <toolbar type="org.jahia.toolbar.widgets">
-            <title-resourcebundle-key key="toolbar.widget"/>
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.widgets"/>
         </toolbar>
 
         <!-- subscriptions -->
@@ -195,7 +205,7 @@
             <item ref-type="org.jahia.toolbar.item.FileManager"/>
             <item ref-type="org.jahia.toolbar.item.MashupManager"/>
             <item ref-type="org.jahia.toolbar.item.ContentManager"/>
-            <item ref-type="org.jahia.toolbar.item.CategoryManager"/>            
+            <item ref-type="org.jahia.toolbar.item.CategoryManager"/>
             <item ref-type="org.jahia.toolbar.item.GWTWorkflow"/>
             <item ref-type="org.jahia.toolbar.item.Pdisplay"/>
         </itemsgroup>
@@ -300,6 +310,84 @@
             <item ref-type="org.jahia.toolbar.item.Newsletter"/>
             <item ref-type="org.jahia.toolbar.item.NewsletterTest"/>
         </itemsgroup>
+
+        <!-- new edit mode-->
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.newedit.Switchingmode" layout="button-label">
+            <item ref-type="org.jahia.toolbar.item.Live"/>
+            <item ref-type="org.jahia.toolbar.item.Edit"/>
+        </itemsgroup>
+
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.newedit.PageProperties" layout="menu">
+            <title-resourcebundle-key key="button.pageSettings"/>
+            <icon-style min="gwt-toolbar-ItemsGroup-icons-pageproperties-min"/>
+            <item ref-type="org.jahia.toolbar.item.PageProperties"/>
+            <item ref-type="org.jahia.toolbar.item.PageStat"/>
+        </itemsgroup>
+
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.newedit.LanguageSwitcher" layout="button-label">
+            <item ref-type="org.jahia.toolbar.item.LanguageSwitcher"/>
+        </itemsgroup>
+
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.newedit.EditAction" layout="button-label">
+            <item ref-type="org.jahia.toolbar.item.EditAction.createPage"/>
+            <item ref-type="org.jahia.toolbar.item.EditAction.publish"/>
+            <item ref-type="org.jahia.toolbar.item.EditAction.unpublish"/>
+            <item ref-type="org.jahia.toolbar.item.EditAction.lock"/>
+            <item ref-type="org.jahia.toolbar.item.EditAction.unlock"/>
+            <item ref-type="org.jahia.toolbar.item.EditAction.edit"/>     
+            <item ref-type="org.jahia.toolbar.item.EditAction.delete"/>
+            <item ref-type="org.jahia.toolbar.item.ClipBoard"/>
+            <item ref-type="org.jahia.toolbar.item.EditAction.status"/>
+        </itemsgroup>
+
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.newedit.Tools" layout="menu">
+            <title-resourcebundle-key key='toolbar.itemgroups.tools'/>
+            <visibility authentication="true"/>
+            <item ref-type="org.jahia.toolbar.item.FileManager"/>
+            <item ref-type="org.jahia.toolbar.item.MashupManager"/>
+            <item ref-type="org.jahia.toolbar.item.ContentManager"/>
+            <item ref-type="org.jahia.toolbar.item.CategoryManager"/>
+            <item ref-type="org.jahia.toolbar.item.GWTWorkflow"/>
+            <item ref-type="org.jahia.toolbar.item.Pdisplay"/>
+        </itemsgroup>
+
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.newedit.Workflow" layout="menu">
+            <title-resourcebundle-key key='toolbar.itemgroups.quickworkflow'/>
+            <visibility mode="edit,preview,compare"/>
+            <icon-style min="gwt-toolbar-ItemsGroup-icons-action-min"/>
+            <items-provider
+                    class="org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl.JahiaItemsGroupFactoryImpl"
+                    input="quick.workflow"/>
+        </itemsgroup>
+
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.newedit.Cache" layout="menu-radio">
+            <title-resourcebundle-key key='toolbar.itemgroups.cache'/>
+            <visibility authentication="true"/>
+            <item ref-type="org.jahia.toolbar.item.FlushSite"/>
+            <item ref-type="org.jahia.toolbar.item.FlushPage"/>
+            <item ref-type="org.jahia.toolbar.item.FlushAllCaches"/>
+        </itemsgroup>
+
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.newedit.Preview" layout="button-label">
+            <item ref-type="org.jahia.toolbar.item.Preview"/>
+        </itemsgroup>
+
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.newedit.User" layout="menu">
+            <title-resourcebundle-key key='toolbar.itemgroups.user'/>
+            <visibility authentication="true"/>
+            <icon-style min="gwt-toolbar-ItemsGroup-icons-user-min"/>
+            <item ref-type="org.jahia.toolbar.item.Logout"/>
+            <item ref-type="org.jahia.toolbar.item.MySettings"/>
+        </itemsgroup>
+
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.newedit.Admin" layout="menu">
+            <visibility authentication="true"/>
+            <icon-style min="gwt-toolbar-ItemsGroup-icons-admin-min"/>
+            <title-resourcebundle-key key="button.administration"/>
+            <item ref-type="org.jahia.toolbar.item.Admin"/>
+        </itemsgroup>
+
+
     </custom-itemsgroup>
     <!-- defines items-->
     <custom-item>
@@ -312,7 +400,8 @@
 
         <item type="org.jahia.toolbar.item.OpenEngineWindow">
             <property name="windowName" value="enginePopupWindow"/>
-            <property name="parameters" value="menubar=no,location=no,resizable=yes,scrollbars=yes,status=yes,width=1020,height=730"/>
+            <property name="parameters"
+                      value="menubar=no,location=no,resizable=yes,scrollbars=yes,status=yes,width=1020,height=730"/>
         </item>
 
         <!-- Redirect item-->
@@ -359,10 +448,11 @@
 
         <!-- License information -->
         <item type="org.jahia.toolbar.item.License" extends="org.jahia.toolbar.item.InfoPanel">
-        		<title-resourcebundle-key key=""/>
-            <visibility authentication="false" mode="edit" />
+            <title-resourcebundle-key key=""/>
+            <visibility authentication="false" mode="edit"/>
             <property name="info">
-                <value-resolver class="org.jahia.services.toolbar.resolver.impl.InfoPropertyResolver" input="license_30"/>
+                <value-resolver class="org.jahia.services.toolbar.resolver.impl.InfoPropertyResolver"
+                                input="license_30"/>
             </property>
         </item>
 
@@ -722,7 +812,7 @@
             <property name="prefName" value="timebasepublishing.activated"/>
         </item>
 
-         <!-- display inlineediting -->
+        <!-- display inlineediting -->
         <item type="org.jahia.toolbar.item.inlineediting" extends="org.jahia.toolbar.item.AjaxAction">
             <title-resourcebundle-key key="button.inlineediting"/>
             <icon-style min="gwt-toolbar-ItemsGroup-icons-inlineediting-min"
@@ -732,7 +822,7 @@
             <selected-resolver class="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"
                                input="inlineediting.activated"/>
             <property name="toggle" value="true"/>
-            <property name="flushPageCache" value="true" />
+            <property name="flushPageCache" value="true"/>
             <property name="onSuccess" value="refresh"/>
             <property name="classAction"
                       value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
@@ -841,7 +931,8 @@
             </visibility>
             <icon-style min="gwt-toolbar-ItemsGroup-icons-subscriptions-min"
                         max="gwt-toolbar-ItemsGroup-icons-subscriptions-normal"/>
-            <property name="classAction" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.SendAsNewsletterActionImpl"/>
+            <property name="classAction"
+                      value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.SendAsNewsletterActionImpl"/>
             <property name="confirmation">
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.ResourceBundlePropertyResolver"
                                 input="toolbar.subscriptions.button.newsletter.confirmation"/>
@@ -857,5 +948,86 @@
             </property>
             <property name="action" value="test"/>
         </item>
+
+        <!-- new edit mode buttons: create -->
+        <item type="org.jahia.toolbar.item.EditAction.createPage" extends="org.jahia.toolbar.item.EditAction">
+            <title-resourcebundle-key key="Create Page"/>
+            <icon-style min="fm-newcontent" max="fm-newcontent"/>
+            <description-resourcebundle-key key="New Page"/>
+            <property name="action" value="createPage"/>
+            <property name="onModuleSelection" value="createPage"/>
+            <property name="enableOnCondition" value="true"/>
+        </item>
+
+
+        <!-- new edit mode buttons: publish -->
+        <item type="org.jahia.toolbar.item.EditAction.publish" extends="org.jahia.toolbar.item.EditAction">
+            <title-resourcebundle-key key="publish"/>
+            <icon-style min="fm-newcontent" max="fm-newcontent"/>
+            <description-resourcebundle-key key="publish"/>
+            <property name="action" value="publish"/>
+            <property name="editSelectionHandler" value="publish"/>
+            <property name="enableOnCondition" value="false"/>
+        </item>
+
+        <!-- new edit mode buttons: unpublish -->
+        <item type="org.jahia.toolbar.item.EditAction.unpublish" extends="org.jahia.toolbar.item.EditAction">
+            <title-resourcebundle-key key="unpublish"/>
+            <icon-style min="fm-newcontent" max="fm-newcontent"/>
+            <description-resourcebundle-key key="unpublish"/>
+            <property name="action" value="unpublish"/>
+            <property name="editSelectionHandler" value="unpublish"/>
+            <property name="enableOnCondition" value="false"/>
+        </item>
+
+        <!-- new edit mode buttons: lock -->
+        <item type="org.jahia.toolbar.item.EditAction.lock" extends="org.jahia.toolbar.item.EditAction">
+            <title-resourcebundle-key key="lock"/>
+            <icon-style min="fm-lock" max="fm-lock"/>
+            <description-resourcebundle-key key="lock"/>
+            <property name="action" value="lock"/>
+            <property name="editSelectionHandler" value="lock"/>
+            <property name="enableOnCondition" value="nodeUnlocked"/>
+        </item>
+
+        <!-- new edit mode buttons: unlock -->
+        <item type="org.jahia.toolbar.item.EditAction.unlock" extends="org.jahia.toolbar.item.EditAction">
+            <title-resourcebundle-key key="unlock"/>
+            <icon-style min="fm-unlock" max="fm-unlock"/>
+            <description-resourcebundle-key key="unlock"/>
+            <property name="action" value="unlock"/>
+            <property name="editSelectionHandler" value="unlock"/>
+            <property name="enableOnCondition" value="nodeLocked"/>
+        </item>
+
+        <!-- new edit mode buttons: edit -->
+        <item type="org.jahia.toolbar.item.EditAction.edit" extends="org.jahia.toolbar.item.EditAction">
+            <title-resourcebundle-key key="edit"/>
+            <icon-style min="fm-edit" max="fm-edit"/>
+            <description-resourcebundle-key key="edit"/>
+            <property name="action" value="edit"/>
+            <property name="editSelectionHandler" value="delete"/>
+            <property name="enableOnCondition" value="nodeWritable"/>
+        </item>
+
+        <!-- new edit mode buttons: delete -->
+        <item type="org.jahia.toolbar.item.EditAction.delete" extends="org.jahia.toolbar.item.EditAction">
+            <title-resourcebundle-key key="delete"/>
+            <icon-style min="fm-remove" max="fm-remove"/>
+            <description-resourcebundle-key key="delete"/>
+            <property name="action" value="delete"/>
+            <property name="editSelectionHandler" value="delete"/>
+            <property name="enableOnCondition" value="nodeWritable"/>
+        </item>
+
+        <!-- new edit mode buttons: status -->
+        <item type="org.jahia.toolbar.item.EditAction.status" extends="org.jahia.toolbar.item.EditAction">
+            <title-resourcebundle-key key="status"/>
+            <description-resourcebundle-key key="status"/>
+            <property name="action" value="status"/>
+            <property name="editSelectionHandler" value="status"/>
+        </item>
+
+
     </custom-item>
 </toolbars>

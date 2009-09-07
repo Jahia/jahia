@@ -285,7 +285,7 @@ public class ContentPage extends ContentObject implements
     private void rebuildStatusMaps() {
         Map<String, JahiaPageInfo> newActivePageInfos = new HashMap<String, JahiaPageInfo>();
         Map<String, JahiaPageInfo> newStagingPageInfos = new HashMap<String, JahiaPageInfo>();
-        Set<JahiaPageInfo> newArchivedPageInfos = null;
+        Set<JahiaPageInfo> newArchivedPageInfos = new HashSet<JahiaPageInfo>();
         // small code to copy the List, not the List elements.
         for (JahiaPageInfo curPageInfo : getPageInfos()) {
             if (curPageInfo.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
@@ -293,9 +293,6 @@ public class ContentPage extends ContentObject implements
             } else if (curPageInfo.getWorkflowState() >= EntryLoadRequest.STAGING_WORKFLOW_STATE) {
                 newStagingPageInfos.put(curPageInfo.getLanguageCode(), curPageInfo);
             } else {
-                if ( newArchivedPageInfos == null ){
-                    newArchivedPageInfos = new HashSet<JahiaPageInfo>();
-                }
                 newArchivedPageInfos.add(curPageInfo);
             }
         }

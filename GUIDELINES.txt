@@ -1,0 +1,83 @@
+Developer Guidelines
+====================
+
+Introduction
+------------
+The goal of this document is to present the guidelines for developers working on the Jahia source code. It is strongly
+recommended that all developers familiarize themselves with these rules and then apply them and possibly also extend or
+review them.
+
+Code style conventions
+----------------------
+- We are based on the Sun coding style conventions : http://java.sun.com/docs/codeconv/ , with a few modifications
+- We allow lines longer than 80 characters
+- We do not allow the usage of tabs as spacers
+- We do NOT put braces on seperate lines, this helps make the code a little more compact. We also put opening and
+closing braces even for single-line statements.
+
+Properties files
+----------------
+- Properties files must ALWAYS be encoded in ISO-8859-1. If they concern resource bundles, they should use the \u
+encoding for non ISO-8859-1 characters as it is the standard. We recommend you edit resources bundles with specialized
+editors such as JetBrains' Intellij IDEA or other resource bundle translation utilities.
+
+XML files
+---------
+- XML files should always validate.
+
+Singletons
+----------
+- Don't create singletons, we have Spring that does a much better job at creating objects and making them available. If
+don't know how to use Spring, just ask someone who knows :)
+- When you see a singleton and have the time to do some maintenance, try to remove it.
+
+Configuration files
+-------------------
+- Don't hardcode settings in Spring configuration files, refer them from properties files
+- Design in services as "modules", with their seperate configuration file if they are adding a new service, or inside
+in an existing one if already has a "classification" (such as users-groups for example).
+- Always document each setting you add. It's ok if you don't do it immediately, but do it before you commit
+- Choose a setting name that makes sense, think about the user of the setting, that needs to understand it
+- It might be a good idea to prefix your setting with your class package, so that you don't conflict with other settings
+- Regroup similar settings into groups, to make it easy for users looking for settings to be able to find them
+- Integrate with the Maven plugin jahia:configure goal if needed
+- Think hard about the default values of your settings, especially in terms of performance and memory usage.
+- Try to make your properties "portable", so that we may move them to another storage system, such as a database
+easily.
+- Avoid putting configuration files in WEB-INF/classes. And always make them overrideable using the classpath mechanism
+(meaning that default configuration files can be overriden with a configuration provided in the classpath). This helps
+make node-specific configuration on cluster-installed servers.
+
+Transactions
+------------
+- Although transactions are not (yet) active in Jahia, make sure all the new code you write is transaction-friendly.
+This means that you should avoid locks, and make copies instead of holding on to shared resources, such as cache entries
+for example. Some cache implementations will even do this for you.
+
+Websphere
+---------
+- Be careful not to write JSP files, especially tags that embed double-quotes within double-quotes. In general WAS
+(WebSphere Application Server) prefers that you surround double-quotes with single-quotes, and NOT the opposite
+- Avoid tag files if you can, on some version of WAS, they are very buggy
+- Be careful that hashmaps will not be processed in the same order than on the Sun JVM. So any startup that works
+"magically" because of the default ordering on the Sun JVM might not work on WAS. For example Spring dependencies must
+be explicitely configured with depends-on or real dependency injection when possible.
+- You can find more details at : http://jira.jahia.org/browse/DOCU-60
+- Don't create your own threads. Websphere will not like this at all. If you have no other choice, use Quartz to perform
+background tasks.
+- Don't access or bind JNDI resources outside of a container managed thread. Websphere doesn't allow it.
+- If you bind something in JNDI, you must unbind for proper undeployment.
+
+Weblogic
+--------
+TBC
+
+JBoss
+-----
+TBC
+
+Tomcat
+------
+- Always test your developments by performing a clean shutdown of Tomcat, not by simply killing the JVM. This will help
+fix quickly resource freeing bugs. Use the destroy() method on the main servlets or simply integrate with Spring which
+will do this for you.

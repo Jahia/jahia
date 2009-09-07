@@ -155,7 +155,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
 
     private static int BUILD_NUMBER=-1;
     /** Jahia server release number */
-    private static double RELEASE_NUMBER = 6.0;
+    private static double RELEASE_NUMBER = 6.5;
 
     /** Jahia server patch number */
     private static int PATCH_NUMBER = 0;
@@ -241,7 +241,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
         logger.debug("--[ " + request.getMethod() + " Request Start URI='" +
                 request.getRequestURI() + "' query='" +
                 request.getQueryString() + "'] --");
-        
+
         if(jahiaExists()) {
             logger.info("Jahia is already installed. Redirecting to Jahia Web application.");
             String ctxName = StringUtils.substringBefore(context.getInitParameter("dirName"), ".war");
@@ -1429,7 +1429,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
             // of restarting the web application.
             String serverInfo = context.getServerInfo();
             String deployToDir = context.getInitParameter("dirName");
-                        
+
             if (serverInfo.contains(SERVER_TOMCAT)) {
                 String fullDestinationPath = (String) values.get("server_home")+"webapps"+System.getProperty("file.separator")+deployToDir;
                 if  (dbUrl.startsWith("jdbc:hsqldb:file:") && dbUrl.indexOf("WEB-INF") != -1) {
@@ -1440,7 +1440,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
                                     || fullDestinationPath.endsWith("\\") ? ""
                                     : System.getProperty("file.separator"))
                             + path);
-                } 
+                }
                 // update the XML context descriptor file configuration
                 String jahiaXml = pathResolver.resolvePath("/WEB-INF/jahia/META-INF");
                 JahiaDataSourceConfigurator.updateDataSourceConfiguration(jahiaXml+"/context.xml", jahiaXml,
@@ -1454,7 +1454,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
                 File newDir = new File(fullDestinationPath);
 
                 FileUtils.moveDirectory(oldDir, newDir);
-                
+
                 logger.info("Moved "+ oldDir.getCanonicalFile()+ " to "+newDir + " in " + (System.currentTimeMillis() - startTime) + " ms");
             } else if (serverInfo.contains(SERVER_JBOSS)) {
                 String fullDestinationPath = (String) values.get("server_home")+"deploy"+System.getProperty("file.separator")+deployToDir;
@@ -1466,20 +1466,20 @@ public class JahiaConfigurationWizard extends HttpServlet {
                                     || fullDestinationPath.endsWith("\\") ? ""
                                     : System.getProperty("file.separator"))
                             + path);
-                } 
+                }
                 String datasource = pathResolver.resolvePath("WEB-INF/jahia-jboss-config.sar/jahia-ds.xml");
                 JahiaDataSourceConfigurator.updateDataSourceConfiguration(datasource, datasource, values);
                 logger.info("updating datasource configuration in  file " + datasource);
-                
+
                 //And now the big finale: copy the configured jahia
                 long startTime = System.currentTimeMillis();
-                
+
                 File oldDir = new File(pathResolver.resolvePath("WEB-INF/jahia"));
                 File newDir = new File(fullDestinationPath);
 
                 FileUtils.moveDirectory(new File(pathResolver.resolvePath("WEB-INF/jahia-jboss-config.sar")), new File((String) values.get("server_home")+"deploy/jahia-jboss-config.sar"));
                 FileUtils.moveDirectory(oldDir, newDir);
-                
+
                 logger.info("Moved "+ oldDir.getCanonicalFile()+ " to "+newDir + " in " + (System.currentTimeMillis() - startTime) + " ms");
             }
         } catch (Exception e) {

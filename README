@@ -409,6 +409,7 @@ try the following:
 2. Change the following variable in \config\src\main\java\org\jahia\bin\JahiaConfigurationWizard.java
 
     public static final String VERSION = "x.x";
+    private static double RELEASE_NUMBER = x.x;
 
 3. Change the following attributes in ALL pom.xml files
 

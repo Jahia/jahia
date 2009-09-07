@@ -51,6 +51,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.webdav.UsageEntry;
+import org.jahia.api.Constants;
 import org.springframework.web.context.ServletContextAware;
 import org.xml.sax.ContentHandler;
 
@@ -793,21 +794,42 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             deniedPathes.add(node);
         }
 
-        JCRSessionWrapper liveSessionForPublish = login(JahiaLoginModule.getSystemCredentials(user.getUsername(), deniedPathes), "live");
+        JCRSessionWrapper liveSessionForPublish = login(JahiaLoginModule.getSystemCredentials(user.getUsername(), deniedPathes), Constants.LIVE_WORKSPACE);
 
         try {
             Node liveNode = liveSessionForPublish.getNode(path);
-
-            liveNode.update("default");
+            liveNode.update(Constants.EDIT_WORKSPACE);
         } catch (PathNotFoundException e) {
             try {
-                liveSessionForPublish.getWorkspace().clone("default", path, path, true);
+                liveSessionForPublish.getWorkspace().clone(Constants.EDIT_WORKSPACE, path, path, true);
             } catch (RepositoryException ee) {
                 ee.printStackTrace();
             }
         }
 
         liveSessionForPublish.logout();
+    }
+
+    /**
+     * Unpublish a node from live workspace.
+     * Referenced Node will not be unpublished.
+     *
+     * @param path path of the node to unpublish
+     * @param languages
+     * @param user
+     * @throws RepositoryException
+     */
+    public void unpublish(String path, Set<String> languages, JahiaUser user) throws RepositoryException {
+        JCRSessionWrapper session = getThreadSession(user);
+        JCRNodeWrapper w = session.getNode(path);
+
+        String parentPath = w.getParent().getPath();
+        JCRSessionWrapper liveSession = getThreadSession(user, Constants.LIVE_WORKSPACE);
+        final JCRNodeWrapper parentNode = liveSession.getNode(parentPath);
+        final JCRNodeWrapper node = liveSession.getNode(path);
+        node.remove();
+        parentNode.save();
+        liveSession.logout();
     }
 
 }

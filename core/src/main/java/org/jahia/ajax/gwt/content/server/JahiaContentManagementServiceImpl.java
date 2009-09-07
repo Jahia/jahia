@@ -526,7 +526,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void unpublish(String path) throws GWTJahiaServiceException {
         long l = System.currentTimeMillis();
-        ContentManagerHelper.getPublicationInfo(path, retrieveParamBean());
+        ContentManagerHelper.unpublish(path,null, retrieveParamBean());
         System.out.println("-->"+(System.currentTimeMillis() - l));
     }
 

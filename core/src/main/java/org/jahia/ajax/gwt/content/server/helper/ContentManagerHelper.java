@@ -2544,7 +2544,7 @@ public class ContentManagerHelper {
 
         try {
             JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser());
-            JCRSessionWrapper liveSession = jcr.getThreadSession(ctx.getUser(), "live");
+            JCRSessionWrapper liveSession = jcr.getThreadSession(ctx.getUser(), Constants.LIVE_WORKSPACE);
             GWTJahiaPublicationInfo info = null;
 
             JCRNodeWrapper publishedNode = null;
@@ -2589,5 +2589,21 @@ public class ContentManagerHelper {
         }
 
     }
-
+    /**
+     * Unpublish a node from live workspace.
+     * Referenced Node will not be unpublished.
+     *
+     * @param path path of the node to unpublish
+     * @param languages
+     * @param user
+     * @throws RepositoryException
+     */
+    public static void unpublish(String path, Set<String> languages, ProcessingContext ctx) throws GWTJahiaServiceException {
+        try {
+            jcr.unpublish(path, languages, ctx.getUser());
+        } catch (RepositoryException e) {
+            logger.error("repository exception",e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
 }

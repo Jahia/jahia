@@ -194,4 +194,7 @@ public class Constants {
 
     public static final String GRANT = "GRANT";
     public static final String DENY = "DENY";
+
+    public static final String LIVE_WORKSPACE = "live";
+    public static final String EDIT_WORKSPACE = "default";
 }

@@ -1012,7 +1012,7 @@
 
         <!-- new edit mode buttons: delete -->
         <item type="org.jahia.toolbar.item.EditAction.delete" extends="org.jahia.toolbar.item.EditAction">
-            <title-resourcebundle-key key="toolbar.edit.button.delete"/>
+            <title-resourcebundle-key key="toolbar.edit.button.remove"/>
             <icon-style min="fm-remove" max="fm-remove"/>
             <description-resourcebundle-key key="delete"/>
             <property name="action" value="delete"/>

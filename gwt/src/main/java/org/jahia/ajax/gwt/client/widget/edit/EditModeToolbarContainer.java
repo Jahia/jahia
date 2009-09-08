@@ -121,12 +121,27 @@ public class EditModeToolbarContainer extends LayoutContainer {
         return page;
     }
 
+    /**
+     * Get edit linker
+     * @return
+     */
     public EditLinker getEditLinker() {
         return editLinker;
     }
 
+    /**
+     * Set edit linker
+     * @param editLinker
+     */
     public void setEditLinker(EditLinker editLinker) {
         this.editLinker = editLinker;
+    }
+
+    /**
+     * Refresh
+     */
+    public void refresh(){
+        handleNewModuleSelection(editLinker.getSelectedModule());     
     }
 
     /**
@@ -135,16 +150,20 @@ public class EditModeToolbarContainer extends LayoutContainer {
      * @param selectedModule
      */
     public void handleNewModuleSelection(Module selectedModule) {
-         Log.debug("EditModeToolbarContainer: handleNewModuleSelection");
          for(int i = 0; i< editModeToolbars.size(); i++){
            editModeToolbars.get(i).handleNewModuleSelection(selectedModule);
         }
     }
 
+    /**
+     * Handle new side panel selection
+     * @param node
+     */
     public void handleNewSidePanelSelection(GWTJahiaNode node) {
-       Log.debug("EditModeToolbarContainer: handleNewSidePanelSelection");
         for(int i = 0; i< editModeToolbars.size(); i++){
            editModeToolbars.get(i).handleNewSidePanelSelection(node); 
         }
     }
+
+
 }

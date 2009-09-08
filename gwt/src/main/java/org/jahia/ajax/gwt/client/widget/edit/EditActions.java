@@ -20,6 +20,10 @@ import java.util.ArrayList;
  */
 public class EditActions {
 
+    /**
+     * Create page
+     * @param editLinker
+     */
     public static void createPage(final EditLinker editLinker) {
         if (editLinker.getMainModule().getNode() != null) {
             JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:page", new AsyncCallback<GWTJahiaNodeType>() {
@@ -36,6 +40,11 @@ public class EditActions {
 
     }
 
+
+    /**
+     * Dispay edit content window
+     * @param editLinker
+     */
     public static void edit(EditLinker editLinker) {
         if (editLinker.getMainModule() != null) {
             new EditContentEngine(editLinker.getMainModule().getNode()).show();
@@ -43,7 +52,11 @@ public class EditActions {
     }
 
 
-    public static void publish(EditLinker editLinker) {
+    /**
+     * Publish selected content
+     * @param editLinker
+     */
+    public static void publish(final EditLinker editLinker) {
         if (editLinker.getMainModule().getNode() != null) {
             JahiaContentManagementService.App.getInstance().publish(editLinker.getSelectedModule().getNode().getPath(), new AsyncCallback() {
                 public void onFailure(Throwable caught) {
@@ -53,12 +66,18 @@ public class EditActions {
 
                 public void onSuccess(Object result) {
                     Info.display("Content published", "Content published.");
+                    editLinker.refresh();
+
                 }
             });
         }
     }
 
-    public static void unpublish(EditLinker editLinker) {
+    /**
+     * Unpublish selected content
+     * @param editLinker
+     */
+    public static void unpublish(final EditLinker editLinker) {
         if (editLinker.getMainModule().getNode() != null) {
             JahiaContentManagementService.App.getInstance().unpublish(editLinker.getSelectedModule().getNode().getPath(), new AsyncCallback() {
                 public void onFailure(Throwable caught) {
@@ -68,14 +87,18 @@ public class EditActions {
 
                 public void onSuccess(Object result) {
                     Info.display("Content unpublished", "Content unpublished.");
+                    editLinker.refresh();
                 }
             });
         }
     }
 
 
+    /**
+     * Switch lock
+     * @param editLinker
+     */
     public static void switchLock(final EditLinker editLinker) {
-
         if (editLinker.getSelectedModule() != null) {
             List<String> paths = new ArrayList<String>(1);
             paths.add(editLinker.getSelectedModule().getNode().getPath());
@@ -95,6 +118,10 @@ public class EditActions {
     }
 
 
+    /**
+     * Delete content
+     * @param editLinker
+     */
     public static void delete(final EditLinker editLinker) {
         if (editLinker.getSelectedModule() != null) {
             List<String> paths = new ArrayList<String>(1);

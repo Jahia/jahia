@@ -119,6 +119,7 @@ public class EditLinker {
 
     public void refresh() {
         mainModule.refresh();
+        toolbar.refresh();
     }
 
     public void handleNewModuleSelection() {

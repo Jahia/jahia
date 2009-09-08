@@ -14,8 +14,8 @@
   <properties>
     <pluto.version>2.0.0</pluto.version>
     <spring.version>2.5.5</spring.version>
-    <jackrabbit.version>1.5.0</jackrabbit.version>
-    <lucene.version>2.3.2</lucene.version>
+    <jackrabbit.version>1.6.0</jackrabbit.version>
+    <lucene.version>2.4.1</lucene.version>
     <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
 
     <driver.derby.version>10.4.2.0</driver.derby.version>

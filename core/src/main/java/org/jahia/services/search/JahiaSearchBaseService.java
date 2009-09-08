@@ -56,6 +56,9 @@ import org.compass.core.mapping.CompassMapping;
 import org.compass.core.mapping.Mapping;
 import org.compass.core.mapping.ResourceMapping;
 import org.compass.core.mapping.ResourcePropertyMapping;
+import org.compass.core.mapping.internal.InternalMultipleMapping;
+import org.compass.core.mapping.support.AbstractMapping;
+import org.compass.core.mapping.support.AbstractResourceMapping;
 import org.compass.core.mapping.rsem.RawResourceMapping;
 import org.compass.core.mapping.rsem.RawResourcePropertyMapping;
 import org.compass.core.spi.InternalCompass;
@@ -3107,8 +3110,8 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 newMapping = true;
                 mappingChanged = true;
                 propertyMapping = new RawResourcePropertyMapping();
-                propertyMapping.setName(fieldName);
-                propertyMapping.setPath(new StaticPropertyPath(fieldName));
+                ((RawResourcePropertyMapping)propertyMapping).setName(fieldName);
+                ((RawResourcePropertyMapping)propertyMapping).setPath(new StaticPropertyPath(fieldName));
             }
             if (propertyMapping instanceof ResourcePropertyMapping) {
                 RawResourcePropertyMapping rawMapping = (RawResourcePropertyMapping) propertyMapping;
@@ -3124,8 +3127,8 @@ public class JahiaSearchBaseService extends JahiaSearchService
                     rawMapping.setOmitNorms(omitNorms);                    
                     mappingChanged = true;
                 }
-                if (newMapping) {
-                    compassMapping.addMapping(propertyMapping);
+                if (newMapping && compassMapping instanceof InternalMultipleMapping) {
+                    ((InternalMultipleMapping)compassMapping).addMapping(propertyMapping);
                 }
             }
         }

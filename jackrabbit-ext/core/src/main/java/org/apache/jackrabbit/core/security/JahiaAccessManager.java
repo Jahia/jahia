@@ -129,7 +129,7 @@ public class JahiaAccessManager implements AccessManager {
         permissions.put("jcr:setProperties", Permission.SET_PROPERTY);
         permissions.put("jcr:addChildNodes", Permission.ADD_NODE);
         permissions.put("jcr:removeChildNodes", Permission.REMOVE_NODE);
-        permissions.put("jcr:write", Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE);
+        permissions.put(Constants.JCR_WRITE_RIGHTS, Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE);
         permissions.put("jcr:getAccessControlPolicy", Permission.READ);
         permissions.put("jcr:setAccessControlPolicy", Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY);
         permissions.put("jcr:all", Permission.READ + Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE);
@@ -142,6 +142,12 @@ public class JahiaAccessManager implements AccessManager {
     public void checkPermission(ItemId id, int permissions) throws AccessDeniedException, ItemNotFoundException, RepositoryException {
         if (!isGranted(id, permissions)) {
             throw new AccessDeniedException("Not sufficient privileges for permissions : " + permissions + " on " + id);
+        }
+    }
+
+    public void checkPermission(Path path, int permissions) throws AccessDeniedException, RepositoryException {
+        if (!isGranted(path, permissions)) {
+            throw new AccessDeniedException("Not sufficient privileges for permissions : " + permissions + " on " + path);
         }
     }
 

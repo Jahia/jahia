@@ -11,7 +11,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>compass</module>
+    <!--<module>compass</module>-->
     <module>concurrent</module>
   </modules>
 

@@ -154,12 +154,14 @@ public class EditModeSelectionHandler {
         // register selection handler
         String editSelectionHandler = getPropertyValue(gwtToolbarItem, ToolbarConstants.EDIT_SELECTION_HANDLER);
         if (editSelectionHandler != null) {
+            Log.debug("Register "+gwtToolbarItem.getTitle() +" --> onModuleSelection");            
             registeredOnModuleSelectionComponents.put(editSelectionHandler, component);
 
         }
 
         String enableOnConditions = getPropertyValue(gwtToolbarItem, ToolbarConstants.ENABLE_ON_CONDITIONS);
         if (editSelectionHandler != null) {
+            Log.debug("Register "+gwtToolbarItem.getTitle() +" --> enableOnCondition");
             registeredEnableOnConditionComponents.put(component, enableOnConditions);
         }
     }
@@ -171,6 +173,10 @@ public class EditModeSelectionHandler {
      * @param selectedNode
      */
     public void enableOnConditions(Component component, String condition, Module selectedModule, GWTJahiaNode selectedNode) {
+        if(condition == null){
+            return;
+        }
+
         boolean nodeWitable = selectedModule != null && selectedModule.getNode().isWriteable();
         boolean nodeLocked = selectedModule != null && selectedModule.getNode().isLockable() && selectedModule.getNode().isLocked();
 

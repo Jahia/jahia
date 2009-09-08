@@ -1,14 +1,8 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.Events;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.Event;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
@@ -138,10 +132,16 @@ public class EditModeToolbarContainer extends LayoutContainer {
      * @param selectedModule
      */
     public void handleNewModuleSelection(Module selectedModule) {
-
+         Log.debug("EditModeToolbarContainer: handleNewModuleSelection");
+         for(int i = 0; i< editModeToolbars.size(); i++){
+           editModeToolbars.get(i).handleNewModuleSelection(selectedModule);
+        }
     }
 
     public void handleNewSidePanelSelection(GWTJahiaNode node) {
-
+       Log.debug("EditModeToolbarContainer: handleNewSidePanelSelection");
+        for(int i = 0; i< editModeToolbars.size(); i++){
+           editModeToolbars.get(i).handleNewSidePanelSelection(node); 
+        }
     }
 }

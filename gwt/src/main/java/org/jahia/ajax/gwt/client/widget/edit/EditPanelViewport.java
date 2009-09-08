@@ -30,37 +30,33 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.widget.toolbar.edit;
+package org.jahia.ajax.gwt.client.widget.edit;
 
-import org.jahia.ajax.gwt.client.widget.toolbar.provider.JahiaProviderFactory;
-import org.jahia.ajax.gwt.client.widget.toolbar.provider.JahiaToolItemProvider;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Viewport;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 /**
  * Created by IntelliJ IDEA.
  * User: ktlili
  * Date: Sep 7, 2009
- * Time: 1:51:40 PM
+ * Time: 12:22:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class EditProviderFactory extends JahiaProviderFactory {
-    private EditLinker editLinker;
-    public static final String ORG_JAHIA_TOOLBAR_ITEM_EDIT_ACTION = "org.jahia.toolbar.item.EditAction";
+public class EditPanelViewport extends Viewport {
 
-    public EditProviderFactory(EditLinker editLinker) {
-        this.editLinker = editLinker;
-    }
+        public EditPanelViewport(String path, String template, String locale) {
+            super() ;
+            setLayout(new FitLayout());
+            createUI(path,template,locale);
+        }
 
-    public JahiaToolItemProvider getJahiaToolItemProvider(String type) {
-        JahiaToolItemProvider jahiaToolItemProvider = super.getJahiaToolItemProvider(type);
-        if (jahiaToolItemProvider != null) {
-            return jahiaToolItemProvider;
+        public void createUI(String path, String template, String locale) {
+            EditManager layout = new EditManager(path,template,locale) ;
+
+            // layout is the main widget contained in the viewport
+            add(layout) ;
         }
-        if (type == null) {
-            return null;
-        } else if (type.equalsIgnoreCase(ORG_JAHIA_TOOLBAR_ITEM_EDIT_ACTION)) {
-            return new EditToolItemProvider(editLinker);
-        }
-        return null;
-    }
+
+
 }

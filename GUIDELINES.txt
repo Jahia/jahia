@@ -47,6 +47,9 @@ easily.
 - Avoid putting configuration files in WEB-INF/classes. And always make them overrideable using the classpath mechanism
 (meaning that default configuration files can be overriden with a configuration provided in the classpath). This helps
 make node-specific configuration on cluster-installed servers.
+- Avoid putting configuration in the web.xml file, prefer Spring configuration that is more easy to re-use and also
+use in test units. In this case the best is using Spring to expose the bean to a property coming from the Jahia
+properties file.
 
 Transactions
 ------------

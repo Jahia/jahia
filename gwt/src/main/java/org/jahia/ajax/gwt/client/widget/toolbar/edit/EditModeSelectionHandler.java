@@ -9,6 +9,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -73,7 +74,7 @@ public class EditModeSelectionHandler {
             final Component unlock = registeredOnModuleSelectionComponents.get("unlock");
             final Component edit = registeredOnModuleSelectionComponents.get("createPage");
             final Component delete = registeredOnModuleSelectionComponents.get("edit");
-            final Button status = (Button) registeredOnModuleSelectionComponents.get("status");
+            final Status status = (Status) registeredOnModuleSelectionComponents.get("status");
             final String s = selectedModule.getNode().getPath();
             status.setText(s);
             JahiaContentManagementService.App.getInstance().getPublicationInfo(s, new AsyncCallback<GWTJahiaPublicationInfo>() {
@@ -195,7 +196,7 @@ public class EditModeSelectionHandler {
         boolean nodeWitable = selectedModule != null && selectedModule.getNode().isWriteable();
         boolean nodeLocked = selectedModule != null && selectedModule.getNode().isLockable() && selectedModule.getNode().isLocked();
 
-        if (condition.equalsIgnoreCase("nodeWitable")) {
+        if (condition.equalsIgnoreCase("nodeWritable")) {
             component.setEnabled(nodeWitable);
             return;
         }

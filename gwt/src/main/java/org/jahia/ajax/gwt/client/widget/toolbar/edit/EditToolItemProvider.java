@@ -38,6 +38,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -56,6 +57,7 @@ public class EditToolItemProvider extends AbstractJahiaToolItemProvider {
     private String ACTION_UNLOCK = "unlock";
     private String ACTION_EDIT = "edit";
     private String ACTION_DELETE = "delete";
+    private String ACTION_STATUS = "status";
     private EditLinker editLinker;
 
 
@@ -67,7 +69,7 @@ public class EditToolItemProvider extends AbstractJahiaToolItemProvider {
         final SelectionListener<T> listener = new SelectionListener<T>() {
             public void componentSelected(T t) {
                 String action = getPropertyValue(gwtToolbarItem, ACTION);
-                Log.debug("Edit action: "+action);
+                Log.debug("Edit action: " + action);
                 if (action != null) {
                     // create page
                     if (action.equalsIgnoreCase(ACTION_CREATE_PAGE)) {
@@ -105,10 +107,23 @@ public class EditToolItemProvider extends AbstractJahiaToolItemProvider {
 
     /**
      * Create a new ToolItem
+     *
      * @param gwtToolbarItem
      * @return
      */
     public Component createNewToolItem(GWTJahiaToolbarItem gwtToolbarItem) {
+        String action = getPropertyValue(gwtToolbarItem, ACTION);
+        if (action != null) {
+            // create page
+            if (action.equalsIgnoreCase(ACTION_STATUS)) {
+                Status status = new Status();
+                status.setText("Not writing");
+                status.setWidth(150);
+                status.setBox(true);
+                status.setBusy("Loading...");
+                return new Status();
+            }
+        }
         return new Button();  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

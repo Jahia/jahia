@@ -59,8 +59,9 @@ for example. Some cache implementations will even do this for you.
 
 Websphere
 ---------
-- Be careful not to write JSP files, especially tags that embed double-quotes within double-quotes. In general WAS
-(WebSphere Application Server) prefers that you surround double-quotes with single-quotes, and NOT the opposite
+- Be careful when you write JSP files, especially including tags that embed double-quotes within double-quotes. In
+general WAS (WebSphere Application Server) prefers that you surround double-quotes with single-quotes, and NOT the
+opposite
 - Avoid tag files if you can, on some version of WAS, they are very buggy
 - Be careful that hashmaps will not be processed in the same order than on the Sun JVM. So any startup that works
 "magically" because of the default ordering on the Sun JVM might not work on WAS. For example Spring dependencies must

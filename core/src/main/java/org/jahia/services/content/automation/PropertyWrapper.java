@@ -33,11 +33,11 @@ package org.jahia.services.content.automation;
 
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.services.categories.Category;
+import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.SelectorType;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.api.Constants;
 
 import javax.jcr.*;
@@ -76,7 +76,7 @@ public class PropertyWrapper implements Updateable {
         path = property.getPath();
     }
 
-    public PropertyWrapper(NodeWrapper nodeWrapper, final String name, final Object o, KnowledgeHelper drools) throws RepositoryException {
+    public PropertyWrapper(NodeWrapper nodeWrapper, final String name, final Object o, KnowledgeHelper drools, final boolean copyToStaging) throws RepositoryException {
         if (nodeWrapper == null) {
             return;
         }
@@ -95,8 +95,42 @@ public class PropertyWrapper implements Updateable {
         } else {
             setProperty(node, name, o);
         }
+        if (copyToStaging) {
+            copyToStaging(node, drools);
+        }
     }
 
+    private void copyToStaging(Node node, KnowledgeHelper drools) {
+        try {
+            JCRStoreProvider provider = (JCRStoreProvider)drools.getWorkingMemory().getGlobal("provider");
+            String username = ((User)drools.getWorkingMemory().getGlobal("user")).getName();
+            Session s = provider.getSystemSession(username, "default");
+            try {
+                Node stagingNode = s.getNodeByUUID(node.getUUID());
+                ExtendedPropertyDefinition propDef = getPropertyDefinition(node, name);
+                if (propDef == null) {
+                    logger.error("Property " + name + " does not exist in "
+                            + node.getPath() + " !");
+                    return;
+                }
+                if (propDef.isMultiple()) {
+                    stagingNode.setProperty(property.getName(), property
+                            .getValues());
+                } else {
+                    stagingNode.setProperty(property.getName(), property
+                            .getValue());
+                }
+                s.save();
+            } catch (RepositoryException e) {
+                logger.error("Cannot set property", e);
+            } finally {
+                s.logout();
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get session", e);
+        }
+    }
+    
     public void doUpdate(Session s, List<Updateable> delayedUpdates) throws RepositoryException {
         try {
             Node node = (Node) s.getItem(nodePath);
@@ -112,27 +146,43 @@ public class PropertyWrapper implements Updateable {
         }
     }
 
-    protected void setProperty(Node node, String name, Object objectValue) throws RepositoryException {
+    private ExtendedPropertyDefinition getPropertyDefinition(Node node, String name)
+            throws RepositoryException {
 
         Map<String, ExtendedPropertyDefinition> defs = new HashMap<String, ExtendedPropertyDefinition>();
         NodeTypeRegistry reg = NodeTypeRegistry.getInstance();
-        ExtendedNodeType nt = null;
+        ExtendedPropertyDefinition propDef = null;
+        try {
+
+            ExtendedNodeType nt = reg.getNodeType(node.getPrimaryNodeType()
+                    .getName());
+            defs.putAll(nt.getPropertyDefinitionsAsMap());
+            NodeType[] p = node.getMixinNodeTypes();
+            for (int i = 0; i < p.length; i++) {
+                defs.putAll(reg.getNodeType(p[i].getName())
+                        .getPropertyDefinitionsAsMap());
+            }
+            propDef = defs.get(name);
+        } catch (NoSuchNodeTypeException e) {
+            logger.debug("Nodetype not supported", e);
+        }
+        return propDef;
+
+    }
+
+    protected void setProperty(Node node, String name, Object objectValue)
+            throws RepositoryException {
+
         try {
             // deal with versioning. this method is called at restore(...)
             if (node.isNodeType(Constants.MIX_VERSIONABLE)) {
                 node.checkout();
             }
 
-
-            nt = reg.getNodeType(node.getPrimaryNodeType().getName());
-            defs.putAll(nt.getPropertyDefinitionsAsMap());
-            NodeType[] p = node.getMixinNodeTypes();
-            for (int i = 0; i < p.length; i++) {
-                defs.putAll(reg.getNodeType(p[i].getName()).getPropertyDefinitionsAsMap());
-            }
-            ExtendedPropertyDefinition propDef = defs.get(name);
+            ExtendedPropertyDefinition propDef = getPropertyDefinition(node, name);
             if (propDef == null) {
-                logger.error("Property " + name + " does not exist in " + node.getPath() + " !");
+                logger.error("Property " + name + " does not exist in "
+                        + node.getPath() + " !");
                 return;
             }
             ValueFactory factory = node.getSession().getValueFactory();
@@ -141,10 +191,12 @@ public class PropertyWrapper implements Updateable {
             if (objectValue.getClass().isArray()) {
                 values = new Value[Array.getLength(objectValue)];
                 for (int i = 0; i < Array.getLength(objectValue); i++) {
-                    values[i] = createValue(Array.get(objectValue, i), propDef, factory);
+                    values[i] = createValue(Array.get(objectValue, i), propDef,
+                            factory);
                 }
             } else {
-                values = new Value[]{createValue(objectValue, propDef, factory)};
+                values = new Value[] { createValue(objectValue, propDef,
+                        factory) };
             }
 
             if (values != null && values.length > 0) {

@@ -60,6 +60,8 @@ public abstract class DefaultEventListener implements SynchronousEventListener {
         propertiesToIgnore.add(Constants.JCR_CREATEDBY);
         propertiesToIgnore.add(Constants.JCR_LASTMODIFIED);
         propertiesToIgnore.add(Constants.JCR_LASTMODIFIEDBY);
+        propertiesToIgnore.add(Constants.JCR_LASTPUBLISHED);
+        propertiesToIgnore.add(Constants.JCR_LASTPUBLISHEDBY);        
         propertiesToIgnore.add(Constants.JCR_LOCKOWNER);
         propertiesToIgnore.add(Constants.JCR_LOCKISDEEP);
         propertiesToIgnore.add(Constants.JCR_ISCHECKEDOUT);

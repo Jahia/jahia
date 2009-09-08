@@ -1,0 +1,56 @@
+#created on: 20 dec. 2007
+package org.jahia.services.content.automation
+
+#list any import classes here.
+import org.jahia.services.content.automation.*
+import org.jahia.services.content.*
+import javax.jcr.observation.Event
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global ImageService imageService
+global ExtractionService extractionService
+global Logger logger
+global JCRStoreProvider provider
+
+rule "Metadata update / content validated"
+    salience -10
+    no-loop
+    when
+        A new node is created
+             - the node has the type jmix:lastPublished
+        The node has a parent             
+    then
+        Log "Publication event fired"
+        Set and copy to staging the property j:lastPublishedBy of the node with the name of the current user
+        Set and copy to staging the property j:lastPublished of the node with the current time
+        Get the ancestor "list" of type jnt:containerList
+        Set and copy to staging the property j:lastPublished of the list with the current time
+        Set and copy to staging the property j:lastPublishedBy of the list with the name of the current user
+        Get the ancestor "page" of type jnt:page
+        Set and copy to staging the property j:lastPublished of the page with the current time
+        Set and copy to staging the property j:lastPublishedBy of the page with the name of the current user
+end
+
+rule "Metadata update / property modified"
+    salience -11
+    no-loop
+    when
+        A property has been set on a node
+             - the node has the type jmix:lastPublished
+        The property j:lastPublished has not been modified yet on the node
+    then
+        Log "Publication event fired"    
+        Set and copy to staging the property j:lastPublishedBy of the node with the name of the current user
+        Set and copy to staging the property j:lastPublished of the node with the current time
+        Get the ancestor "list" of type jnt:containerList
+        Set and copy to staging the property j:lastPublished of the list with the current time
+        Set and copy to staging the property j:lastPublishedBy of the list with the name of the current user
+        Get the ancestor "page" of type jnt:page
+        Set and copy to staging the property j:lastPublished of the page with the current time
+        Set and copy to staging the property j:lastPublishedBy of the page with the name of the current user
+end

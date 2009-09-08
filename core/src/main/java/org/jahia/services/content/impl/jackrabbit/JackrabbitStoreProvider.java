@@ -72,17 +72,22 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
 
     @Override
     public void start() throws JahiaInitializationException {
-        super.start();
-
+        boolean liveWorkspaceCreated = false;
         Session session = null;
         try {
             try {
                 session = getSystemSession(null, "live");
             } catch (NoSuchWorkspaceException e) {
                 session = getSystemSession();
-                JackrabbitWorkspace jrWs = (JackrabbitWorkspace) session.getWorkspace();
+                JackrabbitWorkspace jrWs = (JackrabbitWorkspace) session
+                        .getWorkspace();
                 jrWs.createWorkspace("live");
-                getSystemSession(null, "live").getWorkspace().clone("default", "/content", "/content", false);                
+                liveWorkspaceCreated = true;
+            }
+            super.start();
+            if (liveWorkspaceCreated) {
+                getSystemSession(null, "live").getWorkspace().clone("default",
+                        "/content", "/content", false);
             }
         } catch (RepositoryException e) {
             e.printStackTrace();

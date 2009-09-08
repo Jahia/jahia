@@ -707,6 +707,24 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return null;
     }
 
+    public Date getLastPublishedAsDate() {
+        try {
+            return objectNode.getProperty(Constants.JCR_LASTPUBLISHED).getDate().getTime();
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    public Date getContentLastPublishedAsDate() {
+        try {
+            Node content = objectNode.getNode(Constants.JCR_CONTENT);
+            return content.getProperty(Constants.JCR_LASTPUBLISHED).getDate().getTime();
+        } catch (PathNotFoundException pnfe) {
+        } catch (RepositoryException e) {
+        }
+        return null;
+    }    
+    
     public Date getCreationDateAsDate() {
         try {
             return objectNode.getProperty(Constants.JCR_CREATED).getDate().getTime();
@@ -726,6 +744,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public String getModificationUser() {
         try {
             return objectNode.getProperty(Constants.JCR_LASTMODIFIEDBY).getString();
+        } catch (RepositoryException e) {
+        }
+        return null;
+    }
+    
+    public String getPublicationUser() {
+        try {
+            return objectNode.getProperty(Constants.JCR_LASTPUBLISHEDBY).getString();
         } catch (RepositoryException e) {
         }
         return null;

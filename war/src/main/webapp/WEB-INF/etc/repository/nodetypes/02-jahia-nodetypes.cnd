@@ -22,7 +22,11 @@
 [jmix:thumbnail] > jmix:metadata mixin
  + thumbnail (jnt:extraResource)
 
-[jmix:contentmetadata] > jmix:metadata, mix:createdBy, mix:lastModified, mix:title, jmix:categorized, jmix:keywords, jmix:thumbnail mixin
+[jmix:lastPublished] mixin
+  - j:lastPublished (date) protected
+  - j:lastPublishedBy (string) protected
+
+[jmix:contentmetadata] > jmix:metadata, mix:createdBy, mix:lastModified, jmix:lastPublished, mix:title, jmix:categorized, jmix:keywords, jmix:thumbnail mixin
 
 //---------------------------------------------------------
 // Multi language

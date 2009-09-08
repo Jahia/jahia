@@ -147,8 +147,8 @@ public class ImageService {
             if (contentDate.after(thumbDate)) {
                 NodeWrapper thumbNode = new NodeWrapper(node);
                 File f = getThumbFile(imageNode, size, drools);
-                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_DATA, f, drools));
-                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools));
+                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_DATA, f, drools, false));
+                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools, false));
             }
         } else {
             File f = getThumbFile(imageNode, size, drools);
@@ -156,9 +156,9 @@ public class ImageService {
             NodeWrapper thumbNode = new NodeWrapper(imageNode, name, "jnt:extraResource", drools);
             if (thumbNode.getNode() != null) {
                 drools.insert(thumbNode);
-                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_DATA, f, drools));
-                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_MIMETYPE, imageNode.getMimeType(), drools));
-                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools));
+                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_DATA, f, drools, false));
+                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_MIMETYPE, imageNode.getMimeType(), drools, false));
+                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools, false));
             }
         }
     }
@@ -183,7 +183,7 @@ public class ImageService {
             if (ip == null) {
                 return;
             }
-            drools.insert(new PropertyWrapper(imageNode, propertyName, ip.getHeight(), drools));
+            drools.insert(new PropertyWrapper(imageNode, propertyName, ip.getHeight(), drools, false));
         }
     }
 
@@ -194,7 +194,7 @@ public class ImageService {
             if (ip == null) {
                 return;
             }
-            drools.insert(new PropertyWrapper(imageNode, propertyName, ip.getWidth(), drools));
+            drools.insert(new PropertyWrapper(imageNode, propertyName, ip.getWidth(), drools, false));
         }
     }
 

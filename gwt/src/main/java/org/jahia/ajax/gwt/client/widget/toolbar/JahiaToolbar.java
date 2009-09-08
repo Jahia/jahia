@@ -166,7 +166,7 @@ public abstract class JahiaToolbar extends FocusPanel {
      */
     protected SeparatorToolItem createDragSeparator() {
         SeparatorToolItem separator = new SeparatorToolItem();
-        separator.addStyleName("gwt-draggable");
+        //separator.addStyleName("gwt-draggable");
         return separator;
     }
 
@@ -244,19 +244,19 @@ public abstract class JahiaToolbar extends FocusPanel {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        if(toolbarManager != null){
-        if (visible) {
-            toolbarManager.incrementDiplayedToolbar();
-            Widget parent = getParentContainer();
-            if (parent instanceof TargetToolbarsPanel) {
-                ((TargetToolbarsPanel) parent).addToolbar(this);
+        if (toolbarManager != null) {
+            if (visible) {
+                toolbarManager.incrementDiplayedToolbar();
+                Widget parent = getParentContainer();
+                if (parent instanceof TargetToolbarsPanel) {
+                    ((TargetToolbarsPanel) parent).addToolbar(this);
+                } else {
+                    toolbarManager.addFloatingToolbar(this);
+                }
             } else {
-                toolbarManager.addFloatingToolbar(this);
+                toolbarManager.decrementDisplayedToolbar();
+                removeFromParent();
             }
-        } else {
-            toolbarManager.decrementDisplayedToolbar();
-            removeFromParent();
-        }
         }
 
     }
@@ -280,7 +280,6 @@ public abstract class JahiaToolbar extends FocusPanel {
                 }
             });
         } else {
-             Log.error("Unable huuihh "+getParentContainer());
             // load then display
             ToolbarService.App.getInstance().loadGWTToolbar(getPageContext(), gwtToolbar, new AsyncCallback<GWTJahiaToolbar>() {
                 public void onSuccess(GWTJahiaToolbar gwtToolbar) {
@@ -289,9 +288,9 @@ public abstract class JahiaToolbar extends FocusPanel {
                     boolean display = gwtToolbar.getState().isDisplay();
                     if (display) {
                         createToolBarUI();
-                        if(toolbarManager != null){
+                        /*if (toolbarManager != null) {
                             toolbarManager.handleDraggable(JahiaToolbar.this);
-                        }
+                        }*/
                     }
                 }
 

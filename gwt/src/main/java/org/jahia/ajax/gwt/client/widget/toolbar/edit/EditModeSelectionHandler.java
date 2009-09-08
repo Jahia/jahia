@@ -63,17 +63,17 @@ public class EditModeSelectionHandler {
             String condition = registeredEnableOnConditionComponents.get(button);
             enableOnConditions(button, condition, selectedModule, null);
         }
-        final Component createPage = registeredOnModuleSelectionComponents.get("createPage");
-        final Component publish = registeredOnModuleSelectionComponents.get("publish");
-        final Component unpublish = registeredOnModuleSelectionComponents.get("unpublish");
-        final Component lock = registeredOnModuleSelectionComponents.get("lock");
-        final Component unlock = registeredOnModuleSelectionComponents.get("unlock");
-        final Component edit = registeredOnModuleSelectionComponents.get("createPage");
-        final Component delete = registeredOnModuleSelectionComponents.get("edit");
-        final Button status = (Button) registeredOnModuleSelectionComponents.get("status");
 
 
         if (selectedModule != null) {
+            final Component createPage = registeredOnModuleSelectionComponents.get("createPage");
+            final Component publish = registeredOnModuleSelectionComponents.get("publish");
+            final Component unpublish = registeredOnModuleSelectionComponents.get("unpublish");
+            final Component lock = registeredOnModuleSelectionComponents.get("lock");
+            final Component unlock = registeredOnModuleSelectionComponents.get("unlock");
+            final Component edit = registeredOnModuleSelectionComponents.get("createPage");
+            final Component delete = registeredOnModuleSelectionComponents.get("edit");
+            final Button status = (Button) registeredOnModuleSelectionComponents.get("status");
             final String s = selectedModule.getNode().getPath();
             status.setText(s);
             JahiaContentManagementService.App.getInstance().getPublicationInfo(s, new AsyncCallback<GWTJahiaPublicationInfo>() {
@@ -154,14 +154,14 @@ public class EditModeSelectionHandler {
         // register selection handler
         String editSelectionHandler = getPropertyValue(gwtToolbarItem, ToolbarConstants.EDIT_SELECTION_HANDLER);
         if (editSelectionHandler != null) {
-            Log.debug("Register "+gwtToolbarItem.getTitle() +" --> onModuleSelection");            
+            Log.debug("Register " + gwtToolbarItem.getTitle() + " --> onModuleSelection");
             registeredOnModuleSelectionComponents.put(editSelectionHandler, component);
 
         }
 
         String enableOnConditions = getPropertyValue(gwtToolbarItem, ToolbarConstants.ENABLE_ON_CONDITIONS);
         if (editSelectionHandler != null) {
-            Log.debug("Register "+gwtToolbarItem.getTitle() +" --> enableOnCondition");
+            Log.debug("Register " + gwtToolbarItem.getTitle() + " --> enableOnCondition");
             registeredEnableOnConditionComponents.put(component, enableOnConditions);
         }
     }
@@ -173,17 +173,27 @@ public class EditModeSelectionHandler {
      * @param selectedNode
      */
     public void enableOnConditions(Component component, String condition, Module selectedModule, GWTJahiaNode selectedNode) {
-        if(condition == null){
+        if (condition == null) {
             return;
         }
-
-        boolean nodeWitable = selectedModule != null && selectedModule.getNode().isWriteable();
-        boolean nodeLocked = selectedModule != null && selectedModule.getNode().isLockable() && selectedModule.getNode().isLocked();
 
         if (condition.equalsIgnoreCase("true")) {
             component.setEnabled(true);
             return;
         }
+
+        if (condition.equalsIgnoreCase("false")) {
+            component.setEnabled(false);
+            return;
+        }
+
+        if (selectedModule == null) {
+            component.setEnabled(false);
+            return;
+        }
+
+        boolean nodeWitable = selectedModule != null && selectedModule.getNode().isWriteable();
+        boolean nodeLocked = selectedModule != null && selectedModule.getNode().isLockable() && selectedModule.getNode().isLocked();
 
         if (condition.equalsIgnoreCase("nodeWitable")) {
             component.setEnabled(nodeWitable);

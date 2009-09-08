@@ -49,11 +49,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
 import org.jahia.ajax.gwt.client.state.ToolbarStateManager;
 import org.jahia.ajax.gwt.client.widget.toolbar.dnd.TargetToolbarsPanel;
 import org.jahia.ajax.gwt.client.widget.toolbar.dnd.TargetVerticalPanel;
-import org.jahia.ajax.gwt.client.widget.toolbar.dnd.ToolbarDragController;
-import org.jahia.ajax.gwt.client.widget.toolbar.dnd.ToolbarDragHandler;
-import org.jahia.ajax.gwt.client.widget.toolbar.dnd.ToolbarIndexedDropController;
-
-import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.event.*;
@@ -81,13 +76,13 @@ public class ToolbarManager {
     // target toolbar panel
     private TargetVerticalPanel mainTopPanel;
     // private TargetAbsolutePanel mainCenterPanel;
-    private TargetVerticalPanel mainRigthPanel;
-    private TargetToolbarsPanel[] toolbarsPanels = new TargetToolbarsPanel[2];
+    //private TargetVerticalPanel mainRigthPanel;
+    //private TargetToolbarsPanel[] toolbarsPanels = new TargetToolbarsPanel[2];
     private boolean toolbarsPanelsLoaded = false;
 
     // drag controller
-    private ToolbarDragController dragController;
-    private ToolbarDragController verticalDragController;
+    //private ToolbarDragController dragController;
+    //private ToolbarDragController verticalDragController;
 
     private GWTJahiaPageContext pageContext;
 
@@ -135,19 +130,19 @@ public class ToolbarManager {
         dockPanel.setHeight(height);
 
         // in drag and drop
-        dragController = new ToolbarDragController(RootPanel.get(), true);
-        dragController.addDragHandler(new ToolbarDragHandler(pageContext));
+        //dragController = new ToolbarDragController(RootPanel.get(), true);
+        //dragController.addDragHandler(new ToolbarDragHandler(pageContext));
 
-        verticalDragController = new ToolbarDragController(RootPanel.get(), true);
-        verticalDragController.addDragHandler(new ToolbarDragHandler(pageContext));
+        //verticalDragController = new ToolbarDragController(RootPanel.get(), true);
+        //verticalDragController.addDragHandler(new ToolbarDragHandler(pageContext));
 
         // init panels
         mainTopPanel = new TargetVerticalPanel(ToolbarConstants.AREA_TOP);
         mainTopPanel.setWidth("100%");
 
 
-        mainRigthPanel = new TargetVerticalPanel(ToolbarConstants.AREA_RIGHT);
-        mainRigthPanel.addStyleName("gwt-toolbar-Panel-right");
+        //mainRigthPanel = new TargetVerticalPanel(ToolbarConstants.AREA_RIGHT);
+        //mainRigthPanel.addStyleName("gwt-toolbar-Panel-right");
 
         displayToolbarPanel.removeFromParent();
         RootPanel.get().add(displayToolbarPanel, 0, 0);
@@ -157,13 +152,13 @@ public class ToolbarManager {
 
 
         // add draggable behavior
-        dragController.registerDropController(new ToolbarIndexedDropController(mainTopPanel));
-        dragController.registerDropController(new AbsolutePositionDropController(RootPanel.get()));
-        verticalDragController.registerDropController(new ToolbarIndexedDropController(mainRigthPanel));
+        //dragController.registerDropController(new ToolbarIndexedDropController(mainTopPanel));
+        //dragController.registerDropController(new AbsolutePositionDropController(RootPanel.get()));
+        //verticalDragController.registerDropController(new ToolbarIndexedDropController(mainRigthPanel));
 
         // update toolbar panels flag
-        toolbarsPanels[0] = mainTopPanel;
-        toolbarsPanels[1] = mainRigthPanel;
+        //toolbarsPanels[0] = mainTopPanel;
+        //toolbarsPanels[1] = mainRigthPanel;
         toolbarsPanelsLoaded = true;
 
     }
@@ -395,58 +390,22 @@ public class ToolbarManager {
      * @param gwtToolbar
      */
     public void addToolBarWidget(GWTJahiaToolbar gwtToolbar) {
-        JahiaToolbar jahiaToolbar = null;
-        // box state
-        if (gwtToolbar.isFloatHorizontalState()) {
-            Log.debug("is horizontal box state");
-            jahiaToolbar = new HorizontalJahiaToolbar(this, gwtToolbar);
-            if (gwtToolbar.getState().isDisplay()) {
-                jahiaToolbar.createToolBarUI();
-                addFloatingToolbar(jahiaToolbar);
-            } else {
-                jahiaToolbar.setVisible(false);
-            }
-        } // horizontal state
-        else if (gwtToolbar.isFloatVerticalState()) {
-            Log.debug("is vertical box state");
-            jahiaToolbar = new VerticalJahiaToolbar(this, gwtToolbar);
-            if (gwtToolbar.getState().isDisplay()) {
-                jahiaToolbar.createToolBarUI();
-                addFloatingToolbar(jahiaToolbar);
-            } else {
-                jahiaToolbar.setVisible(false);
-            }
-        }
-        // horizontal state
-        else if (gwtToolbar.isTop()) {
-            Log.debug("is top");
-            jahiaToolbar = new HorizontalJahiaToolbar(this, gwtToolbar);
-            if (gwtToolbar.getState().isDisplay()) {
-                jahiaToolbar.createToolBarUI();
-                mainTopPanel.addToolbar(jahiaToolbar);
-            } else {
-                jahiaToolbar.setVisible(mainTopPanel, false);
+        JahiaToolbar jahiaToolbar = new HorizontalJahiaToolbar(this, gwtToolbar);
+        if (gwtToolbar.getState().isDisplay()) {
+            jahiaToolbar.createToolBarUI();
+            mainTopPanel.addToolbar(jahiaToolbar);
+        } else {
+            jahiaToolbar.setVisible(mainTopPanel, false);
 
-            }
         }
-        // vertical state
-        else if (gwtToolbar.isRight()) {
-            Log.debug("is Right");
-            jahiaToolbar = new VerticalJahiaToolbar(this, gwtToolbar);
-            if (gwtToolbar.getState().isDisplay()) {
-                jahiaToolbar.createToolBarUI();
-                mainRigthPanel.addToolbar(jahiaToolbar);
-            } else {
-                jahiaToolbar.setVisible(mainRigthPanel, false);
-            }
-        }
+
 
         // refresh ui
         if (jahiaToolbar != null) {
             jahiaToolbar.setPageContext(pageContext);
             jahiaToolbars.add(jahiaToolbar);
             // handle drag option
-            handleDraggable(jahiaToolbar);
+            //handleDraggable(jahiaToolbar);
             // deactivate right click context menu if the listener was provided
             // (we will display this menu in another place then)
             if (contextMenuReadyListeners.size() == 0) {
@@ -480,7 +439,7 @@ public class ToolbarManager {
         }
     }
 
-    public void handleDraggable(JahiaToolbar jahiaToolbar) {
+    /*public void handleDraggable(JahiaToolbar jahiaToolbar) {
         if (jahiaToolbar != null) {
             GWTJahiaToolbar gwtToolbar = jahiaToolbar.getGwtToolbar();
             if (gwtToolbar.isDraggable() && jahiaToolbar != null && gwtToolbar.getState().isDisplay()) {
@@ -494,7 +453,7 @@ public class ToolbarManager {
                 Log.debug("is not draggable");
             }
         }
-    }
+    }*/
 
     public List<JahiaToolbar> getJahiaToolbars() {
         return jahiaToolbars;

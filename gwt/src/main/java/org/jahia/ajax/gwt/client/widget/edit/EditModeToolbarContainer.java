@@ -86,6 +86,9 @@ public class EditModeToolbarContainer extends LayoutContainer {
         } else {
             Log.debug("There is no toolbar");
         }
+
+        // no node is selected
+        handleNewModuleSelection(null);
     }
 
     /**

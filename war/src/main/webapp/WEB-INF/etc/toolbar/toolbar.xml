@@ -951,7 +951,7 @@
 
         <!-- new edit mode buttons: create -->
         <item type="org.jahia.toolbar.item.EditAction.createPage" extends="org.jahia.toolbar.item.EditAction">
-            <title-resourcebundle-key key="Create Page"/>
+            <title-resourcebundle-key key="toolbar.edit.button.newcontent"/>
             <icon-style min="fm-newcontent" max="fm-newcontent"/>
             <description-resourcebundle-key key="New Page"/>
             <property name="action" value="createPage"/>
@@ -962,7 +962,7 @@
 
         <!-- new edit mode buttons: publish -->
         <item type="org.jahia.toolbar.item.EditAction.publish" extends="org.jahia.toolbar.item.EditAction">
-            <title-resourcebundle-key key="publish"/>
+            <title-resourcebundle-key key="toolbar.edit.button.publish"/>
             <icon-style min="fm-newcontent" max="fm-newcontent"/>
             <description-resourcebundle-key key="publish"/>
             <property name="action" value="publish"/>
@@ -972,7 +972,7 @@
 
         <!-- new edit mode buttons: unpublish -->
         <item type="org.jahia.toolbar.item.EditAction.unpublish" extends="org.jahia.toolbar.item.EditAction">
-            <title-resourcebundle-key key="unpublish"/>
+            <title-resourcebundle-key key="toolbar.edit.button.unpublish"/>
             <icon-style min="fm-newcontent" max="fm-newcontent"/>
             <description-resourcebundle-key key="unpublish"/>
             <property name="action" value="unpublish"/>
@@ -982,7 +982,7 @@
 
         <!-- new edit mode buttons: lock -->
         <item type="org.jahia.toolbar.item.EditAction.lock" extends="org.jahia.toolbar.item.EditAction">
-            <title-resourcebundle-key key="lock"/>
+            <title-resourcebundle-key key="toolbar.edit.button.lock"/>
             <icon-style min="fm-lock" max="fm-lock"/>
             <description-resourcebundle-key key="lock"/>
             <property name="action" value="lock"/>
@@ -992,7 +992,7 @@
 
         <!-- new edit mode buttons: unlock -->
         <item type="org.jahia.toolbar.item.EditAction.unlock" extends="org.jahia.toolbar.item.EditAction">
-            <title-resourcebundle-key key="unlock"/>
+            <title-resourcebundle-key key="toolbar.edit.button.unlock"/>
             <icon-style min="fm-unlock" max="fm-unlock"/>
             <description-resourcebundle-key key="unlock"/>
             <property name="action" value="unlock"/>
@@ -1002,7 +1002,7 @@
 
         <!-- new edit mode buttons: edit -->
         <item type="org.jahia.toolbar.item.EditAction.edit" extends="org.jahia.toolbar.item.EditAction">
-            <title-resourcebundle-key key="edit"/>
+            <title-resourcebundle-key key="toolbar.edit.button.edit"/>
             <icon-style min="fm-edit" max="fm-edit"/>
             <description-resourcebundle-key key="edit"/>
             <property name="action" value="edit"/>
@@ -1012,7 +1012,7 @@
 
         <!-- new edit mode buttons: delete -->
         <item type="org.jahia.toolbar.item.EditAction.delete" extends="org.jahia.toolbar.item.EditAction">
-            <title-resourcebundle-key key="delete"/>
+            <title-resourcebundle-key key="toolbar.edit.button.delete"/>
             <icon-style min="fm-remove" max="fm-remove"/>
             <description-resourcebundle-key key="delete"/>
             <property name="action" value="delete"/>
@@ -1022,7 +1022,7 @@
 
         <!-- new edit mode buttons: status -->
         <item type="org.jahia.toolbar.item.EditAction.status" extends="org.jahia.toolbar.item.EditAction">
-            <title-resourcebundle-key key="status"/>
+            <title-resourcebundle-key key="toolbar.edit.button.status"/>
             <description-resourcebundle-key key="status"/>
             <property name="action" value="status"/>
             <property name="editSelectionHandler" value="status"/>

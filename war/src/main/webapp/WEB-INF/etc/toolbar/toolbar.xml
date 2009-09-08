@@ -1007,7 +1007,7 @@
             <description-resourcebundle-key key="edit"/>
             <property name="action" value="edit"/>
             <property name="editSelectionHandler" value="delete"/>
-            <property name="enableOnCondition" value="nodeWritable"/>
+            <property name="enableOnCondition" value="nodeWriteable"/>
         </item>
 
         <!-- new edit mode buttons: delete -->
@@ -1017,7 +1017,7 @@
             <description-resourcebundle-key key="delete"/>
             <property name="action" value="delete"/>
             <property name="editSelectionHandler" value="delete"/>
-            <property name="enableOnCondition" value="nodeWritable"/>
+            <property name="enableOnCondition" value="nodeWriteable"/>
         </item>
 
         <!-- new edit mode buttons: status -->

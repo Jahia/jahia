@@ -1,23 +1,19 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.edit;
 
-import org.jahia.ajax.gwt.client.widget.edit.Module;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.util.ToolbarConstants;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Status;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.ToolbarConstants;
+import org.jahia.ajax.gwt.client.widget.edit.Module;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
@@ -59,12 +55,11 @@ public class EditModeSelectionHandler {
      *
      * @param selectedModule
      */
-    public void handleNewModuleSelection(Module selectedModule) {
+    public void handleNewModuleSelection(final Module selectedModule) {
         for (Component button : registeredEnableOnConditionComponents.keySet()) {
             String condition = registeredEnableOnConditionComponents.get(button);
-            enableOnConditions(button, condition, selectedModule, null);
+            enableOnConditions(button, condition, selectedModule);
         }
-
 
         if (selectedModule != null) {
             final Component createPage = registeredOnModuleSelectionComponents.get("createPage");
@@ -84,52 +79,60 @@ public class EditModeSelectionHandler {
 
                 public void onSuccess(GWTJahiaPublicationInfo result) {
                     Log.debug("GWTJahiaPublicationInfo: " + result.getStatus());
-                    switch (result.getStatus()) {
-                        case GWTJahiaPublicationInfo.MODIFIED:
-                            if (publish != null) {
-                                publish.setEnabled(true);
-                            }
-                            if (unpublish != null) {
-                                unpublish.setEnabled(true);
-                            }
-                            if (status != null) {
-                                status.setText("status : " + s + " : modified");
-                            }
-                            break;
-                        case GWTJahiaPublicationInfo.PUBLISHED:
-                            if (publish != null) {
-                                publish.setEnabled(false);
-                            }
-                            if (unpublish != null) {
-                                unpublish.setEnabled(true);
-                            }
-                            if (status != null) {
-                                status.setText("status : " + s + " : published");
-                            }
-                            break;
-                        case GWTJahiaPublicationInfo.UNPUBLISHED:
-                            if (publish != null) {
-                                publish.setEnabled(true);
-                            }
-                            if (unpublish != null) {
-                                unpublish.setEnabled(false);
-                            }
-                            if (status != null) {
-                                status.setText("status : " + s + " : unpublished");
-                            }
-                            break;
-                        case GWTJahiaPublicationInfo.UNPUBLISHABLE:
-                            if (publish != null) {
-                                publish.setEnabled(false);
-                            }
-                            if (unpublish != null) {
+                    if(publish!=null) {
+                        publish.setEnabled(false);
+                    }
+                    if (unpublish != null) {
+                        unpublish.setEnabled(false);
+                    }
+                    if (selectedModule.getNode().isWriteable()) {
+                        switch (result.getStatus()) {
+                            case GWTJahiaPublicationInfo.MODIFIED:
+                                if (publish != null) {
+                                    publish.setEnabled(true);
+                                }
+                                if (unpublish != null) {
+                                    unpublish.setEnabled(true);
+                                }
+                                if (status != null) {
+                                    status.setText("status : " + s + " : modified");
+                                }
+                                break;
+                            case GWTJahiaPublicationInfo.PUBLISHED:
+                                if (publish != null) {
+                                    publish.setEnabled(false);
+                                }
+                                if (unpublish != null) {
+                                    unpublish.setEnabled(true);
+                                }
+                                if (status != null) {
+                                    status.setText("status : " + s + " : published");
+                                }
+                                break;
+                            case GWTJahiaPublicationInfo.UNPUBLISHED:
+                                if (publish != null) {
+                                    publish.setEnabled(true);
+                                }
+                                if (unpublish != null) {
+                                    unpublish.setEnabled(false);
+                                }
+                                if (status != null) {
+                                    status.setText("status : " + s + " : unpublished");
+                                }
+                                break;
+                            case GWTJahiaPublicationInfo.UNPUBLISHABLE:
+                                if (publish != null) {
+                                    publish.setEnabled(false);
+                                }
+                                if (unpublish != null) {
 
-                                unpublish.setEnabled(false);
-                            }
-                            if (status != null) {
-                                status.setText("status : " + s + " : unpublishable / publish parent first");
-                            }
-                            break;
+                                    unpublish.setEnabled(false);
+                                }
+                                if (status != null) {
+                                    status.setText("status : " + s + " : unpublishable / publish parent first");
+                                }
+                                break;
+                        }
                     }
                 }
             });
@@ -171,9 +174,8 @@ public class EditModeSelectionHandler {
      * Enable on condition
      *
      * @param selectedModule
-     * @param selectedNode
      */
-    public void enableOnConditions(Component component, String condition, Module selectedModule, GWTJahiaNode selectedNode) {
+    public void enableOnConditions(Component component, String condition, Module selectedModule) {
         if (condition == null) {
             return;
         }
@@ -193,11 +195,11 @@ public class EditModeSelectionHandler {
             return;
         }
 
-        boolean nodeWitable = selectedModule != null && selectedModule.getNode().isWriteable();
+        boolean nodeWriteable = selectedModule != null && selectedModule.getNode().isWriteable();
         boolean nodeLocked = selectedModule != null && selectedModule.getNode().isLockable() && selectedModule.getNode().isLocked();
 
-        if (condition.equalsIgnoreCase("nodeWritable")) {
-            component.setEnabled(nodeWitable);
+        if (condition.equalsIgnoreCase("nodeWriteable")) {
+            component.setEnabled(nodeWriteable);
             return;
         }
 

@@ -419,7 +419,7 @@ public class SidePanel extends ContentPanel {
                     final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
                     elements.add(node);
 
-                    final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, GWTJahiaItemDefinition.METADATA, null, null);
+                    final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, GWTJahiaItemDefinition.METADATA, null, null,node.isWriteable());
 
                     ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
                     Button item = new Button(Messages.getResource("fm_save"));

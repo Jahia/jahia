@@ -1,8 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.dnd.DND;
+import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.google.gwt.user.client.DOM;
 
 /**
@@ -35,15 +34,19 @@ public class ModuleDragSource extends EditModeDragSource {
     @Override
     protected void onDragStart(DNDEvent e) {
         super.onDragStart(e);
-        e.setCancelled(false);
-        e.setData(this);
-        e.setOperation(DND.Operation.COPY);
-        if (getStatusText() == null) {
-            e.getStatus().update(DOM.clone(module.getHtml().getElement(),true));
+        if (module.getNode().isWriteable()) {
+            e.setCancelled(false);
+            e.setData(this);
+            e.setOperation(DND.Operation.COPY);
+            if (getStatusText() == null) {
+                e.getStatus().update(DOM.clone(module.getHtml().getElement(), true));
 
-            e.getStatus().setData("element",module.getHtml().getElement());
-            DOM.setStyleAttribute(module.getHtml().getElement(), "display", "none");
+                e.getStatus().setData("element", module.getHtml().getElement());
+                DOM.setStyleAttribute(module.getHtml().getElement(), "display", "none");
 
+            }
+        } else {
+            e.setCancelled(true);
         }
     }
 

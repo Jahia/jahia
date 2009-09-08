@@ -1,15 +1,14 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
+import com.extjs.gxt.ui.client.core.El;
+import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.dnd.Insert;
-import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.util.Rectangle;
-import com.extjs.gxt.ui.client.core.El;
 import com.google.gwt.user.client.Element;
-import com.allen_sauer.gwt.log.client.Log;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.List;
 
@@ -51,11 +50,13 @@ public class ModuleDropTarget extends DropTarget {
 //                Element parent = DOM.getParent(row);
 //                parent.insertBefore(toDrag, row);
 //            }
-        Insert insert = Insert.get();
-        insert.setVisible(true);
-        Rectangle rect = El.fly(row).getBounds();
-        int y = !before ? (rect.y + rect.height - 4) : rect.y - 2;
-        insert.el().setBounds(rect.x, y, rect.width, 20);
+        if (module.getParentModule().getNode().isWriteable()) {
+            Insert insert = Insert.get();
+            insert.setVisible(true);
+            Rectangle rect = El.fly(row).getBounds();
+            int y = !before ? (rect.y + rect.height - 4) : rect.y - 2;
+            insert.el().setBounds(rect.x, y, rect.width, 20);
+        }
     }
 
     protected boolean checkNodeType(DNDEvent e, String nodetypes) {

@@ -31,22 +31,21 @@
  */
 package org.jahia.ajax.gwt.client.widget.definition;
 
-import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.definition.*;
-import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
-
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.ListField;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.event.*;
-import com.allen_sauer.gwt.log.client.Log;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
+import org.jahia.ajax.gwt.client.data.definition.*;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
+import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 
 import java.util.*;
 
@@ -67,6 +66,7 @@ public class PropertiesEditor extends FormPanel {
     private List<String> excludedItems;
     private List<String> excludedTypes;
     private String dataType;
+    private boolean isWriteable;
 
     public PropertiesEditor(List<GWTJahiaNodeType> types, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes) {
         super();
@@ -78,6 +78,21 @@ public class PropertiesEditor extends FormPanel {
         this.viewInheritedItems = viewInheritedItems;
         this.excludedItems = excludedItems;
         this.excludedTypes = excludedTypes;
+        this.isWriteable = false;
+        renderNewFormPanel();
+    }
+
+    public PropertiesEditor(List<GWTJahiaNodeType> types, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes,boolean isWriteable) {
+        super();
+        nodeTypes = types;
+        this.isMultipleEdit = isMultipleEdit;
+        this.dataType = datatype;
+        originalProperties = properties;
+        cloneProperties();
+        this.viewInheritedItems = viewInheritedItems;
+        this.excludedItems = excludedItems;
+        this.excludedTypes = excludedTypes;
+        this.isWriteable = isWriteable;
         renderNewFormPanel();
     }
 
@@ -90,6 +105,7 @@ public class PropertiesEditor extends FormPanel {
         this.isMultipleEdit = isMultipleEdit;
         cloneProperties();
         this.viewInheritedItems = viewInheritedItems;
+        this.isWriteable = false;
         renderNewFormPanel();
     }
 
@@ -209,6 +225,7 @@ public class PropertiesEditor extends FormPanel {
                     checkbox.setHideLabel(true);
                     add(checkbox);
                 }
+                field.setEnabled(isWriteable);
                 add(field);
                 fields.put(field.getName(), field);
             }

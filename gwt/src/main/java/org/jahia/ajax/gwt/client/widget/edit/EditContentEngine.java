@@ -220,7 +220,7 @@ public class EditContentEngine extends Window {
         final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
         elements.add(selectedNode);
 
-        final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, datatype, excludedItems, null);
+        final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, datatype, excludedItems, null,selectedNode.isWriteable());
         final EditContentEngine editContentEngine = this;
         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
         Button item = new Button(Messages.getResource("fm_save"));

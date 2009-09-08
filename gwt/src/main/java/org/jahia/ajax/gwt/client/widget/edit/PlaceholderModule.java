@@ -1,12 +1,11 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
+import com.extjs.gxt.ui.client.dnd.DND;
+import com.extjs.gxt.ui.client.dnd.DropTarget;
+import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.dnd.DropTarget;
-import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.google.gwt.user.client.ui.HTML;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 
@@ -86,14 +85,18 @@ public class PlaceholderModule extends LayoutContainer implements Module {
 
         @Override
         protected void onDragEnter(DNDEvent e) {
-            boolean allowed = checkNodeType(e, nodetypes);
-            if (allowed) {
-                e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PLACEHOLDER_TYPE);
-                e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
-                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getParentModule().getNode());
+            if (parentModule.getNode().isWriteable()) {
+                boolean allowed = checkNodeType(e, nodetypes);
+                if (allowed) {
+                    e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PLACEHOLDER_TYPE);
+                    e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
+                    e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getParentModule().getNode());
+                }
+                e.getStatus().setStatus(allowed);
+                e.setCancelled(false);
+            } else {
+                e.getStatus().setStatus(false);
             }
-            e.getStatus().setStatus(allowed);
-            e.setCancelled(false);
         }
     }
     

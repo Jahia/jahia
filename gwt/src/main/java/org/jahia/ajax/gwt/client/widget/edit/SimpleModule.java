@@ -1,17 +1,19 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.event.*;
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
-import com.google.gwt.user.client.ui.HTML;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.DNDEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Event;
-import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,11 +61,7 @@ public class SimpleModule extends LayoutContainer implements Module {
                 }
             };
             addListener(Events.OnClick, listener);
-            addListener(Events.OnDoubleClick, new Listener<ComponentEvent>() {
-                public void handleEvent(ComponentEvent ce) {
-                    new EditContentEngine(node).show();
-                }
-            });
+            addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this));
     }
 
     public String getModuleId() {
@@ -127,15 +125,18 @@ public class SimpleModule extends LayoutContainer implements Module {
         @Override
         protected void onDragEnter(DNDEvent e) {
             super.onDragEnter(e);
-
-            boolean allowed = checkNodeType(e, nodetypes);
-            if (allowed) {
-                e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
-                e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
-                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getNode());
+            if (getModule().getParentModule().getNode().isWriteable()) {
+                boolean allowed = checkNodeType(e, nodetypes);
+                if (allowed) {
+                    e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
+                    e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
+                    e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getNode());
+                }
+                e.getStatus().setStatus(allowed);
+                e.setCancelled(false);
+            } else {
+                e.getStatus().setStatus(false);
             }
-            e.getStatus().setStatus(allowed);
-            e.setCancelled(false);
         }
 
     }

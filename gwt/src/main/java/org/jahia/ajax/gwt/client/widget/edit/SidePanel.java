@@ -40,12 +40,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: romain
- * Date: Aug 19, 2009
- * Time: 11:56:07 AM
- * <p/>
- * This is the content browser / editor side panel.
+ * The Siade Panel of the edit mode.
+ * This panel will contain a create/browse/search area.
+ * An area binded to the previous one dispalying the list of object type available for creation/reference.
+ * A third area for displaying preview/properties of content selected anywhere in the page or in the previous area.
+ * This third area allows to select the template for any particular content. 
  */
 public class SidePanel extends ContentPanel {
 

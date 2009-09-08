@@ -21,11 +21,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Aug 19, 2009
- * Time: 12:34:18 PM
- * To change this template use File | Settings | File Templates.
+ * First module of any rendered element.
+ * Sub content will be created as ListModule or SimpleModule.
  */
 public class MainModule extends ContentPanel implements Module {
 

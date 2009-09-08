@@ -38,7 +38,6 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import java.util.List;
 import java.util.Map;
@@ -171,10 +170,28 @@ public interface JahiaContentManagementServiceAsync {
 
     void saveNodeTemplate(String path, String template , AsyncCallback async);
 
+    /**
+     * Publish the specified path.
+     * @param path the path to publish, will not auto publish the parents
+     * @param async Local implementation of callback to react on return fo asyncronous call to publish
+     * @throws forward GWTJahiaServiceException
+     */
     void publish(String path, AsyncCallback async);
 
+    /**
+     * Unpublish the specified path and its subnodes.
+     * @param path the path to unpublish, will not unpublish the references
+     * @param async Local implementation of callback to react on return fo asyncronous call to unpublish
+     * @throws forward GWTJahiaServiceException
+     */
     void unpublish(String path, AsyncCallback async);
 
+    /**
+     * Get the publication status information for a particular path.
+     * @param path path to get publication info from
+     * @param async Local implementation of callback to react on return fo asyncronous call to getPublicationInfo
+     * @throws forward GWTJahiaServiceException
+     */
     void getPublicationInfo(String path, AsyncCallback<GWTJahiaPublicationInfo> async);
 
 }

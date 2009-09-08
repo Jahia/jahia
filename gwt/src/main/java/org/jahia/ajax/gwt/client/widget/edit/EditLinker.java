@@ -47,7 +47,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 public class EditLinker {
     private GWTJahiaNode sidePanelSelectedNode;
     private Module selectedModule;
-
+    private Module previouslySelectedModule;
     private EditModeDNDListener dndListener;
     private EditModeToolbarContainer toolbar;
     private MainModule mainModule;
@@ -113,7 +113,16 @@ public class EditLinker {
     }
 
     public void onModuleSelection(Module selection) {
+        previouslySelectedModule = selectedModule;
         selectedModule = selection;
+        if(previouslySelectedModule!=null) {
+            final String path = previouslySelectedModule.getPath();
+            final String s = selectedModule.getPath();
+            if(!path.equals(s) && path.contains(s)) {
+                previouslySelectedModule = null;
+                return;
+            }
+        }
         handleNewModuleSelection();
     }
 

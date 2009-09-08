@@ -189,10 +189,26 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void saveNodeTemplate(String path, String template) throws GWTJahiaServiceException;
 
+    /**
+     * Publish the specified path.
+     * @param path the path to publish, will not auto publish the parents
+     * @throws forward GWTJahiaServiceException
+     */
     public void publish(String path) throws GWTJahiaServiceException;
 
+    /**
+     * Unpublish the specified path and its subnodes.
+     * @param path the path to unpublish, will not unpublish the references
+     * @throws forward GWTJahiaServiceException
+     */
     public void unpublish(String path) throws GWTJahiaServiceException;
 
+    /**
+     * Get the publication status information for a particular path.
+     * @param path path to get publication info from
+     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
+     * @throws forward GWTJahiaServiceException
+     */
     public GWTJahiaPublicationInfo getPublicationInfo(String path) throws GWTJahiaServiceException;
 
 }

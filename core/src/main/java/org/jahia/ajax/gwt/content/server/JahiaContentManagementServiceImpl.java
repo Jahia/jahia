@@ -48,12 +48,11 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
-import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
 import org.jahia.ajax.gwt.content.server.helper.ContentManagerHelper;
 import org.jahia.ajax.gwt.content.server.helper.JCRVersioningHelper;
+import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
@@ -66,7 +65,9 @@ import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -518,20 +519,36 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     }
 
+    /**
+     * Publish the specified path.
+     * @param path the path to publish, will not auto publish the parents
+     * @throws forward GWTJahiaServiceException
+     */
     public void publish(String path) throws GWTJahiaServiceException {
         long l = System.currentTimeMillis();
-        ContentManagerHelper.publish(path, null, retrieveParamBean(), false);
+        ContentManagerHelper.publish(path, null, retrieveParamBean().getUser(), false);
         System.out.println("-->"+(System.currentTimeMillis() - l));
     }
 
+    /**
+     * Unpublish the specified path and its subnodes.
+     * @param path the path to unpublish, will not unpublish the references
+     * @throws forward GWTJahiaServiceException
+     */
     public void unpublish(String path) throws GWTJahiaServiceException {
         long l = System.currentTimeMillis();
-        ContentManagerHelper.unpublish(path,null, retrieveParamBean());
+        ContentManagerHelper.unpublish(path,null, retrieveParamBean().getUser());
         System.out.println("-->"+(System.currentTimeMillis() - l));
     }
 
+    /**
+     * Get the publication status information for a particular path.
+     * @param path path to get publication info from
+     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
+     * @throws forward GWTJahiaServiceException
+     */
     public GWTJahiaPublicationInfo getPublicationInfo(String path) throws GWTJahiaServiceException {
-        return ContentManagerHelper.getPublicationInfo(path, retrieveParamBean());
+        return ContentManagerHelper.getPublicationInfo(path, retrieveParamBean().getUser());
     }
 
 }

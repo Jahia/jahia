@@ -2528,25 +2528,32 @@ public class ContentManagerHelper {
      * Parent node must be published, or will be published if publishParent is true.
      *
      * @param path Path of the node to publish
-     * @param languages
-     * @param ctx ProcessingContext
+     * @param languages Set of languages to publish if null publish all languages
+     * @param user the user for obtaining the jcr session
      * @param publishParent Recursively publish the parents
+     * @throws a GWTJahiaServiceException in case of any RepositoryException
      */
-    public static void publish(String path, Set<String> languages, ProcessingContext ctx, boolean publishParent) throws GWTJahiaServiceException {
+    public static void publish(String path, Set<String> languages, JahiaUser user, boolean publishParent) throws GWTJahiaServiceException {
         try {
-            jcr.publish(path, languages, ctx.getUser(), publishParent);
+            jcr.publish(path, languages, user, publishParent);
         } catch (RepositoryException e) {
             logger.error("repository exception",e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-
-    public static GWTJahiaPublicationInfo getPublicationInfo(String path, ProcessingContext ctx) throws GWTJahiaServiceException {
+    /**
+     * Get the publication status information for a particular path.
+     * @param path to get publication info from
+     * @param user the user for obtaining the jcr session
+     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
+     * @throws a GWTJahiaServiceException in case of any RepositoryException
+     */
+    public static GWTJahiaPublicationInfo getPublicationInfo(String path, JahiaUser user) throws GWTJahiaServiceException {
 
         try {
-            JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser());
-            JCRSessionWrapper liveSession = jcr.getThreadSession(ctx.getUser(), Constants.LIVE_WORKSPACE);
+            JCRSessionWrapper session = jcr.getThreadSession(user);
+            JCRSessionWrapper liveSession = jcr.getThreadSession(user, Constants.LIVE_WORKSPACE);
             GWTJahiaPublicationInfo info = null;
 
             JCRNodeWrapper publishedNode = null;
@@ -2596,13 +2603,13 @@ public class ContentManagerHelper {
      * Referenced Node will not be unpublished.
      *
      * @param path path of the node to unpublish
-     * @param languages
-     * @param user
-     * @throws RepositoryException
+     * @param languages Set of languages to unpublish if null unpublish all languages
+     * @param user the user for obtaining the jcr session
+     * @throws a GWTJahiaServiceException in case of any RepositoryException
      */
-    public static void unpublish(String path, Set<String> languages, ProcessingContext ctx) throws GWTJahiaServiceException {
+    public static void unpublish(String path, Set<String> languages, JahiaUser user) throws GWTJahiaServiceException {
         try {
-            jcr.unpublish(path, languages, ctx.getUser());
+            jcr.unpublish(path, languages, user);
         } catch (RepositoryException e) {
             logger.error("repository exception",e);
             throw new GWTJahiaServiceException(e.getMessage());

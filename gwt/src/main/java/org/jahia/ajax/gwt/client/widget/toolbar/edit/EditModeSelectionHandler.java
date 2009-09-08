@@ -217,7 +217,7 @@ public class EditModeSelectionHandler {
 
 
     /**
-     * Het property value
+     * Get property value
      *
      * @param gwtToolbarItem
      * @param propertyName

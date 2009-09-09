@@ -3119,7 +3119,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 if (rawMapping.getAnalyzer() == null && analyzer != null
                         || (rawMapping.getAnalyzer() != null && !rawMapping.getAnalyzer().equals(analyzer))
                         || rawMapping.getBoost() != scoreBoost
-                        || !rawMapping.getIndex().equals(getIndexMode(indexMode))) {
+                        || !getIndexMode(indexMode).equals(rawMapping.getIndex())) {
                     rawMapping.setAnalyzer(analyzer);
                     rawMapping.setBoost(scoreBoost);
                     rawMapping.setIndex(getIndexMode(indexMode));

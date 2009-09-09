@@ -2560,12 +2560,16 @@ public class ContentManagerHelper {
             try {
                 publishedNode = liveSession.getNode(path);
             } catch (PathNotFoundException e) {
+                if(logger.isDebugEnabled()) {
+                    logger.debug(e);
+                }
             }
 
             JCRNodeWrapper stageNode = null;
             try {
                 stageNode = session.getNode(path);
             } catch (PathNotFoundException e) {
+                throw new GWTJahiaServiceException(e.getMessage());
             }
 
             if (publishedNode == null) {
@@ -2583,8 +2587,8 @@ public class ContentManagerHelper {
 
             info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.PUBLISHED);
 
-            long s = stageNode.getProperty("jcr:lastModified").getValue().getLong();
-            long p = publishedNode.getProperty("jcr:lastModified").getValue().getLong();
+            long s = stageNode.getLastModifiedAsDate().getTime();
+            long p = publishedNode.getLastPublishedAsDate().getTime();
             if (s > p) {
                 info.setStatus(GWTJahiaPublicationInfo.MODIFIED);
             }

@@ -218,8 +218,16 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getLastModifiedAsDate();
     }
 
+    public Date getLastPublishedAsDate() {
+        return node.getLastPublishedAsDate();
+    }
+
     public Date getContentLastModifiedAsDate() {
         return node.getContentLastModifiedAsDate();
+    }
+
+    public Date getContentLastPublishedAsDate() {
+        return node.getContentLastPublishedAsDate();
     }
 
     public Date getCreationDateAsDate() {
@@ -232,6 +240,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public String getModificationUser() {
         return node.getModificationUser();
+    }
+
+    public String getPublicationUser() {
+        return node.getPublicationUser();
     }
 
     public String getPropertyAsString(String name) {

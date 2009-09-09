@@ -160,13 +160,19 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     Date getLastModifiedAsDate();
 
+    Date getLastPublishedAsDate();
+
     Date getContentLastModifiedAsDate();
+
+    Date getContentLastPublishedAsDate();
 
     Date getCreationDateAsDate();
 
     String getCreationUser();
 
     String getModificationUser();
+
+    String getPublicationUser();
 
     String getPropertyAsString(String name);
 

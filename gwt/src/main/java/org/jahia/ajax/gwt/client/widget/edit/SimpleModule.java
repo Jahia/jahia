@@ -32,6 +32,7 @@ public class SimpleModule extends LayoutContainer implements Module {
     private Module parentModule;
     private MainModule mainModule;
     private String nodetypes;
+    private boolean isDraggable=false;
 
     public SimpleModule(String id, final String path, String s, String template, String nodetypes, final MainModule mainModule) {
         this.id = id;
@@ -98,6 +99,14 @@ public class SimpleModule extends LayoutContainer implements Module {
 
     public String getTemplate() {
         return template;
+    }
+
+    public void setDraggable(boolean isDraggable) {
+        this.isDraggable = isDraggable;
+    }
+
+    public boolean isDraggable() {
+        return isDraggable;
     }
 
     public class SimpleModuleDragSource extends ModuleDragSource {

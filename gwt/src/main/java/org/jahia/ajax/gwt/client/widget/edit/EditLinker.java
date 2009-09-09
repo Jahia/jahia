@@ -113,8 +113,8 @@ public class EditLinker {
     }
 
     public void onModuleSelection(Module selection) {
-        previouslySelectedModule = selectedModule;
         selectedModule = selection;
+        selection.setDraggable(false);
         if(previouslySelectedModule!=null) {
             final String path = previouslySelectedModule.getPath();
             final String s = selectedModule.getPath();
@@ -124,6 +124,7 @@ public class EditLinker {
             }
         }
         handleNewModuleSelection();
+        selectedModule.setDraggable(true);
     }
 
     public void refresh() {
@@ -132,6 +133,7 @@ public class EditLinker {
     }
 
     public void handleNewModuleSelection() {
+        previouslySelectedModule = selectedModule;
         toolbar.handleNewModuleSelection(selectedModule);
         mainModule.handleNewModuleSelection(selectedModule);
         sidePanel.handleNewModuleSelection(selectedModule);

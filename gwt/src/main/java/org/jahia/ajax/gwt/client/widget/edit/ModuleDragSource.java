@@ -33,20 +33,22 @@ public class ModuleDragSource extends EditModeDragSource {
 
     @Override
     protected void onDragStart(DNDEvent e) {
-        super.onDragStart(e);
-        if (module.getNode().isWriteable()) {
-            e.setCancelled(false);
-            e.setData(this);
-            e.setOperation(DND.Operation.COPY);
-            if (getStatusText() == null) {
-                e.getStatus().update(DOM.clone(module.getHtml().getElement(), true));
+        if (module.isDraggable()) {
+            super.onDragStart(e);
+            if (module.getNode().isWriteable()) {
+                e.setCancelled(false);
+                e.setData(this);
+                e.setOperation(DND.Operation.COPY);
+                if (getStatusText() == null) {
+                    e.getStatus().update(DOM.clone(module.getHtml().getElement(), true));
 
-                e.getStatus().setData("element", module.getHtml().getElement());
-                DOM.setStyleAttribute(module.getHtml().getElement(), "display", "none");
+                    e.getStatus().setData("element", module.getHtml().getElement());
+                    DOM.setStyleAttribute(module.getHtml().getElement(), "display", "none");
 
+                }
+            } else {
+                e.setCancelled(true);
             }
-        } else {
-            e.setCancelled(true);
         }
     }
 

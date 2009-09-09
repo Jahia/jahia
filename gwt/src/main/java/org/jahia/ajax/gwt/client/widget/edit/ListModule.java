@@ -26,6 +26,7 @@ public class ListModule extends ContentPanel implements Module {
     private String template;
     private Module parentModule;
     private MainModule mainModule;
+    private boolean isDraggable = true;
 
     public ListModule(String id, String path, String s, String template, MainModule mainModule) {
 //        super(new FitLayout());
@@ -88,6 +89,14 @@ public class ListModule extends ContentPanel implements Module {
 
     public String getTemplate() {
         return template;
+    }
+
+    public void setDraggable(boolean isDraggable) {
+        this.isDraggable = isDraggable;
+    }
+
+    public boolean isDraggable() {
+        return isDraggable;
     }
 
 }

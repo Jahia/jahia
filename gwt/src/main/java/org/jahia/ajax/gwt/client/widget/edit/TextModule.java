@@ -1,17 +1,15 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.google.gwt.user.client.ui.HTML;
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.dnd.DropTarget;
-import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.Events;
-import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 /**
@@ -86,5 +84,12 @@ public class TextModule extends ContentPanel implements Module {
 
     public String getTemplate() {
         return null;
+    }
+
+    public void setDraggable(boolean isDraggable) {
+    }
+
+    public boolean isDraggable() {
+        return false;
     }
 }

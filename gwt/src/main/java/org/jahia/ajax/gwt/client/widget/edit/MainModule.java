@@ -160,4 +160,10 @@ public class MainModule extends ContentPanel implements Module {
 
     }
 
+    public boolean isDraggable() {
+        return false;
+    }
+
+    public void setDraggable(boolean isDraggable) {
+    }
 }

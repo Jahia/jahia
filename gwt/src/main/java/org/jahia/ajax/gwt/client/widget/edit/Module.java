@@ -29,4 +29,8 @@ public interface Module {
     void setNode(GWTJahiaNode node);
 
     String getTemplate();
+
+    void setDraggable(boolean isDraggable);
+
+    boolean isDraggable();
 }

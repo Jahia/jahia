@@ -103,5 +103,11 @@ public class PlaceholderModule extends LayoutContainer implements Module {
     public String getTemplate() {
         return null;
     }
-    
+
+    public boolean isDraggable() {
+        return false;
+    }
+
+    public void setDraggable(boolean isDraggable) {
+    }
 }

@@ -53,6 +53,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Collections;
+import java.net.MalformedURLException;
 
 /**
  * This class uses the standard request dispatcher to execute a JSP script.
@@ -108,9 +109,9 @@ public class RequestDispatcherScript implements Script {
         ProcessingContext threadParamBean = Jahia.getThreadParamBean();
         TemplatePathResolverBean templatePathResolver = factory.getTemplatePathResolver(threadParamBean);
         ExtendedNodeType nt = (ExtendedNodeType) resource.getNode().getPrimaryNodeType();
-
+        String currentTemplatePath = nt.getTemplatePath();
         for (String template : resource.getTemplates()) {
-            String templatePath = getTemplatePath(context, resource.getTemplateType(), template, templatePathResolver, nt);
+            String templatePath = getTemplatePath(context, resource.getTemplateType(), template, templatePathResolver, nt, currentTemplatePath);
             if (templatePath != null) {
                 return templatePath;
             }
@@ -118,7 +119,7 @@ public class RequestDispatcherScript implements Script {
             List<ExtendedNodeType> nodeTypeList = Arrays.asList(nt.getSupertypes());
             Collections.reverse(nodeTypeList);
             for (ExtendedNodeType st : nodeTypeList) {
-                templatePath = getTemplatePath(context, resource.getTemplateType(), template, templatePathResolver, st);
+                templatePath = getTemplatePath(context, resource.getTemplateType(), template, templatePathResolver, st, currentTemplatePath);
                 if (templatePath != null) {
                     return templatePath;
                 }
@@ -128,14 +129,24 @@ public class RequestDispatcherScript implements Script {
         return null;
     }
 
-    private String getTemplatePath(RenderContext context, String templateType, String template, TemplatePathResolverBean templatePathResolver, ExtendedNodeType nt) {
-        return templatePathResolver.lookup("modules/" +
-                nt.getAlias().replace(':','/') +
-                "/" + templateType +
-                "/" + template.replace('.','/') + ".jsp");
-    }
-
-    /**
+    private String getTemplatePath(RenderContext context, String templateType, String template, TemplatePathResolverBean templatePathResolver, ExtendedNodeType nt, String currentTemplatePath) {
+        String defaultPath = templatePathResolver.lookup("modules/" +
+                         nt.getAlias().replace(':','/') +
+                         "/" + templateType +
+                         "/" + template.replace('.','/') + ".jsp");
+        if (defaultPath != null) {
+            return defaultPath;
+        }
+        String modulePath = currentTemplatePath + "/modules/" + nt.getAlias().replace(':','/') + "/" + templateType +   "/" + template.replace('.','/') + ".jsp";
+        try {
+            if (Jahia.getStaticServletConfig().getServletContext().getResource(modulePath) != null) {
+                return modulePath;
+            }
+        } catch (MalformedURLException e) {
+            return null;
+        }
+        return null;
+    }       /**
      * Execute the script and return the result as a string
      * @return the rendered resource
      * @throws IOException

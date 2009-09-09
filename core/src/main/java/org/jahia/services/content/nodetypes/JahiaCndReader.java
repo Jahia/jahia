@@ -125,6 +125,7 @@ public class JahiaCndReader {
 
     protected String systemId;
     protected String filename;
+    protected String templatePath;
 
     /**
      * the registry where the types should be stored
@@ -150,13 +151,15 @@ public class JahiaCndReader {
      * Creates a new CND reader.
      *
      * @param r
+     * @param templatePath
      * @throws ParseException
      */
-    public JahiaCndReader(Reader r, String filename, String systemId, NodeTypeRegistry registry)
+    public JahiaCndReader(Reader r, String filename, String systemId, NodeTypeRegistry registry, String templatePath)
             throws ParseException, IOException {
         this.systemId = systemId;
         this.registry = registry;
         this.filename = filename;
+        this.templatePath = templatePath;
         lexer = new Lexer(r, filename);
     }
 
@@ -182,7 +185,7 @@ public class JahiaCndReader {
             }
         }
         while (!currentTokenEquals(Lexer.EOF)) {
-            ExtendedNodeType ntd = new ExtendedNodeType(registry, systemId);
+            ExtendedNodeType ntd = new ExtendedNodeType(registry, systemId, templatePath);
             try {
                 doNodeTypeName(ntd);
                 doSuperTypes(ntd);
@@ -374,7 +377,7 @@ public class JahiaCndReader {
                 try {
                     registry.getNodeType(ctnListTypeName);
                 } catch (NoSuchNodeTypeException e) {
-                    ExtendedNodeType listType = new ExtendedNodeType(registry, systemId);
+                    ExtendedNodeType listType = new ExtendedNodeType(registry, systemId, templatePath);
                     listType.setName(parseName(ctnListTypeName));
                     listType.setAlias(aliasName);
                     listType.setDeclaredSupertypes(new String[] {Constants.JAHIANT_CONTENTLIST});
@@ -412,7 +415,7 @@ public class JahiaCndReader {
                 try {
                     registry.getNodeType(ctnListTypeName);
                 } catch (NoSuchNodeTypeException e) {
-                    ExtendedNodeType listType = new ExtendedNodeType(registry, systemId);
+                    ExtendedNodeType listType = new ExtendedNodeType(registry, systemId, templatePath);
                     listType.setName(parseName(ctnListTypeName));
                     listType.setDeclaredSupertypes(new String[] {Constants.JAHIANT_CONTENTLIST});
                     listType.setHasOrderableChildNodes(true);

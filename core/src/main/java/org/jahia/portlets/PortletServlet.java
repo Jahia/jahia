@@ -16,7 +16,6 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.File;
 import java.util.Timer;
@@ -30,19 +29,12 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.*;
-import javax.servlet.UnavailableException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.pluto.container.FilterManager;
-import org.apache.pluto.container.PortletContainerException;
 import org.apache.pluto.container.PortletInvokerService;
 import org.apache.pluto.container.PortletRequestContext;
 import org.apache.pluto.container.PortletResponseContext;
 import org.apache.pluto.container.PortletWindow;
-import org.apache.pluto.container.impl.PortletContextImpl;
-import org.apache.pluto.container.om.portlet.PortletDefinition;
 import org.apache.pluto.driver.container.InitParameterApplicationIdResolver;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -195,7 +187,7 @@ public class PortletServlet extends HttpServlet {
                     String realPath = portletConfig.getPortletContext().getRealPath(rootPath + "/definitions.cnd");
                     if (new File(realPath).exists()) {
                         try {
-                            NodeTypeRegistry.getInstance().addDefinitionsFile(new File(realPath), portletConfig.getPortletName(), true);
+                            NodeTypeRegistry.getInstance().addDefinitionsFile(new File(realPath), portletConfig.getPortletName(), true, rootPath);
                         } catch (ParseException e) {
                             logger.error(e, e);
                         } catch (IOException e) {

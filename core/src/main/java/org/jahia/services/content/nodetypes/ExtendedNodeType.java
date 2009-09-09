@@ -58,6 +58,7 @@ public class ExtendedNodeType implements NodeType {
     
     private NodeTypeRegistry registry;
     private String systemId;
+    private String templatePath;
     private List<ExtendedItemDefinition> items = new ArrayList<ExtendedItemDefinition>();
     private List<String> groupedItems;
 
@@ -74,9 +75,10 @@ public class ExtendedNodeType implements NodeType {
     private List<ExtendedNodeType> declaredSubtypes = new ArrayList<ExtendedNodeType>();
     private String validator;
 
-    public ExtendedNodeType(NodeTypeRegistry registry, String systemId) {
+    public ExtendedNodeType(NodeTypeRegistry registry, String systemId, String templatePath) {
         this.registry = registry;
         this.systemId = systemId;
+        this.templatePath = templatePath;
     }
 
     public String getSystemId() {
@@ -435,5 +437,12 @@ public class ExtendedNodeType implements NodeType {
         b &= !isMetadataType();
         return b;
     }
+    
+    public void setTemplatePath(String templatePath) {
+        this.templatePath = templatePath;
+    }
 
+    public String getTemplatePath() {
+        return templatePath;
+    }
 }

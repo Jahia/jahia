@@ -54,7 +54,7 @@ public class JahiaGroupingFileReader extends JahiaCndReader {
      */
     public JahiaGroupingFileReader(Reader r, String filename, String systemId, NodeTypeRegistry registry)
             throws ParseException, IOException {
-        super(r, filename, systemId, registry);
+        super(r, filename, systemId, registry, "");
     }
 
     /**

@@ -424,9 +424,11 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                 guestGroup = jgms.createGroup(0, JahiaGroupManagerService.GUEST_GROUPNAME, null, false);
             }
 
-            JahiaGroup adminGroup = jgms.createGroup(site.getID(),
-                    JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME, null, false);
-
+            JahiaGroup adminGroup = jgms.lookupGroup(site.getID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
+            if (adminGroup == null) {
+                adminGroup = jgms.createGroup(site.getID(),
+                        JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME, null, false);
+            }
 
             // create groups memberships...
             JahiaSiteTools.addGroup(adminGroup, site);

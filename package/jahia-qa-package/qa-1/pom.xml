@@ -135,6 +135,7 @@
                             <overwritedb>true</overwritedb>
                             <storeFilesInDB>true</storeFilesInDB>
                             <localIp>10.8.37.241</localIp>
+                            <externalConfigPath>${basedir}/src/main/resources/external-config</externalConfigPath>
                         </configuration>
                         <executions>
                             <execution>

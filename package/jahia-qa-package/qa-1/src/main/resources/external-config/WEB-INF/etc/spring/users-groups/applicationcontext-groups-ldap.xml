@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="JahiaGroupManagerLDAPProvider" class="org.jahia.services.usermanager.JahiaGroupManagerLDAPProvider" parent="JahiaGroupManagerProvider" factory-method="getInstance">
+        <property name="key" value="ldap"/>
+        <property name="cacheService" ref="JahiaCacheService"/>
+        <property name="defaultProvider" value="false"/>
+        <property name="readOnly" value="true"/>
+        <property name="priority" value="2"/>
+        <property name="groupManager" ref="org.jahia.hibernate.manager.JahiaGroupManager"/>
+        <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
+        <property name="ldapProperties">
+            <map>
+                <entry key="context.factory" value="com.sun.jndi.ldap.LdapCtxFactory"/>
+                <entry key="url" value="ldap://10.8.37.17:389/"/>
+                <entry key="authentification.mode" value="simple"/>
+                <entry key="public.bind.dn" value="cn=manager,o=jahia"/>
+                <entry key="public.bind.password" value="ldapadmin"/>
+                <entry key="search.attribute" value="cn"/>
+                <entry key="search.name" value="ou=JAHIAGroups,o=cg13,o=jahia"/>
+                <entry key="search.countlimit" value="100"/>
+                <entry key="search.objectclass" value="groupOfUniqueNames"/>
+                <entry key="members.attribute" value="uniqueMember"/>
+                <entry key="dynamic.search.objectclass" value="groupOfURLs"/>
+                <entry key="dynamic.members.attribute" value="memberurl"/>
+                <entry key="preload" value="true"/>
+                <entry key="search.wildcards.attributes" value="cn,description,uniqueMember"/>
+                <entry key="groupname.attribute.map" value="cn"/>
+                <entry key="description.attribute.map" value="description"/>
+                <entry key="ad.range.step" value="0"/>
+                <entry key="ldap.connect.pool" value="true"/>                
+            </map>
+        </property>
+    </bean>
+
+</beans>

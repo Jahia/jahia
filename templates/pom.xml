@@ -64,6 +64,8 @@
         <!--<module>sandbox-templates</module>-->
         <module>test-templates</module>
         <module>web-templates</module>
+        <module>jahiaForum</module>
+
         <!--<module>sandbox-web-templates</module>-->
   </modules>
 

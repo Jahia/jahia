@@ -1,0 +1,155 @@
+.clear 	{
+	clear:both;
+}
+#commentsForm,.comments {
+	font-size:10px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+#commentsForm input,.comments input{
+border:1px solid #ccc;
+background-color:#FFFFFF;
+	font-size:10px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+#commentsForm .commentsForm_button,.comments .comment_button{
+text-align:right;
+margin-top:0.2em;
+}
+/******************************************************************************
+*  Form comments
+******************************************************************************/
+#commentsForm {
+	margin: 0;
+	padding: 0.5em 1em;
+}
+#commentsForm p{
+	margin:0;
+	padding:0;
+}
+#commentsForm  p.field{
+	margin-bottom:0.2em;
+}
+#commentsForm fieldset{
+	border:1px solid #ccc;
+	display:inline;
+	padding:0.5em;
+}
+/******************************************************************************
+* comments
+******************************************************************************/
+.commentBodyWrapper{
+	float:left;
+	width:100%;
+	clear:both;
+}
+.commentBody{
+	margin: 0 100px 0 70px;
+	padding: 5px;
+}
+.commentsAuthor{
+	float:left;
+	width:70px;
+	margin-left:-100%;
+	display:block;
+}
+.commentActions{
+	float:left;
+	width:100px;
+	margin-left:-100px;
+	display:block;
+}
+.comments {
+	margin: 1em 
+}
+.comments h4{
+	margin:0;
+	padding:0;
+	font-size:1em;
+	font-weight:bold
+}
+.comments p {
+	margin:0;
+	padding:0;
+}
+.comments p.commentDate {
+	margin-bottom:0.5em;
+}
+.comments ul {
+	margin:0;
+	padding:0;
+	list-style:none
+}
+.comments ul ul {
+	margin-left:2em;
+}
+.comments li {
+	margin:0;
+	padding:0;
+}
+.comments .commentActions{
+	margin-top:2em;
+}
+.comments .commentActions a{
+display: block
+}
+commentBubble{
+margin:0.5em
+
+}
+/******************************************************************************
+* commentBubble
+******************************************************************************/
+.commentBubble-container { 
+	position: relative;
+	border:1px solid #a89a63;
+	margin-bottom:10px;
+	clear:both;
+	background-color:#f0c321;
+}
+.commentBubble-topleft,
+.commentBubble-topright,
+.commentBubble-bottomleft,
+.commentBubble-bottomright {
+	height: 9px; width: 9px;
+	background-repeat: no-repeat;
+	font-size:2px; 
+}
+.commentBubble-topleft {
+	position:absolute;
+	top:-1px;
+	left:-1px;
+	background: url(../img/commentbubble-topleft.png);
+}
+.commentBubble-arrow {
+	height: 24px; width: 15px;
+	background-repeat: no-repeat;
+	font-size:2px; 
+	position:absolute;
+	top:10px;
+	left:-15px;
+	background: url(../img/commentbubble-arrow.png);
+}
+.commentBubble-topright {
+	position:absolute;
+	top:-1px;
+	right:-1px;
+	background: url(../img/commentbubble-topright.png);
+}
+.commentBubble-bottomleft {
+	position:absolute;
+	bottom:-1px;
+	left:-1px;
+	background: url(../img/commentbubble-bottomleft.png);
+}
+.commentBubble-bottomright {
+	position:absolute;
+	bottom:-1px;
+	right:-1px;
+	background: url(../img/commentbubble-bottomright.png);
+}
+.commentBubble-text {
+	margin: 10px;
+}
+
+
+

@@ -1,0 +1,8 @@
+<jahiaForum = 'jahia.org/jahia/jahiaForum/nt/1.0'>
+
+[jahiaForum:postMixin] mixin
+smallText title
+bigText content
+
+[jahiaForum:post] > jnt:container, jmix:interactiveContent, jahiaForum:postMixin
++ * (jahiaForum:postMixin)

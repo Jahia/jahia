@@ -421,7 +421,7 @@ public class ContentDetails extends BottomRightComponent {
                         List<String> list = new ArrayList<String>();
                         list.add("jcr:content");
                         list.add("j:thumbnail");
-                        final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, null, list, null);
+                        final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, null, list, null,selectedNode.isWriteable());
 
                         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
                         Button item = new Button(Messages.getResource("fm_save"));

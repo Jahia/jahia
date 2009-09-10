@@ -78,7 +78,7 @@ public class PropertiesEditor extends FormPanel {
         this.viewInheritedItems = viewInheritedItems;
         this.excludedItems = excludedItems;
         this.excludedTypes = excludedTypes;
-        this.isWriteable = false;
+        this.isWriteable = true;
         renderNewFormPanel();
     }
 
@@ -105,7 +105,7 @@ public class PropertiesEditor extends FormPanel {
         this.isMultipleEdit = isMultipleEdit;
         cloneProperties();
         this.viewInheritedItems = viewInheritedItems;
-        this.isWriteable = false;
+        this.isWriteable = true;
         renderNewFormPanel();
     }
 

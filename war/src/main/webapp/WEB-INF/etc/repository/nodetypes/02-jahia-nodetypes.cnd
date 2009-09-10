@@ -176,10 +176,36 @@
  - j:usersFolderConfig (string)
  - j:usersFolderSkeleton (string)
 
+[jnt:address] > nt:base, jmix:hierarchyNode
+ - j:street (string)
+ - j:zipcode (string)
+ - j:town (string)
+ - j:country (string,choicelist) < country()
+
+[jnt:addresses]  > nt:base, jmix:collection
+ - j:defaultAddress (weakreference) < jnt:address
+ + * (jnt:address)
+
 [jnt:user] > jnt:folder
  - j:password (string)
  - j:external (boolean)=false
- - j:externalSource (string) 
+ - j:externalSource (string)
+ - j:firstName (string)
+ - j:lastName (string)
+ - j:gender (string,choicelist[resourceBundle]) < male,female,other
+ - j:title (string,choicelist[resourceBundle]) < mister,master,professor,doctor,miss,madam
+ - j:birthDate (date)
+ - j:organization (string)
+ - j:function (string)
+ - j:about (string,richtext)
+ - j:email (string)
+ - j:phoneNumber (string)
+ - j:faxNumber (string)
+ - j:skypeID (string)
+ - j:twitterID (string)
+ - j:facebookID (string)
+ - j:linkedinID (string)
+ + j:addresses (jnt:addresses) = jnt:addresses mandatory autocreated
  - * (string)
 
 [jmix:groupsFolder] mixin

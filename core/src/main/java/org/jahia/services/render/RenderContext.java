@@ -49,6 +49,7 @@ public class RenderContext {
     private String templateWrapper;
 
     private Set<String> dependencies = new HashSet<String>();
+    private Resource resource;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
@@ -99,5 +100,13 @@ public class RenderContext {
 
     public void setTemplateWrapper(String pageWrapper) {
         this.templateWrapper = pageWrapper;
+    }
+
+    public void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
+    public Resource getResource() {
+        return resource;
     }
 }

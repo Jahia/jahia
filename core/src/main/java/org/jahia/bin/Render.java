@@ -1,16 +1,16 @@
 package org.jahia.bin;
 
-import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
@@ -25,9 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * Rendering servlet. Resolves the node and the template, and renders it by executing the appropriate script
@@ -36,7 +35,19 @@ public class Render extends HttpServlet {
     private static Logger logger = Logger.getLogger(Render.class);
 
     private static String renderServletPath;
+    private static List<String> reservedParameters;
+    public static final String NODE_TYPE = "nodeType";
+    public static final String NODE_NAME = "nodeName";
+    public static final String NEW_NODE_OUTPUT_FORMAT = "newNodeOutputFormat";
+    public static final String STAY_ON_NODE = "stayOnNode";
 
+    static {
+        reservedParameters = new ArrayList<String>();
+        reservedParameters.add(NODE_TYPE);
+        reservedParameters.add(NODE_NAME);
+        reservedParameters.add(NEW_NODE_OUTPUT_FORMAT);
+        reservedParameters.add(STAY_ON_NODE);
+    }
     @Override
     public void init() throws ServletException {
         super.init();
@@ -152,12 +163,12 @@ public class Render extends HttpServlet {
             }
             String url = null;
             if (node != null) {
-                String nodeType = req.getParameter("nodeType");
+                String nodeType = req.getParameter(NODE_TYPE);
                 if (nodeType == null || "".equalsIgnoreCase(nodeType.trim())) {
                     resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing nodeType Property");
                 }
                 Node newNode;
-                String nodeName = req.getParameter("nodeName");
+                String nodeName = req.getParameter(NODE_NAME);
                 if(!"*".equals(lastPath)) {
                     nodeName = lastPath;
                 }
@@ -177,7 +188,7 @@ public class Render extends HttpServlet {
                 Set<Map.Entry> set = req.getParameterMap().entrySet();
                 for (Map.Entry entry : set) {
                     String key = (String) entry.getKey();
-                    if (!"nodeType".equals(key) && !"nodeName".equals(key)) {
+                    if (!reservedParameters.contains(key)) {
                         String[] values = (String[]) entry.getValue();
                         newNode.setProperty(key, values[0]);
                     }
@@ -186,9 +197,25 @@ public class Render extends HttpServlet {
                 session.save();
             }
             resp.setStatus(HttpServletResponse.SC_CREATED);
+            String renderedURL = null;
+            String outputFormat = req.getParameter(NEW_NODE_OUTPUT_FORMAT);
+            if(outputFormat==null || "".equals(outputFormat.trim())) {
+                outputFormat = "html";
+            }
             if(url!=null) {
-                String requestedURL = req.getRequestURL().toString();                
-                resp.setHeader("Location",requestedURL.substring(0,requestedURL.indexOf(path))+url+".html");
+                String requestedURL = req.getRequestURL().toString();
+                renderedURL = requestedURL.substring(0, requestedURL.indexOf(URLEncoder.encode(path,
+                                                                                               "UTF-8").replaceAll("%2F","/"))) + url + "." + outputFormat;
+            }
+            String stayOnPage = req.getParameter(STAY_ON_NODE);
+            if(stayOnPage!=null && "".equals(stayOnPage.trim())) {
+                stayOnPage = null;
+            }
+            if(renderedURL!=null && stayOnPage==null) {
+                resp.setHeader("Location", renderedURL);
+                resp.sendRedirect(renderedURL);
+            } else if (stayOnPage != null){
+                resp.sendRedirect(stayOnPage+"."+outputFormat);
             }
         } catch (PathNotFoundException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -245,7 +272,7 @@ public class Render extends HttpServlet {
             Set<Map.Entry> set = req.getParameterMap().entrySet();
             for (Map.Entry entry : set) {
                 String key = (String) entry.getKey();
-                if (!"nodeType".equals(key) && !"nodeName".equals(key)) {
+                if (!NODE_TYPE.equals(key) && !NODE_NAME.equals(key)) {
                     String[] values = (String[]) entry.getValue();
                     node.setProperty(key, values[0]);
                 }

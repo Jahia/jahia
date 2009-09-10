@@ -2156,6 +2156,7 @@ public class ContentManagerHelper {
             ctx.getRequest().setAttribute("mode", "edit");
             RenderContext renderContext = new RenderContext(ctx.getRequest(), ctx.getResponse());
             renderContext.setEditMode(editMode);
+            renderContext.setResource(r);
             res = RenderService.getInstance().render(r, renderContext);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

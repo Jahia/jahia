@@ -6,6 +6,9 @@
 
 <form action="${baseUrl}${currentNode.path}/*" method="post">
     <input type="hidden" name="nodeType" value="jahiaForum:post"/>
+    <input type="hidden" name="stayOnNode" value="${baseUrl}${renderContext.resource.node.path}"/>
+    <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
+    <input type="hidden" name="newNodeOutputFormat" value="html">
     <div id="commentsForm"><!--start commentsForm-->
        <p></p>
        <fieldset>

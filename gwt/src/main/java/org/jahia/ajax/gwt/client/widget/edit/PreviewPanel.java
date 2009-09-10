@@ -1,24 +1,25 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.allen_sauer.gwt.log.client.Log;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,7 +61,7 @@ public class PreviewPanel extends ContentPanel {
 
         toolbar.add(templateBox);
 
-        save = new EditActionItem("save_template", "fm-save") {
+        save = new EditActionItem(Messages.getResource("em_savetemplate"), "fm-save") {
             public void onSelection() {
                     JahiaContentManagementService.App.getInstance().saveNodeTemplate(node.getPath() , template,new AsyncCallback() {
                         public void onFailure(Throwable throwable) {

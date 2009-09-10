@@ -1,14 +1,15 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.Events;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.Event;
-import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,7 +37,7 @@ public class ListModule extends ContentPanel implements Module {
         this.mainModule = mainModule;
         setCollapsible(true);
         setBodyStyleName("pad-text");
-        setHeading("Content : "+path);
+        setHeading(Messages.getResource("em_content")+" : "+path);
 //        setScrollMode(Style.Scroll.AUTO);
         html = new HTML(s);
         add(html);

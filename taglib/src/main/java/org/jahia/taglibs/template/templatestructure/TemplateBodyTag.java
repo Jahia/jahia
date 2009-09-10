@@ -523,7 +523,11 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("add_content_wizard_title", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.title"));
         addGwtDictionaryMessage("add_content_wizard_title", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.title"));
 
-
+        addGwtDictionaryMessage("em_repository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.globalRepository.label"));
+        addGwtDictionaryMessage("em_drag", getJahiaInternalResourceValue("org.jahia.jcr.edit.drag.label"));
+        addGwtDictionaryMessage("em_contentlist", getJahiaInternalResourceValue("org.jahia.jcr.edit.contentlist.label"));
+        addGwtDictionaryMessage("em_savetemplate", getJahiaInternalResourceValue("org.jahia.jcr.edit.savetemplate.label"));
+        addGwtDictionaryMessage("em_content", getJahiaInternalResourceValue("org.jahia.jcr.edit.content.label"));
     }
 
     /**

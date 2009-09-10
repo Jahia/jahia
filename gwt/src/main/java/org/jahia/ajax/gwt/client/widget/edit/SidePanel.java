@@ -104,7 +104,7 @@ public class SidePanel extends ContentPanel {
 
     private void createDisplayPanel() {
         displayPanel = new ContentPanel();
-        displayPanel.setHeading("Display");
+        displayPanel.setHeading(Messages.getResource("fm_information"));
         displayPanel.setLayout(new FitLayout());
         displayPanel.setBorders(false);
         displayPanel.setBodyBorder(false);
@@ -112,7 +112,7 @@ public class SidePanel extends ContentPanel {
         displayPanel.setCollapsible(true);
 
         displayTabs = new TabPanel();
-        previewTabItem = new TabItem("Preview");
+        previewTabItem = new TabItem(Messages.getResource("fm_preview"));
         previewTabItem.setLayout(new FitLayout());
 
         preview = new PreviewPanel();
@@ -121,7 +121,7 @@ public class SidePanel extends ContentPanel {
 //        previewDragSource = new PreviewDragSource(previewTabItem);
 
         displayTabs.add(previewTabItem);
-        propertiesTabItem = new TabItem("Properties");
+        propertiesTabItem = new TabItem(Messages.getResource("fm_properties"));
         propertiesTabItem.setLayout(new FitLayout());
         displayTabs.add(previewTabItem);
         displayTabs.add(propertiesTabItem);
@@ -131,7 +131,7 @@ public class SidePanel extends ContentPanel {
     private void createContentListPanel() {
         // content list panel
         contentList = new ContentPanel();
-        contentList.setHeading("Content list");
+        contentList.setHeading(Messages.getResource("em_contentlist"));
         contentList.setLayout(new FitLayout());
         contentList.setCollapsible(true);
         displayStore = new ListStore<GWTJahiaNode>();
@@ -145,7 +145,7 @@ public class SidePanel extends ContentPanel {
             }
         });
         displayColumns.add(col);
-        displayColumns.add(new ColumnConfig("name", "Name", 250));
+        displayColumns.add(new ColumnConfig("name", Messages.getResource("fm_info_name"), 250));
 //        displayColumns.add(new ColumnConfig("path", "Path", 200));
         displayGrid = new Grid<GWTJahiaNode>(displayStore, new ColumnModel(displayColumns));
         displayGrid.setBorders(false);
@@ -171,7 +171,7 @@ public class SidePanel extends ContentPanel {
             }
         });
         displayColumns.add(col);
-        displayColumns.add(new ColumnConfig("label", "Name", 250));
+        displayColumns.add(new ColumnConfig("label", Messages.getResource("fm_info_name"), 250));
 
         displayTypesGrid = new Grid<GWTJahiaNodeType>(displayTypesStore, new ColumnModel(displayColumns));
         displayTypesGrid.setBorders(false);
@@ -182,7 +182,7 @@ public class SidePanel extends ContentPanel {
     private ContentPanel createRepositoryPanel() {
         // repository panel
         repository = new ContentPanel();
-        repository.setHeading("Repository");
+        repository.setHeading(Messages.getResource("em_repository"));
         repository.setLayout(new FitLayout());
         repository.setBorders(false);
         repository.setBodyBorder(false);
@@ -192,7 +192,7 @@ public class SidePanel extends ContentPanel {
         TabPanel repositoryTabs = new TabPanel();
 
         // First tab : creating
-        TabItem create = new TabItem("Create");
+        TabItem create = new TabItem(Messages.getResource("fm_newcontent"));
         create.setLayout(new FitLayout());
         final ListStore<GWTJahiaNodeType> createStore = new ListStore<GWTJahiaNodeType>();
         JahiaContentDefinitionService.App.getInstance().getNodeTypes(new AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
@@ -232,7 +232,7 @@ public class SidePanel extends ContentPanel {
         create.add(createView);
 
         // Second tab : browse
-        TabItem browse = new TabItem("Browse");
+        TabItem browse = new TabItem(Messages.getResource("fm_browse"));
         browse.setLayout(new FitLayout());
         // data proxy
         RpcProxy<List<GWTJahiaNode>> privateProxy = new RpcProxy<List<GWTJahiaNode>>() {
@@ -293,20 +293,20 @@ public class SidePanel extends ContentPanel {
         browse.add(m_tree);
 
         // searching
-        TabItem search = new TabItem("Search");
+        TabItem search = new TabItem(Messages.getResource("fm_search"));
         FormPanel searchForm = new FormPanel();
         searchForm.setHeaderVisible(false);
         searchForm.setBorders(false);
         searchForm.setBodyBorder(false);
         final TextField<String> searchField = new TextField<String>();
-        searchField.setFieldLabel("Search for");
-        Button ok = new Button("Search", new SelectionListener<ButtonEvent>() {
+        searchField.setFieldLabel(Messages.getResource("fm_search"));
+        Button ok = new Button(Messages.getResource("fm_search"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
                 search(searchField.getValue(), null,null);
             }
         });
 
-        Button drag = new Button("Drag");
+        Button drag = new Button(Messages.getResource("em_drag"));
         querySource = new EditModeDragSource(drag) {
             @Override
             protected void onDragStart(DNDEvent e) {

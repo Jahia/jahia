@@ -951,8 +951,8 @@
 
         <!-- new edit mode buttons: create -->
         <item type="org.jahia.toolbar.item.EditAction.createPage" extends="org.jahia.toolbar.item.EditAction">
-            <title-resourcebundle-key key="toolbar.edit.button.newcontent"/>
-            <icon-style min="fm-newcontent" max="fm-newcontent"/>
+            <title-resourcebundle-key key="toolbar.edit.button.newpage"/>
+            <icon-style min="fm-newpage" max="fm-newpage"/>
             <description-resourcebundle-key key="New Page"/>
             <property name="action" value="createPage"/>
             <property name="onModuleSelection" value="createPage"/>

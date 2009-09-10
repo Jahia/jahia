@@ -31,23 +31,25 @@
  */
 package org.jahia.ajax.gwt.utils;
 
+import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
+import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.acl.JahiaACLException;
 import org.jahia.services.pages.JahiaPage;
-import org.jahia.exceptions.JahiaSessionExpirationException;
-import org.apache.log4j.Logger;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -90,17 +92,18 @@ public class GWTInitializer {
 
     private static String generateInitializerStructure(HttpServletRequest request, HttpSession session, ProcessingContext processingContext) {
         StringBuilder buf = new StringBuilder();
-        
+        Locale locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
+        if (locale == null) {
+            locale = Locale.ENGLISH;
+        }
+
         String context = request.getContextPath();
+        buf.append("<meta name=\"gwt:property\" content=\"locale=").append(locale.toString()).append("\"/>");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-engines.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-templates.css\" rel=\"stylesheet\"/>\n");
 
-        Locale locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
-        if (locale == null) {
-            locale = Locale.ENGLISH;
-        }
         // creat parameters map
         Map<String, String> params = new HashMap<String, String>();
 

@@ -68,8 +68,8 @@ public class Constants {
     public static final String JCR_LANGUAGE = "jcr:language";
     public static final String JCR_LASTMODIFIED = "jcr:lastModified";
     public static final String JCR_LASTMODIFIEDBY = "jcr:lastModifiedBy";    
-    public static final String JCR_LASTPUBLISHED = "jcr:lastPublished";
-    public static final String JCR_LASTPUBLISHEDBY = "jcr:lastPublishedBy";
+    public static final String JCR_LASTPUBLISHED = "j:lastPublished";
+    public static final String JCR_LASTPUBLISHEDBY = "j:lastPublishedBy";
     public static final String JCR_LOCKISDEEP = "jcr:lockIsDeep";
     public static final String JCR_LOCKOWNER = "jcr:lockOwner";
     public static final String JCR_MANDATORY = "jcr:mandatory";

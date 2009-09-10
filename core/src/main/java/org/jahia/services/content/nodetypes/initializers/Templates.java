@@ -33,20 +33,16 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.params.ProcessingContext;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.data.beans.TemplatePathResolverFactory;
-import org.jahia.data.beans.TemplatePathResolverBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.bin.Jahia;
+import org.jahia.settings.SettingsBean;
 
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
 import java.util.*;
 import java.io.File;
-import java.net.MalformedURLException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,49 +55,101 @@ public class Templates implements ValueInitializer {
 
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
         ExtendedNodeType nt = (ExtendedNodeType) context.get("currentDefinition");
-        String tplPkgName = jParams.getSite().getTemplatePackageName();
-        JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(tplPkgName);
-        SortedSet<String> templates = getTemplatesSet(pkg, nt);
+        SortedSet<Template> templates = getTemplatesSet(nt);
 
         List<Value> vs = new ArrayList<Value>();
-        for (Iterator iterator = templates.iterator(); iterator.hasNext();) {
-            String skin = (String) iterator.next();
-            vs.add(new ValueImpl(skin, PropertyType.STRING, false));
+        for (Template template : templates) {
+            vs.add(new ValueImpl(template.getKey(), PropertyType.STRING, false));
         }
         return vs.toArray(new Value[vs.size()]);
     }
 
-    public static SortedSet<String> getTemplatesSet(JahiaTemplatesPackage pkg, ExtendedNodeType nt) {
-        SortedSet<String> templates = new TreeSet<String>();
 
+    // todo: move these methods elsewhere
+    public static SortedSet<Template> getTemplatesSet(ExtendedNodeType nt) {
+        Map<String,Template> templates = new HashMap<String,Template>();
 
         List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(nt.getSupertypes()));
         nodeTypeList.add(nt);
+
+        String templateType = "html";
+
         Collections.reverse(nodeTypeList);
-        for (ExtendedNodeType t : nodeTypeList) {
 
-            if (pkg != null) {
-                for (String rootFolderPath : pkg.getLookupPath()) {
-                    StringBuffer buff = new StringBuffer(64);
-                    buff.append(rootFolderPath);
-                    buff.append("/");
-                    buff.append("modules/" + t.getAlias().replace(':','/') + "/html");
-                    String testPath = buff.toString();
-                    File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(testPath));
-                    if (f.exists()) {
-                        File[] files = f.listFiles();
-                        for (File file : files) {
-                            if (!file.isDirectory()) {
-                                String filename = file.getName();
-                                templates.add(filename.substring(0, filename.lastIndexOf(".")));
-                            }
-                        }
+        for (ExtendedNodeType type : nodeTypeList) {
+            List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(type.getName());
+            for (JahiaTemplatesPackage aPackage : packages) {
+                getTemplatesSet(type, templates, templateType, aPackage.getRootFolder(), aPackage);
+            }
+            getTemplatesSet(type, templates, templateType, "default", null);
+        }
+        return new TreeSet<Template>(templates.values());
+    }
+
+    private static void getTemplatesSet(ExtendedNodeType nt, Map<String,Template> templates, String templateType, String currentTemplatePath, JahiaTemplatesPackage tplPackage) {
+        String path = currentTemplatePath + "/modules/" + nt.getAlias().replace(':', '/') + "/"+ templateType;
+
+        File f = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath()+ "/"+ path);
+        if (f.exists()) {
+            File[] files = f.listFiles();
+            for (File file : files) {
+                if (!file.isDirectory()) {
+                    String filename = file.getName();
+                    String key = filename.substring(0, filename.lastIndexOf("."));
+                    if (!templates.containsKey(key)) {
+                        templates.put(key, new Template(path+"/"+file.getName(), key, tplPackage, filename));
                     }
-
                 }
             }
         }
-        return templates;
+    }
+
+    public static class Template implements Comparable<Template> {
+        private String path;
+        private String key;
+        private JahiaTemplatesPackage ownerPackage;
+        private String displayName;
+
+        private Template(String path, String key, JahiaTemplatesPackage ownerPackage, String displayName) {
+            this.path = path;
+            this.key = key;
+            this.ownerPackage = ownerPackage;
+            this.displayName = displayName;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public JahiaTemplatesPackage getOwnerPackage() {
+            return ownerPackage;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public int compareTo(Template template) {
+            if (ownerPackage == null) {
+                if (template.ownerPackage != null ) {
+                    return 1;
+                } else {
+                    return key.compareTo(template.key);
+                }
+            } else {
+                if (template.ownerPackage == null ) {
+                    return -1;
+                } else if (!ownerPackage.equals(template.ownerPackage)) {
+                    return ownerPackage.getName().compareTo(template.ownerPackage.getName());
+                } else {
+                    return key.compareTo(template.key);
+                }
+            }
+        }
     }
 
 }

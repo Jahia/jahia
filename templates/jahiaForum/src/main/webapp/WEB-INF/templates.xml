@@ -41,11 +41,5 @@
     <thumbnail>images/preview.gif</thumbnail>
     <resource-bundle>resources.JahiaForum</resource-bundle>
     <definitions-file>definitions.cnd</definitions-file>
-    <common-pages>
-        <search-results>searchresult.jsp</search-results>
-    </common-pages>
-    <templates default="simple" homepage="Home">
-        <template name="Home" display-name="Home page" filename="home.jsp" page-type="jahiaForum:home"/>
-    </templates>
 </template-set>
 

@@ -127,10 +127,12 @@ class TemplatePackageRegistry {
 
     private Map<String, JahiaTemplatesPackage> registry = new TreeMap<String, JahiaTemplatesPackage>();
     private Map<String, JahiaTemplatesPackage> fileNameRegistry = new TreeMap<String, JahiaTemplatesPackage>();
+    private Map<String, List<JahiaTemplatesPackage>> packagesPerModule = new HashMap<String, List<JahiaTemplatesPackage>>();
 
     private SettingsBean settingsBean;
 
     private List<JahiaTemplatesPackage> templatePackages;
+
 
     private Timer watcherScheduler;
 
@@ -193,6 +195,10 @@ class TemplatePackageRegistry {
         return registry.size();
     }
 
+    public Map<String, List<JahiaTemplatesPackage>> getPackagesPerModule() {
+        return packagesPerModule;
+    }
+
     /**
      * Returns the requested template package or <code>null</code> if the
      * package with the specified name is not registered in the repository.
@@ -232,12 +238,13 @@ class TemplatePackageRegistry {
         templatePackages = null;
         registry.put(templatePackage.getName(), templatePackage);
         fileNameRegistry.put(templatePackage.getFileName(), templatePackage);
+        File rootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), templatePackage.getRootFolder());
         if (!templatePackage.getDefinitionsFiles().isEmpty()) {
             try {
                 for (String name : templatePackage.getDefinitionsFiles()) {
                     NodeTypeRegistry.getInstance().addDefinitionsFile(
-                            new File(new File(settingsBean.getJahiaTemplatesDiskPath(),templatePackage.getRootFolder()), name),
-                            templatePackage.getName(), true, templatePackage.getRootFolderPath());
+                            new File(rootFolder, name),
+                            templatePackage.getName(), true);
                 }
             } catch (Exception e) {
                 logger.warn("Cannot parse definitions for "+templatePackage.getName(),e);
@@ -247,10 +254,26 @@ class TemplatePackageRegistry {
             try {
                 for (String name : templatePackage.getRulesFiles()) {
                     RulesListener listener = RulesListener.getInstance("jahia");
-                    listener.addRules(new File(new File(settingsBean.getJahiaTemplatesDiskPath(),templatePackage.getRootFolder()), name));
+                    listener.addRules(new File(rootFolder, name));
                 }
             } catch (Exception e) {
                 logger.warn("Cannot parse rules for "+templatePackage.getName(),e);
+            }
+        }
+
+        File[] files = new File(rootFolder,"modules").listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                File[] subFiles = file.listFiles();
+                for (File subFile : subFiles) {
+                    if (subFile.isDirectory()) {
+                        String key = file.getName() + ":" + subFile.getName();
+                        if (!packagesPerModule.containsKey(key)) {
+                            packagesPerModule.put(key, new ArrayList<JahiaTemplatesPackage>());
+                        }
+                        packagesPerModule.get(key).add(templatePackage);
+                    }
+                }
             }
         }
     }

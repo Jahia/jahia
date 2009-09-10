@@ -326,6 +326,7 @@ public class Render extends HttpServlet {
         ctx.setCurrentLocale(locale);
 
         Resource r = resolveResource(workspace, locale, path, ctx.getUser());
+        renderContext.setResource(r);
         Node current = r.getNode();
         try {
             while (true) {

@@ -78,7 +78,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
                 File f = new File(cnddir);
                 SortedSet<File> cndfiles = new TreeSet<File>(Arrays.asList(f.listFiles()));
                 for (File file : cndfiles) {
-                    addDefinitionsFile(file, SYSTEM + "-" + file.getName().split("-")[1], true, "/templates/default");
+                    addDefinitionsFile(file, SYSTEM + "-" + file.getName().split("-")[1], true);
                 }
             } catch (ParseException e) {
                 logger.error(e.getMessage(), e);
@@ -89,10 +89,10 @@ public class NodeTypeRegistry implements NodeTypeManager {
         }
     }
 
-    public void addDefinitionsFile(File file, String systemId, boolean redeploy, String templatePath) throws ParseException, IOException {
+    public void addDefinitionsFile(File file, String systemId, boolean redeploy) throws ParseException, IOException {
         String ext = file.getName().substring(file.getName().lastIndexOf('.'));
         if (ext.equalsIgnoreCase(".cnd")) {
-            JahiaCndReader r = new JahiaCndReader(new FileReader(file),file.getPath(), systemId, this, templatePath);
+            JahiaCndReader r = new JahiaCndReader(new FileReader(file),file.getPath(), systemId, this);
             r.parse();
         } else if (ext.equalsIgnoreCase(".grp")) {
             JahiaGroupingFileReader r = new JahiaGroupingFileReader(new FileReader(file), file.getName(),systemId, this);

@@ -195,10 +195,14 @@ public class PreviewPanel extends ContentPanel {
                     com.google.gwt.user.client.Window.alert("-->" + throwable.getMessage());
                 }
                 public void onSuccess(List<String[]> strings) {
-                    for(String[] template:strings) {
-                        templateBox.getStore().add(new GWTJahiaBasicDataBean(template[0], template[1]));
+                    for(String[] currentTpl:strings) {
+                        GWTJahiaBasicDataBean dataBean = new GWTJahiaBasicDataBean(currentTpl[0], currentTpl[1]);
+                        templateBox.getStore().add(dataBean);
+                        if (currentTpl[0].equals(template)) {
+                            templateBox.setValue(dataBean);
+                        }
                     }
-                    templateBox.setValue(new GWTJahiaBasicDataBean(template,template));
+
                 }
             });
         }

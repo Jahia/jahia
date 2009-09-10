@@ -12,6 +12,7 @@ import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.JspException;
@@ -178,11 +179,12 @@ public class ModuleTag extends BodyTagSupport {
                 // add externalLinks
                 try {
                     ExtendedNodeType nt = (ExtendedNodeType) currentResource.getNode().getPrimaryNodeType();
-                    File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(nt.getTemplatePath()+"/css"));
+                    String path = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(nt.getSystemId()).getRootFolder();
+                    File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(path+"/css"));
                     if (f.exists()) {
                         File[] files = f.listFiles();
                         for (File file : files) {
-                            renderContext.addExternalLink("css",nt.getTemplatePath()+"/css/" + file.getName());
+                            renderContext.addExternalLink("css",path+"/css/" + file.getName());
                         }
                     }
 

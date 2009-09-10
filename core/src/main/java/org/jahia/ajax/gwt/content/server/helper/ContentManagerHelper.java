@@ -2397,8 +2397,6 @@ public class ContentManagerHelper {
 
     public static List<String[]> getTemplatesSet(String path, ProcessingContext ctx) throws GWTJahiaServiceException {
         List<String[]> templatesPath = new ArrayList<String[]>();
-        String tplPkgName = ctx.getSite().getTemplatePackageName();
-        JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(tplPkgName);
         try {
             JCRNodeWrapper node = jcr.getThreadSession(ctx.getUser()).getNode(path);
             String def = null;
@@ -2407,12 +2405,18 @@ public class ContentManagerHelper {
                 def = node.getProperty("j:defaultTemplate").getString();
             }
 
-            SortedSet<String> set = getTemplatesSet(pkg, node);
-            for (String s : set) {
-                if (s.equals(def)) {
-                    templatesPath.add(new String[]{s,"* " + s});                    
+            SortedSet<Templates.Template> set = getTemplatesSet(node);
+            for (Templates.Template s : set) {
+                String tpl;
+                if (s.getOwnerPackage() == null) {
+                    tpl = "Default";
                 } else {
-                    templatesPath.add(new String[]{s,s});
+                    tpl = s.getOwnerPackage().getName();
+                }
+                if (s.getKey().equals(def)) {
+                    templatesPath.add(new String[]{s.getKey(),"* " + tpl +" : "+ s.getKey()});
+                } else {
+                    templatesPath.add(new String[]{s.getKey(),tpl +" : "+ s.getKey()});
                 }
             }
         } catch (RepositoryException e) {
@@ -2422,20 +2426,20 @@ public class ContentManagerHelper {
         return templatesPath;
     }
 
-    private static SortedSet<String> getTemplatesSet(JahiaTemplatesPackage pkg, JCRNodeWrapper node) throws RepositoryException {
+    private static SortedSet<Templates.Template> getTemplatesSet(JCRNodeWrapper node) throws RepositoryException {
         ExtendedNodeType nt = (ExtendedNodeType) node.getPrimaryNodeType();
-        SortedSet<String> set;
+        SortedSet<Templates.Template> set;
         if (node.getPrimaryNodeTypeName().equals("jnt:nodeReference")) {
 
-            set = getTemplatesSet(pkg, (JCRNodeWrapper) node.getProperty("j:node").getNode());
+            set = getTemplatesSet((JCRNodeWrapper) node.getProperty("j:node").getNode());
         } else if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
-            set = Templates.getTemplatesSet(pkg, nt);
+            set = Templates.getTemplatesSet(nt);
             List<JCRNodeWrapper> l = node.getChildren();
             for (JCRNodeWrapper c : l) {
-                set.addAll(getTemplatesSet(pkg, c));
+                set.addAll(getTemplatesSet(c));
             }
         } else {
-            set = Templates.getTemplatesSet(pkg, nt);
+            set = Templates.getTemplatesSet(nt);
         }
         return set;
     }

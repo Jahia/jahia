@@ -32,12 +32,10 @@
 package org.jahia.services.render;
 
 import org.apache.log4j.Logger;
-import org.jahia.data.beans.TemplatePathResolverFactory;
-import org.jahia.data.beans.TemplatePathResolverBean;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.params.ProcessingContext;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.registries.ServicesRegistry;
 
 import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpServletResponse;
@@ -84,7 +82,7 @@ public class RequestDispatcherScript implements Script {
      */
     public RequestDispatcherScript(Resource resource, RenderContext context) throws IOException {
         try {
-            String templatePath = getTemplatePath(resource, context);
+            String templatePath = getTemplatePath(resource);
             if (templatePath == null) {
                 throw new IOException("Template not found for : "+resource);
             } else {
@@ -104,14 +102,21 @@ public class RequestDispatcherScript implements Script {
         }
     }
 
-    private String getTemplatePath(Resource resource, RenderContext context) throws RepositoryException {
-        TemplatePathResolverFactory factory = (TemplatePathResolverFactory) SpringContextSingleton.getInstance().getContext().getBean("TemplatePathResolverFactory");
-        ProcessingContext threadParamBean = Jahia.getThreadParamBean();
-        TemplatePathResolverBean templatePathResolver = factory.getTemplatePathResolver(threadParamBean);
+    private String getTemplatePath(Resource resource) throws RepositoryException {
         ExtendedNodeType nt = (ExtendedNodeType) resource.getNode().getPrimaryNodeType();
-        String currentTemplatePath = nt.getTemplatePath();
+
+        String templatePath;
+
         for (String template : resource.getTemplates()) {
-            String templatePath = getTemplatePath(context, resource.getTemplateType(), template, templatePathResolver, nt, currentTemplatePath);
+            List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(nt.getName());            
+            for (JahiaTemplatesPackage aPackage : packages) {
+                String currentTemplatePath = aPackage.getRootFolderPath();
+                templatePath = getTemplatePath(resource.getTemplateType(), template, nt, currentTemplatePath);
+                if (templatePath != null) {
+                    return templatePath;
+                }
+            }
+            templatePath = getTemplatePath(resource.getTemplateType(), template, nt, "/templates/default");
             if (templatePath != null) {
                 return templatePath;
             }
@@ -119,34 +124,37 @@ public class RequestDispatcherScript implements Script {
             List<ExtendedNodeType> nodeTypeList = Arrays.asList(nt.getSupertypes());
             Collections.reverse(nodeTypeList);
             for (ExtendedNodeType st : nodeTypeList) {
-                templatePath = getTemplatePath(context, resource.getTemplateType(), template, templatePathResolver, st, currentTemplatePath);
+                packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(st.getName());
+                for (JahiaTemplatesPackage aPackage : packages) {
+                    String currentTemplatePath = aPackage.getRootFolderPath();
+                    templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath);
+                    if (templatePath != null) {
+                        return templatePath;
+                    }
+                }
+                templatePath = getTemplatePath(resource.getTemplateType(), template, st, "/templates/default");
                 if (templatePath != null) {
                     return templatePath;
                 }
+                
             }
         }
 
         return null;
     }
 
-    private String getTemplatePath(RenderContext context, String templateType, String template, TemplatePathResolverBean templatePathResolver, ExtendedNodeType nt, String currentTemplatePath) {
-        String defaultPath = templatePathResolver.lookup("modules/" +
-                         nt.getAlias().replace(':','/') +
-                         "/" + templateType +
-                         "/" + template.replace('.','/') + ".jsp");
-        if (defaultPath != null) {
-            return defaultPath;
-        }
+    private String getTemplatePath(String templateType, String template, ExtendedNodeType nt, String currentTemplatePath) {
         String modulePath = currentTemplatePath + "/modules/" + nt.getAlias().replace(':','/') + "/" + templateType +   "/" + template.replace('.','/') + ".jsp";
         try {
             if (Jahia.getStaticServletConfig().getServletContext().getResource(modulePath) != null) {
                 return modulePath;
             }
         } catch (MalformedURLException e) {
-            return null;
         }
         return null;
-    }       /**
+    }
+
+    /**
      * Execute the script and return the result as a string
      * @return the rendered resource
      * @throws IOException

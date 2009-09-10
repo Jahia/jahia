@@ -36,6 +36,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Collections;
+import java.util.ArrayList;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.lang.StringUtils;
@@ -225,6 +227,19 @@ public class JahiaTemplateManagerService extends JahiaService {
      */
     public List<JahiaTemplatesPackage> getAvailableTemplatePackages() {
         return templatePackageRegistry.getAvailablePackages();
+    }
+
+    /**
+     * Returns a list of all available template packages having templates for a module.
+     *
+     * @return a list of all available template packages
+     */
+    public List<JahiaTemplatesPackage> getAvailableTemplatePackagesForModule(String moduleName) {
+        List<JahiaTemplatesPackage> r = templatePackageRegistry.getPackagesPerModule().get(moduleName);
+        if (r == null) {
+            return Collections.emptyList();
+        }
+        return r;
     }
 
     /**

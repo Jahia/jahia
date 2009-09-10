@@ -35,6 +35,7 @@
 
 <%@ include file="../../../../../common/declarations.jspf" %>
 <c:set var="useGWT" value="${!empty param.useGWT}"/>
+<template:module node="${currentNode}" forcedTemplate="${currentResource.resolvedTemplate}" var="content"/>
 <template:template gwtForGuest="${useGWT}">
     <template:templateHead>
         <!-- All headers and declarations global meta and css-->
@@ -48,10 +49,12 @@
             <s:openSearchLink searchFor="pages"/>
             <s:openSearchLink searchFor="files"/>
         </c:if>
+        <%--CSS--%>
+        <c:forEach var="css" items="${renderContext.externalLinks.css}">
+            <link rel="stylesheet" href="${renderContext.request.contextPath}/${css}" media="screen"/>
+        </c:forEach>
     </template:templateHead>
     <template:templateBody gwtScript="${param.gwtScript}">
-
-        <template:module node="${currentNode}" forcedTemplate="${currentResource.resolvedTemplate}" />
-
+        ${content}
     </template:templateBody>
 </template:template>

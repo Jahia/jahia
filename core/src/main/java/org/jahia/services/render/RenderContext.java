@@ -33,8 +33,7 @@ package org.jahia.services.render;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * TODO Comment me
@@ -47,6 +46,7 @@ public class RenderContext {
     private boolean includeSubModules = true;
     private boolean isEditMode = false;
     private String templateWrapper;
+    private Map<String,Set<String>> externalLinks = new HashMap<String,Set<String>>();
 
     private Set<String> dependencies = new HashSet<String>();
     private Resource resource;
@@ -100,6 +100,23 @@ public class RenderContext {
 
     public void setTemplateWrapper(String pageWrapper) {
         this.templateWrapper = pageWrapper;
+    }
+
+    public void addExternalLink(String externalLinkType,String externalLink) {
+        Set<String> externalLinkList = getExternalLinks(externalLinkType);
+        if (externalLinkList == null) {
+            externalLinkList = new HashSet<String>();
+        }
+        externalLinkList.add(externalLink);
+        externalLinks.put(externalLinkType,externalLinkList);
+    }
+
+    public Set<String> getExternalLinks(String externalLinkType) {
+        return externalLinks.get(externalLinkType);
+    }
+
+    public Map<String, Set<String>> getExternalLinks() {
+        return externalLinks;
     }
 
     public void setResource(Resource resource) {

@@ -32,7 +32,7 @@
 
                 <p class="comment_button">
                 <input type="submit" value="Citer" name="citer" class="button" tabindex="1" />
-    			<input type="submit" value="Répondre" name="repondre" class="button" tabindex="2" />
+    			<input type="submit" value="Repondre" name="repondre" class="button" tabindex="2" />
 </p>
 <div class="clear"></div>
 </div>

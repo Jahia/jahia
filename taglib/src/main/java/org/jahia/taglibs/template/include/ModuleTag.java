@@ -9,6 +9,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRNodeDecorator;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRValueWrapper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.apache.log4j.Logger;
@@ -26,6 +27,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.version.VersionException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.File;
 import java.util.*;
 
 /**
@@ -59,6 +61,10 @@ public class ModuleTag extends BodyTagSupport {
     private String forcedTemplate = null;
 
     private String autoCreateType = null;
+
+    private String var = null;
+
+    private StringBuffer buffer = new StringBuffer();
 
     public void setPath(String path) {
         this.path = path;
@@ -98,6 +104,10 @@ public class ModuleTag extends BodyTagSupport {
 
     public void setAutoCreateType(String autoCreateType) {
         this.autoCreateType = autoCreateType;
+    }
+
+    public void setVar(String var) {
+        this.var = var;
     }
 
     @Override
@@ -165,6 +175,20 @@ public class ModuleTag extends BodyTagSupport {
                 }
             }
             if (node != null) {
+                // add externalLinks
+                try {
+                    ExtendedNodeType nt = (ExtendedNodeType) currentResource.getNode().getPrimaryNodeType();
+                    File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(nt.getTemplatePath()+"/css"));
+                    if (f.exists()) {
+                        File[] files = f.listFiles();
+                        for (File file : files) {
+                            renderContext.addExternalLink("css",nt.getTemplatePath()+"/css/" + file.getName());
+                        }
+                    }
+
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
+                }
                 if (node.getPath().endsWith("/*")) {
                     if (renderContext.isEditMode() && editable) {
                         printModuleStart("placeholder", node.getPath(), null);
@@ -173,7 +197,6 @@ public class ModuleTag extends BodyTagSupport {
                     
                     return EVAL_PAGE;
                 }
-
                 if (nodeTypes != null) {
                     StringTokenizer st = new StringTokenizer(nodeTypes, " ");
                     boolean found = false;
@@ -237,6 +260,9 @@ public class ModuleTag extends BodyTagSupport {
         } catch (IOException ex) {
             throw new JspException(ex);
         } finally {
+            if (var != null) {
+                pageContext.setAttribute(var,buffer);
+            }
             path = null;
             contentBeanName = null;
             node = null;
@@ -246,6 +272,8 @@ public class ModuleTag extends BodyTagSupport {
             templateType = "html";
             nodeTypes = null;
             autoCreateType = null;
+            var = null;
+            buffer = null;
 
     		Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
     		pageContext.setAttribute("org.jahia.modules.level", level != null ? level -1 : 1, PageContext.REQUEST_SCOPE);
@@ -255,24 +283,52 @@ public class ModuleTag extends BodyTagSupport {
     }
 
     private void printModuleStart(String type, String path, String resolvedTemplate) throws IOException {
-        pageContext.getOut().print("<div class=\"jahia-template-gxt\" jahiatype=\"module\" " +
-                "id=\"module"+ UUID.randomUUID().toString()+"\" type=\""+type+"\" path=\""+ path +"\" " +
-                ((nodeTypes != null) ? "nodetypes=\""+nodeTypes+"\"" : "") + ((resolvedTemplate != null) ?" template=\""+resolvedTemplate+"\"":"")+">");
+
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ")
+                .append("id=\"module")
+                .append(UUID.randomUUID().toString())
+                .append("\" type=\"")
+                .append(type)
+                .append("\" path=\"").append(path)
+                .append("\" ")
+                .append((nodeTypes != null) ? "nodetypes=\"" + nodeTypes + "\"" : "")
+                .append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "")
+                .append(">");
+        this.buffer = buffer;
+        if (var == null) {
+            pageContext.getOut().print(buffer);
+        }
+
     }
 
-    private void printModuleEnd() throws IOException {
-        pageContext.getOut().print("</div>");
+    private void printModuleEnd()  throws IOException {
+        StringBuffer buffer = new StringBuffer();
+         buffer.append("</div>");
+        this.buffer = buffer;
+        if (var == null) {
+            pageContext.getOut().print(buffer);
+        }
     }
 
     private void render(RenderContext renderContext, Resource resource) throws IOException {
+        StringBuffer buffer = new StringBuffer();
         try {
             if (renderContext.isIncludeSubModules()) {
-                pageContext.getOut().print(RenderService.getInstance().render(resource, renderContext));
+                buffer.append(RenderService.getInstance().render(resource, renderContext));
+                this.buffer = buffer;
+                if (var == null) {
+                    pageContext.getOut().print(buffer);
+                }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException io) {
-             pageContext.getOut().print(io);
+            buffer.append(io);
+            this.buffer = buffer;
+            if (var == null) {
+                pageContext.getOut().print(buffer);
+            }
         }
 
     }

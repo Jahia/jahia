@@ -224,3 +224,12 @@ rule "Import file"
         Import the node
         Log "Import file"
 end
+
+rule "Profile Image update"
+    when
+        A property j:picture has been set on a node
+             - the node has the type jnt:user
+    then
+        Create a square thumbnail on reference "avatar_120" of size 120
+        Create a square thumbnail on reference "avatar_60" of size 60
+end

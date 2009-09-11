@@ -178,6 +178,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getThumbnailUrl(name);
     }
 
+    public Map<String, String> getThumbnailUrls() {
+        return node.getThumbnailUrls();
+    }
+
     public List<JCRNodeWrapper> getChildren() {
         return node.getChildren();
     }

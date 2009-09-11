@@ -34,21 +34,21 @@ package org.jahia.services.content.automation;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.Calendar;
-
-import javax.jcr.Node;
-
 import org.drools.ObjectFilter;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
+
+import javax.jcr.Node;
+import javax.jcr.Session;
+import javax.jcr.Property;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -119,7 +119,7 @@ public class ImageService {
      * Creates a JPEG thumbnail from inputFile and saves it to disk in
      * outputFile. scaleWidth is the width to scale the image to
      */
-    private boolean createThumb(ImageWrapper iw, File outputFile, int size) throws IOException {
+    private boolean createThumb(ImageWrapper iw, File outputFile, int size, boolean square) throws IOException {
         ImagePlus ip = iw.getImagePlus();
         // Load the input image.
         if (ip == null) {
@@ -127,7 +127,9 @@ public class ImageService {
         }
         ip = new ImagePlus(ip.getTitle(), ip.getImageStack());
         ImageProcessor processor = ip.getProcessor();
-        if (ip.getWidth() > ip.getHeight()) {
+        if(square) {
+            processor = processor.resize(size, size);
+        } else if (ip.getWidth() > ip.getHeight()) {
             processor = processor.resize(size, ip.getHeight()*size/ip.getWidth());
         } else {
             processor = processor.resize(ip.getWidth()*size/ip.getHeight(), size);
@@ -138,20 +140,22 @@ public class ImageService {
         return ImageProcess.save(type, ip,outputFile);
     }
 
-
     public void addThumbnail(NodeWrapper imageNode, String name, int size, KnowledgeHelper drools) throws Exception {
+        addThumbnail(imageNode, name, size,false, drools);
+    }
+    public void addThumbnail(NodeWrapper imageNode, String name, int size,boolean square, KnowledgeHelper drools) throws Exception {
         if (imageNode.getNode().hasNode(name)) {
             Node node = imageNode.getNode().getNode(name);
             Calendar thumbDate = node.getProperty("jcr:lastModified").getDate();
             Calendar contentDate = imageNode.getNode().getNode("jcr:content").getProperty("jcr:lastModified").getDate();
             if (contentDate.after(thumbDate)) {
                 NodeWrapper thumbNode = new NodeWrapper(node);
-                File f = getThumbFile(imageNode, size, drools);
+                File f = getThumbFile(imageNode, size,square, drools);
                 drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_DATA, f, drools, false));
                 drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools, false));
             }
         } else {
-            File f = getThumbFile(imageNode, size, drools);
+            File f = getThumbFile(imageNode, size,square, drools);
 
             NodeWrapper thumbNode = new NodeWrapper(imageNode, name, "jnt:extraResource", drools);
             if (thumbNode.getNode() != null) {
@@ -163,7 +167,21 @@ public class ImageService {
         }
     }
 
-    private File getThumbFile(NodeWrapper imageNode, int size, KnowledgeHelper drools) throws Exception {
+    public void addThumbnail(PropertyWrapper propertyWrapper, String name, int size, KnowledgeHelper drools) throws Exception {
+        final Property property = propertyWrapper.getProperty();
+        final Session session = property.getSession();
+        Node node = session.getNodeByUUID(property.getString());
+        addThumbnail(new NodeWrapper(node),name, size,drools);
+    }
+
+    public void addSquareThumbnail(PropertyWrapper propertyWrapper, String name, int size, KnowledgeHelper drools) throws Exception {
+        final Property property = propertyWrapper.getProperty();
+        final Session session = property.getSession();
+        Node node = session.getNodeByUUID(property.getString());
+        addThumbnail(new NodeWrapper(node),name, size,drools);
+    }
+
+    private File getThumbFile(NodeWrapper imageNode, int size,boolean square,KnowledgeHelper drools) throws Exception {
         String savePath = org.jahia.settings.SettingsBean.getInstance().getTmpContentDiskPath();
         File Ftemp = new File(savePath);
         if (!Ftemp.exists()) Ftemp.mkdir();
@@ -171,7 +189,7 @@ public class ImageService {
 
         ImageWrapper iw = getImageWrapper(imageNode, drools);
 
-        createThumb(iw, f, size);
+        createThumb(iw, f, size,square);
         f.deleteOnExit();
         return f;
     }

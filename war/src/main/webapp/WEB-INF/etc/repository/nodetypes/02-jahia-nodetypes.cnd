@@ -194,7 +194,7 @@
  - j:lastName (string)
  - j:gender (string,choicelist[resourceBundle]) < male,female,other
  - j:title (string,choicelist[resourceBundle]) < mister,master,professor,doctor,miss,madam
- - j:birthDate (date)
+ - j:birthDate (date,datepicker)
  - j:organization (string)
  - j:function (string)
  - j:about (string,richtext)
@@ -205,8 +205,9 @@
  - j:twitterID (string)
  - j:facebookID (string)
  - j:linkedinID (string)
- + j:addresses (jnt:addresses) = jnt:addresses mandatory autocreated
+ - j:picture (weakreference,file) < jnt:file
  - * (string)
+ + j:addresses (jnt:addresses) = jnt:addresses mandatory autocreated
 
 [jmix:groupsFolder] mixin
  - j:groupsFolderConfig (string)

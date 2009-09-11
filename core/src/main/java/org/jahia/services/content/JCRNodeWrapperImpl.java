@@ -433,6 +433,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return getWebdavUrl() + "/" + name;
     }
 
+    public Map<String,String> getThumbnailUrls() {
+        List<String> list = getThumbnails();
+        Map<String,String> map = new HashMap<String, String>(list.size());
+        for (String thumbnailName : list) {
+            map.put(thumbnailName,getThumbnailUrl(thumbnailName));
+        }
+        return map;
+    }
+
     public List<JCRNodeWrapper> getChildren() {
         List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
         if (provider.getService() != null) {

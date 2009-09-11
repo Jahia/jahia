@@ -140,6 +140,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     String getThumbnailUrl(String name);
 
+    Map<String,String> getThumbnailUrls();
+
     List<JCRNodeWrapper> getChildren();
 
     List<JCRNodeWrapper> getEditableChildren();

@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-
+<a name="threadPost"></a>
 <form action="${baseUrl}${currentNode.path}/*" method="post">
     <input type="hidden" name="nodeType" value="jahiaForum:post"/>
     <input type="hidden" name="stayOnNode" value="${baseUrl}${renderContext.resource.node.path}"/>

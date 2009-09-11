@@ -2,6 +2,7 @@ package org.jahia.taglibs.template.include;
 
 import org.jahia.data.beans.ContentBean;
 import org.jahia.data.beans.CategoryBean;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.RenderContext;
@@ -179,12 +180,16 @@ public class ModuleTag extends BodyTagSupport {
                 // add externalLinks
                 try {
                     ExtendedNodeType nt = (ExtendedNodeType) currentResource.getNode().getPrimaryNodeType();
-                    String path = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(nt.getSystemId()).getRootFolder();
-                    File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(path+"/css"));
-                    if (f.exists()) {
-                        File[] files = f.listFiles();
-                        for (File file : files) {
-                            renderContext.addExternalLink("css",path+"/css/" + file.getName());
+                    final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
+                            nt.getSystemId());
+                    if (aPackage!=null) {
+                        String path = aPackage.getRootFolder();
+                        File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(path+"/css"));
+                        if (f.exists()) {
+                            File[] files = f.listFiles();
+                            for (File file : files) {
+                                renderContext.addExternalLink("css",path+"/css/" + file.getName());
+                            }
                         }
                     }
 

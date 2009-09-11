@@ -180,15 +180,14 @@ public class ModuleTag extends BodyTagSupport {
                 // add externalLinks
                 try {
                     ExtendedNodeType nt = (ExtendedNodeType) currentResource.getNode().getPrimaryNodeType();
-                    final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
-                            nt.getSystemId());
-                    if (aPackage!=null) {
-                        String path = aPackage.getRootFolder();
-                        File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(path+"/css"));
+                    final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(nt.getSystemId());
+                    if (aPackage != null) {
+                        String path = aPackage.getFilePath();
+                        File f = new File(path+"/css");
                         if (f.exists()) {
                             File[] files = f.listFiles();
                             for (File file : files) {
-                                renderContext.addExternalLink("css",path+"/css/" + file.getName());
+                                renderContext.addExternalLink("css",aPackage.getRootFolderPath()+"/css/" + file.getName());
                             }
                         }
                     }

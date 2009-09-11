@@ -1968,6 +1968,14 @@ body {
     overflow: hidden;
 }
 
+#bodywrapper p.peopleDetail {
+    font-size: 85%;
+    margin: 0;
+}
+#bodywrapper p.peopleLabel {
+    font-weight:bold;
+}
+
 #bodywrapper p.peopleFonction {
     font-size: 85%;
     margin: 0;

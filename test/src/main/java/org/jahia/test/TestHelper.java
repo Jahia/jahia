@@ -72,7 +72,7 @@ public class TestHelper {
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
 
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
-        JahiaSite site = service.getSiteByKey("testSite");
+        JahiaSite site = service.getSiteByKey(name);
 
         if (site != null) {
             service.removeSite(site);

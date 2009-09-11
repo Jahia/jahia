@@ -68,8 +68,6 @@ public class Constants {
     public static final String JCR_LANGUAGE = "jcr:language";
     public static final String JCR_LASTMODIFIED = "jcr:lastModified";
     public static final String JCR_LASTMODIFIEDBY = "jcr:lastModifiedBy";    
-    public static final String JCR_LASTPUBLISHED = "j:lastPublished";
-    public static final String JCR_LASTPUBLISHEDBY = "j:lastPublishedBy";
     public static final String JCR_LOCKISDEEP = "jcr:lockIsDeep";
     public static final String JCR_LOCKOWNER = "jcr:lockOwner";
     public static final String JCR_MANDATORY = "jcr:mandatory";
@@ -102,6 +100,7 @@ public class Constants {
     public static final String JCR_VERSIONABLEUUID = "jcr:versionableUuid";
     public static final String JCR_PATH = "jcr:path";
     public static final String JCR_SCORE = "jcr:score";
+    public static final String MIX_LANGUAGE = "mix:language";    
     public static final String MIX_LOCKABLE = "mix:lockable";
     public static final String MIX_MIMETYPE = "mix:mimeType";
     public static final String MIX_REFERENCEABLE = "mix:referenceable";
@@ -171,7 +170,9 @@ public class Constants {
     public static final String JAHIANT_LAYOUTITEM = "jnt:layoutItem";
     public static final String JAHIANT_MOUNTPOINT = "jnt:mountPoint";
     public static final String JAHIANT_VFSMOUNTPOINT = "jnt:vfsMountPoint";
-
+    
+    public static final String LASTPUBLISHED = "j:lastPublished";
+    public static final String LASTPUBLISHEDBY = "j:lastPublishedBy";    
     public static final String CONTENT = "content";
     public static final String SYSTEM = "j:system";
     public static final String FILTERS = "j:filters";

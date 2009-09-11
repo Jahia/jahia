@@ -42,6 +42,9 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.exceptions.JahiaSessionExpirationException;
+import org.jahia.exceptions.JahiaException;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -97,6 +100,7 @@ public class GWTInitializer {
             locale = Locale.ENGLISH;
         }
 
+        final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
         String context = request.getContextPath();
         buf.append("<meta name=\"gwt:property\" content=\"locale=").append(locale.toString()).append("\"/>");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
@@ -184,6 +188,25 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.ENGINE_LANGUAGE, enginelocale.toString());
         }
 
+        try {
+            // put live workspace url
+            if (request.getAttribute("renderContext") != null) {
+                params.put(JahiaGWTParameters.LIVE_URL, request.getAttribute("liveUrl") + ".html");
+                params.put(JahiaGWTParameters.EDIT_URL, request.getAttribute("editUrl") + ".html");
+                params.put(JahiaGWTParameters.PREVIEW_URL, request.getAttribute("previewUrl") + ".html");
+                params.put(JahiaGWTParameters.COMPARE_URL, request.getAttribute("compareUrl") + ".html");
+            } else {
+                if (jData != null && jData.gui() != null) {
+                    params.put(JahiaGWTParameters.LIVE_URL, jData.gui().drawNormalModeLink());
+                    params.put(JahiaGWTParameters.EDIT_URL, jData.gui().drawEditModeLink());
+                    params.put(JahiaGWTParameters.PREVIEW_URL, jData.gui().drawPreviewModeLink());
+                    params.put(JahiaGWTParameters.COMPARE_URL, jData.gui().drawRevDifferenceModeLink(1, jData.getProcessingContext().getOperationMode()));
+                }
+            }
+        } catch (JahiaException e) {
+            logger.error(e, e);
+        }
+
         // add jahia parameter dictionary
         buf.append("<script type='text/javascript'>\n");
         buf.append(getJahiaGWTConfig(params));
@@ -193,6 +216,12 @@ public class GWTInitializer {
     }
 
 
+    /**
+     * Get jahiaGWTConfig as JSON string
+     *
+     * @param params
+     * @return
+     */
     private static String getJahiaGWTConfig(Map params) {
         StringBuilder s = new StringBuilder();
         s.append("var " + JahiaGWTParameters.JAHIA_GWT_PARAMETERS + " = {\n");
@@ -216,6 +245,12 @@ public class GWTInitializer {
         return s.toString();
     }
 
+    /**
+     * Build service base entry point url
+     *
+     * @param request
+     * @return
+     */
     private static String buildServiceBaseEntrypointUrl(HttpServletRequest request) {
         return new StringBuilder(request.getContextPath()).append("/gwt/").toString();
     }

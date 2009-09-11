@@ -39,6 +39,7 @@ import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 
 import java.util.Map;
 
@@ -52,12 +53,15 @@ public class RedirectWindowJahiaToolItemProvider extends AbstractJahiaToolItemPr
         // add listener
         SelectionListener<T> listener = new SelectionListener<T>() {
             public void componentSelected(T be) {
-                Map preferences = gwtToolbarItem.getProperties();
-                final GWTJahiaProperty windowUrl = (GWTJahiaProperty) preferences.get(ToolbarConstants.URL);
-                if (windowUrl != null && windowUrl.getValue() != null) {
-                    Window.Location.replace(windowUrl.getValue());
+                String jsUrl = getPropertyValue(gwtToolbarItem, "js.url");
+                if (jsUrl != null) {
+                    Window.Location.replace(JahiaGWTParameters.getParam(jsUrl));
                 } else {
-                    Window.Location.replace("http://www.google.com");
+                    Map preferences = gwtToolbarItem.getProperties();
+                    final GWTJahiaProperty windowUrl = (GWTJahiaProperty) preferences.get(ToolbarConstants.URL);
+                    if (windowUrl != null && windowUrl.getValue() != null) {
+                        Window.Location.replace(windowUrl.getValue());
+                    }
                 }
             }
         };

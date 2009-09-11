@@ -16,6 +16,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.operations.valves.EngineValve;
 import org.jahia.params.ParamBean;
 import org.jahia.content.ContentObject;
+import org.jahia.api.Constants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.jcr.RepositoryException;
@@ -92,7 +93,7 @@ public class RenderService extends JahiaService {
         Object old = request.getAttribute("currentNode");
         request.setAttribute("currentNode", resource.getNode());
 
-        String editBaseUrl = context.getRequest().getContextPath()+Edit.getEditServletPath()+ "/"+resource.getWorkspace()+"/"+resource.getLocale();
+        final String editBaseUrl = context.getRequest().getContextPath()+Edit.getEditServletPath()+ "/"+resource.getWorkspace()+"/"+resource.getLocale();
         if (request.getAttribute("baseUrl") == null) {
             if (context.isEditMode()) {
                 request.setAttribute("baseUrl", editBaseUrl);
@@ -101,12 +102,9 @@ public class RenderService extends JahiaService {
             }
         }
 
-        // TODO: add acl and permission checking
-        if(request.getAttribute("editUrl") == null){
-            if(!context.isEditMode()){
-                request.setAttribute("editUrl", editBaseUrl+resource.getNode().getPath());
-            }
-        }
+
+
+
 
         request.setAttribute("workspace", resource.getNode().getSession().getWorkspace().getName());
         request.setAttribute("locale", resource.getNode().getSession().getWorkspace().getName());

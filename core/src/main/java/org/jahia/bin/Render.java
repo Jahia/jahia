@@ -14,6 +14,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.api.Constants;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -327,6 +328,9 @@ public class Render extends HttpServlet {
 
         Resource r = resolveResource(workspace, locale, path, ctx.getUser());
         renderContext.setResource(r);
+
+        setWorkspaceUrl(renderContext, locale, r);
+
         Node current = r.getNode();
         try {
             while (true) {
@@ -349,6 +353,23 @@ public class Render extends HttpServlet {
         }
 
         return RenderService.getInstance().render(r, renderContext);
+    }
+
+    /**
+     * Set worksapce url as attribute of the current request
+     * @param renderContext
+     * @param locale
+     * @param r
+     */
+    private void setWorkspaceUrl(RenderContext renderContext, Locale locale, Resource r) {
+        final String liveBaseUrl = renderContext.getRequest().getContextPath()+ Render.getRenderServletPath()+ "/"+ Constants.LIVE_WORKSPACE +"/"+locale;
+        final String editBaseUrl = renderContext.getRequest().getContextPath()+ Edit.getEditServletPath()+ "/"+Constants.EDIT_WORKSPACE+"/"+locale;
+        final String previewBaseUrl = renderContext.getRequest().getContextPath()+Render.getRenderServletPath()+ "/"+Constants.EDIT_WORKSPACE+"/"+locale;
+        final String resourcePath = r.getNode().getPath();
+
+        renderContext.getRequest().setAttribute("liveUrl", liveBaseUrl+resourcePath);
+        renderContext.getRequest().setAttribute("editUrl", editBaseUrl+resourcePath);
+        renderContext.getRequest().setAttribute("previewUrl", previewBaseUrl+resourcePath);
     }
 
     /**

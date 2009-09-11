@@ -1,7 +1,6 @@
 <toolbars id="org.jahia.toolbars.default">
     <display>
-        <toolbar name="editmode" ref-type="org.jahia.toolbar.editmode" state="top" draggable="false" displayed="true"
-                 mandatory="true" display-title="true"/>
+        <toolbar name="editmode" ref-type="org.jahia.toolbar.editmode" state="top" displayed="true" mandatory="true" display-title="true"/>
 
         <!--<toolbar name="workflow" ref-type="org.jahia.toolbar.workflow" state="top" draggable="true" displayed="false"
                  mandatory="false" display-title="true"/>
@@ -97,7 +96,7 @@
         <toolbar type="org.jahia.toolbar.statistics">
             <title-resourcebundle-key key="toolbar.itemgroups.statistics"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.Statistics"/>
-            <visibility>
+            <visibility >
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.SimpleVisibilityResolver"
                                 input="statistics"/>
             </visibility>
@@ -407,6 +406,7 @@
         <!-- Redirect item-->
         <item type="org.jahia.toolbar.item.RedirectWindow">
             <property name="url" value="http://www.jahia.org"/>
+            <property name="url" value="http://www.jahia.org"/>
         </item>
 
         <!-- base item: open window, redirect, display info, ajax action, separator-->
@@ -476,10 +476,7 @@
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver"
                                 input="live"/>
             </visibility>
-            <property name="url">
-                <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
-                                input="live"/>
-            </property>
+            <property name="js.url" value="liveUrl"/>
             <selected-resolver class="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"
                                input="live"/>
         </item>
@@ -494,9 +491,7 @@
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver"
                                 input="compare"/>
             </visibility>
-            <property name="url">
-                <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver" input="compare"/>
-            </property>
+            <property name="js.url" value="compareUrl"/>
             <selected-resolver class="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"
                                input="compare"/>
         </item>
@@ -523,9 +518,7 @@
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver"
                                 input="preview"/>
             </visibility>
-            <property name="url">
-                <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver" input="preview"/>
-            </property>
+            <property name="js.url" value="previewUrl"/>
             <selected-resolver class="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"
                                input="preview"/>
         </item>
@@ -551,9 +544,7 @@
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver"
                                 input="edit"/>
             </visibility>
-            <property name="url">
-                <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver" input="edit"/>
-            </property>
+            <property name="js.url" value="editUrl"/>
             <selected-resolver class="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"
                                input="edit"/>
         </item>

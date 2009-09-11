@@ -40,6 +40,7 @@ import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -52,6 +53,7 @@ import java.util.Map;
 public class OpenWindowJahiaToolItemProvider extends AbstractJahiaToolItemProvider {
     /**
      * Get Selectect Listener
+     *
      * @param gwtToolbarItem
      * @return
      */
@@ -68,25 +70,29 @@ public class OpenWindowJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                     }
                 }
                 final GWTJahiaProperty windowWidth = (GWTJahiaProperty) preferences.get(ToolbarConstants.WIDTH);
-                String wWidth = "" ;
+                String wWidth = "";
                 if (windowWidth == null) {
                     Log.debug("Warning: width not found - nb. preferences:" + preferences.size());
-                     wWidth = ",width=900";
+                    wWidth = ",width=900";
                 } else {
-                    wWidth = ",width=" + windowWidth.getValue() ;
+                    wWidth = ",width=" + windowWidth.getValue();
                 }
 
                 final GWTJahiaProperty windowHeight = (GWTJahiaProperty) preferences.get(ToolbarConstants.HEIGHT);
-                String wHeight = "" ;
+                String wHeight = "";
                 if (windowHeight == null) {
                     wHeight = ",height=600";
                 } else {
-                    wHeight = ",height=" + windowHeight.getValue() ;
+                    wHeight = ",height=" + windowHeight.getValue();
                 }
 
-                final String wOptions = "directories=no,scrollbars=yes,resizable=yes,status=no,location=no" + wWidth + wHeight ;
-                if (windowUrl != null && windowUrl.getValue() != null) {
-                    String name = gwtToolbarItem.getTitle().replaceAll(" ", "_") ;
+                final String wOptions = "directories=no,scrollbars=yes,resizable=yes,status=no,location=no" + wWidth + wHeight;
+                final String jsUrl = getPropertyValue(gwtToolbarItem, "js.url");
+                if (jsUrl != null) {
+                    String name = gwtToolbarItem.getTitle().replaceAll(" ", "_");
+                    Window.open(JahiaGWTParameters.getParam(jsUrl), name, wOptions);
+                } else if (windowUrl != null && windowUrl.getValue() != null) {
+                    String name = gwtToolbarItem.getTitle().replaceAll(" ", "_");
                     Window.open(windowUrl.getValue(), name, wOptions);
                 }
             }
@@ -96,6 +102,7 @@ public class OpenWindowJahiaToolItemProvider extends AbstractJahiaToolItemProvid
 
     /**
      * Create a new tool Item
+     *
      * @param gwtToolbarItem
      * @return
      */

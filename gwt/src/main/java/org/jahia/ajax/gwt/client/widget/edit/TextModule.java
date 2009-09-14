@@ -82,6 +82,7 @@ public class TextModule extends ContentPanel implements Module {
 
     }
 
+
     public String getTemplate() {
         return null;
     }

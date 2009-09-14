@@ -194,4 +194,12 @@ public interface JahiaContentManagementServiceAsync {
      */
     void getPublicationInfo(String path, AsyncCallback<GWTJahiaPublicationInfo> async);
 
+    /**
+     * Get the publication status information for a particular path.
+     * @param pathes path to get publication info from
+     * @param async Local implementation of callback to react on return fo asyncronous call to getPublicationInfo
+     * @throws forward GWTJahiaServiceException
+     */
+    public void getPublicationInfo(List<String> pathes, AsyncCallback<Map<String,GWTJahiaPublicationInfo>> async);
+
 }

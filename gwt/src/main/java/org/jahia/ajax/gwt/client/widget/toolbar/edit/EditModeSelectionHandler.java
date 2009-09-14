@@ -65,13 +65,15 @@ public class EditModeSelectionHandler {
             final Component createPage = registeredOnModuleSelectionComponents.get("createPage");
             final Component publish = registeredOnModuleSelectionComponents.get("publish");
             final Component unpublish = registeredOnModuleSelectionComponents.get("unpublish");
+            final Component viewPublishStatus = registeredOnModuleSelectionComponents.get("viewPublishStatus");
             final Component lock = registeredOnModuleSelectionComponents.get("lock");
             final Component unlock = registeredOnModuleSelectionComponents.get("unlock");
             final Component edit = registeredOnModuleSelectionComponents.get("createPage");
             final Component delete = registeredOnModuleSelectionComponents.get("edit");
-            final Status status = (Status) registeredOnModuleSelectionComponents.get("status");
+//            final Status status = (Status) registeredOnModuleSelectionComponents.get("status");
             final String s = selectedModule.getNode().getPath();
-            status.setText(s);
+//            status.setText(s);
+            viewPublishStatus.setEnabled(true);
             JahiaContentManagementService.App.getInstance().getPublicationInfo(s, new AsyncCallback<GWTJahiaPublicationInfo>() {
                 public void onFailure(Throwable caught) {
 
@@ -94,9 +96,9 @@ public class EditModeSelectionHandler {
                                 if (unpublish != null) {
                                     unpublish.setEnabled(true);
                                 }
-                                if (status != null) {
-                                    status.setText("status : " + s + " : modified");
-                                }
+//                                if (status != null) {
+//                                    status.setText("status : " + s + " : modified");
+//                                }
                                 break;
                             case GWTJahiaPublicationInfo.PUBLISHED:
                                 if (publish != null) {
@@ -105,9 +107,9 @@ public class EditModeSelectionHandler {
                                 if (unpublish != null) {
                                     unpublish.setEnabled(true);
                                 }
-                                if (status != null) {
-                                    status.setText("status : " + s + " : published");
-                                }
+//                                if (status != null) {
+//                                    status.setText("status : " + s + " : published");
+//                                }
                                 break;
                             case GWTJahiaPublicationInfo.UNPUBLISHED:
                                 if (publish != null) {
@@ -116,9 +118,9 @@ public class EditModeSelectionHandler {
                                 if (unpublish != null) {
                                     unpublish.setEnabled(false);
                                 }
-                                if (status != null) {
-                                    status.setText("status : " + s + " : unpublished");
-                                }
+//                                if (status != null) {
+//                                    status.setText("status : " + s + " : unpublished");
+//                                }
                                 break;
                             case GWTJahiaPublicationInfo.UNPUBLISHABLE:
                                 if (publish != null) {
@@ -128,9 +130,9 @@ public class EditModeSelectionHandler {
 
                                     unpublish.setEnabled(false);
                                 }
-                                if (status != null) {
-                                    status.setText("status : " + s + " : unpublishable / publish parent first");
-                                }
+//                                if (status != null) {
+//                                    status.setText("status : " + s + " : unpublishable / publish parent first");
+//                                }
                                 break;
                         }
                     }

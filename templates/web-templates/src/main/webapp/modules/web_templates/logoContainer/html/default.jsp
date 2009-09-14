@@ -5,4 +5,4 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <jcr:nodeProperty node="${currentNode}" name="logo" var="logo"/>
-<a href='<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>'><img src="${logo.node.url}"/></a>
+<a href="${url.base}${rootPage.path}" /><img src="${logo.node.url}"/></a>

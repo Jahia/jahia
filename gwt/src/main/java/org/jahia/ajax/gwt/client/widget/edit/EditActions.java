@@ -3,13 +3,23 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.ScrollListener;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -139,4 +149,81 @@ public class EditActions {
             });
         }
     }
+
+
+    private static Map<LayoutContainer, Module> containers = new HashMap<LayoutContainer, Module>();
+    public static void viewPublishedStatus(final EditLinker editLinker) {
+        if (!containers.isEmpty()) {
+            for (LayoutContainer ctn : containers.keySet()) {
+                RootPanel.get().remove(ctn);
+            }
+            containers.clear();
+            return;
+        }
+        final Map<String, List<Module>> modulesByPath = ModuleHelper.getModulesByPath();
+        ArrayList<String> list = new ArrayList<String>();
+        for (String s : modulesByPath.keySet()) {
+            if (!s.endsWith("*") && !(modulesByPath.get(s) instanceof TextModule)) {
+                list.add(s);
+            }
+        }
+        JahiaContentManagementService.App.getInstance().getPublicationInfo(list,new AsyncCallback<Map<String, GWTJahiaPublicationInfo>>() {
+            public void onSuccess(Map<String, GWTJahiaPublicationInfo> result) {
+
+                Listener<ComponentEvent> removeListener = new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent ce) {
+                        for (LayoutContainer ctn : containers.keySet()) {
+                            RootPanel.get().remove(ctn);
+                        }
+                        containers.clear();
+                    }
+                };
+
+                for (String path : result.keySet()) {
+                    GWTJahiaPublicationInfo info = result.get(path);
+                    if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                        for (Module module : modulesByPath.get(path)) {
+                            if (module instanceof MainModule) {
+                                continue;
+                            }
+                            LayoutContainer ctn = new LayoutContainer();
+                            ctn.setBorders(true);
+
+//                            if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                                ctn.setStyleAttribute("background-color", "red");
+//                            } else {
+//                                ctn.setStyleAttribute("background-color", "orange");
+//                            }
+                            ctn.setStyleAttribute("opacity", "0.2");
+                            RootPanel.get().add(ctn);
+                            ctn.el().makePositionable(true);
+                            ctn.setPosition(module.getContainer().getAbsoluteLeft(), module.getContainer().getAbsoluteTop());
+                            ctn.setSize(module.getContainer().getWidth(), module.getContainer().getHeight());
+                            ctn.show();
+                            containers.put(ctn, module);
+                            ctn.sinkEvents(Event.ONCLICK);
+                            ctn.addListener(Events.OnClick, removeListener);
+                        }
+                    }
+
+                }
+                editLinker.getMainModule().addScrollListener(new ScrollListener() {
+                    @Override
+                    public void widgetScrolled(ComponentEvent ce) {
+                        for (LayoutContainer container : containers.keySet()) {
+                            LayoutContainer parentCtn = containers.get(container).getContainer();
+                            container.setPosition(parentCtn.getAbsoluteLeft(), parentCtn.getAbsoluteTop());                            
+                        }
+                        super.widgetScrolled(ce);
+                    }
+                });
+            }
+
+            public void onFailure(Throwable throwable) {
+
+            }
+        });
+
+    }
+
 }

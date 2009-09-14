@@ -211,4 +211,12 @@ public interface JahiaContentManagementService extends RemoteService {
      */
     public GWTJahiaPublicationInfo getPublicationInfo(String path) throws GWTJahiaServiceException;
 
+    /**
+     * Get the publication status information for multiple pathes.
+     * @param pathes path to get publication info from
+     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
+     * @throws forward GWTJahiaServiceException
+     */
+    public Map<String,GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException;
+
 }

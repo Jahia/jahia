@@ -53,6 +53,7 @@ public class EditToolItemProvider extends AbstractJahiaToolItemProvider {
     private String ACTION_CREATE_PAGE = "createPage";
     private String ACTION_PUBLISH = "publish";
     private String ACTION_UNPUBLISH = "unpublish";
+    private String ACTION_VIEWPUBLISHSTATUS = "viewPublishStatus";
     private String ACTION_LOCK = "lock";
     private String ACTION_UNLOCK = "unlock";
     private String ACTION_EDIT = "edit";
@@ -82,6 +83,10 @@ public class EditToolItemProvider extends AbstractJahiaToolItemProvider {
                     // unpublish
                     else if (action.equalsIgnoreCase(ACTION_UNPUBLISH)) {
                         EditActions.unpublish(editLinker);
+                    }
+                    // view publish status
+                    else if (action.equalsIgnoreCase(ACTION_VIEWPUBLISHSTATUS)) {
+                        EditActions.viewPublishedStatus(editLinker);
                     }
                     // lock
                     else if (action.equalsIgnoreCase(ACTION_LOCK)) {

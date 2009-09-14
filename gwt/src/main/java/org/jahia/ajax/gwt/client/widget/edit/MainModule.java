@@ -135,6 +135,7 @@ public class MainModule extends ContentPanel implements Module {
         }
     }
 
+
     public Module getParentModule() {
         return null;
     }

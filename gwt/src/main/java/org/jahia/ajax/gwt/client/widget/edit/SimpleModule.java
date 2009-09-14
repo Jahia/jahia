@@ -89,6 +89,7 @@ public class SimpleModule extends LayoutContainer implements Module {
         this.node = node;
     }
 
+
     public Module getParentModule() {
         return parentModule;
     }

@@ -331,6 +331,7 @@
             <item ref-type="org.jahia.toolbar.item.EditAction.createPage"/>
             <item ref-type="org.jahia.toolbar.item.EditAction.publish"/>
             <item ref-type="org.jahia.toolbar.item.EditAction.unpublish"/>
+            <item ref-type="org.jahia.toolbar.item.EditAction.viewPublishStatus"/>
             <item ref-type="org.jahia.toolbar.item.EditAction.lock"/>
             <item ref-type="org.jahia.toolbar.item.EditAction.unlock"/>
             <item ref-type="org.jahia.toolbar.item.EditAction.edit"/>     
@@ -968,6 +969,16 @@
             <description-resourcebundle-key key="unpublish"/>
             <property name="action" value="unpublish"/>
             <property name="editSelectionHandler" value="unpublish"/>
+            <property name="enableOnCondition" value="false"/>
+        </item>
+
+        <!-- new edit mode buttons: unpublish -->
+        <item type="org.jahia.toolbar.item.EditAction.viewPublishStatus" extends="org.jahia.toolbar.item.EditAction">
+            <title-resourcebundle-key key="toolbar.edit.button.status"/>
+            <icon-style min="fm-newcontent" max="fm-newcontent"/>
+            <description-resourcebundle-key key="toolbar.edit.button.status"/>
+            <property name="action" value="viewPublishStatus"/>
+            <property name="editSelectionHandler" value="viewPublishStatus"/>
             <property name="enableOnCondition" value="false"/>
         </item>
 

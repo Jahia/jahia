@@ -68,6 +68,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -533,7 +534,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * Unpublish the specified path and its subnodes.
      * @param path the path to unpublish, will not unpublish the references
-     * @throws forward GWTJahiaServiceException
+     * @throws GWTJahiaServiceException
      */
     public void unpublish(String path) throws GWTJahiaServiceException {
         long l = System.currentTimeMillis();
@@ -545,10 +546,25 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * Get the publication status information for a particular path.
      * @param path path to get publication info from
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
-     * @throws forward GWTJahiaServiceException
+     * @throws GWTJahiaServiceException
      */
     public GWTJahiaPublicationInfo getPublicationInfo(String path) throws GWTJahiaServiceException {
         return ContentManagerHelper.getPublicationInfo(path, retrieveParamBean().getUser());
+    }
+
+    /**
+     * Get the publication status information for multiple pathes.
+     * @param pathes path to get publication info from
+     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
+     * @throws GWTJahiaServiceException
+     */
+    public Map<String,GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException {
+        Map<String, GWTJahiaPublicationInfo> map = new HashMap<String, GWTJahiaPublicationInfo>();
+        for (String path : pathes) {
+            map.put(path, ContentManagerHelper.getPublicationInfo(path, retrieveParamBean().getUser()));
+        }
+
+        return map;
     }
 
 }

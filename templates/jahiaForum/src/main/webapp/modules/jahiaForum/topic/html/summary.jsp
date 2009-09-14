@@ -3,14 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<ul>
-<c:forEach items="${currentNode.editableChildren}" var="subchild">
-    <li>
-        <template:module node="${subchild}" template="default"/>
-    </li>
-</c:forEach>
-    <li>
-        <template:module node="${currentNode}" template="form"/>
-    </li>
-</ul>
-    
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<div class="topic-subject">
+    <a href="${url.base}${currentNode.path}.html"><jcr:nodeProperty node="${currentNode}" name="topicSubject"/> : 
+    <c:if test="${not empty currentNode.editableChildren}">${fn:length(currentNode.editableChildren)} Posts </c:if></a>
+</div>

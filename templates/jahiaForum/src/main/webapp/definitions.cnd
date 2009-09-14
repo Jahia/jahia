@@ -7,3 +7,13 @@ bigText content
 [jahiaForum:thread] > jnt:container, jmix:interactiveContent
 smallText title
 + * (jahiaForum:post)
+
+[jahiaForum:topic] > jnt:container, jmix:interactiveContent
+smallText topicSubject
++ * (jahiaForum:thread)
+
+[jahiaForum:dynamicTopicList] > jnt:container, jmix:interactiveContent
+
+[jahiaForum:boardIndex] > jnt:container, jmix:interactiveContent
+smallText boardSubject
++ * (jahiaForum:topic)

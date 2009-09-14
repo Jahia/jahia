@@ -10,7 +10,7 @@
 <li>
     <div class="commentBodyWrapper"><!--start commentBodyWrapper-->
         <div class="commentBody">
-            <p class="commentDate">i : ${params.test} ${currentNode.propertiesAsString['jcr:created']}</p>
+            <p class="commentDate">${currentNode.propertiesAsString['jcr:created']}</p>
 
             <div class="commentBubble-container"><!--start commentBubble-->
                 <div class="commentBubble-arrow"></div>

@@ -37,7 +37,7 @@
     <template:composePageURL fullURL="true" var="url"/>
     <channel>
         <title><fmt:message key="newsChannelTitle"/></title>
-        <link><c:out value="${url}"/></link>
+        <link><c:out value="${url}" escapeXml="true"/></link>
         <description><fmt:message key="newsChannelDescription"/></description>
         <language>${requestScope.currentRequest.locale}</language>
         <dc:language>${requestScope.currentRequest.locale}</dc:language>
@@ -56,7 +56,7 @@
                 <item>
                     <title><c:out value="${newsTitle}"/></title>
                     <description><![CDATA[<c:out value="${newsDesc}"/>]]></description>
-                    <guid isPermaLink="false">${detailsUrl}</guid>
+                    <guid isPermaLink="false"><c:out value="${detailsUrl}" escapeXml="true"/></guid>
                     <template:getContentObjectCategories objectKey="ContentContainer_${newsContainer.ID}" asSet="true"
                                                         var="categories"/>
                     <c:forEach items="${categories}" var="category">
@@ -64,7 +64,7 @@
                     </c:forEach>
                     <pubDate><c:out value="${newsDate}"/></pubDate>
                     <dc:date><c:out value="${newsDate}"/></dc:date>
-                    <link>${detailsUrl}</link>
+                    <link><c:out value="${detailsUrl}" escapeXml="true"/></link>
                 </item>
             </template:container>
         </template:containerList>

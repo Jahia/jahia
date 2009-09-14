@@ -1,10 +1,10 @@
 package org.jahia.bin;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
+import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -14,13 +14,14 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.api.Constants;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,11 +29,28 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.*;
+import java.text.MessageFormat;
 
 /**
  * Rendering servlet. Resolves the node and the template, and renders it by executing the appropriate script
  */
 public class Render extends HttpServlet {
+    private static final String METHOD_DELETE = "DELETE";
+    private static final String METHOD_HEAD = "HEAD";
+    private static final String METHOD_GET = "GET";
+    private static final String METHOD_OPTIONS = "OPTIONS";
+    private static final String METHOD_POST = "POST";
+    private static final String METHOD_PUT = "PUT";
+    private static final String METHOD_TRACE = "TRACE";
+
+    private static final String HEADER_IFMODSINCE = "If-Modified-Since";
+    private static final String HEADER_LASTMOD = "Last-Modified";
+
+    private static final String LSTRING_FILE =
+            "javax.servlet.http.LocalStrings";
+    private static ResourceBundle lStrings =
+            ResourceBundle.getBundle(LSTRING_FILE);
+
     private static Logger logger = Logger.getLogger(Render.class);
 
     private static String renderServletPath;
@@ -62,8 +80,9 @@ public class Render extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String method = req.getMethod();
+
         long startTime = System.currentTimeMillis();
 
         ProcessingContext ctx = null;
@@ -81,143 +100,82 @@ public class Render extends HttpServlet {
             String lang = path.substring(1, index);
             path = path.substring(index);
 
-            RenderContext renderContext = new RenderContext(req, resp);
+            RenderContext renderContext = createRenderContext(req, resp);
             renderContext.setTemplateWrapper("fullpage");
-            String out = render(workspace, lang, path, ctx, renderContext);
 
-            resp.setContentType("text/html");
-            resp.setCharacterEncoding("UTF-8");
-            resp.setContentLength(out.getBytes("UTF-8").length);
-
-            PrintWriter writer = resp.getWriter();
-            writer.print(out);
-            writer.close();
-        } catch (PathNotFoundException e) {
-        	ErrorHandler.getInstance().handle(e, req, resp);
-        } catch (Exception e) {
-        	ErrorHandler.getInstance().handle(e, req, resp);
-        } finally {
-            if (logger.isInfoEnabled()) {
-                StringBuilder sb = new StringBuilder(100);
-                sb.append("Rendered [").append(req.getRequestURI());
-                if (ctx != null && ctx.getUser() != null) {
-                    sb.append("] user=[").append(ctx.getUser().getUsername());
-                }
-                sb.append("] ip=[").append(req.getRemoteAddr()).append(
-                        "] sessionID=[").append(req.getSession(true).getId())
-                        .append("] in [").append(
-                        System.currentTimeMillis() - startTime).append(
-                        "ms]");
-                logger.info(sb.toString());
-            }
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        long startTime = System.currentTimeMillis();
-
-        ProcessingContext ctx = null;
-
-        String path = req.getPathInfo();
-
-        try {
-            ctx = Jahia.createParamBean(req, resp, req.getSession());
-
-            int index = path.indexOf('/', 1);
-            String workspace = path.substring(1, index);
-            path = path.substring(index);
-
-            index = path.indexOf('/', 1);
-            String lang = path.substring(1, index);
-            path = path.substring(index);
             try {
                 if (workspace.equals("default")) {
-                    ctx.setOperationMode("edit");
-                }
-            } catch (JahiaException e) {
-                logger.error(e.getMessage(), e);
-            }
-            Locale locale = LanguageCodeConverters.languageCodeToLocale(lang);
-            ctx.setCurrentLocale(locale);
-            JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(ctx.getUser(), workspace, locale);
-            String[] subPaths = path.split("/");
-            String lastPath = subPaths[subPaths.length - 1];
-            StringBuffer realPath = new StringBuffer();
-            Node node = null;
-            for (String subPath : subPaths) {
-                if (!"".equals(subPath.trim()) && !"*".equals(subPath) && !subPath.equals(lastPath)) {
-                    realPath.append("/").append(subPath);
-                    try {
-                        node = session.getNode(realPath.toString());
-                    } catch (PathNotFoundException e) {
-                        if (node != null) {
-                            node = node.addNode(subPath, "jnt:folder");
-                        }
-                    }
-                }
-            }
-            String url = null;
-            if (node != null) {
-                String nodeType = req.getParameter(NODE_TYPE);
-                if (nodeType == null || "".equalsIgnoreCase(nodeType.trim())) {
-                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing nodeType Property");
-                }
-                Node newNode;
-                String nodeName = req.getParameter(NODE_NAME);
-                if(!"*".equals(lastPath)) {
-                    nodeName = lastPath;
-                }
-                if (nodeName == null || "".equals(nodeName.trim())) {
-                    String[] strings = nodeType.split(":");
-                    if(strings.length>0) {
-                        nodeName = strings[1] + Math.round(Math.random()*100000);
+                    if (renderContext.isEditMode()) {
+                        ctx.setOperationMode("edit");
                     } else {
-                        nodeName = strings[1] + Math.round(Math.random()*100000);
+                        ctx.setOperationMode("preview");
                     }
+                } else if (workspace.equals("live")) {
+                    ctx.setOperationMode("normal");
                 }
-                try {
-                    newNode = session.getNode(realPath+"/"+nodeName);
-                } catch (PathNotFoundException e) {
-                    newNode = node.addNode(nodeName, nodeType);
-                }
-                Set<Map.Entry> set = req.getParameterMap().entrySet();
-                for (Map.Entry entry : set) {
-                    String key = (String) entry.getKey();
-                    if (!reservedParameters.contains(key)) {
-                        String[] values = (String[]) entry.getValue();
-                        newNode.setProperty(key, values[0]);
-                    }
-                }
-                url = ((JCRNodeWrapper) newNode).getPath();
-                session.save();
+            } catch (JahiaException e) {
+                logger.error(e.getMessage(), e);
             }
-            resp.setStatus(HttpServletResponse.SC_CREATED);
-            String renderedURL = null;
-            String outputFormat = req.getParameter(NEW_NODE_OUTPUT_FORMAT);
-            if(outputFormat==null || "".equals(outputFormat.trim())) {
-                outputFormat = "html";
-            }
-            if(url!=null) {
-                String requestedURL = req.getRequestURL().toString();
-                renderedURL = requestedURL.substring(0, requestedURL.indexOf(URLEncoder.encode(path,
-                                                                                               "UTF-8").replaceAll("%2F","/"))) + url + "." + outputFormat;
-            }
-            String stayOnPage = req.getParameter(STAY_ON_NODE);
-            if(stayOnPage!=null && "".equals(stayOnPage.trim())) {
-                stayOnPage = null;
-            }
-            if(renderedURL!=null && stayOnPage==null) {
-                resp.setHeader("Location", renderedURL);
-                resp.sendRedirect(renderedURL);
-            } else if (stayOnPage != null){
-                resp.sendRedirect(stayOnPage+"."+outputFormat);
+            Locale locale = LanguageCodeConverters.languageCodeToLocale(lang);
+            ctx.setCurrentLocale(locale);
+            ctx.getSessionState().setAttribute(ParamBean.SESSION_LOCALE, locale);
+
+            if (method.equals(METHOD_GET)) {
+                long lastModified = getLastModified(req);
+//                if (lastModified == -1) {
+                    // servlet doesn't support if-modified-since, no reason
+                    // to go through further expensive logic
+                    doGet(req, resp, renderContext, ctx, path, workspace, locale);
+//                } else {
+//                    long ifModifiedSince = req.getDateHeader(HEADER_IFMODSINCE);
+//                    if (ifModifiedSince < (lastModified / 1000 * 1000)) {
+//                        // If the servlet mod time is later, call doGet()
+//                        // Round down to the nearest second for a proper compare
+//                        // A ifModifiedSince of -1 will always be less
+//                        maybeSetLastModified(resp, lastModified);
+//                        doGet(req, resp, renderContext, ctx, path, workspace, locale);
+//                    } else {
+//                        resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+//                    }
+//                }
+
+            } else if (method.equals(METHOD_HEAD)) {
+                long lastModified = getLastModified(req);
+                maybeSetLastModified(resp, lastModified);
+                doHead(req, resp);
+
+            } else if (method.equals(METHOD_POST)) {
+                doPost(req, resp, renderContext, ctx, path, workspace, locale);
+
+            } else if (method.equals(METHOD_PUT)) {
+                doPut(req, resp, renderContext, ctx, path, workspace, locale);
+
+            } else if (method.equals(METHOD_DELETE)) {
+                doDelete(req, resp);
+
+            } else if (method.equals(METHOD_OPTIONS)) {
+                doOptions(req, resp);
+
+            } else if (method.equals(METHOD_TRACE)) {
+                doTrace(req, resp);
+
+            } else {
+                //
+                // Note that this means NO servlet supports whatever
+                // method was requested, anywhere on this server.
+                //
+
+                String errMsg = lStrings.getString("http.method_not_implemented");
+                Object[] errArgs = new Object[1];
+                errArgs[0] = method;
+                errMsg = MessageFormat.format(errMsg, errArgs);
+
+                resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, errMsg);
             }
         } catch (PathNotFoundException e) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        	ErrorHandler.getInstance().handle(e, req, resp);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new ServletException(e);
+        	ErrorHandler.getInstance().handle(e, req, resp);
         } finally {
             if (logger.isInfoEnabled()) {
                 StringBuilder sb = new StringBuilder(100);
@@ -230,97 +188,143 @@ public class Render extends HttpServlet {
                         .append("] in [").append(
                         System.currentTimeMillis() - startTime).append(
                         "ms]");
-
                 logger.info(sb.toString());
             }
         }
+
     }
 
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        long startTime = System.currentTimeMillis();
+    /**
+     * Sets the Last-Modified entity header field, if it has not
+     * already been set and if the value is meaningful.  Called before
+     * doGet, to ensure that headers are set before response data is
+     * written.  A subclass might have set this header already, so we
+     * check.
+     */
+    private void maybeSetLastModified(HttpServletResponse resp, long lastModified) {
+        if (resp.containsHeader(HEADER_LASTMOD))
+            return;
+        if (lastModified >= 0)
+            resp.setDateHeader(HEADER_LASTMOD, lastModified);
+    }
 
-        ProcessingContext ctx = null;
+    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp) {
+        return new RenderContext(req, resp);
+    }
 
-        String path = req.getPathInfo();
+    private void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, ProcessingContext ctx, String path, String workspace, Locale locale) throws RepositoryException, IOException {
+        String out = render(workspace, locale, path, ctx, renderContext);
 
-        try {
-            ctx = Jahia.createParamBean(req, resp, req.getSession());
+        resp.setContentType("text/html");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentLength(out.getBytes("UTF-8").length);
 
-            int index = path.indexOf('/', 1);
-            String workspace = path.substring(1, index);
-            path = path.substring(index);
+        PrintWriter writer = resp.getWriter();
+        writer.print(out);
+        writer.close();
+    }
 
-            index = path.indexOf('/', 1);
-            String lang = path.substring(1, index);
-            path = path.substring(index);
-            try {
-                if (workspace.equals("default")) {
-                    ctx.setOperationMode("edit");
-                }
-            } catch (JahiaException e) {
-                logger.error(e.getMessage(), e);
+    private void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, ProcessingContext ctx, String path, String workspace, Locale locale) throws RepositoryException, IOException {
+        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(ctx.getUser(), workspace, locale);
+        Node node = session.getNode(path);
+        Set<Map.Entry> set = req.getParameterMap().entrySet();
+        for (Map.Entry entry : set) {
+            String key = (String) entry.getKey();
+            if (!NODE_TYPE.equals(key) && !NODE_NAME.equals(key)) {
+                String[] values = (String[]) entry.getValue();
+                node.setProperty(key, values[0]);
             }
-            Locale locale = LanguageCodeConverters.languageCodeToLocale(lang);
-            ctx.setCurrentLocale(locale);
-            JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(ctx.getUser(), workspace, locale);
-            Node node = session.getNode(path);
+        }
+        session.save();
+        StringBuffer out = new StringBuffer("Successfully updated");
+
+        resp.setContentType("text/html");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentLength(out.length());
+
+        PrintWriter writer = resp.getWriter();
+        writer.print(out.toString());
+        writer.close();
+    }
+
+    private void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, ProcessingContext ctx, String path, String workspace, Locale locale) throws RepositoryException, IOException {
+        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(ctx.getUser(), workspace, locale);
+        String[] subPaths = path.split("/");
+        String lastPath = subPaths[subPaths.length - 1];
+        StringBuffer realPath = new StringBuffer();
+        Node node = null;
+        for (String subPath : subPaths) {
+            if (!"".equals(subPath.trim()) && !"*".equals(subPath) && !subPath.equals(lastPath)) {
+                realPath.append("/").append(subPath);
+                try {
+                    node = session.getNode(realPath.toString());
+                } catch (PathNotFoundException e) {
+                    if (node != null) {
+                        node = node.addNode(subPath, "jnt:folder");
+                    }
+                }
+            }
+        }
+        String url = null;
+        if (node != null) {
+            String nodeType = req.getParameter(NODE_TYPE);
+            if (nodeType == null || "".equalsIgnoreCase(nodeType.trim())) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing nodeType Property");
+            }
+            Node newNode;
+            String nodeName = req.getParameter(NODE_NAME);
+            if(!"*".equals(lastPath)) {
+                nodeName = lastPath;
+            }
+            if (nodeName == null || "".equals(nodeName.trim())) {
+                String[] strings = nodeType.split(":");
+                if(strings.length>0) {
+                    nodeName = strings[1] + Math.round(Math.random()*100000);
+                } else {
+                    nodeName = strings[1] + Math.round(Math.random()*100000);
+                }
+            }
+            try {
+                newNode = session.getNode(realPath+"/"+nodeName);
+            } catch (PathNotFoundException e) {
+                newNode = node.addNode(nodeName, nodeType);
+            }
             Set<Map.Entry> set = req.getParameterMap().entrySet();
             for (Map.Entry entry : set) {
                 String key = (String) entry.getKey();
-                if (!NODE_TYPE.equals(key) && !NODE_NAME.equals(key)) {
+                if (!reservedParameters.contains(key)) {
                     String[] values = (String[]) entry.getValue();
-                    node.setProperty(key, values[0]);
+                    newNode.setProperty(key, values[0]);
                 }
             }
+            url = ((JCRNodeWrapper) newNode).getPath();
             session.save();
-            StringBuffer out = new StringBuffer("Successfully updated");
-
-            resp.setContentType("text/html");
-            resp.setCharacterEncoding("UTF-8");
-            resp.setContentLength(out.length());
-
-            PrintWriter writer = resp.getWriter();
-            writer.print(out.toString());
-            writer.close();
-        } catch (PathNotFoundException e) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new ServletException(e);
-        } finally {
-            if (logger.isInfoEnabled()) {
-                StringBuilder sb = new StringBuilder(100);
-                sb.append("Rendered [").append(req.getRequestURI());
-                if (ctx != null && ctx.getUser() != null) {
-                    sb.append("] user=[").append(ctx.getUser().getUsername());
-                }
-                sb.append("] ip=[").append(req.getRemoteAddr()).append(
-                        "] sessionID=[").append(req.getSession(true).getId())
-                        .append("] in [").append(
-                        System.currentTimeMillis() - startTime).append(
-                        "ms]");
-
-                logger.info(sb.toString());
-            }
+        }
+        resp.setStatus(HttpServletResponse.SC_CREATED);
+        String renderedURL = null;
+        String outputFormat = req.getParameter(NEW_NODE_OUTPUT_FORMAT);
+        if(outputFormat==null || "".equals(outputFormat.trim())) {
+            outputFormat = "html";
+        }
+        if(url!=null) {
+            String requestedURL = req.getRequestURL().toString();
+            renderedURL = requestedURL.substring(0, requestedURL.indexOf(URLEncoder.encode(path,
+                                                                                           "UTF-8").replaceAll("%2F","/"))) + url + "." + outputFormat;
+        }
+        String stayOnPage = req.getParameter(STAY_ON_NODE);
+        if(stayOnPage!=null && "".equals(stayOnPage.trim())) {
+            stayOnPage = null;
+        }
+        if(renderedURL!=null && stayOnPage==null) {
+            resp.setHeader("Location", renderedURL);
+            resp.sendRedirect(renderedURL);
+        } else if (stayOnPage != null){
+            resp.sendRedirect(stayOnPage+"."+outputFormat);
         }
     }
 
-    public String render(String workspace, String lang, String path, ProcessingContext ctx, RenderContext renderContext) throws RepositoryException, IOException {
-        try {
-            if (workspace.equals("default")) {
-                if (renderContext.isEditMode()) {
-                    ctx.setOperationMode("edit");
-                } else {
-                    ctx.setOperationMode("preview");
-                }
-            }
-        } catch (JahiaException e) {
-            logger.error(e.getMessage(), e);
-        }
-        Locale locale = LanguageCodeConverters.languageCodeToLocale(lang);
-        ctx.setCurrentLocale(locale);
 
+    public String render(String workspace, Locale locale, String path, ProcessingContext ctx, RenderContext renderContext) throws RepositoryException, IOException {
         Resource r = resolveResource(workspace, locale, path, ctx.getUser());
         renderContext.setMainResource(r);
 

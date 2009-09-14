@@ -6,6 +6,8 @@ import org.jahia.services.render.RenderContext;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -31,11 +33,10 @@ public class Edit extends Render {
         return editServletPath;
     }
 
-    @Override
-    public String render(String workspace, String lang, String path, ProcessingContext ctx, RenderContext context) throws RepositoryException, IOException {
-        context.setEditMode(true);
-//        context.setTemplateWrapper("edit");
 
-        return super.render(workspace, lang, path, ctx, context);
+    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp) {
+        RenderContext context = super.createRenderContext(req, resp);
+        context.setEditMode(true);
+        return context;
     }
 }

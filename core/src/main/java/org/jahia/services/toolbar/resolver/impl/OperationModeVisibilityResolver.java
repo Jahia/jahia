@@ -74,60 +74,62 @@ public class OperationModeVisibilityResolver implements VisibilityResolver {
             return false;
         }
 
-        // guest jahiaUser
-        if (!AdvPreviewSettings.isInUserAliasingMode()
-                && jahiaUser.getUsername().equalsIgnoreCase(JahiaUserManagerProvider.GUEST_USERNAME)) {
-            return false;
-        }
-
-        // check edit permission
-        boolean editModePermission = isEditModeAllowed(processingContext);
-        logger.debug("EditModePermission: " + editModePermission);
-        //case of "all op.mode buttons"
-        if (type.equalsIgnoreCase(ALL) && !editModePermission) {
-            return false;
-        }
-        if (editModePermission) {
-            // check write access
-            boolean writeAccess = isWriteAccess(jData);
-            logger.debug("WriteAccess: " + writeAccess);
-            //case of "all op.mode buttons"
-            if (type.equalsIgnoreCase(ALL)) {
-                return writeAccess;
-            }
-
-            if (writeAccess || isAdminAccess(jData)) {
-                //edit
-                if (type.equalsIgnoreCase(EDIT)) {
-                    return true;
-                }
-
-                ContentPage thecontentPage = jData.getProcessingContext().getContentPage();
-                String thelocale = processingContext.getLocale().toString();
-
-                if (type.equalsIgnoreCase(LIVE)) {
-                    // check if there is active entries
-                    boolean hasActiveEntries = hasActiveEntries(jData);
-                    logger.debug("hasActiveEntries: " + hasActiveEntries);
-                    if (hasActiveEntries) {
-                        // ches if page is available
-                        boolean isAvailable = isPageAvailabe(jData);
-                        logger.debug("isAvailable: " + isAvailable);
-                        return isAvailable;
-                    }
-                }
-
-                // preview or compare
-                if ((type.equalsIgnoreCase(COMPARE) || type.equalsIgnoreCase(PREVIEW))) {
-                    boolean displayPreview = displayPreview(jData);
-                    logger.debug("displayPreview: " + displayPreview);
-                    return displayPreview;
-                }
-
-
-            }
-        }
-        return false;
+        return true;
+//
+//        // guest jahiaUser
+//        if (!AdvPreviewSettings.isInUserAliasingMode()
+//                && jahiaUser.getUsername().equalsIgnoreCase(JahiaUserManagerProvider.GUEST_USERNAME)) {
+//            return false;
+//        }
+//
+//        // check edit permission
+//        boolean editModePermission = isEditModeAllowed(processingContext);
+//        logger.debug("EditModePermission: " + editModePermission);
+//        //case of "all op.mode buttons"
+//        if (type.equalsIgnoreCase(ALL) && !editModePermission) {
+//            return false;
+//        }
+//        if (editModePermission) {
+//            // check write access
+//            boolean writeAccess = isWriteAccess(jData);
+//            logger.debug("WriteAccess: " + writeAccess);
+//            //case of "all op.mode buttons"
+//            if (type.equalsIgnoreCase(ALL)) {
+//                return writeAccess;
+//            }
+//
+//            if (writeAccess || isAdminAccess(jData)) {
+//                //edit
+//                if (type.equalsIgnoreCase(EDIT)) {
+//                    return true;
+//                }
+//
+//                ContentPage thecontentPage = jData.getProcessingContext().getContentPage();
+//                String thelocale = processingContext.getLocale().toString();
+//
+//                if (type.equalsIgnoreCase(LIVE)) {
+//                    // check if there is active entries
+//                    boolean hasActiveEntries = hasActiveEntries(jData);
+//                    logger.debug("hasActiveEntries: " + hasActiveEntries);
+//                    if (hasActiveEntries) {
+//                        // ches if page is available
+//                        boolean isAvailable = isPageAvailabe(jData);
+//                        logger.debug("isAvailable: " + isAvailable);
+//                        return isAvailable;
+//                    }
+//                }
+//
+//                // preview or compare
+//                if ((type.equalsIgnoreCase(COMPARE) || type.equalsIgnoreCase(PREVIEW))) {
+//                    boolean displayPreview = displayPreview(jData);
+//                    logger.debug("displayPreview: " + displayPreview);
+//                    return displayPreview;
+//                }
+//
+//
+//            }
+//        }
+//        return false;
     }
 
 

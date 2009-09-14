@@ -10,7 +10,7 @@
         <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 
         <li class="item_1 standard first">
-        <a href="${baseUrl}${currentNode.path}.html">${title.string}</a>
+        <a href="${url.current}">${title.string}</a>
         </li>
     </c:if>
 
@@ -18,7 +18,7 @@
         <c:if test="${jcr:isNodeType(child, 'jnt:page')}">
             <li class="item_${status.index + 2} standard ">
             <jcr:nodeProperty node="${child}" name="jcr:title" var="title"/>
-            <a href="${baseUrl}${child.path}.html">${title.string}</a>
+            <a href="${url.base}${child.path}.html">${title.string}</a>
             </li>
         </c:if>
     </c:forEach>

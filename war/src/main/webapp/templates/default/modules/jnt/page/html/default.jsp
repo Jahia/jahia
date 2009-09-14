@@ -8,14 +8,14 @@
     <c:set var="currentPath" value=""/>
     <c:forTokens items="${currentNode.path}" delims="/" var="itemPath">
         <c:set var="currentPath" value="${currentPath}/${itemPath}"/>
-        <a href="${baseUrl}${currentPath}.html">${itemPath}</a> /
+        <a href="${url.base}${currentPath}.html">${itemPath}</a> /
     </c:forTokens>
     <h3>Menu</h3>
     <ul>
     <c:forEach items="${currentNode.children}" var="child">
         <c:if test="${jcr:isNodeType(child, 'jnt:page')}">
         <li>
-            <a href="${baseUrl}${child.path}.html">${child.name}</a>
+            <a href="${url.base}${child.path}.html">${child.name}</a>
         </li>
         </c:if>
     </c:forEach>

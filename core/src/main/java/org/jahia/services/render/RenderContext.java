@@ -43,39 +43,31 @@ import java.util.*;
 public class RenderContext {
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private Resource mainResource;
+
     private boolean includeSubModules = true;
     private boolean isEditMode = false;
-    private String templateWrapper;
-    private Map<String,Set<String>> externalLinks = new HashMap<String,Set<String>>();
 
-    private Set<String> dependencies = new HashSet<String>();
-    private Resource resource;
+    private String templateWrapper;
+
+    private Set<String> displayedModules = new HashSet<String>();
+    private Map<String,Set<String>> externalLinks = new HashMap<String,Set<String>>();
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
-
-        request.setAttribute("renderContext", this);
     }
 
     public HttpServletRequest getRequest() {
         return request;
     }
 
-    public void setRequest(HttpServletRequest request) {
-        this.request = request;
-    }
-
     public HttpServletResponse getResponse() {
         return response;
     }
 
-    public void setResponse(HttpServletResponse response) {
-        this.response = response;
-    }
-
-    public Set<String> getDependencies() {
-        return dependencies;
+    public Set<String> getDisplayedModules() {
+        return displayedModules;
     }
 
     public boolean isIncludeSubModules() {
@@ -119,11 +111,12 @@ public class RenderContext {
         return externalLinks;
     }
 
-    public void setResource(Resource resource) {
-        this.resource = resource;
+    public void setMainResource(Resource mainResource) {
+        this.mainResource = mainResource;
     }
 
-    public Resource getResource() {
-        return resource;
+    public Resource getMainResource() {
+        return mainResource;
     }
+
 }

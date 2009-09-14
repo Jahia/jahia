@@ -151,6 +151,7 @@ public class Resource {
                 "node=" + node.getPath() +
                 ", templateType='" + templateType + '\'' +
                 ", template='" + template + '\'' +
+                ", forcedTemplate='" + forcedTemplate + '\'' +
                 '}';
     }
 }

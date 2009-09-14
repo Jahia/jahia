@@ -8,7 +8,7 @@
  <jcr:nodeProperty node="${currentNode}" name="newsDate" var="newsDate"/>
  <jcr:nodeProperty node="${currentNode}" name="newsDesc" var="newsDesc"/>
  <jcr:nodeProperty node="${currentNode}" name="newsImage" var="newsImage"/>
-<form action="${baseUrl}${currentNode.path}" method="post">
+<form action="${url.base}${currentNode.path}" method="post">
     <input type="hidden" name="nodeType" value="web_templates:newsContainer"/>
     <div class="newsListItem"><!--start newsListItem -->
 
@@ -22,7 +22,7 @@
             </span>
         </p>
 
-        <div class="newsImg"><a href="${baseUrl}${currentNode.path}.html"><img src="${newsImage.node.url}"/></a></div>
+        <div class="newsImg"><a href="${url.current}"><img src="${newsImage.node.url}"/></a></div>
         <p class="newsResume">
             <textarea rows="10" cols="80" name="newsDesc">${newsDesc.string}</textarea>
         </p>

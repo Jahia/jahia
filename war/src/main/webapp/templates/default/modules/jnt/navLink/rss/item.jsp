@@ -1,7 +1,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <item>
     <title>link-${currentNode.name}</title>
-    <link>${baseUrl}${currentNode.path}.html</link>
+    <link>${url.current}</link>
     <description>${currentNode.name}</description>
     <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
     <pubDate>${newsDate}.date</pubDate>

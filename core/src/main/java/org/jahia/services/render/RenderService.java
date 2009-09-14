@@ -9,14 +9,11 @@ import org.jahia.services.containers.ContentContainer;
 import org.jahia.data.beans.ContainerBean;
 import org.jahia.data.JahiaData;
 import org.jahia.bin.Jahia;
-import org.jahia.bin.Render;
-import org.jahia.bin.Edit;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.operations.valves.EngineValve;
 import org.jahia.params.ParamBean;
 import org.jahia.content.ContentObject;
-import org.jahia.api.Constants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.jcr.RepositoryException;
@@ -82,35 +79,22 @@ public class RenderService extends JahiaService {
             }
         }
         if (script == null) {
-//            if (resource.getNode().getPrimaryNodeTypeName().equals("jnt:nodeReference")) {
-//                Resource wrappedResource = new Resource(resource.getNode(), resource.getWorkspace(), resource.getLocale(), resource.getTemplateType(), "default", true);
-//                script = resolveScript(wrappedResource, context);
-//            } else {
-                script = resolveScript(resource, context);
-//            }
+            script = resolveScript(resource, context);
         }
+
+        request.setAttribute("renderContext", context);
 
         Object old = request.getAttribute("currentNode");
         request.setAttribute("currentNode", resource.getNode());
-
-        final String editBaseUrl = context.getRequest().getContextPath()+Edit.getEditServletPath()+ "/"+resource.getWorkspace()+"/"+resource.getLocale();
-        if (request.getAttribute("baseUrl") == null) {
-            if (context.isEditMode()) {
-                request.setAttribute("baseUrl", editBaseUrl);
-            } else {
-                request.setAttribute("baseUrl", context.getRequest().getContextPath()+Render.getRenderServletPath()+ "/"+resource.getWorkspace()+"/"+resource.getLocale());
-            }
-        }
-
-
-
-
 
         request.setAttribute("workspace", resource.getNode().getSession().getWorkspace().getName());
         request.setAttribute("locale", resource.getNode().getSession().getWorkspace().getName());
 
         Resource oldResource = (Resource) request.getAttribute("currentResource");
         request.setAttribute("currentResource", resource);
+
+        URLGenerator oldUrl = (URLGenerator) request.getAttribute("url");
+        request.setAttribute("url",new URLGenerator(context, resource));
 
         String output;
         try {
@@ -119,6 +103,7 @@ public class RenderService extends JahiaService {
         } finally {
             request.setAttribute("currentNode",old);
             request.setAttribute("currentResource",oldResource);
+            request.setAttribute("url",oldUrl);
         }
 
         if (oldResource != null) {
@@ -141,15 +126,7 @@ public class RenderService extends JahiaService {
      * @throws IOException
      */
     private Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, IOException {
-//        try {
-            return new RequestDispatcherScript(resource, context);
-//        } catch (IOException e) {
-//            if (resource.getTemplate() != null) {
-//                return new RequestDispatcherScript(new Resource(resource.getNode(), resource.getTemplateType() ,null), request,response);
-//            } else {
-//                throw e;
-//            }
-//        }
+        return new RequestDispatcherScript(resource, context);
     }
 
     /**

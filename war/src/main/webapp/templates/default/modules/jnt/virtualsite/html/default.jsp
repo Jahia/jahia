@@ -10,6 +10,6 @@
 <p>Nodes:</p>
 <ul>
 <c:forEach var="child" items="${currentNode.nodes}">
-    <li><a href="${baseUrl}${child.path}.html">${child.name}</a></li>
+    <li><a href="${url.base}${child.path}.html">${child.name}</a></li>
 </c:forEach>
 </ul>

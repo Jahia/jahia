@@ -42,6 +42,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.exceptions.JahiaException;
 import org.apache.log4j.Logger;
@@ -191,10 +192,11 @@ public class GWTInitializer {
         try {
             // put live workspace url
             if (request.getAttribute("renderContext") != null) {
-                params.put(JahiaGWTParameters.LIVE_URL, request.getAttribute("liveUrl") + ".html");
-                params.put(JahiaGWTParameters.EDIT_URL, request.getAttribute("editUrl") + ".html");
-                params.put(JahiaGWTParameters.PREVIEW_URL, request.getAttribute("previewUrl") + ".html");
-                params.put(JahiaGWTParameters.COMPARE_URL, request.getAttribute("compareUrl") + ".html");
+                URLGenerator url = (URLGenerator) request.getAttribute("url");
+                params.put(JahiaGWTParameters.LIVE_URL, url.getLive());
+                params.put(JahiaGWTParameters.EDIT_URL, url.getEdit());
+                params.put(JahiaGWTParameters.PREVIEW_URL, url.getPreview());
+                params.put(JahiaGWTParameters.COMPARE_URL, null);
             } else {
                 if (jData != null && jData.gui() != null) {
                     params.put(JahiaGWTParameters.LIVE_URL, jData.gui().drawNormalModeLink());

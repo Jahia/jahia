@@ -12,7 +12,7 @@
 
     <div class="newsListItem"><!--start newsListItem -->
 
-        <h4><a href="${baseUrl}${currentNode.path}.html">${newsTitle.string}</a></h4>
+        <h4><a href="${url.current}">${newsTitle.string}</a></h4>
 
         <p class="newsInfo">
             <span class="newsLabelDate"><fmt:message key="news.date"/> :</span>
@@ -22,12 +22,12 @@
             </span>
         </p>
 
-        <div class="newsImg"><a href="${baseUrl}${currentNode.path}.html"><img src="${newsImage.node.url}"/></a></div>
+        <div class="newsImg"><a href="${url.current}"><img src="${newsImage.node.url}"/></a></div>
         <p class="newsResume">
             ${newsDesc.string}
         </p>
 
-        <div class="more"><span><a href="${baseUrl}${currentNode.path}.html">
+        <div class="more"><span><a href="${url.current}">
             <fmt:message key="news.readmore"/>
         </a></span></div>
         <div class="clear"> </div>

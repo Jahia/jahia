@@ -81,13 +81,8 @@ public class Render extends HttpServlet {
             String lang = path.substring(1, index);
             path = path.substring(index);
 
-            String baseUrl = StringUtils.removeEnd(req.getRequestURI(), path);
-            req.setAttribute("baseUrl", baseUrl);
-            req.getSession().setAttribute("baseUrl", baseUrl);
-
             RenderContext renderContext = new RenderContext(req, resp);
             renderContext.setTemplateWrapper("fullpage");
-
             String out = render(workspace, lang, path, ctx, renderContext);
 
             resp.setContentType("text/html");
@@ -327,9 +322,7 @@ public class Render extends HttpServlet {
         ctx.setCurrentLocale(locale);
 
         Resource r = resolveResource(workspace, locale, path, ctx.getUser());
-        renderContext.setResource(r);
-
-        setWorkspaceUrl(renderContext, locale, r);
+        renderContext.setMainResource(r);
 
         Node current = r.getNode();
         try {
@@ -353,23 +346,6 @@ public class Render extends HttpServlet {
         }
 
         return RenderService.getInstance().render(r, renderContext);
-    }
-
-    /**
-     * Set worksapce url as attribute of the current request
-     * @param renderContext
-     * @param locale
-     * @param r
-     */
-    private void setWorkspaceUrl(RenderContext renderContext, Locale locale, Resource r) {
-        final String liveBaseUrl = renderContext.getRequest().getContextPath()+ Render.getRenderServletPath()+ "/"+ Constants.LIVE_WORKSPACE +"/"+locale;
-        final String editBaseUrl = renderContext.getRequest().getContextPath()+ Edit.getEditServletPath()+ "/"+Constants.EDIT_WORKSPACE+"/"+locale;
-        final String previewBaseUrl = renderContext.getRequest().getContextPath()+Render.getRenderServletPath()+ "/"+Constants.EDIT_WORKSPACE+"/"+locale;
-        final String resourcePath = r.getNode().getPath();
-
-        renderContext.getRequest().setAttribute("liveUrl", liveBaseUrl+resourcePath);
-        renderContext.getRequest().setAttribute("editUrl", editBaseUrl+resourcePath);
-        renderContext.getRequest().setAttribute("previewUrl", previewBaseUrl+resourcePath);
     }
 
     /**

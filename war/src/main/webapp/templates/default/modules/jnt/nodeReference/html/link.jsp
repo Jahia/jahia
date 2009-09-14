@@ -4,5 +4,5 @@
 <jcr:nodeProperty node="${currentNode}" name="j:node" var="reference"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <c:if test="${ !empty reference.node }">
-    <a href="${baseUrl}${reference.node.path}.html">${title.string}</a>
+    <a href="${url.base}${reference.node.path}.html">${title.string}</a>
 </c:if>

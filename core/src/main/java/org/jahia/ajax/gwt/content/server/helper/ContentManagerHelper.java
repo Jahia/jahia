@@ -58,7 +58,6 @@ import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.PortletEntryPointDefinition;
 import org.jahia.data.containers.JahiaContainer;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.params.ParamBean;
@@ -2156,7 +2155,7 @@ public class ContentManagerHelper {
             ctx.getRequest().setAttribute("mode", "edit");
             RenderContext renderContext = new RenderContext(ctx.getRequest(), ctx.getResponse());
             renderContext.setEditMode(editMode);
-            renderContext.setResource(r);
+            renderContext.setMainResource(r);
             res = RenderService.getInstance().render(r, renderContext);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

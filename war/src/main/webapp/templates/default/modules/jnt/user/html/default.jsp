@@ -57,7 +57,7 @@
             <c:forEach items="${result}" var="page">
                 <jcr:nodeProperty node="${page}" name="jcr:title" var="title"/>
                 <li>
-                    <a href="${baseUrl}${page.path}.html">${title.string}</a>
+                    <a href="${url.base}${page.path}.html">${title.string}</a>
                 </li>
             </c:forEach>
         </ul>

@@ -36,7 +36,7 @@
 
 <template-set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.jahia.org/jahia/templates" xsi:schemaLocation="http://www.jahia.org/jahia/templates http://www.jahia.org/shemas/templates_2_0.xsd">
     <package-name>Jahia Forum</package-name>
-    <root-folder>jahiaForum</root-folder>
+    <root-folder>jahia_forum</root-folder>
     <provider>jahia.org</provider>
     <thumbnail>images/preview.gif</thumbnail>
     <resource-bundle>resources.JahiaForum</resource-bundle>

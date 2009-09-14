@@ -99,8 +99,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      * @param password User password
      */
     public JahiaUser createUser(String name, String password, Properties properties) {
+        JCRSessionWrapper jcrSessionWrapper = null;
         try {
-            JCRSessionWrapper jcrSessionWrapper = jcrStoreService.getSystemSession();
+            jcrSessionWrapper = jcrStoreService.getSystemSession();
             JCRNodeWrapper parentNodeWrapper = jcrSessionWrapper.getNode("/" + Constants.CONTENT + "/users");
             Node userNode;
             if (parentNodeWrapper.hasProperty("j:usersFolderSkeleton")) {
@@ -133,6 +134,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             logger.error(e);
         } catch (IOException e) {
             logger.error(e);
+        } finally {
+            if(jcrSessionWrapper!=null) {
+                jcrSessionWrapper.logout();
+            }
         }
         return null;
     }
@@ -277,6 +282,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      * @return Return a reference on a new created jahiaUser object.
      */
     public JahiaUser lookupUser(String name) {
+        JCRSessionWrapper session = null;
         try {
             if (cache == null) {
                 start();
@@ -284,7 +290,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             if (cache.containsKey(name)) {
                 return (JahiaUser) cache.get(name);
             }
-            JCRSessionWrapper session = jcrStoreService.getSystemSession();
+            session = jcrStoreService.getSystemSession();
             Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name.trim());
             if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                 JCRUser user = new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
@@ -297,6 +303,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             logger.warn(e);
         } catch (JahiaInitializationException e) {
             logger.error(e);
+        } finally {
+            if(session!=null) {
+                session.logout();
+            }
         }
         return null;
     }
@@ -344,9 +354,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      */
     public Set<JahiaUser> searchUsers(int siteID, Properties searchCriterias) {
         Set<JahiaUser> users = new HashSet<JahiaUser>();
-
+        Session session = null;
         try {
-            Session session = jcrStoreService.getSystemSession();
+            session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
                 StringBuffer query = new StringBuffer("SELECT * FROM " + Constants.JAHIANT_USER);
                 if (searchCriterias != null && searchCriterias.size() > 0) {
@@ -398,6 +408,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             }
         } catch (RepositoryException e) {
             logger.error(e);
+        } finally {
+            if(session!=null) {
+                session.logout();
+            }
         }
         return users;
     }

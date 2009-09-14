@@ -37,25 +37,24 @@
  */
 package org.jahia.services.content.impl.jackrabbit;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import javax.jcr.*;
-import javax.jcr.nodetype.NodeTypeIterator;
-
 import org.apache.jackrabbit.api.JackrabbitNodeTypeManager;
 import org.apache.jackrabbit.api.JackrabbitWorkspace;
 import org.apache.jackrabbit.core.nodetype.NodeTypeManagerImpl;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.JCRNodeWrapperImpl;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.nodetypes.JRCndWriter;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.exceptions.JahiaInitializationException;
+
+import javax.jcr.*;
+import javax.jcr.nodetype.NodeTypeIterator;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * @author hollis
@@ -86,11 +85,16 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
             }
             super.start();
             if (liveWorkspaceCreated) {
-                getSystemSession(null, "live").getWorkspace().clone("default",
+                session = getSystemSession(null, "live");
+                session.getWorkspace().clone("default",
                         "/content", "/content", false);
             }
         } catch (RepositoryException e) {
             e.printStackTrace();
+        } finally {
+            if(session!=null) {
+                session.logout();
+            }
         }
     }
 

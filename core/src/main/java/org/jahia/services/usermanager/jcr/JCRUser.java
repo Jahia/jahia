@@ -34,6 +34,7 @@ package org.jahia.services.usermanager.jcr;
 
 import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.*;
 
@@ -77,18 +78,24 @@ public class JCRUser implements JahiaUser {
      *         corresponds to the user key, which is unique within a Jahia system.
      */
     public String getName() {
+        JCRSessionWrapper session = null;
         try {
             if (name == null) {
-                name = getNode().getName();
+                session = jcrStoreService.getSystemSession();
+                name = getNode(session).getName();
             }
             return name;
         } catch (RepositoryException e) {
             return "";
+        } finally {
+            if (session != null) {
+                session.logout();
+            }
         }
     }
 
-    private Node getNode() throws RepositoryException {
-        return jcrStoreService.getSystemSession().getNodeByUUID(nodeUuid);
+    private Node getNode(JCRSessionWrapper session) throws RepositoryException {
+        return session.getNodeByUUID(nodeUuid);
     }
 
     /**
@@ -141,8 +148,10 @@ public class JCRUser implements JahiaUser {
     public Properties getProperties() {
         if (properties == null) {
             properties = new Properties();
+            JCRSessionWrapper session = null;
             try {
-                PropertyIterator iterator = getNode().getProperties();
+                session = jcrStoreService.getSystemSession();
+                PropertyIterator iterator = getNode(session).getProperties();
                 for (; iterator.hasNext();) {
                     Property property = iterator.nextProperty();
                     if (!property.getDefinition().isMultiple()) {
@@ -151,6 +160,10 @@ public class JCRUser implements JahiaUser {
                 }
             } catch (RepositoryException e) {
                 logger.error(e);
+            } finally {
+                if (session != null) {
+                    session.logout();
+                }
             }
         }
         return properties;
@@ -168,16 +181,24 @@ public class JCRUser implements JahiaUser {
     public UserProperties getUserProperties() {
         if (userProperties == null) {
             userProperties = new UserProperties();
+            JCRSessionWrapper session = null;
             try {
-                PropertyIterator iterator = getNode().getProperties();
+                session = jcrStoreService.getSystemSession();
+                PropertyIterator iterator = getNode(session).getProperties();
                 for (; iterator.hasNext();) {
                     Property property = iterator.nextProperty();
                     if (!property.getDefinition().isMultiple()) {
-                        userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(), property.getString(), false));
+                        userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(),
+                                                                                            property.getString(),
+                                                                                            false));
                     }
                 }
             } catch (RepositoryException e) {
                 logger.error(e);
+            } finally {
+                if (session != null) {
+                    session.logout();
+                }
             }
         }
         return userProperties;
@@ -214,8 +235,10 @@ public class JCRUser implements JahiaUser {
      * @return true if everything went well
      */
     public boolean removeProperty(String key) {
+        JCRSessionWrapper session = null;
         try {
-            Node node = getNode();
+            session = jcrStoreService.getSystemSession();
+            Node node = getNode(session);
             Property property = node.getProperty(key);
             if (property != null) {
                 property.remove();
@@ -226,6 +249,10 @@ public class JCRUser implements JahiaUser {
             }
         } catch (RepositoryException e) {
             logger.warn(e);
+        } finally {
+            if (session != null) {
+                session.logout();
+            }
         }
         return false;
     }
@@ -241,8 +268,10 @@ public class JCRUser implements JahiaUser {
      * @return true if everything went well
      */
     public boolean setProperty(String key, String value) {
+        JCRSessionWrapper session = null;
         try {
-            Node node = getNode();
+            session = jcrStoreService.getSystemSession();
+            Node node = getNode(session);
             node.setProperty(key, value);
             node.save();
             properties = null;
@@ -250,6 +279,10 @@ public class JCRUser implements JahiaUser {
             return true;
         } catch (RepositoryException e) {
             logger.warn(e);
+        } finally {
+            if (session != null) {
+                session.logout();
+            }
         }
         return false;
     }
@@ -313,8 +346,7 @@ public class JCRUser implements JahiaUser {
      *         false on any error.
      */
     public boolean isAdminMember(int siteID) {
-        return isMemberOfGroup(siteID,
-                               JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
+        return isMemberOfGroup(siteID, JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
     }
 
     /**
@@ -471,9 +503,6 @@ public class JCRUser implements JahiaUser {
 
     @Override
     public String toString() {
-        return "JCRUser{" +
-               "nodeUuid='" + nodeUuid + '\'' +
-               "name='" + getName() + '\'' +
-               '}';
+        return "JCRUser{" + "nodeUuid='" + nodeUuid + '\'' + "name='" + getName() + '\'' + '}';
     }
 }

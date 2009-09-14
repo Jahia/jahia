@@ -53,6 +53,7 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPortletNode;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.InsertionSortedMap;
@@ -268,8 +269,9 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
     private ApplicationBean getApplicationByContextAndJCRCall(String context) {
         ApplicationBean app = null;
+        Session session = null;
         try {
-            Session session = jcrStoreService.getSystemSession();
+            session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
                 String query = "SELECT * FROM jnt:portletDefinition where j:context = '"+context+"' ORDER BY j:context";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
@@ -282,6 +284,10 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             }
         } catch (RepositoryException e) {
             logger.error(e);
+        } finally {
+            if(session!=null) {
+                session.logout();
+            }
         }
         return app;
     }
@@ -353,8 +359,10 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         if (app == null) {
             return false;
         }
+        JCRSessionWrapper jcrSessionWrapper = null;
         try {
-            final JCRNodeWrapper parentNode = jcrStoreService.getSystemSession().getNode("/content/portletdefinitions");
+            jcrSessionWrapper = jcrStoreService.getSystemSession();
+            final JCRNodeWrapper parentNode = jcrSessionWrapper.getNode("/content/portletdefinitions");
             final String name = app.getName().replaceAll("/", "___");
             final JCRNodeWrapper wrapper = parentNode.addNode(name, "jnt:portletDefinition");
             wrapper.setProperty("j:context", app.getContext());
@@ -369,6 +377,10 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             app.setID(wrapper.getUUID());
         } catch (RepositoryException e) {
             logger.error(e, e);
+        } finally {
+            if(jcrSessionWrapper!=null) {
+                jcrSessionWrapper.logout();
+            }
         }
 
         putInApplicationCache(app);

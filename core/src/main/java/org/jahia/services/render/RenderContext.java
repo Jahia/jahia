@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
- * TODO Comment me
+ * Template rendering context with the information about current request/response pair and optional template parameters.
  *
  * @author toto
  */
@@ -52,6 +52,8 @@ public class RenderContext {
 
     private Set<String> displayedModules = new HashSet<String>();
     private Map<String,Set<String>> externalLinks = new HashMap<String,Set<String>>();
+    
+    private Map<String, Object> parameters = new HashMap<String, Object>();
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
@@ -117,6 +119,10 @@ public class RenderContext {
 
     public Resource getMainResource() {
         return mainResource;
+    }
+
+	public Map<String, Object> getModuleParams() {
+    	return parameters;
     }
 
 }

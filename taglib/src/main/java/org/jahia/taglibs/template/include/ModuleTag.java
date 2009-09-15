@@ -1,3 +1,34 @@
+/**
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
 package org.jahia.taglibs.template.include;
 
 import org.jahia.data.beans.ContentBean;
@@ -15,6 +46,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.apache.log4j.Logger;
+import org.apache.taglibs.standard.tag.common.core.ParamParent;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -30,6 +62,7 @@ import javax.jcr.version.VersionException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.File;
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -38,7 +71,7 @@ import java.util.*;
  * Date: May 14, 2009
  * Time: 7:18:15 PM
  */
-public class ModuleTag extends BodyTagSupport {
+public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     private static final long serialVersionUID = -8968618483176483281L;
 
@@ -67,6 +100,8 @@ public class ModuleTag extends BodyTagSupport {
     private String var = null;
 
     private StringBuffer buffer = new StringBuffer();
+    
+    private Map<String, String> parameters = new HashMap<String, String>();
 
     public void setPath(String path) {
         this.path = path;
@@ -126,142 +161,154 @@ public class ModuleTag extends BodyTagSupport {
             if (renderContext == null) {
                 renderContext = new RenderContext((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
             }
-            Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
-            if (currentResource != null) {
-                templateType = currentResource.getTemplateType();
-            }
-            if (nodeName != null) {
-                node = (JCRNodeWrapper) pageContext.findAttribute(nodeName);
-            } else if (contentBeanName != null) {
-                try {                            
-                    ContentBean bean = (ContentBean) pageContext.getAttribute(contentBeanName);
-                    node = bean.getContentObject().getJCRNode(Jahia.getThreadParamBean());
-                } catch (JahiaException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            } else if (path != null && currentResource != null) {
-                try {
-                    if (!path.startsWith("/")) {
-                        JCRNodeWrapper nodeWrapper = currentResource.getNode();
-                        if (!path.equals("*") && nodeWrapper.hasNode(path)) {
-                            node = (JCRNodeWrapper) nodeWrapper.getNode(path);
-                        } else if (!path.equals("*") && renderContext.isEditMode() && autoCreateType != null) {
-                            node = nodeWrapper.addNode(path, autoCreateType);
-                            nodeWrapper.save();
-                        } else {
-                            currentResource.getMissingResources().add(path);
-                            Map<String, Object> extraParams = new HashMap<String, Object>();
-
-                            if (renderContext.isEditMode()) {
-                                printModuleStart("placeholder", nodeWrapper.getPath()+"/"+path, null);
-                                printModuleEnd();
-                            }
-                        }
-                    } else if (path.startsWith("/")) {
-                        try {
-                            node = (JCRNodeWrapper) currentResource.getNode().getSession().getItem(path);
-                        } catch (PathNotFoundException e) {
-                            String currentPath = currentResource.getNode().getPath();
-                            if (path.startsWith(currentPath+"/") && path.substring(currentPath.length()+1).indexOf('/') == -1) {
-                                currentResource.getMissingResources().add(path.substring(currentPath.length()+1));
-                            }
-
-                            if (renderContext.isEditMode()) {
-                                printModuleStart("placeholder", path, null);
-                                printModuleEnd();
-                            }
-                        }
-                    }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-            if (node != null) {
-                // add externalLinks
-                try {
-                    ExtendedNodeType nt = (ExtendedNodeType) currentResource.getNode().getPrimaryNodeType();
-                    final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(nt.getSystemId());
-                    if (aPackage != null) {
-                        String path = aPackage.getFilePath();
-                        File f = new File(path+"/css");
-                        if (f.exists()) {
-                            File[] files = f.listFiles();
-                            for (File file : files) {
-                                renderContext.addExternalLink("css",aPackage.getRootFolderPath()+"/css/" + file.getName());
-                            }
-                        }
-                    }
-
-                } catch (RepositoryException e) {
-                    e.printStackTrace();
-                }
-                if (node.getPath().endsWith("/*")) {
-                    if (renderContext.isEditMode() && editable) {
-                        printModuleStart("placeholder", node.getPath(), null);
-                        printModuleEnd();
-                    }
-                    
-                    return EVAL_PAGE;
-                }
-                if (nodeTypes != null) {
-                    StringTokenizer st = new StringTokenizer(nodeTypes, " ");
-                    boolean found = false;
-                    Node displayedNode = node;
-                    try {
-                        if (node.isNodeType("jnt:nodeReference") && node.hasProperty("j:node")) {
-                            displayedNode = node.getProperty("j:node").getNode();
-                        }
-                        while (st.hasMoreTokens()) {
-                            String tok = st.nextToken();
-                            try {
-                                if (displayedNode.isNodeType(tok)) {
-                                    found = true;
-                                    break;
-                                }
-                            } catch (RepositoryException e) {
-                                logger.error("Cannot test on "+tok,e);
-                            }
-                        }
-                    } catch (RepositoryException e) {
-                        logger.error(e,e);
-                    }
-                    if (!found) {
-                        return EVAL_PAGE;
-                    }
-                }
-
-                Resource resource = new Resource(node, templateType, template, forcedTemplate);
-
-                if (renderContext.isEditMode() && editable) {
-                    try {
-                        if (node.isNodeType("jmix:link")) {
-                            // no placeholder at all for links
-                            render(renderContext, resource);
-                        } else {
-                            String type = "existingNode";
-                            if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
-                                type = "list";
-                            }
-                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate());
-
-                            JCRNodeWrapper w = new JCRNodeDecorator(node) {
-                                @Override
-                                public Property getProperty(String s) throws PathNotFoundException, RepositoryException {
-                                    JCRPropertyWrapper p = (JCRPropertyWrapper) super.getProperty(s);
-                                    return new EditablePropertyWrapper(p);
-                                }
-                            };
-                            resource = new Resource(w, resource.getTemplateType(), resource.getTemplate(), resource.getForcedTemplate());
-                            render(renderContext, resource);
-                            printModuleEnd();
-                        }
-                    } catch (RepositoryException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
-                } else {
-                    render(renderContext, resource);
-                }
-
+            
+            // add custom parameters
+            Map<String, Object> oldParams = new HashMap<String, Object>(renderContext.getModuleParams()); 
+            renderContext.getModuleParams().clear();
+            try {
+	            String charset = pageContext.getResponse().getCharacterEncoding();
+	            for (Map.Entry<String, String> param : parameters.entrySet()) {
+	            	renderContext.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(param.getValue(), charset));
+	            }
+	
+	            Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
+	            if (currentResource != null) {
+	                templateType = currentResource.getTemplateType();
+	            }
+	            if (nodeName != null) {
+	                node = (JCRNodeWrapper) pageContext.findAttribute(nodeName);
+	            } else if (contentBeanName != null) {
+	                try {                            
+	                    ContentBean bean = (ContentBean) pageContext.getAttribute(contentBeanName);
+	                    node = bean.getContentObject().getJCRNode(Jahia.getThreadParamBean());
+	                } catch (JahiaException e) {
+	                    logger.error(e.getMessage(), e);
+	                }
+	            } else if (path != null && currentResource != null) {
+	                try {
+	                    if (!path.startsWith("/")) {
+	                        JCRNodeWrapper nodeWrapper = currentResource.getNode();
+	                        if (!path.equals("*") && nodeWrapper.hasNode(path)) {
+	                            node = (JCRNodeWrapper) nodeWrapper.getNode(path);
+	                        } else if (!path.equals("*") && renderContext.isEditMode() && autoCreateType != null) {
+	                            node = nodeWrapper.addNode(path, autoCreateType);
+	                            nodeWrapper.save();
+	                        } else {
+	                            currentResource.getMissingResources().add(path);
+	
+	                            if (renderContext.isEditMode()) {
+	                                printModuleStart("placeholder", nodeWrapper.getPath()+"/"+path, null);
+	                                printModuleEnd();
+	                            }
+	                        }
+	                    } else if (path.startsWith("/")) {
+	                        try {
+	                            node = (JCRNodeWrapper) currentResource.getNode().getSession().getItem(path);
+	                        } catch (PathNotFoundException e) {
+	                            String currentPath = currentResource.getNode().getPath();
+	                            if (path.startsWith(currentPath+"/") && path.substring(currentPath.length()+1).indexOf('/') == -1) {
+	                                currentResource.getMissingResources().add(path.substring(currentPath.length()+1));
+	                            }
+	
+	                            if (renderContext.isEditMode()) {
+	                                printModuleStart("placeholder", path, null);
+	                                printModuleEnd();
+	                            }
+	                        }
+	                    }
+	                } catch (RepositoryException e) {
+	                    logger.error(e.getMessage(), e);
+	                }
+	            }
+	            if (node != null) {
+	                // add externalLinks
+	                try {
+	                    ExtendedNodeType nt = (ExtendedNodeType) currentResource.getNode().getPrimaryNodeType();
+	                    final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(nt.getSystemId());
+	                    if (aPackage != null) {
+	                        String path = aPackage.getFilePath();
+	                        File f = new File(path+"/css");
+	                        if (f.exists()) {
+	                            File[] files = f.listFiles();
+	                            for (File file : files) {
+	                                renderContext.addExternalLink("css",aPackage.getRootFolderPath()+"/css/" + file.getName());
+	                            }
+	                        }
+	                    }
+	
+	                } catch (RepositoryException e) {
+	                	logger.error(e.getMessage(), e);
+	                }
+	                if (node.getPath().endsWith("/*")) {
+	                    if (renderContext.isEditMode() && editable) {
+	                        printModuleStart("placeholder", node.getPath(), null);
+	                        printModuleEnd();
+	                    }
+	                    
+	                    return EVAL_PAGE;
+	                }
+	                if (nodeTypes != null) {
+	                    StringTokenizer st = new StringTokenizer(nodeTypes, " ");
+	                    boolean found = false;
+	                    Node displayedNode = node;
+	                    try {
+	                        if (node.isNodeType("jnt:nodeReference") && node.hasProperty("j:node")) {
+	                            displayedNode = node.getProperty("j:node").getNode();
+	                        }
+	                        while (st.hasMoreTokens()) {
+	                            String tok = st.nextToken();
+	                            try {
+	                                if (displayedNode.isNodeType(tok)) {
+	                                    found = true;
+	                                    break;
+	                                }
+	                            } catch (RepositoryException e) {
+	                                logger.error("Cannot test on "+tok,e);
+	                            }
+	                        }
+	                    } catch (RepositoryException e) {
+	                        logger.error(e,e);
+	                    }
+	                    if (!found) {
+	                        return EVAL_PAGE;
+	                    }
+	                }
+	
+	                Resource resource = new Resource(node, templateType, template, forcedTemplate);
+	
+	                if (renderContext.isEditMode() && editable) {
+	                    try {
+	                        if (node.isNodeType("jmix:link")) {
+	                            // no placeholder at all for links
+	                            render(renderContext, resource);
+	                        } else {
+	                            String type = "existingNode";
+	                            if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
+	                                type = "list";
+	                            }
+	                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate());
+	
+	                            JCRNodeWrapper w = new JCRNodeDecorator(node) {
+	                                @Override
+	                                public Property getProperty(String s) throws PathNotFoundException, RepositoryException {
+	                                    JCRPropertyWrapper p = (JCRPropertyWrapper) super.getProperty(s);
+	                                    return new EditablePropertyWrapper(p);
+	                                }
+	                            };
+	                            resource = new Resource(w, resource.getTemplateType(), resource.getTemplate(), resource.getForcedTemplate());
+	                            render(renderContext, resource);
+	                            printModuleEnd();
+	                        }
+	                    } catch (RepositoryException e) {
+	                        logger.error(e.getMessage(), e);
+	                    }
+	                } else {
+	                    render(renderContext, resource);
+	                }
+	            }
+            } finally {
+            	renderContext.getModuleParams().clear();
+            	renderContext.getModuleParams().putAll(oldParams);
             }
         } catch (IOException ex) {
             throw new JspException(ex);
@@ -280,6 +327,7 @@ public class ModuleTag extends BodyTagSupport {
             autoCreateType = null;
             var = null;
             buffer = null;
+            parameters.clear();
 
     		Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
     		pageContext.setAttribute("org.jahia.modules.level", level != null ? level -1 : 1, PageContext.REQUEST_SCOPE);
@@ -337,6 +385,10 @@ public class ModuleTag extends BodyTagSupport {
             }
         }
 
+    }
+
+	public void addParameter(String name, String value) {
+		parameters.put(name, value);
     }
 
     /**
@@ -510,9 +562,6 @@ public class ModuleTag extends BodyTagSupport {
 
             public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
                 return v.getString();
-//                return  "<div class=\"jahia-template-gxt\" jahiatype=\"placeholder\" " +
-//                        "id=\"placeholder"+ UUID.randomUUID().toString()+"\" type=\"text\" path=\""+ path +"\" >" +
-//                        v.getString() + "</div>";
             }
 
             public InputStream getStream() throws IllegalStateException, RepositoryException {

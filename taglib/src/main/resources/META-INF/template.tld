@@ -366,21 +366,23 @@
     </tag>
     <tag>
         <description>
-            Custom jsp:param implementation that is used in conjunction with 'include' to pass additional parameters
+            Tag is used to add parameters to the parent tag, that impements ParamParent, e.g. 'include' or 'module' tags
         </description>
-        <name>param</name>
-        <tag-class>org.jahia.taglibs.template.include.ParamTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>name</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>value</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
+	    <name>param</name>
+	    <tag-class>org.apache.taglibs.standard.tag.rt.core.ParamTag</tag-class>
+	    <body-content>JSP</body-content>
+	    <attribute>
+	        <description>Name of the parameter.</description>
+	        <name>name</name>
+	        <required>true</required>
+	        <rtexprvalue>true</rtexprvalue>
+	    </attribute>
+	    <attribute>
+	        <description>Value of the parameter.</description>
+	        <name>value</name>
+	        <required>false</required>
+	        <rtexprvalue>true</rtexprvalue>
+	    </attribute>
     </tag>
     <tag>
       <description>

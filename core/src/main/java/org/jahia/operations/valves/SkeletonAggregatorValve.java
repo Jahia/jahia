@@ -203,9 +203,11 @@ public class SkeletonAggregatorValve implements Valve {
                 watch.stop();
                 if (generatorQueue.getNotCacheablePage().containsKey(entryKey)) {
                     ValveContext.valveResources.set(null);
+                    logger.debug("Page " + entryKey + " not cacheable, exiting skeleton aggregator valve");
                     return exit;
                 }
                 if (skeletonCache.getConcurrentHashMap().containsKey(entryKey)) {
+                    logger.debug("Skeleton entry " + entryKey + " was marked for invalidation, will not retrieve from cache");
                     skeletonCache.getConcurrentHashMap().remove(entryKey);
                     ValveContext.valveResources.set(new PageState(false, entryKey));
                     return exit;
@@ -273,6 +275,7 @@ public class SkeletonAggregatorValve implements Valve {
                                             outputDocument.replace(segment.getBegin(), segment.getElement()
                                                     .getEndTag().getEnd(), containerHTMLCacheEntry.getBodyContent());
                                         else {
+                                            logger.debug("Couldn't find container cache fragment " + containerKey + " for page " + entryKey + " exiting aggregator... ");
                                             ValveContext.valveResources.set(new PageState(false, entryKey));
                                             return exit;
                                         }

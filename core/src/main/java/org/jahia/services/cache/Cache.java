@@ -150,9 +150,6 @@ public class Cache<K, V> {
                 logger.debug ("Cache entry has expired, ignoring entry and removing...");
                 remove (entryKey);
                 return null;
-
-            } else {
-                logger.debug ("Cache entry has not expired, continuing...");
             }
         }
 
@@ -263,7 +260,17 @@ public class Cache<K, V> {
             logger.debug ("cache is deactivated. Aborting store.");
             return false;
         }
-        
+
+        if (logger.isDebugEnabled()) {
+            CacheEntry<V> existingEntry = cacheImplementation.get (entryKey);
+            if (existingEntry != null) {
+                logger.debug("Updating cache entry " + entryKey + " for cache " + getName());
+                if (entry.getObject().equals(existingEntry.getObject())) {
+                    logger.debug("Updating cache "+getName()+" entry " + entryKey + " with same object value ("+entry.getObject()+")!");
+                }
+            }
+        }
+
         if (entryKey.getClass() == GroupCacheKey.class) {
             GroupCacheKey groupKey = (GroupCacheKey) entryKey;
             cacheImplementation.put (entryKey, groupKey.getGroupArray(), entry);
@@ -462,13 +469,26 @@ public class Cache<K, V> {
      *           otherwise return <code>false</code>
      */
     final public boolean containsKey (final K entryKey) {
-        return cacheImplementation.containsKey (entryKey);
+        if (cacheImplementation.containsKey (entryKey)) {
+            // we must now check that the object has not expired.
+            if (getCacheEntry(entryKey) == null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Entry " + entryKey + " has expired. containsKey will return false.");
+                }
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
     }
     
     /** Returns a Collection of all cache keys at the moment (may change in the next moment)
-    *
-    * @return  Collection of key objects in the cache
-    */
+     * Warning, if expiration times were set, they are NOT checked by this method, so make
+     * sure you perform a get and check that it is not null when using this method.
+     * @return  Collection of key objects in the cache
+     */
    final public Collection<K> getKeys () {
        return cacheImplementation.getKeys();
    }
@@ -486,8 +506,10 @@ public class Cache<K, V> {
         synchronized (this) {
         cacheImplementation.remove (entryKey);
         }
-        logger.debug ("Removed the entry [" + entryKey.toString () +
-                      "] from cache [" + name + "]!");
+        if (logger.isDebugEnabled()) {
+            logger.debug ("Removed the entry [" + entryKey.toString () +
+                          "] from cache [" + name + "]!");
+        }
     }
 
     /**

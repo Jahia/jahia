@@ -193,6 +193,8 @@ FRAG2(frag_size=60000)"
             diskPersistent="true"
             maxElementsOnDisk="10000"
             eternal="false">
+        <cacheEventListenerFactory class="org.jahia.services.cache.ehcache.LoggingCacheEventListenerFactory"
+                                   properties=""/>
         <cacheEventListenerFactory class="org.jahia.services.cache.ehcache.SkeletonCacheEventListenerFactory"
                                    properties=""/>
                 <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
@@ -204,6 +206,8 @@ FRAG2(frag_size=60000)"
             maxElementsInMemory="500"
             diskPersistent="true"
             eternal="false">
+        <cacheEventListenerFactory class="org.jahia.services.cache.ehcache.LoggingCacheEventListenerFactory"
+                                   properties=""/>
                 <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
                                    properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>
     </cache>
@@ -217,6 +221,8 @@ FRAG2(frag_size=60000)"
             timeToLiveSeconds="14400"
             maxElementsOnDisk="50000"
             eternal="false">
+        <cacheEventListenerFactory class="org.jahia.services.cache.ehcache.LoggingCacheEventListenerFactory"
+                                   properties=""/>
                 <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
                                    properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>
     </cache>
@@ -226,6 +232,8 @@ FRAG2(frag_size=60000)"
             maxElementsInMemory="500"
             diskPersistent="true"
             eternal="false">
+        <cacheEventListenerFactory class="org.jahia.services.cache.ehcache.LoggingCacheEventListenerFactory"
+                                   properties=""/>
                 <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
                                    properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>
     </cache>
@@ -235,6 +243,9 @@ FRAG2(frag_size=60000)"
             maxElementsInMemory="300"
             diskPersistent="false"
             eternal="true">
+        <!-- Uncomment the following to help debug cluster messaging -->
+        <!--cacheEventListenerFactory class="org.jahia.services.cache.ehcache.LoggingCacheEventListenerFactory"
+                                   properties=""/-->
                 <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
                                    properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>
     </cache>
@@ -244,6 +255,9 @@ FRAG2(frag_size=60000)"
             maxElementsInMemory="300"
             diskPersistent="false"
             eternal="true">
+        <!-- Uncomment the following to help debug cluster messaging -->
+        <!--cacheEventListenerFactory class="org.jahia.services.cache.ehcache.LoggingCacheEventListenerFactory"
+                                   properties=""/-->
                 <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
                                    properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>
     </cache>
@@ -253,6 +267,9 @@ FRAG2(frag_size=60000)"
             maxElementsInMemory="300"
             diskPersistent="false"
             eternal="true">
+        <!-- Uncomment the following to help debug cluster messaging -->
+        <!--cacheEventListenerFactory class="org.jahia.services.cache.ehcache.LoggingCacheEventListenerFactory"
+                                   properties=""/-->
                 <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
                                    properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>
     </cache>
@@ -262,6 +279,9 @@ FRAG2(frag_size=60000)"
             maxElementsInMemory="300"
             diskPersistent="false"
             eternal="true">
+        <!-- Uncomment the following to help debug cluster messaging -->
+        <!--cacheEventListenerFactory class="org.jahia.services.cache.ehcache.LoggingCacheEventListenerFactory"
+                                   properties=""/-->
                 <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
                                    properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>
     </cache>

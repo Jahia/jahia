@@ -35,7 +35,7 @@
 
 <%@ include file="../../../../../common/declarations.jspf" %>
 <c:set var="useGWT" value="${!empty param.useGWT}"/>
-<template:module node="${currentNode}" forcedTemplate="${currentResource.resolvedTemplate}" var="content"/>
+<template:module node="${currentNode}" forcedTemplate="${currentResource.resolvedTemplate}" var="content" templateWrapper="bodywrapper"/>
 <template:template gwtForGuest="${useGWT}">
     <template:templateHead>
         <!-- All headers and declarations global meta and css-->
@@ -55,85 +55,6 @@
         </c:forEach>
     </template:templateHead>
     <template:templateBody gwtScript="${param.gwtScript}">
-        <c:forEach items="${currentNode.ancestors}" var="page">
-            <c:if test="${jcr:isNodeType(page, 'jnt:page')}">
-                <c:if test="${rootPage == null}">
-                    <c:set var="rootPage" value="${page}"/>
-                </c:if>
-            </c:if>
-        </c:forEach>
-        <c:if test="${jcr:isNodeType(currentNode, 'jnt:page')}">
-            <c:if test="${rootPage == null}">
-                <c:set var="rootPage" value="${currentNode}"/>
-            </c:if>
-        </c:if>
-        <div id="bodywrapper">
-            <div id="contentArea">
-                <div id="toplinks">
-
-                    <div id="languages">
-                            <%--<ui:languageSwitchingLinks display="horizontal" linkDisplay="${linkDisplay.isoLocaleCountryCode}" displayLanguageState="true"/>--%>
-                    </div>
-
-                    <div id="topshortcuts">
-                        <ul>
-                            <c:if test="${requestScope.currentRequest.logged}">
-                                <li class="topshortcuts-login">
-                                    <a class="loginFormTopLogoutShortcuts"
-                                       href="<template:composePageURL page="logout"/>"><span><fmt:message
-                                            key="web_templates.logout"/></span></a>
-                                </li>
-                                <li>
-                                    <span class="currentUser"><utility:userProperty/></span>
-                                </li>
-                                <li class="topshortcuts-mysettings">
-                                    <a href="${url.base}"><fmt:message key="web_templates.mySettings.title"/></a>
-                                </li>
-                                <li class="topshortcuts-edit">
-                                    <a href="${url.edit}"><fmt:message key="edit"/></a>
-                                </li>
-                            </c:if>
-                            <li class="topshortcuts-print"><a href="#" onclick="javascript:window.print()">
-                                <fmt:message key="web_templates.print"/></a>
-                            </li>
-                            <li class="topshortcuts-typoincrease">
-                                <a href="javascript:ts('body',1)"><fmt:message key="web_templates.up"/></a>
-                            </li>
-                            <li class="topshortcuts-typoreduce">
-                                <a href="javascript:ts('body',-1)"><fmt:message key="web_templates.down"/></a>
-                            </li>
-                            <li class="topshortcuts-home">
-                                <a href="${url.base}${rootPage.path}.html"><fmt:message key="web_templates.home"/></a>
-                            </li>
-                            <li class="topshortcuts-sitemap">
-                                <a href="${url.base}${rootPage.path}.sitemap.html"><fmt:message
-                                        key="web_templates.sitemap"/></a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="clear"></div>
-
-
-                </div>
-                <div id="page">
-                    <div id="pageHeader">
-                        <div id="logotop">
-                                <%--<jcr:node var="logo" path="${rootPage.path}/logo"/>--%>
-                            <template:module path="${rootPage.path}/logo"/>
-                        </div>
-                        <h1 class="hide">${currentSite.title} : ${currentPage.title}</h1>
-
-
-                        <template:module node="${rootPage}" forcedTemplate="nav.navBar" editable="false"/>
-                    </div>
-
-
-                        ${content}
-                    <div class="clear"></div>
-                </div>
-                <div class="clear"></div>
-            </div>
-            <div class="clear"></div>
-        </div>
+        ${content}
     </template:templateBody>
 </template:template>

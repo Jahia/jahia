@@ -399,8 +399,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         ContentManagerHelper.uploadedFile(location, tmpName, operation, newName, retrieveParamBean());
     }
 
-    public String getRenderedContent(String path, String workspace, String locale, String template, boolean editMode) throws GWTJahiaServiceException {
-        return ContentManagerHelper.getRenderedContent(path, workspace, LanguageCodeConverters.languageCodeToLocale(locale), template, editMode, retrieveParamBean());
+    public String getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, boolean editMode) throws GWTJahiaServiceException {
+        return ContentManagerHelper.getRenderedContent(path, workspace, LanguageCodeConverters.languageCodeToLocale(locale), template, templateWrapper, editMode, retrieveParamBean());
     }
 
     public Boolean isFileAccessibleForCurrentContainer(String path) throws GWTJahiaServiceException {

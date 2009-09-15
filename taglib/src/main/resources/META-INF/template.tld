@@ -458,6 +458,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>The template wrapper</description>
+            <name>templateWrapper</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>Enable or disable edition of this module in edit mode. Mainly used for absolute or references.</description>
             <name>editable</name>
             <required>false</required>

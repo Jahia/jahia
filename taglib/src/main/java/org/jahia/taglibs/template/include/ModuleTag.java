@@ -95,6 +95,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     private String forcedTemplate = null;
 
+    private String templateWrapper = null;
+
     private String autoCreateType = null;
 
     private String var = null;
@@ -139,6 +141,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         this.forcedTemplate = forcedTemplate;
     }
 
+    public void setTemplateWrapper(String templateWrapper) {
+        this.templateWrapper = templateWrapper;
+    }
+
     public void setAutoCreateType(String autoCreateType) {
         this.autoCreateType = autoCreateType;
     }
@@ -161,10 +167,15 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             if (renderContext == null) {
                 renderContext = new RenderContext((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
             }
-            
+            if(templateWrapper != null) {
+                renderContext.setTemplateWrapper(templateWrapper);
+            }
             // add custom parameters
             Map<String, Object> oldParams = new HashMap<String, Object>(renderContext.getModuleParams()); 
             renderContext.getModuleParams().clear();
+
+            buffer = new StringBuffer();
+
             try {
 	            String charset = pageContext.getResponse().getCharacterEncoding();
 	            for (Map.Entry<String, String> param : parameters.entrySet()) {
@@ -321,6 +332,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             node = null;
             template = null;
             forcedTemplate = null;
+            templateWrapper = null;
             editable = true;
             templateType = "html";
             nodeTypes = null;
@@ -338,7 +350,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     private void printModuleStart(String type, String path, String resolvedTemplate) throws IOException {
 
-        StringBuffer buffer = new StringBuffer();
         buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ")
                 .append("id=\"module")
                 .append(UUID.randomUUID().toString())
@@ -349,39 +360,37 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 .append((nodeTypes != null) ? "nodetypes=\"" + nodeTypes + "\"" : "")
                 .append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "")
                 .append(">");
-        this.buffer = buffer;
         if (var == null) {
             pageContext.getOut().print(buffer);
+            buffer.delete(0, buffer.length());
         }
 
     }
 
     private void printModuleEnd()  throws IOException {
-        StringBuffer buffer = new StringBuffer();
-         buffer.append("</div>");
-        this.buffer = buffer;
+        buffer.append("</div>");
         if (var == null) {
             pageContext.getOut().print(buffer);
+            buffer.delete(0, buffer.length());
         }
     }
 
     private void render(RenderContext renderContext, Resource resource) throws IOException {
-        StringBuffer buffer = new StringBuffer();
         try {
             if (renderContext.isIncludeSubModules()) {
                 buffer.append(RenderService.getInstance().render(resource, renderContext));
-                this.buffer = buffer;
                 if (var == null) {
                     pageContext.getOut().print(buffer);
+                    buffer.delete(0, buffer.length());
                 }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException io) {
             buffer.append(io);
-            this.buffer = buffer;
             if (var == null) {
                 pageContext.getOut().print(buffer);
+                buffer.delete(0, buffer.length());
             }
         }
 

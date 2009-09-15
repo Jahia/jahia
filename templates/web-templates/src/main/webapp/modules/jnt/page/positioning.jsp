@@ -69,7 +69,4 @@
     <div class="clear"></div>
 </div>
 <div>&nbsp;</div>
-<div id="footer">
-    <%@include file="areas/footer.jsp" %>
-</div>
 

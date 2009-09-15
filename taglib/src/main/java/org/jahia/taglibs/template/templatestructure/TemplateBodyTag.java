@@ -41,6 +41,7 @@ import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderService;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.internal.gwt.GWTIncluder;
 import org.jahia.registries.ServicesRegistry;
@@ -139,7 +140,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     private transient Map<String, Object> attributes = new HashMap<String, Object>();
     private String gwtScript;
     boolean useGwt = false;
-
+    private boolean editDivOpen = false;
 
     /**
      * Allows the template developer to specify a specific GWT javascript file to use rather than the default one.
@@ -217,13 +218,22 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
             pageContext.getOut().println(buf.toString());
 
-            if (renderContext != null && renderContext.isEditMode()) {
-                Resource r = (Resource) pageContext.getRequest().getAttribute("currentResource");
-                addEditModeResources();
-                pageContext.getRequest().setAttribute("jahia.engines.gwtModuleIncluded", Boolean.TRUE);
-                pageContext.getOut().println(GWTIncluder.generateGWTImport(pageContext, "org.jahia.ajax.gwt.module.edit.Edit"));
-                pageContext.getOut().println("<div class=\"jahia-template-gxt editmode-gxt\" id=\"editmode\" jahiatype=\"editmode\" path=\""+r.getNode().getPath()+"\" locale=\""+r.getLocale()+"\" template=\""+r.getResolvedTemplate()+"\"></div>");
-                return SKIP_BODY;
+            if (renderContext != null) {
+                if (renderContext.isEditMode()) {
+                    Resource r = (Resource) pageContext.getRequest().getAttribute("currentResource");
+                    addEditModeResources();
+                    pageContext.getRequest().setAttribute("jahia.engines.gwtModuleIncluded", Boolean.TRUE);
+                    pageContext.getOut().println(GWTIncluder.generateGWTImport(pageContext, "org.jahia.ajax.gwt.module.edit.Edit"));
+                    pageContext.getOut().println("<div class=\"jahia-template-gxt editmode-gxt\" id=\"editmode\" jahiatype=\"editmode\" path=\""+r.getNode().getPath()+"\" locale=\""+r.getLocale()+"\" template=\""+r.getResolvedTemplate()+"\">");
+                    editDivOpen = true;
+                    return SKIP_BODY;
+                } else {
+//                    Resource r = (Resource) pageContext.getRequest().getAttribute("currentResource");
+//                    request.setAttribute("templateWrapper", "bodywrapper");
+//                    String out = RenderService.getInstance().render(r, renderContext);
+//                    pageContext.getOut().print(out);
+//                    return SKIP_BODY;
+                }
             }
 
         } catch (Exception e) {
@@ -564,6 +574,10 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                     buf.append("</script>\n");
                 }
             }
+            if (editDivOpen) {
+                buf.append("</div>");
+            }
+
             buf.append("</body>");
 
             pageContext.getOut().println(buf.toString());
@@ -575,6 +589,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         gwtScript = null;
         attributes = new HashMap<String, Object>();
         useGwt = false;
+        editDivOpen = false;
         return EVAL_PAGE;
     }
 

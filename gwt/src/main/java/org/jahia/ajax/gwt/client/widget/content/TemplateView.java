@@ -68,7 +68,7 @@ public class TemplateView extends TopRightComponent {
     public void setContent(final Object root) {
         clearTable();
         if (root != null) {
-            JahiaContentManagementService.App.getInstance().getRenderedContent(((GWTJahiaNode) root).getPath(), null, null, null, false, new AsyncCallback<String>() {
+            JahiaContentManagementService.App.getInstance().getRenderedContent(((GWTJahiaNode) root).getPath(), null, null, null, null, false, new AsyncCallback<String>() {
                 public void onSuccess(String result) {
                     html = new HTML(result);
                     m_component.add(html);

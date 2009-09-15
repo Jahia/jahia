@@ -2140,10 +2140,11 @@ public class ContentManagerHelper {
      * @param workspace
      * @param locale
      * @param template
+     * @param templateWrapper
      * @param editMode
      * @param ctx  @return   @throws GWTJahiaServiceException
      */
-    public static String getRenderedContent(String path, String workspace, Locale locale, String template, boolean editMode, ParamBean ctx) throws GWTJahiaServiceException {
+    public static String getRenderedContent(String path, String workspace, Locale locale, String template, String templateWrapper, boolean editMode, ParamBean ctx) throws GWTJahiaServiceException {
         String res = null;
         try {
             if (locale == null) {
@@ -2156,6 +2157,7 @@ public class ContentManagerHelper {
             RenderContext renderContext = new RenderContext(ctx.getRequest(), ctx.getResponse());
             renderContext.setEditMode(editMode);
             renderContext.setMainResource(r);
+            renderContext.setTemplateWrapper(templateWrapper);
             res = RenderService.getInstance().render(r, renderContext);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

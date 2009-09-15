@@ -2,11 +2,6 @@
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
     <sites jcr:primaryType="jnt:systemfolder">
         <ACME j:nodename="ACME" jcr:created="2009-05-19T17:13:04.120+02:00" jcr:lastModified="2009-05-19T17:13:04.208+02:00" j:server="localhost2" jcr:createdBy="root" jcr:primaryType="jnt:virtualsite" jcr:uuid="48b45be5-f668-43ba-91a5-5a64c47224d2" jcr:lastModifiedBy="root" j:fullpath="/content/sites/ACME" j:serverName="localhost" jcr:mixinTypes="jmix:accessControlled">
-            <j:acl jcr:primaryType="jnt:acl">
-                <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"></GRANT_jcr_read_g_users>
-                <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"></GRANT_jcr_write_g_users>
-                <j:ace j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read jcr:write" j:aceType="GRANT"></j:ace>
-            </j:acl>
             <files j:nodename="files" jcr:created="2009-05-19T17:13:04.121+02:00" jcr:lastModified="2009-05-19T17:13:22.735+02:00" jcr:createdBy="root" jcr:primaryType="jnt:folder" jcr:uuid="5a94c987-42f8-4cfe-b95a-a4729551f6df" jcr:lastModifiedBy="root" j:fullpath="/content/sites/ACME/files">
                 <PDF j:nodename="PDF" jcr:created="2009-05-19T17:13:09.429+02:00" jcr:lastModified="2009-05-19T17:13:22.857+02:00" jcr:createdBy="root" jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:test" jcr:uuid="57d04410-fc44-4e59-b9a4-77dfad80c63c" jcr:lastModifiedBy="root" j:fullpath="/content/sites/ACME/files/PDF">
                     <Publications j:nodename="Publications" jcr:created="2009-05-19T17:13:09.432+02:00" jcr:lastModified="2009-05-19T17:13:22.853+02:00" jcr:createdBy="root" jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:test mix:lockable" jcr:uuid="f2576d5c-01d6-47a4-8049-d7ed85d00d94" jcr:lastModifiedBy="root" j:fullpath="/content/sites/ACME/files/PDF/Publications">

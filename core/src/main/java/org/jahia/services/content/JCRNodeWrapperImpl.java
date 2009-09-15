@@ -81,7 +81,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     protected Node objectNode = null;
 
-    protected String[] defaultPerms = { Constants.JCR_READ_RIGHTS,Constants.JCR_WRITE_RIGHTS };
+    protected String[] defaultPerms = { Constants.JCR_READ_RIGHTS_LIVE, Constants.JCR_READ_RIGHTS , Constants.JCR_WRITE_RIGHTS, Constants.JCR_MODIFYACCESSCONTROL, Constants.JCR_WRITE_RIGHTS_LIVE };
 
     protected Exception exception = null;
     private static final String J_PRIVILEGES = "j:privileges";
@@ -1148,7 +1148,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public List<Item> getAncestors() throws RepositoryException {
         List<Item> ancestors = new ArrayList<Item>();
         for (int i  = 0; i < getDepth(); i++) {
-            ancestors.add(getAncestor(i));
+            try {
+                ancestors.add(getAncestor(i));
+            } catch (AccessDeniedException ade) {
+                return ancestors;
+            }
         }
         return ancestors;
     }
@@ -1500,15 +1504,45 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public static void changePermissions(Node objectNode, String user, String perm) throws RepositoryException {
         Map<String, String> permsAsMap = new HashMap<String, String>();
         perm = perm.toLowerCase();
-        if (perm.charAt(0)=='r') {
-            permsAsMap.put(Constants.JCR_READ_RIGHTS, "GRANT");
-        } else {
-            permsAsMap.put(Constants.JCR_READ_RIGHTS, "DENY");
-        }
-        if (perm.charAt(1)=='w') {
-            permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "GRANT");
-        } else {
-            permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "DENY");
+        if (perm.length() == 2) {
+            if (perm.charAt(0)=='r') {
+                permsAsMap.put(Constants.JCR_READ_RIGHTS_LIVE, "GRANT");
+            } else {
+                permsAsMap.put(Constants.JCR_READ_RIGHTS_LIVE, "DENY");
+            }
+            if (perm.charAt(1)=='w') {
+                permsAsMap.put(Constants.JCR_READ_RIGHTS, "GRANT");
+                permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "GRANT");
+            } else {
+                permsAsMap.put(Constants.JCR_READ_RIGHTS, "DENY");
+                permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "DENY");
+            }
+        } else if (perm.length() == 5) {
+            if (perm.charAt(0)=='r') {
+                permsAsMap.put(Constants.JCR_READ_RIGHTS_LIVE, "GRANT");
+            } else {
+                permsAsMap.put(Constants.JCR_READ_RIGHTS_LIVE, "DENY");
+            }
+            if (perm.charAt(1)=='e') {
+                permsAsMap.put(Constants.JCR_READ_RIGHTS, "GRANT");
+            } else {
+                permsAsMap.put(Constants.JCR_READ_RIGHTS, "DENY");
+            }
+            if (perm.charAt(1)=='w') {
+                permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "GRANT");
+            } else {
+                permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "DENY");
+            }
+            if (perm.charAt(1)=='a') {
+                permsAsMap.put(Constants.JCR_MODIFYACCESSCONTROL, "GRANT");
+            } else {
+                permsAsMap.put(Constants.JCR_MODIFYACCESSCONTROL, "DENY");
+            }
+            if (perm.charAt(1)=='p') {
+                permsAsMap.put(Constants.JCR_WRITE_RIGHTS_LIVE, "GRANT");
+            } else {
+                permsAsMap.put(Constants.JCR_WRITE_RIGHTS_LIVE, "DENY");
+            }
         }
         changePermissions(objectNode, user, permsAsMap);
     }

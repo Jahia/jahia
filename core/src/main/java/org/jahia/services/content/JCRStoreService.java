@@ -727,10 +727,18 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                 if (p.getDefinition().isMultiple()) {
                     Value[] vs = p.getValues();
                     for (Value v : vs) {
-                        referencedNode.add(start.getSession().getNodeByUUID(v.getString()).getPath());
+                        try {
+                            referencedNode.add(start.getSession().getNodeByUUID(v.getString()).getPath());
+                        } catch (ItemNotFoundException e) {
+                            logger.warn("Cannot get reference "+v.getString() );
+                        }
                     }
                 } else {
-                    referencedNode.add(p.getNode().getPath());
+                    try {
+                        referencedNode.add(p.getNode().getPath());
+                    } catch (ItemNotFoundException e) {
+                        logger.warn("Cannot get reference "+p.getString() );
+                    }
                 }
             } else if ((p.getType() == PropertyType.REFERENCE || p.getType() == ExtendedPropertyType.WEAKREFERENCE)) {
                 System.out.println("-->"+p.getName());
@@ -786,7 +794,11 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         getBlockedAndReferencesList(w, blocked, referencedNodes, languages);
 
         for (String node : referencedNodes) {
-            publish(node, languages, user, true);
+            try {
+                publish(node, languages, user, true);
+            } catch (AccessDeniedException e) {
+                logger.warn("Cannot publish node at : "+node);
+            }
         }
 
         List<String> deniedPathes = new ArrayList<String>();
@@ -794,7 +806,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             deniedPathes.add(node);
         }
 
-        JCRSessionWrapper liveSessionForPublish = login(JahiaLoginModule.getSystemCredentials(user.getUsername(), deniedPathes), Constants.LIVE_WORKSPACE);
+        JCRSessionWrapper liveSessionForPublish = login(JahiaLoginModule.getCredentials(user.getUsername(), deniedPathes), Constants.LIVE_WORKSPACE);
 
         try {
             Node liveNode = liveSessionForPublish.getNode(path);

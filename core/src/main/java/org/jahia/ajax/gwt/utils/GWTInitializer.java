@@ -76,7 +76,7 @@ public class GWTInitializer {
         if (jData != null) {
             processingContext = jData.getProcessingContext();
         } else {
-            processingContext = Jahia.getThreadParamBean();
+            processingContext = null;
         }
         return generateInitializerStructure(request, session, processingContext);
     }

@@ -67,6 +67,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     public static final String READ = "read";
     public static final String WRITE = "write";
     public static final String MANAGE = "manage";
+
     public static final int UNSET = 0;
     public static final int GRANTED = 1;
     public static final int DENIED = 2;

@@ -81,22 +81,26 @@ public class JahiaAclNodeImpl extends NodeImpl {
                         principalName = typeOfPrincipal +":"+ e.getComp_id().getTarget().split(":")[0];
                     }
                     if (e.getPermission(JahiaBaseACL.READ_RIGHTS) == JahiaAclEntry.ACL_YES) {
-                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.GRANT, Constants.JCR_READ_RIGHTS));
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.GRANT, Constants.JCR_READ_RIGHTS_LIVE));
                     }
                     if (e.getPermission(JahiaBaseACL.READ_RIGHTS) == JahiaAclEntry.ACL_NO) {
-                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.DENY, Constants.JCR_READ_RIGHTS));
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.DENY, Constants.JCR_READ_RIGHTS_LIVE));
                     }
                     if (e.getPermission(JahiaBaseACL.WRITE_RIGHTS) == JahiaAclEntry.ACL_YES) {
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.GRANT, Constants.JCR_READ_RIGHTS));
                         initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.GRANT, Constants.JCR_WRITE_RIGHTS));
                     }
                     if (e.getPermission(JahiaBaseACL.WRITE_RIGHTS) == JahiaAclEntry.ACL_NO) {
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.DENY, Constants.JCR_READ_RIGHTS));
                         initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.DENY, Constants.JCR_WRITE_RIGHTS));
                     }
                     if (e.getPermission(JahiaBaseACL.ADMIN_RIGHTS) == JahiaAclEntry.ACL_YES) {
-                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.GRANT, Constants.JCR_ADMIN_RIGHTS));
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.GRANT, Constants.JCR_MODIFYACCESSCONTROL));
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.GRANT, Constants.JCR_WRITE_RIGHTS_LIVE));
                     }
                     if (e.getPermission(JahiaBaseACL.ADMIN_RIGHTS) == JahiaAclEntry.ACL_NO) {
-                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.DENY, Constants.JCR_ADMIN_RIGHTS));
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.DENY, Constants.JCR_MODIFYACCESSCONTROL));
+                        initNode(new JahiaAceNodeImpl(getSession(),this,principalName,Constants.DENY, Constants.JCR_WRITE_RIGHTS_LIVE));
                     }
                 }
             }

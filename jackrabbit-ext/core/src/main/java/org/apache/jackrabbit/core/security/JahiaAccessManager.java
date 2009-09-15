@@ -129,7 +129,7 @@ public class JahiaAccessManager implements AccessManager {
         permissions.put("jcr:setProperties", Permission.SET_PROPERTY);
         permissions.put("jcr:addChildNodes", Permission.ADD_NODE);
         permissions.put("jcr:removeChildNodes", Permission.REMOVE_NODE);
-        permissions.put(Constants.JCR_WRITE_RIGHTS, Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE + Permission.NODE_TYPE_MNGMT);
+        permissions.put(Constants.JCR_WRITE_RIGHTS, Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE + Permission.NODE_TYPE_MNGMT + Permission.VERSION_MNGMT);
         permissions.put("jcr:getAccessControlPolicy", Permission.READ);
         permissions.put("jcr:setAccessControlPolicy", Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY);
         permissions.put("jcr:all", Permission.READ + Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE + Permission.NODE_TYPE_MNGMT);
@@ -176,6 +176,10 @@ public class JahiaAccessManager implements AccessManager {
     public boolean isGranted(Path absPath, int permissions) throws RepositoryException {
 
         if (p.isSystem() && p.getDeniedPathes() == null) {
+            return true;
+        }
+
+        if (permissions == READ && absPath.toString().equals("{}")) {
             return true;
         }
 
@@ -377,6 +381,14 @@ public class JahiaAccessManager implements AccessManager {
 
 
     public boolean match(int permission, String privilege) {
+        String workspace = "default";
+        if (privilege.contains("_")) {
+            workspace = privilege.substring(privilege.lastIndexOf('_')+1);
+            privilege = privilege.substring(0,privilege.lastIndexOf('_'));
+        }
+        if (!workspace.equals(workspaceName)) {
+            return false;
+        }
         Integer foundPermission = permissions.get(privilege);
         return foundPermission != null && (foundPermission & permission) != 0;
     }

@@ -90,7 +90,9 @@ public class Render extends HttpServlet {
         String path = req.getPathInfo();
 
         try {
+            Object old = req.getSession(true).getAttribute(ParamBean.SESSION_SITE);
             paramBean = Jahia.createParamBean(req, resp, req.getSession());
+            req.getSession(true).setAttribute(ParamBean.SESSION_SITE, old);
 
             int index = path.indexOf('/', 1);
             String workspace = path.substring(1, index);
@@ -216,10 +218,10 @@ public class Render extends HttpServlet {
      * 1970 GMT, or -1 if the time is not known
      */
     protected long getLastModified(Resource resource, RenderContext renderContext) throws RepositoryException, IOException {
-        Node node = resource.getNode();
-        if (node.hasProperty("jcr:lastModified")) {
-            return node.getProperty("jcr:lastModified").getDate().getTime().getTime();
-        }
+//        Node node = resource.getNode();
+//        if (node.hasProperty("jcr:lastModified")) {
+//            return node.getProperty("jcr:lastModified").getDate().getTime().getTime();
+//        }
         return -1;
     }
 
@@ -412,6 +414,8 @@ public class Render extends HttpServlet {
                         ctx.setSite(site);
                         ctx.setContentPage(site.getHomeContentPage());
                         ctx.setThePage(site.getHomePage());
+                        ctx.getSessionState().setAttribute(ProcessingContext.SESSION_SITE, site);
+                        ctx.getSessionState().setAttribute(ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID, site.getHomePageID());
                     } catch (JahiaException e) {
                         logger.error(e.getMessage(), e);
                     }

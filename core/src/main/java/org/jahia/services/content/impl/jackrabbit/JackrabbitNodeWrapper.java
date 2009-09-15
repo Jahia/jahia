@@ -180,6 +180,7 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
         try {
             if (objectNode.hasNode("j:acl")) {
                 objectNode.getNode("j:acl").remove();
+                objectNode.removeMixin("jmix:accessControlled");
                 return true;
             }
         } catch (RepositoryException e) {

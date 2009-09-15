@@ -7,8 +7,11 @@
     <files jcr:primaryType="jnt:folder">
         <private jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
             <j:acl jcr:primaryType="jnt:acl">
+                <DENY_jcr_read_live_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read_live" j:aceType="DENY"/>
                 <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"/>
                 <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"/>
+                <DENY_jcr_modifyAccessControl_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:modifyAccessControl" j:aceType="DENY"/>
+                <DENY_jcr_write_live_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write_live" j:aceType="DENY"/>
             </j:acl>
 
             <imports jcr:primaryType="jnt:importDropBox" />
@@ -19,8 +22,11 @@
 
     <preferences jcr:primaryType="jnt:preferences" jcr:mixinTypes="jmix:accessControlled" >
         <j:acl jcr:primaryType="jnt:acl">
+            <DENY_jcr_read_live_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read_live" j:aceType="DENY"/>
             <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"/>
             <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"/>
+            <DENY_jcr_modifyAccessControl_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:modifyAccessControl" j:aceType="DENY"/>
+            <DENY_jcr_write_live_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write_live" j:aceType="DENY"/>
         </j:acl>
     </preferences>
 

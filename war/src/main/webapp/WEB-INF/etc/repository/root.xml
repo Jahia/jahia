@@ -7,8 +7,10 @@
     <shared jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
 
         <j:acl jcr:primaryType="jnt:acl">
+            <GRANT_jcr_read_live_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
+                                    j:privileges="jcr:read_live" j:aceType="GRANT"/>
             <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
-                                    j:privileges="jcr:read" j:aceType="GRANT"/>
+                                     j:privileges="jcr:read" j:aceType="GRANT"/>
             <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
                                      j:privileges="jcr:write" j:aceType="GRANT"/>
             <!--<DENY_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="" j:aceType="DENY"/>-->
@@ -26,10 +28,16 @@
             <files jcr:primaryType="jnt:folder">
                 <private jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
                     <j:acl jcr:primaryType="jnt:acl">
+                        <DENY_jcr_read_live_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
+                                               j:privileges="jcr:read_live" j:aceType="DENY"/>
                         <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
                                                j:privileges="jcr:read" j:aceType="DENY"/>
                         <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
                                                 j:privileges="jcr:write" j:aceType="DENY"/>
+                        <DENY_jcr_modifyAccessControl_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
+                                                j:privileges="jcr:modifyAccessControl" j:aceType="DENY"/>
+                        <DENY_jcr_write_live_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
+                                                j:privileges="jcr:write_live" j:aceType="DENY"/>
                     </j:acl>
 
                     <imports jcr:primaryType="jnt:importDropBox"/>
@@ -40,10 +48,16 @@
 
             <preferences jcr:primaryType="jnt:preferences" jcr:mixinTypes="jmix:accessControlled">
                 <j:acl jcr:primaryType="jnt:acl">
+                    <DENY_jcr_read_live_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
+                                           j:privileges="jcr:read_live" j:aceType="DENY"/>
                     <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
                                            j:privileges="jcr:read" j:aceType="DENY"/>
                     <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
                                             j:privileges="jcr:write" j:aceType="DENY"/>
+                    <DENY_jcr_modifyAccessControl_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
+                                            j:privileges="jcr:modifyAccessControl" j:aceType="DENY"/>
+                    <DENY_jcr_write_live_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
+                                            j:privileges="jcr:write_live" j:aceType="DENY"/>
                 </j:acl>
             </preferences>
         </ROOT_NAME_PLACEHOLDER>
@@ -92,6 +106,10 @@
         <j:acl jcr:primaryType="jnt:acl">
             <GRANT_jcr_write_g_administrators j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:administrators"
                                     j:privileges="jcr:write" j:aceType="GRANT"/>
-        </j:acl>    
+            <GRANT_jcr_modifyAccessControl_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:administrators"
+                                    j:privileges="jcr:modifyAccessControl" j:aceType="GRANT"/>
+            <GRANT_jcr_write_live_g_administrators j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:administrators"
+                                    j:privileges="jcr:write_live" j:aceType="GRANT"/>
+        </j:acl>
     </categories>
 </content>

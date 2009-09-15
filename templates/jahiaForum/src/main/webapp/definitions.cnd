@@ -5,7 +5,7 @@ smallText title
 bigText content
 
 [jahiaForum:thread] > jnt:container, jmix:interactiveContent
-smallText title
+smallText threadSubject
 + * (jahiaForum:post)
 
 [jahiaForum:topic] > jnt:container, jmix:interactiveContent

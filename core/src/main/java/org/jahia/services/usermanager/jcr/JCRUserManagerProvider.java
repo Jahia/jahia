@@ -152,15 +152,20 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      */
     public boolean deleteUser(JahiaUser user) {
         if (user instanceof JCRUser) {
+            JCRSessionWrapper jcrSessionWrapper = null;
             JCRUser jcrUser = (JCRUser) user;
             try {
-                JCRSessionWrapper jcrSessionWrapper = jcrStoreService.getSystemSession();
+                jcrSessionWrapper = jcrStoreService.getSystemSession();
                 Node node = jcrSessionWrapper.getNodeByUUID(jcrUser.getNodeUuid());
                 node.remove();
                 jcrSessionWrapper.save();
                 return true;
             } catch (RepositoryException e) {
                 logger.error(e);
+            } finally {
+                if(jcrSessionWrapper!=null) {
+                    jcrSessionWrapper.logout();
+                }
             }
         }
         return false;
@@ -182,9 +187,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      */
     public List<String> getUserList() {
         List<String> users = new ArrayList<String>();
-
+        Session session = null;
         try {
-            Session session = jcrStoreService.getSystemSession();
+            session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
                 String query = "SELECT j:nodename FROM " + Constants.JAHIANT_USER + " ORDER BY j:nodename";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
@@ -200,6 +205,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             }
         } catch (RepositoryException e) {
             logger.error(e);
+        } finally {
+            if(session!=null) {
+                session.logout();
+            }
         }
         return users;
     }
@@ -211,9 +220,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      */
     public List<String> getUsernameList() {
         List<String> users = new ArrayList<String>();
-
+        Session session = null;
         try {
-            Session session = jcrStoreService.getSystemSession();
+            session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
                 String query = "SELECT j:nodename FROM " + Constants.JAHIANT_USER + " ORDER BY j:nodename";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
@@ -229,6 +238,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             }
         } catch (RepositoryException e) {
             logger.error(e);
+        } finally {
+            if(session!=null) {
+                session.logout();
+            }
         }
         return users;
     }
@@ -252,6 +265,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      * @return Return a reference on a new created jahiaUser object.
      */
     public JahiaUser lookupUserByKey(String userKey) {
+        JCRSessionWrapper session = null;
         try {
             String name = userKey.split("}")[1];
             if (cache == null) {
@@ -260,7 +274,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             if (cache.containsKey(name)) {
                 return (JahiaUser) cache.get(name);
             }
-            JCRSessionWrapper session = jcrStoreService.getSystemSession();
+            session = jcrStoreService.getSystemSession();
             Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name);
             if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                 JCRUser user = new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
@@ -271,6 +285,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             logger.error(e);
         } catch (JahiaInitializationException e) {
             logger.error(e);
+        } finally {
+            if(session!=null) {
+                session.logout();
+            }
         }
         return null;
     }
@@ -312,6 +330,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
     }
 
     public JahiaUser lookupExternalUser(String name) {
+        JCRSessionWrapper session = null;
         try {
             if (cache == null) {
                 start();
@@ -319,7 +338,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             if (cache.containsKey(name)) {
                 return (JahiaUser) cache.get(name);
             }
-            JCRSessionWrapper session = jcrStoreService.getSystemSession();
+            session = jcrStoreService.getSystemSession();
             Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name.trim());
             if (usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                 JCRUser user = new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
@@ -332,6 +351,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             logger.warn(e);
         } catch (JahiaInitializationException e) {
             logger.error(e);
+        } finally {
+            if(session!=null) {
+                session.logout();
+            }
         }
         return null;
     }
@@ -435,8 +458,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      *         return false on any failure.
      */
     public boolean userExists(String name) {
+        Session session = null;
         try {
-            Session session = jcrStoreService.getSystemSession();
+            session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
                 String query = "SELECT * FROM " + Constants.JAHIANT_USER + " WHERE j:nodename = '" + name + "'";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
@@ -446,6 +470,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             }
         } catch (RepositoryException e) {
             logger.error(e);
+        } finally {
+            if(session!=null){
+                session.logout();
+            }
         }
         return false;
     }

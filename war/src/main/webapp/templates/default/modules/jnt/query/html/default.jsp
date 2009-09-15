@@ -6,18 +6,18 @@
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:statement" var="query"/>
 <jcr:xpath var="savedSearchIterator" xpath="${query.string}"/>
-<c:if test="${savedSearchIterator.size == 0}">
+<c:if test="${savedSearchIterator.nodes.size == 0}">
     <p>No search results found</p>
 </c:if>
-<c:if test="${savedSearchIterator.size != 0}">
-    <p>${savedSearchIterator.size}&nbsp;results found:</p>
+<c:if test="${savedSearchIterator.nodes.size != 0}">
+    <p>${savedSearchIterator.nodes.size}&nbsp;results found:</p>
     <c:set var="itemsPerPage" value="10"/>
     <pg:pager maxPageItems="${itemsPerPage}" url="${url.current}" export="currentPageNumber=pageNumber">
         <c:forEach var="aParam" items="${paramValues}">
             <c:if test="${not fn:startsWith(aParam.key, 'pager.')}"><pg:param name="${aParam.key}"/></c:if>
         </c:forEach>
         <ol start="${itemsPerPage * (currentPageNumber - 1) + 1}">
-        <c:forEach items="${savedSearchIterator}" var="hit">
+        <c:forEach items="${savedSearchIterator.nodes}" var="hit">
             <pg:item>
                 <li><template:module node="${hit}" forcedTemplate="link" editable="false"/></li>
             </pg:item>

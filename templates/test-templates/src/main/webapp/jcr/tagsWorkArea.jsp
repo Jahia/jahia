@@ -62,10 +62,10 @@
 </c:forEach>
 <h3>Executing an XPath expression [//element(*, nt:query)] for retrieving all saved search:</h3>
 <jcr:xpath var="savedSearchIterator" xpath="//element(*, nt:query)"/>
-<c:if test="${savedSearchIterator.size == 0}">
+<c:if test="${savedSearchIterator.nodes.size == 0}">
     No saved searches found
 </c:if>
-<c:forEach items="${savedSearchIterator}" var="node">
+<c:forEach items="${savedSearchIterator.nodes}" var="node">
     <ul>
         <li>Node: ${node.name}</li>
         <li>URL: ${node.url}</li>
@@ -75,10 +75,10 @@
 
 <h3>Executing an XPath expression [//element(*, jnt:portlet)] for retrieving all mashups:</h3>
 <jcr:xpath var="allMashupsIterator" xpath="//element(*, jnt:portlet)"/>
-<c:if test="${allMashupsIterator.size == 0}">
+<c:if test="${allMashupsIterator.nodes.size == 0}">
     No mashups found
 </c:if>
-<c:forEach items="${allMashupsIterator}" var="node">
+<c:forEach items="${allMashupsIterator.nodes}" var="node">
     <ul>
         <li>Node: ${node.name}</li>
         <li>URL: ${node.url}</li>

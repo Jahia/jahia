@@ -2,11 +2,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <%-- Get all contents --%>
 <jcr:nodeProperty node="${currentNode}" name="title" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
-<li>
     <div class="commentBodyWrapper"><!--start commentBodyWrapper-->
         <div class="commentBody">
             <p class="commentDate">${currentNode.propertiesAsString['jcr:created']}</p>
@@ -18,8 +19,9 @@
                 <div class="commentBubble-topleft"></div>
 
                 <div class="commentBubble-text">
+                    <jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="created"/>
+                    <h4>${fn:escapeXml(title.string)} posted at <fmt:formatDate value="${created.time}" dateStyle="full" type="both"/></h4>
 
-                    <h4>${fn:escapeXml(title.string)}</h4>
 
                     <p id="jahia-forum-post-${currentNode.UUID}">${content.string}</p>
                 </div>
@@ -40,11 +42,11 @@
     </div>
     <!--start commentBodyWrapper-->
     <div class="commentsAuthor">
-        <img src="perso1.jpg" alt="perso1"/>
-
-        <p class="AuthorId">${currentNode.propertiesAsString['jcr:createdBy']}</p>
-
-        <p class="commentNumber">741 Messages</p>
+        <jcr:node var="createdBy" path="/content/users/${currentNode.propertiesAsString['jcr:createdBy']}"/>
+        <template:module node="${createdBy}" template="mini"/>
+        <jcr:sql var="numberOfPostsQuery" sql="select jcr:uuid from jahiaForum:post  where jcr:createdBy= '${createdBy.name}'"/>
+        <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
+        <p class="commentNumber">${numberOfPosts} Messages</p>
     </div>
 
     <div class="commentActions">
@@ -54,4 +56,3 @@
     </div>
 
     <div class="clear"></div>
-</li>

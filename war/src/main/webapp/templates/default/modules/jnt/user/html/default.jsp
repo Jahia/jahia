@@ -50,11 +50,11 @@
     <div>
         <jcr:xpath var="result" xpath="//element(*, jnt:page)[@jcr:createdBy='${currentNode.name}']"/>
         User pages:
-        <c:if test="${result.size == 0}">
+        <c:if test="${result.nodes.size == 0}">
             ${currentNode.name} has not created any pages so far
         </c:if>
         <ul>
-            <c:forEach items="${result}" var="page">
+            <c:forEach items="${result.nodes}" var="page">
                 <jcr:nodeProperty node="${page}" name="jcr:title" var="title"/>
                 <li>
                     <a href="${url.base}${page.path}.html">${title.string}</a>

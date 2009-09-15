@@ -553,7 +553,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return res;
         }
         try {
-            PropertyIterator pi = objectNode.getProperties();
+            PropertyIterator pi = getProperties();
             if (pi != null) {
                 while (pi.hasNext()) {
                     Property p = pi.nextProperty();

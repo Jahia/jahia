@@ -14,7 +14,7 @@
     <div class="peoplePhoto">
         <jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
         <c:if test="${not empty picture}">
-            <img src="${picture.node.url}" alt="${title} ${firstname} ${lastname}" width="60" height="60"/>
+            <img src="${picture.node.thumbnailUrls['avatar_60']}" alt="${title} ${firstname} ${lastname}" width="60" height="60"/>
         </c:if>
         </br>
         <p style="font-face:arial; font-size:10px; font-color:#C9C9C9"><a

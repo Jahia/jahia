@@ -29,21 +29,20 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.taglibs.jcr.xpath;
+package org.jahia.taglibs.jcr.query;
 
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.NodeIteratorImpl;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.QueryResultAdapter;
+import org.jahia.services.render.Resource;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.render.Resource;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.bin.Jahia;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -51,17 +50,16 @@ import javax.jcr.query.QueryResult;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.security.Principal;
-import java.util.Collections;
 import java.util.Locale;
 
 /**
  * Tag implementation for exposing a result of XPath JCR query into the template scope.
  */
-public class JCRXPathTag extends AbstractJahiaTag {
-    private static final Logger logger = Logger.getLogger(JCRXPathTag.class);
+public class JCRSQLTag extends AbstractJahiaTag {
+    private static final Logger logger = Logger.getLogger(JCRSQLTag.class);
     private int scope = PageContext.PAGE_SCOPE;
     private String var;
-    private String xpath;
+    private String sql;
 
     public int doEndTag() {
         resetState();
@@ -72,7 +70,7 @@ public class JCRXPathTag extends AbstractJahiaTag {
         try {
             final ProcessingContext ctx = getProcessingContext();
             if (ctx != null) {
-                pageContext.setAttribute(var, findNodeIteratorByXpath(ctx.getUser(), xpath), scope);
+                pageContext.setAttribute(var, findQueryResultByXpath(ctx.getUser(), sql), scope);
             } else {
                 logger.error("ProcessingContext instance is null.");
             }
@@ -86,16 +84,16 @@ public class JCRXPathTag extends AbstractJahiaTag {
 
     /**
      * Find Node iterator by principal and XPath expression.
-     * 
+     *
      * @param p
      *            the principal
      * @param path
      *            an Xpath expression to perform the JCR query
-     * @return the {@link NodeIterator} instance with the results of the query;
+     * @return the {@link javax.jcr.NodeIterator} instance with the results of the query;
      *         returns empty iterator if nothing is found
      */
-    private NodeIterator findNodeIteratorByXpath(Principal p, String path) {
-        NodeIterator ni = null;
+    private QueryResult findQueryResultByXpath(Principal p, String path) {
+        QueryResult queryResult = null;
         if (logger.isDebugEnabled()) {
             logger.debug("Find node by xpath[ " + path + " ]");
         }
@@ -114,14 +112,12 @@ public class JCRXPathTag extends AbstractJahiaTag {
                 QueryManager queryManager = session.getWorkspace().getQueryManager();
 
                 if (queryManager != null) {
-                    Query q = queryManager.createQuery(path, Query.XPATH);
+                    Query q = queryManager.createQuery(path, Query.SQL);
                     // execute query
-                    QueryResult queryResult = q.execute();
-    
-                    // get node iterator
-                    ni = queryResult.getNodes();
+                    queryResult = q.execute();
+
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Path[" + path + "] --> found [" + ni.getSize() + "] values.");
+                        logger.debug("Path[" + path + "] --> found [" + queryResult + "] values.");
                     }
                 }
             } catch (javax.jcr.PathNotFoundException e) {
@@ -135,7 +131,7 @@ public class JCRXPathTag extends AbstractJahiaTag {
                 logger.error(e, e);
             }
         }
-        return ni != null ? ni : new NodeIteratorImpl(Collections.EMPTY_LIST.iterator(), 0);
+        return queryResult != null ? queryResult : new QueryResultAdapter();
     }
 
     public int getScope() {
@@ -146,15 +142,15 @@ public class JCRXPathTag extends AbstractJahiaTag {
         return var;
     }
 
-    public String getXpath() {
-        return xpath;
+    public String getSql() {
+        return sql;
     }
 
     @Override
     protected void resetState() {
         super.resetState();
         scope = PageContext.PAGE_SCOPE;
-        xpath = null;
+        sql = null;
         var = null;
     }
 
@@ -166,8 +162,8 @@ public class JCRXPathTag extends AbstractJahiaTag {
         this.var = var;
     }
 
-    public void setXpath(String xpath) {
-        this.xpath = xpath;
+    public void setSql(String sql) {
+        this.sql = sql;
     }
 
 }

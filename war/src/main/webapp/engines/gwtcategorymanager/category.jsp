@@ -37,20 +37,6 @@
 <html>
 <head>
     <title><internal:message key="button.categorymanager"/></title>
-
-
-    <link rel="stylesheet" type="text/css" media="screen"
-          href="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/uvumi-crop.css"/>
-    <style type="text/css">
-        .yellowSelection {
-            border: 2px dotted #FFB82F;
-        }
-
-        .blueMask {
-            background-color: #00f;
-            cursor: pointer;
-        }
-    </style>
     <internal:gwtInit standalone="true"/>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
 </head>

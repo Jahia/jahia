@@ -52,6 +52,7 @@ public class ManagerConfigurationFactory {
     public static final String MASHUPPICKER = "mashuppicker";
     public static final String CATEGORYPICKER = "categorypicker";
     public static final String COMPLETE = "complete";
+    public static final String SITEMANAGER = "sitemanager";
 
     public static ManagerConfiguration getConfiguration(String config, BrowserLinker linker) {
         if (config != null) {
@@ -79,11 +80,14 @@ public class ManagerConfigurationFactory {
             if (config.contains(COMPLETE)) {
                 return getCompleteManagerConfiguration(linker);
             }
+            if (config.contains(SITEMANAGER)) {
+                return getSiteManagerConfiguration(linker);
+            }
         }
         return getCompleteManagerConfiguration(linker);
     }
 
-    public static ManagerConfiguration getCompleteManagerConfiguration(final BrowserLinker linker) {
+	public static ManagerConfiguration getCompleteManagerConfiguration(final BrowserLinker linker) {
         ManagerConfiguration completeManagerConfig = new ManagerConfiguration();
         completeManagerConfig.setEnableTextMenu(true);
 
@@ -1022,7 +1026,7 @@ public class ManagerConfigurationFactory {
         }
 
         /**
-         * Item that  loows creating a new page
+         * Item that allows creation of a new page
          *
          * @param linker
          * @return
@@ -1042,7 +1046,7 @@ public class ManagerConfigurationFactory {
         }
 
         /**
-         * Item that  loows creating a new page
+         * Item that allows creation of a new content list
          *
          * @param linker
          * @return
@@ -1086,6 +1090,79 @@ public class ManagerConfigurationFactory {
             };
             return importItem;
         }
+
+        private static ContentActionItem createNewSiteItem(final BrowserLinker linker) {
+            ContentActionItem newSite = new ContentActionItem(Messages.get("fm_newsite", "New site"), "fm-newsite") {
+                public void onSelection() {
+                    ContentActions.showContentWizard(linker, "jnt:virtualsite");
+                }
+
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+                }
+            };
+            return newSite;
+        }
+
+    }
+
+    public static ManagerConfiguration getSiteManagerConfiguration(BrowserLinker linker) {
+        ManagerConfiguration cfg = new ManagerConfiguration();
+        cfg.setEnableTextMenu(true);
+        cfg.setDisplaySize(false);
+        cfg.setDisplayDate(false);
+        cfg.setDefaultView(JCRClientUtils.FILE_TABLE);
+        
+        ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
+        ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
+        file.addItem(newFolder);
+        cfg.addItem(newFolder);
+        ContentActionItem newSite = ItemCreator.createNewSiteItem(linker);
+        file.addItem(newSite);
+        cfg.addItem(newSite);
+        ContentActionItem newPage = ItemCreator.createNewPageContentItem(linker);
+        file.addItem(newPage);
+        cfg.addItem(newPage);
+        ContentActionItem exportItem = ItemCreator.createExportItem(linker);
+        file.addItem(exportItem);
+        cfg.addItem(exportItem);
+        ContentActionItem importItem = ItemCreator.createImportItem(linker);
+        file.addItem(importItem);
+        cfg.addItem(importItem);
+        cfg.addItem(new ContentActionItemSeparator());
+
+        ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
+        ContentActionItem rename = ItemCreator.createRenameItem(linker);
+        edit.addItem(rename);
+        cfg.addItem(rename);
+        ContentActionItem remove = ItemCreator.createRemoveItem(linker);
+        edit.addItem(remove);
+        cfg.addItem(remove);
+        edit.addItem(new ContentActionItemSeparator());
+        cfg.addItem(new ContentActionItemSeparator());
+        ContentActionItem copy = ItemCreator.createCopyItem(linker);
+        edit.addItem(copy);
+        cfg.addItem(copy);
+        ContentActionItem cut = ItemCreator.createCutItem(linker);
+        edit.addItem(cut);
+        cfg.addItem(cut);
+        ContentActionItem paste = ItemCreator.createPasteItem(linker);
+        edit.addItem(paste);
+        cfg.addItem(paste);
+        ContentActionItem pasteRef = ItemCreator.createPasteReferenceItem(linker);
+        edit.addItem(pasteRef);
+        cfg.addItem(pasteRef);
+
+        // add menus to the config as well
+        cfg.addGroup(file);
+        cfg.addGroup(edit);
+
+        cfg.addAccordion(JCRClientUtils.SITE_REPOSITORY);
+
+        cfg.setNodeTypes(JCRClientUtils.SITE_NODETYPES);
+        cfg.setFolderTypes(JCRClientUtils.SITE_NODETYPES);
+
+        return cfg;
 
     }
 

@@ -71,6 +71,7 @@ public class URLPropertyResolver implements PropertyResolver {
     public static String GWT_FILEMANAGER = "gwtfilemanager";
     public static String GWT_MASHUPMANAGER = "gwtmashupmanager";
     public static String GWT_CATEGORYMANAGER = "gwtcategorymanager";    
+    public static String GWT_SITEMANAGER = "gwtsitemanager";    
 
     public static String LOGOUT = "logout";
 
@@ -161,6 +162,8 @@ public class URLPropertyResolver implements PropertyResolver {
                     value = jData.getProcessingContext().getContextPath() + "/engines/gwtmashupmanager/mashup.jsp";
                 } else if (input.equalsIgnoreCase(GWT_CATEGORYMANAGER)) {
                     value = jData.getProcessingContext().getContextPath() + "/engines/gwtcategorymanager/category.jsp";                    
+                } else if (input.equalsIgnoreCase(GWT_SITEMANAGER)) {
+                    value = jData.getProcessingContext().getContextPath() + "/engines/gwtsitemanager/site.jsp";                    
                 } else if (input.equalsIgnoreCase(PAGE_PROPERTIES)) {
                     value = jData.gui().drawPagePropertiesUrl();
                 } else if (input.equalsIgnoreCase(CacheModeSelectedResolver.CACHE_DEBUG)) {

@@ -205,6 +205,7 @@
             <item ref-type="org.jahia.toolbar.item.MashupManager"/>
             <item ref-type="org.jahia.toolbar.item.ContentManager"/>
             <item ref-type="org.jahia.toolbar.item.CategoryManager"/>
+            <item ref-type="org.jahia.toolbar.item.SiteManager"/>
             <item ref-type="org.jahia.toolbar.item.GWTWorkflow"/>
             <item ref-type="org.jahia.toolbar.item.Pdisplay"/>
         </itemsgroup>
@@ -347,6 +348,7 @@
             <item ref-type="org.jahia.toolbar.item.MashupManager"/>
             <item ref-type="org.jahia.toolbar.item.ContentManager"/>
             <item ref-type="org.jahia.toolbar.item.CategoryManager"/>
+            <item ref-type="org.jahia.toolbar.item.SiteManager"/>
             <item ref-type="org.jahia.toolbar.item.GWTWorkflow"/>
             <item ref-type="org.jahia.toolbar.item.Pdisplay"/>
         </itemsgroup>
@@ -623,6 +625,19 @@
             <property name="url">
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
                                 input="gwtcategorymanager"/>
+            </property>
+        </item>
+
+        <!-- Category Manager -->
+        <item type="org.jahia.toolbar.item.SiteManager" extends="org.jahia.toolbar.item.OpenWindow">
+            <title-resourcebundle-key key="button.sitemanager"/>
+            <icon-style min="gwt-toolbar-ItemsGroup-icons-sitemanager-min"
+                        max="gwt-toolbar-ItemsGroup-icons-sitemanager-normal"/>
+            <description-resourcebundle-key key="button.sitemanager"/>
+            <visibility site-action-permission="engines.sitemanager"/>
+            <property name="url">
+                <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
+                                input="gwtsitemanager"/>
             </property>
         </item>
 

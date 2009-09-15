@@ -189,6 +189,10 @@
     background: url( ../images/min/categorymanager.png ) no-repeat scroll 0 center !important;
 }
 
+.gwt-toolbar-ItemsGroup-icons-sitemanager-min {
+    background: url( ../images/min/sitemanager.png ) no-repeat scroll 0 center !important;
+}
+
 .gwt-toolbar-ItemsGroup-icons-logout-min {
     background: url( ../images/min/logout.png ) no-repeat scroll 0 center !important;
 }
@@ -350,6 +354,10 @@
 
 .gwt-toolbar-ItemsGroup-icons-categorymanager-normal {
     background: url( ../images/normal/categorymanager.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-sitemanager-normal {
+    background: url( ../images/normal/sitemanager.png ) no-repeat scroll 0 center !important;
 }
 
 .gwt-toolbar-ItemsGroup-icons-logout-normal {

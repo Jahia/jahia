@@ -59,6 +59,10 @@
     background-image: url( ../images/google_gadget.png ) !important;
 }
 
+.fm-newsite {
+    background-image: url( ../images/add-site.png ) !important;
+}
+
 .fm-remove {
     background-image: url( ../images/remove.png ) !important;
 }

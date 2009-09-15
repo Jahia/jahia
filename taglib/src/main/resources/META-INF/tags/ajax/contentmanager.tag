@@ -456,6 +456,9 @@ while (selectedNodeIter.hasNext()) {
         resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteMashupRepository.label"
         aliasResourceName="fm_repository_websiteMashupRepository"/>
 <internal:gwtResourceBundle
+        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.siteRepository.label"
+        aliasResourceName="fm_repository_siteRepository"/>
+<internal:gwtResourceBundle
         resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.globalRepository.label"
         aliasResourceName="fm_repository_globalRepository"/>
 <internal:gwtResourceBundle

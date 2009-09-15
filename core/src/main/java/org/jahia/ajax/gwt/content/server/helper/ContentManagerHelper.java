@@ -216,20 +216,22 @@ public class ContentManagerHelper {
         String[] mimeTypesToMatch = getFiltersToApply(mimeTypes);
         String[] filtersToApply = getFiltersToApply(filters);
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
+        boolean displayAllVirtualSites = nodeTypes != null && nodeTypes.contains(Constants.JAHIANT_VIRTUALSITE);
         for (JCRNodeWrapper f : list) {
             if (logger.isDebugEnabled()) {
                 logger.debug(new StringBuilder("processing ").append(f.getPath()).toString());
             }
             if (f.isVisible() && (matchesNodeType(f, nodeTypesToApply) || (f.isCollection()))) {
                 if (f.isCollection() && noFolders) {
-                    System.out.println("--------------------- no folder -> continue");
+                	if (logger.isDebugEnabled()) {
+                		logger.debug("--------------------- no folder -> continue");
+                	}
                     continue;
                 }
                 try {
-                    if (f.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
-                        if (!f.getName().equals(context.getSiteKey())) {
-                            continue;
-                        }
+                    // if we are not in the site manager and the current site does not match the virtual site node --> hide it
+                	if (!displayAllVirtualSites && f.isNodeType(Constants.JAHIANT_VIRTUALSITE) && !f.getName().equals(context.getSiteKey())) {
+                    	continue;
                     }
                 } catch (RepositoryException e) {
                     if (logger.isDebugEnabled()) {
@@ -244,7 +246,9 @@ public class ContentManagerHelper {
 //                    }
                     result.add(theNode);
                 } else {
-                    logger.debug(new StringBuilder(f.getPath()).append(" did not match the filters or is not a collection"));
+                	if (logger.isDebugEnabled()) {
+                		logger.debug(new StringBuilder(f.getPath()).append(" did not match the filters or is not a collection"));
+                	}
                 }
             }
         }
@@ -447,7 +451,7 @@ public class ContentManagerHelper {
                 userNodes.add(root);
             }
 
-        }else if (key.equals(JCRClientUtils.PORTLET_DEFINITIONS_REPOSITORY)) {
+        } else if (key.equals(JCRClientUtils.PORTLET_DEFINITIONS_REPOSITORY)) {
             GWTJahiaNode root = getNode("/content/portletdefinitions", workspace, jParams);
             if (root != null) {
                 root.setDisplayName("Portlet Definition");
@@ -456,6 +460,12 @@ public class ContentManagerHelper {
 
             }
 
+        } else if (key.equals(JCRClientUtils.SITE_REPOSITORY)) {
+            GWTJahiaNode root = getNode("/content/sites", workspace, jParams);
+            if (root != null) {
+                root.setDisplayName("sites");
+                userNodes.add(root);
+            }
         } else if (key.equals(JCRClientUtils.GLOBAL_REPOSITORY)) {
             GWTJahiaNode root = getNode("/content/", workspace, jParams);
             if (root != null) {
@@ -2587,7 +2597,9 @@ public class ContentManagerHelper {
                     info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.UNPUBLISHABLE);
                 }
 
-                System.out.println("---> info:"+info.getStatus());
+                if (logger.isDebugEnabled()) {
+                	logger.debug("---> info:"+info.getStatus());
+                }
                 return info;
             }
 
@@ -2598,9 +2610,11 @@ public class ContentManagerHelper {
             if (s > p) {
                 info.setStatus(GWTJahiaPublicationInfo.MODIFIED);
             }
-            System.out.println("--> "+stageNode);
-            System.out.println("--> "+publishedNode);
-            System.out.println("---> info:"+info.getStatus());
+            if (logger.isDebugEnabled()) {
+            	logger.debug("--> "+stageNode);
+	            logger.debug("--> "+publishedNode);
+	            logger.debug("---> info:"+info.getStatus());
+            }
             return info;
         } catch (RepositoryException e) {
             logger.error("repository exception",e);

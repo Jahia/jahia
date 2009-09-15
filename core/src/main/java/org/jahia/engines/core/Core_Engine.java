@@ -37,6 +37,7 @@ package org.jahia.engines.core;
 
 import org.jahia.api.Constants;
 import org.jahia.bin.Render;
+import org.jahia.bin.Edit;
 import org.jahia.data.JahiaData;
 import org.jahia.engines.JahiaEngine;
 import org.jahia.engines.validation.EngineValidationHelper;
@@ -143,9 +144,11 @@ public class Core_Engine implements JahiaEngine {
         try {
             String base;
             if (ParamBean.NORMAL.equals(processingContext.getOpMode())) {
-                base = processingContext.getRequest().getContextPath()+ Render.getRenderServletPath()+ "/"+ Constants.LIVE_WORKSPACE +"/"+processingContext.getLocale();
+                base = processingContext.getRequest().getContextPath()+ Render.getRenderServletPath() + "/"+ Constants.LIVE_WORKSPACE +"/"+processingContext.getLocale();
+            } else if (ParamBean.PREVIEW.equals(processingContext.getOpMode())) {
+                base = processingContext.getRequest().getContextPath()+ Render.getRenderServletPath() + "/"+ Constants.EDIT_WORKSPACE +"/"+processingContext.getLocale();
             } else {
-                base = processingContext.getRequest().getContextPath()+ Render.getRenderServletPath()+ "/"+ Constants.EDIT_WORKSPACE +"/"+processingContext.getLocale();
+                base = processingContext.getRequest().getContextPath()+ Edit.getEditServletPath()+ "/"+ Constants.EDIT_WORKSPACE +"/"+processingContext.getLocale();
             }
             String jcrPath = processingContext.getContentPage().getJCRPath(processingContext);
             if (jcrPath.startsWith("/content/jahia")) {

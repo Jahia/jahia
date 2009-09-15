@@ -3,6 +3,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<script type="text/javascript">
+function jahiaForumQuote(targetId, quotedText) {
+	var targetArea = document.getElementById(targetId);
+	if (targetArea) {
+		targetArea.value = targetArea.value + '\n<blockquote>\n' + quotedText + '\n<blockquote>\n';
+	}
+	return false; 
+}
+</script>
 <a name="threadPost"></a>
 <form action="${url.base}${currentNode.path}/*" method="post">
     <input type="hidden" name="nodeType" value="jahiaForum:post"/>
@@ -19,7 +28,7 @@
            </p>
 
            <p class="field">
-             <textarea rows="7" cols="35" id="c_content" name="content" tabindex="2"></textarea>
+             <textarea rows="7" cols="35" id="jahia-forum-thread-${currentNode.UUID}" name="content" tabindex="2"></textarea>
            </p>
       <p class="commentsForm_button">
         <input type="reset" value="Annuler" class="button" tabindex="3" />

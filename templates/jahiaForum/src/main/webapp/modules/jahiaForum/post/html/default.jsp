@@ -1,8 +1,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
 <%-- Get all contents --%>
 <jcr:nodeProperty node="${currentNode}" name="title" var="title"/>
@@ -20,9 +19,9 @@
 
                 <div class="commentBubble-text">
 
-                    <h4>${title.string}</h4>
+                    <h4>${fn:escapeXml(title.string)}</h4>
 
-                    <p>${content.string}</p>
+                    <p id="jahia-forum-post-${currentNode.UUID}">${content.string}</p>
                 </div>
 
                 <div class="commentBubble-bottomright"></div>
@@ -33,9 +32,7 @@
 
 
             <p class="comment_button">
-                <form action="" name="formQuote">
-                    <input type="submit" value="Citer" name="citer" class="button" tabindex="1"/>
-                </form>
+            	<button class="button" onclick="return jahiaForumQuote('jahia-forum-thread-${currentNode.parent.UUID}', '${fn:escapeXml(functions:escapeJavaScript(content.string))}');">Quote it</button>
             </p>
 
             <div class="clear"></div>

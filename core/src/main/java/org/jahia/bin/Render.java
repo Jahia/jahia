@@ -20,8 +20,6 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,6 +53,7 @@ public class Render extends HttpServlet {
 
     private static String renderServletPath;
     private static List<String> reservedParameters;
+
     public static final String NODE_TYPE = "nodeType";
     public static final String NODE_NAME = "nodeName";
     public static final String NEW_NODE_OUTPUT_FORMAT = "newNodeOutputFormat";
@@ -67,6 +66,7 @@ public class Render extends HttpServlet {
         reservedParameters.add(NEW_NODE_OUTPUT_FORMAT);
         reservedParameters.add(STAY_ON_NODE);
     }
+
     @Override
     public void init() throws ServletException {
         super.init();
@@ -85,12 +85,12 @@ public class Render extends HttpServlet {
 
         long startTime = System.currentTimeMillis();
 
-        ProcessingContext ctx = null;
+        ProcessingContext paramBean = null;
 
         String path = req.getPathInfo();
 
         try {
-            ctx = Jahia.createParamBean(req, resp, req.getSession());
+            paramBean = Jahia.createParamBean(req, resp, req.getSession());
 
             int index = path.indexOf('/', 1);
             String workspace = path.substring(1, index);
@@ -100,55 +100,59 @@ public class Render extends HttpServlet {
             String lang = path.substring(1, index);
             path = path.substring(index);
 
-            RenderContext renderContext = createRenderContext(req, resp);
+            RenderContext renderContext = createRenderContext(req, resp, paramBean.getUser());
+
             renderContext.setTemplateWrapper("fullpage");
 
             try {
                 if (workspace.equals("default")) {
                     if (renderContext.isEditMode()) {
-                        ctx.setOperationMode("edit");
+                        paramBean.setOperationMode("edit");
                     } else {
-                        ctx.setOperationMode("preview");
+                        paramBean.setOperationMode("preview");
                     }
                 } else if (workspace.equals("live")) {
-                    ctx.setOperationMode("normal");
+                    paramBean.setOperationMode("normal");
                 }
             } catch (JahiaException e) {
                 logger.error(e.getMessage(), e);
             }
             Locale locale = LanguageCodeConverters.languageCodeToLocale(lang);
-            ctx.setCurrentLocale(locale);
-            ctx.getSessionState().setAttribute(ParamBean.SESSION_LOCALE, locale);
+            paramBean.setCurrentLocale(locale);
+            paramBean.getSessionState().setAttribute(ParamBean.SESSION_LOCALE, locale);
 
             if (method.equals(METHOD_GET)) {
-                long lastModified = getLastModified(req);
-//                if (lastModified == -1) {
+                Resource resource = resolveResource(workspace, locale, path, renderContext.getUser(), paramBean);
+                renderContext.setMainResource(resource);
+
+                long lastModified = getLastModified(resource, renderContext);
+
+                if (lastModified == -1) {
                     // servlet doesn't support if-modified-since, no reason
                     // to go through further expensive logic
-                    doGet(req, resp, renderContext, ctx, path, workspace, locale);
-//                } else {
-//                    long ifModifiedSince = req.getDateHeader(HEADER_IFMODSINCE);
-//                    if (ifModifiedSince < (lastModified / 1000 * 1000)) {
-//                        // If the servlet mod time is later, call doGet()
-//                        // Round down to the nearest second for a proper compare
-//                        // A ifModifiedSince of -1 will always be less
-//                        maybeSetLastModified(resp, lastModified);
-//                        doGet(req, resp, renderContext, ctx, path, workspace, locale);
-//                    } else {
-//                        resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-//                    }
-//                }
-
+                    doGet(req, resp, renderContext, resource);
+                } else {
+                    long ifModifiedSince = req.getDateHeader(HEADER_IFMODSINCE);
+                    if (ifModifiedSince < (lastModified / 1000 * 1000)) {
+                        // If the servlet mod time is later, call doGet()
+                        // Round down to the nearest second for a proper compare
+                        // A ifModifiedSince of -1 will always be less
+                        maybeSetLastModified(resp, lastModified);
+                        doGet(req, resp, renderContext, resource);
+                    } else {
+                        resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                    }
+                }
             } else if (method.equals(METHOD_HEAD)) {
                 long lastModified = getLastModified(req);
                 maybeSetLastModified(resp, lastModified);
                 doHead(req, resp);
 
             } else if (method.equals(METHOD_POST)) {
-                doPost(req, resp, renderContext, ctx, path, workspace, locale);
+                doPost(req, resp, renderContext, path, workspace, locale);
 
             } else if (method.equals(METHOD_PUT)) {
-                doPut(req, resp, renderContext, ctx, path, workspace, locale);
+                doPut(req, resp, renderContext, path, workspace, locale);
 
             } else if (method.equals(METHOD_DELETE)) {
                 doDelete(req, resp);
@@ -180,8 +184,8 @@ public class Render extends HttpServlet {
             if (logger.isInfoEnabled()) {
                 StringBuilder sb = new StringBuilder(100);
                 sb.append("Rendered [").append(req.getRequestURI());
-                if (ctx != null && ctx.getUser() != null) {
-                    sb.append("] user=[").append(ctx.getUser().getUsername());
+                if (paramBean != null && paramBean.getUser() != null) {
+                    sb.append("] user=[").append(paramBean.getUser().getUsername());
                 }
                 sb.append("] ip=[").append(req.getRemoteAddr()).append(
                         "] sessionID=[").append(req.getSession(true).getId())
@@ -192,6 +196,31 @@ public class Render extends HttpServlet {
             }
         }
 
+    }
+
+    /**
+     * Returns the time the <code>HttpServletRequest</code>
+     * object was last modified,
+     * in milliseconds since midnight January 1, 1970 GMT.
+     * If the time is unknown, this method returns a negative
+     * number (the default).
+     *
+     * <p>Servlets that support HTTP GET requests and can quickly determine
+     * their last modification time should override this method.
+     * This makes browser and proxy caches work more effectively,
+     * reducing the load on server and network resources.
+     *
+     * @return a <code>long</code> integer specifying
+     * the time the <code>HttpServletRequest</code> object was
+     * last modified, in milliseconds since midnight, January 1,
+     * 1970 GMT, or -1 if the time is not known
+     */
+    protected long getLastModified(Resource resource, RenderContext renderContext) throws RepositoryException, IOException {
+        Node node = resource.getNode();
+        if (node.hasProperty("jcr:lastModified")) {
+            return node.getProperty("jcr:lastModified").getDate().getTime().getTime();
+        }
+        return -1;
     }
 
     /**
@@ -208,12 +237,12 @@ public class Render extends HttpServlet {
             resp.setDateHeader(HEADER_LASTMOD, lastModified);
     }
 
-    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp) {
-        return new RenderContext(req, resp);
+    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
+        return new RenderContext(req, resp, user);
     }
 
-    private void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, ProcessingContext ctx, String path, String workspace, Locale locale) throws RepositoryException, IOException {
-        String out = render(workspace, locale, path, ctx, renderContext);
+    private void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws RepositoryException, IOException {
+        String out = RenderService.getInstance().render(resource, renderContext);
 
         resp.setContentType("text/html");
         resp.setCharacterEncoding("UTF-8");
@@ -224,8 +253,8 @@ public class Render extends HttpServlet {
         writer.close();
     }
 
-    private void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, ProcessingContext ctx, String path, String workspace, Locale locale) throws RepositoryException, IOException {
-        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(ctx.getUser(), workspace, locale);
+    private void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
+        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(renderContext.getUser(), workspace, locale);
         Node node = session.getNode(path);
         Set<Map.Entry> set = req.getParameterMap().entrySet();
         for (Map.Entry entry : set) {
@@ -247,8 +276,8 @@ public class Render extends HttpServlet {
         writer.close();
     }
 
-    private void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, ProcessingContext ctx, String path, String workspace, Locale locale) throws RepositoryException, IOException {
-        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(ctx.getUser(), workspace, locale);
+    private void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
+        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(renderContext.getUser(), workspace, locale);
         String[] subPaths = path.split("/");
         String lastPath = subPaths[subPaths.length - 1];
         StringBuffer realPath = new StringBuffer();
@@ -323,35 +352,6 @@ public class Render extends HttpServlet {
         }
     }
 
-
-    public String render(String workspace, Locale locale, String path, ProcessingContext ctx, RenderContext renderContext) throws RepositoryException, IOException {
-        Resource r = resolveResource(workspace, locale, path, ctx.getUser());
-        renderContext.setMainResource(r);
-
-        Node current = r.getNode();
-        try {
-            while (true) {
-                if (current.isNodeType("jnt:jahiaVirtualsite") || current.isNodeType("jnt:virtualsite")) {
-                    String sitename = current.getName();
-                    try {
-                        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitename);
-                        ctx.setSite(site);
-                        ctx.setContentPage(site.getHomeContentPage());
-                        ctx.setThePage(site.getHomePage());
-                    } catch (JahiaException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                    break;
-                }
-                current = current.getParent();
-            }
-        } catch (ItemNotFoundException e) {
-            // no site
-        }
-
-        return RenderService.getInstance().render(r, renderContext);
-    }
-
     /**
      * Creates a resource from the specified path.
      * <p/>
@@ -361,11 +361,12 @@ public class Render extends HttpServlet {
      * @param workspace The workspace where to get the node
      * @param path      The path of the node, in the specified workspace
      * @param user      Current user
+     * @param ctx
      * @return The resource, if found
      * @throws PathNotFoundException if the resource cannot be resolved
      * @throws RepositoryException
      */
-    private Resource resolveResource(String workspace, Locale locale, String path, JahiaUser user) throws RepositoryException {
+    private Resource resolveResource(String workspace, Locale locale, String path, JahiaUser user, ProcessingContext ctx) throws RepositoryException {
         if (logger.isDebugEnabled()) {
         	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         }
@@ -400,6 +401,29 @@ public class Render extends HttpServlet {
         if (logger.isDebugEnabled()) {
         	logger.debug("Resolved resource: " + r);
         }
+
+        Node current = r.getNode();
+        try {
+            while (true) {
+                if (current.isNodeType("jnt:jahiaVirtualsite") || current.isNodeType("jnt:virtualsite")) {
+                    String sitename = current.getName();
+                    try {
+                        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitename);
+                        ctx.setSite(site);
+                        ctx.setContentPage(site.getHomeContentPage());
+                        ctx.setThePage(site.getHomePage());
+                    } catch (JahiaException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                    break;
+                }
+                current = current.getParent();
+            }
+        } catch (ItemNotFoundException e) {
+            // no site
+        }
+
+
         return r;
     }
 

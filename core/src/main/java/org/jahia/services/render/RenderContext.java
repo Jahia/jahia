@@ -58,9 +58,10 @@ public class RenderContext {
     
     private Map<String, Object> parameters = new HashMap<String, Object>();
 
-    public RenderContext(HttpServletRequest request, HttpServletResponse response) {
+    public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
         this.response = response;
+        this.user = user;
     }
 
     public HttpServletRequest getRequest() {

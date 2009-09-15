@@ -1,14 +1,11 @@
 package org.jahia.bin;
 
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.usermanager.JahiaUser;
 
-import javax.jcr.RepositoryException;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,8 +31,8 @@ public class Edit extends Render {
     }
 
 
-    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp) {
-        RenderContext context = super.createRenderContext(req, resp);
+    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
+        RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
         return context;
     }

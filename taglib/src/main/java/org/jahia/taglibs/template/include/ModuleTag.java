@@ -34,6 +34,7 @@ package org.jahia.taglibs.template.include;
 import org.jahia.data.beans.ContentBean;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.JahiaData;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.RenderContext;
@@ -165,7 +166,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         try {
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
             if (renderContext == null) {
-                renderContext = new RenderContext((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
+                final JahiaData jData = (JahiaData) pageContext.getRequest().getAttribute("org.jahia.data.JahiaData");
+                renderContext = new RenderContext((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), jData.getProcessingContext().getUser());
             }
             if(templateWrapper != null) {
                 renderContext.setTemplateWrapper(templateWrapper);

@@ -595,7 +595,7 @@ public class JCRStoreProvider {
 //                            }
 
                             session.save();
-                            service.publish(f.getPath(), null, user, false);
+                            service.publish(siteNode.getPath(), null, user, false);
                         }
                     }
                 } catch (IOException e) {

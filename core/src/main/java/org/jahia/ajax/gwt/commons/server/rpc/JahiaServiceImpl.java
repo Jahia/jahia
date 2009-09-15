@@ -458,7 +458,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
             locale = getEngineLocale();
         }
         Map<String, Locale> availableLocaleMap = WorkflowServiceHelper.retrieveOrderedLocaleDisplayForSite(jParams.getSite());
-        Map<String, String> workflowStates = WorkflowServiceHelper.getWorkflowStates(jParams.getContentPage());
+//        Map<String, String> workflowStates = WorkflowServiceHelper.getWorkflowStates(jParams.getContentPage());
         Map<String, GWTLanguageSwitcherLocaleBean> availableLanguages = new HashMap<String, GWTLanguageSwitcherLocaleBean>(availableLocaleMap.size());
         Set<Map.Entry<String, Locale>> iterator = availableLocaleMap.entrySet();
         for (Map.Entry<String, Locale> stringLocaleEntry : iterator) {
@@ -472,7 +472,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
             localeBean.setLanguage(value.getLanguage());
             availableLanguages.put(stringLocaleEntry.getKey(), localeBean);
         }
-        return new GWTJahiaLanguageSwitcherBean(availableLanguages, workflowStates);
+        return new GWTJahiaLanguageSwitcherBean(availableLanguages, new HashMap<String,String>());
     }
 
     private String getCleanHTMLText(String text, String notTrunkedText, int maxChar) {

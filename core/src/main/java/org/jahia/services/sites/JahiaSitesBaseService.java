@@ -76,17 +76,20 @@ import org.jahia.services.importexport.ExtendedImportResult;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockRegistry;
 import org.jahia.services.search.JahiaSearchService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.content.ContentObject;
+import org.jahia.api.Constants;
 import org.quartz.JobDetail;
 import org.quartz.JobDataMap;
 import org.apache.log4j.Logger;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Node;
 
 /**
  * Jahia Multi Sites Management Service
@@ -512,7 +515,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                         jParams.getUser().getUserKey(),
                         jAcl.getID(),
                         jParams);
-                
+
                 WorkflowInfo wfInfo = ServicesRegistry.getInstance()
                         .getWorkflowService().getDefaultWorkflowEntry();
                 if (WorkflowService.EXTERNAL == wfInfo.getMode()) {
@@ -541,6 +544,23 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                 page.getACL().setGroupEntry(adminGroup, adminAclEntry);
                 JahiaEvent setRightsEvent = new JahiaEvent(this, jParams, page.getACL());
                 ServicesRegistry.getInstance ().getJahiaEventService ().fireSetRights(setRightsEvent);
+
+
+                try {
+                    JCRNodeWrapper source = page.getContentPage().getJCRNode(jParams);
+                    Node parent = source.getParent();
+                    if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
+                        Node dest = JCRStoreService.getInstance().getThreadSession(jParams.getUser()).getNode("/content/sites/"+parent.getName());
+                        source.copyFile(dest.getPath());
+                        dest.save();
+                    }
+                } catch (JahiaException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (RepositoryException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+
+
             } else {
                 // enable admin group to admin the page
                 adminAclEntry = new JahiaAclEntry(7, 0);
@@ -599,6 +619,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                     jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, site.getID());
                     jobDataMap.put(BackgroundJob.JOB_TYPE,ImportJob.IMPORT_TYPE);
                     jobDataMap.put(ImportJob.DELETE_FILE, Boolean.TRUE);
+                    jobDataMap.put(ImportJob.COPY_TO_JCR, Boolean.TRUE);
 
                     ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
                 } else {

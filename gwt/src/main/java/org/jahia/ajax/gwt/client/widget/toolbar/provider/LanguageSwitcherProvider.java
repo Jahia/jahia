@@ -59,7 +59,7 @@ public class LanguageSwitcherProvider extends JahiaToolItemProvider {
     public Component createToolItem (GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, GWTJahiaToolbarItem gwtToolbarItem) {
         Button item = new Button("loading...") ;
         item.setEnabled(false);
-        new LanguageSwitcher(true, true, false,true, JahiaGWTParameters.getLanguage(), false, new LanguageSelectedListener() {
+        new LanguageSwitcher(true, true, false,false, JahiaGWTParameters.getLanguage(), false, new LanguageSelectedListener() {
             private final JahiaServiceAsync jahiaServiceAsync = JahiaService.App.getInstance();
             public void onLanguageSelected (String languageSelected) {
                 jahiaServiceAsync.getLanguageURL(languageSelected,new AsyncCallback<String>() {

@@ -48,6 +48,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.mail.GroovyMimeMessagePreparator;
 import org.jahia.services.mail.MailService;
@@ -59,11 +60,14 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.UserProperty;
 import org.jahia.services.workflow.AbstractActivationJob;
 import org.jahia.services.workflow.PublishAllJob;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.api.Constants;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -81,6 +85,8 @@ public class ImportJob extends BackgroundJob {
     public static final String URI = "uri";
     public static final String FILENAME = "filename";
     public static final String DELETE_FILE = "delete";
+
+    public static final String COPY_TO_JCR = "copyToJCR";
 
     public void executeJahiaJob(JobExecutionContext jobExecutionContext, ProcessingContext context) throws Exception {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
@@ -153,6 +159,23 @@ public class ImportJob extends BackgroundJob {
                         messageMimePreparator.setBinding(binding);
                         messageMimePreparator.setTemplatePath("autoexport_notvalidated.groovy");
                         mailService.sendTemplateMessage(messageMimePreparator);
+                    }
+                }
+
+                if (Boolean.TRUE.equals(jobDataMap.get(COPY_TO_JCR)) ) {
+                    ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
+                    try {
+                        JCRNodeWrapper source = imported.getJCRNode(context);
+                        Node parent = source.getParent();
+                        if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
+                            Node dest = JCRStoreService.getInstance().getThreadSession(context.getUser()).getNode("/content/sites/"+parent.getName());
+                            source.copyFile(dest.getPath());
+                            dest.save();
+                        }
+                    } catch (JahiaException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    } catch (RepositoryException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                 }
             } finally {

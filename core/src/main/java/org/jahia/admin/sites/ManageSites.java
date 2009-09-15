@@ -74,6 +74,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.*;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.pages.ContentPage;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
@@ -2208,6 +2209,18 @@ public class ManageSites extends AbstractAdministrationModule {
     }
 
     private void redirectAfterAdd(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException, ServletException {
+//        JahiaSite site = (JahiaSite) session.getAttribute(CLASS_NAME + "newJahiaSite");
+//        ContentPage page = site.getHomeContentPage();
+//
+//        try {
+//            JCRNodeWrapper source = page.getJCRNode(Jahia.getThreadParamBean());
+//            source.copyFile("/content/sites/"+site.getSiteKey());
+//        } catch (JahiaException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        } catch (RepositoryException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
+//
         if (session.getAttribute(CLASS_NAME + "redirectToJahia") != null) {
             session.removeAttribute(CLASS_NAME + "redirectToJahia");
             try {

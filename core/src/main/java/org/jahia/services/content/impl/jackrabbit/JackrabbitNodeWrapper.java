@@ -31,21 +31,20 @@
  */
 package org.jahia.services.content.impl.jackrabbit;
 
+import org.apache.jackrabbit.core.SessionImpl;
+import org.apache.jackrabbit.core.security.authorization.Permission;
+import org.apache.jackrabbit.spi.Path;
+import org.apache.log4j.Logger;
+import org.jahia.services.content.JCRNodeWrapperImpl;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRStoreProvider;
+
+import javax.jcr.*;
+import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-
-import org.apache.log4j.Logger;
-import org.jahia.services.content.JCRStoreProvider;
-import org.jahia.services.content.JCRNodeWrapperImpl;
-import org.jahia.services.content.JCRSessionWrapper;
 
 /**
  * Created by IntelliJ IDEA.
@@ -63,6 +62,64 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
 
     protected JackrabbitNodeWrapper(Node objectNode, JCRSessionWrapper session, JCRStoreProvider provider) {
         super(objectNode, session, provider);
+    }
+
+    @Override
+    public boolean hasPermission(String perm) {
+        if (exception != null) {
+            return false;
+        }
+        String ws = null;
+        int permissions = 0;
+        try {
+            if (READ.equals(perm)) {
+                permissions = Permission.READ;
+                ws = "default";
+            } else if (WRITE.equals(perm)) {
+                permissions = Permission.ADD_NODE;
+                ws = "default";
+            } else if (MODIFY_ACL.equals(perm)) {
+                permissions = Permission.MODIFY_AC;
+                ws = "default";
+            } else if (READ_LIVE.equals(perm)) {
+                permissions = Permission.READ;
+                ws = "live";
+            } else if (WRITE_LIVE.equals(perm)) {
+                permissions = Permission.ADD_NODE;
+                ws = "live";
+            }
+            if (ws == null) {
+                return false;
+            }
+            if (ws.equals(workspace.getName())) {
+                SessionImpl jrSession = (SessionImpl) session.getProviderSession(provider);
+                Path path = jrSession.getQPath(localPath).getNormalizedPath();
+                return jrSession.getAccessManager().isGranted(path, permissions);
+            } else {
+                SessionImpl jrSession = (SessionImpl) provider.getThreadSession(getUser(), "live");
+                Node current = getParent();
+                while (true) {
+                    try {
+                        Path path = jrSession.getQPath(current.getCorrespondingNodePath(ws)).getNormalizedPath();
+                        return jrSession.getAccessManager().isGranted(path, permissions);
+                    } catch (ItemNotFoundException nfe) {
+                        // corresponding node not found
+                        try {
+                            current = current.getParent();
+                        } catch (AccessDeniedException e) {
+                            return false;
+                        } catch (ItemNotFoundException e) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        } catch (AccessControlException e) {
+            return false;
+        } catch (RepositoryException re) {
+            logger.error("Cannot check perm ", re);
+            return false;
+        }
     }
 
     public Map<String, List<String[]>> getAclEntries() {
@@ -90,10 +147,10 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
         Map<String, Map<String, String>> actualACLs = new HashMap<String, Map<String, String>>();
         Map<String, List<String[]>> allACLs = getAclEntries();
         if (allACLs != null) {
-            for (Map.Entry<String, List<String[]>> entry: allACLs.entrySet()) {
+            for (Map.Entry<String, List<String[]>> entry : allACLs.entrySet()) {
                 Map<String, String> permissionsForUser = new HashMap<String, String>();
                 // filtering stuff (path, GRANT/DENY, jcr:perm)
-                for (String[] perms: entry.getValue()) {
+                for (String[] perms : entry.getValue()) {
                     if (permissionsForUser.containsKey(perms[2])) {
                         if (perms[0].equals(getPath())) {
                             permissionsForUser.put(perms[2], perms[1]);
@@ -108,40 +165,40 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
         return actualACLs;
     }
 
-    public boolean getAclInheritanceBreak(){
+    public boolean getAclInheritanceBreak() {
         if (exception != null) {
             return false;
         }
         try {
             return getAclInheritanceBreak(objectNode);
         } catch (RepositoryException e) {
-            logger.error("Cannot get acl",e);
+            logger.error("Cannot get acl", e);
             return false;
         }
     }
 
-    public boolean changePermissions (String user, String perm) {
+    public boolean changePermissions(String user, String perm) {
         if (exception != null) {
             return false;
         }
         try {
             changePermissions(objectNode, user, perm);
         } catch (RepositoryException e) {
-            logger.error("Cannot change acl",e);
+            logger.error("Cannot change acl", e);
             return false;
         }
 
         return true;
     }
 
-    public boolean changePermissions (String user, Map<String,String> perm) {
+    public boolean changePermissions(String user, Map<String, String> perm) {
         if (exception != null) {
             return false;
         }
         try {
             changePermissions(objectNode, user, perm);
         } catch (RepositoryException e) {
-            logger.error("Cannot change acl",e);
+            logger.error("Cannot change acl", e);
             return false;
         }
 
@@ -155,28 +212,28 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
         try {
             setAclInheritanceBreak(objectNode, inheritance);
         } catch (RepositoryException e) {
-            logger.error("Cannot change acl",e);
+            logger.error("Cannot change acl", e);
             return false;
         }
 
         return true;
     }
 
-    public boolean revokePermissions (String user) {
+    public boolean revokePermissions(String user) {
         if (exception != null) {
             return false;
         }
         try {
             revokePermission(objectNode, user);
         } catch (RepositoryException e) {
-            logger.error("Cannot change acl",e);
+            logger.error("Cannot change acl", e);
             return false;
         }
 
         return true;
     }
 
-    public boolean revokeAllPermissions () {
+    public boolean revokeAllPermissions() {
         try {
             if (objectNode.hasNode("j:acl")) {
                 objectNode.getNode("j:acl").remove();
@@ -189,7 +246,7 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
         return false;
     }
 
-    private void recurseonACPs(Map<String, List<String[]>> results, Map<String, List<String[]>> inherited, Node n) throws RepositoryException  {
+    private void recurseonACPs(Map<String, List<String[]>> results, Map<String, List<String[]>> inherited, Node n) throws RepositoryException {
         try {
             Map<String, List<String[]>> current = results;
             while (true) {
@@ -205,7 +262,7 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
 
                         if (!current.containsKey(principal)) {
                             List<String[]> p = localResults.get(principal);
-                            if (p == null)  {
+                            if (p == null) {
                                 p = new ArrayList<String[]>();
                                 localResults.put(principal, p);
                             }

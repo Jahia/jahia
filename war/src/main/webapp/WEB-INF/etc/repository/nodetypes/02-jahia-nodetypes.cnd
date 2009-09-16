@@ -131,7 +131,7 @@
  - j:name
 
 [jnt:folder] > nt:folder, jmix:hierarchyNode, jmix:collection, jmix:contentmetadata
- + * (jmix:hierarchyNode)
+ + * (jmix:hierarchyNode) version
 
 [jnt:systemfolder] > jnt:folder
 
@@ -154,7 +154,7 @@
 // Categories
 //---------------------------------------------------------
 
-[jnt:category] > nt:base, jmix:hierarchyNode, jmix:collection, mix:title
+[jnt:category] > nt:base, mix:created, mix:createdBy, mix:lastModified, jmix:lastPublished, jmix:hierarchyNode, jmix:collection, mix:title
 + * (jnt:category)
 - * (reference) multiple < jnt:category
 
@@ -317,15 +317,15 @@
 //---------------------------------------------------------
 
 [jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:navigation, jmix:contentmetadata
- + * (nt:base)
+ + * (nt:base) version
 
 [jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:contentmetadata, jmix:containerContent
  orderable
- + * (nt:base)
+ + * (nt:base) version
 
 [jnt:gridContentList] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:contentmetadata, jmix:containerContent
  - j:nbColumns (long)
- + * (jmix:positionable)
+ + * (jmix:positionable) version
 
 //---------------------------------------------------------
 // Portlets

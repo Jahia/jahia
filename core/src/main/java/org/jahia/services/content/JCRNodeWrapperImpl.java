@@ -37,8 +37,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.data.containers.JahiaContainer;
-import org.jahia.data.fields.JahiaField;
 import org.jahia.data.files.JahiaFile;
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.params.ParamBean;
@@ -81,7 +79,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     protected Node objectNode = null;
 
-    protected String[] defaultPerms = { Constants.JCR_READ_RIGHTS_LIVE, Constants.JCR_READ_RIGHTS , Constants.JCR_WRITE_RIGHTS, Constants.JCR_MODIFYACCESSCONTROL, Constants.JCR_WRITE_RIGHTS_LIVE };
+    protected String[] defaultPerms = { Constants.JCR_READ_RIGHTS_LIVE, Constants.JCR_READ_RIGHTS , Constants.JCR_WRITE_RIGHTS, Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, Constants.JCR_WRITE_RIGHTS_LIVE };
 
     protected Exception exception = null;
     private static final String J_PRIVILEGES = "j:privileges";
@@ -216,14 +214,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return false;
         }
         try {
-            if (READ.equals(perm)) {
+            if (READ.equals(perm) || READ_LIVE.equals(perm)) {
                 if (objectNode != null) {
                     return true;
                 }
-            } else if (WRITE.equals(perm)) {
-                session.getProviderSession(provider).checkPermission(objectNode.getPath(),  "set_property");
-                return true;
-            } else if (MANAGE.equals(perm)) {
+            } else if (WRITE.equals(perm) || WRITE_LIVE.equals(perm) || MODIFY_ACL.equals(perm)) {
                 session.getProviderSession(provider).checkPermission(objectNode.getPath(),  "set_property");
                 return true;
             }
@@ -235,16 +230,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         return false;
-    }
-
-    /**
-     * @return Returns the Set of denied users (Read Rights) in comparison with the permision of the field
-     */
-    public Set<String> comparePermsWithField(final JahiaField theField, final JahiaContainer theContainer) {
-        return new HashSet<String>();
-    }
-
-    public void alignPermsWithField(JahiaField theField, Set<String> users) {
     }
 
     public boolean changePermissions (String user, String perm) {
@@ -1534,9 +1519,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "DENY");
             }
             if (perm.charAt(1)=='a') {
-                permsAsMap.put(Constants.JCR_MODIFYACCESSCONTROL, "GRANT");
+                permsAsMap.put(Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, "GRANT");
             } else {
-                permsAsMap.put(Constants.JCR_MODIFYACCESSCONTROL, "DENY");
+                permsAsMap.put(Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, "DENY");
             }
             if (perm.charAt(1)=='p') {
                 permsAsMap.put(Constants.JCR_WRITE_RIGHTS_LIVE, "GRANT");
@@ -1716,7 +1701,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public String getCorrespondingNodePath(String s) throws ItemNotFoundException, NoSuchWorkspaceException, AccessDeniedException, RepositoryException {
-        throw new UnsupportedOperationException();
+        if (provider.getMountPoint().equals("/")) {
+            return objectNode.getCorrespondingNodePath(s);
+        } else {
+            return provider.getMountPoint() + objectNode.getCorrespondingNodePath(s);
+        }
     }
 
     public boolean isCheckedOut() throws RepositoryException {

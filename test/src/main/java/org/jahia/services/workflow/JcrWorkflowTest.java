@@ -107,7 +107,7 @@ public class JcrWorkflowTest extends TestCase {
                     .lookupUser(JahiaUserManagerService.GUEST_USERNAME);
             boolean accessWasDenied = false;
             try {
-                jcrService.publish(stageNode.getPath(), languages, guestUser,
+                jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, guestUser,
                         false, false);
             } catch (AccessDeniedException e) {
                 accessWasDenied = true;
@@ -116,7 +116,7 @@ public class JcrWorkflowTest extends TestCase {
                     "Guest user was able to publish a node although he has no access "
                             + stageNode.getPath(), accessWasDenied);
 
-            jcrService.publish(stageNode.getPath(), languages, session
+            jcrService.publish(stageNode.getPath(),Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, session
                     .getUser(), false, false);
 
             JCRNodeWrapper publishedNode = liveSession.getNode(stageNode
@@ -273,7 +273,7 @@ public class JcrWorkflowTest extends TestCase {
         addNodeAndDependands(pageNodeToPublish, languages,
                 publishedDateForObjects);
 
-        jcrService.publish(pageNodeToPublish.getPath(), languages, session
+        jcrService.publish(pageNodeToPublish.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, session
                 .getUser(), publishParent, false);
 
         for (Map.Entry<String, Long> publishedDateForObject : publishedDateForObjects

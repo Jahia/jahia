@@ -102,14 +102,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.hasPermission(perm);
     }
 
-    public Set<String> comparePermsWithField(JahiaField theField, JahiaContainer theContainer) {
-        return node.comparePermsWithField(theField, theContainer);
-    }
-
-    public void alignPermsWithField(JahiaField theField, Set<String> users) {
-        node.alignPermsWithField(theField, users);
-    }
-
     public boolean changePermissions(String user, String perm) {
         return node.changePermissions(user, perm);        
     }

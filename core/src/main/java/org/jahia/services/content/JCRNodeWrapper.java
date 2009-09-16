@@ -32,8 +32,6 @@
 package org.jahia.services.content;
 
 import org.jahia.api.Constants;
-import org.jahia.data.containers.JahiaContainer;
-import org.jahia.data.fields.JahiaField;
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
@@ -49,7 +47,6 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -64,9 +61,11 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     public static final int UNSUPPORTED_ERROR = 98;
     public static final int UNKNOWN_ERROR = 99;
 
-    public static final String READ = "read";
-    public static final String WRITE = "write";
-    public static final String MANAGE = "manage";
+    public static final String READ = Constants.JCR_READ_RIGHTS;
+    public static final String WRITE = Constants.JCR_WRITE_RIGHTS;
+    public static final String READ_LIVE = Constants.JCR_READ_RIGHTS_LIVE;
+    public static final String WRITE_LIVE = Constants.JCR_WRITE_RIGHTS_LIVE;
+    public static final String MODIFY_ACL = Constants.JCR_MODIFYACCESSCONTROL_RIGHTS;
 
     public static final int UNSET = 0;
     public static final int GRANTED = 1;
@@ -102,10 +101,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     boolean isWriteable();
 
     boolean hasPermission(String perm);
-
-    Set<String> comparePermsWithField(JahiaField theField, JahiaContainer theContainer);
-
-    void alignPermsWithField(JahiaField theField, Set<String> users);
 
     boolean changePermissions (String user, String perms);
 

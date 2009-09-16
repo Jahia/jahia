@@ -45,6 +45,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.jcr.PathNotFoundException;
+import javax.jcr.AccessDeniedException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -138,6 +139,8 @@ public class ErrorHandler {
 
         if (e instanceof PathNotFoundException) {
         	code = SC_NOT_FOUND;
+        } else if (e instanceof AccessDeniedException) {
+            code = SC_UNAUTHORIZED;            
         } else if (e instanceof JahiaException) {
             if (e instanceof JahiaSessionExpirationException) {
                 code = SC_BAD_REQUEST;

@@ -755,7 +755,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                 } else {
                     pruneNodes.add(n.getPath());
                 }
-            } else {
+            } else if (!n.getName().equals("j:acl")) {
                 getBlockedAndReferencesList(n, pruneNodes, referencedNode, languages);
             }
         }
@@ -767,22 +767,24 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
      * Parent node must be published, or will be published if publishParent is true.
      *
      * @param path          Path of the node to publish
+     * @param sourceWorkspace
+     * @param destinationWorkspace
      * @param languages
      * @param user          the user
      * @param publishParent Recursively publish the parents
      * @param system
      */
-    public void publish(String path, Set<String> languages, JahiaUser user, boolean publishParent, boolean system) throws RepositoryException {
-        JCRSessionWrapper session = getThreadSession(user);
-        JCRNodeWrapper w = session.getNode(path);
+    public void publish(String path, String sourceWorkspace, String destinationWorkspace, Set<String> languages, JahiaUser user, boolean publishParent, boolean system) throws RepositoryException {
+        JCRSessionWrapper sourceSession = getThreadSession(user, sourceWorkspace);
+        JCRNodeWrapper sourceNode = sourceSession.getNode(path);
 
-        String parentPath = w.getParent().getPath();
-        JCRSessionWrapper liveSession = getThreadSession(user, "live");
+        String parentPath = sourceNode.getParent().getPath();
+        JCRSessionWrapper destinationSession = getThreadSession(user, destinationWorkspace);
         try {
-            liveSession.getNode(parentPath);
+            destinationSession.getNode(parentPath);
         } catch (PathNotFoundException e) {
             if (publishParent) {
-                publish(parentPath, languages, user, true, system);
+                publish(parentPath, sourceWorkspace, destinationWorkspace, languages, user, true, system);
             } else {
                 return;
             }
@@ -791,11 +793,11 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         Set<String> blocked = new HashSet<String>();
         Set<String> referencedNodes = new HashSet<String>();
 
-        getBlockedAndReferencesList(w, blocked, referencedNodes, languages);
+        getBlockedAndReferencesList(sourceNode, blocked, referencedNodes, languages);
 
         for (String node : referencedNodes) {
             try {
-                publish(node, languages, user, true, system);
+                publish(node, sourceWorkspace, destinationWorkspace, languages, user, true, system);
             } catch (AccessDeniedException e) {
                 logger.warn("Cannot publish node at : " + node);
             }
@@ -808,22 +810,22 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
         JCRSessionWrapper liveSessionForPublish;
          if (system) {
-            liveSessionForPublish = login(JahiaLoginModule.getSystemCredentials(user.getUsername(), deniedPathes), Constants.LIVE_WORKSPACE);
+            liveSessionForPublish = login(JahiaLoginModule.getSystemCredentials(user.getUsername(), deniedPathes), destinationWorkspace);
         } else {
-            liveSessionForPublish = login(JahiaLoginModule.getCredentials(user.getUsername(), deniedPathes), Constants.LIVE_WORKSPACE);
+            liveSessionForPublish = login(JahiaLoginModule.getCredentials(user.getUsername(), deniedPathes), destinationWorkspace);
         }
         try {
             Node liveNode = liveSessionForPublish.getNode(path);
-            liveNode.update(Constants.EDIT_WORKSPACE);
+            liveNode.update(sourceWorkspace);
         } catch (PathNotFoundException e) {
             try {
-                liveSessionForPublish.getWorkspace().clone(Constants.EDIT_WORKSPACE, path, path, true);
+                liveSessionForPublish.getWorkspace().clone(sourceWorkspace, path, path, true);
             } catch (RepositoryException ee) {
                 ee.printStackTrace();
             }
+        } finally {
+            liveSessionForPublish.logout();
         }
-
-        liveSessionForPublish.logout();
     }
 
     /**
@@ -856,10 +858,10 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
      * @return
      * @throws RepositoryException
      */
-    public PublicationInfo getPublicationInfo(String path, JahiaUser user) throws RepositoryException {
+    public PublicationInfo getPublicationInfo(String path, JahiaUser user, Set<String> languages, boolean includesReferences) throws RepositoryException {
         JCRSessionWrapper session = getThreadSession(user);
         JCRSessionWrapper liveSession = getThreadSession(user, Constants.LIVE_WORKSPACE);
-        PublicationInfo info = null;
+        PublicationInfo info = new PublicationInfo();
 
         JCRNodeWrapper publishedNode = null;
         try {
@@ -870,36 +872,43 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             }
         }
 
-        JCRNodeWrapper stageNode = null;
-        stageNode = session.getNode(path);
+        JCRNodeWrapper stageNode = session.getNode(path);
 
+        if (includesReferences) {
+            Set<String> blocked = new HashSet<String>();
+            Set<String> referencedNodes = new HashSet<String>();
+
+            getBlockedAndReferencesList(stageNode, blocked, referencedNodes, languages);
+            for (String referencedNode : referencedNodes) {
+                info.addReference(referencedNode,getPublicationInfo(referencedNode, user, languages, true));
+            }
+        }
         if (publishedNode == null) {
             // node has not been published yet, check if parent is published
             try {
                 liveSession.getNode(stageNode.getParent().getPath());
-                info = new PublicationInfo(PublicationInfo.UNPUBLISHED);
+                info.setStatus(PublicationInfo.UNPUBLISHED);
+            } catch (AccessDeniedException e) {
+                info.setStatus(PublicationInfo.UNPUBLISHABLE);
             } catch (PathNotFoundException e) {
-                info = new PublicationInfo(PublicationInfo.UNPUBLISHABLE);
+                info.setStatus(PublicationInfo.UNPUBLISHABLE);
             }
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("---> info:" + info.getStatus());
+        } else {
+            if (stageNode.getLastModifiedAsDate() == null) {
+                logger.error("Null modifieddate for node "+stageNode.getPath());
+                info.setStatus(PublicationInfo.MODIFIED);
+            } else {
+                long s = stageNode.getLastModifiedAsDate().getTime();
+                long p = publishedNode.getLastPublishedAsDate().getTime();
+                if (s > p) {
+                    info.setStatus(PublicationInfo.MODIFIED);
+                } else {
+                    info.setStatus(PublicationInfo.PUBLISHED);
+                }
             }
-            return info;
         }
+        info.setCanPublish(stageNode.hasPermission(JCRNodeWrapper.WRITE_LIVE));
 
-        info = new PublicationInfo(PublicationInfo.PUBLISHED);
-
-        long s = stageNode.getLastModifiedAsDate().getTime();
-        long p = publishedNode.getLastPublishedAsDate().getTime();
-        if (s > p) {
-            info.setStatus(PublicationInfo.MODIFIED);
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("--> " + stageNode);
-            logger.debug("--> " + publishedNode);
-            logger.debug("---> info:" + info.getStatus());
-        }
         return info;
     }
 

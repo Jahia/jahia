@@ -82,17 +82,19 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                         .getWorkspace();
                 jrWs.createWorkspace("live");
                 liveWorkspaceCreated = true;
+                session.logout();
             }
             super.start();
             if (liveWorkspaceCreated) {
                 session = getSystemSession(null, "live");
                 session.getWorkspace().clone("default",
                         "/content", "/content", false);
+                session.logout();
             }
         } catch (RepositoryException e) {
             e.printStackTrace();
         } finally {
-            if(session!=null) {
+            if(session!=null && session.isLive()) {
                 session.logout();
             }
         }
@@ -147,7 +149,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         Node node = rootNode.getNode(Constants.JCR_SYSTEM);
         // Import default ACLs
         if (!node.hasNode("j:acl")) {
-            JCRNodeWrapperImpl.changePermissions(rootNode,"g:guest","r----");
+            JCRNodeWrapperImpl.changePermissions(rootNode,"g:guest","re---");
         }
     }
 

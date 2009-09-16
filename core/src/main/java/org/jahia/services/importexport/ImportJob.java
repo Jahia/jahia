@@ -170,6 +170,10 @@ public class ImportJob extends BackgroundJob {
                         if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
                             Node dest = JCRStoreService.getInstance().getThreadSession(context.getUser()).getNode("/content/sites/"+parent.getName());
                             source.copyFile(dest.getPath());
+                            if (source.hasNode("j:acl")) {
+                                dest.addMixin("jmix:accessControlled");
+                                ((JCRNodeWrapper)source.getNode("j:acl")).copyFile(dest.getPath());
+                            }
                             dest.save();
                         }
                     } catch (JahiaException e) {

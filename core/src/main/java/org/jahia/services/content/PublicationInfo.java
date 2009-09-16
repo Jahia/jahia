@@ -15,6 +15,9 @@ public class PublicationInfo {
     public static final int PUBLISHED = 1;
     public static final int MODIFIED = 2;
 
+    public static final int LIVE_ONLY = 4;
+    public static final int LIVE_MODIFIED = 5;
+
     public static final int UNPUBLISHABLE = 3;
 
     private int status;
@@ -27,8 +30,7 @@ public class PublicationInfo {
 
     private Map<String, PublicationInfo> references;
 
-    public PublicationInfo(int status) {
-        this.status = status;
+    public PublicationInfo() {
         this.references = new HashMap<String, PublicationInfo>();
     }
 

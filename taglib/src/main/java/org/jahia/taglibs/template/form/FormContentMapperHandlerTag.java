@@ -318,7 +318,7 @@ public class FormContentMapperHandlerTag extends AbstractJahiaTag {
                         }
                         if (!uris.isEmpty()) {
                             try {
-                                object.alignPermsWithField(curField, uris);
+//                                object.alignPermsWithField(curField, uris);
                                 try {
                                     object.save();
                                 } catch (RepositoryException e) {

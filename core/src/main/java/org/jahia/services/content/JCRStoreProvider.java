@@ -593,7 +593,7 @@ public class JCRStoreProvider {
 //                            }
 
                             session.save();
-                            service.publish(siteNode.getPath(), null, user, false, true);
+                            service.publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, user, false, true);
                         }
                     }
                 } catch (IOException e) {
@@ -829,6 +829,10 @@ public class JCRStoreProvider {
 
     public Session getThreadSession(JahiaUser user) throws RepositoryException {
         return service.getThreadSession(user).getProviderSession(this);
+    }
+
+    public Session getThreadSession(JahiaUser user, String workspace) throws RepositoryException {
+        return service.getThreadSession(user, workspace).getProviderSession(this);
     }
 
     public Session getSystemSession() throws RepositoryException {

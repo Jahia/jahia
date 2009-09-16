@@ -193,7 +193,7 @@ public class Constants {
 
     public static final String JCR_READ_RIGHTS = "jcr:read";
     public static final String JCR_WRITE_RIGHTS = "jcr:write";
-    public static final String JCR_MODIFYACCESSCONTROL = "jcr:modifyAccessControl";
+    public static final String JCR_MODIFYACCESSCONTROL_RIGHTS = "jcr:modifyAccessControl";
 
     public static final String JCR_READ_RIGHTS_LIVE = "jcr:read_live";
     public static final String JCR_WRITE_RIGHTS_LIVE = "jcr:write_live";

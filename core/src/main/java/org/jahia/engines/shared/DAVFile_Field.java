@@ -161,8 +161,8 @@ public class DAVFile_Field implements FieldSubEngine {
         final JahiaContainer theContainer = (JahiaContainer) engineMap.get(fieldsEditCallingEngineName + "."
                 + "theContainer");
         if (object.isValid()) {
-            engineMap.put("deniedUsers", object.comparePermsWithField(theField, theContainer));
-            engineMap.put("canAdmin", Boolean.valueOf(object.hasPermission(JCRNodeWrapper.MANAGE)));
+//            engineMap.put("deniedUsers", object.comparePermsWithField(theField, theContainer));
+//            engineMap.put("canAdmin", Boolean.valueOf(object.hasPermission(JCRNodeWrapper.MANAGE)));
             setSelectedNode(jParams, object);
         } else {
             setSelectedNode(jParams,null);
@@ -184,7 +184,7 @@ public class DAVFile_Field implements FieldSubEngine {
         }
         if (!uris.isEmpty()) {
             try {
-                object.alignPermsWithField(theField, uris);
+//                object.alignPermsWithField(theField, uris);
                 try {
                     object.save();
                 } catch (RepositoryException e) {
@@ -323,8 +323,8 @@ public class DAVFile_Field implements FieldSubEngine {
         final JCRNodeWrapper rm = JahiaWebdavBaseService.getInstance().getDAVFileAccess(
                 fField.getRealName(), jParams.getUser());
         if (rm.isValid() && davAction == null) {
-            engineMap.put("deniedUsers", rm.comparePermsWithField(theField, theContainer));
-            engineMap.put("canAdmin", Boolean.valueOf(rm.hasPermission(JCRNodeWrapper.MANAGE)));
+//            engineMap.put("deniedUsers", rm.comparePermsWithField(theField, theContainer));
+//            engineMap.put("canAdmin", Boolean.valueOf(rm.hasPermission(JCRNodeWrapper.MANAGE)));
             setSelectedNode(jParams, rm);
         } else {
             setSelectedNode(jParams,null);

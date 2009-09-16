@@ -47,6 +47,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.api.Constants;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -70,7 +71,9 @@ public class CategoriesImportHandler extends DefaultHandler {
     private JahiaSite site;
     private List<String[]> uuidProps = new ArrayList<String[]>();
     private Category rootCategory = null;
+    private ProcessingContext ctx;
     public CategoriesImportHandler(ProcessingContext jParams) {
+        ctx = jParams;
         site = jParams.getSite();
         cs = ServicesRegistry.getInstance().getCategoryService();
     }
@@ -232,6 +235,14 @@ public class CategoriesImportHandler extends DefaultHandler {
         return l;
     }
 
+    @Override
+    public void endDocument() throws SAXException {
+        try {
+            ServicesRegistry.getInstance().getJCRStoreService().publish("/content/categories", Constants.EDIT_WORKSPACE,  Constants.LIVE_WORKSPACE, null, ctx.getUser(), true, true);
+        } catch (RepositoryException e) {
+            logger.error("Cannot puiblish categories ",e);
+        }
+    }
 
     public void setRootCategory(Category cat) {
         rootCategory = cat;

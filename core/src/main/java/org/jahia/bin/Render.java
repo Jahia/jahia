@@ -15,10 +15,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -373,31 +370,43 @@ public class Render extends HttpServlet {
         	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         }
         JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(user, workspace, locale);
+        JCRSessionWrapper systemSession = ServicesRegistry.getInstance().getJCRStoreService().getSystemSession(null, workspace);
 
         JCRNodeWrapper node = null;
 
         String ext = null;
         String tpl = null;
 
-        while (true) {
-            int i = path.lastIndexOf('.');
-            if (i > path.lastIndexOf('/')) {
-                if (ext == null) {
-                    ext = path.substring(i + 1);
-                } else if (tpl == null) {
-                    tpl = path.substring(i + 1);
+        try {
+            while (true) {
+                int i = path.lastIndexOf('.');
+                if (i > path.lastIndexOf('/')) {
+                    if (ext == null) {
+                        ext = path.substring(i + 1);
+                    } else if (tpl == null) {
+                        tpl = path.substring(i + 1);
+                    } else {
+                        tpl = path.substring(i + 1) + "." + tpl;
+                    }
+                    path = path.substring(0, i);
                 } else {
-                    tpl = path.substring(i + 1) + "." + tpl;
+                    throw new PathNotFoundException("not found");
                 }
-                path = path.substring(0, i);
-            } else {
-                throw new PathNotFoundException("not found");
+                try {
+                    node = session.getNode(path);
+                    break;
+                } catch (PathNotFoundException e) {
+                    try {
+                        // node unreadable ?
+                        systemSession.getNode(path);
+                        throw new AccessDeniedException(path);
+                    } catch (PathNotFoundException e1) {
+                        // continue
+                    }
+                }
             }
-            try {
-                node = session.getNode(path);
-                break;
-            } catch (PathNotFoundException e) {
-            }
+        } finally {
+            systemSession.logout();
         }
         Resource r = new Resource(node, ext, null, tpl);
         if (logger.isDebugEnabled()) {

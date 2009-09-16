@@ -1292,8 +1292,14 @@ public class ContentManagerHelper {
                                     }
                                 }
                             } else {
-                                Value value = Utils.convertValue(propValue);
-                                objectNode.setProperty(prop.getName(), value);
+                                if (propValue != null) {
+                                    Value value = Utils.convertValue(propValue);
+                                    objectNode.setProperty(prop.getName(), value);
+                                } else {
+                                    if (objectNode.hasProperty(prop.getName())) {
+                                        objectNode.getProperty(prop.getName()).remove();
+                                    }
+                                }
                             }
                         } else if (objectNode.hasProperty(prop.getName())) {
                             objectNode.getProperty(prop.getName()).remove();
@@ -2541,11 +2547,11 @@ public class ContentManagerHelper {
      * @param languages Set of languages to publish if null publish all languages
      * @param user the user for obtaining the jcr session
      * @param publishParent Recursively publish the parents
-     * @throws a GWTJahiaServiceException in case of any RepositoryException
+     * @throws GWTJahiaServiceException in case of any RepositoryException
      */
     public static void publish(String path, Set<String> languages, JahiaUser user, boolean publishParent) throws GWTJahiaServiceException {
         try {
-            jcr.publish(path, languages, user, publishParent, false);
+            jcr.publish(path, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, user, publishParent, false);
         } catch (RepositoryException e) {
             logger.error("repository exception",e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -2557,11 +2563,13 @@ public class ContentManagerHelper {
      * @param path to get publication info from
      * @param user the user for obtaining the jcr session
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
-     * @throws a GWTJahiaServiceException in case of any RepositoryException
+     * @throws GWTJahiaServiceException in case of any RepositoryException
      */
     public static GWTJahiaPublicationInfo getPublicationInfo(String path, JahiaUser user) throws GWTJahiaServiceException {
-
         try {
+
+            PublicationInfo pubInfo = jcr.getPublicationInfo(path,  user, null, true);
+
             JCRSessionWrapper session = jcr.getThreadSession(user);
             JCRSessionWrapper liveSession = jcr.getThreadSession(user, Constants.LIVE_WORKSPACE);
             GWTJahiaPublicationInfo info = null;

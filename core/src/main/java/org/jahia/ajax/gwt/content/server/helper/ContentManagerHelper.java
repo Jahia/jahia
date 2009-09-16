@@ -221,13 +221,7 @@ public class ContentManagerHelper {
             if (logger.isDebugEnabled()) {
                 logger.debug(new StringBuilder("processing ").append(f.getPath()).toString());
             }
-            if (f.isVisible() && (matchesNodeType(f, nodeTypesToApply) || (f.isCollection()))) {
-                if (f.isCollection() && noFolders) {
-                	if (logger.isDebugEnabled()) {
-                		logger.debug("--------------------- no folder -> continue");
-                	}
-                    continue;
-                }
+            if (f.isVisible() && (matchesNodeType(f, nodeTypesToApply) || (!noFolders && f.isCollection()))) {
                 try {
                     // if we are not in the site manager and the current site does not match the virtual site node --> hide it
                 	if (!displayAllVirtualSites && f.isNodeType(Constants.JAHIANT_VIRTUALSITE) && !f.getName().equals(context.getSiteKey())) {

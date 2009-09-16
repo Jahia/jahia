@@ -1091,19 +1091,6 @@ public class ManagerConfigurationFactory {
             return importItem;
         }
 
-        private static ContentActionItem createNewSiteItem(final BrowserLinker linker) {
-            ContentActionItem newSite = new ContentActionItem(Messages.get("fm_newsite", "New site"), "fm-newsite") {
-                public void onSelection() {
-                    ContentActions.showContentWizard(linker, "jnt:virtualsite");
-                }
-
-                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                    setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
-                }
-            };
-            return newSite;
-        }
-
     }
 
     public static ManagerConfiguration getSiteManagerConfiguration(BrowserLinker linker) {
@@ -1117,9 +1104,6 @@ public class ManagerConfigurationFactory {
         ContentActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         cfg.addItem(newFolder);
-        ContentActionItem newSite = ItemCreator.createNewSiteItem(linker);
-        file.addItem(newSite);
-        cfg.addItem(newSite);
         ContentActionItem newPage = ItemCreator.createNewPageContentItem(linker);
         file.addItem(newPage);
         cfg.addItem(newPage);
@@ -1161,6 +1145,9 @@ public class ManagerConfigurationFactory {
 
         cfg.setNodeTypes(JCRClientUtils.SITE_NODETYPES);
         cfg.setFolderTypes(JCRClientUtils.SITE_NODETYPES);
+        
+        // do not display collections, if they do not match node type filters
+        cfg.setAllowConnections(false);
 
         return cfg;
 

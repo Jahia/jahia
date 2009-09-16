@@ -64,6 +64,8 @@ public class ManagerConfiguration {
     private boolean displayLock = true;
     private boolean displayDate = true;
     private boolean displayProvider = false;
+    
+    private boolean allowConnections = true;
 
     public ManagerConfiguration() {
         items = new ArrayList<ContentActionItemItf>();
@@ -227,5 +229,13 @@ public class ManagerConfiguration {
 
     public void setDisplayProvider(boolean displayProvider) {
         this.displayProvider = displayProvider;
+    }
+
+	public boolean isAllowConnections() {
+    	return allowConnections;
+    }
+
+	public void setAllowConnections(boolean allowConnections) {
+    	this.allowConnections = allowConnections;
     }
 }

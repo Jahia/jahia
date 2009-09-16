@@ -99,7 +99,7 @@ public class RepositoryTab extends ContentPanel {
                     contentManagementService.getRoot(repositoryType, config.getFolderTypes(), config.getMimeTypes(), config.getFilters(), null, listAsyncCallback);
                 } else {
                     Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName() + " for " + repositoryType) ;
-                    contentManagementService.ls((GWTJahiaNode) gwtJahiaFolder, config.getFolderTypes(), config.getMimeTypes(), config.getFilters(), null, false, listAsyncCallback);
+                    contentManagementService.ls((GWTJahiaNode) gwtJahiaFolder, config.getFolderTypes(), config.getMimeTypes(), config.getFilters(), null, !config.isAllowConnections(), listAsyncCallback);
                 }
             }
         };

@@ -106,7 +106,7 @@ public class ContentTreeTable extends TopRightComponent {
                     }
                     init = false;
                 } else {
-                    service.ls((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, false, listAsyncCallback);
+                    service.ls((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, !configuration.isAllowConnections(), listAsyncCallback);
                 }
             }
         };

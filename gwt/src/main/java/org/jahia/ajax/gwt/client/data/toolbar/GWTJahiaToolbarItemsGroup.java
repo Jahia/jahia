@@ -31,6 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.data.toolbar;
 
+import com.allen_sauer.gwt.log.client.Log;
+
 import java.util.List;
 import java.io.Serializable;
 
@@ -74,6 +76,8 @@ public class GWTJahiaToolbarItemsGroup implements Serializable {
     }
 
     public int getLayout() {
+        Log.debug("setGwtToolbarItems lyout");
+        
         return layout;
     }
 
@@ -111,5 +115,11 @@ public class GWTJahiaToolbarItemsGroup implements Serializable {
 
     public void setGwtToolbarItems(List<GWTJahiaToolbarItem> gwtToolbarItems) {
         this.gwtToolbarItems = gwtToolbarItems;
+
+        if (this.gwtToolbarItems != null) {
+            for (GWTJahiaToolbarItem gwtJahiaToolbarItem : this.gwtToolbarItems) {
+                gwtJahiaToolbarItem.setParentItemsGroup(this);
+            }
+        }
     }
 }

@@ -31,6 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.util.content.actions;
 
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -40,7 +42,7 @@ import java.util.ArrayList;
  */
 public class ManagerConfiguration {
 
-    private List<ContentActionItemItf> items;
+    private List<ActionItemItf> items;
     private List<ContentActionItemGroup> groupedItems;
 
     private boolean enableTextMenu;
@@ -68,14 +70,14 @@ public class ManagerConfiguration {
     private boolean allowConnections = true;
 
     public ManagerConfiguration() {
-        items = new ArrayList<ContentActionItemItf>();
+        items = new ArrayList<ActionItemItf>();
         groupedItems = new ArrayList<ContentActionItemGroup>();
         tableColumns = new ArrayList<String>();
         accordionPanels = new ArrayList<String>();
         tabs = new ArrayList<String>();
     }
 
-    public void addItem(ContentActionItemItf item) {
+    public void addItem(ActionItemItf item) {
         items.add(item);
     }
 
@@ -111,7 +113,7 @@ public class ManagerConfiguration {
         this.hideLeftPanel = hide;
     }
 
-    public List<ContentActionItemItf> getItems() {
+    public List<ActionItemItf> getItems() {
         return items;
     }
 

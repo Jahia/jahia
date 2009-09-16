@@ -43,6 +43,7 @@ import java.io.Serializable;
  * Time: 15:41:31
  */
 public class GWTJahiaToolbarItem implements Serializable {
+    private GWTJahiaToolbarItemsGroup parentItemsGroup;
     private String id;
     private String type;
     private String mediumIconStyle;
@@ -54,6 +55,16 @@ public class GWTJahiaToolbarItem implements Serializable {
     private boolean selected;
     private Map<String, GWTJahiaProperty> properties = new HashMap<String, GWTJahiaProperty>();
 
+    public GWTJahiaToolbarItem() {
+    }
+
+    public GWTJahiaToolbarItemsGroup getParentItemsGroup() {
+        return parentItemsGroup;
+    }
+
+    public void setParentItemsGroup(GWTJahiaToolbarItemsGroup parentItemsGroup) {
+        this.parentItemsGroup = parentItemsGroup;
+    }
 
     public String getId() {
         return id;

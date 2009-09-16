@@ -32,6 +32,8 @@
 package org.jahia.ajax.gwt.client.util.content.actions;
 
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ContentActionItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.SeparatorActionItem;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -122,13 +124,13 @@ public class ManagerConfigurationFactory {
             file.addItem(webFolder);
             completeManagerConfig.addItem(webFolder);
         }
-        file.addItem(new ContentActionItemSeparator());
-        completeManagerConfig.addItem(new ContentActionItemSeparator());
+        file.addItem(new SeparatorActionItem());
+        completeManagerConfig.addItem(new SeparatorActionItem());
         ContentActionItem lock = ItemCreator.createLockItem(linker);
         file.addItem(lock);
         ContentActionItem unlock = ItemCreator.createUnlockItem(linker);
         file.addItem(unlock);
-        file.addItem(new ContentActionItemSeparator());
+        file.addItem(new SeparatorActionItem());
         ContentActionItem zip = ItemCreator.createZipItem(linker);
         file.addItem(zip);
         ContentActionItem unzip = ItemCreator.createUnzipItem(linker);
@@ -141,8 +143,8 @@ public class ManagerConfigurationFactory {
         ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         edit.addItem(remove);
         completeManagerConfig.addItem(remove);
-        edit.addItem(new ContentActionItemSeparator());
-        completeManagerConfig.addItem(new ContentActionItemSeparator());
+        edit.addItem(new SeparatorActionItem());
+        completeManagerConfig.addItem(new SeparatorActionItem());
         ContentActionItem copy = ItemCreator.createCopyItem(linker);
         edit.addItem(copy);
         completeManagerConfig.addItem(copy);
@@ -216,13 +218,13 @@ public class ManagerConfigurationFactory {
             file.addItem(webFolder);
             fileManagerConfig.addItem(webFolder);
         }
-        file.addItem(new ContentActionItemSeparator());
-        fileManagerConfig.addItem(new ContentActionItemSeparator());
+        file.addItem(new SeparatorActionItem());
+        fileManagerConfig.addItem(new SeparatorActionItem());
         ContentActionItem lock = ItemCreator.createLockItem(linker);
         file.addItem(lock);
         ContentActionItem unlock = ItemCreator.createUnlockItem(linker);
         file.addItem(unlock);
-        file.addItem(new ContentActionItemSeparator());
+        file.addItem(new SeparatorActionItem());
         ContentActionItem zip = ItemCreator.createZipItem(linker);
         file.addItem(zip);
         ContentActionItem unzip = ItemCreator.createUnzipItem(linker);
@@ -235,8 +237,8 @@ public class ManagerConfigurationFactory {
         ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         edit.addItem(remove);
         fileManagerConfig.addItem(remove);
-        edit.addItem(new ContentActionItemSeparator());
-        fileManagerConfig.addItem(new ContentActionItemSeparator());
+        edit.addItem(new SeparatorActionItem());
+        fileManagerConfig.addItem(new SeparatorActionItem());
         ContentActionItem copy = ItemCreator.createCopyItem(linker);
         edit.addItem(copy);
         fileManagerConfig.addItem(copy);
@@ -305,7 +307,7 @@ public class ManagerConfigurationFactory {
         ContentActionItem preview = ItemCreator.createPreviewItem(linker);
         file.addItem(preview);
         filePickerConfig.addItem(preview);
-        filePickerConfig.addItem(new ContentActionItemSeparator());
+        filePickerConfig.addItem(new SeparatorActionItem());
 
         ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
         ContentActionItem rename = ItemCreator.createRenameItem(linker);
@@ -314,8 +316,8 @@ public class ManagerConfigurationFactory {
         ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         filePickerConfig.addItem(remove);
         edit.addItem(remove);
-        edit.addItem(new ContentActionItemSeparator());
-        filePickerConfig.addItem(new ContentActionItemSeparator());
+        edit.addItem(new SeparatorActionItem());
+        filePickerConfig.addItem(new SeparatorActionItem());
         ContentActionItem copy = ItemCreator.createCopyItem(linker);
         filePickerConfig.addItem(copy);
         edit.addItem(copy);
@@ -376,7 +378,7 @@ public class ManagerConfigurationFactory {
         ContentActionItem newGadget = ItemCreator.createNewGadgetItem(linker);
         file.addItem(newGadget);
         mashupManagerConfig.addItem(newGadget);
-        mashupManagerConfig.addItem(new ContentActionItemSeparator());
+        mashupManagerConfig.addItem(new SeparatorActionItem());
 
         ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
         ContentActionItem rename = ItemCreator.createRenameItem(linker);
@@ -385,8 +387,8 @@ public class ManagerConfigurationFactory {
         ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         edit.addItem(remove);
         mashupManagerConfig.addItem(remove);
-        edit.addItem(new ContentActionItemSeparator());
-        mashupManagerConfig.addItem(new ContentActionItemSeparator());
+        edit.addItem(new SeparatorActionItem());
+        mashupManagerConfig.addItem(new SeparatorActionItem());
         ContentActionItem copy = ItemCreator.createCopyItem(linker);
         edit.addItem(copy);
         mashupManagerConfig.addItem(copy);
@@ -441,7 +443,7 @@ public class ManagerConfigurationFactory {
         ContentActionItem newMashup = ItemCreator.createNewMashupItem(linker);
         file.addItem(newMashup);
         mashupPickerConfig.addItem(newMashup);
-        mashupPickerConfig.addItem(new ContentActionItemSeparator());
+        mashupPickerConfig.addItem(new SeparatorActionItem());
         ContentActionItem newRSS = ItemCreator.createNewRSSItem(linker);
         file.addItem(newRSS);
         mashupPickerConfig.addItem(newRSS);
@@ -456,8 +458,8 @@ public class ManagerConfigurationFactory {
         ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         edit.addItem(remove);
         mashupPickerConfig.addItem(remove);
-        edit.addItem(new ContentActionItemSeparator());
-        mashupPickerConfig.addItem(new ContentActionItemSeparator());
+        edit.addItem(new SeparatorActionItem());
+        mashupPickerConfig.addItem(new SeparatorActionItem());
         ContentActionItem copy = ItemCreator.createCopyItem(linker);
         edit.addItem(copy);
         mashupPickerConfig.addItem(copy);
@@ -506,7 +508,7 @@ public class ManagerConfigurationFactory {
         ContentActionItem importItem = ItemCreator.createImportItem(linker);
         file.addItem(importItem);
         categoryManagerConfig.addItem(importItem);
-        categoryManagerConfig.addItem(new ContentActionItemSeparator());
+        categoryManagerConfig.addItem(new SeparatorActionItem());
 
         ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
         ContentActionItem rename = ItemCreator.createRenameItem(linker);
@@ -515,8 +517,8 @@ public class ManagerConfigurationFactory {
         ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         edit.addItem(remove);
         categoryManagerConfig.addItem(remove);
-        edit.addItem(new ContentActionItemSeparator());
-        categoryManagerConfig.addItem(new ContentActionItemSeparator());
+        edit.addItem(new SeparatorActionItem());
+        categoryManagerConfig.addItem(new SeparatorActionItem());
         ContentActionItem copy = ItemCreator.createCopyItem(linker);
         edit.addItem(copy);
         categoryManagerConfig.addItem(copy);
@@ -563,8 +565,8 @@ public class ManagerConfigurationFactory {
         ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         edit.addItem(remove);
         categoryPickerConfig.addItem(remove);
-        edit.addItem(new ContentActionItemSeparator());
-        categoryPickerConfig.addItem(new ContentActionItemSeparator());
+        edit.addItem(new SeparatorActionItem());
+        categoryPickerConfig.addItem(new SeparatorActionItem());
         ContentActionItem copy = ItemCreator.createCopyItem(linker);
         edit.addItem(copy);
         categoryPickerConfig.addItem(copy);
@@ -623,7 +625,7 @@ public class ManagerConfigurationFactory {
         ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         edit.addItem(remove);
         portletDefinitionManagerConf.addItem(remove);
-        portletDefinitionManagerConf.addItem(new ContentActionItemSeparator());
+        portletDefinitionManagerConf.addItem(new SeparatorActionItem());
 
 
         // add menus to the config as well
@@ -1113,7 +1115,7 @@ public class ManagerConfigurationFactory {
         ContentActionItem importItem = ItemCreator.createImportItem(linker);
         file.addItem(importItem);
         cfg.addItem(importItem);
-        cfg.addItem(new ContentActionItemSeparator());
+        cfg.addItem(new SeparatorActionItem());
 
         ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
         ContentActionItem rename = ItemCreator.createRenameItem(linker);
@@ -1122,8 +1124,8 @@ public class ManagerConfigurationFactory {
         ContentActionItem remove = ItemCreator.createRemoveItem(linker);
         edit.addItem(remove);
         cfg.addItem(remove);
-        edit.addItem(new ContentActionItemSeparator());
-        cfg.addItem(new ContentActionItemSeparator());
+        edit.addItem(new SeparatorActionItem());
+        cfg.addItem(new SeparatorActionItem());
         ContentActionItem copy = ItemCreator.createCopyItem(linker);
         edit.addItem(copy);
         cfg.addItem(copy);

@@ -30,6 +30,7 @@
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.PageProperties"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.LanguageSwitcher"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.EditAction"/>
+            <!--<itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentAction"/>-->            
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Tools"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Workflow"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Cache"/>
@@ -339,6 +340,11 @@
             <item ref-type="org.jahia.toolbar.item.EditAction.delete"/>
             <item ref-type="org.jahia.toolbar.item.ClipBoard"/>
             <item ref-type="org.jahia.toolbar.item.EditAction.status"/>
+        </itemsgroup>
+
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.ContentAction" layout="button-label">
+            <item ref-type="org.jahia.toolbar.item.ContentAction.delete"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.copy"/>
         </itemsgroup>
 
         <itemsgroup type="org.jahia.toolbar.itemsgroup.newedit.Tools" layout="menu">
@@ -957,92 +963,95 @@
         </item>
 
         <!-- new edit mode buttons: create -->
-        <item type="org.jahia.toolbar.item.EditAction.createPage" extends="org.jahia.toolbar.item.EditAction">
+        <item type="org.jahia.toolbar.item.EditAction.createPage">
             <title-resourcebundle-key key="toolbar.edit.button.newpage"/>
             <icon-style min="fm-newpage" max="fm-newpage"/>
             <description-resourcebundle-key key="New Page"/>
-            <property name="action" value="createPage"/>
             <property name="onModuleSelection" value="createPage"/>
             <property name="enableOnCondition" value="true"/>
         </item>
 
 
         <!-- new edit mode buttons: publish -->
-        <item type="org.jahia.toolbar.item.EditAction.publish" extends="org.jahia.toolbar.item.EditAction">
+        <item type="org.jahia.toolbar.item.EditAction.publish">
             <title-resourcebundle-key key="toolbar.edit.button.publish"/>
             <icon-style min="fm-newcontent" max="fm-newcontent"/>
             <description-resourcebundle-key key="publish"/>
-            <property name="action" value="publish"/>
             <property name="editSelectionHandler" value="publish"/>
             <property name="enableOnCondition" value="false"/>
         </item>
 
         <!-- new edit mode buttons: unpublish -->
-        <item type="org.jahia.toolbar.item.EditAction.unpublish" extends="org.jahia.toolbar.item.EditAction">
+        <item type="org.jahia.toolbar.item.EditAction.unpublish">
             <title-resourcebundle-key key="toolbar.edit.button.unpublish"/>
             <icon-style min="fm-newcontent" max="fm-newcontent"/>
             <description-resourcebundle-key key="unpublish"/>
-            <property name="action" value="unpublish"/>
             <property name="editSelectionHandler" value="unpublish"/>
             <property name="enableOnCondition" value="false"/>
         </item>
 
         <!-- new edit mode buttons: unpublish -->
-        <item type="org.jahia.toolbar.item.EditAction.viewPublishStatus" extends="org.jahia.toolbar.item.EditAction">
+        <item type="org.jahia.toolbar.item.EditAction.viewPublishStatus">
             <title-resourcebundle-key key="toolbar.edit.button.status"/>
             <icon-style min="fm-newcontent" max="fm-newcontent"/>
             <description-resourcebundle-key key="toolbar.edit.button.status"/>
-            <property name="action" value="viewPublishStatus"/>
             <property name="editSelectionHandler" value="viewPublishStatus"/>
             <property name="enableOnCondition" value="false"/>
         </item>
 
         <!-- new edit mode buttons: lock -->
-        <item type="org.jahia.toolbar.item.EditAction.lock" extends="org.jahia.toolbar.item.EditAction">
+        <item type="org.jahia.toolbar.item.EditAction.lock">
             <title-resourcebundle-key key="toolbar.edit.button.lock"/>
             <icon-style min="fm-lock" max="fm-lock"/>
             <description-resourcebundle-key key="lock"/>
-            <property name="action" value="lock"/>
             <property name="editSelectionHandler" value="lock"/>
             <property name="enableOnCondition" value="nodeUnlocked"/>
         </item>
 
         <!-- new edit mode buttons: unlock -->
-        <item type="org.jahia.toolbar.item.EditAction.unlock" extends="org.jahia.toolbar.item.EditAction">
+        <item type="org.jahia.toolbar.item.EditAction.unlock">
             <title-resourcebundle-key key="toolbar.edit.button.unlock"/>
             <icon-style min="fm-unlock" max="fm-unlock"/>
             <description-resourcebundle-key key="unlock"/>
-            <property name="action" value="unlock"/>
             <property name="editSelectionHandler" value="unlock"/>
             <property name="enableOnCondition" value="nodeLocked"/>
         </item>
 
         <!-- new edit mode buttons: edit -->
-        <item type="org.jahia.toolbar.item.EditAction.edit" extends="org.jahia.toolbar.item.EditAction">
+        <item type="org.jahia.toolbar.item.EditAction.edit">
             <title-resourcebundle-key key="toolbar.edit.button.edit"/>
             <icon-style min="fm-edit" max="fm-edit"/>
             <description-resourcebundle-key key="edit"/>
-            <property name="action" value="edit"/>
             <property name="editSelectionHandler" value="delete"/>
             <property name="enableOnCondition" value="nodeWriteable"/>
         </item>
 
         <!-- new edit mode buttons: delete -->
-        <item type="org.jahia.toolbar.item.EditAction.delete" extends="org.jahia.toolbar.item.EditAction">
+        <item type="org.jahia.toolbar.item.EditAction.delete">
             <title-resourcebundle-key key="toolbar.edit.button.remove"/>
             <icon-style min="fm-remove" max="fm-remove"/>
             <description-resourcebundle-key key="delete"/>
-            <property name="action" value="delete"/>
             <property name="editSelectionHandler" value="delete"/>
             <property name="enableOnCondition" value="nodeWriteable"/>
         </item>
 
         <!-- new edit mode buttons: status -->
-        <item type="org.jahia.toolbar.item.EditAction.status" extends="org.jahia.toolbar.item.EditAction">
+        <item type="org.jahia.toolbar.item.EditAction.status">
             <title-resourcebundle-key key="toolbar.edit.button.status"/>
             <description-resourcebundle-key key="status"/>
-            <property name="action" value="status"/>
             <property name="editSelectionHandler" value="status"/>
+        </item>
+
+
+        <!-- new content  buttons  -->
+        <item type="org.jahia.toolbar.item.ContentAction.copy">
+            <title-resourcebundle-key key="toolbar.edit.button.contentAction.copy"/>
+            <description-resourcebundle-key key="contentAction.copy"/>
+        </item>
+
+        <item type="org.jahia.toolbar.item.ContentAction.delete">
+            <title-resourcebundle-key key="toolbar.edit.button.contentAction.delete"/>
+            <description-resourcebundle-key key="contentAction.delete"/>
         </item>
 
 

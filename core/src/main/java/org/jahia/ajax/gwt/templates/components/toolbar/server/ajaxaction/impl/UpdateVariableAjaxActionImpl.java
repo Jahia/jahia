@@ -38,7 +38,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.widget.toolbar.provider.AjaxActionJahiaToolItemProvider;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.AjaxActionActionItem;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.content.ObjectKey;
 import org.jahia.data.JahiaData;
@@ -84,9 +84,9 @@ public class UpdateVariableAjaxActionImpl extends AjaxAction {
             String preferenceName = prefNameProp.getValue();
 
             // get value
-            GWTJahiaProperty prefValueProp = gwtPropertiesMap.get(AjaxActionJahiaToolItemProvider.SELECTED);
+            GWTJahiaProperty prefValueProp = gwtPropertiesMap.get(AjaxActionActionItem.SELECTED);
             if(prefValueProp == null){
-                logger.error("Property '"+AjaxActionJahiaToolItemProvider.SELECTED+"' not found. --> cancel action");
+                logger.error("Property '"+AjaxActionActionItem.SELECTED+"' not found. --> cancel action");
                 return result;
             }
             String preferenceValue = prefValueProp.getValue();

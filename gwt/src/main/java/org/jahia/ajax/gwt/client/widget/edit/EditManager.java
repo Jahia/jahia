@@ -4,6 +4,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.Style;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,7 +17,7 @@ public class EditManager extends ContentPanel {
 
     private MainModule mainModule;
     private SidePanel sidePanel;
-    private EditModeToolbarContainer toolbar;
+    private ActionToolbarLayoutContainer toolbar;
     private EditLinker editLinker;
 
     public EditManager(String path, String template, String locale) {
@@ -30,7 +31,7 @@ public class EditManager extends ContentPanel {
         add(sidePanel, data);
 
         data = new BorderLayoutData(Style.LayoutRegion.NORTH, 26);
-        toolbar =  new EditModeToolbarContainer();
+        toolbar =  new ActionToolbarLayoutContainer();
 
         setTopComponent(toolbar);
 
@@ -53,7 +54,7 @@ public class EditManager extends ContentPanel {
         return sidePanel;
     }
 
-    public EditModeToolbarContainer getToolbar() {
+    public ActionToolbarLayoutContainer getToolbar() {
         return toolbar;
     }
 

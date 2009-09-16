@@ -38,7 +38,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
-import org.jahia.ajax.gwt.client.widget.toolbar.provider.JahiaProviderFactory;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionItemFactory;
 import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.factory.ItemsGroupFactory;
 import org.jahia.content.ContentObjectKey;
@@ -270,7 +270,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     gwtToolbarItem.setDisplayTitle(true);
                     gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
                     
-                    gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_OPEN_WINDOW);
+                    gwtToolbarItem.setType(ActionItemFactory.ORG_JAHIA_TOOLBAR_ITEM_OPEN_WINDOW);
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.WIDTH, "1020"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.HEIGHT, "730"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
@@ -283,7 +283,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     gwtToolbarItem.setDisplayTitle(true);
                     gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
 
-                    gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_OPEN_WINDOW);
+                    gwtToolbarItem.setType(ActionItemFactory.ORG_JAHIA_TOOLBAR_ITEM_OPEN_WINDOW);
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.WIDTH, "1020"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.HEIGHT, "730"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
@@ -314,34 +314,6 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                 }
             }
 
-//            Map<String, Map<String, Set<String>>> batch = (Map<String, Map<String, Set<String>>>) jahiaData.getProcessingContext().getSessionState().getAttribute("workflowBatch");
-//            boolean foundInBatch = false;
-//            if (batch != null) {
-//                for (Map<String, Set<String>> stringSetMap : batch.values()) {
-//                    if (stringSetMap.containsKey(currentObjectKey.getKey()) && stringSetMap.get(currentObjectKey.getKey()).contains(lang)) {
-//                        foundInBatch = true;
-//                        break;
-//                    }
-//                }
-//            }
-//            if (actionsMap.size() > 0 && actionsMap.containsKey(lang) && !foundInBatch) {
-//                for (GWTJahiaLabel actionLabel : WorkflowServiceHelper.getAvailableActions(processingContext.getLocale())) {
-//                    if (actionsMap.get(lang).contains(actionLabel.getKey())) {
-//                        String key = actionLabel.getKey();
-//                        String label = actionLabel.getLabel();
-//                        GWTJahiaToolbarItem gwtToolbarItem = createQuickWorkflowItem(currentObjectKey.getKey(), lang, key, "Batch " + label, "batch");
-//                        // add to itemsgroup
-//                        if (gwtToolbarItem != null) {
-//                            String minIconStyle = "gwt-toolbar-ItemsGroup-icons-action-" + key + "-min";
-//                            String maxIconStyle = "gwt-toolbar-ItemsGroup-icons-action-" + key + "-min";
-//                            gwtToolbarItem.setMediumIconStyle(maxIconStyle);
-//                            gwtToolbarItem.setMinIconStyle(minIconStyle);
-//                            // add to group lis
-//                            gwtToolbarItemsList.add(gwtToolbarItem);
-//                        }
-//                    }
-//                }
-//            }
 
             if (ServicesRegistry.getInstance().getJahiaACLManagerService().getSiteActionPermission("engines.actions.publishAll", processingContext.getUser(),
                     JahiaBaseACL.READ_RIGHTS, processingContext.getSiteID()) > 0) {
@@ -413,7 +385,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
             // create the toolitem
             GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
             gwtToolbarItem.setTitle(title);
-            gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_REDIRECT_WINDOW);
+            gwtToolbarItem.setType(ActionItemFactory.ORG_JAHIA_TOOLBAR_ITEM_REDIRECT_WINDOW);
             gwtToolbarItem.setDisplayTitle(true);
 
             // add url property
@@ -444,7 +416,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
             // create the toolitem
             GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
             gwtToolbarItem.setTitle(label);
-            gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_QUICK_WORKFLOW);
+            gwtToolbarItem.setType(ActionItemFactory.ORG_JAHIA_TOOLBAR_ITEM_QUICK_WORKFLOW);
             gwtToolbarItem.setDisplayTitle(true);
 
             // add url property
@@ -485,7 +457,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
         // create the toolitem
         GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
         gwtToolbarItem.setTitle(label);
-        gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_QUICK_WORKFLOW);
+        gwtToolbarItem.setType(ActionItemFactory.ORG_JAHIA_TOOLBAR_ITEM_QUICK_WORKFLOW);
         gwtToolbarItem.setDisplayTitle(true);
 
         // add label property

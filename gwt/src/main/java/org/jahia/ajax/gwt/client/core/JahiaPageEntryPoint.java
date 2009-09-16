@@ -37,7 +37,6 @@ import java.util.Map;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
-import org.jahia.ajax.gwt.client.widget.toolbar.ToolbarManager;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -57,7 +56,6 @@ import com.google.gwt.user.client.Element;
 public abstract class JahiaPageEntryPoint implements EntryPoint {
     private JahiaModuleProvider customJahiaModuleProvider;
     private static DockPanel dockPanel = new DockPanel();
-    private static ToolbarManager toolbarManager;
 
     public static JahiaPageEntryPoint instance;
 
@@ -119,14 +117,6 @@ public abstract class JahiaPageEntryPoint implements EntryPoint {
     }
 
 
-    public static ToolbarManager getToolbarManager() {
-        return toolbarManager;
-    }
-
-    public static void setToolbarManager(ToolbarManager toolbarManager) {
-        JahiaPageEntryPoint.toolbarManager = toolbarManager;
-    }
-
     /**
      * This method returns an operationMode JahiaModuleProvider.
      *
@@ -178,28 +168,6 @@ public abstract class JahiaPageEntryPoint implements EntryPoint {
         return TemplatesDOMUtil.getAllJahiaTypedRootPanels(element);
     }
 
-    public static DockPanel getDockPanel() {
-        return dockPanel;
-    }
-
-    //target area: center
-    public static void addCenter(Widget w) {
-        dockPanel.add(w, DockPanel.CENTER);
-    }
-
-    // create draggable, target area: north
-    public static void addNorth(Widget w) {
-        RootPanel.get().add(w, 0, 0);
-        /*dockPanel.add(w, DockPanel.NORTH);
-        dockPanel.setCellVerticalAlignment(w, VerticalPanel.ALIGN_TOP);*/
-    }
-
-    //target area: east
-    public static void addEast(Widget w) {
-        dockPanel.add(w, DockPanel.EAST);
-        dockPanel.setCellHorizontalAlignment(w, HorizontalPanel.ALIGN_RIGHT);
-
-    }
 
     private native void initJavaScriptApi() /*-{
         // define a static JS function with a friendly name

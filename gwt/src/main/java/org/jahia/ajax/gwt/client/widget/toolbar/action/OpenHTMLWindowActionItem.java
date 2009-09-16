@@ -29,50 +29,36 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.module;
+package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import java.util.List;
+import com.extjs.gxt.ui.client.widget.Window;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
-import org.jahia.ajax.gwt.client.core.JahiaModule;
-import org.jahia.ajax.gwt.client.core.JahiaType;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.ui.RootPanel;
+import java.util.Map;
 
 /**
- * User: jahia
- * Date: 4 mars 2008
- * Time: 15:24:16
+ * User: ktlili
+ * Date: 7 nov. 2008
+ * Time: 13:38:20
  */
-public class ToolbarJahiaModule extends JahiaModule {
-    private static String ACTUAL_CONTENT = "actualContent";
-    private RootPanel topPanel;
+public class OpenHTMLWindowActionItem extends BaseActionItem {
 
-    public String getJahiaModuleType() {
-        return JahiaType.TOOLBARS_MANAGER;
-    }
-
-    public void onModuleLoad(GWTJahiaPageContext pageContext, List<RootPanel> jahiaTypePanels) {
-      /* if (jahiaTypePanels != null && jahiaTypePanels.size() > 1) {
-            Log.warn("There are several toolbar jahiaType elements. Only the first is handled");
+    @Override
+    public void onSelection() {
+        Map preferences = getGwtToolbarItem().getProperties();
+        final GWTJahiaProperty htmlProperty = (GWTJahiaProperty) preferences.get(ToolbarConstants.HTML);
+        if (htmlProperty != null && htmlProperty.getValue() != null) {
+            Window window = new Window();
+            if (getGwtToolbarItem().getTitle() != null) {
+                String title = getGwtToolbarItem().getTitle().replaceAll(" ", "_");
+                window.setTitle(title);
+            }
+            window.addText(htmlProperty.getValue());
+            window.setModal(true);
+            window.setResizable(true);
+            window.setClosable(true);
+            window.show();
         }
-
-        // create toolbar manager
-        final ToolbarManager toolbarManagerWidget;
-        if (JahiaPageEntryPoint.getToolbarManager() == null) {
-            toolbarManagerWidget = new ToolbarManager(jahiaTypePanels.get(0), pageContext);
-        } else {
-            toolbarManagerWidget = JahiaPageEntryPoint.getToolbarManager();
-        }
-
-        // load toolbar
-        toolbarManagerWidget.createUI();
-
-        JahiaPageEntryPoint.setToolbarManager(toolbarManagerWidget);*/
-
     }
-
-
 }

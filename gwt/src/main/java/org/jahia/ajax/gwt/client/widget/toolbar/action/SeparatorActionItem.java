@@ -29,50 +29,41 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.module;
+package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import java.util.List;
-
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
-import org.jahia.ajax.gwt.client.core.JahiaModule;
-import org.jahia.ajax.gwt.client.core.JahiaType;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
+import com.extjs.gxt.ui.client.widget.menu.Item;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
 
 /**
- * User: jahia
- * Date: 4 mars 2008
- * Time: 15:24:16
+ * User: rfelden
+ * Date: 7 janv. 2009 - 15:24:18
  */
-public class ToolbarJahiaModule extends JahiaModule {
-    private static String ACTUAL_CONTENT = "actualContent";
-    private RootPanel topPanel;
+public class SeparatorActionItem implements ActionItemItf {
 
-    public String getJahiaModuleType() {
-        return JahiaType.TOOLBARS_MANAGER;
+    public void setEnabled(boolean enabled) {}
+
+    public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {}
+
+    public Button getTextToolitem() {
+        return null ;
     }
 
-    public void onModuleLoad(GWTJahiaPageContext pageContext, List<RootPanel> jahiaTypePanels) {
-      /* if (jahiaTypePanels != null && jahiaTypePanels.size() > 1) {
-            Log.warn("There are several toolbar jahiaType elements. Only the first is handled");
-        }
-
-        // create toolbar manager
-        final ToolbarManager toolbarManagerWidget;
-        if (JahiaPageEntryPoint.getToolbarManager() == null) {
-            toolbarManagerWidget = new ToolbarManager(jahiaTypePanels.get(0), pageContext);
-        } else {
-            toolbarManagerWidget = JahiaPageEntryPoint.getToolbarManager();
-        }
-
-        // load toolbar
-        toolbarManagerWidget.createUI();
-
-        JahiaPageEntryPoint.setToolbarManager(toolbarManagerWidget);*/
-
+    public Item getMenuItem() {
+        return new SeparatorMenuItem() ;
     }
 
+    public Item getContextMenuItem() {
+        return new SeparatorMenuItem() ;
+    }
 
+    public GWTJahiaToolbarItem getGwtToolbarItem() {
+        return null;
+    }
+
+    public void setGwtToolbarItem(GWTJahiaToolbarItem gwtToolbarItem) {
+
+    }
 }

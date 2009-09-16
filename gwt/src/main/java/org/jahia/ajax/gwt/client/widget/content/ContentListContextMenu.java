@@ -37,11 +37,11 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActionItemGroup;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActionItemItf;
 
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class ContentListContextMenu extends Menu {
             if (i > 0) {
                 add(new SeparatorMenuItem()) ;
             }
-            for (ContentActionItemItf item: group.getItems()) {
+            for (ActionItemItf item: group.getItems()) {
                 add(item.getContextMenuItem()) ;
             }
         }
@@ -126,7 +126,7 @@ public class ContentListContextMenu extends Menu {
                     isImage = topTableSelection.get(0).getNodeTypes().contains("jmix:image") ;
                 }
                 for (ContentActionItemGroup group: config.getGroupedItems()) {
-                    for (ContentActionItemItf item: group.getItems()) {
+                    for (ActionItemItf item: group.getItems()) {
                         item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
                     }
                 }

@@ -45,7 +45,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.analytics.GWTJahiaAnalyticsParamet
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaProcessJobInfo;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
-import org.jahia.ajax.gwt.client.widget.toolbar.ToolbarManager;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.factory.ItemsGroupFactory;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
@@ -105,23 +104,18 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                 getToolbarJahiaPreferencesProvider().deleteAllPreferencesByPrincipal(getRemoteJahiaUser());
             }
             JahiaData jData = retrieveJahiaData(pageContext);
-            String value = getGenericPreferenceValue(ToolbarManager.TOOLBARS_DISPLAYED_PREF);
-            if (value == null || Boolean.parseBoolean(value)) {
-                // there is no pref or toolbar are hided
-                // get all tool bars
-                ToolbarSet toolbarSet = getToolbarService().getToolbarSet(retrieveParamBean(pageContext));
-                Visibility visibility = toolbarSet.getVisibility();
-                if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
-                    GWTJahiaToolbarSet gwtJahiaToolbarSet = createGWTToolbarSet(pageContext, toolbarSet);
-                    return gwtJahiaToolbarSet;
-                } else {
-                    logger.info("Toolbar are not visible.");
-                    return null;
-                }
+            // there is no pref or toolbar are hided
+            // get all tool bars
+            ToolbarSet toolbarSet = getToolbarService().getToolbarSet(retrieveParamBean(pageContext));
+            Visibility visibility = toolbarSet.getVisibility();
+            if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
+                GWTJahiaToolbarSet gwtJahiaToolbarSet = createGWTToolbarSet(pageContext, toolbarSet);
+                return gwtJahiaToolbarSet;
             } else {
-                logger.info("Toolbars are not displayed");
+                logger.info("Toolbar are not visible.");
                 return null;
             }
+
         } catch (Exception e) {
             logger.error(e, e);
             throw new GWTJahiaServiceException("Error during loading toolbars due to " + e.getMessage());
@@ -145,8 +139,8 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                 // add toolbar only if not empty
                 if (gwtToolbar != null && gwtToolbar.getGwtToolbarItemsGroups() != null && !gwtToolbar.getGwtToolbarItemsGroups().isEmpty()) {
                     gwtJahiaToolbarSet.addGWTToolbar(gwtToolbar);
-                } else{
-                    logger.debug("["+(gwtToolbar != null) +","+ (gwtToolbar.getGwtToolbarItemsGroups() != null) +","+ (!gwtToolbar.getGwtToolbarItemsGroups().isEmpty())+"]"+" toolbar: " + toolbar.getName() + " has no items -->  not visible");
+                } else {
+                    logger.debug("[" + (gwtToolbar != null) + "," + (gwtToolbar.getGwtToolbarItemsGroups() != null) + "," + (!gwtToolbar.getGwtToolbarItemsGroups().isEmpty()) + "]" + " toolbar: " + toolbar.getName() + " has no items -->  not visible");
                 }
             } else {
                 logger.debug("toolbar: " + toolbar.getName() + ":  not visible");
@@ -262,7 +256,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
     private GWTJahiaToolbar createGWTToolbar(GWTJahiaPageContext pageContext, Toolbar toolbar) {
         // don't add the tool bar if  has no items group
         if (toolbar.getItemsGroupList() == null || toolbar.getItemsGroupList().isEmpty()) {
-            logger.debug("toolbar["+toolbar.getName()+"] itemsgroup list is empty");
+            logger.debug("toolbar[" + toolbar.getName() + "] itemsgroup list is empty");
             return null;
         }
 
@@ -316,7 +310,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                     }
                 }
             } else {
-                logger.debug("toolbar["+gwtToolbar.getName()+"] - itemsGroup [" +itemsGroup.getType()+","+ itemsGroup.getTitleKey() + "]  not visible");
+                logger.debug("toolbar[" + gwtToolbar.getName() + "] - itemsGroup [" + itemsGroup.getType() + "," + itemsGroup.getTitleKey() + "]  not visible");
             }
             index++;
         }
@@ -388,7 +382,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
     private GWTJahiaToolbarItemsGroup createGWTItemsGroup(GWTJahiaPageContext page, String toolbarName, int index, ItemsGroup itemsGroup) {
         // don't add the items group if  has no items group
         if (itemsGroup.getItemList() == null || itemsGroup.getItemList().isEmpty()) {
-            logger.debug("toolbar["+toolbarName+"] itemlist is empty");
+            logger.debug("toolbar[" + toolbarName + "] itemlist is empty");
             return null;
         }
 
@@ -432,7 +426,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
 
         // don't add the items group if  has no items group
         if (gwtToolbarItemsList == null || gwtToolbarItemsList.isEmpty()) {
-            logger.debug("toolbar["+toolbarName+"] itemlist is empty");
+            logger.debug("toolbar[" + toolbarName + "] itemlist is empty");
             return null;
         }
 
@@ -590,7 +584,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         boolean isSystemJob = true;
         boolean isCurrentPageValided = false;
         String lastExecutedJobLabel = "";
-        String lastExecutionJobTitle = "" ;
+        String lastExecutionJobTitle = "";
         String link = null;
         JobDetail lastExecutedJobDetail = getSchedulerService().getLastCompletedJobDetail();
         if (lastExecutedJobDetail != null) {
@@ -605,7 +599,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                 }
 
                 // set title if any
-                lastExecutionJobTitle = lastExecutedJobDataMap.getString(BackgroundJob.JOB_TITLE) ;
+                lastExecutionJobTitle = lastExecutedJobDataMap.getString(BackgroundJob.JOB_TITLE);
 
                 // set 'is System Job'
                 String lastExecutedJobType = lastExecutedJobDataMap.getString(BackgroundJob.JOB_TYPE);
@@ -722,7 +716,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             gwtProcessJobInfo.setSystemJob(isSystemJob);
             gwtProcessJobInfo.setJobReportUrl(link);
             if (lastExecutionJobTitle == null) {
-                lastExecutionJobTitle = "" ;
+                lastExecutionJobTitle = "";
             }
             gwtProcessJobInfo.setJobType(lastExecutedJobLabel);
             gwtProcessJobInfo.setLastTitle(lastExecutionJobTitle);

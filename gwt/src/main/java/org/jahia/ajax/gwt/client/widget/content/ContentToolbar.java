@@ -34,6 +34,9 @@ package org.jahia.ajax.gwt.client.widget.content;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 import org.jahia.ajax.gwt.client.widget.language.LanguageSwitcher;
 import org.jahia.ajax.gwt.client.widget.language.LanguageSelectedListener;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ContentActionItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 import org.jahia.ajax.gwt.client.util.content.actions.*;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -73,8 +76,23 @@ public class ContentToolbar extends TopBar {
     private ManagerConfiguration configuration ;
 
     public ContentToolbar(ManagerConfiguration config) {
-        m_component = new LayoutContainer(new RowLayout());
         configuration = config ;
+        m_component = new LayoutContainer(new RowLayout());
+        createUi();
+    }
+
+    private void createDynamicUi() {
+      m_component = new ActionToolbarLayoutContainer(){
+            @Override
+            public void afterToolbarLoading() {
+               createUi();
+            }
+        };
+        ((ActionToolbarLayoutContainer)m_component).initWithLinker(getLinker());
+    }
+
+    private void createUi() {
+        //m_component = new LayoutContainer(new RowLayout());
 
         ToolBar menus = new ToolBar();
         ToolBar shortcuts = new ToolBar();
@@ -92,8 +110,9 @@ public class ContentToolbar extends TopBar {
             }
         };
 
-        for (ContentActionItemItf item: config.getItems()) {
-            Button b = item.getTextToolitem();
+        // toolbar createion
+        for (ActionItemItf item: configuration.getItems()) {
+            Component b = item.getTextToolitem();
             if (b != null) {
                 shortcuts.add(b);
             } else {
@@ -104,10 +123,11 @@ public class ContentToolbar extends TopBar {
         shortcuts.add(new SeparatorToolItem()) ;
         shortcuts.add(refresh.getTextToolitem()) ;
 
-        if (config.isEnableTextMenu() && config.getGroupedItems().size() > 0) {
-            for (ContentActionItemGroup group: config.getGroupedItems()) {
+        // text menu creation
+        if (configuration.isEnableTextMenu() && configuration.getGroupedItems().size() > 0) {
+            for (ContentActionItemGroup group: configuration.getGroupedItems()) {
                 final Menu menu = new Menu() ;
-                for (ContentActionItemItf item: group.getItems()) {
+                for (ActionItemItf item: group.getItems()) {
                     menu.add(item.getMenuItem()) ;
                 }
 
@@ -218,13 +238,12 @@ public class ContentToolbar extends TopBar {
             languageSwitcher.init(item);
 
             menus.add(item);
- 
+
 
             m_component.add(menus) ;
         }
 
         m_component.add(shortcuts);
-        //menus.add(new FillToolItem());
     }
 
     // override to handle view switching
@@ -302,13 +321,17 @@ public class ContentToolbar extends TopBar {
         }
         
         for (ContentActionItemGroup group: configuration.getGroupedItems()) {
-            for (ContentActionItemItf item: group.getItems()) {
+            for (ActionItemItf item: group.getItems()) {
                 item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
             }
         }
+        
+        //m_component.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
+
     }
 
     public Component getComponent() {
         return m_component;
     }
+
 }

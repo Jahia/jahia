@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
 
 /**
@@ -49,13 +50,13 @@ public class EditLinker {
     private Module selectedModule;
     private Module previouslySelectedModule;
     private EditModeDNDListener dndListener;
-    private EditModeToolbarContainer toolbar;
+    private ActionToolbarLayoutContainer toolbar;
     private MainModule mainModule;
     private SidePanel sidePanel;
 
     private String locale;
 
-    public EditLinker(MainModule mainModule, SidePanel sidePanel, EditModeToolbarContainer toolbar) {
+    public EditLinker(MainModule mainModule, SidePanel sidePanel, ActionToolbarLayoutContainer toolbar) {
         this.dndListener = new EditModeDNDListener(this);
         this.mainModule = mainModule;
         this.sidePanel = sidePanel;
@@ -65,7 +66,7 @@ public class EditLinker {
     }
 
 
-    public EditModeToolbarContainer getToolbar() {
+    public ActionToolbarLayoutContainer getToolbar() {
         return toolbar;
     }
 

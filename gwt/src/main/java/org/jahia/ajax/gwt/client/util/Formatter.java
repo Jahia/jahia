@@ -34,7 +34,9 @@ package org.jahia.ajax.gwt.client.util;
 import java.util.Date;
 
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 
@@ -88,7 +90,7 @@ public class Formatter {
      *
      * @param ti the ToolItem
      */
-    public static void enableButton(Button ti) {
+    public static void enableButton(Component ti) {
         if (!ti.isEnabled()) {
             ti.setEnabled(true);
         }
@@ -99,13 +101,13 @@ public class Formatter {
      *
      * @param ti the ToolItem
      */
-    public static void disableButton(Button ti) {
+    public static void disableButton(Component ti) {
         if (ti.isEnabled()) {
             ti.disable();
         }
     }
 
-    public static void setButtonEnabled(Button ti, boolean b) {
+    public static void setButtonEnabled(Component ti, boolean b) {
         if (b) {
             Formatter.enableButton(ti);
         } else {
@@ -119,7 +121,7 @@ public class Formatter {
      *
      * @param mi the MenuItem
      */
-    public static void enableMenuItem(MenuItem mi) {
+    public static void enableMenuItem(Item mi) {
         if (!mi.isEnabled()) {
             mi.enable();
         }
@@ -130,7 +132,7 @@ public class Formatter {
      *
      * @param mi the MenuItem
      */
-    public static void disableMenuItem(MenuItem mi) {
+    public static void disableMenuItem(Item mi) {
         if (mi.isEnabled()) {
             mi.disable();
         }

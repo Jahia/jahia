@@ -29,50 +29,45 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.module;
+package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import java.util.List;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.Component;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
-import org.jahia.ajax.gwt.client.core.JahiaModule;
-import org.jahia.ajax.gwt.client.core.JahiaType;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.ui.RootPanel;
+import java.util.Map;
 
 /**
  * User: jahia
- * Date: 4 mars 2008
- * Time: 15:24:16
+ * Date: 18 avr. 2008
+ * Time: 10:52:59
  */
-public class ToolbarJahiaModule extends JahiaModule {
-    private static String ACTUAL_CONTENT = "actualContent";
-    private RootPanel topPanel;
+public class InfoActionItem extends BaseActionItem {
 
-    public String getJahiaModuleType() {
-        return JahiaType.TOOLBARS_MANAGER;
+    public <T extends ComponentEvent> SelectionListener<T> getSelectListener(GWTJahiaToolbarItem gwtToolbarItem) {
+        return null;
     }
 
-    public void onModuleLoad(GWTJahiaPageContext pageContext, List<RootPanel> jahiaTypePanels) {
-      /* if (jahiaTypePanels != null && jahiaTypePanels.size() > 1) {
-            Log.warn("There are several toolbar jahiaType elements. Only the first is handled");
+    public Component createNewToolItem() {
+        // TO DO: find a better implementation of this item. The current one is ....
+        final Button item = new Button();
+        item.setIconStyle(getGwtToolbarItem().getMinIconStyle());
+        Map preferences = getGwtToolbarItem().getProperties();
+        if (preferences != null) {
+            final GWTJahiaProperty info = (GWTJahiaProperty) preferences.get(ToolbarConstants.INFO);
+            if (info != null) {
+                item.setText(info.getValue());
+            }
         }
-
-        // create toolbar manager
-        final ToolbarManager toolbarManagerWidget;
-        if (JahiaPageEntryPoint.getToolbarManager() == null) {
-            toolbarManagerWidget = new ToolbarManager(jahiaTypePanels.get(0), pageContext);
-        } else {
-            toolbarManagerWidget = JahiaPageEntryPoint.getToolbarManager();
-        }
-
-        // load toolbar
-        toolbarManagerWidget.createUI();
-
-        JahiaPageEntryPoint.setToolbarManager(toolbarManagerWidget);*/
-
+        return item;
     }
 
+    @Override
+    public void onSelection() {
+    }
 
 }

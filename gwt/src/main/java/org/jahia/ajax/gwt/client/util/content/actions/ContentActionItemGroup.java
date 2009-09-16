@@ -31,6 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.util.content.actions;
 
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -41,14 +43,14 @@ import java.util.ArrayList;
 public class ContentActionItemGroup {
 
     private String groupLabel;
-    private List<ContentActionItemItf> items ;
+    private List<ActionItemItf> items ;
 
     public ContentActionItemGroup(String name) {
         groupLabel = name ;
-        items = new ArrayList<ContentActionItemItf>() ;
+        items = new ArrayList<ActionItemItf>() ;
     }
 
-    public void addItem(ContentActionItemItf item) {
+    public void addItem(ActionItemItf item) {
         items.add(item) ;
     }
 
@@ -56,7 +58,7 @@ public class ContentActionItemGroup {
         return groupLabel;
     }
 
-    public List<ContentActionItemItf> getItems() {
+    public List<ActionItemItf> getItems() {
         return items;
     }
 }

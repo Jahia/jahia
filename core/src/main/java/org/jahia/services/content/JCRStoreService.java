@@ -69,26 +69,24 @@ import java.rmi.registry.Registry;
 import java.util.*;
 
 /**
- *
- *
  * User: toto
  * Date: 15 nov. 2007 - 15:18:34
  */
 public class JCRStoreService extends JahiaService implements Repository, ServletContextAware {
     private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(JCRStoreService.class);
+            org.apache.log4j.Logger.getLogger(JCRStoreService.class);
 
-    private Map<String,String> descriptors = new HashMap<String,String>();
-    private Map<String,JCRStoreProvider> providers = new HashMap<String,JCRStoreProvider>();
+    private Map<String, String> descriptors = new HashMap<String, String>();
+    private Map<String, JCRStoreProvider> providers = new HashMap<String, JCRStoreProvider>();
     private List<JCRStoreProvider> providerList = new ArrayList<JCRStoreProvider>();
-    private SortedMap<String,JCRStoreProvider> mountPoints = new TreeMap<String,JCRStoreProvider>();
-    private SortedMap<String,JCRStoreProvider> dynamicMountPoints = new TreeMap<String,JCRStoreProvider>();
+    private SortedMap<String, JCRStoreProvider> mountPoints = new TreeMap<String, JCRStoreProvider>();
+    private SortedMap<String, JCRStoreProvider> dynamicMountPoints = new TreeMap<String, JCRStoreProvider>();
     private JahiaFieldXRefManager fieldXRefManager = null;
     private JahiaUserManagerService userService;
     private String servletContextAttributeName;
     private ServletContext servletContext;
 
-    private Map<String,String> decorators = new HashMap<String,String>();
+    private Map<String, String> decorators = new HashMap<String, String>();
 
     private NamespaceRegistryWrapper namespaceRegistry;
 
@@ -129,8 +127,8 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                     return s2.compareTo(s1);
                 }
             };
-            this.mountPoints = new TreeMap<String,JCRStoreProvider>(invertedStringComparator);
-            this.dynamicMountPoints = new TreeMap<String,JCRStoreProvider>(invertedStringComparator);
+            this.mountPoints = new TreeMap<String, JCRStoreProvider>(invertedStringComparator);
+            this.dynamicMountPoints = new TreeMap<String, JCRStoreProvider>(invertedStringComparator);
 
             try {
                 Registry r = LocateRegistry.createRegistry(2099);
@@ -139,32 +137,32 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                 logger.error(e.getMessage(), e);
             }
 
-            this.descriptors = new HashMap<String,String>();
+            this.descriptors = new HashMap<String, String>();
 
-            descriptors.put("jcr.specification.version" , "1.0");
-            descriptors.put("jcr.specification.name" , "Content Repository API for Java(TM) Technology Specification");
-            descriptors.put("jcr.repository.vendor" , "Jahia");
+            descriptors.put("jcr.specification.version", "1.0");
+            descriptors.put("jcr.specification.name", "Content Repository API for Java(TM) Technology Specification");
+            descriptors.put("jcr.repository.vendor", "Jahia");
             descriptors.put("jcr.repository.vendor.url", "http://www.jahia.org/");
-            descriptors.put("jcr.repository.name" , "UnitedContentBus");
-            descriptors.put("jcr.repository.version" , "6.1");
-            descriptors.put("level.1.supported" , "true");
-            descriptors.put("level.2.supported" , "true");
-            descriptors.put("option.transactions.supported" , "true");
-            descriptors.put("option.versioning.supported" , "true");
-            descriptors.put("option.observation.supported" , "false");
-            descriptors.put("option.locking.supported" , "true");
-            descriptors.put("option.query.sql.supported" , "true");
-            descriptors.put("query.xpath.pos.index" , "true");
-            descriptors.put("query.xpath.doc.order" , "false");
+            descriptors.put("jcr.repository.name", "UnitedContentBus");
+            descriptors.put("jcr.repository.version", "6.1");
+            descriptors.put("level.1.supported", "true");
+            descriptors.put("level.2.supported", "true");
+            descriptors.put("option.transactions.supported", "true");
+            descriptors.put("option.versioning.supported", "true");
+            descriptors.put("option.observation.supported", "false");
+            descriptors.put("option.locking.supported", "true");
+            descriptors.put("option.query.sql.supported", "true");
+            descriptors.put("query.xpath.pos.index", "true");
+            descriptors.put("query.xpath.doc.order", "false");
 
             namespaceRegistry = new NamespaceRegistryWrapper();
 
-        } catch (Exception e){
-            logger.error("Repository init error",e);
+        } catch (Exception e) {
+            logger.error("Repository init error", e);
         }
 
         if ((servletContextAttributeName != null) &&
-            (servletContext != null)) {
+                (servletContext != null)) {
             servletContext.setAttribute(servletContextAttributeName, this);
         }
     }
@@ -181,14 +179,14 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     /**
-     * @deprecated
      * @return
+     * @deprecated
      */
     public JCRStoreProvider getMainStoreProvider() {
         return mountPoints.get("/");
     }
 
-    public Map<String,JCRStoreProvider> getMountPoints() {
+    public Map<String, JCRStoreProvider> getMountPoints() {
         return mountPoints;
     }
 
@@ -205,7 +203,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     //    private ThreadLocal systemSession = new ThreadLocal();
-    protected ThreadLocal<Map<String,Map<String,JCRSessionWrapper>>> userSession = new ThreadLocal<Map<String,Map<String,JCRSessionWrapper>>>();
+    protected ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> userSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
 
 
     public JCRSessionWrapper getThreadSession(JahiaUser user) throws RepositoryException {
@@ -219,10 +217,10 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     public JCRSessionWrapper getThreadSession(JahiaUser user, String workspace, Locale locale) throws RepositoryException {
         // thread user session might be inited/closed in an http filter, instead of keeping it
 
-        Map<String,Map<String,JCRSessionWrapper>> smap = userSession.get();
+        Map<String, Map<String, JCRSessionWrapper>> smap = userSession.get();
 
         if (smap == null) {
-            smap = new HashMap<String,Map<String,JCRSessionWrapper>>();
+            smap = new HashMap<String, Map<String, JCRSessionWrapper>>();
         }
         userSession.set(smap);
 
@@ -243,9 +241,9 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 //            logger.error("Exception on session : "+e);
 //            s = null;
 //        }
-        Map<String,JCRSessionWrapper> wsMap = smap.get(username);
+        Map<String, JCRSessionWrapper> wsMap = smap.get(username);
         if (wsMap == null) {
-            wsMap = new HashMap<String,JCRSessionWrapper>();
+            wsMap = new HashMap<String, JCRSessionWrapper>();
             smap.put(username, wsMap);
         }
 
@@ -258,17 +256,17 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             localeString = locale.toString();
         }
 
-        JCRSessionWrapper s = wsMap.get(workspace+"-"+localeString);
+        JCRSessionWrapper s = wsMap.get(workspace + "-" + localeString);
 
         if (s == null || !s.isLive()) {
             if (!JahiaLoginModule.GUEST.equals(username)) {
                 s = login(org.jahia.jaas.JahiaLoginModule.getCredentials(username), workspace, locale);
                 // should be done somewhere else, call can be quite expensive
-                deployExternalUser(username,user.getProviderName());
+                deployExternalUser(username, user.getProviderName());
             } else {
                 s = login(org.jahia.jaas.JahiaLoginModule.getGuestCredentials(), workspace, locale);
             }
-            wsMap.put(workspace+"-"+localeString, s);
+            wsMap.put(workspace + "-" + localeString, s);
         } else {
             s.refresh(true);
         }
@@ -303,9 +301,9 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
         if (mountPoint != null) {
             if (p.isDynamicallyMounted()) {
-                dynamicMountPoints.put(mountPoint,p);
+                dynamicMountPoints.put(mountPoint, p);
             } else {
-                mountPoints.put(mountPoint,p);
+                mountPoints.put(mountPoint, p);
             }
         }
     }
@@ -335,15 +333,15 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             if (path.startsWith("/")) {
                 for (Iterator<String> iterator = dynamicMountPoints.keySet().iterator(); iterator.hasNext();) {
                     String mp = iterator.next();
-                    if (path.startsWith(mp+"/")) {
+                    if (path.startsWith(mp + "/")) {
                         String localPath = path.substring(mp.length());
                         JCRStoreProvider provider = dynamicMountPoints.get(mp);
-                        return provider.getNodeWrapper(provider.getRelativeRoot()+ localPath, user);
+                        return provider.getNodeWrapper(provider.getRelativeRoot() + localPath, user);
                     }
                 }
                 for (Iterator<String> iterator = mountPoints.keySet().iterator(); iterator.hasNext();) {
                     String mp = iterator.next();
-                    if (mp.equals("/") || path.equals(mp) || path.startsWith(mp+"/")) {
+                    if (mp.equals("/") || path.equals(mp) || path.startsWith(mp + "/")) {
                         String localPath = path;
                         if (!mp.equals("/")) {
                             localPath = path.substring(mp.length());
@@ -352,17 +350,17 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                         if (localPath.equals("")) {
                             localPath = "/";
                         }
-                        return provider.getNodeWrapper(provider.getRelativeRoot()+localPath, user);
+                        return provider.getNodeWrapper(provider.getRelativeRoot() + localPath, user);
                     }
                 }
                 return null;
-            } else if (path.length()>0 && path.contains(":")) {
+            } else if (path.length() > 0 && path.contains(":")) {
                 int index = path.indexOf(":");
-                String key = path.substring(0,index);
-                String localPath = path.substring(index+1);
+                String key = path.substring(0, index);
+                String localPath = path.substring(index + 1);
                 JCRStoreProvider provider = providers.get(key);
                 if (provider != null) {
-                    return provider.getNodeWrapper(provider.getRelativeRoot()+localPath, user);
+                    return provider.getNodeWrapper(provider.getRelativeRoot() + localPath, user);
                 }
             }
         }
@@ -376,6 +374,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     /**
      * Returns a list of providers ordered by registration order. This is important because some providers
      * are more "low-level" than others.
+     *
      * @return an ORDERED list of providers
      */
     public List<JCRStoreProvider> getProviderList() {
@@ -385,13 +384,13 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     public JCRStoreProvider getProvider(String path) {
         for (Iterator<String> iterator = dynamicMountPoints.keySet().iterator(); iterator.hasNext();) {
             String mp = iterator.next();
-            if (path.startsWith(mp+"/")) {
+            if (path.startsWith(mp + "/")) {
                 return dynamicMountPoints.get(mp);
             }
         }
         for (Iterator<String> iterator = mountPoints.keySet().iterator(); iterator.hasNext();) {
             String mp = iterator.next();
-            if (mp.equals("/") || path.equals(mp) || path.startsWith(mp+"/")) {
+            if (mp.equals("/") || path.equals(mp) || path.startsWith(mp + "/")) {
                 return mountPoints.get(mp);
             }
         }
@@ -399,7 +398,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     public void export(String path, ContentHandler ch, JahiaUser user) {
-        getProvider(path).export(path, ch , user);
+        getProvider(path).export(path, ch, user);
     }
 
     public List<JCRNodeWrapper> getUserFolders(String site, JahiaUser user) {
@@ -429,19 +428,19 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     public List<JCRNodeWrapper> getSiteFolders(String site, JahiaUser user) {
         List<JCRNodeWrapper> r = new ArrayList<JCRNodeWrapper>();
         for (JCRStoreProvider storeProvider : getMountPoints().values()) {
-                try {
-                    r.addAll(storeProvider.getSiteFolders(site, user));
-                } catch (RepositoryException e) {
-                    logger.warn("Error when querying repository",e);
-                }
+            try {
+                r.addAll(storeProvider.getSiteFolders(site, user));
+            } catch (RepositoryException e) {
+                logger.warn("Error when querying repository", e);
+            }
         }
         return r;
     }
 
     public void closeAllSessions() {
-        Map<String,Map<String,JCRSessionWrapper>> smap = userSession.get();
+        Map<String, Map<String, JCRSessionWrapper>> smap = userSession.get();
         if (smap != null) {
-            for (Map<String,JCRSessionWrapper> wsMap : smap.values()) {
+            for (Map<String, JCRSessionWrapper> wsMap : smap.values()) {
                 for (JCRSessionWrapper s : wsMap.values()) {
                     s.logout();
                 }
@@ -451,21 +450,22 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     public List<UsageEntry> findUsages(String sourceUri, boolean onlyLockedUsages) {
-        return findUsages (sourceUri, Jahia.getThreadParamBean(), onlyLockedUsages);
+        return findUsages(sourceUri, Jahia.getThreadParamBean(), onlyLockedUsages);
     }
 
-    public List<UsageEntry> findUsages (String sourceUri, ProcessingContext jParams,
-                            boolean onlyLockedUsages) {
-        return findUsages (sourceUri, Jahia.getThreadParamBean(), onlyLockedUsages,null);
+    public List<UsageEntry> findUsages(String sourceUri, ProcessingContext jParams,
+                                       boolean onlyLockedUsages) {
+        return findUsages(sourceUri, Jahia.getThreadParamBean(), onlyLockedUsages, null);
     }
-        public List<UsageEntry> findUsages (String sourceUri, ProcessingContext jParams,
-                            boolean onlyLockedUsages, String versionName) {
+
+    public List<UsageEntry> findUsages(String sourceUri, ProcessingContext jParams,
+                                       boolean onlyLockedUsages, String versionName) {
         List<UsageEntry> res = new ArrayList<UsageEntry>();
         if (fieldXRefManager == null) {
             fieldXRefManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldXRefManager.class.getName());
         }
 
-        Collection<JahiaFieldXRef> c = fieldXRefManager.getReferencesForTarget(JahiaFieldXRefManager.FILE+sourceUri);
+        Collection<JahiaFieldXRef> c = fieldXRefManager.getReferencesForTarget(JahiaFieldXRefManager.FILE + sourceUri);
 
         for (Iterator<JahiaFieldXRef> iterator = c.iterator(); iterator.hasNext();) {
             JahiaFieldXRef jahiaFieldXRef = iterator.next();
@@ -476,7 +476,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                         version = ContentField.getField(jahiaFieldXRef.getComp_id().getFieldId()).getActiveVersionID();
                     }
                     UsageEntry entry = new UsageEntry(jahiaFieldXRef.getComp_id().getFieldId(), version, jahiaFieldXRef.getComp_id().getWorkflow(), jahiaFieldXRef.getComp_id().getLanguage(), jahiaFieldXRef.getComp_id().getTarget().substring(JahiaFieldXRefManager.FILE.length()), jParams);
-                    if(versionName!=null) {
+                    if (versionName != null) {
                         entry.setVersionName(versionName);
                     }
                     res.add(entry);
@@ -493,35 +493,35 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         StringBuffer sb = new StringBuffer(name.length());
         for (int i = 0; i < name.length(); i++) {
             char c = name.charAt(i);
-            if (c>='\u0080') {
-                if      (c >= '\u00C0' && c < '\u00C6') sb.append('A');
-                else if (c == '\u00C6'                ) sb.append("AE");
-                else if (c == '\u00C7'                ) sb.append('C');
+            if (c >= '\u0080') {
+                if (c >= '\u00C0' && c < '\u00C6') sb.append('A');
+                else if (c == '\u00C6') sb.append("AE");
+                else if (c == '\u00C7') sb.append('C');
                 else if (c >= '\u00C8' && c < '\u00CC') sb.append('E');
                 else if (c >= '\u00CC' && c < '\u00D0') sb.append('I');
-                else if (c == '\u00D0'                ) sb.append('D');
-                else if (c == '\u00D1'                ) sb.append('N');
+                else if (c == '\u00D0') sb.append('D');
+                else if (c == '\u00D1') sb.append('N');
                 else if (c >= '\u00D2' && c < '\u00D7') sb.append('O');
-                else if (c == '\u00D7'                ) sb.append('x');
-                else if (c == '\u00D8'                ) sb.append('O');
+                else if (c == '\u00D7') sb.append('x');
+                else if (c == '\u00D8') sb.append('O');
                 else if (c >= '\u00D9' && c < '\u00DD') sb.append('U');
-                else if (c == '\u00DD'                ) sb.append('Y');
-                else if (c == '\u00DF'                ) sb.append("SS");
+                else if (c == '\u00DD') sb.append('Y');
+                else if (c == '\u00DF') sb.append("SS");
                 else if (c >= '\u00E0' && c < '\u00E6') sb.append('a');
-                else if (c == '\u00E6'                ) sb.append("ae");
-                else if (c == '\u00E7'                ) sb.append('c');
+                else if (c == '\u00E6') sb.append("ae");
+                else if (c == '\u00E7') sb.append('c');
                 else if (c >= '\u00E8' && c < '\u00EC') sb.append('e');
                 else if (c >= '\u00EC' && c < '\u00F0') sb.append('i');
-                else if (c == '\u00F0'                ) sb.append('d');
-                else if (c == '\u00F1'                ) sb.append('n');
+                else if (c == '\u00F0') sb.append('d');
+                else if (c == '\u00F1') sb.append('n');
                 else if (c >= '\u00F2' && c < '\u00FF') sb.append('o');
-                else if (c == '\u00F7'                ) sb.append('/');
-                else if (c == '\u00F8'                ) sb.append('o');
+                else if (c == '\u00F7') sb.append('/');
+                else if (c == '\u00F8') sb.append('o');
                 else if (c >= '\u00F9' && c < '\u00FF') sb.append('u');
-                else if (c == '\u00FD'                ) sb.append('y');
-                else if (c == '\u00FF'                ) sb.append("y");
-                else if (c == '\u0152'                ) sb.append("OE");
-                else if (c == '\u0153'                ) sb.append("oe");
+                else if (c == '\u00FD') sb.append('y');
+                else if (c == '\u00FF') sb.append("y");
+                else if (c == '\u0152') sb.append("OE");
+                else if (c == '\u0153') sb.append("oe");
                 else sb.append('_');
             } else {
                 sb.append(c);
@@ -538,7 +538,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                     try {
                         return (JCRNodeWrapper) Class.forName(className).getConstructor(JCRNodeWrapper.class).newInstance(w);
                     } catch (Exception e) {
-                        logger.error("Cannot decorate node",e);
+                        logger.error("Cannot decorate node", e);
                     }
                 }
             }
@@ -578,7 +578,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         return null;
     }
 
-    public QueryManager getQueryManager(JahiaUser user,ProcessingContext context) {
+    public QueryManager getQueryManager(JahiaUser user, ProcessingContext context) {
         try {
             return getThreadSession(user).getWorkspace().getQueryManager(context);
         } catch (RepositoryException e) {
@@ -587,7 +587,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         return null;
     }
 
-    public QueryManager getQueryManager(JahiaUser user,ProcessingContext context,Properties properties) {
+    public QueryManager getQueryManager(JahiaUser user, ProcessingContext context, Properties properties) {
         try {
             return getThreadSession(user).getWorkspace().getQueryManager(context, properties);
         } catch (RepositoryException e) {
@@ -597,7 +597,6 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     /**
-     *
      * @param queryObjectModel
      * @param user
      * @return
@@ -605,7 +604,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
      * @throws RepositoryException
      */
     public QueryResult execute(QueryObjectModel queryObjectModel, JahiaUser user) throws InvalidQueryException,
-                    RepositoryException {
+            RepositoryException {
         return getThreadSession(user).getWorkspace().execute(queryObjectModel);
     }
 
@@ -631,15 +630,15 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
         JahiaLoginModule m = new JahiaLoginModule();
         Subject s = new Subject();
-        HashMap<String,?> sharedState = new HashMap<String,Object>();
-        HashMap<String,?> options = new HashMap<String,Object>();
+        HashMap<String, ?> sharedState = new HashMap<String, Object>();
+        HashMap<String, ?> options = new HashMap<String, Object>();
         m.initialize(s, new CallbackHandler() {
             public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
                 for (Callback callback : callbacks) {
                     if (callback instanceof NameCallback) {
-                        ((NameCallback)callback).setName(simpleCreds.getUserID());
+                        ((NameCallback) callback).setName(simpleCreds.getUserID());
                     } else if (callback instanceof PasswordCallback) {
-                        ((PasswordCallback)callback).setPassword(simpleCreds.getPassword());
+                        ((PasswordCallback) callback).setPassword(simpleCreds.getPassword());
                     } else {
                         throw new UnsupportedCallbackException(callback);
                     }
@@ -668,7 +667,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             }
             return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this);
         }
-        throw  new LoginException("Can't login");
+        throw new LoginException("Can't login");
     }
 
     public JCRSessionWrapper login(Credentials credentials) throws LoginException, RepositoryException {
@@ -713,10 +712,10 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
      * Search in all sub nodes and properties the referenced nodes and get the list of nodes where the publication
      * should stop ( currently sub pages, sub folders and sub files ).
      *
-     * @param start The root node where to start the search
-     * @param pruneNodes Empty list, will be filled with the list of sub nodes that should not be part of the publication
+     * @param start          The root node where to start the search
+     * @param pruneNodes     Empty list, will be filled with the list of sub nodes that should not be part of the publication
      * @param referencedNode Empty list, will be filled with the list of nodes referenced in the sub tree
-     * @param languages The list of languages to publish, null to publish all
+     * @param languages      The list of languages to publish, null to publish all
      * @throws RepositoryException
      */
     private void getBlockedAndReferencesList(Node start, Set<String> pruneNodes, Set<String> referencedNode, Set<String> languages) throws RepositoryException {
@@ -730,18 +729,18 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                         try {
                             referencedNode.add(start.getSession().getNodeByUUID(v.getString()).getPath());
                         } catch (ItemNotFoundException e) {
-                            logger.warn("Cannot get reference "+v.getString() );
+                            logger.warn("Cannot get reference " + v.getString());
                         }
                     }
                 } else {
                     try {
                         referencedNode.add(p.getNode().getPath());
                     } catch (ItemNotFoundException e) {
-                        logger.warn("Cannot get reference "+p.getString() );
+                        logger.warn("Cannot get reference " + p.getString());
                     }
                 }
             } else if ((p.getType() == PropertyType.REFERENCE || p.getType() == ExtendedPropertyType.WEAKREFERENCE)) {
-                System.out.println("-->"+p.getName());
+                System.out.println("-->" + p.getName());
             }
         }
         NodeIterator ni = start.getNodes();
@@ -767,12 +766,13 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
      * Referenced nodes will also be published.
      * Parent node must be published, or will be published if publishParent is true.
      *
-     * @param path Path of the node to publish
+     * @param path          Path of the node to publish
      * @param languages
-     * @param user the user
+     * @param user          the user
      * @param publishParent Recursively publish the parents
+     * @param system
      */
-    public void publish(String path, Set<String> languages, JahiaUser user,  boolean publishParent) throws RepositoryException {
+    public void publish(String path, Set<String> languages, JahiaUser user, boolean publishParent, boolean system) throws RepositoryException {
         JCRSessionWrapper session = getThreadSession(user);
         JCRNodeWrapper w = session.getNode(path);
 
@@ -782,7 +782,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             liveSession.getNode(parentPath);
         } catch (PathNotFoundException e) {
             if (publishParent) {
-                publish(parentPath, languages, user, true);
+                publish(parentPath, languages, user, true, system);
             } else {
                 return;
             }
@@ -795,9 +795,9 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
         for (String node : referencedNodes) {
             try {
-                publish(node, languages, user, true);
+                publish(node, languages, user, true, system);
             } catch (AccessDeniedException e) {
-                logger.warn("Cannot publish node at : "+node);
+                logger.warn("Cannot publish node at : " + node);
             }
         }
 
@@ -826,7 +826,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
      * Unpublish a node from live workspace.
      * Referenced Node will not be unpublished.
      *
-     * @param path path of the node to unpublish
+     * @param path      path of the node to unpublish
      * @param languages
      * @param user
      * @throws RepositoryException
@@ -842,6 +842,61 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         node.remove();
         parentNode.save();
         liveSession.logout();
+    }
+
+
+    /**
+     * 
+     * @param path
+     * @param user
+     * @return
+     * @throws RepositoryException
+     */
+    public PublicationInfo getPublicationInfo(String path, JahiaUser user) throws RepositoryException {
+        JCRSessionWrapper session = getThreadSession(user);
+        JCRSessionWrapper liveSession = getThreadSession(user, Constants.LIVE_WORKSPACE);
+        PublicationInfo info = null;
+
+        JCRNodeWrapper publishedNode = null;
+        try {
+            publishedNode = liveSession.getNode(path);
+        } catch (PathNotFoundException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(e);
+            }
+        }
+
+        JCRNodeWrapper stageNode = null;
+        stageNode = session.getNode(path);
+
+        if (publishedNode == null) {
+            // node has not been published yet, check if parent is published
+            try {
+                liveSession.getNode(stageNode.getParent().getPath());
+                info = new PublicationInfo(PublicationInfo.UNPUBLISHED);
+            } catch (PathNotFoundException e) {
+                info = new PublicationInfo(PublicationInfo.UNPUBLISHABLE);
+            }
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("---> info:" + info.getStatus());
+            }
+            return info;
+        }
+
+        info = new PublicationInfo(PublicationInfo.PUBLISHED);
+
+        long s = stageNode.getLastModifiedAsDate().getTime();
+        long p = publishedNode.getLastPublishedAsDate().getTime();
+        if (s > p) {
+            info.setStatus(PublicationInfo.MODIFIED);
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("--> " + stageNode);
+            logger.debug("--> " + publishedNode);
+            logger.debug("---> info:" + info.getStatus());
+        }
+        return info;
     }
 
 }

@@ -2545,7 +2545,7 @@ public class ContentManagerHelper {
      */
     public static void publish(String path, Set<String> languages, JahiaUser user, boolean publishParent) throws GWTJahiaServiceException {
         try {
-            jcr.publish(path, languages, user, publishParent);
+            jcr.publish(path, languages, user, publishParent, false);
         } catch (RepositoryException e) {
             logger.error("repository exception",e);
             throw new GWTJahiaServiceException(e.getMessage());

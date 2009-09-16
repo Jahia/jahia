@@ -108,7 +108,7 @@ public class JcrWorkflowTest extends TestCase {
             boolean accessWasDenied = false;
             try {
                 jcrService.publish(stageNode.getPath(), languages, guestUser,
-                        false);
+                        false, false);
             } catch (AccessDeniedException e) {
                 accessWasDenied = true;
             }
@@ -117,7 +117,7 @@ public class JcrWorkflowTest extends TestCase {
                             + stageNode.getPath(), accessWasDenied);
 
             jcrService.publish(stageNode.getPath(), languages, session
-                    .getUser(), false);
+                    .getUser(), false, false);
 
             JCRNodeWrapper publishedNode = liveSession.getNode(stageNode
                     .getPath());
@@ -274,7 +274,7 @@ public class JcrWorkflowTest extends TestCase {
                 publishedDateForObjects);
 
         jcrService.publish(pageNodeToPublish.getPath(), languages, session
-                .getUser(), publishParent);
+                .getUser(), publishParent, false);
 
         for (Map.Entry<String, Long> publishedDateForObject : publishedDateForObjects
                 .entrySet()) {

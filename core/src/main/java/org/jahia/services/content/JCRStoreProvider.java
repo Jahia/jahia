@@ -42,9 +42,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.jaas.JahiaLoginModule;
-import org.jahia.registries.ServicesRegistry;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -595,7 +593,7 @@ public class JCRStoreProvider {
 //                            }
 
                             session.save();
-                            service.publish(siteNode.getPath(), null, user, false);
+                            service.publish(siteNode.getPath(), null, user, false, true);
                         }
                     }
                 } catch (IOException e) {

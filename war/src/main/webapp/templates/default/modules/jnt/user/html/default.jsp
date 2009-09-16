@@ -27,7 +27,7 @@
         </c:if>
     </div>
     <div class="peopleBody">
-        <h5>${title} ${firstname}&nbsp;${lastname}&nbsp;(logged as : ${currentNode.name})</h5>
+        <h5>${title} &nbsp;${firstname}&nbsp;${lastname}&nbsp;(logged as : ${currentNode.name})</h5>
         
         <p class="peopleDetail"><span class="peopleLabel">Function :</span> ${function}</p>
 

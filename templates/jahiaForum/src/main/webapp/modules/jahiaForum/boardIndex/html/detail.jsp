@@ -7,11 +7,13 @@
 <div class="board-subject">
     <jcr:nodeProperty node="${currentNode}" name="boardSubject"/> :
     <c:if test="${not empty currentNode.children}">${fn:length(currentNode.children)} Topics </c:if>
+    <c:if test="${empty currentNode.children}">No Topics </c:if>
 </div>
 <ul>
-<c:forEach items="${currentNode.editableChildren}" var="topic">
-    <li>
-        <template:module node="${topic}" template="summary"/>
-    </li>
-</c:forEach>
+    <c:forEach items="${currentNode.editableChildren}" var="topic" varStatus="status">
+        <li>
+            <template:module node="${topic}" template="summary"/>
+        </li>
+    </c:forEach>
 </ul>
+<template:module node="${currentNode}" template="newTopicForm"/>

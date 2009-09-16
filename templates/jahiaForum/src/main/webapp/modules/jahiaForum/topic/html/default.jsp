@@ -8,7 +8,7 @@
 <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
 <div>
     <c:if test="${jcr:isNodeType(currentNode.parent, 'jahiaForum:boardIndex')}">
-        <a href="${url.base}${currentNode.parent.path}.html">${currentNode.parent.propertiesAsString['boardSubject']}</a>
+        <a href="${url.base}${currentNode.parent.path}.detail.html">${currentNode.parent.propertiesAsString['boardSubject']}</a>
     </c:if>
 </div>
 <div class="topic-subject">
@@ -22,3 +22,4 @@
         </li>
     </c:forEach>
 </ul>
+<template:module node="${currentNode}" template="newThreadForm"/>

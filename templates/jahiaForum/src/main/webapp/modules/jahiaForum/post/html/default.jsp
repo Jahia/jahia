@@ -44,7 +44,7 @@
     <div class="commentsAuthor">
         <jcr:node var="createdBy" path="/content/users/${currentNode.propertiesAsString['jcr:createdBy']}"/>
         <template:module node="${createdBy}" template="mini"/>
-        <jcr:sql var="numberOfPostsQuery" sql="select jcr:uuid from jahiaForum:post  where jcr:createdBy= '${createdBy.name}'"/>
+        <jcr:sql var="numberOfPostsQuery" sql="select jcr:uuid from jahiaForum:post  where jcr:createdBy = '${createdBy.name}'"/>
         <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
         <p class="commentNumber">${numberOfPosts} Messages</p>
     </div>

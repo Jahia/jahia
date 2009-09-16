@@ -5,6 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <div class="board-subject">
-    <a href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty node="${currentNode}" name="boardSubject"/> : 
-    <c:if test="${not empty currentNode.children}">${fn:length(currentNode.children)} Topics </c:if></a>
+    <a href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty node="${currentNode}" name="boardSubject"/>
+    <c:if test="${not empty currentNode.children}"> : ${fn:length(currentNode.children)} Topics </c:if></a><br/>
+    <span><jcr:nodeProperty node="${currentNode}" name="boardDescription"/></span>
 </div>

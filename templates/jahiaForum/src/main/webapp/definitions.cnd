@@ -16,4 +16,5 @@ smallText topicSubject
 
 [jahiaForum:boardIndex] > jnt:container, jmix:interactiveContent
 smallText boardSubject
+smallText boardDescription
 + * (jahiaForum:topic)

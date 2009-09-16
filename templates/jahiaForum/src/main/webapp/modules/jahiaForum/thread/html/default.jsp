@@ -5,7 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <div>
     <c:if test="${jcr:isNodeType(currentNode.parent.parent, 'jahiaForum:boardIndex')}">
-        <a href="${url.base}${currentNode.parent.parent.path}.html">${currentNode.parent.parent.propertiesAsString['boardSubject']}</a>&nbsp;>>&nbsp;
+        <a href="${url.base}${currentNode.parent.parent.path}.detail.html">${currentNode.parent.parent.propertiesAsString['boardSubject']}</a>&nbsp;>>&nbsp;
     </c:if>
     <c:if test="${jcr:isNodeType(currentNode.parent, 'jahiaForum:topic')}">
         <a href="${url.base}${currentNode.parent.path}.html">${currentNode.parent.propertiesAsString['topicSubject']}</a>&nbsp;>>&nbsp;
@@ -19,7 +19,7 @@
         </li>
     </c:forEach>
     <li>
-        <template:module node="${currentNode}" template="form"/>
+        <template:module node="${currentNode}" template="newPostForm"/>
     </li>
 </ul>
     

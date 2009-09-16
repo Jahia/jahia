@@ -46,7 +46,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.List;
@@ -168,7 +168,7 @@ public class ContentPickerContainer extends TopRightComponent {
         return pickerGrid.getSelection();
     }
 
-    public void initWithLinker(BrowserLinker linker) {
+    public void initWithLinker(ManagerLinker linker) {
         m_treeTable.initWithLinker(linker);
         m_search.initWithLinker(linker);
         m_thumbs.initWithLinker(linker);

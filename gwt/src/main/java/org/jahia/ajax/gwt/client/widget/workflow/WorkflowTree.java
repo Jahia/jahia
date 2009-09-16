@@ -32,28 +32,22 @@
 package org.jahia.ajax.gwt.client.widget.workflow;
 
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;
 import org.jahia.ajax.gwt.client.service.workflow.WorkflowServiceAsync;
 import org.jahia.ajax.gwt.client.service.workflow.WorkflowService;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
 import org.jahia.ajax.gwt.client.util.tree.PreviousPathsOpener;
-import org.jahia.ajax.gwt.client.util.tree.CustomTreeBinder;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.tree.Tree;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.binder.TreeBinder;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.CheckChangedListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
@@ -150,7 +144,7 @@ public class WorkflowTree extends LeftComponent {
     }
 
     @Override
-    public void initWithLinker(BrowserLinker linker) {
+    public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
         loader.load(new GWTJahiaWorkflowElement(rootPage));
     }

@@ -120,7 +120,7 @@ public class ProcessJobOptionsComponent extends LeftComponent {
     }
 
     private GWTJahiaProcessJobPreference getGWTJahiaProcessJobPreference() {
-        return ((ProcessdisplayBrowserLinker) getLinker()).getGwtJahiaProcessJobPreference();
+        return ((ProcessdisplayManagerLinker) getLinker()).getGwtJahiaProcessJobPreference();
     }
 
     /**

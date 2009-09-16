@@ -154,7 +154,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void moveAtEnd(String sourcePath, String targetPath, AsyncCallback asyncCallback);
 
-    void getNodes(List<String> list, AsyncCallback<List<GWTJahiaNode>> async);
+    void getNodesWithPublicationInfo(List<String> list, AsyncCallback<List<GWTJahiaNode>> async);
 
     void pasteReferenceOnTopOf(GWTJahiaNode pathsToCopy, String destinationPath, String name, AsyncCallback async);
 
@@ -192,7 +192,7 @@ public interface JahiaContentManagementServiceAsync {
      * @param async Local implementation of callback to react on return fo asyncronous call to getPublicationInfo
      * @throws forward GWTJahiaServiceException
      */
-    void getPublicationInfo(String path, AsyncCallback<GWTJahiaPublicationInfo> async);
+    void getPublicationInfo(String path, boolean includeReferences, AsyncCallback<GWTJahiaPublicationInfo> async);
 
     /**
      * Get the publication status information for a particular path.
@@ -200,6 +200,6 @@ public interface JahiaContentManagementServiceAsync {
      * @param async Local implementation of callback to react on return fo asyncronous call to getPublicationInfo
      * @throws forward GWTJahiaServiceException
      */
-    public void getPublicationInfo(List<String> pathes, AsyncCallback<Map<String,GWTJahiaPublicationInfo>> async);
+    void getPublicationInfo(List<String> pathes, AsyncCallback<Map<String,GWTJahiaPublicationInfo>> async);
 
 }

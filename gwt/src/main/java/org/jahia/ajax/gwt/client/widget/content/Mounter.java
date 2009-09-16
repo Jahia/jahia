@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
 /**
  * Created by IntelliJ IDEA.
@@ -56,7 +56,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
  */
 public class Mounter extends Window {
 
-    public Mounter(final BrowserLinker linker) {
+    public Mounter(final ManagerLinker linker) {
         super() ;
         setHeading(Messages.getResource("fm_mount"));
         setSize(500, 250);

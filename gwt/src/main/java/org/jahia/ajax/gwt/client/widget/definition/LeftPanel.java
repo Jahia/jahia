@@ -40,15 +40,12 @@ import com.extjs.gxt.ui.client.widget.DataListItem;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -115,7 +112,7 @@ public class LeftPanel extends LeftComponent {
         }
     }
 
-    public void initWithLinker(BrowserLinker linker) {
+    public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
         retrieveTypes();
     }

@@ -32,7 +32,7 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -226,7 +226,7 @@ public class FolderTree extends LeftComponent {
         }
     }
 
-    public void initWithLinker(BrowserLinker linker) {
+    public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
         for (RepositoryTab tab: repositories) {
             tab.init();

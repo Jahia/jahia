@@ -46,12 +46,12 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
  */
 public class TriPanelBrowserViewport extends Viewport {
 
-    protected BrowserLinker linker ;
+    protected ManagerLinker linker ;
 
     protected TriPanelBrowserViewport() {
         super() ;
         setLayout(new FitLayout());
-        linker = new BrowserLinker() ;
+        linker = new ManagerLinker() ;
     }
 
     protected void initWidgets(Component leftTree, Component topTable, Component bottomTabs, Component topToolbar, Component statusBar) {
@@ -62,7 +62,7 @@ public class TriPanelBrowserViewport extends Viewport {
         add(layout) ;
     }
 
-    public BrowserLinker getLinker() {
+    public ManagerLinker getLinker() {
         return linker ;
     }
 

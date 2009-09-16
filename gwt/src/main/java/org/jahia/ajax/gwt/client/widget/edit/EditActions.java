@@ -32,6 +32,7 @@ public class EditActions {
 
     /**
      * Create page
+     *
      * @param editLinker
      */
     public static void createPage(final EditLinker editLinker) {
@@ -43,7 +44,7 @@ public class EditActions {
                 }
 
                 public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
-                    new EditContentEngine(editLinker, editLinker.getMainModule().getNode(), gwtJahiaNodeType,null,false,true).show();
+                    new EditContentEngine(editLinker, editLinker.getMainModule().getNode(), gwtJahiaNodeType, null, false, true).show();
                 }
             });
         }
@@ -53,6 +54,7 @@ public class EditActions {
 
     /**
      * Dispay edit content window
+     *
      * @param editLinker
      */
     public static void edit(EditLinker editLinker) {
@@ -64,14 +66,15 @@ public class EditActions {
 
     /**
      * Publish selected content
+     *
      * @param editLinker
      */
     public static void publish(final EditLinker editLinker) {
-        if (editLinker.getMainModule().getNode() != null) {
+        if (editLinker.getSelectedModule().getNode() != null) {
             JahiaContentManagementService.App.getInstance().publish(editLinker.getSelectedModule().getNode().getPath(), new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
-                    com.google.gwt.user.client.Window.alert("Cannot publish "+caught.getMessage());
+                    com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
                 }
 
                 public void onSuccess(Object result) {
@@ -85,14 +88,15 @@ public class EditActions {
 
     /**
      * Unpublish selected content
+     *
      * @param editLinker
      */
     public static void unpublish(final EditLinker editLinker) {
-        if (editLinker.getMainModule().getNode() != null) {
+        if (editLinker.getSelectedModule().getNode() != null) {
             JahiaContentManagementService.App.getInstance().unpublish(editLinker.getSelectedModule().getNode().getPath(), new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
-                    com.google.gwt.user.client.Window.alert("Cannot unpublish "+caught.getMessage());
+                    com.google.gwt.user.client.Window.alert("Cannot unpublish " + caught.getMessage());
                 }
 
                 public void onSuccess(Object result) {
@@ -106,6 +110,7 @@ public class EditActions {
 
     /**
      * Switch lock
+     *
      * @param editLinker
      */
     public static void switchLock(final EditLinker editLinker) {
@@ -130,6 +135,7 @@ public class EditActions {
 
     /**
      * Delete content
+     *
      * @param editLinker
      */
     public static void delete(final EditLinker editLinker) {
@@ -152,6 +158,7 @@ public class EditActions {
 
 
     private static Map<LayoutContainer, Module> containers = new HashMap<LayoutContainer, Module>();
+
     public static void viewPublishedStatus(final EditLinker editLinker) {
         if (!containers.isEmpty()) {
             for (LayoutContainer ctn : containers.keySet()) {
@@ -167,62 +174,54 @@ public class EditActions {
                 list.add(s);
             }
         }
-        JahiaContentManagementService.App.getInstance().getPublicationInfo(list,new AsyncCallback<Map<String, GWTJahiaPublicationInfo>>() {
-            public void onSuccess(Map<String, GWTJahiaPublicationInfo> result) {
 
-                Listener<ComponentEvent> removeListener = new Listener<ComponentEvent>() {
-                    public void handleEvent(ComponentEvent ce) {
-                        for (LayoutContainer ctn : containers.keySet()) {
-                            RootPanel.get().remove(ctn);
-                        }
-                        containers.clear();
-                    }
-                };
+        Listener<ComponentEvent> removeListener = new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent ce) {
+                for (LayoutContainer ctn : containers.keySet()) {
+                    RootPanel.get().remove(ctn);
+                }
+                containers.clear();
+            }
+        };
 
-                for (String path : result.keySet()) {
-                    GWTJahiaPublicationInfo info = result.get(path);
-                    if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                        for (Module module : modulesByPath.get(path)) {
-                            if (module instanceof MainModule) {
-                                continue;
-                            }
-                            LayoutContainer ctn = new LayoutContainer();
-                            ctn.setBorders(true);
+        for (String path : list) {
+            for (Module module : modulesByPath.get(path)) {
+                if (module instanceof MainModule) {
+                    continue;
+                }
+                GWTJahiaPublicationInfo info = module.getNode().getPublicationInfo();
+                if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+
+                    LayoutContainer ctn = new LayoutContainer();
+                    ctn.setBorders(true);
 
 //                            if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                                ctn.setStyleAttribute("background-color", "red");
+                    ctn.setStyleAttribute("background-color", "red");
 //                            } else {
 //                                ctn.setStyleAttribute("background-color", "orange");
 //                            }
-                            ctn.setStyleAttribute("opacity", "0.2");
-                            RootPanel.get().add(ctn);
-                            ctn.el().makePositionable(true);
-                            ctn.setPosition(module.getContainer().getAbsoluteLeft(), module.getContainer().getAbsoluteTop());
-                            ctn.setSize(module.getContainer().getWidth(), module.getContainer().getHeight());
-                            ctn.show();
-                            containers.put(ctn, module);
-                            ctn.sinkEvents(Event.ONCLICK);
-                            ctn.addListener(Events.OnClick, removeListener);
-                        }
-                    }
-
+                    ctn.setStyleAttribute("opacity", "0.2");
+                    RootPanel.get().add(ctn);
+                    ctn.el().makePositionable(true);
+                    ctn.setPosition(module.getContainer().getAbsoluteLeft(), module.getContainer().getAbsoluteTop());
+                    ctn.setSize(module.getContainer().getWidth(), module.getContainer().getHeight());
+                    ctn.show();
+                    containers.put(ctn, module);
+                    ctn.sinkEvents(Event.ONCLICK);
+                    ctn.addListener(Events.OnClick, removeListener);
                 }
-                editLinker.getMainModule().addScrollListener(new ScrollListener() {
-                    @Override
-                    public void widgetScrolled(ComponentEvent ce) {
-                        for (LayoutContainer container : containers.keySet()) {
-                            LayoutContainer parentCtn = containers.get(container).getContainer();
-                            container.setPosition(parentCtn.getAbsoluteLeft(), parentCtn.getAbsoluteTop());                            
-                        }
-                        super.widgetScrolled(ce);
+            }
+            editLinker.getMainModule().addScrollListener(new ScrollListener() {
+                @Override
+                public void widgetScrolled(ComponentEvent ce) {
+                    for (LayoutContainer container : containers.keySet()) {
+                        LayoutContainer parentCtn = containers.get(container).getContainer();
+                        container.setPosition(parentCtn.getAbsoluteLeft(), parentCtn.getAbsoluteTop());
                     }
-                });
-            }
-
-            public void onFailure(Throwable throwable) {
-
-            }
-        });
+                    super.widgetScrolled(ce);
+                }
+            });
+        }
 
     }
 

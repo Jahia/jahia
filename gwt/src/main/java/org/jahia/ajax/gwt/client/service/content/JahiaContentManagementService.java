@@ -173,7 +173,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void moveAtEnd(String sourcePath, String targetPath) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaNode> getNodes(List<String> list) throws GWTJahiaServiceException;
+    public List<GWTJahiaNode> getNodesWithPublicationInfo(List<String> list) throws GWTJahiaServiceException;
 
     public void pasteReferenceOnTopOf(GWTJahiaNode pathsToCopy, String destinationPath, String name) throws GWTJahiaServiceException;
 
@@ -209,7 +209,7 @@ public interface JahiaContentManagementService extends RemoteService {
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws forward GWTJahiaServiceException
      */
-    public GWTJahiaPublicationInfo getPublicationInfo(String path) throws GWTJahiaServiceException;
+    public GWTJahiaPublicationInfo getPublicationInfo(String path, boolean includeReferences) throws GWTJahiaServiceException;
 
     /**
      * Get the publication status information for multiple pathes.

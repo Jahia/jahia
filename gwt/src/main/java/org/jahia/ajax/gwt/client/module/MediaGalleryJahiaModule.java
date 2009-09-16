@@ -37,7 +37,7 @@ import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.content.ThumbView;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.DOM;
 import com.allen_sauer.gwt.log.client.Log;
@@ -60,7 +60,7 @@ public class MediaGalleryJahiaModule extends JahiaModule {
             for (RootPanel panel : rootPanels) {
                 String path = DOM.getElementAttribute(panel.getElement(), "path");
                 String conf = DOM.getElementAttribute(panel.getElement(), "config");
-                BrowserLinker linker = new BrowserLinker() ;
+                ManagerLinker linker = new ManagerLinker() ;
                 final ThumbView view = new ThumbView(ManagerConfigurationFactory.getConfiguration(conf, linker)) ;
                 linker.registerComponents(null, view, null, null, null); ;
                 final GWTJahiaNode directory = new GWTJahiaNode(null,null, null, path, null, null, null, null, null, null, false, false, false, false, null,false);

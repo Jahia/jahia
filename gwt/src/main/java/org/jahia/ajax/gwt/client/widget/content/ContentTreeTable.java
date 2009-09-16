@@ -64,7 +64,7 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.ArrayList;
@@ -221,7 +221,7 @@ public class ContentTreeTable extends TopRightComponent {
 //        }
     }
 
-    public void initWithLinker(BrowserLinker linker) {
+    public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
 //        loader.load();
     }

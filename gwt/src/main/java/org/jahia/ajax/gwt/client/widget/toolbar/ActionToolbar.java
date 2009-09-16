@@ -15,7 +15,9 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.BaseSelectionHandler;
+import org.jahia.ajax.gwt.client.widget.toolbar.handler.SidePanelSelectionHandler;
+import org.jahia.ajax.gwt.client.widget.toolbar.handler.ModuleSelectionHandler;
+import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
 import org.jahia.ajax.gwt.client.widget.edit.Module;
 
 import java.util.List;
@@ -32,13 +34,11 @@ public class ActionToolbar extends ToolBar {
     private GWTJahiaToolbar gwtToolbar;
     private boolean loaded = false;
     private ActionItemFactoryItf actionItemFactoryItf;
-    private BaseSelectionHandler selectionHandler;
 
 
-    public ActionToolbar(GWTJahiaToolbar gwtToolbar, ActionItemFactoryItf actionItemFactoryItf, BaseSelectionHandler selectionHandler) {
+    public ActionToolbar(GWTJahiaToolbar gwtToolbar, ActionItemFactoryItf actionItemFactoryItf) {
         this.gwtToolbar = gwtToolbar;
         this.actionItemFactoryItf = actionItemFactoryItf;
-        this.selectionHandler = selectionHandler;
     }
 
 
@@ -161,8 +161,6 @@ public class ActionToolbar extends ToolBar {
 
             }
 
-            // register selection handler
-            selectionHandler.registerComponent(gwtToolbarItem, toolItem);
             if (actionItem != null) {
                 items.add(actionItem);
             }
@@ -213,7 +211,11 @@ public class ActionToolbar extends ToolBar {
      * @param selectedModule
      */
     public void handleNewModuleSelection(Module selectedModule) {
-        selectionHandler.handleNewModuleSelection(selectedModule);
+        for (ActionItemItf item : items) {
+            if (item instanceof ModuleSelectionHandler) {
+                ((ModuleSelectionHandler)item).handleNewModuleSelection(selectedModule);
+            }
+        }
     }
 
     /**
@@ -222,11 +224,15 @@ public class ActionToolbar extends ToolBar {
      * @param node
      */
     public void handleNewSidePanelSelection(GWTJahiaNode node) {
-        selectionHandler.handleNewSidePanelSelection(node);
+        for (ActionItemItf item : items) {
+            if (item instanceof SidePanelSelectionHandler) {
+                ((SidePanelSelectionHandler)item).handleNewSidePanelSelection(node);
+            }
+        }
     }
 
     /**
-     * To DO: REFACTOR THIS METHOD
+     * To DO: REFACTOR THIS METHOD / take only 2 nodes as parameters (tree selection / table selection )
      *
      * @param isTreeSelection
      * @param isTableSelection
@@ -244,7 +250,9 @@ public class ActionToolbar extends ToolBar {
      */
     public void enableOnConditions(boolean isTreeSelection, boolean isTableSelection, boolean isWritable, boolean isDeleteable, boolean isParentWritable, boolean isSingleFile, boolean isSingleFolder, boolean isPasteAllowed, boolean isLockable, boolean isLocked, boolean isZip, boolean isImage, boolean isMount) {
         for (ActionItemItf item : items) {
-            item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWritable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
+            if (item instanceof ManagerSelectionHandler) {
+                ((ManagerSelectionHandler)item).enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWritable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
+            }
         }
     }
 

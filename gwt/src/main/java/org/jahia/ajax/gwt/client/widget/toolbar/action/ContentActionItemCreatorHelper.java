@@ -1,8 +1,9 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ContentActionItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters; /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
@@ -42,263 +43,103 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters; /**
  * Time: 9:49:14 AM
  */
 public class ContentActionItemCreatorHelper {
-    public static ContentActionItem createRotateItem(final BrowserLinker linker) {
-        ContentActionItem rotate = new ContentActionItem(Messages.getResource("fm_rotate"), "fm-rotate") {
-            public void onSelection() {
-                ContentActions.rotateImage(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection && parentWritable && singleFile && isImage);
-            }
-        };
+    public static ContentActionItem createRotateItem(final ManagerLinker linker) {
+        ContentActionItem rotate = new RotateActionItem(linker);
         return rotate;
     }
 
-    public static ContentActionItem createCropItem(final BrowserLinker linker) {
-        ContentActionItem crop = new ContentActionItem(Messages.getResource("fm_crop"), "fm-crop") {
-            public void onSelection() {
-                ContentActions.cropImage(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection && parentWritable && singleFile && isImage);
-            }
-        };
+    public static ContentActionItem createCropItem(final ManagerLinker linker) {
+        ContentActionItem crop = new CropActionItem(linker);
         return crop;
     }
 
-    public static ContentActionItem createUnzipItem(final BrowserLinker linker) {
-        ContentActionItem unzip = new ContentActionItem(Messages.getResource("fm_unzip"), "fm-unzip") {
-            public void onSelection() {
-                ContentActions.unzip(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection && parentWritable && singleFile && isZip);
-            }
-        };
+    public static ContentActionItem createUnzipItem(final ManagerLinker linker) {
+        ContentActionItem unzip = new UnzipActionItem(linker);
         return unzip;
     }
 
-    public static ContentActionItem createUnlockItem(final BrowserLinker linker) {
-        ContentActionItem unlock = new ContentActionItem(Messages.getResource("fm_unlock"), "fm-unlock") {
-            public void onSelection() {
-                ContentActions.lock(false, linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection && lockable && writable);
-            }
-        };
+    public static ContentActionItem createUnlockItem(final ManagerLinker linker) {
+        ContentActionItem unlock = new UnlockActionItem(linker);
         return unlock;
     }
 
-    public static ContentActionItem createWebfolderItem(final BrowserLinker linker) {
-        ContentActionItem webFolder = new ContentActionItem(Messages.getResource("fm_webfolder"), "fm-webfolder") {
-            public void onSelection() {
-                ContentActions.openWebFolder(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection || tableSelection && singleFolder);
-            }
-        };
+    public static ContentActionItem createWebfolderItem(final ManagerLinker linker) {
+        ContentActionItem webFolder = new WebfolderActionItem(linker);
         return webFolder;
     }
 
-    public static ContentActionItem createNewFolderItem(final BrowserLinker linker) {
-        ContentActionItem newFolder = new ContentActionItem(Messages.getResource("fm_newdir"), "fm-newfolder") {
-            public void onSelection() {
-                ContentActions.createFolder(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
-            }
-        };
+    public static ContentActionItem createNewFolderItem(final ManagerLinker linker) {
+        ContentActionItem newFolder = new NewFolderActionItem(linker);
         return newFolder;
     }
 
-    public static ContentActionItem createCutItem(final BrowserLinker linker) {
-        ContentActionItem cut = new ContentActionItem(Messages.getResource("fm_cut"), "fm-cut") {
-            public void onSelection() {
-                ContentActions.cut(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection && writable);
-            }
-        };
+    public static ContentActionItem createCutItem(final ManagerLinker linker) {
+        ContentActionItem cut = new CutActionItem(linker);
         return cut;
     }
 
-    public static ContentActionItem createRemoveItem(final BrowserLinker linker) {
-        ContentActionItem remove = new ContentActionItem(Messages.getResource("fm_remove"), "fm-remove") {
-            public void onSelection() {
-                ContentActions.remove(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection && deleteable && !isMount);
-            }
-        };
+    public static ContentActionItem createRemoveItem(final ManagerLinker linker) {
+        ContentActionItem remove = new RemoveActionItem(linker);
         return remove;
     }
 
-    public static ContentActionItem createPasteItem(final BrowserLinker linker) {
-        ContentActionItem paste = new ContentActionItem(Messages.getResource("fm_paste"), "fm-paste") {
-            public void onSelection() {
-                ContentActions.paste(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection && parentWritable && pasteAllowed || tableSelection && writable && pasteAllowed);
-            }
-        };
+    public static ContentActionItem createPasteItem(final ManagerLinker linker) {
+        ContentActionItem paste = new PasteActionItem(linker);
         return paste;
     }
 
-    public static ContentActionItem createPasteReferenceItem(final BrowserLinker linker) {
-        ContentActionItem paste = new ContentActionItem(Messages.getResource("fm_pasteref"), "fm-pasteref") {
-            public void onSelection() {
-                ContentActions.pasteReference(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection && parentWritable && pasteAllowed || tableSelection && writable && pasteAllowed);
-            }
-        };
+    public static ContentActionItem createPasteReferenceItem(final ManagerLinker linker) {
+        ContentActionItem paste = new PasteReferenceActionItem(linker);
         return paste;
     }
 
-    public static ContentActionItem createCopyItem(final BrowserLinker linker) {
-        ContentActionItem copy = new ContentActionItem(Messages.getResource("fm_copy"), "fm-copy") {
-            public void onSelection() {
-                ContentActions.copy(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection);
-            }
-        };
+    public static ContentActionItem createCopyItem(final ManagerLinker linker) {
+        ContentActionItem copy = new CopyActionItem(linker);
         return copy;
     }
 
-    public static ContentActionItem createRenameItem(final BrowserLinker linker) {
-        ContentActionItem rename = new ContentActionItem(Messages.getResource("fm_rename"), "fm-rename") {
-            public void onSelection() {
-                ContentActions.rename(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection && writable && (singleFile || singleFolder));
-            }
-        };
+    public static ContentActionItem createRenameItem(final ManagerLinker linker) {
+        ContentActionItem rename = new RenameActionItem(linker);
         return rename;
     }
 
-    public static ContentActionItem createResizeItem(final BrowserLinker linker) {
-        ContentActionItem resize = new ContentActionItem(Messages.getResource("fm_resize"), "fm-resize") {
-            public void onSelection() {
-                ContentActions.resizeImage(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection && parentWritable && singleFile && isImage);
-            }
-        };
+    public static ContentActionItem createResizeItem(final ManagerLinker linker) {
+        ContentActionItem resize = new ResizeActionItem(linker);
         return resize;
     }
 
-    public static ContentActionItem createMountItem(final BrowserLinker linker) {
-        ContentActionItem mount = new ContentActionItem(Messages.getResource("fm_mount"), "fm-mount") {
-            public void onSelection() {
-                ContentActions.mountFolder(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled("root".equals(JahiaGWTParameters.getCurrentUser())); // TODO dirty code (to refactor using server side configuration and roles)
-            }
-        };
+    public static ContentActionItem createMountItem(final ManagerLinker linker) {
+        ContentActionItem mount = new MountActionItem(linker);
         return mount;
     }
 
-    public static ContentActionItem createUnmountItem(final BrowserLinker linker) {
-        ContentActionItem mount = new ContentActionItem(Messages.getResource("fm_unmount"), "fm-unmount") {
-            public void onSelection() {
-                ContentActions.unmountFolder(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection && writable && isMount);
-            }
-        };
+    public static ContentActionItem createUnmountItem(final ManagerLinker linker) {
+        ContentActionItem mount = new UnmountActionItem(linker);
         return mount;
     }
 
-    public static ContentActionItem createZipItem(final BrowserLinker linker) {
-        ContentActionItem zip = new ContentActionItem(Messages.getResource("fm_zip"), "fm-zip") {
-            public void onSelection() {
-                ContentActions.zip(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection && parentWritable);
-            }
-        };
+    public static ContentActionItem createZipItem(final ManagerLinker linker) {
+        ContentActionItem zip = new ZipActionItem(linker);
         return zip;
     }
 
-    public static ContentActionItem createLockItem(final BrowserLinker linker) {
-        ContentActionItem lock = new ContentActionItem(Messages.getResource("fm_lock"), "fm-lock") {
-            public void onSelection() {
-                ContentActions.lock(true, linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection && lockable && writable);
-            }
-        };
+    public static ContentActionItem createLockItem(final ManagerLinker linker) {
+        ContentActionItem lock = new LockActionItem(linker);
         return lock;
     }
 
-    public static ContentActionItem createDownloadItem(final BrowserLinker linker) {
-        ContentActionItem download = new ContentActionItem(Messages.getResource("fm_download"), "fm-download") {
-            public void onSelection() {
-                ContentActions.download(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection && singleFile);
-            }
-        };
+    public static ContentActionItem createDownloadItem(final ManagerLinker linker) {
+        ContentActionItem download = new DownloadActionItem(linker);
         return download;
     }
 
-    public static ContentActionItem createPreviewItem(final BrowserLinker linker) {
-        ContentActionItem download = new ContentActionItem(Messages.getResource("fm_preview"), "fm-preview") {
-            public void onSelection() {
-                ContentActions.preview(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection && singleFile && isImage);
-            }
-        };
+    public static ContentActionItem createPreviewItem(final ManagerLinker linker) {
+        ContentActionItem download = new PreviewActionItem(linker);
         return download;
     }
 
-    public static ContentActionItem createUploadItem(final BrowserLinker linker) {
-        ContentActionItem upload = new ContentActionItem(Messages.getResource("fm_upload"), "fm-upload") {
-            public void onSelection() {
-                ContentActions.upload(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
-            }
-        };
+    public static ContentActionItem createUploadItem(final ManagerLinker linker) {
+        ContentActionItem upload = new UploadActionItem(linker);
         return upload;
     }
 
@@ -308,16 +149,8 @@ public class ContentActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ContentActionItem createNewMashupItem(final BrowserLinker linker) {
-        ContentActionItem newMashup = new ContentActionItem(Messages.getResource("fm_newmashup"), "fm-newmashup") {
-            public void onSelection() {
-                ContentActions.showMashupWizard(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
-            }
-        };
+    public static ContentActionItem createNewMashupItem(final ManagerLinker linker) {
+        ContentActionItem newMashup = new NewMashupActionItem(linker);
         return newMashup;
     }
 
@@ -327,16 +160,8 @@ public class ContentActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ContentActionItem createNewRSSItem(final BrowserLinker linker) {
-        ContentActionItem newMashup = new ContentActionItem(Messages.getResource("fm_newrssmashup"), "fm-newrssmashup") {
-            public void onSelection() {
-                ContentActions.showRSSForm(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
-            }
-        };
+    public static ContentActionItem createNewRSSItem(final ManagerLinker linker) {
+        ContentActionItem newMashup = new NewRssActionItem(linker);
         return newMashup;
     }
 
@@ -346,16 +171,8 @@ public class ContentActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ContentActionItem createNewGadgetItem(final BrowserLinker linker) {
-        ContentActionItem newMashup = new ContentActionItem(Messages.getResource("fm_newgadgetmashup"), "fm-newgooglegadgetmashup") {
-            public void onSelection() {
-                ContentActions.showGoogleGadgetForm(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
-            }
-        };
+    public static ContentActionItem createNewGadgetItem(final ManagerLinker linker) {
+        ContentActionItem newMashup = new NewGadgetActionItem(linker);
         return newMashup;
     }
 
@@ -365,16 +182,8 @@ public class ContentActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ContentActionItem createNewCategoryItem(final BrowserLinker linker) {
-        ContentActionItem newCategory = new ContentActionItem(Messages.getResource("fm_newcategory"), "fm-newcategory") {
-            public void onSelection() {
-                ContentActions.showContentWizard(linker, "jnt:category");
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
-            }
-        };
+    public static ContentActionItem createNewCategoryItem(final ManagerLinker linker) {
+        ContentActionItem newCategory = new NewCategoryActionItem(linker);
         return newCategory;
     }
 
@@ -384,16 +193,8 @@ public class ContentActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ContentActionItem createDeployPortletDefinition(final BrowserLinker linker) {
-        ContentActionItem actionItem = new ContentActionItem(Messages.getNotEmptyResource("fm_deployPortlet", "Deploy Portlet"), "fm-newmashup") {
-            public void onSelection() {
-                ContentActions.showDeployPortletForm(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
-            }
-        };
+    public static ContentActionItem createDeployPortletDefinition(final ManagerLinker linker) {
+        ContentActionItem actionItem = new DeployPortletDefinitionActionItem(linker);
         return actionItem;
     }
 
@@ -403,16 +204,8 @@ public class ContentActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ContentActionItem createNewContentItem(final BrowserLinker linker) {
-        ContentActionItem newContent = new ContentActionItem(Messages.getResource("fm_newcontent"), "fm-newcontent") {
-            public void onSelection() {
-                ContentActions.showContentWizard(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
-            }
-        };
+    public static ContentActionItem createNewContentItem(final ManagerLinker linker) {
+        ContentActionItem newContent = new NewContentActionItem(linker);
         return newContent;
     }
 
@@ -422,17 +215,9 @@ public class ContentActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ContentActionItem createNewPageContentItem(final BrowserLinker linker) {
+    public static ContentActionItem createNewPageContentItem(final ManagerLinker linker) {
 
-        ContentActionItem newPageContent = new ContentActionItem(Messages.getNotEmptyResource("fm_newpagecontent", "New page"), "fm-newcontent") {
-            public void onSelection() {
-                ContentActions.showContentWizard(linker, "jnt:page");
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
-            }
-        };
+        ContentActionItem newPageContent = new NewPageActionItem(linker);
         return newPageContent;
     }
 
@@ -442,43 +227,529 @@ public class ContentActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ContentActionItem createNewContentListItem(final BrowserLinker linker) {
+    public static ContentActionItem createNewContentListItem(final ManagerLinker linker) {
 
-        ContentActionItem newContentListItem = new ContentActionItem(Messages.getNotEmptyResource("fm_newcontentlist", "New content list"), "fm-newfolder") {
-            public void onSelection() {
-                ContentActions.showContentWizard(linker, "jnt:contentList");
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
-            }
-        };
+        ContentActionItem newContentListItem = new NewContentListActionItem(linker);
         return newContentListItem;
     }
 
-    public static ContentActionItem createExportItem(final BrowserLinker linker) {
-        ContentActionItem exportItem = new ContentActionItem(Messages.getResource("fm_export"), "fm-export") {
-            public void onSelection() {
-                ContentActions.exportContent(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(tableSelection || treeSelection);
-            }
-        };
+    public static ContentActionItem createExportItem(final ManagerLinker linker) {
+        ContentActionItem exportItem = new ExportActionItem(linker);
         return exportItem;
     }
 
-    public static ContentActionItem createImportItem(final BrowserLinker linker) {
-        ContentActionItem importItem = new ContentActionItem(Messages.getResource("fm_import"), "fm-import") {
-            public void onSelection() {
-                ContentActions.importContent(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                setEnabled(treeSelection && parentWritable);
-            }
-        };
+    public static ContentActionItem createImportItem(final ManagerLinker linker) {
+        ContentActionItem importItem = new ImportActionItem(linker);
         return importItem;
+    }
+
+    private static class RotateActionItem extends ContentActionItem implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public RotateActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_rotate"), "fm-rotate");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.rotateImage(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection && parentWritable && singleFile && isImage);
+        }
+    }
+
+    private static class CropActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public CropActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_crop"), "fm-crop");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.cropImage(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection && parentWritable && singleFile && isImage);
+        }
+    }
+
+    private static class UnzipActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public UnzipActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_unzip"), "fm-unzip");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.unzip(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection && parentWritable && singleFile && isZip);
+        }
+    }
+
+    private static class UnlockActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public UnlockActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_unlock"), "fm-unlock");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.lock(false, linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection && lockable && writable);
+        }
+    }
+
+    private static class WebfolderActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public WebfolderActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_webfolder"), "fm-webfolder");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.openWebFolder(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection || tableSelection && singleFolder);
+        }
+    }
+
+    private static class NewFolderActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public NewFolderActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_newdir"), "fm-newfolder");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.createFolder(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+        }
+    }
+
+    private static class CutActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public CutActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_cut"), "fm-cut");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.cut(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection && writable);
+        }
+    }
+
+    private static class RemoveActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public RemoveActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_remove"), "fm-remove");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.remove(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection && deleteable && !isMount);
+        }
+    }
+
+    private static class PasteActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public PasteActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_paste"), "fm-paste");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.paste(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection && parentWritable && pasteAllowed || tableSelection && writable && pasteAllowed);
+        }
+    }
+
+    private static class PasteReferenceActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public PasteReferenceActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_pasteref"), "fm-pasteref");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.pasteReference(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection && parentWritable && pasteAllowed || tableSelection && writable && pasteAllowed);
+        }
+    }
+
+    private static class CopyActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public CopyActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_copy"), "fm-copy");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.copy(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection);
+        }
+    }
+
+    private static class RenameActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public RenameActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_rename"), "fm-rename");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.rename(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection && writable && (singleFile || singleFolder));
+        }
+    }
+
+    private static class ResizeActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public ResizeActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_resize"), "fm-resize");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.resizeImage(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection && parentWritable && singleFile && isImage);
+        }
+    }
+
+    private static class MountActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public MountActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_mount"), "fm-mount");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.mountFolder(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled("root".equals(JahiaGWTParameters.getCurrentUser())); // TODO dirty code (to refactor using server side configuration and roles)
+        }
+    }
+
+    private static class UnmountActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public UnmountActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_unmount"), "fm-unmount");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.unmountFolder(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection && writable && isMount);
+        }
+    }
+
+    private static class ZipActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public ZipActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_zip"), "fm-zip");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.zip(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection && parentWritable);
+        }
+    }
+
+    private static class LockActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public LockActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_lock"), "fm-lock");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.lock(true, linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection && lockable && writable);
+        }
+    }
+
+    private static class DownloadActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public DownloadActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_download"), "fm-download");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.download(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection && singleFile);
+        }
+    }
+
+    private static class PreviewActionItem extends ContentActionItem implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public PreviewActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_preview"), "fm-preview");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.preview(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection && singleFile && isImage);
+        }
+    }
+
+    private static class UploadActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public UploadActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_upload"), "fm-upload");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.upload(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+        }
+    }
+
+    private static class NewMashupActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public NewMashupActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_newmashup"), "fm-newmashup");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.showMashupWizard(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+        }
+    }
+
+    private static class NewRssActionItem extends ContentActionItem implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public NewRssActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_newrssmashup"), "fm-newrssmashup");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.showRSSForm(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+        }
+    }
+
+    private static class NewGadgetActionItem extends ContentActionItem implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public NewGadgetActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_newgadgetmashup"), "fm-newgooglegadgetmashup");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.showGoogleGadgetForm(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+        }
+    }
+
+    private static class NewCategoryActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public NewCategoryActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_newcategory"), "fm-newcategory");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.showContentWizard(linker, "jnt:category");
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+        }
+    }
+
+    private static class DeployPortletDefinitionActionItem extends ContentActionItem implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public DeployPortletDefinitionActionItem(ManagerLinker linker) {
+            super(Messages.getNotEmptyResource("fm_deployPortlet", "Deploy Portlet"), "fm-newmashup");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.showDeployPortletForm(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+        }
+    }
+
+    private static class NewContentActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public NewContentActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_newcontent"), "fm-newcontent");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.showContentWizard(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+        }
+    }
+
+    private static class NewPageActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public NewPageActionItem(ManagerLinker linker) {
+            super(Messages.getNotEmptyResource("fm_newpagecontent", "New page"), "fm-newcontent");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.showContentWizard(linker, "jnt:page");
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+        }
+    }
+
+    private static class NewContentListActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public NewContentListActionItem(ManagerLinker linker) {
+            super(Messages.getNotEmptyResource("fm_newcontentlist", "New content list"), "fm-newfolder");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.showContentWizard(linker, "jnt:contentList");
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+        }
+    }
+
+    private static class ExportActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public ExportActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_export"), "fm-export");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.exportContent(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(tableSelection || treeSelection);
+        }
+    }
+
+    private static class ImportActionItem extends ContentActionItem  implements ManagerSelectionHandler {
+        private final ManagerLinker linker;
+
+        public ImportActionItem(ManagerLinker linker) {
+            super(Messages.getResource("fm_import"), "fm-import");
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            ContentActions.importContent(linker);
+        }
+
+        public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
+            setEnabled(treeSelection && parentWritable);
+        }
     }
 }

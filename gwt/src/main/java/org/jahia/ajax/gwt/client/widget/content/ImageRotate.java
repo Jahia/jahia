@@ -35,7 +35,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
@@ -56,9 +56,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class ImageRotate extends Window {
 
-    private BrowserLinker m_linker ;
+    private ManagerLinker m_linker ;
 
-    public ImageRotate(final BrowserLinker linker, final GWTJahiaNode n) {
+    public ImageRotate(final ManagerLinker linker, final GWTJahiaNode n) {
         super() ;
 
         m_linker = linker ;

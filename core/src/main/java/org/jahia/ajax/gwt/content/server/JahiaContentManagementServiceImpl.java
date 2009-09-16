@@ -447,12 +447,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public List<GWTJahiaNode> getNodes(List<String> pathes) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> getNodesWithPublicationInfo(List<String> pathes) throws GWTJahiaServiceException {
         String workspace = "default";
         ParamBean jParams = retrieveParamBean();
         List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
         for (String path : pathes) {
-            list.add(ContentManagerHelper.getNode(path, workspace, jParams));
+            GWTJahiaNode gwtJahiaNode = ContentManagerHelper.getNode(path, workspace, jParams);
+            gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getPath(), false));
+            list.add(gwtJahiaNode);
         }
         return list;
     }
@@ -548,8 +550,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws GWTJahiaServiceException
      */
-    public GWTJahiaPublicationInfo getPublicationInfo(String path) throws GWTJahiaServiceException {
-        return ContentManagerHelper.getPublicationInfo(path, retrieveParamBean().getUser());
+    public GWTJahiaPublicationInfo getPublicationInfo(String path, boolean includeReferences) throws GWTJahiaServiceException {
+        return ContentManagerHelper.getPublicationInfo(path, null, includeReferences, retrieveParamBean().getUser());
     }
 
     /**
@@ -561,7 +563,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public Map<String,GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException {
         Map<String, GWTJahiaPublicationInfo> map = new HashMap<String, GWTJahiaPublicationInfo>();
         for (String path : pathes) {
-            map.put(path, ContentManagerHelper.getPublicationInfo(path, retrieveParamBean().getUser()));
+            map.put(path, ContentManagerHelper.getPublicationInfo(path, null, false, retrieveParamBean().getUser()));
         }
 
         return map;

@@ -36,10 +36,9 @@ import java.io.Serializable;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.wizard.WizardCard;
 import org.jahia.ajax.gwt.client.widget.wizard.WizardWindow;
-import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * Widget for adding new content objects using a wizard.
@@ -110,7 +109,7 @@ public class AddContentWizardWindow extends WizardWindow {
 
     private AddContentData data;
 
-    private BrowserLinker linker;
+    private ManagerLinker linker;
 
     private GWTJahiaNode parentNode;
 
@@ -128,7 +127,7 @@ public class AddContentWizardWindow extends WizardWindow {
      * @param linker     browser linker instance
      * @param parentNode the parent node where the wizard was called
      */
-    public AddContentWizardWindow(BrowserLinker linker, GWTJahiaNode parentNode) {
+    public AddContentWizardWindow(ManagerLinker linker, GWTJahiaNode parentNode) {
         this(linker, parentNode, null);
 
     }
@@ -139,7 +138,7 @@ public class AddContentWizardWindow extends WizardWindow {
      * @param linker     browser linker instance
      * @param parentNode the parent node where the wizard was called
      */
-    public AddContentWizardWindow(BrowserLinker linker, GWTJahiaNode parentNode, GWTJahiaNodeType nodeType) {
+    public AddContentWizardWindow(ManagerLinker linker, GWTJahiaNode parentNode, GWTJahiaNodeType nodeType) {
         super(null);
         data = new AddContentData(nodeType);
         this.parentNode = parentNode;
@@ -168,7 +167,7 @@ public class AddContentWizardWindow extends WizardWindow {
         return Messages.get("add_content_wizard_title", "Add content");
     }
 
-    public BrowserLinker getLinker() {
+    public ManagerLinker getLinker() {
         return linker;
     }
 

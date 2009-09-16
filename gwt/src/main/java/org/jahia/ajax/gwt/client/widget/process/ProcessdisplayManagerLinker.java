@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.process;
 
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobPreference;
 import org.jahia.ajax.gwt.client.service.process.ProcessDisplayService;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -42,10 +42,10 @@ import com.allen_sauer.gwt.log.client.Log;
  * Date: 29 juil. 2008
  * Time: 16:01:34
  */
-public class ProcessdisplayBrowserLinker extends BrowserLinker {
+public class ProcessdisplayManagerLinker extends ManagerLinker {
     private GWTJahiaProcessJobPreference gwtJahiaProcessJobPreference;
 
-    public ProcessdisplayBrowserLinker(GWTJahiaProcessJobPreference gwtJahiaProcessJobPreference, ProcessJobOptionsComponent leftComponent, ProcessJobGrid topRightComponent, ProcessJobMessagesTab bottomRightComponent, ProcessJobTopBar topBar) {
+    public ProcessdisplayManagerLinker(GWTJahiaProcessJobPreference gwtJahiaProcessJobPreference, ProcessJobOptionsComponent leftComponent, ProcessJobGrid topRightComponent, ProcessJobMessagesTab bottomRightComponent, ProcessJobTopBar topBar) {
         super(leftComponent, topRightComponent, bottomRightComponent, topBar, null);
         this.gwtJahiaProcessJobPreference = gwtJahiaProcessJobPreference;
     }

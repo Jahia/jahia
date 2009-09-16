@@ -34,7 +34,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -58,9 +58,9 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public class ImageCrop extends Window {
 
-    private BrowserLinker m_linker ;
+    private ManagerLinker m_linker ;
 
-    public ImageCrop(final BrowserLinker linker, final GWTJahiaNode n) {
+    public ImageCrop(final ManagerLinker linker, final GWTJahiaNode n) {
         super() ;
 
         m_linker = linker ;

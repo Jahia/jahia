@@ -55,7 +55,7 @@ public class LanguageSwitcherActionItem implements ActionItemItf {
     public Component getTextToolitem() {
         Button item = new Button("loading...") ;
         item.setEnabled(false);
-        new LanguageSwitcher(true, true, false,true, JahiaGWTParameters.getLanguage(), false, new LanguageSelectedListener() {
+        new LanguageSwitcher(true, true, false,false, JahiaGWTParameters.getLanguage(), false, new LanguageSelectedListener() {
             private final JahiaServiceAsync jahiaServiceAsync = JahiaService.App.getInstance();
             public void onLanguageSelected (String languageSelected) {
                 jahiaServiceAsync.getLanguageURL(languageSelected,new AsyncCallback<String>() {
@@ -92,8 +92,5 @@ public class LanguageSwitcherActionItem implements ActionItemItf {
 
     public void setGwtToolbarItem(GWTJahiaToolbarItem gwtToolbarItem) {
 
-    }
-
-    public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
     }
 }

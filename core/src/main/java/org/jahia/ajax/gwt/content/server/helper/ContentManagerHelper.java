@@ -2565,65 +2565,28 @@ public class ContentManagerHelper {
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws GWTJahiaServiceException in case of any RepositoryException
      */
-    public static GWTJahiaPublicationInfo getPublicationInfo(String path, JahiaUser user) throws GWTJahiaServiceException {
+    public static GWTJahiaPublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences,JahiaUser user) throws GWTJahiaServiceException {
         try {
-
-            PublicationInfo pubInfo = jcr.getPublicationInfo(path,  user, null, true);
-
-            JCRSessionWrapper session = jcr.getThreadSession(user);
-            JCRSessionWrapper liveSession = jcr.getThreadSession(user, Constants.LIVE_WORKSPACE);
-            GWTJahiaPublicationInfo info = null;
-
-            JCRNodeWrapper publishedNode = null;
-            try {
-                publishedNode = liveSession.getNode(path);
-            } catch (PathNotFoundException e) {
-                if(logger.isDebugEnabled()) {
-                    logger.debug(e);
-                }
-            }
-
-            JCRNodeWrapper stageNode = null;
-            try {
-                stageNode = session.getNode(path);
-            } catch (PathNotFoundException e) {
-                throw new GWTJahiaServiceException(e.getMessage());
-            }
-
-            if (publishedNode == null) {
-                // node has not been published yet, check if parent is published
-                try {
-                    liveSession.getNode(stageNode.getParent().getPath());
-                    info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.UNPUBLISHED);
-                } catch (PathNotFoundException e) {
-                    info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.UNPUBLISHABLE);
-                }
-
-                if (logger.isDebugEnabled()) {
-                	logger.debug("---> info:"+info.getStatus());
-                }
-                return info;
-            }
-
-            info = new GWTJahiaPublicationInfo(GWTJahiaPublicationInfo.PUBLISHED);
-
-            long s = stageNode.getLastModifiedAsDate().getTime();
-            long p = publishedNode.getLastPublishedAsDate().getTime();
-            if (s > p) {
-                info.setStatus(GWTJahiaPublicationInfo.MODIFIED);
-            }
-            if (logger.isDebugEnabled()) {
-            	logger.debug("--> "+stageNode);
-	            logger.debug("--> "+publishedNode);
-	            logger.debug("---> info:"+info.getStatus());
-            }
-            return info;
+            PublicationInfo pubInfo = jcr.getPublicationInfo(path,  user, languages, includesReferences);
+            return convert(pubInfo);
         } catch (RepositoryException e) {
             logger.error("repository exception",e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
 
     }
+
+    private static GWTJahiaPublicationInfo convert(PublicationInfo pubInfo) {
+        Map<String, GWTJahiaPublicationInfo> map = new HashMap<String, GWTJahiaPublicationInfo>();
+        for (String p : pubInfo.getReferences().keySet()) {
+            PublicationInfo pi = pubInfo.getReferences().get(p);
+            map.put(p,convert(pi));
+        }
+
+        GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(pubInfo.getStatus(), pubInfo.isCanPublish(), map);
+        return  gwtInfo;
+    }
+
     /**
      * Unpublish a node from live workspace.
      * Referenced Node will not be unpublished.
@@ -2631,7 +2594,7 @@ public class ContentManagerHelper {
      * @param path path of the node to unpublish
      * @param languages Set of languages to unpublish if null unpublish all languages
      * @param user the user for obtaining the jcr session
-     * @throws a GWTJahiaServiceException in case of any RepositoryException
+     * @throws GWTJahiaServiceException in case of any RepositoryException
      */
     public static void unpublish(String path, Set<String> languages, JahiaUser user) throws GWTJahiaServiceException {
         try {

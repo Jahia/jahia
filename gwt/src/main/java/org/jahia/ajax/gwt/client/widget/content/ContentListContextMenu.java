@@ -36,8 +36,9 @@ import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.MenuEvent;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
+import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
@@ -53,7 +54,7 @@ import java.util.List;
  */
 public class ContentListContextMenu extends Menu {
 
-    public ContentListContextMenu(final BrowserLinker linker, final ManagerConfiguration config) {
+    public ContentListContextMenu(final ManagerLinker linker, final ManagerConfiguration config) {
         super() ;
 
         // add all items found in the defined menus
@@ -127,7 +128,9 @@ public class ContentListContextMenu extends Menu {
                 }
                 for (ContentActionItemGroup group: config.getGroupedItems()) {
                     for (ActionItemItf item: group.getItems()) {
-                        item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
+                        if (item instanceof ManagerSelectionHandler) {
+                            ((ManagerSelectionHandler)item).enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
+                        }
                     }
                 }
             }

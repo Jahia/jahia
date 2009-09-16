@@ -99,7 +99,7 @@ public class ProcessDisplayPanel extends TriPanelBrowserViewport {
         ProcessJobTopBar processJobTopBar = new ProcessJobTopBar();
 
         // this is the linker that will have the components communicate with each other
-        linker = new ProcessdisplayBrowserLinker(gwtJahiaProcessJobPreference, filterPanel, tablePanel, messagePanel, processJobTopBar);
+        linker = new ProcessdisplayManagerLinker(gwtJahiaProcessJobPreference, filterPanel, tablePanel, messagePanel, processJobTopBar);
 
         // important: create ui after creating linker
         filterPanel.createUI();

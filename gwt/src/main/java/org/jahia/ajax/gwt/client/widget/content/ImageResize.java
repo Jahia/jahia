@@ -46,7 +46,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
 /**
  *
@@ -56,9 +56,9 @@ import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
  */
 public class ImageResize extends Window {
 
-    private BrowserLinker m_linker ;
+    private ManagerLinker m_linker ;
 
-    public ImageResize(final BrowserLinker linker, final GWTJahiaNode n) {
+    public ImageResize(final ManagerLinker linker, final GWTJahiaNode n) {
         super() ;
 
         m_linker = linker ;

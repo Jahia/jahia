@@ -34,7 +34,7 @@ package org.jahia.ajax.gwt.client.widget.content.portlet;
 import org.jahia.ajax.gwt.client.widget.wizard.WizardCard;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNewPortletInstance;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 /**
@@ -74,7 +74,7 @@ public abstract class MashupWizardCard extends WizardCard {
         return getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getPortletType();
     }
 
-    public BrowserLinker getLinker() {
+    public ManagerLinker getLinker() {
         if (getPortletWizardWindow() == null) {
             return null;
         }

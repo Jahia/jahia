@@ -50,7 +50,7 @@ import com.extjs.gxt.ui.client.Style;
  */
 public class TriPanelBrowserLayout extends ContentPanel {
 
-    protected BrowserLinker linker;
+    protected ManagerLinker linker;
     protected BorderLayoutData centerData = new BorderLayoutData(Style.LayoutRegion.SOUTH, 200);
     protected BorderLayoutData northData = new BorderLayoutData(Style.LayoutRegion.CENTER);
     protected BorderLayoutData westData = new BorderLayoutData(Style.LayoutRegion.WEST, 200);
@@ -58,7 +58,7 @@ public class TriPanelBrowserLayout extends ContentPanel {
     protected TriPanelBrowserLayout() {
         super(new FitLayout());
         setHeaderVisible(false);
-        linker = new BrowserLinker() ;
+        linker = new ManagerLinker() ;
     }
 
     protected void initWidgets(Component leftTree, Component topTable, Component bottomTabs, Component topToolbar, Component statusBar) {
@@ -127,7 +127,7 @@ public class TriPanelBrowserLayout extends ContentPanel {
         this.westData = westData;
     }
 
-    public BrowserLinker getLinker() {
+    public ManagerLinker getLinker() {
         return linker;
     }
 

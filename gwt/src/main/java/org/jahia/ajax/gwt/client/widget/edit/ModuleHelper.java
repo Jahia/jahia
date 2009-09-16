@@ -75,7 +75,7 @@ public class ModuleHelper {
             }
         }
         Log.info("all pathes "+list);
-        JahiaContentManagementService.App.getInstance().getNodes(list,new AsyncCallback<List<GWTJahiaNode>>() {
+        JahiaContentManagementService.App.getInstance().getNodesWithPublicationInfo(list,new AsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {
                 for (GWTJahiaNode gwtJahiaNode : result) {
                     for (Module module : modulesByPath.get(gwtJahiaNode.getPath())) {

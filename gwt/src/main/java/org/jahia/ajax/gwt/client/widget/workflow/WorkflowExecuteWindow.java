@@ -45,7 +45,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowBatch;
 import org.jahia.ajax.gwt.client.service.workflow.WorkflowService;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 
@@ -58,12 +58,12 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class WorkflowExecuteWindow extends Window {
 
-    private BrowserLinker linker ;
+    private ManagerLinker linker ;
     private Button execute ;
     private TextArea comments ;
     private TextField title ;
 
-    public WorkflowExecuteWindow(final BrowserLinker linker) {
+    public WorkflowExecuteWindow(final ManagerLinker linker) {
         super();
         this.linker = linker ;
         setLayout(new FormLayout());

@@ -234,10 +234,6 @@ public abstract class BaseActionItem implements ActionItemItf {
     }
 
 
-    public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-
-    }
-
     public abstract void onSelection();
 
 }

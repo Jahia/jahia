@@ -52,7 +52,7 @@ import org.jahia.ajax.gwt.client.service.JahiaContentLegacyServiceAsync;
 import org.jahia.ajax.gwt.client.service.JahiaContentLegacyService;
 import org.jahia.ajax.gwt.client.util.tree.TreeOpener;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.widget.SearchField;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -261,7 +261,7 @@ public class PageExplorer extends TopRightComponent {
         }
     }
 
-    public void initWithLinker(BrowserLinker linker) {
+    public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
         loader.load() ;
     }

@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.extjs.gxt.ui.client.data.ListLoadConfig;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.Style;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 
 /**
  * Created by IntelliJ IDEA.
@@ -63,6 +64,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private List<GWTJahiaNodeVersion> versions;
     private String selectedVersion;
     private GWTJahiaNode referencedNode;
+    private GWTJahiaPublicationInfo publicationInfo;
 
     public GWTJahiaNode() {
         super();
@@ -425,6 +427,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setReferencedNode(GWTJahiaNode referencedNode) {
         this.referencedNode = referencedNode;
+    }
+
+    public GWTJahiaPublicationInfo getPublicationInfo() {
+        return publicationInfo;
+    }
+
+    public void setPublicationInfo(GWTJahiaPublicationInfo publicationInfo) {
+        this.publicationInfo = publicationInfo;
     }
 
     @Override

@@ -1,9 +1,12 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
+import org.jahia.ajax.gwt.client.widget.toolbar.handler.ModuleSelectionHandler;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem; /**
+import org.jahia.ajax.gwt.client.widget.edit.Module;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo; /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
  *
@@ -42,165 +45,249 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem; /**
  */
 public class EditActionItemCreatorHelper {
     /**
-     *  Create item "create content"
+     * Create item "create content"
+     *
      * @param gwtToolbarItem
      * @param linker
      * @return
      */
     public static ActionItemItf createEditCreateActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
-        ActionItemItf actionItem = new BaseActionItem(gwtToolbarItem) {
-            public void onSelection() {
-                EditActions.createPage(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-
-            }
-        };
+        ActionItemItf actionItem = new CreatePageActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
 
     /**
      * Create item "publish content"
+     *
      * @param gwtToolbarItem
      * @param linker
      * @return
      */
     public static ActionItemItf createEditPublishActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
-        ActionItemItf actionItem = new BaseActionItem(gwtToolbarItem) {
-            public void onSelection() {
-                EditActions.publish(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-            }
-        };
+        ActionItemItf actionItem = new PublishActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
 
     /**
      * Create item "unpublish content"
+     *
      * @param gwtToolbarItem
      * @param linker
      * @return
      */
     public static ActionItemItf createEditUnpublishActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
-        ActionItemItf actionItem = new BaseActionItem(gwtToolbarItem) {
-            public void onSelection() {
-                EditActions.unpublish(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-            }
-        };
+        ActionItemItf actionItem = new UnpublishActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
 
     /**
      * Create item "view publish status"
+     *
      * @param gwtToolbarItem
      * @param linker
      * @return
      */
     public static ActionItemItf createEditViewPublishStatusActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
-        ActionItemItf actionItem = new BaseActionItem(gwtToolbarItem) {
-            public void onSelection() {
-                EditActions.viewPublishedStatus(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-            }
-        };
+        ActionItemItf actionItem = new ViewPublishStatusActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
 
     /**
      * Create item "lock content"
+     *
      * @param gwtToolbarItem
      * @param linker
      * @return
      */
     public static ActionItemItf createEditLockActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
-        ActionItemItf actionItem = new BaseActionItem(gwtToolbarItem) {
-            public void onSelection() {
-                EditActions.switchLock(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-            }
-        };
+        ActionItemItf actionItem = new LockActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
 
     /**
      * Create item "unlock item"
+     *
      * @param gwtToolbarItem
      * @param linker
      * @return
      */
     public static ActionItemItf createEditUnlockActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
-        ActionItemItf actionItem = new BaseActionItem(gwtToolbarItem) {
-            public void onSelection() {
-                EditActions.switchLock(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-            }
-        };
+        ActionItemItf actionItem = new UnlockActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
 
     /**
      * Create item "edit content"
+     *
      * @param gwtToolbarItem
      * @param linker
      * @return
      */
     public static ActionItemItf createEditEditActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
-        ActionItemItf actionItem = new BaseActionItem(gwtToolbarItem) {
-            public void onSelection() {
-                EditActions.edit(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-            }
-        };
+        ActionItemItf actionItem = new EditContentActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
 
     /**
      * Create item "delete content"
+     *
      * @param gwtToolbarItem
      * @param linker
      * @return
      */
     public static ActionItemItf createEditDeleteActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
-        ActionItemItf actionItem = new BaseActionItem(gwtToolbarItem) {
-            public void onSelection() {
-                EditActions.delete(linker);
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-            }
-        };
+        ActionItemItf actionItem = new DeleteActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
 
-    /**
-     * Create item "edit status"
-     * @param gwtToolbarItem
-     * @param linker
-     * @return
-     */
-    public static ActionItemItf createEditStatusActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
-        ActionItemItf actionItem = new BaseActionItem(gwtToolbarItem) {
-            public void onSelection() {
-                EditActions.viewPublishedStatus(linker);
-            }
+    private static class CreatePageActionItem extends BaseActionItem {
+        private final EditLinker linker;
 
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-             }
-        };
-        return actionItem;
+        public CreatePageActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+            super(gwtToolbarItem);
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            EditActions.createPage(linker);
+        }
+    }
+
+    private static class PublishActionItem extends BaseActionItem implements ModuleSelectionHandler {
+        private final EditLinker linker;
+
+        public PublishActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+            super(gwtToolbarItem);
+            this.linker = linker;
+            setEnabled(false);
+        }
+
+        public void onSelection() {
+            EditActions.publish(linker);
+        }
+
+        public void handleNewModuleSelection(Module selectedModule) {
+            if (selectedModule != null) {
+                GWTJahiaPublicationInfo info = selectedModule.getNode().getPublicationInfo();
+                setEnabled(info.isCanPublish() && (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED));
+            }
+        }
+    }
+
+    private static class UnpublishActionItem extends BaseActionItem implements ModuleSelectionHandler {
+        private final EditLinker linker;
+
+        public UnpublishActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+            super(gwtToolbarItem);
+            this.linker = linker;
+            setEnabled(false);
+        }
+
+        public void onSelection() {
+            EditActions.unpublish(linker);
+        }
+
+        public void handleNewModuleSelection(Module selectedModule) {
+            if (selectedModule != null) {
+                GWTJahiaPublicationInfo info = selectedModule.getNode().getPublicationInfo();
+                setEnabled(info.isCanPublish() && (info.getStatus() == GWTJahiaPublicationInfo.PUBLISHED));
+            }
+        }
+    }
+
+    private static class ViewPublishStatusActionItem extends BaseActionItem implements ModuleSelectionHandler {
+        private final EditLinker linker;
+
+        public ViewPublishStatusActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+            super(gwtToolbarItem);
+            this.linker = linker;
+        }
+
+        public void onSelection() {
+            EditActions.viewPublishedStatus(linker);
+        }
+
+        public void handleNewModuleSelection(Module selectedModule) {
+        }
+    }
+
+    private static class LockActionItem extends BaseActionItem implements ModuleSelectionHandler {
+        private final EditLinker linker;
+
+        public LockActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+            super(gwtToolbarItem);
+            this.linker = linker;
+            setEnabled(false);
+        }
+
+        public void onSelection() {
+            EditActions.switchLock(linker);
+        }
+
+        public void handleNewModuleSelection(Module selectedModule) {
+            if (selectedModule != null) {
+                setEnabled(selectedModule.getNode().isLockable() && !selectedModule.getNode().isLocked());
+            }
+        }
+    }
+
+    private static class UnlockActionItem extends BaseActionItem implements ModuleSelectionHandler {
+        private final EditLinker linker;
+
+        public UnlockActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+            super(gwtToolbarItem);
+            this.linker = linker;
+            setEnabled(false);
+        }
+
+        public void onSelection() {
+            EditActions.switchLock(linker);
+        }
+
+        public void handleNewModuleSelection(Module selectedModule) {
+            if (selectedModule != null) {
+                setEnabled(selectedModule.getNode().isLockable() && selectedModule.getNode().isLocked());
+            }
+        }
+    }
+
+    private static class EditContentActionItem extends BaseActionItem implements ModuleSelectionHandler {
+        private final EditLinker linker;
+
+        public EditContentActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+            super(gwtToolbarItem);
+            this.linker = linker;
+            setEnabled(false);
+        }
+
+        public void onSelection() {
+            EditActions.edit(linker);
+        }
+
+        public void handleNewModuleSelection(Module selectedModule) {
+            if (selectedModule != null) {
+                setEnabled(selectedModule.getNode().isWriteable());
+            }
+        }
+    }
+
+    private static class DeleteActionItem extends BaseActionItem implements ModuleSelectionHandler {
+        private final EditLinker linker;
+
+        public DeleteActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+            super(gwtToolbarItem);
+            this.linker = linker;
+            setEnabled(false);
+        }
+
+        public void onSelection() {
+            EditActions.delete(linker);
+        }
+
+        public void handleNewModuleSelection(Module selectedModule) {
+            if (selectedModule != null) {
+                setEnabled(selectedModule.getNode().isWriteable());
+            }
+        }
     }
 }

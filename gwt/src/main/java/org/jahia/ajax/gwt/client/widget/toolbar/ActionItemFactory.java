@@ -35,7 +35,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.*;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 
 /**
@@ -46,7 +46,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
  */
 public class ActionItemFactory extends ActionItemFactoryItf {
     private EditLinker editLinker;
-    private BrowserLinker browserLinker;
+    private ManagerLinker managerLinker;
 
     public static final String ORG_JAHIA_TOOLBAR_ITEM_CLIPBOARD = "org.jahia.toolbar.item.ClipBoard";
     public static final String ORG_JAHIA_TOOLBAR_ITEM_INFO = "org.jahia.toolbar.item.Inf";
@@ -85,18 +85,17 @@ public class ActionItemFactory extends ActionItemFactoryItf {
     public static final String ORG_JAHIA_TOOLBAR_ITEM_CONTENT_ACTION_DELETE = "org.jahia.toolbar.item.ContentAction.delete";
 
 
-
     public ActionItemFactory(EditLinker editLinker) {
         this.editLinker = editLinker;
     }
 
-    public ActionItemFactory(BrowserLinker browserLinker) {
-        this.browserLinker = browserLinker;
+    public ActionItemFactory(ManagerLinker managerLinker) {
+        this.managerLinker = managerLinker;
     }
 
-    public ActionItemFactory(EditLinker editLinker, BrowserLinker browserLinker) {
+    public ActionItemFactory(EditLinker editLinker, ManagerLinker managerLinker) {
         this.editLinker = editLinker;
-        this.browserLinker = browserLinker;
+        this.managerLinker = managerLinker;
     }
 
     public ActionItemItf createActionItem(GWTJahiaToolbarItem gwtToolbarItem) {
@@ -143,15 +142,15 @@ public class ActionItemFactory extends ActionItemFactoryItf {
         }else if (type.equalsIgnoreCase(ORG_JAHIA_TOOLBAR_ITEM_EDIT_ACTION_PUBLISH)) {
             actionItem = EditActionItemCreatorHelper.createEditPublishActionItem(gwtToolbarItem,editLinker);
         }else if (type.equalsIgnoreCase(ORG_JAHIA_TOOLBAR_ITEM_EDIT_ACTION_STATUS)) {
-            actionItem = EditActionItemCreatorHelper.createEditStatusActionItem(gwtToolbarItem,editLinker);
+            actionItem = EditActionItemCreatorHelper.createEditViewPublishStatusActionItem(gwtToolbarItem,editLinker);
         }else if (type.equalsIgnoreCase(ORG_JAHIA_TOOLBAR_ITEM_EDIT_ACTION_UNLOCK)) {
             actionItem = EditActionItemCreatorHelper.createEditUnlockActionItem(gwtToolbarItem,editLinker);
         }  else if (type.equalsIgnoreCase(ORG_JAHIA_TOOLBAR_ITEM_EDIT_ACTION_UNPUBLISH)) {
             actionItem = EditActionItemCreatorHelper.createEditUnpublishActionItem(gwtToolbarItem,editLinker);
         }else if (type.equalsIgnoreCase(ORG_JAHIA_TOOLBAR_ITEM_CONTENT_ACTION_COPY)) {
-            actionItem = ContentActionItemCreatorHelper.createCopyItem(browserLinker);
+            actionItem = ContentActionItemCreatorHelper.createCopyItem(managerLinker);
         }else if (type.equalsIgnoreCase(ORG_JAHIA_TOOLBAR_ITEM_CONTENT_ACTION_DELETE)) {
-            actionItem = ContentActionItemCreatorHelper.createRemoveItem(browserLinker);
+            actionItem = ContentActionItemCreatorHelper.createRemoveItem(managerLinker);
         }
         if(actionItem != null){
             actionItem.setGwtToolbarItem(gwtToolbarItem);

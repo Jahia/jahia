@@ -12,8 +12,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionItemFactory;
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.BaseSelectionHandler;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.Module;
 import org.jahia.ajax.gwt.client.util.URL;
@@ -31,9 +30,8 @@ import java.util.ArrayList;
  */
 public class ActionToolbarLayoutContainer extends LayoutContainer {
     private List<ActionToolbar> actionToolbars = new ArrayList<ActionToolbar>();
-    private BaseSelectionHandler selectionHandler = new BaseSelectionHandler();
     private EditLinker editLinker;
-    private BrowserLinker browserLinker;
+    private ManagerLinker managerLinker;
 
     public  ActionToolbarLayoutContainer() {
         loadToolbars(false);
@@ -44,8 +42,8 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
         this.editLinker = linker;
     }
 
-    public void initWithLinker(BrowserLinker linker) {
-        this.browserLinker = linker;
+    public void initWithLinker(ManagerLinker linker) {
+        this.managerLinker = linker;
     }
 
     /**
@@ -106,7 +104,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
      * @param gwtToolbar
      */
     public void addActionToolbar(GWTJahiaToolbar gwtToolbar) {
-        ActionToolbar actionToolbar = new ActionToolbar(gwtToolbar, new ActionItemFactory(editLinker, browserLinker), selectionHandler);
+        ActionToolbar actionToolbar = new ActionToolbar(gwtToolbar, new ActionItemFactory(editLinker, managerLinker));
         if (gwtToolbar.getState().isDisplay()) {
             actionToolbar.createToolBar();
             add(actionToolbar);

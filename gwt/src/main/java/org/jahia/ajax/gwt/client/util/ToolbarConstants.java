@@ -77,8 +77,6 @@ public abstract class ToolbarConstants {
     public static final String HTML = "html";
     public static final String WINDOW_NAME = "windowName";
     public static final String PARAMETERS = "parameters";
-    public static final String EDIT_SELECTION_HANDLER = "editSelectionHandler";
-    public static final String ENABLE_ON_CONDITIONS = "enableOnCondition";
 
 
 }

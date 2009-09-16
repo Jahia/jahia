@@ -40,7 +40,7 @@ import com.extjs.gxt.ui.client.widget.Component;
  * @author rfelden
  * @version 19 juin 2008 - 10:45:20
  */
-public class BrowserLinker {
+public class ManagerLinker {
 
     // Components
     private LeftComponent m_leftComponent;
@@ -50,7 +50,7 @@ public class BrowserLinker {
     private BottomBar m_bottomBar;
     private DNDListener dndListener;
 
-    public BrowserLinker() {}
+    public ManagerLinker() {}
 
     /**
      * deprecated please use no args constructor and then registerComponents method
@@ -60,7 +60,7 @@ public class BrowserLinker {
      * @param topBar a toolbar for interaction(cannot be null)
      * @param bottomBar a status bar displaying short info on current events
      */
-    public BrowserLinker(LeftComponent leftComponent, TopRightComponent topRightComponent, BottomRightComponent bottomRightComponent, TopBar topBar, BottomBar bottomBar) {
+    public ManagerLinker(LeftComponent leftComponent, TopRightComponent topRightComponent, BottomRightComponent bottomRightComponent, TopBar topBar, BottomBar bottomBar) {
         m_topRightComponent = topRightComponent;
         m_topBar = topBar;
         m_bottomRightComponent = bottomRightComponent;

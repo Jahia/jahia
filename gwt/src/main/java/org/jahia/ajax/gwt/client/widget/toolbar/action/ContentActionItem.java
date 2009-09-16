@@ -113,21 +113,4 @@ public abstract class ContentActionItem extends BaseActionItem {
     public MenuItem getContextMenuItem() {
         return contextMenuItem;
     }
-
-
-
-    public abstract void onSelection();
-
-    public abstract void enableOnConditions(boolean treeSelection,
-                                            boolean tableSelection,
-                                            boolean writable,
-                                            boolean deleteable, boolean parentWritable,
-                                            boolean singleFile,
-                                            boolean singleFolder,
-                                            boolean pasteAllowed,
-                                            boolean lockable,
-                                            boolean locked, boolean isZip,
-                                            boolean isImage,
-                                            boolean isMount);
-
 }

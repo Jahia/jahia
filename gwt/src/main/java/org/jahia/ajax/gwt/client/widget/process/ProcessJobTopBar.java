@@ -33,7 +33,6 @@ package org.jahia.ajax.gwt.client.widget.process;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -182,8 +181,8 @@ public class ProcessJobTopBar extends TopBar {
      *
      * @return
      */
-    private ProcessdisplayBrowserLinker getPdisplayBrowserLinker() {
-        return ((ProcessdisplayBrowserLinker) getLinker());
+    private ProcessdisplayManagerLinker getPdisplayBrowserLinker() {
+        return ((ProcessdisplayManagerLinker) getLinker());
     }
 
     /**

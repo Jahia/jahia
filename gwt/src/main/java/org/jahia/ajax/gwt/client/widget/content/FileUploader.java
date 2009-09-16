@@ -45,10 +45,9 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
@@ -65,7 +64,7 @@ public class FileUploader extends Window {
     private int fieldCount = 0;
     private FormPanel form;
 
-    public FileUploader(final BrowserLinker linker, final GWTJahiaNode location) {
+    public FileUploader(final ManagerLinker linker, final GWTJahiaNode location) {
         super();
         setHeading(Messages.getResource("fm_uploadFiles"));
         setSize(500, 200);
@@ -247,7 +246,7 @@ public class FileUploader extends Window {
         show();
     }
 
-    private void endUpload(CheckBox unzip, BrowserLinker linker) {
+    private void endUpload(CheckBox unzip, ManagerLinker linker) {
         if (unzip.getValue().booleanValue()) {
             linker.refreshAll();
         } else {

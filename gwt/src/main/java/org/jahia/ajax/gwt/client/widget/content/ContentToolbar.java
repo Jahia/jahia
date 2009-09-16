@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.widget.language.LanguageSelectedListener;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ContentActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
+import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
 import org.jahia.ajax.gwt.client.util.content.actions.*;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -102,11 +103,6 @@ public class ContentToolbar extends TopBar {
         ContentActionItem refresh = new ContentActionItem(Messages.getResource("fm_refresh"), "fm-refresh") {
             public void onSelection() {
                 getLinker().refreshTable();
-            }
-
-            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-                // always enabled
-                // setEnabled(treeSelection);
             }
         };
 
@@ -322,7 +318,9 @@ public class ContentToolbar extends TopBar {
         
         for (ContentActionItemGroup group: configuration.getGroupedItems()) {
             for (ActionItemItf item: group.getItems()) {
-                item.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
+                if (item instanceof ManagerSelectionHandler) {
+                    ((ManagerSelectionHandler)item).enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
+                }
             }
         }
         

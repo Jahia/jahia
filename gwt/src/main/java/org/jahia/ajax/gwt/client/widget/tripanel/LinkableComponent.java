@@ -46,13 +46,13 @@ public abstract class LinkableComponent {
     /**
      * This is the link target, it deals with communication between components.
      */
-    private BrowserLinker m_linker ;
+    private ManagerLinker m_linker ;
 
     /**
      * Set the linker, should be used by the linker itself in order lay a callback in each component.
      * @param linker the linker
      */
-    public void initWithLinker(BrowserLinker linker) {
+    public void initWithLinker(ManagerLinker linker) {
         m_linker = linker ;
     }
 
@@ -60,7 +60,7 @@ public abstract class LinkableComponent {
      * Get the linker shared by every component.
      * @return the linker
      */
-    public BrowserLinker getLinker() {
+    public ManagerLinker getLinker() {
         return m_linker ;
     }
 

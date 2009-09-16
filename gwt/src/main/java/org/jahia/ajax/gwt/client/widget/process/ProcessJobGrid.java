@@ -242,8 +242,8 @@ public class ProcessJobGrid extends TopRightComponent {
      *
      * @return
      */
-    private ProcessdisplayBrowserLinker getPdisplayBrowserLinker() {
-        return ((ProcessdisplayBrowserLinker) getLinker());
+    private ProcessdisplayManagerLinker getPdisplayBrowserLinker() {
+        return ((ProcessdisplayManagerLinker) getLinker());
     }
 
     private ProcessJobTopBar getProcessJobTopBar() {

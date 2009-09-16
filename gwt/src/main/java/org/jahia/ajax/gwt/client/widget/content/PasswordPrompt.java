@@ -30,7 +30,7 @@ import com.allen_sauer.gwt.log.client.Log;
 
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
 /**
  *
@@ -40,9 +40,9 @@ import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
  */
 public class PasswordPrompt extends Window {
 
-    private BrowserLinker m_linker ;
+    private ManagerLinker m_linker ;
 
-    public PasswordPrompt(final BrowserLinker linker, String username, final String providerKey, final MenuItem item, final String logoutLabel) {
+    public PasswordPrompt(final ManagerLinker linker, String username, final String providerKey, final MenuItem item, final String logoutLabel) {
         super() ;
 
         m_linker = linker ;

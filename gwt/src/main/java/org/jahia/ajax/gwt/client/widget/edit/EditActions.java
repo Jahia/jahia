@@ -4,17 +4,23 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.ScrollListener;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.util.SwallowEvent;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -71,18 +77,18 @@ public class EditActions {
      */
     public static void publish(final EditLinker editLinker) {
         if (editLinker.getSelectedModule().getNode() != null) {
-            JahiaContentManagementService.App.getInstance().publish(editLinker.getSelectedModule().getNode().getPath(), new AsyncCallback() {
-                public void onFailure(Throwable caught) {
-                    Log.error("Cannot publish", caught);
-                    com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
-                }
+            JahiaContentManagementService.App.getInstance().getPublicationInfo(editLinker.getSelectedModule().getNode().getPath(), true,
+                    new AsyncCallback<GWTJahiaPublicationInfo>() {
+                        public void onSuccess(GWTJahiaPublicationInfo result) {
+                            new PublicationStatusWindow(editLinker, result).show();
+                        }
 
-                public void onSuccess(Object result) {
-                    Info.display("Content published", "Content published.");
-                    editLinker.refresh();
+                        public void onFailure(Throwable caught) {
+                            com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
+                        }
+                    }
+            );
 
-                }
-            });
         }
     }
 
@@ -121,7 +127,7 @@ public class EditActions {
             JahiaContentManagementService.App.getInstance().setLock(paths, isLock, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
                     Log.error("", throwable);
-                    Window.alert("-->" + throwable.getMessage());
+                    com.google.gwt.user.client.Window.alert("-->" + throwable.getMessage());
                 }
 
                 public void onSuccess(Object o) {
@@ -145,7 +151,7 @@ public class EditActions {
             JahiaContentManagementService.App.getInstance().deletePaths(paths, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
                     Log.error("", throwable);
-                    Window.alert("-->" + throwable.getMessage());
+                    com.google.gwt.user.client.Window.alert("-->" + throwable.getMessage());
                 }
 
                 public void onSuccess(Object o) {
@@ -223,6 +229,65 @@ public class EditActions {
             });
         }
 
+    }
+
+    private static class PublicationStatusWindow extends Window {
+        private EditLinker editLinker;
+
+        private PublicationStatusWindow(final EditLinker editLinker, GWTJahiaPublicationInfo info) {
+            this.editLinker = editLinker;
+            setScrollMode(Style.Scroll.AUTO);
+            setHeading("Publish");
+            setSize(500, 150);
+            setResizable(false);
+            ButtonBar buttons = new ButtonBar() ;
+
+            setModal(true);
+
+            final FormPanel form = new FormPanel() ;
+            form.setFrame(false);
+            form.setHeaderVisible(false);
+            form.setBorders(false);
+
+            final TextArea area = new TextArea();
+            area.setName("comments");
+            area.setFieldLabel("Comments");
+            form.add(area);
+
+            for (String path : info.getReferences().keySet()) {
+                add(new Label(path+ " / "+ info.getReferences().get(path).getStatus()));
+            }
+            
+
+            Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
+                    hide() ;
+                }
+            });
+            Button ok = new Button("Publish", new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
+                    JahiaContentManagementService.App.getInstance().publish(editLinker.getSelectedModule().getNode().getPath(), new AsyncCallback() {
+                        public void onFailure(Throwable caught) {
+                            Log.error("Cannot publish", caught);
+                            com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
+                            hide();
+                        }
+
+                        public void onSuccess(Object result) {
+                            Info.display("Content published", "Content published.");
+                            editLinker.refresh();
+                            hide();
+                        }
+                    });
+
+                }
+            }) ;
+            buttons.add(ok) ;
+            buttons.add(cancel) ;
+            setButtonAlign(Style.HorizontalAlignment.CENTER);
+            setBottomComponent(buttons);
+            add(form);
+        }
     }
 
 }

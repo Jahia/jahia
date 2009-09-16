@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -130,25 +131,22 @@ public class EditContentEngine extends Window {
         tabs = new TabPanel();
         tabs.setBodyBorder(false);
         tabs.setBorders(false);
+        tabs.setAutoHeight(true);
 
         contentTab = new AsyncTabItem(Messages.get("ece_content", "Content"));
-        contentTab.setLayout(new FitLayout());
+        //contentTab.setLayout(new FitLayout());
         tabs.add(contentTab);
         if (fullMode) {
             metadataTab = new AsyncTabItem(Messages.get("ece_metadata", "Metadata"));
-            metadataTab.setLayout(new FitLayout());
             tabs.add(metadataTab);
 
             rightsTab = new AsyncTabItem(Messages.get("ece_rights", "Rights"));
-            rightsTab.setLayout(new FitLayout());
             tabs.add(rightsTab);
 
             workflowTab = new AsyncTabItem(Messages.get("ece_workflow", "Workflow"));
-            workflowTab.setLayout(new FitLayout());
             tabs.add(workflowTab);
 
             versionsTab = new AsyncTabItem(Messages.get("ece_versions", "Versions"));
-            versionsTab.setLayout(new FitLayout());
             tabs.add(versionsTab);
         }
         add(tabs);

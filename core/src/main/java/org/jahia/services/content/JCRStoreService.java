@@ -806,8 +806,12 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             deniedPathes.add(node);
         }
 
-        JCRSessionWrapper liveSessionForPublish = login(JahiaLoginModule.getCredentials(user.getUsername(), deniedPathes), Constants.LIVE_WORKSPACE);
-
+        JCRSessionWrapper liveSessionForPublish;
+         if (system) {
+            liveSessionForPublish = login(JahiaLoginModule.getSystemCredentials(user.getUsername(), deniedPathes), Constants.LIVE_WORKSPACE);
+        } else {
+            liveSessionForPublish = login(JahiaLoginModule.getCredentials(user.getUsername(), deniedPathes), Constants.LIVE_WORKSPACE);
+        }
         try {
             Node liveNode = liveSessionForPublish.getNode(path);
             liveNode.update(Constants.EDIT_WORKSPACE);

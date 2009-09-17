@@ -32,7 +32,7 @@
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.EditAction"/>
             <!--<itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentAction"/>-->            
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Tools"/>
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Workflow"/>
+            <!--<itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Workflow"/>-->
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Cache"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.Preview"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.newedit.User"/>

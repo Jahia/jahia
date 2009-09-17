@@ -1,0 +1,33 @@
+<style type="text/css">
+div.user-profile {
+    border-bottom: 1px solid #eaeaea;
+    padding: 5px;
+}
+
+div.user-profile div.user-photo {
+    float: left;
+    width: 120px;
+    height: 120px;
+    display: block;
+    border: 1px solid #cccccc;
+    margin-right:10px;
+    overflow: hidden;
+}
+
+div.user-profile div.user-body {
+    margin: 0 0 0 130px;
+}
+
+div.user-profile span.user-label {
+	float: left;
+    font-weight: bold;
+    width: 100px;
+    margin-left: 15px !important;
+}
+div.user-profile input, div.user-profile textarea {
+    width: 250px;
+}
+div.user-profile textarea {
+    margin-left: 3px;
+}
+</style>

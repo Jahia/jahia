@@ -38,12 +38,15 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.bin.Jahia;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+import java.util.Locale;
 
 /**
  * Tag exposing a JCR node.
@@ -74,13 +77,20 @@ public class JCRNodeTag extends AbstractJahiaTag {
 
     public int doStartTag() throws JspException {
         ProcessingContext ctx = getProcessingContext();
+        String workspace = null;
+        Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
+        Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
+        if (currentResource != null) {
+            workspace = currentResource.getWorkspace();
+            locale = currentResource.getLocale();
+        }
         if (ctx != null) {
             JahiaUser user = ctx.getUser();
             try {
                 JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
                 JCRNodeWrapper n = service.checkExistence(path, user);
                 if (n != null) {
-                    JCRNodeWrapper node = service.getThreadSession(user,null, Jahia.getThreadParamBean().getLocale()).getNode(path);
+                    JCRNodeWrapper node = service.getThreadSession(user,workspace, locale).getNode(path);
                     pageContext.setAttribute(var, node, scope);
                 } else {
                     logger.error("The path '" + path + "' does not exist");

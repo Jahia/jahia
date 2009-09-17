@@ -33,14 +33,14 @@
         </div>
         <!--stop commentBubble-->
 
-
-        <p class="comment_button">
-            <button class="button"
-                    onclick="return jahiaForumQuote('jahia-forum-thread-${currentNode.parent.UUID}', '${fn:escapeXml(functions:escapeJavaScript(content.string))}');">
-                Quote it
-            </button>
-        </p>
-
+        <c:if test="${renderContext.user.name != 'guest'}">
+            <p class="comment_button">
+                <button class="button"
+                        onclick="return jahiaForumQuote('jahia-forum-thread-${currentNode.parent.UUID}', '${fn:escapeXml(functions:escapeJavaScript(content.string))}');">
+                    Quote it
+                </button>
+            </p>
+        </c:if>
         <div class="clear"></div>
     </div>
 </div>
@@ -61,11 +61,13 @@
                 <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
             <input type="hidden" name="newNodeOutputFormat" value="html">
         </form>
+        <a href="#" onclick="document.getElementById('jahia-forum-post-delete-${currentNode.UUID}').submit();"
+           class="commentDelete">Delete</a>
+        <a href="#" class="commentEdit">Edit</a>
     </c:if>
-    <a href="#" onclick="document.getElementById('jahia-forum-post-delete-${currentNode.UUID}').submit();"
-       class="commentDelete">Delete</a>
-    <a href="#" class="commentEdit">Edit</a>
-    <a href="#" class="commentAlert">Alert</a>
+    <c:if test="${renderContext.user.name != 'guest'}">
+        <a href="#" class="commentAlert">Alert</a>
+    </c:if>
 </div>
 
 <div class="clear"></div>

@@ -394,9 +394,10 @@ public class Render extends HttpServlet {
      * or [nodepath].[templatetype]
      *
      * @param workspace The workspace where to get the node
+     * @param locale    cureent locale
      * @param path      The path of the node, in the specified workspace
      * @param user      Current user
-     * @param ctx
+     * @param ctx       request context
      * @return The resource, if found
      * @throws PathNotFoundException if the resource cannot be resolved
      * @throws RepositoryException

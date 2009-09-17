@@ -16,4 +16,15 @@
         </li>
     </c:forEach>
 </ul>
-<template:module node="${currentNode}" template="newTopicForm"/>
+
+<jcr:sql var="numberOfPostsQuery"
+         sql="select jcr:uuid from jahiaForum:post  where jcr:path like '${currentNode.path}/%/%'"/>
+<c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
+<jcr:sql var="numberOfThreadsQuery"
+         sql="select jcr:uuid from jahiaForum:thread  where jcr:path like '${currentNode.path}/%'"/>
+<c:set var="numberOfThreads" value="${numberOfThreadsQuery.rows.size}"/>
+<span>Total Threads : ${numberOfThreads}</span>
+<span>Total Posts : ${numberOfPosts}</span>
+<c:if test="${renderContext.user.name != 'guest'}">
+    <template:module node="${currentNode}" template="newTopicForm"/>
+</c:if>

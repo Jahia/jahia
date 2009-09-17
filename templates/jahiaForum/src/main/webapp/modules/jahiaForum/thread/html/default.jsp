@@ -18,8 +18,10 @@
             <template:module node="${subchild}" template="default"/>
         </li>
     </c:forEach>
-    <li>
-        <template:module node="${currentNode}" template="newPostForm"/>
-    </li>
+    <c:if test="${renderContext.user.name != 'guest'}">
+        <li>
+            <template:module node="${currentNode}" template="newPostForm"/>
+        </li>
+    </c:if>
 </ul>
     

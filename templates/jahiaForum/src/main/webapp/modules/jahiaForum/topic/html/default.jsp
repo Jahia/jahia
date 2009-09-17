@@ -4,7 +4,8 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<jcr:sql var="numberOfPostsQuery" sql="select jcr:uuid from jahiaForum:post  where jcr:path like '${currentNode.path}/%/%'"/>
+<jcr:sql var="numberOfPostsQuery"
+         sql="select jcr:uuid from jahiaForum:post  where jcr:path like '${currentNode.path}/%/%'"/>
 <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
 <div>
     <c:if test="${jcr:isNodeType(currentNode.parent, 'jahiaForum:boardIndex')}">
@@ -22,4 +23,6 @@
         </li>
     </c:forEach>
 </ul>
-<template:module node="${currentNode}" template="newThreadForm"/>
+<c:if test="${renderContext.user.name != 'guest'}">
+    <template:module node="${currentNode}" template="newThreadForm"/>
+</c:if>

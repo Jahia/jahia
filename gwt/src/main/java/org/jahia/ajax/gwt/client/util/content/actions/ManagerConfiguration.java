@@ -67,7 +67,7 @@ public class ManagerConfiguration {
     private boolean displayDate = true;
     private boolean displayProvider = false;
     
-    private boolean allowConnections = true;
+    private boolean allowCollections = true;
 
     public ManagerConfiguration() {
         items = new ArrayList<ActionItemItf>();
@@ -233,11 +233,11 @@ public class ManagerConfiguration {
         this.displayProvider = displayProvider;
     }
 
-	public boolean isAllowConnections() {
-    	return allowConnections;
+	public boolean isAllowCollections() {
+    	return allowCollections;
     }
 
-	public void setAllowConnections(boolean allowConnections) {
-    	this.allowConnections = allowConnections;
+	public void setAllowCollections(boolean allowConnections) {
+    	this.allowCollections = allowConnections;
     }
 }

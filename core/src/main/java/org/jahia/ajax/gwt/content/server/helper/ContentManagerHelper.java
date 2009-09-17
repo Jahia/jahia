@@ -234,6 +234,13 @@ public class ContentManagerHelper {
                 }
                 if (f.isCollection() || (matchesFilters(f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply))) {
                     GWTJahiaNode theNode = getGWTJahiaNode(f,true);
+                    if (displayAllVirtualSites) {
+                        try {
+                            theNode.setPublicationInfo(getPublicationInfo(f.getPath(), null, false, context.getUser()));
+                        } catch (GWTJahiaServiceException e) {
+                			logger.error(e.getMessage(), e);
+                		}
+                    }
 //                    if (openPaths != null && openPaths.length() > 0) {
 //                        logger.debug("trying to append children");
 //                        appendChildren(theNode, splitOpenPathList(openPaths), context, nodeTypes, mimeTypes, filters, noFolders);
@@ -248,9 +255,8 @@ public class ContentManagerHelper {
         }
 
         try {
-            if (viewTemplateAreas && node.isNodeType("jmix:renderable") && node.hasProperty("j:defaultTemplate")) {
+            if (!displayAllVirtualSites && viewTemplateAreas && node.isNodeType("jmix:renderable") && node.hasProperty("j:defaultTemplate")) {
                 Resource r = new Resource(node, "html", null, null);
-                final HashMap<String, List<String>> listHashMap = new HashMap<String, List<String>>();
                 RenderContext renderContext = new RenderContext(((ParamBean) context).getRequest(), ((ParamBean) context).getResponse(), user);
                 renderContext.setSite(context.getSite());
                 renderContext.setIncludeSubModules(false);
@@ -701,6 +707,7 @@ public class ContentManagerHelper {
                 hasChildren = true;
                 hasFolderChildren = true;
             } else {
+            	// TODO consider current node types, mime types and filters when checking for children
                 for (JCRNodeWrapper w : f.getChildren()) {
                     try {
                         hasChildren = true;
@@ -716,6 +723,12 @@ public class ContentManagerHelper {
             n.setHasChildren(hasChildren);
             n.setHasFolderChildren(hasFolderChildren);
         }
+        n.setLastModifiedBy(f.getModificationUser());
+        n.setCreated(f.getCreationDateAsDate());
+        n.setCreatedBy(f.getCreationUser());
+        n.setLastPublished(f.getLastPublishedAsDate());
+        n.setLastPublishedBy(f.getPublicationUser());
+        
         setIcon(f, n);
 
         List<String> names = f.getThumbnails();

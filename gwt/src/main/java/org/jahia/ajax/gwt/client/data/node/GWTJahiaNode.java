@@ -44,7 +44,7 @@ import com.extjs.gxt.ui.client.Style;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 
 /**
- * Created by IntelliJ IDEA.
+ * GWT bean that represents a single JCR node.
  *
  * @author rfelden
  * @version 19 juin 2008 - 15:57:38
@@ -71,20 +71,19 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         setFile(Boolean.FALSE);
     }
 
-    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, String providerKey, boolean writeable, boolean deleteable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
-        super();
+    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date lastModified, List<String> nodetypes, List<String> inheritedTypes, String aclContext, String providerKey, boolean writeable, boolean deleteable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
+        this();
         setUUID(uuid);
         setName(name);
         setDisplayName(name);
         setDescription(description);
         setPath(path);
         setUrl(url);
-        setDate(date);
+        setLastModified(lastModified);
         setNodeTypes(nodetypes);
         setInheritedNodeTypes(inheritedTypes);
         setAclContext(aclContext);
         setProviderKey(providerKey);
-        setFile(Boolean.FALSE);
         setWriteable(writeable);
         setDeleteable(deleteable);
         setLockable(lockable);
@@ -95,11 +94,10 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         setVersioned(versioned);
     }
 
-    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, String providerKey, Long size, boolean writeable, boolean deleteable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
-        this(uuid, name,description, path, url, date, nodetypes, inheritedTypes, aclContext, providerKey, writeable, deleteable, lockable, locked, lockOwner,versioned);
+    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date lastModified, List<String> nodetypes, List<String> inheritedTypes, String aclContext, String providerKey, Long size, boolean writeable, boolean deleteable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
+        this(uuid, name,description, path, url, lastModified, nodetypes, inheritedTypes, aclContext, providerKey, writeable, deleteable, lockable, locked, lockOwner,versioned);
         setSize(size);
         setFile(Boolean.TRUE);
-        //setPreview("../images/types/gwt/large/icon-file.png");
     }
 
     public void setHasChildren(boolean hasChildren) {
@@ -206,12 +204,52 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         set("path", path);
     }
 
-    public Date getDate() {
-        return get("date");
+    public Date getCreated() {
+        return get("created");
     }
 
-    public void setDate(Date date) {
-        set("date", date);
+    public String getCreatedBy() {
+        return get("createdBy");
+    }
+
+    public Date getLastPublished() {
+        return get("lastPublished");
+    }
+
+    public String getLastPublishedBy() {
+        return get("lastPublishedBy");
+    }
+
+    public Date getLastModified() {
+        return get("lastModified");
+    }
+
+    public String getLastModifiedBy() {
+        return get("lastModifiedBy");
+    }
+
+    public void setCreated(Date date) {
+        set("created", date);
+    }
+
+    public void setCreatedBy(String creationUser) {
+        set("createdBy", creationUser);
+    }
+
+    public void setLastModified(Date date) {
+        set("lastModified", date);
+    }
+
+    public void setLastModifiedBy(String lastModificationUser) {
+        set("lastModifiedBy", lastModificationUser);
+    }
+
+    public void setLastPublished(Date date) {
+        set("lastPublished", date);
+    }
+
+    public void setLastPublishedBy(String lastPublicationUser) {
+        set("lastPublishedBy", lastPublicationUser);
     }
 
     public void setFile(Boolean file) {
@@ -429,14 +467,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         this.referencedNode = referencedNode;
     }
 
-    public GWTJahiaPublicationInfo getPublicationInfo() {
-        return publicationInfo;
-    }
-
-    public void setPublicationInfo(GWTJahiaPublicationInfo publicationInfo) {
-        this.publicationInfo = publicationInfo;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -447,5 +477,13 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         if (getPath() != null ? !getPath().equals(that.getPath()) : that.getPath() != null) return false;
 
         return true;
+    }
+
+    public GWTJahiaPublicationInfo getPublicationInfo() {
+        return publicationInfo;
+    }
+
+    public void setPublicationInfo(GWTJahiaPublicationInfo publicationInfo) {
+        this.publicationInfo = publicationInfo;
     }
 }

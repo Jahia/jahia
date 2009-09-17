@@ -368,7 +368,7 @@ public class ContentDetails extends BottomRightComponent {
                         }
                     }
                     if (config.isDisplayDate()) {
-                        Date date = selectedNode.getDate();
+                        Date date = selectedNode.getLastModified();
                         if (date != null) {
                             flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_lastModif") + " :</b> " + org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
                         }

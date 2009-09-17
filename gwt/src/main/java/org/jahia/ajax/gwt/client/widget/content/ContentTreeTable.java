@@ -106,7 +106,7 @@ public class ContentTreeTable extends TopRightComponent {
                     }
                     init = false;
                 } else {
-                    service.ls((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, !configuration.isAllowConnections(), listAsyncCallback);
+                    service.ls((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, !configuration.isAllowCollections(), listAsyncCallback);
                 }
             }
         };
@@ -349,7 +349,7 @@ public class ContentTreeTable extends TopRightComponent {
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                        Date d = gwtJahiaNode.getDate();
+                        Date d = gwtJahiaNode.getLastModified();
                         if (d != null) {
                             return DateTimeFormat.getFormat("d/MM/y").format(d).toString();
                         } else {

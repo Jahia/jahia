@@ -203,9 +203,9 @@ public class SearchTable extends TopRightComponent {
         col.setAlignment(Style.HorizontalAlignment.LEFT);
         col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-                if (modelData.getDate() != null) {
+                if (modelData.getLastModified() != null) {
                     return new DateTimePropertyEditor(DateTimeFormat.getFormat(CalendarField.DEFAULT_DATE_FORMAT)).
-                            getStringValue(modelData.getDate()) ;
+                            getStringValue(modelData.getLastModified()) ;
                 } else {
                     return "-" ;
                 }

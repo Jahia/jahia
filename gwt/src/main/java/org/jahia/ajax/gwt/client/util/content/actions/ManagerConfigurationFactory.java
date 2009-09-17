@@ -37,7 +37,6 @@ import org.jahia.ajax.gwt.client.widget.toolbar.action.SeparatorActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ContentActionItemCreatorHelper;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import com.extjs.gxt.ui.client.GXT;
 
 /**
@@ -93,7 +92,7 @@ public class ManagerConfigurationFactory {
 	public static ManagerConfiguration getCompleteManagerConfiguration(final ManagerLinker linker) {
         ManagerConfiguration completeManagerConfig = new ManagerConfiguration();
         completeManagerConfig.setEnableTextMenu(true);
-
+        
         ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
         ContentActionItem newFolder = ContentActionItemCreatorHelper.createNewFolderItem(linker);
         file.addItem(newFolder);
@@ -201,6 +200,15 @@ public class ManagerConfigurationFactory {
         ManagerConfiguration fileManagerConfig = new ManagerConfiguration();
         fileManagerConfig.setEnableTextMenu(true);
         fileManagerConfig.setDisplayProvider(true);
+        
+        fileManagerConfig.addColumn("providerKey");
+        fileManagerConfig.addColumn("ext");
+        fileManagerConfig.addColumn("locked");
+        fileManagerConfig.addColumn("name");
+        fileManagerConfig.addColumn("path");
+        fileManagerConfig.addColumn("size");
+        fileManagerConfig.addColumn("lastModified");
+        
         ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
         ContentActionItem newFolder = ContentActionItemCreatorHelper.createNewFolderItem(linker);
         file.addItem(newFolder);
@@ -365,6 +373,12 @@ public class ManagerConfigurationFactory {
         mashupManagerConfig.setEnableFileDoubleClick(false);
         mashupManagerConfig.setDisplayExt(false);
         mashupManagerConfig.setDisplaySize(false);
+        
+        mashupManagerConfig.addColumn("locked");
+        mashupManagerConfig.addColumn("name");
+        mashupManagerConfig.addColumn("path");
+        mashupManagerConfig.addColumn("lastModified");
+        
         mashupManagerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
         ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
         ContentActionItem newFolder = ContentActionItemCreatorHelper.createNewFolderItem(linker);
@@ -407,8 +421,6 @@ public class ManagerConfigurationFactory {
         mashupManagerConfig.addGroup(file);
         mashupManagerConfig.addGroup(edit);
 
-        // no columns to add (default)
-
         // show only the mashup repository
         mashupManagerConfig.addAccordion(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
         mashupManagerConfig.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY);
@@ -434,6 +446,9 @@ public class ManagerConfigurationFactory {
         mashupPickerConfig.setEnableFileDoubleClick(false);
         mashupPickerConfig.setDisplayExt(false);
         mashupPickerConfig.setDisplaySize(false);
+
+        // only one column here : name
+        mashupPickerConfig.addColumn("name");
 
         mashupPickerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
 
@@ -477,9 +492,6 @@ public class ManagerConfigurationFactory {
         mashupPickerConfig.addGroup(file);
         mashupPickerConfig.addGroup(edit);
 
-        // only one column here : name
-        mashupPickerConfig.addColumn("name");
-
         // no tab here
 //        mashupPickerConfig.addTab(JCRClientUtils.MASHUP_REPOSITORY);
 
@@ -498,6 +510,11 @@ public class ManagerConfigurationFactory {
         categoryManagerConfig.setDisplayExt(false);
         categoryManagerConfig.setDisplaySize(false);
         categoryManagerConfig.setDisplayDate(false);
+        
+        categoryManagerConfig.addColumn("locked");
+        categoryManagerConfig.addColumn("name");
+        categoryManagerConfig.addColumn("path");
+        
         categoryManagerConfig.setDefaultView(JCRClientUtils.FILE_TABLE);
         ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
         ContentActionItem newCategory = ContentActionItemCreatorHelper.createNewCategoryItem(linker);
@@ -552,6 +569,9 @@ public class ManagerConfigurationFactory {
         categoryPickerConfig.setDisplayExt(false);
         categoryPickerConfig.setDisplaySize(false);
 
+        // only one column here : name
+        categoryPickerConfig.addColumn("name");
+
         categoryPickerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
 
         ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
@@ -592,9 +612,6 @@ public class ManagerConfigurationFactory {
         categoryPickerConfig.addItem(importItem);
 
 
-        // only one column here : name
-        categoryPickerConfig.addColumn("name");
-
         // hide the left panel
         categoryPickerConfig.setHideLeftPanel(true);
 
@@ -612,6 +629,8 @@ public class ManagerConfigurationFactory {
         portletDefinitionManagerConf.setDisplayExt(false);
         portletDefinitionManagerConf.setDisplaySize(false);
 
+        // only one column here : name
+        portletDefinitionManagerConf.addColumn("name");
 
         // file item group
         ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
@@ -633,9 +652,6 @@ public class ManagerConfigurationFactory {
         portletDefinitionManagerConf.addGroup(file);
         portletDefinitionManagerConf.addGroup(edit);
 
-        // only one column here : name
-        portletDefinitionManagerConf.addColumn("name");
-
         // hide the left panel
         portletDefinitionManagerConf.setHideLeftPanel(true);
 
@@ -654,12 +670,17 @@ public class ManagerConfigurationFactory {
         cfg.setEnableTextMenu(true);
         cfg.setDisplaySize(false);
         cfg.setDisplayDate(false);
+        
+        cfg.addColumn("ext");
+        cfg.addColumn("locked");
+        cfg.addColumn("name");
+    	cfg.addColumn("lastModified");
+    	cfg.addColumn("lastModifiedBy");
+        cfg.addColumn("publicationInfo");
+        
         cfg.setDefaultView(JCRClientUtils.FILE_TABLE);
         
         ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
-        ContentActionItem newFolder = ContentActionItemCreatorHelper.createNewFolderItem(linker);
-        file.addItem(newFolder);
-        cfg.addItem(newFolder);
         ContentActionItem newPage = ContentActionItemCreatorHelper.createNewPageContentItem(linker);
         file.addItem(newPage);
         cfg.addItem(newPage);
@@ -703,7 +724,7 @@ public class ManagerConfigurationFactory {
         cfg.setFolderTypes(JCRClientUtils.SITE_NODETYPES);
         
         // do not display collections, if they do not match node type filters
-        cfg.setAllowConnections(false);
+        cfg.setAllowCollections(false);
 
         return cfg;
 

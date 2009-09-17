@@ -60,17 +60,60 @@ import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Table view component for the content manager widget.
  *
  * @author rfelden
  * @version 20 juin 2008 - 09:53:08
  */
 public class TableView extends TopRightComponent {
 
-    private LayoutContainer m_component;
+    private static String[] STATE_IMAGES = new String[]{"000", "111", "121", "000", "000", "000"};
+    
+	private static final GridCellRenderer<GWTJahiaNode> EXT_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+        public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
+            return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
+        }
+    };
+	private static final GridCellRenderer<GWTJahiaNode> LOCKED_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+		public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
+		        ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
+			if (modelData.isLocked().booleanValue()) {
+				String lockOwner = modelData.getLockOwner();
+				return lockOwner != null && lockOwner.equals(JahiaGWTParameters.SYSTEM_USER) ? "<img src='../images/icons/gwt/lock_information.png'>"
+				        : ContentModelIconProvider.getInstance().getLockIcon().getHTML();
+			} else {
+				return "";
+			}
+		}
+	};
+	private static final GridCellRenderer<GWTJahiaNode> SIZE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+		public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
+		        ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
+			if (modelData.getSize() != null) {
+				long size = modelData.getSize().longValue();
+				return Formatter.getFormattedSize(size);
+			} else {
+				return "-";
+			}
+		}
+	};
+	private static final GridCellRenderer<GWTJahiaNode> DATE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+		public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
+		        ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
+			Date d = modelData.get(s);
+			if (d != null) {
+				return new DateTimePropertyEditor(DateTimeFormat.getFormat(CalendarField.DEFAULT_DATE_FORMAT)).getStringValue(d);
+			} else {
+				return "-";
+			}
+		}
+	};
+
+	private LayoutContainer m_component;
     private Grid<GWTJahiaNode> m_table;
     private ListStore<GWTJahiaNode> store;
     private ListLoader<ListLoadResult<GWTJahiaNode>> loader ;
@@ -87,7 +130,7 @@ public class TableView extends TopRightComponent {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName()) ;
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, !configuration.isAllowConnections(), listAsyncCallback);
+                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, !configuration.isAllowCollections(), listAsyncCallback);
             }
         };
 
@@ -118,7 +161,7 @@ public class TableView extends TopRightComponent {
 
         m_table = new Grid<GWTJahiaNode>(store, getHeaders());
         m_table.setBorders(true);
-        m_table.setAutoExpandColumn("path");
+        m_table.setAutoExpandColumn(configuration.getTableColumns().isEmpty() || configuration.getTableColumns().contains("path") ? "path" : "name");
         m_table.getSelectionModel().setSelectionMode(Style.SelectionMode.MULTI);
         m_table.addListener(Events.RowClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent event) {
@@ -204,95 +247,108 @@ public class TableView extends TopRightComponent {
 
     private ColumnModel getHeaders() {
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
-        ColumnConfig col;
-
-        if (configuration.isDisplayProvider()) {
-            col = new ColumnConfig("providerKey", Messages.getResource("fm_column_provider"), 60);
-            col.setSortable(true);
-            col.setResizable(true);
-            headerList.add(col);
+        List<String> columnNames = new ArrayList<String>(configuration.getTableColumns());
+        if (columnNames.isEmpty()) {
+        	columnNames.add("providerKey");
+        	columnNames.add("ext");
+        	columnNames.add("locked");
+        	columnNames.add("name");
+        	columnNames.add("path");
+        	columnNames.add("size");
+        	columnNames.add("publicationInfo");
+        	columnNames.add("created");
+        	columnNames.add("createdBy");
+        	columnNames.add("lastModified");
+        	columnNames.add("lastModifiedBy");
+        	columnNames.add("lastPublished");
+        	columnNames.add("lastPublishedBy");
         }
 
-        if (configuration.isDisplayExt()) {
-            col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 40);
-            col.setAlignment(Style.HorizontalAlignment.CENTER);
-            col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-                    return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
-                }
-            });
-            col.setSortable(true);
-            col.setResizable(true);
-            headerList.add(col);
-        }
-
-        if (configuration.isDisplayLock()) {
-            col = new ColumnConfig("locked", Messages.getResource("fm_column_locked"), 40);
-            col.setAlignment(Style.HorizontalAlignment.CENTER);
-            col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-                    if (modelData.isLocked().booleanValue()) {
-                        String lockOwner = modelData.getLockOwner();
-                        return lockOwner != null
-                                && lockOwner.equals(JahiaGWTParameters.SYSTEM_USER) ? "<img src='../images/icons/gwt/lock_information.png'>"
-                                : ContentModelIconProvider.getInstance().getLockIcon().getHTML();
-                    } else {
-                        return "";
-                    }
-                }
-            });
-            col.setSortable(false);
-            col.setResizable(true);
-            headerList.add(col);
-        }
-
-        col = new ColumnConfig("name", Messages.getResource("fm_column_name"), 140);
-        col.setSortable(true);
-        col.setResizable(true);
-        headerList.add(col);
-
-
-        col = new ColumnConfig("path", Messages.getResource("fm_column_path"), 270);
-        col.setSortable(true);
-        col.setResizable(true);
-        headerList.add(col);
-
-
-        if (configuration.isDisplaySize()) {
-            col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 60);
-            col.setResizable(true);
-            col.setAlignment(Style.HorizontalAlignment.LEFT);
-            col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-                    if (modelData.getSize() != null) {
-                        long size = modelData.getSize().longValue();
-                        return Formatter.getFormattedSize(size);
-                    } else {
-                        return "-";
-                    }
-                }
-            });
-            col.setResizable(true);
-            col.setSortable(true);
-            headerList.add(col);
-        }
-
-        if (configuration.isDisplayDate()) {
-            col = new ColumnConfig("date", Messages.getResource("fm_column_date"), 100);
-            col.setAlignment(Style.HorizontalAlignment.LEFT);
-            col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-                    if (modelData.getDate() != null) {
-                        return new DateTimePropertyEditor(DateTimeFormat.getFormat(CalendarField.DEFAULT_DATE_FORMAT)).
-                                getStringValue(modelData.getDate());
-                    } else {
-                        return "-";
-                    }
-                }
-            });
-            col.setSortable(true);
-            col.setResizable(true);
-            headerList.add(col);
+        for (String columnName : columnNames) {
+            ColumnConfig col = null;
+	        
+            if ("providerKey".equals(columnName)) {
+                col = new ColumnConfig("providerKey", Messages.getResource("fm_column_provider"), 60);
+                col.setSortable(true);
+                col.setResizable(true);
+            } else if ("ext".equals(columnName)) {
+                col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 40);
+                col.setAlignment(Style.HorizontalAlignment.CENTER);
+                col.setRenderer(EXT_RENDERER);
+                col.setSortable(true);
+                col.setResizable(true);
+            } else if ("locked".equals(columnName)) {
+                col = new ColumnConfig("locked", Messages.getResource("fm_column_locked"), 40);
+                col.setAlignment(Style.HorizontalAlignment.CENTER);
+                col.setRenderer(LOCKED_RENDERER);
+                col.setSortable(false);
+                col.setResizable(true);
+            } else if ("name".equals(columnName)) {
+	            col = new ColumnConfig("name", Messages.getResource("fm_column_name"), 140);
+	            col.setSortable(true);
+	            col.setResizable(true);
+            } else if ("path".equals(columnName)) {
+	            col = new ColumnConfig("path", Messages.getResource("fm_column_path"), 270);
+	            col.setSortable(true);
+	            col.setResizable(true);
+            } else if ("size".equals(columnName)) {
+                col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 60);
+                col.setResizable(true);
+                col.setAlignment(Style.HorizontalAlignment.LEFT);
+                col.setRenderer(SIZE_RENDERER);
+                col.setResizable(true);
+                col.setSortable(true);
+            } else if ("created".equals(columnName)) {
+                col = new ColumnConfig("created", Messages.get("fm_column_created", "Created"), 100);
+                col.setAlignment(Style.HorizontalAlignment.LEFT);
+                col.setRenderer(DATE_RENDERER);
+                col.setSortable(true);
+                col.setResizable(true);
+            } else if ("createdBy".equals(columnName)) {
+                col = new ColumnConfig("createdBy", Messages.get("fm_column_created_by", "Created by"), 100);
+                col.setAlignment(Style.HorizontalAlignment.LEFT);
+                col.setSortable(true);
+                col.setResizable(true);
+            } else if ("lastModified".equals(columnName)) {
+                col = new ColumnConfig("lastModified", Messages.get("fm_column_modified", "Modified"), 100);
+                col.setAlignment(Style.HorizontalAlignment.LEFT);
+                col.setRenderer(DATE_RENDERER);
+                col.setSortable(true);
+                col.setResizable(true);
+            } else if ("lastModifiedBy".equals(columnName)) {
+                col = new ColumnConfig("lastModifiedBy", Messages.get("fm_column_modified_by", "Modified by"), 100);
+                col.setAlignment(Style.HorizontalAlignment.LEFT);
+                col.setSortable(true);
+                col.setResizable(true);
+            } else if ("lastPublished".equals(columnName)) {
+                col = new ColumnConfig("lastPublished", Messages.get("fm_column_published", "Published"), 100);
+                col.setAlignment(Style.HorizontalAlignment.LEFT);
+                col.setRenderer(DATE_RENDERER);
+                col.setSortable(true);
+                col.setResizable(true);
+            } else if ("lastPublishedBy".equals(columnName)) {
+                col = new ColumnConfig("lastPublishedBy", Messages.get("fm_column_published_by", "Published by"), 100);
+                col.setAlignment(Style.HorizontalAlignment.LEFT);
+                col.setSortable(true);
+                col.setResizable(true);
+            } else if ("publicationInfo".equals(columnName)) {
+                col = new ColumnConfig("publicationInfo", Messages.get("fm_column_publication_info", "State"), 30);
+                col.setAlignment(Style.HorizontalAlignment.LEFT);
+				col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+					public String render(GWTJahiaNode node, String property, ColumnData config, int rowIndex,
+					        int colIndex, ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
+						int state = node.getPublicationInfo() != null ? node.getPublicationInfo().getStatus() : 0;
+						String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
+						return "<img src=\"../../gwt/resources/images/workflow/" + STATE_IMAGES[state]
+						        + ".png\" height=\"12\" width=\"12\" title=\"" + title + "\" alt=\"" + title + "\"/>";
+					}
+				});
+				col.setSortable(true);
+				col.setResizable(true);
+            }
+            if (col != null) {
+            	headerList.add(col);            	
+            }
         }
 
         return new ColumnModel(headerList);

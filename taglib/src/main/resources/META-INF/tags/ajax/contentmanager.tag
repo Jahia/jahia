@@ -430,6 +430,20 @@ while (selectedNodeIter.hasNext()) {
                             aliasResourceName="fm_column_date"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label"
                             aliasResourceName="fm_column_provider"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.created.label"
+                            aliasResourceName="fm_column_created"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.createdBy.label"
+                            aliasResourceName="fm_column_created_by"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.modified.label"
+                            aliasResourceName="fm_column_modified"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.modifiedBy.label"
+                            aliasResourceName="fm_column_modified_by"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.published.label"
+                            aliasResourceName="fm_column_published"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.publishedBy.label"
+                            aliasResourceName="fm_column_published_by"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.publicationInfo.label"
+                            aliasResourceName="fm_column_publication_info"/>
 
 <internal:gwtResourceBundle
         resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"

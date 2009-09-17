@@ -71,7 +71,13 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
     private static JCRUserManagerProvider mUserManagerService;
     private transient CacheService cacheService;
     private transient Cache cache;
-
+    private static transient Map<String,String> mappingOfProperties;
+    static {
+        mappingOfProperties = new HashMap<String, String>();
+        mappingOfProperties.put("lastname","j:lastName");
+        mappingOfProperties.put("firstname","j:firstName");
+        mappingOfProperties.put("organization","j:organization");
+    }
     /**
      * Create an new instance of the User Manager Service if the instance do not
      * exist, or return the existing instance.
@@ -127,7 +133,11 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             userNode.setProperty(JCRUser.J_PASSWORD, password);
             userNode.setProperty(JCRUser.J_EXTERNAL, false);
             for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-                userNode.setProperty((String) entry.getKey(), (String) entry.getValue());
+                String key = (String) entry.getKey();
+                if(mappingOfProperties.containsKey(key)) {
+                    key = mappingOfProperties.get(key);
+                }
+                userNode.setProperty(key, (String) entry.getValue());
             }
             jcrSessionWrapper.save();
             jcrStoreService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE , Constants.LIVE_WORKSPACE, null, Jahia.getThreadParamBean().getUser(), true, true);

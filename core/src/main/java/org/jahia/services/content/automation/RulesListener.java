@@ -282,6 +282,9 @@ public class RulesListener extends DefaultEventListener {
                                     Property p = (Property) s.getItem(path);
 
                                     Node parent = p.getParent();
+                                    if (parent.isNodeType("jnt:translation")) {
+                                        parent = parent.getParent();
+                                    }
                                     if (parent.isNodeType(Constants.JAHIAMIX_HIERARCHYNODE) || parent.isNodeType(Constants.NT_RESOURCE) || parent.isNodeType("jnt:workflowState")) {
                                         NodeWrapper rn;
                                         if (parent .isNodeType(Constants.MIX_REFERENCEABLE)) {

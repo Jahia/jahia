@@ -1306,7 +1306,7 @@ public class ContentManagerHelper {
                                     }
                                 }
                             } else {
-                                if (propValue != null) {
+                                if (propValue != null && propValue.getString() != null) {
                                     Value value = Utils.convertValue(propValue);
                                     objectNode.setProperty(prop.getName(), value);
                                 } else {

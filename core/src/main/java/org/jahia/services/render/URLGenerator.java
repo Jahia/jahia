@@ -3,14 +3,21 @@ package org.jahia.services.render;
 import org.jahia.api.Constants;
 import org.jahia.bin.Edit;
 import org.jahia.bin.Render;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRStoreService;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.collections.Transformer;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Main URL generation class. This class is exposed to the template developers to make it easy to them to access
+ * basic URLs such as
+ * ${url.edit}
+ * ${url.userProfile}
  * User: toto
  * Date: Sep 14, 2009
  * Time: 11:13:37 AM
@@ -24,12 +31,16 @@ public class URLGenerator {
     private String edit;
     private String preview;
 
+    private String userProfile;
+
     private Resource resource;
     private RenderContext context;
+    private JCRStoreService jcrStoreService;
 
-    public URLGenerator(RenderContext context, Resource resource) {
+    public URLGenerator(RenderContext context, Resource resource, JCRStoreService jcrStoreService) {
         this.context = context;
         this.resource = resource;
+        this.jcrStoreService = jcrStoreService;
         initURL();
     }
 
@@ -52,6 +63,10 @@ public class URLGenerator {
         live += resourcePath + ".html";
         edit += resourcePath + ".html";
         preview += resourcePath + ".html";
+
+        List<JCRNodeWrapper> userFolders = jcrStoreService.getUserFolders(null,context.getUser());
+        String userHomePath = userFolders.iterator().next().getPath();
+        userProfile = base + userHomePath + ".html";
     }
 
     public String getBase() {
@@ -68,6 +83,10 @@ public class URLGenerator {
 
     public String getPreview() {
         return preview;
+    }
+
+    public String getUserProfile() {
+        return userProfile;
     }
 
     public String getCurrent() {

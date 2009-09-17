@@ -94,7 +94,7 @@ public class RenderService extends JahiaService {
         request.setAttribute("currentResource", resource);
 
         URLGenerator oldUrl = (URLGenerator) request.getAttribute("url");
-        request.setAttribute("url",new URLGenerator(context, resource));
+        request.setAttribute("url",new URLGenerator(context, resource, storeService));
 
         String output;
         try {

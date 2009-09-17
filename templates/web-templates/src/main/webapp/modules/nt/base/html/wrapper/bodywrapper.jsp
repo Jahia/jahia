@@ -55,7 +55,7 @@
                             <span class="currentUser"><utility:userProperty/></span>
                         </li>
                         <li class="topshortcuts-mysettings">
-                            <a href="${url.base}"><fmt:message key="web_templates.mySettings.title"/></a>
+                            <a href="${url.userProfile}"><fmt:message key="web_templates.mySettings.title"/></a>
                         </li>
                         <li class="topshortcuts-edit">
                             <a href="${url.edit}"><fmt:message key="edit"/></a>

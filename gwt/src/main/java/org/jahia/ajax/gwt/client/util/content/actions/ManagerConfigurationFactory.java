@@ -684,14 +684,12 @@ public class ManagerConfigurationFactory {
         ContentActionItem newPage = ContentActionItemCreatorHelper.createNewPageContentItem(linker);
         file.addItem(newPage);
         cfg.addItem(newPage);
-        ContentActionItem exportItem = ContentActionItemCreatorHelper.createExportItem(linker);
-        file.addItem(exportItem);
-        cfg.addItem(exportItem);
-        ContentActionItem importItem = ContentActionItemCreatorHelper.createImportItem(linker);
-        file.addItem(importItem);
-        cfg.addItem(importItem);
+        
+        file.addItem(new SeparatorActionItem());
+        file.addItem(ContentActionItemCreatorHelper.createLockItem(linker));
+        file.addItem(ContentActionItemCreatorHelper.createUnlockItem(linker));
         cfg.addItem(new SeparatorActionItem());
-
+        
         ContentActionItemGroup edit = new ContentActionItemGroup(Messages.getResource("fm_editMenu"));
         ContentActionItem rename = ContentActionItemCreatorHelper.createRenameItem(linker);
         edit.addItem(rename);

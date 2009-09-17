@@ -1,8 +1,12 @@
 package org.jahia.ajax.gwt.client.data.publication;
 
+import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.data.BaseTreeModel;
+
 import java.io.Serializable;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,7 +15,7 @@ import java.util.HashMap;
  * Time: 12:00:28 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTJahiaPublicationInfo implements Serializable {
+public class GWTJahiaPublicationInfo extends BaseTreeModel implements Serializable {
 
     public static final int UNPUBLISHED = 0;
     public static final int PUBLISHED = 1;
@@ -22,30 +26,39 @@ public class GWTJahiaPublicationInfo implements Serializable {
 
     public static final int UNPUBLISHABLE = 3;
 
-    private int status;
 
-    private boolean canPublish;
-
-    private Map<String, GWTJahiaPublicationInfo> references;
 
     public GWTJahiaPublicationInfo() {
     }
 
-    public GWTJahiaPublicationInfo(int status, boolean canPublish, Map<String, GWTJahiaPublicationInfo> references) {
-        this.status = status;
-        this.canPublish = canPublish;
-        this.references = references;
+    public GWTJahiaPublicationInfo(String path, int status, boolean canPublish) {
+        setPath(path);
+        setStatus(status);
+        setCanPublish(canPublish);
     }
 
-    public int getStatus() {
-        return status;
+    public String getPath() {
+        return get("path");
     }
 
-    public boolean isCanPublish() {
-        return canPublish;
+    public void setPath(String path) {
+        set("path", path);
     }
 
-    public Map<String, GWTJahiaPublicationInfo> getReferences() {
-        return references;
+    public Integer getStatus() {
+        return get("status");
     }
+
+    public void setStatus(Integer status) {
+        set("status", status);
+    }
+
+    public Boolean isCanPublish() {
+        return get("canPublish");
+    }
+
+    public void setCanPublish(Boolean canPublish) {
+        set("canPublish", canPublish);
+    }
+
 }

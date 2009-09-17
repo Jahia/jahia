@@ -13,6 +13,13 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
@@ -20,6 +27,10 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.util.SwallowEvent;
 
 import java.util.List;
@@ -192,11 +203,17 @@ public class EditActions {
 
         for (String path : list) {
             for (Module module : modulesByPath.get(path)) {
-                if (module instanceof MainModule) {
-                    continue;
-                }
                 GWTJahiaPublicationInfo info = module.getNode().getPublicationInfo();
                 if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+
+                    El el;
+                    LayoutContainer container = module.getContainer();
+
+                    if (container instanceof ContentPanel) {
+                        el = ((ContentPanel) container).getHeader().el();
+                    } else {
+                        el = container.el();
+                    }
 
                     LayoutContainer ctn = new LayoutContainer();
                     ctn.setBorders(true);
@@ -209,8 +226,8 @@ public class EditActions {
                     ctn.setStyleAttribute("opacity", "0.2");
                     RootPanel.get().add(ctn);
                     ctn.el().makePositionable(true);
-                    ctn.setPosition(module.getContainer().getAbsoluteLeft(), module.getContainer().getAbsoluteTop());
-                    ctn.setSize(module.getContainer().getWidth(), module.getContainer().getHeight());
+                    ctn.setPosition(container.getAbsoluteLeft(), container.getAbsoluteTop());
+                    ctn.setSize(el.getWidth(), el.getHeight());
                     ctn.show();
                     containers.put(ctn, module);
                     ctn.sinkEvents(Event.ONCLICK);
@@ -238,7 +255,7 @@ public class EditActions {
             this.editLinker = editLinker;
             setScrollMode(Style.Scroll.AUTO);
             setHeading("Publish");
-            setSize(500, 150);
+            setSize(800, 500);
             setResizable(false);
             ButtonBar buttons = new ButtonBar() ;
 
@@ -247,6 +264,7 @@ public class EditActions {
             final FormPanel form = new FormPanel() ;
             form.setFrame(false);
             form.setHeaderVisible(false);
+            form.setBodyBorder(false);
             form.setBorders(false);
 
             final TextArea area = new TextArea();
@@ -254,10 +272,66 @@ public class EditActions {
             area.setFieldLabel("Comments");
             form.add(area);
 
-            for (String path : info.getReferences().keySet()) {
-                add(new Label(path+ " / "+ info.getReferences().get(path).getStatus()));
+
+            List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+            ColumnConfig column = new ColumnConfig();  
+            column.setId("path");
+            column.setHeader("Path");
+            column.setWidth(400);
+            column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
+                @Override
+                public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+                    return model.get(property);
+                }
+            });
+            configs.add(column);
+
+            column = new ColumnConfig();
+            column.setId("status");
+            column.setHeader("Current status");
+            column.setWidth(150);
+            column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
+                @Override
+                public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+                    switch (model.getStatus()) {
+                        case GWTJahiaPublicationInfo.UNPUBLISHED:
+                            return "Not yet published";
+                        case GWTJahiaPublicationInfo.PUBLISHED:
+                            return "Published";
+                        case GWTJahiaPublicationInfo.MODIFIED:
+                            return "Modified";
+                        case GWTJahiaPublicationInfo.UNPUBLISHABLE:
+                            return "Not yet published";
+                    }
+                    return "";
+                }
+            });
+            configs.add(column);
+
+            column = new ColumnConfig();
+            column.setId("canPublish");
+            column.setHeader("Publication allowed");
+            column.setWidth(150);
+            column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
+                @Override
+                public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+                    return model.isCanPublish().toString();
+                }
+            });
+            configs.add(column);
+
+            ListStore<GWTJahiaPublicationInfo> store = new ListStore<GWTJahiaPublicationInfo>();
+            store.add(info);
+            for (ModelData data : info.getChildren()) {
+                store.add((GWTJahiaPublicationInfo) data);
             }
-            
+//            store.add((List<GWTJahiaPublicationInfo>) info.getChildren(), true);
+            ColumnModel cm = new ColumnModel(configs);
+
+            Grid<GWTJahiaPublicationInfo> g = new Grid<GWTJahiaPublicationInfo>(store, cm);
+            g.setStripeRows(true);
+
+            add(g);
 
             Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {

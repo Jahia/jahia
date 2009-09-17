@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 /**

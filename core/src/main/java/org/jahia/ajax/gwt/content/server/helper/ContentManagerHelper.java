@@ -2583,7 +2583,7 @@ public class ContentManagerHelper {
     public static GWTJahiaPublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences,JahiaUser user) throws GWTJahiaServiceException {
         try {
             PublicationInfo pubInfo = jcr.getPublicationInfo(path,  user, languages, includesReferences);
-            return convert(pubInfo);
+            return convert(path, pubInfo);
         } catch (RepositoryException e) {
             logger.error("repository exception",e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -2591,14 +2591,15 @@ public class ContentManagerHelper {
 
     }
 
-    private static GWTJahiaPublicationInfo convert(PublicationInfo pubInfo) {
-        Map<String, GWTJahiaPublicationInfo> map = new HashMap<String, GWTJahiaPublicationInfo>();
+    private static GWTJahiaPublicationInfo convert(String path, PublicationInfo pubInfo) {
+        List<GWTJahiaPublicationInfo> list = new ArrayList<GWTJahiaPublicationInfo>();
+
+        GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(path, pubInfo.getStatus(), pubInfo.isCanPublish());
         for (String p : pubInfo.getReferences().keySet()) {
             PublicationInfo pi = pubInfo.getReferences().get(p);
-            map.put(p,convert(pi));
+            gwtInfo.add(convert(p, pi));
         }
 
-        GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(pubInfo.getStatus(), pubInfo.isCanPublish(), map);
         return  gwtInfo;
     }
 

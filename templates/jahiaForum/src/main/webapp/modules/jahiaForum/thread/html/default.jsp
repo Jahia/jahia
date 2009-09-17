@@ -25,6 +25,8 @@
         </li>
     </c:if>
 </ul>--%>
+<div id="forum-body">
+
 <div class="posts">
     <h2><a href="${url.base}${currentNode.parent.path}.html"><jcr:nodeProperty node="${currentNode}"
                                                                                name="threadSubject"/></a></h2>
@@ -56,4 +58,5 @@
         </div>
 
     </div>
+</div>
 </div>

@@ -18,6 +18,7 @@
     <a href="${url.base}${currentNode.path}.html"><jcr:nodeProperty node="${currentNode}" name="threadSubject"/></a> :
     <c:if test="${numberOfPosts > 0}">${numberOfPosts} Posts. Last post <fmt:formatDate value="${lastModified.time}" type="both" dateStyle="full"/></c:if><c:if test="${numberOfPosts <= 0}">No Posts</c:if>
 </div>--%>
+<div id="forum-body">
 <dl>
     <dt title="posts"><a class="forum-title" href="${url.base}${currentNode.path}.html"><jcr:nodeProperty
             node="${currentNode}" name="threadSubject"/></a>
@@ -31,3 +32,4 @@
                                                                                                   src="img/icon_topic_latest.gif"/>${createdBy.string}
     </a><br/>at <fmt:formatDate value="${lastModified.time}" dateStyle="full" type="both"/></span></dd>
 </dl>
+</div>

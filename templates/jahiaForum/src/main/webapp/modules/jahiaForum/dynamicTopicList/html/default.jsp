@@ -8,6 +8,7 @@
 <c:if test="${topics.nodes.size == 0}">
     No Topics Found
 </c:if>
+
 <ul>
 <c:forEach items="${topics.nodes}" var="topic">
     <li><a href="${url.base}${topic.path}.html"><jcr:nodeProperty node="${topic}" name="topicSubject"/> (${fn:length(topic.children)} threads)</a></li>

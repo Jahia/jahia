@@ -14,6 +14,7 @@
         <jcr:nodeProperty node="${lastModifiedNode}" name="jcr:createdBy" var="createdBy"/>
     </c:if>
 </c:forEach>
+<div id="forum-body">
 <div class="forum-box forum-box-style1 room">
     <span class="forum-corners-top"><span></span></span>
     <%--<c:if test="${empty requestScope.param['roomHeaders']}">
@@ -48,4 +49,5 @@
             <span class="forum-corners-bottom"><span></span></span>
         </li>
     </ul>
+</div>
 </div>

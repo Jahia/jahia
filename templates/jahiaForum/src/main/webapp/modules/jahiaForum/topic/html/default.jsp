@@ -32,6 +32,7 @@
 <jcr:sql var="numberOfThreadsQuery"
          sql="select jcr:uuid from jahiaForum:thread  where jcr:path like '${currentNode.path}/%'"/>
 <c:set var="numberOfThreads" value="${numberOfThreadsQuery.rows.size}"/>
+<div id="forum-body">
 <div class="topics">
     <h2><a href="${url.base}${currentNode.parent.path}.html"><jcr:nodeProperty node="${currentNode}"
                                                                                name="topicSubject"/></a></h2>
@@ -88,4 +89,5 @@
 
     <span>Total Threads : ${numberOfThreads}</span>
     <span>Total Posts : ${numberOfPosts}</span>
+</div>
 </div>

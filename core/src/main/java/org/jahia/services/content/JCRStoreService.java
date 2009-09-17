@@ -56,6 +56,7 @@ import org.springframework.web.context.ServletContextAware;
 import org.xml.sax.ContentHandler;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -718,18 +719,30 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
      * @param languages      The list of languages to publish, null to publish all
      * @throws RepositoryException
      */
-    private void getBlockedAndReferencesList(Node start, Set<String> pruneNodes, Set<String> referencedNode, Set<String> languages) throws RepositoryException {
+    private void getBlockedAndReferencesList(JCRNodeWrapper start, Set<String> pruneNodes, Set<String> referencedNode, Set<String> languages) throws RepositoryException {
+        String lang = null;
+        if (start.isNodeType("jnt:translation")) {
+            lang = start.getProperty("jcr:language").getString();
+        }
+
         PropertyIterator pi = start.getProperties();
         while (pi.hasNext()) {
             Property p = pi.nextProperty();
-            if ((p.getType() == PropertyType.REFERENCE || p.getType() == ExtendedPropertyType.WEAKREFERENCE) && !p.getName().startsWith("jcr:")) {
-                if (p.getDefinition().isMultiple()) {
+            PropertyDefinition definition = p.getDefinition();
+            if (lang != null && p.getName().endsWith("_"+lang)) {
+                String name = p.getName().substring(0, p.getName().length() - lang.length() - 1);
+                definition = ((JCRNodeWrapper)start.getParent()).getApplicablePropertyDefinition(name);
+            }
+            if ((definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) && !p.getName().startsWith("jcr:")) {
+                if (definition.isMultiple()) {
                     Value[] vs = p.getValues();
                     for (Value v : vs) {
                         try {
                             Node ref = start.getSession().getNodeByUUID(v.getString());
                             if (!referencedNode.contains(ref.getPath())) {
-                                referencedNode.add(ref.getPath());
+                                if (!ref.isNodeType("jnt:page")) {
+                                    referencedNode.add(ref.getPath());
+                                }
 //                                getBlockedAndReferencesList(ref, pruneNodes, referencedNode, languages);
                             }
                         } catch (ItemNotFoundException e) {
@@ -738,26 +751,29 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                     }
                 } else {
                     try {
-                        if (!referencedNode.contains(p.getNode().getPath())) {
-                            referencedNode.add(p.getNode().getPath());
+                        Node ref = p.getNode();
+                        if (!referencedNode.contains(ref.getPath())) {
+                            if (!ref.isNodeType("jnt:page")) {
+                                referencedNode.add(ref.getPath());
+                            }
 //                            getBlockedAndReferencesList(p.getNode(), pruneNodes, referencedNode, languages);
                         }
                     } catch (ItemNotFoundException e) {
                         logger.warn("Cannot get reference " + p.getString());
                     }
                 }
-            } else if ((p.getType() == PropertyType.REFERENCE || p.getType() == ExtendedPropertyType.WEAKREFERENCE)) {
+            } else if ((definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE)) {
                 System.out.println("-->" + p.getName());
             }
         }
         NodeIterator ni = start.getNodes();
         while (ni.hasNext()) {
-            Node n = ni.nextNode();
+            JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
             if (n.isNodeType("jnt:page") || n.isNodeType("jnt:folder") || n.isNodeType("jnt:file")) {
                 pruneNodes.add(n.getPath());
             } else if (languages != null && n.isNodeType("jnt:translation")) {
-                String lang = n.getProperty("jcr:language").getString();
-                if (languages.contains(lang)) {
+                String translationLanguage = n.getProperty("jcr:language").getString();
+                if (languages.contains(translationLanguage)) {
                     getBlockedAndReferencesList(n, pruneNodes, referencedNode, languages);
                 } else {
                     pruneNodes.add(n.getPath());
@@ -876,6 +892,12 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
      * @throws RepositoryException
      */
     public PublicationInfo getPublicationInfo(String path, JahiaUser user, Set<String> languages, boolean includesReferences) throws RepositoryException {
+        return getPublicationInfo(path, user ,languages, includesReferences, new HashSet<String>());
+    }
+
+    public PublicationInfo getPublicationInfo(String path, JahiaUser user, Set<String> languages, boolean includesReferences, Set<String> pathes) throws RepositoryException {
+        pathes.add(path);
+
         JCRSessionWrapper session = getThreadSession(user);
         JCRSessionWrapper liveSession = getThreadSession(user, Constants.LIVE_WORKSPACE);
         PublicationInfo info = new PublicationInfo();
@@ -897,7 +919,9 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
             getBlockedAndReferencesList(stageNode, blocked, referencedNodes, languages);
             for (String referencedNode : referencedNodes) {
-                info.addReference(referencedNode,getPublicationInfo(referencedNode, user, languages, true));
+                if (!pathes.contains(referencedNode)) {
+                    info.addReference(referencedNode,getPublicationInfo(referencedNode, user, languages, true, pathes));
+                }
             }
         }
         if (publishedNode == null) {
@@ -914,8 +938,8 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             if (stageNode.getLastModifiedAsDate() == null) {
                 logger.error("Null modifieddate for staged node "+stageNode.getPath());
                 info.setStatus(PublicationInfo.MODIFIED);
-            } else if (publishedNode.getLastModifiedAsDate() == null) {
-                logger.error("Null modifieddate for published node "+publishedNode.getPath());
+            } else if (publishedNode.getLastPublishedAsDate() == null) {
+                logger.error("Null lastPublishDate for published node "+stageNode.getPath());
                 info.setStatus(PublicationInfo.MODIFIED);
             } else {
                 long s = stageNode.getLastModifiedAsDate().getTime();

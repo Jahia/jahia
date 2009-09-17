@@ -37,6 +37,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -221,6 +222,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     List<UsageEntry> findUsages(boolean onlyLocked);
 
     List<UsageEntry> findUsages(ProcessingContext context, boolean onlyLocked);
+
+    ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName) throws ConstraintViolationException, RepositoryException ;
 
     String getPath();
 

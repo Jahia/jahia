@@ -1778,7 +1778,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return usageEntryList;
     }
 
-    protected ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName)
+    public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName)
             throws ConstraintViolationException, RepositoryException {
         List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
         types.add(getPrimaryNodeType());

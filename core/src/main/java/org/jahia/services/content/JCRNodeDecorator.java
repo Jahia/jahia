@@ -38,6 +38,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -340,6 +341,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public List<UsageEntry> findUsages(ProcessingContext context, boolean onlyLocked) {
         return node.findUsages(context, onlyLocked);
+    }
+
+    public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName) throws ConstraintViolationException, RepositoryException {
+        return node.getApplicablePropertyDefinition(propertyName);
     }
 
     public JCRNodeWrapper addNode(String s) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {

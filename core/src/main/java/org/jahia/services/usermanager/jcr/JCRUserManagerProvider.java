@@ -45,6 +45,7 @@ import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
 import org.jahia.utils.Base64;
+import org.jahia.bin.Jahia;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -129,6 +130,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 userNode.setProperty((String) entry.getKey(), (String) entry.getValue());
             }
             jcrSessionWrapper.save();
+            jcrStoreService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE , Constants.LIVE_WORKSPACE, null, Jahia.getThreadParamBean().getUser(), true, true);
             return new JCRUser(userNode.getUUID(), jcrStoreService);
         } catch (RepositoryException e) {
             logger.error(e);

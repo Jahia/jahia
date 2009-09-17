@@ -58,16 +58,16 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     private JCRNodeWrapper node;
     private Property property;
     private String name;
-    private PropertyDefinition def;
+    private ExtendedPropertyDefinition def;
 
-    public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JCRSessionWrapper session, JCRStoreProvider provider) {
+    public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JCRSessionWrapper session, JCRStoreProvider provider, ExtendedPropertyDefinition def) {
         super(session, provider);
         this.node = objectNode;
         this.property = property;
         try {
             this.localPath = property.getPath();
             this.name = property.getName();
-            def = property.getDefinition();
+            this.def = def;
         } catch (RepositoryException e) {
             
         }
@@ -181,12 +181,12 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         String name = def.getDeclaringNodeType().getName();
         if (name.equals(Constants.NT_HIERARCHYNODE) && def.getName().equals(Constants.JCR_CREATED)) {
             name = Constants.MIX_CREATED;
-        }
-        if (name.equals(Constants.NT_RESOURCE) && (def.getName().equals(Constants.JCR_MIMETYPE) || def.getName().equals(Constants.JCR_ENCODING))) {
+        } else if (name.equals(Constants.NT_RESOURCE) && (def.getName().equals(Constants.JCR_MIMETYPE) || def.getName().equals(Constants.JCR_ENCODING))) {
             name = Constants.MIX_MIMETYPE;
-        }
-        if (name.equals(Constants.NT_RESOURCE) && def.getName().equals(Constants.JCR_LASTMODIFIED)) {
+        } else if (name.equals(Constants.NT_RESOURCE) && def.getName().equals(Constants.JCR_LASTMODIFIED)) {
             name = Constants.MIX_LAST_MODIFIED;
+        } else {
+            return def;
         }
 
         ExtendedNodeType ent = NodeTypeRegistry.getInstance().getNodeType(name);
@@ -194,7 +194,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public int getType() throws RepositoryException {
-        return property.getType();
+        return def.getRequiredType();
     }
 
     public CategoryBean getCategory() throws ValueFormatException, RepositoryException {

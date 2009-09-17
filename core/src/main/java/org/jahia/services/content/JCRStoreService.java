@@ -727,14 +727,21 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                     Value[] vs = p.getValues();
                     for (Value v : vs) {
                         try {
-                            referencedNode.add(start.getSession().getNodeByUUID(v.getString()).getPath());
+                            Node ref = start.getSession().getNodeByUUID(v.getString());
+                            if (!referencedNode.contains(ref.getPath())) {
+                                referencedNode.add(ref.getPath());
+//                                getBlockedAndReferencesList(ref, pruneNodes, referencedNode, languages);
+                            }
                         } catch (ItemNotFoundException e) {
                             logger.warn("Cannot get reference " + v.getString());
                         }
                     }
                 } else {
                     try {
-                        referencedNode.add(p.getNode().getPath());
+                        if (!referencedNode.contains(p.getNode().getPath())) {
+                            referencedNode.add(p.getNode().getPath());
+//                            getBlockedAndReferencesList(p.getNode(), pruneNodes, referencedNode, languages);
+                        }
                     } catch (ItemNotFoundException e) {
                         logger.warn("Cannot get reference " + p.getString());
                     }
@@ -775,6 +782,12 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
      * @param system
      */
     public void publish(String path, String sourceWorkspace, String destinationWorkspace, Set<String> languages, JahiaUser user, boolean publishParent, boolean system) throws RepositoryException {
+        publish(path, sourceWorkspace, destinationWorkspace, languages, user, publishParent, system, new HashSet<String>());
+    }
+
+    private void publish(String path, String sourceWorkspace, String destinationWorkspace, Set<String> languages, JahiaUser user, boolean publishParent, boolean system, Set<String> pathes) throws RepositoryException {
+        pathes.add(path);
+
         JCRSessionWrapper sourceSession = getThreadSession(user, sourceWorkspace);
         JCRNodeWrapper sourceNode = sourceSession.getNode(path);
 
@@ -784,7 +797,9 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             destinationSession.getNode(parentPath);
         } catch (PathNotFoundException e) {
             if (publishParent) {
-                publish(parentPath, sourceWorkspace, destinationWorkspace, languages, user, true, system);
+                if (!pathes.contains(parentPath)) {
+                    publish(parentPath, sourceWorkspace, destinationWorkspace, languages, user, true, system, pathes);
+                }
             } else {
                 return;
             }
@@ -797,7 +812,9 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
         for (String node : referencedNodes) {
             try {
-                publish(node, sourceWorkspace, destinationWorkspace, languages, user, true, system);
+                if (!pathes.contains(node)) {
+                    publish(node, sourceWorkspace, destinationWorkspace, languages, user, true, system, pathes);
+                }
             } catch (AccessDeniedException e) {
                 logger.warn("Cannot publish node at : " + node);
             }
@@ -895,7 +912,10 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             }
         } else {
             if (stageNode.getLastModifiedAsDate() == null) {
-                logger.error("Null modifieddate for node "+stageNode.getPath());
+                logger.error("Null modifieddate for staged node "+stageNode.getPath());
+                info.setStatus(PublicationInfo.MODIFIED);
+            } else if (publishedNode.getLastModifiedAsDate() == null) {
+                logger.error("Null modifieddate for published node "+publishedNode.getPath());
                 info.setStatus(PublicationInfo.MODIFIED);
             } else {
                 long s = stageNode.getLastModifiedAsDate().getTime();

@@ -63,6 +63,8 @@ public class ExtendedNodeType implements NodeType {
 
     private Map<String, ExtendedNodeDefinition> nodes = new ListOrderedMap();
     private Map<String, ExtendedPropertyDefinition> properties = new ListOrderedMap();
+    private Map<String, ExtendedNodeDefinition> unstructuredNodes = new ListOrderedMap();
+    private Map<Integer, ExtendedPropertyDefinition> unstructuredProperties = new ListOrderedMap();
 
     private Name name;
     private String alias;
@@ -274,17 +276,39 @@ public class ExtendedNodeType implements NodeType {
         return l;
     }
 
+    public Map<Integer,ExtendedPropertyDefinition> getUnstructuredPropertyDefinitions() {
+        Map<Integer,ExtendedPropertyDefinition> l = new ListOrderedMap();
+
+        ExtendedNodeType[] supertypes = getSupertypes();
+        for (int i = 0; i < supertypes.length; i++) {
+            ExtendedNodeType nodeType = supertypes[i];
+            Map<Integer,ExtendedPropertyDefinition> c = nodeType.getDeclaredUnstructuredPropertyDefinitions();
+            l.putAll(c);
+        }
+
+        l.putAll(unstructuredProperties);
+
+        return l;
+    }
+
     public ExtendedPropertyDefinition[] getPropertyDefinitions() {
-        Map<String, ExtendedPropertyDefinition> l = getPropertyDefinitionsAsMap();
-        return l.values().toArray(new ExtendedPropertyDefinition[l.size()]);
+        Collection<ExtendedPropertyDefinition> c = new ArrayList<ExtendedPropertyDefinition>(getPropertyDefinitionsAsMap().values());
+        c.addAll(getUnstructuredPropertyDefinitions().values());
+        return c.toArray(new ExtendedPropertyDefinition[c.size()]);
     }
 
     public Map<String, ExtendedPropertyDefinition> getDeclaredPropertyDefinitionsAsMap() {
         return properties;
     }
 
+    public Map<Integer,ExtendedPropertyDefinition> getDeclaredUnstructuredPropertyDefinitions() {
+        return unstructuredProperties;
+    }
+
     public ExtendedPropertyDefinition[] getDeclaredPropertyDefinitions() {
-        return properties.values().toArray(new ExtendedPropertyDefinition[properties.size()]);
+        Collection<ExtendedPropertyDefinition> c = new ArrayList<ExtendedPropertyDefinition>(properties.values());
+        c.addAll(unstructuredProperties.values());
+        return c.toArray(new ExtendedPropertyDefinition[c.size()]);
     }
 
     public Map<String, ExtendedNodeDefinition> getChildNodeDefinitionsAsMap() {
@@ -300,17 +324,39 @@ public class ExtendedNodeType implements NodeType {
         return l;
     }
 
+    public Map<String,ExtendedNodeDefinition> getUnstructuredChildNodeDefinitions() {
+        Map<String,ExtendedNodeDefinition> l = new ListOrderedMap();
+
+        l.putAll(unstructuredNodes);
+
+        ExtendedNodeType[] supertypes = getSupertypes();
+        for (int i = 0; i < supertypes.length; i++) {
+            ExtendedNodeType nodeType = supertypes[i];
+            Map<String,ExtendedNodeDefinition> c = nodeType.getDeclaredUnstructuredChildNodeDefinitions();
+            l.putAll(c);
+        }
+
+        return l;
+    }
+
     public ExtendedNodeDefinition[] getChildNodeDefinitions() {
-        Map<String, ExtendedNodeDefinition> l = getChildNodeDefinitionsAsMap();
-        return l.values().toArray(new ExtendedNodeDefinition[l.size()]);
+        Collection<ExtendedNodeDefinition> c = new ArrayList<ExtendedNodeDefinition>(getChildNodeDefinitionsAsMap().values());
+        c.addAll(getUnstructuredChildNodeDefinitions().values());
+        return c.toArray(new ExtendedNodeDefinition[c.size()]);
     }
 
     public Map<String, ExtendedNodeDefinition> getDeclaredChildNodeDefinitionsAsMap() {
         return nodes;
     }
 
+    public Map<String,ExtendedNodeDefinition> getDeclaredUnstructuredChildNodeDefinitions() {
+        return unstructuredNodes;
+    }
+
     public ExtendedNodeDefinition[] getDeclaredChildNodeDefinitions() {
-        return nodes.values().toArray(new ExtendedNodeDefinition[nodes.size()]);
+        Collection<ExtendedNodeDefinition> c = new ArrayList<ExtendedNodeDefinition>(nodes.values());
+        c.addAll(unstructuredNodes.values());
+        return c.toArray(new ExtendedNodeDefinition[c.size()]);
     }
 
     public List<String> getGroupedItems() {
@@ -342,7 +388,11 @@ public class ExtendedNodeType implements NodeType {
     }
 
     void setPropertyDefinition(String name, ExtendedPropertyDefinition p) {
-        properties.put(name, p);
+        if (name.equals("*")) {
+            unstructuredProperties.put(p.getRequiredType(), p);
+        } else {
+            properties.put(name, p);
+        }
         items.add(p);
     }
 
@@ -351,7 +401,15 @@ public class ExtendedNodeType implements NodeType {
     }
 
     void setNodeDefinition(String name, ExtendedNodeDefinition p) {
-        nodes.put(name, p);
+        if (name.equals("*")) {
+            String s = "";
+            for (String s1 : p.getRequiredPrimaryTypesNames()) {
+                s += (s1 + " ");
+            }
+            unstructuredNodes.put(s.trim(), p);
+        } else {
+            nodes.put(name, p);
+        }
         items.add(p);
     }
 

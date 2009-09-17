@@ -62,7 +62,7 @@ public class DailyTimeBasedPublishingNode extends NodeImpl {
         parent = node;
         try {
             final ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType("jnt:hourlyTimebasedPublished");
-            setDefinition(parent.nodetype.getChildNodeDefinitionsAsMap().get("*"));
+            setDefinition(parent.nodetype.getUnstructuredChildNodeDefinitions().get("jnt:hourlyTimebasedPublished"));
             setNodetype(type);
         } catch (NoSuchNodeTypeException e) {
             logger.error(e);

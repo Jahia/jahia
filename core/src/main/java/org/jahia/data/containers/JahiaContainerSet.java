@@ -180,7 +180,7 @@ public class JahiaContainerSet implements Map<String, JahiaContainerList> {
                                 processingContext.getEntryLoadRequest()))).getNodeType().getName();
             }  
             n = NodeTypeRegistry.getInstance().getNodeType(n).getNodeDefinition(containerName)
-                    .getRequiredPrimaryTypes()[0].getChildNodeDefinitionsAsMap().get("*").getRequiredPrimaryTypes()[0]
+                    .getRequiredPrimaryTypes()[0].getUnstructuredChildNodeDefinitions().values().iterator().next().getRequiredPrimaryTypes()[0]
                     .getName();
         } catch (Exception e) {
             logger.warn("Error retrieving page definitions", e);

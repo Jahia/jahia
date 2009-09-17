@@ -62,7 +62,7 @@ public class JahiaAceNodeImpl extends NodeImpl {
         this.privileges = privileges;
         try {
             final ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType("jnt:ace");
-            setDefinition(parent.nodetype.getChildNodeDefinitionsAsMap().get("*"));
+            setDefinition(parent.nodetype.getUnstructuredChildNodeDefinitions().get("jnt:ace"));
             setNodetype(type);
         } catch (NoSuchNodeTypeException e) {
             logger.error(e);

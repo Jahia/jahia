@@ -329,7 +329,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
 //                String containerName = nodeDef.getDeclaringNodeType().getName().replace(':','_') + "_" + nodeDef.getName();
                 ExtendedNodeType[] requiredPrimaryTypes = nodeDef.getRequiredPrimaryTypes();
                 if (requiredPrimaryTypes[0].isNodeType(Constants.JAHIANT_CONTAINERLIST) || requiredPrimaryTypes[0].isNodeType(Constants.JAHIANT_CONTENTLIST)) {
-                    nodeDef = requiredPrimaryTypes[0].getDeclaredChildNodeDefinitionsAsMap().get("*");
+                    nodeDef = requiredPrimaryTypes[0].getDeclaredUnstructuredChildNodeDefinitions().values().iterator().next();
                     requiredPrimaryTypes = nodeDef.getRequiredPrimaryTypes(); 
                 }
 
@@ -954,7 +954,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
             ExtendedNodeType[] nodeTypes = nodeDef.getRequiredPrimaryTypes();
             if (nodeTypes.length > 0) {
                 if (nodeTypes[0].isNodeType(Constants.JAHIANT_CONTAINERLIST)||nodeTypes[0].isNodeType(Constants.JAHIANT_CONTENTLIST)) {
-                    nodeTypes = nodeTypes[0].getChildNodeDefinitionsAsMap().get("*").getRequiredPrimaryTypes();
+                    nodeTypes = nodeTypes[0].getUnstructuredChildNodeDefinitions().values().iterator().next().getRequiredPrimaryTypes();
                 }
                 for (int i = 0; i < nodeTypes.length; i++) {
                     ExtendedNodeType nodeType = nodeTypes[i];

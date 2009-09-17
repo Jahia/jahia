@@ -42,12 +42,15 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.jaas.JahiaLoginModule;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -535,7 +538,9 @@ public class JCRStoreProvider {
     }
 
     public JCRPropertyWrapperImpl getPropertyWrapper(Property prop, JCRSessionWrapper session) throws RepositoryException {
-        return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getNode(), session, this), prop, session, this);
+        PropertyDefinition def = prop.getDefinition();
+        ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(def.getDeclaringNodeType().getName()).getDeclaredPropertyDefinitionsAsMap().get(def.getName());
+        return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getNode(), session, this), prop, session, this, epd);
     }
 
     protected boolean canRegisterCustomNodeTypes() {
@@ -630,18 +635,20 @@ public class JCRStoreProvider {
                                 f.getNode(username);
                             } catch (PathNotFoundException ee) {
                                 try {
+                                    Node userNode;
                                     if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
                                         session.importXML(f.getPath(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                                         session.move(f.getPath()+"/user", f.getPath()+"/"+username);
-                                        Node userNode = f.getNode(username);
+                                        userNode = f.getNode(username);
                                         userNode.setProperty(JCRUser.J_EXTERNAL,true);
                                         userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE,providerName);
                                         JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
                                     } else {
-                                        Node userNode = f.addNode(username, Constants.JAHIANT_USER);
+                                        userNode = f.addNode(username, Constants.JAHIANT_USER);
                                         JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
                                     }
                                     session.save();
+                                    service.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, Jahia.getThreadParamBean().getUser(), true, true);
                                 } catch (RepositoryException e1) {
                                     logger.error("Cannot save", e1);
                                 }

@@ -912,7 +912,7 @@ public class ImportHandler extends DefaultHandler {
                     } catch (NoSuchNodeTypeException e) {
                         if (localName.endsWith("List")) {
                             ExtendedNodeType listNt = jcd.getContainerListNodeDefinition().getRequiredPrimaryTypes()[0];
-                            ExtendedNodeType ctnNt = listNt.getChildNodeDefinitionsAsMap().get("*").getRequiredPrimaryTypes()[0];
+                            ExtendedNodeType ctnNt = listNt.getUnstructuredChildNodeDefinitions().values().iterator().next().getRequiredPrimaryTypes()[0];
                             ExtendedNodeType importedNt = NodeTypeRegistry.getInstance().getNodeType(importedPt.substring(0, importedPt.length()-4));
                             if (ctnNt.isNodeType(importedNt.getName()) || importedNt.isNodeType(ctnNt.getName())) {
                                 return parent;
@@ -925,8 +925,8 @@ public class ImportHandler extends DefaultHandler {
                     if (!ImportExportBaseService.getInstance().isCompatible(jcd, importedListNodeType, jParams)) {
                         if (importedListNodeType.isNodeType("jnt:containerList")) {
                             ExtendedNodeType listNt = jcd.getContainerListNodeDefinition().getRequiredPrimaryTypes()[0];
-                            ExtendedNodeType ctnNt = listNt.getChildNodeDefinitionsAsMap().get("*").getRequiredPrimaryTypes()[0];
-                            ExtendedNodeType importedNt = importedListNodeType.getChildNodeDefinitionsAsMap().get("*").getRequiredPrimaryTypes()[0];
+                            ExtendedNodeType ctnNt = listNt.getUnstructuredChildNodeDefinitions().values().iterator().next().getRequiredPrimaryTypes()[0];
+                            ExtendedNodeType importedNt = importedListNodeType.getUnstructuredChildNodeDefinitions().values().iterator().next().getRequiredPrimaryTypes()[0];
                             if (ctnNt.isNodeType(importedNt.getName()) || importedNt.isNodeType(ctnNt.getName())) {
                                 return parent;
                             }

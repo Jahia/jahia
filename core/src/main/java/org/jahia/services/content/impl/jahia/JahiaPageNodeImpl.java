@@ -74,7 +74,7 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
         super(session, contentPage);
 
         // todo not same definition if rootpage
-        setDefinition(NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_PAGE).getDeclaredChildNodeDefinitionsAsMap().get("*"));
+        setDefinition(NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_PAGE).getDeclaredUnstructuredChildNodeDefinitions().get(Constants.NT_BASE));
         JahiaPageDefinition template = contentPage.getPageTemplate(getProcessingContext());
         if (template == null ) {
             template = contentPage.getPageTemplate(EntryLoadRequest.STAGED);

@@ -8,6 +8,40 @@
 <%-- Get all contents --%>
 <jcr:nodeProperty node="${currentNode}" name="title" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
+<jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
+<jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModified"/>
+<span class="forum-corners-top"><span></span></span>
+
+<div class="forum-postbody">
+    <h3 class="forum-h3-first"><a href="#">${title.string}</a></h3>
+
+    <p class="forum-author">by <strong><a
+            href="${url.base}/content/users/${createdBy.string}">${createdBy.string}</a></strong> » <fmt:formatDate
+            value="${lastModified.time}" type="both" dateStyle="full"/></p>
+
+    <div class="content">${content.string}</div>
+</div>
+<jcr:sql var="numberOfPostsQuery"
+         sql="select jcr:uuid from jahiaForum:post  where jcr:createdBy = '${createdBy.string}'"/>
+<c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
+<dl class="forum-postprofile">
+    <dt>
+        <jcr:node var="userNode" path="/content/users/${createdBy.string}"/>
+        <template:module node="${userNode}" template="mini"/>
+    </dt>
+    <dd><strong>Posts:</strong> ${numberOfPosts}</dd>
+    <dd><strong>Joined:</strong> <jcr:nodeProperty node="${userNode}" name="jcr:lastModified"
+                                                   var="userCreated"/><fmt:formatDate value="${userCreated.time}"
+                                                                                      type="both" dateStyle="full"/>
+    </dd>
+</dl>
+<div class="back2top"><a title="Top" class="top" href="#wrap">Top</a></div>
+<div class="clear"></div>
+<span class="forum-corners-bottom"><span></span></span>
+
+
+<%--
+
 <div class="commentBodyWrapper"><!--start commentBodyWrapper-->
     <div class="commentBody">
         <p class="commentDate">${currentNode.propertiesAsString['jcr:created']}</p>
@@ -58,7 +92,9 @@
     <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
         <form action="${url.base}${currentNode.path}" method="delete" id="jahia-forum-post-delete-${currentNode.UUID}">
             <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
-                <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
+                --%>
+<%-- Define the output format for the newly created node by default html or by stayOnNode--%>
+<%--
             <input type="hidden" name="newNodeOutputFormat" value="html">
         </form>
         <a href="#" onclick="document.getElementById('jahia-forum-post-delete-${currentNode.UUID}').submit();"
@@ -70,4 +106,4 @@
     </c:if>
 </div>
 
-<div class="clear"></div>
+<div class="clear"></div>--%>

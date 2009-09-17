@@ -35,18 +35,7 @@
 
 <%@ include file="../../../../../common/declarations.jspf" %>
 <div id="bodywrapper">
-    <c:forEach items="${currentNode.ancestors}" var="page">
-        <c:if test="${jcr:isNodeType(page, 'jnt:page')}">
-            <c:if test="${rootPage == null}">
-                <c:set var="rootPage" value="${page}"/>
-            </c:if>
-        </c:if>
-    </c:forEach>
-    <c:if test="${jcr:isNodeType(currentNode, 'jnt:page')}">
-        <c:if test="${rootPage == null}">
-            <c:set var="rootPage" value="${currentNode}"/>
-        </c:if>
-    </c:if>
+    <jcr:node var="rootPage" path="/content/sites/${renderContext.site.siteKey}/home" />
     <div id="contentArea">
         <div id="toplinks">
 

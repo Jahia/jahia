@@ -127,7 +127,8 @@ public class Render extends HttpServlet {
             if (method.equals(METHOD_GET)) {
                 Resource resource = resolveResource(workspace, locale, path, renderContext.getUser(), paramBean);
                 renderContext.setMainResource(resource);
-
+                renderContext.setSite(paramBean.getSite());
+                
                 long lastModified = getLastModified(resource, renderContext);
 
                 if (lastModified == -1) {

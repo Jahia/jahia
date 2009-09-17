@@ -95,16 +95,16 @@
     -->
 
     <!-- rule for site export and other pages that could cause problems-->
-    <rule>
-        <from>^/(.*?)/page([0-9]+).html/(.*?)$</from>
-        <to last="true">/$1/pid/$2/$3</to>
-    </rule>
+    <!--<rule>-->
+        <!--<from>^/(.*?)/page([0-9]+).html/(.*?)$</from>-->
+        <!--<to last="true">/$1/pid/$2/$3</to>-->
+    <!--</rule>-->
 
     <!-- rule for any regular page-->
-    <rule>
-        <from>^/(.*?)/page([0-9]+).html$</from>
-        <to>/$1/pid/$2</to>
-    </rule>
+    <!--<rule>-->
+        <!--<from>^/(.*?)/page([0-9]+).html$</from>-->
+        <!--<to>/$1/pid/$2</to>-->
+    <!--</rule>-->
 
     <!-- GXT resources-->
     <rule>
@@ -147,10 +147,10 @@
     </outbound-rule>
 
     <!-- rule for any regular page-->
-    <outbound-rule>
-        <from>/pid/([0-9]+)$</from>
-        <to>/page$1.html</to>
-    </outbound-rule>
+    <!--<outbound-rule>-->
+        <!--<from>/pid/([0-9]+)$</from>-->
+        <!--<to>/page$1.html</to>-->
+    <!--</outbound-rule>-->
 
 </urlrewrite>
 

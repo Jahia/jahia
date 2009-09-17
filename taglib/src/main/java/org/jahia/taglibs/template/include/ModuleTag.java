@@ -168,6 +168,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             if (renderContext == null) {
                 final JahiaData jData = (JahiaData) pageContext.getRequest().getAttribute("org.jahia.data.JahiaData");
                 renderContext = new RenderContext((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), jData.getProcessingContext().getUser());
+                renderContext.setSite(jData.getProcessingContext().getSite());
             }
             if(templateWrapper != null) {
                 renderContext.setTemplateWrapper(templateWrapper);

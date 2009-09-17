@@ -32,6 +32,7 @@
 package org.jahia.services.render;
 
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.sites.JahiaSite;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,6 +48,7 @@ public class RenderContext {
     private HttpServletResponse response;
     private Resource mainResource;
     private JahiaUser user;
+    private JahiaSite site;
 
     private boolean includeSubModules = true;
     private boolean isEditMode = false;
@@ -74,6 +76,14 @@ public class RenderContext {
 
     public JahiaUser getUser() {
         return user;
+    }
+
+    public JahiaSite getSite() {
+        return site;
+    }
+
+    public void setSite(JahiaSite site) {
+        this.site = site;
     }
 
     public Set<String> getDisplayedModules() {

@@ -151,6 +151,10 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
 
     public String getName() throws RepositoryException {
         try {
+            if (contentPage.getSite().getHomePageID() == contentPage.getID()) {
+                return "home";
+            }
+
             String s = contentPage.getProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
             if (s != null) {
                 return s;
@@ -158,7 +162,8 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
         } catch (JahiaException e) {
             e.printStackTrace();
         }
-        return contentPage.getObjectKey().toString();
+//        return contentPage.getObjectKey().toString();
+        return "page" + contentPage.getID();
     }
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {

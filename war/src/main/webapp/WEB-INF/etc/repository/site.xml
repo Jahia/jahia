@@ -12,6 +12,4 @@
 
     <content jcr:primaryType="jnt:folder"/>
 
-    <home jcr:primaryType="jnt:page" />
-    
 </site>

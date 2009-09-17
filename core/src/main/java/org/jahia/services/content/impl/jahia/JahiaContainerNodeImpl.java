@@ -89,7 +89,8 @@ public class JahiaContainerNodeImpl extends JahiaContentNodeImpl {
         } catch (JahiaException e) {
             e.printStackTrace();
         }
-        return contentContainer.getObjectKey().toString();
+//        return contentContainer.getObjectKey().toString();
+        return "ctn"+ contentContainer.getID();
     }
 
     protected void initFields() throws RepositoryException {
@@ -152,4 +153,6 @@ public class JahiaContainerNodeImpl extends JahiaContentNodeImpl {
         }
         return null;
     }
+
+
 }

@@ -252,6 +252,7 @@ public class ContentManagerHelper {
                 Resource r = new Resource(node, "html", null, null);
                 final HashMap<String, List<String>> listHashMap = new HashMap<String, List<String>>();
                 RenderContext renderContext = new RenderContext(((ParamBean) context).getRequest(), ((ParamBean) context).getResponse(), user);
+                renderContext.setSite(context.getSite());
                 renderContext.setIncludeSubModules(false);
                 RenderService.getInstance().render(r, renderContext);
                 List<String> l = r.getMissingResources();
@@ -2165,6 +2166,7 @@ public class ContentManagerHelper {
             Resource r = new Resource(node, "html", null, template);
             ctx.getRequest().setAttribute("mode", "edit");
             RenderContext renderContext = new RenderContext(ctx.getRequest(), ctx.getResponse(), ctx.getUser());
+            renderContext.setSite(ctx.getSite());
             renderContext.setEditMode(editMode);
             renderContext.setMainResource(r);
             renderContext.setTemplateWrapper(templateWrapper);

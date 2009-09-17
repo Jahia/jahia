@@ -81,12 +81,12 @@ public class ModuleHelper {
                     for (Module module : modulesByPath.get(gwtJahiaNode.getPath())) {
                         Log.info("set object for "+module.getModuleId());
                         module.setNode(gwtJahiaNode);
-
                     }
                 }
             }
 
             public void onFailure(Throwable caught) {
+                Log.error("Unbale to get node with publication info due to:",caught);
 
             }
         });

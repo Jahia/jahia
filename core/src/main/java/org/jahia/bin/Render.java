@@ -263,21 +263,13 @@ public class Render extends HttpServlet {
         Set<Map.Entry> set = req.getParameterMap().entrySet();
         for (Map.Entry entry : set) {
             String key = (String) entry.getKey();
-            if (!NODE_TYPE.equals(key) && !NODE_NAME.equals(key)) {
+            if (!reservedParameters.contains(key)) {
                 String[] values = (String[]) entry.getValue();
                 node.setProperty(key, values[0]);
             }
         }
         session.save();
-        StringBuffer out = new StringBuffer("Successfully updated");
-
-        resp.setContentType("text/html");
-        resp.setCharacterEncoding("UTF-8");
-        resp.setContentLength(out.length());
-
-        PrintWriter writer = resp.getWriter();
-        writer.print(out.toString());
-        writer.close();
+        performRedirect(null, null, req, resp);
     }
 
     private void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
@@ -334,29 +326,10 @@ public class Render extends HttpServlet {
             session.save();
         }
         resp.setStatus(HttpServletResponse.SC_CREATED);
-        String renderedURL = null;
-        String outputFormat = req.getParameter(NEW_NODE_OUTPUT_FORMAT);
-        if(outputFormat==null || "".equals(outputFormat.trim())) {
-            outputFormat = "html";
-        }
-        if(url!=null) {
-            String requestedURL = req.getRequestURL().toString();
-            renderedURL = requestedURL.substring(0, requestedURL.indexOf(URLEncoder.encode(path,
-                                                                                           "UTF-8").replaceAll("%2F","/"))) + url + "." + outputFormat;
-        }
-        String stayOnPage = req.getParameter(STAY_ON_NODE);
-        if(stayOnPage!=null && "".equals(stayOnPage.trim())) {
-            stayOnPage = null;
-        }
-        if(renderedURL!=null && stayOnPage==null) {
-            resp.setHeader("Location", renderedURL);
-            resp.sendRedirect(renderedURL);
-        } else if (stayOnPage != null){
-            resp.sendRedirect(stayOnPage+"."+outputFormat);
-        }
+        performRedirect(url, path, req, resp);
     }
 
-    private void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
+	private void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
         JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(renderContext.getUser(), workspace, locale);
         Node node = session.getNode(path);
         Node parent = node.getParent();
@@ -365,6 +338,10 @@ public class Render extends HttpServlet {
         String url = parent.getPath();
         session.save();
         resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        performRedirect(url, path, req, resp);
+    }
+
+	private void performRedirect(String url, String path, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String renderedURL = null;
         String outputFormat = req.getParameter(NEW_NODE_OUTPUT_FORMAT);
         if(outputFormat==null || "".equals(outputFormat.trim())) {
@@ -394,7 +371,7 @@ public class Render extends HttpServlet {
      * or [nodepath].[templatetype]
      *
      * @param workspace The workspace where to get the node
-     * @param locale    cureent locale
+     * @param locale    current locale
      * @param path      The path of the node, in the specified workspace
      * @param user      Current user
      * @param ctx       request context

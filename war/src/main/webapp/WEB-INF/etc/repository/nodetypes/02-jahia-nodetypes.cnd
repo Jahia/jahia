@@ -26,7 +26,10 @@
   - j:lastPublished (date) protected
   - j:lastPublishedBy (string) protected
 
-[jmix:contentmetadata] > jmix:metadata, mix:createdBy, mix:lastModified, jmix:lastPublished, mix:title, jmix:categorized, jmix:keywords, jmix:thumbnail mixin
+[jmix:originWS] mixin
+  - j:originWS (string) protected
+
+[jmix:contentmetadata] > jmix:metadata, mix:createdBy, mix:lastModified, jmix:lastPublished, mix:title, jmix:categorized, jmix:keywords, jmix:thumbnail, jmix:originWS mixin
 
 //---------------------------------------------------------
 // Multi language

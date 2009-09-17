@@ -12,6 +12,7 @@
 [condition][]A variable {name} has been extracted=ExtractedVariable ( node == node, name == "{name}", {name} : value )
 [condition][]The type {name} has been assigned to a node=m : PropertyWrapper ( name == "jcr:mixinTypes", stringValues contains "{name}", node : node )
 [condition][]The {node} has a property {property}=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValues ) from {node}.properties
+[condition][]- the value is not "{value}"=stringValue != "{value}"
 [condition][]The property {property} is not defined for the {node}=not ( PropertyWrapper ( name == "{property}" ) from {node}.properties )
 [condition][]A property has been set on a node=property : PropertyWrapper ( propertyName : name, propertyValue : stringValues , node : node )
 [condition][]- its name is not {name}=name != "{name}"
@@ -19,12 +20,12 @@
 [condition][]A property {property} has been set on a node=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValues , node : node )
 [condition][]- the value is {value}=stringValue == {value}
 [condition][]The property {property} has not been modified yet on the {node}=not PropertyWrapper ( name=="{property}" , node=={node} )
+[condition][]The property {property} has not the value "{value}" on the {node}=PropertyWrapper ( name == "{property}" , stringValue != "{value}" ) from {node}.properties
 [condition][]The node has a parent=parent : NodeWrapper () from node.parent
 [condition][]- the mimetype is {mimetype}=mimeType == "{mimetype}"
 [condition][]- the mimetype is not {mimetype}=mimeType != "{mimetype}"
 [condition][]- the mimetype matches {mimetype}=mimeType matches "{mimetype}"
 [condition][]- it has the extension type {type}=types contains "{type}"
-[consequence][]Get the ancestor "{name}" of type {type}=NodeWrapper {name} = node.getAncestor("{type}");
 [condition][]The {node} has a child=child : NodeWrapper ( ) from node.childNodes
 [condition][]- the mimetype is {mimetype}=mimeType == "{mimetype}"
 [condition][]- the mimetype is not {mimetype}=mimeType != "{mimetype}"
@@ -41,17 +42,22 @@
 [condition][]A node has been published=property : PropertyWrapper ( language : name, state : stringValue, stringValue == "active", workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
 [condition][]A node has been rollbacked to author=property : PropertyWrapper ( language : name, state : stringValue, stringValue == "staging", workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
 [condition][]- it has the type {type}=node.types contains "{type}"
+[condition][]A search result hit is present=searchHit : JahiaSearchHit ( )
+[condition][]- the container is of type {containerType}=type == JahiaSearchHitInterface.CONTAINER_TYPE && containerType == "{containerType}"
+[consequence][]Get the ancestor "{name}" of type {type}=NodeWrapper {name} = node.getAncestor("{type}");
 [consequence][]Add the type {type}=node.addType ( "{type}", drools );
 [consequence][]Create a new node {nodename} under the {node}=NodeWrapper {nodename} = new NodeWrapper({node}, "{nodename}", null, drools);insert ({nodename});
 [consequence][]Create a new folder {nodename} under the {node}=NodeWrapper {nodename} = new NodeWrapper({node}, "{nodename}", "jnt:folder", drools);insert ({nodename});
 [consequence][]Create a new node {nodename} of type {type} under the {node}=NodeWrapper {nodename} = new NodeWrapper({node}, "{nodename}", "{type}", drools);insert ({nodename});
 [consequence][]Set the property {property} of the {node} with the name of the current user=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", user.getName(), drools, false));
 [consequence][]Set and copy to staging the property {property} of the {node} with the name of the current user=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", user.getName(), drools, true));
+[consequence][]Set not existing property {property} of the {node} with the name of the current user=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", user.getName(), drools, false,false));
 [consequence][]Set the property {property} of the {node} with the name of the node=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", provider.decodeInternalName(node.getName()), drools, false));
 [consequence][]Set the property {property} of the {node} with the path of the node=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", provider.decodeInternalName(node.getPath()), drools, false));
 [consequence][]Set the property {property} of the {node} with the value of that property=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", propertyValue, drools, false));
 [consequence][]Set the property {property} of the {node} with the current time=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", new java.util.Date(), drools, false));
 [consequence][]Set and copy to staging the property {property} of the {node} with the current time=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", new java.util.Date(), drools, true));
+[consequence][]Set not existing property {property} of the {node} with the current time=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", new java.util.Date(), drools, false,false));
 [consequence][]Set the property {property} of the {node} with the value of {variable}=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", {variable}, drools, false));
 [consequence][]Set the property {property} of the {node} with the value "{value}"=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", "{value}", drools, false));
 [consequence][]Remove this property=insert (new DeletedPropertyWrapper(property, drools));
@@ -76,9 +82,8 @@
 [consequence][]Fire {eventType} notification event to the users involved in the next step=service.notify(node, "{eventType}", service.getWorkflowNextStepPrincipals(node,language), drools);
 [consequence][]Fire {eventType} notification event to the users having administration rights on the object=service.notify(node, "{eventType}", service.getWorkflowAdminPrincipals(node), drools);
 [consequence][]Fire {eventType} notification event to the last user that did "{action}"=service.notify(node, "{eventType}", service.getLastUserForAction(node,language,"{action}"), drools);
-[condition][]A search result hit is present=searchHit : JahiaSearchHit ( )
-[condition][]- the container is of type {containerType}=type == JahiaSearchHitInterface.CONTAINER_TYPE && containerType == "{containerType}"
 [consequence][]Append URL path "{urlPath}"=urlService.addURLPath(searchHit, "{urlPath}");
 [consequence][]Append URL query-parameter "{parameterName}" with {parameterValue}=urlService.addURLQueryParameter(searchHit, "{parameterName}", {parameterValue});
 [consequence][]Create a thumbnail on reference "{name}" of size {size}=imageService.addThumbnail(property, "{name}",{size}, drools);
 [consequence][]Create a square thumbnail on reference "{name}" of size {size}=imageService.addSquareThumbnail(property, "{name}",{size}, drools);
+

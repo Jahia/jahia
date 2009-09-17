@@ -23,10 +23,12 @@ rule "Metadata update / content created"
     when
         A new node is created
              - it has the type mix:lastModified
+             - it has the type jmix:originWS
         The node has a parent
     then
         Set the property jcr:createdBy of the node with the name of the current user
         #Set the property jcr:created of the node with the current time
+        Set the property j:originWS of the node with the value "default"
         Set the property jcr:lastModifiedBy of the parent with the name of the current user
         Set the property jcr:lastModified of the parent with the current time
         Get the ancestor "list" of type jnt:containerList

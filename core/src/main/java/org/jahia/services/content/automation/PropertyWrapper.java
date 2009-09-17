@@ -77,6 +77,10 @@ public class PropertyWrapper implements Updateable {
     }
 
     public PropertyWrapper(NodeWrapper nodeWrapper, final String name, final Object o, KnowledgeHelper drools, final boolean copyToStaging) throws RepositoryException {
+        this(nodeWrapper, name, o, drools, copyToStaging,true);
+    }
+    public PropertyWrapper(NodeWrapper nodeWrapper, final String name, final Object o, KnowledgeHelper drools,
+                           final boolean copyToStaging, final boolean overrideIfExisting) throws RepositoryException {
         if (nodeWrapper == null) {
             return;
         }
@@ -93,13 +97,12 @@ public class PropertyWrapper implements Updateable {
             List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
             list.add(this);
         } else {
-            setProperty(node, name, o);
+            setProperty(node, name, o,overrideIfExisting);
         }
         if (copyToStaging) {
             copyToStaging(node, drools);
         }
     }
-
     private void copyToStaging(Node node, KnowledgeHelper drools) {
         try {
             JCRStoreProvider provider = (JCRStoreProvider)drools.getWorkingMemory().getGlobal("provider");
@@ -139,7 +142,7 @@ public class PropertyWrapper implements Updateable {
                 logger.debug("Node is still locked, delay property update to later");
                 delayedUpdates.add(this);
             } else {
-                setProperty(node, name, value);
+                setProperty(node, name, value,true);
             }
         } catch (PathNotFoundException e) {
             logger.warn("Node does not exist " + nodePath);
@@ -170,10 +173,18 @@ public class PropertyWrapper implements Updateable {
 
     }
 
-    protected void setProperty(Node node, String name, Object objectValue)
+    protected void setProperty(Node node, String name, Object objectValue,final boolean overrideIfExisting)
             throws RepositoryException {
 
         try {
+            if(!overrideIfExisting){
+                try {
+                    node.getProperty(name);
+                    return;
+                } catch (RepositoryException e) {
+                    logger.debug("Create new property "+name+" on node "+node.getPath());
+                }
+            }
             // deal with versioning. this method is called at restore(...)
             if (node.isNodeType(Constants.MIX_VERSIONABLE)) {
                 node.checkout();
@@ -187,7 +198,7 @@ public class PropertyWrapper implements Updateable {
             }
             ValueFactory factory = node.getSession().getValueFactory();
 
-            Value[] values = null;
+            Value[] values;
             if (objectValue.getClass().isArray()) {
                 values = new Value[Array.getLength(objectValue)];
                 for (int i = 0; i < Array.getLength(objectValue); i++) {
@@ -199,7 +210,7 @@ public class PropertyWrapper implements Updateable {
                         factory) };
             }
 
-            if (values != null && values.length > 0) {
+            if (values.length > 0) {
                 if (!propDef.isMultiple()) {
                     property = node.setProperty(name, values[0]);
                 } else {

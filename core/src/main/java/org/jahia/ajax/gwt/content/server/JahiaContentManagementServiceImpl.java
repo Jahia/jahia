@@ -452,9 +452,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         ParamBean jParams = retrieveParamBean();
         List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
         for (String path : pathes) {
-            GWTJahiaNode gwtJahiaNode = ContentManagerHelper.getNode(path, workspace, jParams);
-            gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getPath(), false));
-            list.add(gwtJahiaNode);
+            try {
+                GWTJahiaNode gwtJahiaNode = ContentManagerHelper.getNode(path, workspace, jParams);
+                gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getPath(), false));
+                list.add(gwtJahiaNode);
+            } catch (GWTJahiaServiceException e) {
+                logger.error(e,e);
+            }
         }
         return list;
     }
@@ -525,7 +529,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * Publish the specified path.
      * @param path the path to publish, will not auto publish the parents
-     * @throws forward GWTJahiaServiceException
+     * @throws  GWTJahiaServiceException
      */
     public void publish(String path) throws GWTJahiaServiceException {
         long l = System.currentTimeMillis();

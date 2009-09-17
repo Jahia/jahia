@@ -55,6 +55,7 @@ public class Render extends HttpServlet {
     public static final String NODE_NAME = "nodeName";
     public static final String NEW_NODE_OUTPUT_FORMAT = "newNodeOutputFormat";
     public static final String STAY_ON_NODE = "stayOnNode";
+    public static final String METHOD_TO_CALL = "methodToCall";
 
     static {
         reservedParameters = new ArrayList<String>();
@@ -62,6 +63,7 @@ public class Render extends HttpServlet {
         reservedParameters.add(NODE_NAME);
         reservedParameters.add(NEW_NODE_OUTPUT_FORMAT);
         reservedParameters.add(STAY_ON_NODE);
+        reservedParameters.add(METHOD_TO_CALL);
     }
 
     @Override
@@ -79,7 +81,9 @@ public class Render extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String method = req.getMethod();
-
+        if(req.getParameter(METHOD_TO_CALL)!=null) {
+            method = req.getParameter(METHOD_TO_CALL).toUpperCase();
+        }
         long startTime = System.currentTimeMillis();
 
         ProcessingContext paramBean = null;
@@ -154,7 +158,7 @@ public class Render extends HttpServlet {
                 doPut(req, resp, renderContext, path, workspace, locale);
 
             } else if (method.equals(METHOD_DELETE)) {
-                doDelete(req, resp);
+                doDelete(req, resp,renderContext, path, workspace, locale);
 
             } else if (method.equals(METHOD_OPTIONS)) {
                 doOptions(req, resp);
@@ -329,6 +333,37 @@ public class Render extends HttpServlet {
             session.save();
         }
         resp.setStatus(HttpServletResponse.SC_CREATED);
+        String renderedURL = null;
+        String outputFormat = req.getParameter(NEW_NODE_OUTPUT_FORMAT);
+        if(outputFormat==null || "".equals(outputFormat.trim())) {
+            outputFormat = "html";
+        }
+        if(url!=null) {
+            String requestedURL = req.getRequestURL().toString();
+            renderedURL = requestedURL.substring(0, requestedURL.indexOf(URLEncoder.encode(path,
+                                                                                           "UTF-8").replaceAll("%2F","/"))) + url + "." + outputFormat;
+        }
+        String stayOnPage = req.getParameter(STAY_ON_NODE);
+        if(stayOnPage!=null && "".equals(stayOnPage.trim())) {
+            stayOnPage = null;
+        }
+        if(renderedURL!=null && stayOnPage==null) {
+            resp.setHeader("Location", renderedURL);
+            resp.sendRedirect(renderedURL);
+        } else if (stayOnPage != null){
+            resp.sendRedirect(stayOnPage+"."+outputFormat);
+        }
+    }
+
+    private void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
+        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(renderContext.getUser(), workspace, locale);
+        Node node = session.getNode(path);
+        Node parent = node.getParent();
+        node.remove();
+        parent.save();
+        String url = parent.getPath();
+        session.save();
+        resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
         String renderedURL = null;
         String outputFormat = req.getParameter(NEW_NODE_OUTPUT_FORMAT);
         if(outputFormat==null || "".equals(outputFormat.trim())) {

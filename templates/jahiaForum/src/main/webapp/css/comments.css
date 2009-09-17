@@ -122,12 +122,11 @@ margin:0.5em
 }
 .commentBubble-arrow {
 	height: 24px; width: 15px;
-	background-repeat: no-repeat;
-	font-size:2px; 
+    background: url(../img/commentbubble-arrow.png) no-repeat;
+    font-size:2px;
 	position:absolute;
 	top:10px;
 	left:-15px;
-	background: url(../img/commentbubble-arrow.png);
 }
 .commentBubble-topright {
 	position:absolute;

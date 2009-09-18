@@ -44,6 +44,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.bin.Jahia;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.PathNotFoundException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.util.Locale;
@@ -95,6 +96,8 @@ public class JCRNodeTag extends AbstractJahiaTag {
                 } else {
                     logger.error("The path '" + path + "' does not exist");
                 }
+            } catch (PathNotFoundException e) {
+                logger.debug("Item not found '" + path + "'", e);
             } catch (RepositoryException e) {
                 logger.error("Could not retrieve JCR node using path '" + path + "'", e);
             }

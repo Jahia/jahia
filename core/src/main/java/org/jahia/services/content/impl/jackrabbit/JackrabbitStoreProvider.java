@@ -149,7 +149,8 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         Node node = rootNode.getNode(Constants.JCR_SYSTEM);
         // Import default ACLs
         if (!node.hasNode("j:acl")) {
-            JCRNodeWrapperImpl.changePermissions(rootNode,"g:guest","re---");
+            JCRNodeWrapperImpl.changePermissions(rootNode,"g:guest","r----");
+            JCRNodeWrapperImpl.changePermissions(rootNode,"g:users","re---");
         }
     }
 

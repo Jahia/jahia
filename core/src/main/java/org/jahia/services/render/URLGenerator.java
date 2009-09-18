@@ -4,6 +4,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Edit;
 import org.jahia.bin.Render;
 import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.apache.commons.collections.map.LazyMap;
@@ -63,14 +64,15 @@ public class URLGenerator {
         live += resourcePath + ".html";
         edit += resourcePath + ".html";
         preview += resourcePath + ".html";
-
-        List<JCRNodeWrapper> userFolders = jcrStoreService.getUserFolders(null,context.getUser());
-        String userHomePath = userFolders.iterator().next().getPath();
-        userProfile = base + userHomePath + ".html";
+        if (!context.getUser().getName().equals(JahiaUserManagerService.GUEST_USERNAME)) {
+            List<JCRNodeWrapper> userFolders = jcrStoreService.getUserFolders(null,context.getUser());
+            String userHomePath = userFolders.iterator().next().getPath();
+            userProfile = base + userHomePath + ".html";
+        }
     }
 
     public String getBase() {
-        return base;
+        return base;  
     }
 
     public String getLive() {

@@ -14,14 +14,14 @@
 <form action="${url.base}${currentNode.path}" method="post">
 <input type="hidden" name="methodToCall" value="put"/>
 <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
+<jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
+<input type="hidden" name="j:picture" id="myAvatar" value="${not empty picture ? picture.string : ''}"/>
+<ui:fileSelector fieldId="myAvatar" filters="*.bmp,*.gif,*.jpe,*.jpeg,*.jpg,*.png,*.tif,*.tiff" onSelect="function (path, url, uuid) { document.getElementById('myAvatar').value=uuid; document.getElementById('myAvatarPreview').src=url; document.getElementById('myAvatarPreview').width=120; document.getElementById('myAvatarPreview').height=120; return false; }"/>
 <div class="user-profile">
     <div class="user-photo">
-        <jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
         <c:if test="${not empty picture}">
             <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(person)}" id="myAvatarPreview" />
         </c:if>
-        <input type="hidden" name="j:picture" id="myAvatar"/>
-        <ui:fileSelector fieldId="myAvatar" filters="*.bmp,*.gif,*.jpe,*.jpeg,*.jpg,*.png,*.tif,*.tiff" onSelect="function (path, url, uuid) { document.getElementById('myAvatar').value=uuid; document.getElementById('myAvatarPreview').src=url; return false; }"/>
     </div>
     <div class="user-body">
         <h4>${fn:escapeXml(person)}&nbsp;(logged as: ${currentNode.name})</h4>

@@ -39,6 +39,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.applications.ServletIncludeResponseWrapper;
+import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.exceptions.JahiaException;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner;
@@ -88,7 +89,9 @@ public class TestServlet  extends HttpServlet {
         }
 
         try {
-            ctx.setOperationMode(ParamBean.EDIT);
+            ctx.setOperationMode(ParamBean.EDIT);            
+            ctx.setEntryLoadRequest(new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, ctx.getLocales()));
+
             JahiaUser admin = JahiaAdminUser.getAdminUser(0);
             ctx.setTheUser(admin);
         } catch (JahiaException e) {

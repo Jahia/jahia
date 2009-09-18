@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.workflow;
+package org.jahia.services.publication;
 
 import junit.framework.TestCase;
 
@@ -56,7 +56,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 /**
- * Unit test for publish / unpublish using JCR 
+ * Unit test for publish / unpublish using JCR
  * - tests publish / unpublish of pages, container lists, containers
  * - with different language settings (all, none, one, two languages)
  * - with using user not having rights
@@ -65,8 +65,8 @@ import javax.jcr.RepositoryException;
  * @author Benjamin Papez
  *
  */
-public class JcrWorkflowTest extends TestCase {
-    private static Logger logger = Logger.getLogger(JcrWorkflowTest.class);
+public class PublicationTest extends TestCase {
+    private static Logger logger = Logger.getLogger(PublicationTest.class);
     private JahiaSite site;
     private ProcessingContext ctx;
     private final static String TESTSITE_NAME = "jcrWorkflowTest";
@@ -341,7 +341,7 @@ public class JcrWorkflowTest extends TestCase {
             throws RepositoryException {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
                 .getJCRStoreService();
-        JCRSessionWrapper session = jcrService.getThreadSession(ctx.getUser());        
+        JCRSessionWrapper session = jcrService.getThreadSession(ctx.getUser());
         Map<String, Long> publishedDateForObjects = new HashMap<String, Long>();
         addNodeAndDependands(pageNodeToPublish, languages,
                 publishedDateForObjects);
@@ -351,7 +351,7 @@ public class JcrWorkflowTest extends TestCase {
 
         JCRSessionWrapper liveSession = jcrService.getThreadSession(ctx
                 .getUser(), Constants.LIVE_WORKSPACE);
-        
+
         for (Map.Entry<String, Long> publishedDateForObject : publishedDateForObjects
                 .entrySet()) {
             JCRNodeWrapper publishedNode = null;

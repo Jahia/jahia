@@ -51,7 +51,7 @@
         </c:if>
         <%--CSS--%>
         <c:forEach var="css" items="${renderContext.externalLinks.css}">
-            <link rel="stylesheet" href="${renderContext.request.contextPath}/${css}" media="screen"/>
+            <link rel="stylesheet" href="${renderContext.request.contextPath}${css}" media="screen" type="text/css"/>
         </c:forEach>
     </template:templateHead>
     <template:templateBody gwtScript="${param.gwtScript}">

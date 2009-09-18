@@ -18,8 +18,10 @@
     <div class="user-photo">
         <jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
         <c:if test="${not empty picture}">
-            <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(person)}"/>
+            <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(person)}" id="myAvatarPreview" />
         </c:if>
+        <input type="hidden" name="j:picture" id="myAvatar"/>
+        <ui:fileSelector fieldId="myAvatar" filters="*.bmp,*.gif,*.jpe,*.jpeg,*.jpg,*.png,*.tif,*.tiff" onSelect="function (path, url, uuid) { document.getElementById('myAvatar').value=uuid; document.getElementById('myAvatarPreview').src=url; return false; }"/>
     </div>
     <div class="user-body">
         <h4>${fn:escapeXml(person)}&nbsp;(logged as: ${currentNode.name})</h4>

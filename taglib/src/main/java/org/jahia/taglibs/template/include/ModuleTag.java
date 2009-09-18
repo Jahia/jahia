@@ -103,7 +103,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     private String var = null;
 
     private StringBuffer buffer = new StringBuffer();
-    
+
     private Map<String, String> parameters = new HashMap<String, String>();
 
     public void setPath(String path) {
@@ -174,7 +174,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 renderContext.setTemplateWrapper(templateWrapper);
             }
             // add custom parameters
-            Map<String, Object> oldParams = new HashMap<String, Object>(renderContext.getModuleParams()); 
+            Map<String, Object> oldParams = new HashMap<String, Object>(renderContext.getModuleParams());
             renderContext.getModuleParams().clear();
 
             buffer = new StringBuffer();
@@ -184,7 +184,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	            for (Map.Entry<String, String> param : parameters.entrySet()) {
 	            	renderContext.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(param.getValue(), charset));
 	            }
-	
+
 	            Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
 	            if (currentResource != null) {
 	                templateType = currentResource.getTemplateType();
@@ -192,7 +192,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	            if (nodeName != null) {
 	                node = (JCRNodeWrapper) pageContext.findAttribute(nodeName);
 	            } else if (contentBeanName != null) {
-	                try {                            
+	                try {
 	                    ContentBean bean = (ContentBean) pageContext.getAttribute(contentBeanName);
 	                    node = bean.getContentObject().getJCRNode(Jahia.getThreadParamBean());
 	                } catch (JahiaException e) {
@@ -209,7 +209,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	                            nodeWrapper.save();
 	                        } else {
 	                            currentResource.getMissingResources().add(path);
-	
+
 	                            if (renderContext.isEditMode()) {
 	                                printModuleStart("placeholder", nodeWrapper.getPath()+"/"+path, null);
 	                                printModuleEnd();
@@ -223,7 +223,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	                            if (path.startsWith(currentPath+"/") && path.substring(currentPath.length()+1).indexOf('/') == -1) {
 	                                currentResource.getMissingResources().add(path.substring(currentPath.length()+1));
 	                            }
-	
+
 	                            if (renderContext.isEditMode()) {
 	                                printModuleStart("placeholder", path, null);
 	                                printModuleEnd();
@@ -236,29 +236,13 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	            }
 	            if (node != null) {
 	                // add externalLinks
-	                try {
-	                    ExtendedNodeType nt = (ExtendedNodeType) currentResource.getNode().getPrimaryNodeType();
-	                    final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(nt.getSystemId());
-	                    if (aPackage != null) {
-	                        String path = aPackage.getFilePath();
-	                        File f = new File(path+"/css");
-	                        if (f.exists()) {
-	                            File[] files = f.listFiles();
-	                            for (File file : files) {
-	                                renderContext.addExternalLink("css",aPackage.getRootFolderPath()+"/css/" + file.getName());
-	                            }
-	                        }
-	                    }
-	
-	                } catch (RepositoryException e) {
-	                	logger.error(e.getMessage(), e);
-	                }
+
 	                if (node.getPath().endsWith("/*")) {
 	                    if (renderContext.isEditMode() && editable) {
 	                        printModuleStart("placeholder", node.getPath(), null);
 	                        printModuleEnd();
 	                    }
-	                    
+
 	                    return EVAL_PAGE;
 	                }
 	                if (nodeTypes != null) {
@@ -287,9 +271,26 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	                        return EVAL_PAGE;
 	                    }
 	                }
-	
-	                Resource resource = new Resource(node, templateType, template, forcedTemplate);
-	
+
+                    Resource resource = new Resource(node, templateType, template, forcedTemplate);
+                    try {
+                        ExtendedNodeType nt = (ExtendedNodeType) resource.getNode().getPrimaryNodeType();
+                        final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
+                                nt.getSystemId());
+                        if (aPackage != null) {
+                            String path = aPackage.getFilePath();
+                            File f = new File(path + "/css");
+                            if (f.exists()) {
+                                File[] files = f.listFiles();
+                                for (File file : files) {
+                                    renderContext.addExternalLink("css",
+                                                                  aPackage.getRootFolderPath() + "/css/" + file.getName());
+                                }
+                            }
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
 	                if (renderContext.isEditMode() && editable) {
 	                    try {
 	                        if (node.isNodeType("jmix:link")) {
@@ -301,7 +302,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	                                type = "list";
 	                            }
 	                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate());
-	
+
 	                            JCRNodeWrapper w = new JCRNodeDecorator(node) {
 	                                @Override
 	                                public Property getProperty(String s) throws PathNotFoundException, RepositoryException {
@@ -346,7 +347,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     		Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
     		pageContext.setAttribute("org.jahia.modules.level", level != null ? level -1 : 1, PageContext.REQUEST_SCOPE);
-        	
+
         }
         return EVAL_PAGE;
     }

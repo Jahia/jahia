@@ -29,7 +29,7 @@
     <div class="posts">
         <h2><a href="${url.base}${currentNode.parent.path}.html"><jcr:nodeProperty node="${currentNode}"
                                                                                    name="threadSubject"/></a></h2>
-
+        <a name="wrap"></a>
         <div class="forum-actions">
 
             <div class="forum-buttons">

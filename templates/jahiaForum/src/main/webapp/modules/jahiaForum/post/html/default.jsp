@@ -26,7 +26,7 @@
         <c:if test="${renderContext.user.name != 'guest'}">
             <li class="forum-report-icon"><a title="Report this post" href="#"><span>Report this post</span></a></li>
             <li class="forum-quote-icon">
-                <a title="Reply with quote" href="#"
+                <a title="Reply with quote" href="#threadPost"
                    onclick="return jahiaForumQuote('jahia-forum-thread-${currentNode.parent.UUID}', '${fn:escapeXml(functions:escapeJavaScript(content.string))}');"><span>Reply with quote</span></a>
             </li>
         </c:if>

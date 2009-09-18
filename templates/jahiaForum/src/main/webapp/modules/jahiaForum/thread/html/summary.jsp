@@ -18,18 +18,21 @@
     <a href="${url.base}${currentNode.path}.html"><jcr:nodeProperty node="${currentNode}" name="threadSubject"/></a> :
     <c:if test="${numberOfPosts > 0}">${numberOfPosts} Posts. Last post <fmt:formatDate value="${lastModified.time}" type="both" dateStyle="full"/></c:if><c:if test="${numberOfPosts <= 0}">No Posts</c:if>
 </div>--%>
-<div id="forum-body">
 <dl>
     <dt title="posts"><a class="forum-title" href="${url.base}${currentNode.path}.html"><jcr:nodeProperty
             node="${currentNode}" name="threadSubject"/></a>
         <br/></dt>
     <%--<dd class="topics">30</dd>--%>
     <dd class="posts">${numberOfPosts}</dd>
-    <dd class="lastpost"><span>
-					<dfn>Last post</dfn> by <a href="${url.base}/content/users/${createdBy.string}"><img height="9" width="11"
-                                                                                                  title="View the latest post"
-                                                                                                  alt="View the latest post"
-                                                                                                  src="img/icon_topic_latest.gif"/>${createdBy.string}
-    </a><br/>at <fmt:formatDate value="${lastModified.time}" dateStyle="full" type="both"/></span></dd>
+    <dd class="lastpost">
+        <c:if test="${numberOfPosts > 0}">
+        <span>
+					<dfn>Last post</dfn> by <a href="${url.base}${lastModifiedNode.parent.path}.html"><img height="9"
+                                                                                                           width="11"
+                                                                                                           title="View the latest post"
+                                                                                                           alt="View the latest post"
+                                                                                                           src="/jahia/templates/jahia_forum/img/icon_topic_latest.gif"/>${createdBy.string}
+        </a><br/><fmt:formatDate value="${lastModified.time}" dateStyle="full" type="both"/></span>
+        </c:if>
+    </dd>
 </dl>
-</div>

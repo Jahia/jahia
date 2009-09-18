@@ -14,10 +14,10 @@
 </script>
 <a name="threadPost"></a>
 
-<form action="${url.base}${currentNode.path}/*" method="post">
+<%--<form action="${url.base}${currentNode.path}/*" method="post">
     <input type="hidden" name="nodeType" value="jahiaForum:post"/>
     <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
-    <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
+    --%><%-- Define the output format for the newly created node by default html or by stayOnNode--%><%--
     <input type="hidden" name="newNodeOutputFormat" value="html">
 
     <div id="commentsForm"><!--start commentsForm-->
@@ -42,4 +42,45 @@
             </p>
         </fieldset>
     </div>
+</form>--%>
+<form action="${url.base}${currentNode.path}/*" method="post">
+    <input type="hidden" name="nodeType" value="jahiaForum:post"/>
+    <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
+    <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
+    <input type="hidden" name="newNodeOutputFormat" value="html">
+
+    <div class="post-reply"><!--start post-reply-->
+        <h2><a href="#">${currentNode.propertiesAsString['threadSubject']}</a></h2>
+
+        <div class="forum-box forum-box-style2">
+            <span class="forum-corners-top"><span></span></span>
+
+            <div id="forum-Form"><!--start forum-Form-->
+                <h3 class="forum-h3-first">Post a reply</h3>
+
+                <fieldset>
+                    <p class="field">
+                        <input value="<c:if test="${not empty currentNode.children}"> Re:</c:if>${currentNode.propertiesAsString['threadSubject']}" type="text" size="35" id="forum_site" name="title"
+                               tabindex="1"/>
+                    </p>
+
+                    <p class="field">
+                        <textarea rows="7" cols="35" id="jahia-forum-thread-${currentNode.UUID}" name="content" tabindex="2"></textarea>
+                    </p>
+
+                    <p class="forum_button">
+                        <input type="reset" value="Reset" class="button" tabindex="3"/>
+
+                        <input type="submit" value="Submit" class="button" tabindex="4"/>
+                    </p>
+                </fieldset>
+            </div>
+            <!--stop forum-Form-->
+
+
+            <div class="clear"></div>
+            <span class="forum-corners-bottom"><span></span></span>
+        </div>
+    </div>
+    <!--stop post-reply-->
 </form>

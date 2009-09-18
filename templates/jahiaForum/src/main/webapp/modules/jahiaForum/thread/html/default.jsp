@@ -26,37 +26,34 @@
     </c:if>
 </ul>--%>
 <div id="forum-body">
+    <div class="posts">
+        <h2><a href="${url.base}${currentNode.parent.path}.html"><jcr:nodeProperty node="${currentNode}"
+                                                                                   name="threadSubject"/></a></h2>
 
-<div class="posts">
-    <h2><a href="${url.base}${currentNode.parent.path}.html"><jcr:nodeProperty node="${currentNode}"
-                                                                               name="threadSubject"/></a></h2>
+        <div class="forum-actions">
 
-    <div class="forum-actions">
+            <div class="forum-buttons">
+                <div class="forum-post-icon"><a title="Post a new post" href="#"><span/>Post a new post</a></div>
+            </div>
+            <div class="forum-pagination">
+                ${fn:length(currentNode.children)} posts
+            </div>
 
-        <div class="forum-buttons">
-            <div class="forum-post-icon"><a title="Post a new post" href="#"><span/>Post a new post</a></div>
         </div>
-        <div class="forum-pagination">
-            ${fn:length(currentNode.children)} posts
-        </div>
 
+        <c:forEach items="${currentNode.editableChildren}" var="subchild" varStatus="status">
+            <c:if test="${not status.last and not renderContext.editMode}">
+                <div class="forum-box forum-box-style${(status.index mod 2)+1}">
+                    <template:module node="${subchild}" template="default"/>
+                </div>
+            </c:if>
+        </c:forEach>
+        <template:module node="${currentNode}" template="newPostForm"/>
+        <div class="forum-actions">
+            <div class="forum-pagination">
+                ${fn:length(currentNode.children)} posts
+            </div>
+
+        </div>
     </div>
-
-    <c:forEach items="${currentNode.editableChildren}" var="subchild" varStatus="status">
-        <div class="forum-box forum-box-style${(status.index mod 2)+1}">
-            <template:module node="${subchild}" template="default"/>
-        </div>
-    </c:forEach>
-
-    <div class="forum-actions">
-
-        <div class="forum-buttons">
-            <div class="forum-post-icon"><template:module node="${currentNode}" template="newPostForm"/></div>
-        </div>
-        <div class="forum-pagination">
-            ${fn:length(currentNode.children)} posts
-        </div>
-
-    </div>
-</div>
 </div>

@@ -16,15 +16,15 @@
 <c:forEach items="${addresses.children}" var="address" varStatus="status">
     <jcr:nodeProperty node="${address}" name="j:country" var="country"/>
 </c:forEach>
-<div style="border:1px solid #C9C9C9; padding:2px;">
+<div>
     <div class="peoplePhoto">
         <jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
         <c:if test="${not empty picture}">
             <img src="${picture.node.thumbnailUrls['avatar_60']}" alt="${title} ${firstname} ${lastname}" width="60"
                  height="60"/>
         </c:if>
-        </br>
-        <p style="font-face:arial; font-size:10px; font-color:#C9C9C9">
+        <br/>
+        <p style="clear:both;font-face:arial; font-size:10px; font-color:#C9C9C9">
             <c:if test="${not empty country}">
             <img src="${url.base}/../../../css/images/flags/plain/flag_${fn:toLowerCase(country.string)}.png"/>
         </c:if>

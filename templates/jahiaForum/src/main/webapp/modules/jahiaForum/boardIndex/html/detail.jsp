@@ -35,61 +35,54 @@
          sql="select jcr:uuid from jahiaForum:thread  where jcr:path like '${currentNode.path}/%'"/>
 <c:set var="numberOfThreads" value="${numberOfThreadsQuery.rows.size}"/>
 <div id="forum-body">
-<div class="topics">
-    <h2><a href="${url.base}${currentNode.parent.path}.html"><jcr:nodeProperty node="${currentNode}"
-                                                                               name="boardSubject"/></a></h2>
+    <div class="topics">
+        <h2><a href="${url.base}${currentNode.path}.html"><jcr:nodeProperty node="${currentNode}"
+                                                                                   name="boardSubject"/></a></h2>
 
-    <div class="forum-actions">
+        <div class="forum-actions">
 
-        <div class="forum-buttons">
-            <div class="forum-post-icon"><a title="Post a new topic" href="#"><span/>Post a new topic</a></div>
+            <div class="forum-buttons">
+                <div class="forum-post-icon"><a title="Post a new topic" href="#"><span/>Post a new topic</a></div>
+            </div>
+            <div class="forum-pagination">
+                ${fn:length(currentNode.children)} topics
+            </div>
+
         </div>
-        <div class="forum-pagination">
-            ${fn:length(currentNode.children)} topics
-        </div>
+        <div class="forum-box forum-box-style1 topics">
+            <span class="forum-corners-top"><span></span></span>
 
-    </div>
-    <div class="forum-box forum-box-style1 topics">
-        <span class="forum-corners-top"><span></span></span>
-
-        <ul class="forum-list">
-            <li class="forum-list-header">
-                <dl class="icon">
-                    <dt><a href="#">Topics</a></dt>
-                    <dd class="topics">Posts</dd>
-                    <%--<dd class="posts">View</dd>--%>
-                    <dd class="lastpost"><span>Last post</span></dd>
-                </dl>
-            </li>
-        </ul>
-
-
-        <ul class="forum-list forums">
-            <c:forEach items="${currentNode.editableChildren}" var="topic" varStatus="status">
-                <li class="row">
-                    <template:module node="${topic}" template="summary"/>
+            <ul class="forum-list">
+                <li class="forum-list-header">
+                    <dl class="icon">
+                        <dt>Topics</dt>
+                        <dd class="topics">Posts</dd>
+                        <%--<dd class="posts">View</dd>--%>
+                        <dd class="lastpost"><span>Last post</span></dd>
+                    </dl>
                 </li>
-            </c:forEach>
-        </ul>
-        <div class="clear"></div>
-        <span class="forum-corners-bottom"><span></span></span>
-    </div>
-    <div class="forum-actions">
+            </ul>
 
-        <div class="forum-buttons">
-            <div class="forum-post-icon">
-                <c:if test="${renderContext.user.name != 'guest'}">
-                    <template:module node="${currentNode}" template="newTopicForm"/>
-                </c:if>
+
+            <ul class="forum-list forums">
+                <c:forEach items="${currentNode.editableChildren}" var="topic" varStatus="status">
+                    <c:if test="${not status.last and not renderContext.editMode}">
+                        <li class="row">
+                            <template:module node="${topic}" template="summary"/>
+                        </li>
+                    </c:if>
+                </c:forEach>
+            </ul>
+            <div class="clear"></div>
+            <span class="forum-corners-bottom"><span></span></span>
+        </div>
+        <template:module node="${currentNode}" template="newTopicForm"/>
+        <div class="forum-actions">
+            <div class="forum-pagination">
+                ${fn:length(currentNode.children)} topics
             </div>
         </div>
-        <div class="forum-pagination">
-            ${fn:length(currentNode.children)} topics
-        </div>
-
+        <span>Total Threads : ${numberOfThreads}</span>
+        <span>Total Posts : ${numberOfPosts}</span>
     </div>
-
-    <span>Total Threads : ${numberOfThreads}</span>
-    <span>Total Posts : ${numberOfPosts}</span>
-</div>
 </div>

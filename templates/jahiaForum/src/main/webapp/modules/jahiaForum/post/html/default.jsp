@@ -10,9 +10,35 @@
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModified"/>
+<c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
+    <form action="${url.base}${currentNode.path}" method="post"
+          id="jahia-forum-post-delete-${currentNode.UUID}">
+        <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
+            <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
+        <input type="hidden" name="newNodeOutputFormat" value="html">
+        <input type="hidden" name="methodToCall" value="delete">
+    </form>
+</c:if>
 <span class="forum-corners-top"><span></span></span>
 
 <div class="forum-postbody">
+    <ul class="forum-profile-icons">
+        <c:if test="${renderContext.user.name != 'guest'}">
+            <li class="forum-report-icon"><a title="Report this post" href="#"><span>Report this post</span></a></li>
+            <li class="forum-quote-icon">
+                <a title="Reply with quote" href="#"
+                   onclick="return jahiaForumQuote('jahia-forum-thread-${currentNode.parent.UUID}', '${fn:escapeXml(functions:escapeJavaScript(content.string))}');"><span>Reply with quote</span></a>
+            </li>
+        </c:if>
+        <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
+            <li class="delete-post-icon"><a title="Delete with post" href="#"
+                                            onclick="document.getElementById('jahia-forum-post-delete-${currentNode.UUID}').submit();"><span>Delete this post</span></a>
+            </li>
+            <li class="edit-post-icon"><a title="edit with post" href="#"><span>Edit this post</span></a></li>
+        </c:if>
+
+    </ul>
+
     <h3 class="forum-h3-first"><a href="#">${title.string}</a></h3>
 
     <p class="forum-author">by <strong><a
@@ -29,6 +55,7 @@
         <jcr:node var="userNode" path="/content/users/${createdBy.string}"/>
         <template:module node="${userNode}" template="mini"/>
     </dt>
+    <br/>
     <dd><strong>Posts:</strong> ${numberOfPosts}</dd>
     <dd><strong>Joined:</strong> <jcr:nodeProperty node="${userNode}" name="jcr:lastModified"
                                                    var="userCreated"/><fmt:formatDate value="${userCreated.time}"

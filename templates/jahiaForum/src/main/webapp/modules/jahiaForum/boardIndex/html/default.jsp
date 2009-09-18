@@ -15,39 +15,41 @@
     </c:if>
 </c:forEach>
 <div id="forum-body">
-<div class="forum-box forum-box-style1 room">
-    <span class="forum-corners-top"><span></span></span>
-    <%--<c:if test="${empty requestScope.param['roomHeaders']}">
-    <ul class="forum-list">
-        <li class="forum-list-header">
-            <dl class="icon">
-                <dt><a href="#">Room</a></dt>
-                <dd class="topics">Topics</dd>
-                <dd class="posts">Posts</dd>
-                <dd class="lastpost"><span>Last post</span></dd>
-            </dl>
-        </li>
-    </ul>
-        <c:set var="roomHeaders" value="alreadySet" scope="session"/>
-    </c:if>--%>
-    <ul class="forum-list forums">
-        <li class="row">
-            <dl>
-                <dt title="posts">
-                    <a class="forum-title" href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty
-                            node="${currentNode}" name="boardSubject"/></a><br/>
-                    <jcr:nodeProperty node="${currentNode}" name="boardDescription"/></dt>
-                <dd class="topics">${fn:length(currentNode.children)}<dfn>Topics</dfn></dd>
-                <dd class="posts">${numberOfPosts} <dfn>Posts</dfn></dd>
-                <dd class="lastpost"><span>
-					<dfn>Last post</dfn> by <a href="${url.base}/content/users/${createdBy.string}"><img height="9" width="11" title="View the latest post"
-                                                             alt="View the latest post"
-                                                             src="img/icon_topic_latest.gif"/>${createdBy.string}</a><br/>
-			  at <fmt:formatDate value="${lastModified.time}" dateStyle="full" type="both"/></span></dd>
-            </dl>
-            <div class="clear"></div>
-            <span class="forum-corners-bottom"><span></span></span>
-        </li>
-    </ul>
-</div>
+    <div class="forum-box forum-box-style1 room">
+        <span class="forum-corners-top"><span></span></span>
+        <%--<c:if test="${empty requestScope.param['roomHeaders']}">
+        <ul class="forum-list">
+            <li class="forum-list-header">
+                <dl class="icon">
+                    <dt><a href="#">Room</a></dt>
+                    <dd class="topics">Topics</dd>
+                    <dd class="posts">Posts</dd>
+                    <dd class="lastpost"><span>Last post</span></dd>
+                </dl>
+            </li>
+        </ul>
+            <c:set var="roomHeaders" value="alreadySet" scope="session"/>
+        </c:if>--%>
+        <ul class="forum-list forums">
+            <li class="row">
+                <dl>
+                    <dt title="posts">
+                        <a class="forum-title" href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty
+                                node="${currentNode}" name="boardSubject"/></a><br/>
+                        <jcr:nodeProperty node="${currentNode}" name="boardDescription"/></dt>
+                    <dd class="topics">${fn:length(currentNode.children)}<dfn>Topics</dfn></dd>
+                    <dd class="posts">${numberOfPosts} <dfn>Posts</dfn></dd>
+                    <dd class="lastpost"><c:if test="${numberOfPosts > 0}">
+                        <span>
+					<dfn>Last post</dfn> by <a href="${url.base}/content/users/${createdBy.string}">
+                            <img height="9" width="11" title="View the latest post" alt="View the latest post"
+                                 src="/jahia/templates/jahia_forum/img/icon_topic_latest.gif"/>${createdBy.string}
+                        </a><br/><fmt:formatDate value="${lastModified.time}" dateStyle="full" type="both"/></span>
+                    </c:if></dd>
+                </dl>
+            </li>
+        </ul>
+        <div class="clear"></div>
+        <span class="forum-corners-bottom"><span></span></span>
+    </div>
 </div>

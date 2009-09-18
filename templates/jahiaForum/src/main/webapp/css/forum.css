@@ -30,7 +30,7 @@ clear:both
 	background:none;
 }
 /******************************************************************************
-* général
+* gï¿½nï¿½ral
 ******************************************************************************/
 #forum-body {
 	font-family: Verdana, Helvetica, Arial, sans-serif;
@@ -64,14 +64,16 @@ clear:both
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	text-transform: uppercase;
-	border-bottom: 1px solid #CCCCCC;
+	border-bottom: 1px solid #fff;
 	margin-bottom: 3px;
 	padding-bottom: 2px;
 	font-size: 1.05em;
 	color: #989898;
 	margin-top: 20px;
 }
-
+#forum-body .forum-h3-first{
+margin-top:0
+}
 #forum-body h4 {
 	font-family: "Trebuchet MS", Verdana, Helvetica, Arial, Sans-serif;
 	font-size: 1.3em;
@@ -296,6 +298,7 @@ clear:both
 	background: none;
 	background-color:#d6ecfd
 }
+
 /******************************************************************************
 * forum-forum-linklist + forum-navlinks
 ******************************************************************************/
@@ -463,7 +466,7 @@ font-weight:bold;
 }
 #forum-body li.forum-list-header dl.icon dt {
 	padding-left:0;
-	padding-right:50px;
+	padding-right:0px;
 }
 #forum-body ul.forum-list li.forum-list-header dd{
 border:none
@@ -545,9 +548,7 @@ padding:5px
 #forum-body .forum-postbody {
 color:#333333;
 }
-#forum-body .forum-postbody .forum-h3-first{
-margin-top:0
-}
+
 #forum-body .forum-postbody {
 clear:both;
 color:#333333;
@@ -642,4 +643,69 @@ div#bottomshortcuts{
 	background:none;
 	padding-right:1em;
 	margin-right:0;
+}
+/******************************************************************************
+*  Form comments
+******************************************************************************/
+#forum-Form {
+	margin: 0;
+	padding:0;
+    clear:both;
+}
+#forum-Form p{
+	margin:0;
+	padding:0;
+}
+#forum-Form  p.field{
+	margin-bottom:0.2em;
+}
+#forum-Form  textarea{
+	width:99%
+}
+#forum-Form fieldset{
+	border:none;
+}
+/******************************************************************************
+*  Form comments
+******************************************************************************/
+#forum-body ul.forum-profile-icons {
+float:right;
+padding:0;
+margin:0;
+width:auto;
+}
+#forum-body ul.forum-profile-icons {
+list-style-type:none;
+}
+
+#forum-body ul.forum-profile-icons li {
+margin:0 3px;
+}
+
+#forum-body ul.forum-profile-icons li {
+float:left;
+}
+#forum-body ul.forum-profile-icons li a,
+#forum-body ul.forum-profile-icons li a:link,
+#forum-body ul.forum-profile-icons li a:visited{
+	border:1px solid #B0B0B0;
+	cursor:pointer;
+	font-family:Verdana,Helvetica,Arial,sans-serif;
+	font-size:1em;
+	font-weight:normal;
+	padding:0 3px;
+	vertical-align:middle;	
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+#forum-body ul.forum-profile-icons li a:hover,
+#forum-body ul.forum-profile-icons li a:active {
+	color:#000;
+	text-decoration:none;
+	background-color:#eaeaea;
+}
+
+#forum-body .back2top{
+clear:both;
+text-align: right
 }

@@ -538,6 +538,20 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("em_contentlist", getJahiaInternalResourceValue("org.jahia.jcr.edit.contentlist.label"));
         addGwtDictionaryMessage("em_savetemplate", getJahiaInternalResourceValue("org.jahia.jcr.edit.savetemplate.label"));
         addGwtDictionaryMessage("em_content", getJahiaInternalResourceValue("org.jahia.jcr.edit.content.label"));
+
+        addGwtDictionaryMessage("publication_currentStatus", getJahiaInternalResourceValue("org.jahia.jcr.publication.currentStatus"));
+        addGwtDictionaryMessage("publication_path", getJahiaInternalResourceValue("org.jahia.jcr.publication.path"));
+        addGwtDictionaryMessage("publication_publicationAllowed", getJahiaInternalResourceValue("org.jahia.jcr.publication.publicationAllowed"));
+        addGwtDictionaryMessage("publication_publicationComments", getJahiaInternalResourceValue("org.jahia.jcr.publication.publicationComments"));
+        addGwtDictionaryMessage("publication_publish", getJahiaInternalResourceValue("org.jahia.jcr.publication.publish"));
+        addGwtDictionaryMessage("publication_status_modified", getJahiaInternalResourceValue("org.jahia.jcr.publication.status_modified"));
+        addGwtDictionaryMessage("publication_status_notyetpublished", getJahiaInternalResourceValue("org.jahia.jcr.publication.status_notyetpublished"));
+        addGwtDictionaryMessage("publication_status_published", getJahiaInternalResourceValue("org.jahia.jcr.publication.status_published"));
+        addGwtDictionaryMessage("publication_unpublished_text", getJahiaInternalResourceValue("org.jahia.jcr.publication.unpublished_text"));
+        addGwtDictionaryMessage("publication_published_text", getJahiaInternalResourceValue("org.jahia.jcr.publication.published_text"));
+        addGwtDictionaryMessage("publication_unpublished_title", getJahiaInternalResourceValue("org.jahia.jcr.publication.unpublished_title"));
+        addGwtDictionaryMessage("publication_published_title", getJahiaInternalResourceValue("org.jahia.jcr.publication.published_title"));
+
     }
 
     /**

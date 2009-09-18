@@ -117,7 +117,7 @@ public class EditActions {
                 }
 
                 public void onSuccess(Object result) {
-                    Info.display("Content unpublished", "Content unpublished.");
+                    Info.display(Messages.getResource("publication_unpublished_title"), Messages.getResource("publication_unpublished_text"));
                     editLinker.refresh();
                 }
             });
@@ -269,14 +269,14 @@ public class EditActions {
 
             final TextArea area = new TextArea();
             area.setName("comments");
-            area.setFieldLabel("Comments");
+            area.setFieldLabel(Messages.getResource("publication_publicationComments"));
             form.add(area);
 
 
             List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
             ColumnConfig column = new ColumnConfig();  
             column.setId("path");
-            column.setHeader("Path");
+            column.setHeader(Messages.getResource("publication_path"));
             column.setWidth(400);
             column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
                 @Override
@@ -288,20 +288,20 @@ public class EditActions {
 
             column = new ColumnConfig();
             column.setId("status");
-            column.setHeader("Current status");
+            column.setHeader(Messages.getResource("publication_currentStatus"));
             column.setWidth(150);
             column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
                 @Override
                 public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
                     switch (model.getStatus()) {
                         case GWTJahiaPublicationInfo.UNPUBLISHED:
-                            return "Not yet published";
+                            return Messages.getResource("publication_status_notyetpublished");
                         case GWTJahiaPublicationInfo.PUBLISHED:
-                            return "Published";
+                            return Messages.getResource("publication_status_published");
                         case GWTJahiaPublicationInfo.MODIFIED:
-                            return "Modified";
+                            return Messages.getResource("publication_status_modified");
                         case GWTJahiaPublicationInfo.UNPUBLISHABLE:
-                            return "Not yet published";
+                            return Messages.getResource("publication_status_notyetpublished");
                     }
                     return "";
                 }
@@ -310,7 +310,7 @@ public class EditActions {
 
             column = new ColumnConfig();
             column.setId("canPublish");
-            column.setHeader("Publication allowed");
+            column.setHeader(Messages.getResource("publication_publicationAllowed"));
             column.setWidth(150);
             column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
                 @Override
@@ -333,13 +333,16 @@ public class EditActions {
 
             add(g);
 
-            Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+            final Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
                     hide() ;
                 }
             });
-            Button ok = new Button("Publish", new SelectionListener<ButtonEvent>() {
+            final Button ok = new Button(Messages.getResource("publication_publish")) ;
+            SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
+                    ok.setEnabled(false);
+                    cancel.setEnabled(false);
                     JahiaContentManagementService.App.getInstance().publish(editLinker.getSelectedModule().getNode().getPath(), new AsyncCallback() {
                         public void onFailure(Throwable caught) {
                             Log.error("Cannot publish", caught);
@@ -348,14 +351,15 @@ public class EditActions {
                         }
 
                         public void onSuccess(Object result) {
-                            Info.display("Content published", "Content published.");
+                            Info.display(Messages.getResource("publication_published_title"), Messages.getResource("publication_published_text"));
                             editLinker.refresh();
                             hide();
                         }
                     });
 
                 }
-            }) ;
+            };
+            ok.addSelectionListener(selectionListener);
             buttons.add(ok) ;
             buttons.add(cancel) ;
             setButtonAlign(Style.HorizontalAlignment.CENTER);

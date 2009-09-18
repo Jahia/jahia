@@ -184,6 +184,7 @@
  - j:zipcode (string)
  - j:town (string)
  - j:country (string,choicelist) < country()
+ - j:private (boolean)=false
 
 [jnt:addresses]  > nt:base, jmix:collection
  - j:defaultAddress (weakreference) < jnt:address
@@ -194,21 +195,36 @@
  - j:external (boolean)=false
  - j:externalSource (string)
  - j:firstName (string)
+ - j:firstNamePublic (boolean)=true
  - j:lastName (string)
+ - j:lastNamePublic (boolean)=true
  - j:gender (string,choicelist[resourceBundle]) < male,female,other
+ - j:genderPublic (boolean)=true
  - j:title (string,choicelist[resourceBundle]) < mister,master,professor,doctor,miss,madam
+ - j:titlePublic (boolean)=true
  - j:birthDate (date,datepicker)
  - j:organization (string)
+ - j:organizationPublic (boolean)=true
  - j:function (string)
+ - j:functionPublic (boolean)=true
  - j:about (string,richtext)
+ - j:aboutPublic (boolean)=true
  - j:email (string)
+ - j:emailPublic (boolean)=true
  - j:phoneNumber (string)
+ - j:phoneNumberPublic (boolean)=true
  - j:faxNumber (string)
+ - j:faxNumberPublic (boolean)=true
  - j:skypeID (string)
+ - j:skipeIDPublic (boolean)=true
  - j:twitterID (string)
+ - j:twitterIDPublic (boolean)=true
  - j:facebookID (string)
+ - j:facebookIDPublic (boolean)=true
  - j:linkedinID (string)
+ - j:linkedinIDPublic (boolean)=true
  - j:picture (weakreference,file) < jnt:file
+ - j:picturePublic (boolean)=true
  - * (string)
  + j:addresses (jnt:addresses) = jnt:addresses mandatory autocreated
 

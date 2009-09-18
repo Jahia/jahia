@@ -24,7 +24,7 @@ div.user-profile span.user-label {
     width: 100px;
     margin-left: 15px !important;
 }
-div.user-profile input, div.user-profile textarea {
+div.user-profile input.user-prop, div.user-profile textarea {
     width: 250px;
 }
 div.user-profile textarea {

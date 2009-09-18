@@ -15,12 +15,14 @@
         </c:if>
     </div>
     <div class="user-body">
-        <h5>${fn:escapeXml(person)}&nbsp;(logged as: ${currentNode.name})</h5>
+        <h5><template:isPublic userKey="${currentNode.name}" property="j:firstName">${fn:escapeXml(person)}&nbsp;</template:isPublic>(logged as: ${currentNode.name})</h5>
         <p><span class="user-label">Organization:</span>&nbsp;${fn:escapeXml(fields['j:organization'])}</p>
         <p><span class="user-label">Function:</span>&nbsp;${fn:escapeXml(fields['j:function'])}</p>
         <p><span class="user-label">Phone:</span>&nbsp;${fn:escapeXml(fields['j:phoneNumber'])}</p>
         <p><span class="user-label">Fax:</span>&nbsp;${fn:escapeXml(fields['j:faxNumber'])}</p>
+        <template:isPublic userKey="${currentNode.name}" property="j:email">
         <p><span class="user-label">Email:</span>&nbsp;<a href="mailto:${fields['j:email']}">${fields['j:email']}</a></p>
+        </template:isPublic>
         <p><span class="user-label">Skype:</span>&nbsp;${fields['j:skypeID']}
         	<c:if test="${not empty fields['j:skypeID']}">
         		<a href="skype:${fields['j:skypeID']}?call"><img src="http://download.skype.com/share/skypebuttons/buttons/call_green_transparent_70x23.png" style="border: none;" width="70" height="23" alt="${fields['j:skypeID']}" /></a>

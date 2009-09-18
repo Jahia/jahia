@@ -57,14 +57,14 @@
 <title><fmt:message key="org.jahia.engines.filemanager.Filemanager_Engine.fileLocation.label"/></title>
 <internal:gwtInit modules="org.jahia.ajax.gwt.module.contentpicker.ContentPicker"/>
 <script type="text/javascript">
-function handleSelection(path) {
+function handleSelection(path, uuid) {
     <c:if test="${not empty param.callback}">
     if (window.opener) {
         <c:if test="${not empty param.callbackType}">
-        window.opener.${param.callback}('${param.callbackType}' == 'url' ? '${pageContext.request.contextPath}/repository/default' + path : path);
+        window.opener.${param.callback}('${param.callbackType}' == 'url' ? '${pageContext.request.contextPath}/repository/default' + path : path, uuid);
         </c:if>
         <c:if test="${empty param.callbackType}">
-        window.opener.${param.callback}(path, '${pageContext.request.contextPath}/repository/default' + path);
+        window.opener.${param.callback}(path, '${pageContext.request.contextPath}/repository/default' + path, uuid);
         </c:if>
     }
     </c:if>

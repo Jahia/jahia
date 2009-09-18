@@ -58,9 +58,9 @@
 onclick="javascript:{var fileSelector = window.open('${pageContext.request.contextPath}/engines/webdav/filePicker.jsp?callback=setSelectedFile${fieldIdHash}&amp;rootPath=${rootPath}&amp;startPath=${startPath}&amp;filters=${filters}&amp;mimeTypes=${mimeTypes}', '<%="fileSelector" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable,height=800,width=800'); fileSelector.focus(); return false;}"
 title='<fmt:message key="selectors.fileSelector.selectFile"/>'><fmt:message key="selectors.select"/></a>
 <script type="text/javascript">
-    function setSelectedFile${fieldIdHash}(path, url) {
+    function setSelectedFile${fieldIdHash}(path, url, uuid) {
     <c:if test="${not empty onSelect}">
-        if ((${onSelect})(path, url)) {
+        if ((${onSelect})(path, url, uuid)) {
             document.getElementById('${fieldId}').value = ${useUrl} ? url : path;
         }
     </c:if>

@@ -54,17 +54,17 @@ import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * This component displays a path to the selected file.
+ * 
  * User: rfelden
  * Date: 28 ao�t 2008
  * Time: 13:30:11
- *
- * This component displays a path to the selected file.
  */
 public class ContentPathBar extends TopBar {
 
     private ToolBar m_component ;
-    private TextField selectedPath ;
+    private TextField<String> selectedPath ;
+    private TextField<String> selectedUuid ;
     List<GWTJahiaNode> selectedNodes ;
     private String callback ;
     private boolean allowThumbs;
@@ -72,13 +72,19 @@ public class ContentPathBar extends TopBar {
 
     public ContentPathBar(List<GWTJahiaNode> selectedNodes, final ManagerConfiguration config, final String callback, final boolean allowThumbs) {
         m_component = new ToolBar() ;
-        selectedPath = new TextField() ;
+        selectedPath = new TextField<String>() ;
         selectedPath.setId("content_id");
         selectedPath.setReadOnly(true);
         m_component.add(new LabelToolItem(Messages.getResource("fm_selection"))) ;
         m_component.add(selectedPath) ;
 
         selectedPath.setWidth(500);
+        
+        selectedUuid = new TextField<String>();
+        selectedUuid.setId("content_uuid");
+        selectedUuid.setVisible(false);
+        m_component.add(selectedUuid);
+        
         m_component.add(new FillToolItem()) ;
         Button deselect = new Button(Messages.getResource("fm_deselect")) ;
         deselect.setIconStyle("gxt-button-clear");
@@ -86,8 +92,9 @@ public class ContentPathBar extends TopBar {
             public void componentSelected(ButtonEvent event) {
                 getLinker().getTopRightObject().clearSelection() ;
                 selectedPath.setRawValue("");
+                selectedUuid.setRawValue("");
                 if (callback != null && callback.length() > 0) {
-                    nativeCallback(callback, selectedPath.getRawValue());
+                    nativeCallback(callback, selectedPath.getRawValue(), selectedUuid.getRawValue());
                 }
             }
         });
@@ -104,9 +111,9 @@ public class ContentPathBar extends TopBar {
         DeferredCommand.addCommand(new Command() {
             public void execute() {
                 if (selectedNodes.isEmpty()) {
-                    initPathField("");
+                    initPathField("", "");
                 } else {
-                    initPathField(selectedNodes.get(0).getPath());
+                    initPathField(selectedNodes.get(0).getPath(), selectedNodes.get(0).getUUID());
                 }
             }
         });
@@ -125,8 +132,8 @@ public class ContentPathBar extends TopBar {
                 }                
             }
             if (found) {
-            final String path = selection.get(0).getPath();
-            JahiaContentManagementService.App.getInstance().isFileAccessibleForCurrentContainer(path, new AsyncCallback<Boolean>() {
+            final GWTJahiaNode selectedNode = selection.get(0);
+            JahiaContentManagementService.App.getInstance().isFileAccessibleForCurrentContainer(selectedNode.getPath(), new AsyncCallback<Boolean>() {
                 public void onFailure(Throwable throwable) {
                     Log.error("unable to check ACLs");
                 }
@@ -136,9 +143,10 @@ public class ContentPathBar extends TopBar {
                         doIt = Window.confirm("The file may not be readable by everyone, resulting in a broken link.\nDo you wish to continue ?");
                     }
                     if (doIt) {
-                        selectedPath.setRawValue(path);
+                        selectedPath.setRawValue(selectedNode.getPath());
+                        selectedUuid.setRawValue(selectedNode.getUUID());
                         if (callback != null && callback.length() > 0) {
-                            nativeCallback(callback, selectedPath.getRawValue());
+                            nativeCallback(callback, selectedPath.getRawValue(), selectedUuid.getRawValue());
                         }
                     }
                 }
@@ -152,9 +160,11 @@ public class ContentPathBar extends TopBar {
         return m_component ;
     }
 
-    public void initPathField(String path) {
+    public void initPathField(String path, String uuid) {
         selectedPath.setRawValue(path);
         selectedPath.setName("content_id");
+        selectedUuid.setRawValue(uuid);
+        selectedUuid.setName("content_uuid");
     }
 
     public boolean isAllowThumbs() {
@@ -165,9 +175,9 @@ public class ContentPathBar extends TopBar {
         return callback;
     }
 
-    public static native void nativeCallback(String callback, String path) /*-{
+    public static native void nativeCallback(String callback, String path, String uuid) /*-{
         try {
-            eval('$wnd.' + callback)(path);
+            eval('$wnd.' + callback)(path, uuid);
         } catch (e) {};
     }-*/;
 

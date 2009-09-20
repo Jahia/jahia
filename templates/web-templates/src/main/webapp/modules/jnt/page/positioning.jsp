@@ -40,6 +40,14 @@
         <c:if test="${ !empty param.mainArea }">
             <div id="${param.position}">
                 <div class="spacer">
+                       <h2>Page : ${currentNode.name}</h2>
+                    <c:set var="currentPath" value=""/>
+    <c:forTokens items="${currentNode.path}" delims="/" var="itemPath">
+        <c:set var="currentPath" value="${currentPath}/${itemPath}"/>
+        <a href="${url.base}${currentPath}.html">${itemPath}</a> /
+</c:forTokens>
+
+
                     <jsp:include page="${param.mainArea}"/>
                 </div>
             </div>

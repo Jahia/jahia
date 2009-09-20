@@ -4,30 +4,31 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
+<c:if test="${property.name == 'j:peoplePicture'}"><c:set var="peoplePicture" value="${property.string}"/></c:if>
+<c:if test="${property.name == 'j:peopleLastname'}"><c:set var="peopleLastname" value="${property.string}"/></c:if>
+<c:if test="${property.name == 'j:peopleFirstname'}"><c:set var="peopleFirstname" value="${property.string}"/></c:if>
+<c:if test="${property.name == 'j:peopleFunction'}"><c:set var="peopleFunction" value="${property.string}"/></c:if>
+<c:if test="${property.name == 'j:peopleBusinessUnit'}"><c:set var="peopleBusinessUnit" value="${property.string}"/></c:if>
+<c:if test="${property.name == 'j:peopleEmail'}"><c:set var="peopleEmail" value="${property.string}"/></c:if>
+<c:if test="${property.name == 'j:peopleBiography'}"><c:set var="peopleBiography" value="${property.string}"/></c:if>
+<c:if test="${property.name == 'j:peopleTelephone'}"><c:set var="peopleTelephone" value="${property.string}"/></c:if>
+<c:if test="${property.name == 'j:peopleCellular'}"><c:set var="peopleCellular" value="${property.string}"/></c:if>
+<c:if test="${property.name == 'j:peopleFax'}"><c:set var="peopleFax" value="${property.string}"/></c:if>
 
-<jcr:nodeProperty node="${currentNode}" name="peoplePicture" var="peoplePicture"/>
-<jcr:nodeProperty node="${currentNode}" name="peopleLastname" var="peopleLastname"/>
-<jcr:nodeProperty node="${currentNode}" name="peopleFirstname" var="peopleFirstname"/>
-<jcr:nodeProperty node="${currentNode}" name="peopleFunction" var="peopleFunction"/>
-<jcr:nodeProperty node="${currentNode}" name="peopleBusinessUnit" var="peopleBusinessUnit"/>
-<jcr:nodeProperty node="${currentNode}" name="peopleEmail" var="peopleEmail"/>
-<jcr:nodeProperty node="${currentNode}" name="peopleBiography" var="peopleBiography"/>
-<jcr:nodeProperty node="${currentNode}" name="peopleTelephone" var="peopleTelephone"/>
-<jcr:nodeProperty node="${currentNode}" name="peopleCellular" var="peopleCellular"/>
-<jcr:nodeProperty node="${currentNode}" name="peopleFax" var="peopleFax"/>
 
     <div id="illustration2" style="background:transparent url(${background.node.url}) no-repeat top left;">
         <div class="illustration2-text" style='margin-top:${positionTop.string}px; margin-left:${positionLeft.string}px'>
-            <h2>${title.string}</h2>
+            <h2>${title}</h2>
             <p>${cast.string}</p>
         <div class="clear"> </div></div>
     </div>
 
 	<div class="peopleListItem">
 		<div class="peoplePhoto">
-        <img src="${peoplePicture.file.thumbnailUrl}" alt="${peopleLastname.string} picture"></div>
+
+        <img src="${peoplePicture.image.thumbnailUrl}" alt="${peopleFirstname}&nbsp;${peopleLastname} picture"></div>
         <div class="peopleBody">
-            <h5>${peopleFirstname.string} ${peopleLastname.string}</h5>
+            <h5>${peopleFirstname} ${peopleLastname.string}</h5>
             <p class="peopleFonction">${peopleFunction.string}</p>
             <p class="peopleBusinessUnit">${peopleBusinessUnit.string}</p>
 
@@ -44,12 +45,12 @@
 				</div><!--stop collapsible -->
 					<div class="clear"> </div></div><!--stop peopleBody -->
 				<div class="clear"> </div></div><!--stop peopleListItem -->
-    </ui:actionMenu>
 
 
 
-<!-- unused fields ${peopleTelephone} ${peopleCellular} ${peopleFax} -->
-    </template:container>
+
+<!-- unused fields ${peopleTelephone.string} ${peopleCellular.string} ${peopleFax.string} -->
+
 <script type='text/javascript'>
 jQuery(document).ready(function($) {
   $('a[rel*=facebox]').facebox({

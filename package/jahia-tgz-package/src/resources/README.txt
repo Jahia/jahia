@@ -9,8 +9,8 @@ To check if Java is already installed on your system, type the following command
 java -version
 
 You should get a message indicating which Java version is installed on your system. Please note that the same message will be displayed if you only have a JRE installed. If an error is returned, you probably don't have a complete JDK installed.
-If you have installed other versions of the Java Development Kit, Java Runtime Environment or other Java servers on your system, we recommend that you run a few checks before start?ing the installation in order to be sure that Jahia will run without problems.
-Check that you have no TOMCAT_HOME and no CATALINA_HOME environment variable set. Note that once installed, Jahia will check at run time that this variable is not already set, and will stop if it is the case.
+If you have installed other versions of the Java Development Kit, Java Runtime Environment or other Java servers on your system, we recommend that you run a few checks before starting the installation in order to be sure that Jahia will run without problems.
+Check that you have no TOMCAT_HOME and no CATALINA_HOME environment variable set.
 To install a Java virtual machine on a Windows system (WindowsNT, Windows 2000 or Windows XP), you need to have administrator rights on your computer. Please contact your system administrator if you don't have sufficient permissions.
 After the installation, you have to set the JAVA_HOME environment variable to the directory where your have installed the Java virtual machine. The default installation path of the SUN 1.5.0 Java virtual machine on Windows is "c:\j2sdk1.5.0_xx", where xx is the release number. Note that Jahia will check at run time that this variable is correctly set, and will stop if it is not the case.
 
@@ -20,9 +20,9 @@ http://extranet.jahia.com/jahia/Jahia/op/edit/documentation/pid/634
 
 2. Launch Tomcat using the following command line from the Jahia folder:
 
-- on Windows: /bin/startup.bat
+- on Windows: /startJahia.bat
 
-- on MacOS or Linux: ./bin/startup.sh
+- on MacOS or Linux: ./startJahia.sh
 
 3. Access from your browser http://localhost:8080/config
 

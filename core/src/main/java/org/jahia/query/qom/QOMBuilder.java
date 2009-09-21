@@ -34,7 +34,7 @@ package org.jahia.query.qom;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.params.ProcessingContext;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.*;
+import javax.jcr.query.qom.*;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.RepositoryException;
@@ -150,201 +150,115 @@ public class QOMBuilder implements QueryObjectModelFactory {
         this.getOrderings().add(ordering);
     }
 
-    public QueryObjectModel createQuery(Selector selector, Constraint constraint, Ordering[] orderings, Column[] columns)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.createQuery(selector, constraint, orderings, columns);
+    public QueryObjectModel createQuery(Source source, Constraint constraint, Ordering[] orderings, Column[] columns) throws InvalidQueryException, RepositoryException {
+        return qomFactory.createQuery(source, constraint, orderings, columns);
     }
 
-    public QueryObjectModel createQuery(Source source, Constraint constraint, Ordering[] orderings, Column[] columns)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.createQuery(source,constraint,orderings,columns);
+    public Selector selector(String nodeTypeName, String selectorName) throws InvalidQueryException, RepositoryException {
+        return qomFactory.selector(nodeTypeName, selectorName);
     }
 
-    public Selector selector(String nodeTypeName) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.selector(nodeTypeName);
+    public Join join(Source left, Source right, String joinType, JoinCondition joinCondition) throws InvalidQueryException, RepositoryException {
+        return qomFactory.join(left, right, joinType, joinCondition);
     }
 
-    public Selector selector(String nodeTypeName, String selectorName)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.selector(nodeTypeName,selectorName);
+    public EquiJoinCondition equiJoinCondition(String selector1Name, String property1Name, String selector2Name, String property2Name) throws InvalidQueryException, RepositoryException {
+        return qomFactory.equiJoinCondition(selector1Name, property1Name, selector2Name, property2Name);
     }
 
-    public Join join(Source left, Source right, int joinType, JoinCondition joinCondition)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.join(left, right, joinType, joinCondition);
+    public SameNodeJoinCondition sameNodeJoinCondition(String selector1Name, String selector2Name, String selector2Path) throws InvalidQueryException, RepositoryException {
+        return qomFactory.sameNodeJoinCondition(selector1Name, selector2Name, selector2Path);
     }
 
-    public EquiJoinCondition equiJoinCondition(String selector1Name, String property1Name, String selector2Name, String property2Name)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.equiJoinCondition(selector1Name, property1Name, selector2Name, property2Name);
+    public ChildNodeJoinCondition childNodeJoinCondition(String childSelectorName, String parentSelectorName) throws InvalidQueryException, RepositoryException {
+        return qomFactory.childNodeJoinCondition(childSelectorName, parentSelectorName);
     }
 
-    public SameNodeJoinCondition sameNodeJoinCondition(String selector1Name, String selector2Name)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.sameNodeJoinCondition(selector1Name,selector2Name);
-    }
-
-    public SameNodeJoinCondition sameNodeJoinCondition(String selector1Name, String selector2Name, String selector2Path)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.sameNodeJoinCondition(selector1Name,selector2Name,selector2Path);
-    }
-
-    public ChildNodeJoinCondition childNodeJoinCondition(String childSelectorName, String parentSelectorName)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.childNodeJoinCondition(childSelectorName, parentSelectorName);
-    }
-
-    public DescendantNodeJoinCondition descendantNodeJoinCondition(String descendantSelectorName,
-                                                                   String ancestorSelectorName)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.descendantNodeJoinCondition(descendantSelectorName, ancestorSelectorName);
+    public DescendantNodeJoinCondition descendantNodeJoinCondition(String descendantSelectorName, String ancestorSelectorName) throws InvalidQueryException, RepositoryException {
+        return qomFactory.descendantNodeJoinCondition(descendantSelectorName, ancestorSelectorName);
     }
 
     public And and(Constraint constraint1, Constraint constraint2) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.and(constraint1, constraint2);
+        return qomFactory.and(constraint1, constraint2);
     }
 
     public Or or(Constraint constraint1, Constraint constraint2) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.or(constraint1, constraint2);
+        return qomFactory.or(constraint1, constraint2);
     }
 
     public Not not(Constraint constraint) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.not(constraint);
+        return qomFactory.not(constraint);
     }
 
-    public Comparison comparison(DynamicOperand operand1, int operator, StaticOperand operand2)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.comparison(operand1, operator, operand2);
+    public Comparison comparison(DynamicOperand operand1, String operator, StaticOperand operand2) throws InvalidQueryException, RepositoryException {
+        return qomFactory.comparison(operand1, operator, operand2);
     }
 
-    public PropertyExistence propertyExistence(String propertyName) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.propertyExistence(propertyName);
+    public PropertyExistence propertyExistence(String selectorName, String propertyName) throws InvalidQueryException, RepositoryException {
+        return qomFactory.propertyExistence(selectorName, propertyName);
     }
 
-    public PropertyExistence propertyExistence(String selectorName, String propertyName)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.propertyExistence(selectorName,propertyName);
-    }
-
-    public FullTextSearch fullTextSearch(String propertyName, String fullTextSearchExpression)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.fullTextSearch(propertyName,fullTextSearchExpression);
-    }
-
-    public FullTextSearch fullTextSearch(String selectorName, String propertyName, String fullTextSearchExpression)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.fullTextSearch(selectorName,propertyName,fullTextSearchExpression);
-    }
-
-    public SameNode sameNode(String path) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.sameNode(path);
+    public FullTextSearch fullTextSearch(String s, String s1, StaticOperand staticOperand) throws InvalidQueryException, RepositoryException {
+        return qomFactory.fullTextSearch(s, s1, staticOperand);
     }
 
     public SameNode sameNode(String selectorName, String path) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.sameNode(path);
-    }
-
-    public ChildNode childNode(String path) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.childNode(path);
+        return qomFactory.sameNode(selectorName, path);
     }
 
     public ChildNode childNode(String selectorName, String path) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.childNode(selectorName,path);
+        return qomFactory.childNode(selectorName, path);
     }
 
-    public DescendantNode descendantNode(String path) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.descendantNode(path);
+    public DescendantNode descendantNode(String selectorName, String path) throws InvalidQueryException, RepositoryException {
+        return qomFactory.descendantNode(selectorName, path);
     }
 
-    public DescendantNode descendantNode(String selectorName, String path)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.descendantNode(selectorName,path);
-    }
-
-    public PropertyValue propertyValue(String propertyName) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.propertyValue(propertyName);
-    }
-
-    public PropertyValue propertyValue(String selectorName, String propertyName)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.propertyValue(selectorName,propertyName);
+    public PropertyValue propertyValue(String selectorName, String propertyName) throws InvalidQueryException, RepositoryException {
+        return qomFactory.propertyValue(selectorName, propertyName);
     }
 
     public Length length(PropertyValue propertyValue) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.length(propertyValue);
-    }
-
-    public NodeName nodeName() throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.nodeName();
+        return qomFactory.length(propertyValue);
     }
 
     public NodeName nodeName(String selectorName) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.nodeName(selectorName);
-    }
-
-    public NodeLocalName nodeLocalName() throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.nodeLocalName();
+        return qomFactory.nodeName(selectorName);
     }
 
     public NodeLocalName nodeLocalName(String selectorName) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.nodeLocalName(selectorName);
+        return qomFactory.nodeLocalName(selectorName);
     }
 
-    public FullTextSearchScore fullTextSearchScore() throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.fullTextSearchScore();
-    }
-
-    public FullTextSearchScore fullTextSearchScore(String selectorName)
-        throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.fullTextSearchScore(selectorName);
+    public FullTextSearchScore fullTextSearchScore(String selectorName) throws InvalidQueryException, RepositoryException {
+        return qomFactory.fullTextSearchScore(selectorName);
     }
 
     public LowerCase lowerCase(DynamicOperand operand) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.lowerCase(operand);
+        return qomFactory.lowerCase(operand);
     }
 
     public UpperCase upperCase(DynamicOperand operand) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.upperCase(operand);
+        return qomFactory.upperCase(operand);
     }
 
     public BindVariableValue bindVariable(String bindVariableName) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.bindVariable(bindVariableName);
+        return qomFactory.bindVariable(bindVariableName);
     }
 
-    public Literal literal(Value value) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.literal(value);
+    public Literal literal(Value literalValue) throws InvalidQueryException, RepositoryException {
+        return qomFactory.literal(literalValue);
     }
 
-    public Ordering ascending(DynamicOperand operand)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.ascending(operand);
-    }    
-    
-    public Ordering ascending(DynamicOperand operand, boolean localeSensitive)
-    throws InvalidQueryException, RepositoryException {
-        return ((QueryObjectModelFactoryImpl)this.qomFactory).ascending(operand,localeSensitive);
+    public Ordering ascending(DynamicOperand operand) throws InvalidQueryException, RepositoryException {
+        return qomFactory.ascending(operand);
     }
 
-    public Ordering descending(DynamicOperand operand)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.descending(operand);
-    }    
-    
-    public Ordering descending(DynamicOperand operand, boolean localeSensitive)
-    throws InvalidQueryException, RepositoryException {
-        return ((QueryObjectModelFactoryImpl)this.qomFactory).descending(operand,localeSensitive);
+    public Ordering descending(DynamicOperand operand) throws InvalidQueryException, RepositoryException {
+        return qomFactory.descending(operand);
     }
 
-    public Column column(String propertyName) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.column(propertyName);
-    }
-
-    public Column column(String propertyName, String columnName) throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.column(propertyName, columnName);
-    }
-
-    public Column column(String selectorName, String propertyName, String columnName)
-    throws InvalidQueryException, RepositoryException {
-        return this.qomFactory.column(selectorName, propertyName, columnName);
+    public Column column(String selectorName, String propertyName, String columnName) throws InvalidQueryException, RepositoryException {
+        return qomFactory.column(selectorName, propertyName, columnName);
     }
 }

@@ -34,7 +34,8 @@ package org.jahia.taglibs.query;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -151,12 +152,12 @@ public class ContainerQueryTag extends QueryDefinitionTag  {
                         String order = cListTag.getSortOrder() != null
                                 && cListTag.getSortOrder().trim().toLowerCase()
                                         .startsWith("desc") ? String
-                                .valueOf(JahiaQueryObjectModelConstants.ORDER_DESCENDING)
+                                .valueOf(QueryObjectModelConstants.JCR_ORDER_DESCENDING)
                                 : String
-                                        .valueOf(JahiaQueryObjectModelConstants.ORDER_ASCENDING);
+                                        .valueOf(QueryObjectModelConstants.JCR_ORDER_ASCENDING);
 
                         String
-                                .valueOf(JahiaQueryObjectModelConstants.ORDER_DESCENDING);
+                                .valueOf(QueryObjectModelConstants.JCR_ORDER_DESCENDING);
                         addOrdering(sortFieldDef.getName(), numberValue, null,
                                 sortFieldDef.getIsMetadata(), null, order, true, null);
                     }

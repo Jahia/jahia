@@ -31,12 +31,12 @@
  */
 package org.jahia.query.filtercreator;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.ChildNode;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Comparison;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.DescendantNode;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.FullTextSearch;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
+import javax.jcr.query.qom.ChildNode;
+import javax.jcr.query.qom.Comparison;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.DescendantNode;
+import javax.jcr.query.qom.FullTextSearch;
+import javax.jcr.query.qom.QueryObjectModel;
 import org.jahia.data.containers.ContainerFilterBean;
 import org.jahia.data.containers.ContainerFilterInterface;
 import org.jahia.data.containers.NumberFormats;
@@ -167,20 +167,20 @@ public abstract class AbstractFilterCreator implements FilterCreator {
                                               ProcessingContext context) throws JahiaException;
 
 
-    public static String getFilterOperatorFromQueryModelOperator( int queryModelOperator ) {
-        if ( queryModelOperator == JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO ){
+    public static String getFilterOperatorFromQueryModelOperator( String queryModelOperator ) {
+        if (queryModelOperator.equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO)){
             return ContainerFilterBean.COMP_EQUAL;
-        }else if ( queryModelOperator == JahiaQueryObjectModelConstants.OPERATOR_NOT_EQUAL_TO ){
+        }else if (queryModelOperator.equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO)){
               return ContainerFilterBean.COMP_NOT_EQUAL;         
-        } else if ( queryModelOperator == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN ){
+        } else if (queryModelOperator.equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN)){
             return ContainerFilterBean.COMP_BIGGER;
-        } else if ( queryModelOperator == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO ){
+        } else if (queryModelOperator.equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO)){
             return ContainerFilterBean.COMP_BIGGER_OR_EQUAL;
-        } else if ( queryModelOperator == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN ){
+        } else if (queryModelOperator.equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN)){
             return ContainerFilterBean.COMP_SMALLER;
-        } else if ( queryModelOperator == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO ){
+        } else if (queryModelOperator.equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO)){
             return ContainerFilterBean.COMP_SMALLER_OR_EQUAL;
-        } else if ( queryModelOperator == JahiaQueryObjectModelConstants.OPERATOR_LIKE ){
+        } else if (queryModelOperator.equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_LIKE)){
             return ContainerFilterBean.COMP_STARTS_WITH;
         }
         return null;

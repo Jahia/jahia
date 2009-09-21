@@ -33,21 +33,16 @@ package org.jahia.query.qom;
 
 import java.util.Properties;
 
-import javax.jcr.ItemExistsException;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.QueryResult;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Column;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Ordering;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelFactory;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Source;
+import javax.jcr.query.qom.Column;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.Ordering;
+import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModelFactory;
+import javax.jcr.query.qom.Source;
 import javax.jcr.version.VersionException;
 
 import org.jahia.exceptions.JahiaException;
@@ -161,6 +156,22 @@ public class QueryObjectModelImpl extends QOMNode implements QueryObjectModel {
             return queryExecute.execute(this);
         }
         return null;
+    }
+
+    public void setLimit(long limit) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setOffset(long offset) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void bindValue(String varName, Value value) throws IllegalArgumentException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String[] getBindVariableNames() throws RepositoryException {
+        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public String getStatement() {

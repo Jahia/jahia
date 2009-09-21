@@ -31,14 +31,7 @@
  */
 package org.jahia.services.content.impl.jahia;
 
-import javax.jcr.Credentials;
-import javax.jcr.LoginException;
-import javax.jcr.NoSuchWorkspaceException;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
-import javax.jcr.Workspace;
+import javax.jcr.*;
 
 import org.apache.log4j.Logger;
 import org.jahia.jaas.JahiaLoginModule;
@@ -152,5 +145,21 @@ public class RepositoryImpl implements Repository {
 
     public void setProcessingContextFactory(ProcessingContextFactory processingContextFactory) {
         this.processingContextFactory = processingContextFactory;
+    }
+
+    public boolean isStandardDescriptor(String key) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isSingleValueDescriptor(String key) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Value getDescriptorValue(String key) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Value[] getDescriptorValues(String key) {
+        return new Value[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

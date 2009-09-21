@@ -37,7 +37,7 @@ import org.jahia.services.expressions.SearchExpressionContext;
 import org.jahia.services.expressions.ExpressionEvaluationUtils;
 
 import javax.jcr.Value;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Literal;
+import javax.jcr.query.qom.Literal;
 import java.util.List;
 import java.util.Iterator;
 
@@ -59,7 +59,7 @@ public class LiteralImpl extends StaticOperandImpl implements Literal {
     /**
      * @return the value of this literal.
      */
-    public Value getValue() {
+    public Value getLiteralValue() {
         return value;
     }
 
@@ -117,5 +117,4 @@ public class LiteralImpl extends StaticOperandImpl implements Literal {
                 JahiaException.DATA_ERROR,JahiaException.ERROR_SEVERITY, e);
         }
     }
-    
 }

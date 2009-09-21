@@ -38,6 +38,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.version.VersionException;
 import java.io.InputStream;
 import java.util.Calendar;
+import java.math.BigDecimal;
 
 /**
  * Created by IntelliJ IDEA.
@@ -137,5 +138,29 @@ public class VFSPropertyImpl extends VFSItemImpl implements Property {
 
     public int getType() throws RepositoryException {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setValue(BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Binary getBinary() throws ValueFormatException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Property getProperty() throws ItemNotFoundException, ValueFormatException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isMultiple() throws RepositoryException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

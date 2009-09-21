@@ -33,7 +33,7 @@ package org.jahia.query.qom;
 
 import org.jahia.exceptions.JahiaException;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.StaticOperand;
+import javax.jcr.query.qom.StaticOperand;
 
 /**
  * Created by IntelliJ IDEA.

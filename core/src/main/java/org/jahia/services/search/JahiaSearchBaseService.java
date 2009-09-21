@@ -57,8 +57,6 @@ import org.compass.core.mapping.Mapping;
 import org.compass.core.mapping.ResourceMapping;
 import org.compass.core.mapping.ResourcePropertyMapping;
 import org.compass.core.mapping.internal.InternalMultipleMapping;
-import org.compass.core.mapping.support.AbstractMapping;
-import org.compass.core.mapping.support.AbstractResourceMapping;
 import org.compass.core.mapping.rsem.RawResourceMapping;
 import org.compass.core.mapping.rsem.RawResourcePropertyMapping;
 import org.compass.core.spi.InternalCompass;
@@ -3019,7 +3017,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                                 }
                             }
                         }
-                        if (propertyDef.isSortable()) {
+                        if (propertyDef.isQueryOrderable()) {
                             if (updateCompassMappings(
                                     compassMappings,
                                     JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX
@@ -3045,9 +3043,9 @@ public class JahiaSearchBaseService extends JahiaSearchService
                             && def.getType() != FieldTypes.COLOR
                             && def.getType() != FieldTypes.APPLICATION &&
                                (propertyDef == null || !Boolean.FALSE
-                                    .equals(propertyDef.getFulltextSearchable())))
+                                    .equals(propertyDef.isFullTextSearchable())))
                             || (propertyDef != null && Boolean.TRUE
-                                    .equals(propertyDef.getFulltextSearchable()))) {
+                                    .equals(propertyDef.isFullTextSearchable()))) {
                         String key = isMetadata ? JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD
                                 : JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD;
 

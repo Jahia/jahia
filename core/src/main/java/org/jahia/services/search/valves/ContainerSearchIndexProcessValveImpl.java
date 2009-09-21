@@ -204,7 +204,7 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                 }
                 
                 ExtendedPropertyDefinition propDef = jahiaFieldDefinition.getPropertyDefinition();
-                if (propDef != null && propDef.isSortable() && values.length > 0) {
+                if (propDef != null && propDef.isQueryOrderable() && values.length > 0) {
                     doc.setFieldValues(JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX + name, values);
                     doc.getField(
                             JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX
@@ -256,7 +256,7 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                     }
                     if (propDef == null
                             || !Boolean.FALSE.equals(propDef
-                                    .getFulltextSearchable())) {
+                                    .isFullTextSearchable())) {
                         valuesList.addAll(Arrays.asList(values));
                     }
                 } else if ((field.getType() != FieldTypes.DATE
@@ -265,9 +265,9 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                         && field.getType() != FieldTypes.INTEGER
                         && field.getType() != FieldTypes.COLOR && field
                         .getType() != FieldTypes.APPLICATION && 
-                            (propDef == null || !Boolean.FALSE.equals(propDef.getFulltextSearchable())))
+                            (propDef == null || !Boolean.FALSE.equals(propDef.isFullTextSearchable())))
                         || (propDef != null && Boolean.TRUE.equals(propDef
-                                .getFulltextSearchable()))) {
+                                .isFullTextSearchable()))) {
                     valuesList.addAll(Arrays.asList(values));
                 }
             } catch ( Exception t){

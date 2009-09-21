@@ -46,6 +46,7 @@ import javax.jcr.nodetype.PropertyDefinition;
 import java.util.Calendar;
 import java.util.Date;
 import java.io.InputStream;
+import java.math.BigDecimal;
 
 /**
  * Implementation of JCRValueWrapper Interface.
@@ -116,6 +117,14 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
 
     public boolean getBoolean() throws ValueFormatException, IllegalStateException, RepositoryException {
         return value.getBoolean();
+    }
+
+    public Binary getBinary() throws RepositoryException {
+        return value.getBinary();
+    }
+
+    public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+        return value.getDecimal();
     }
 
     public Node getNode() throws ValueFormatException, IllegalStateException, RepositoryException {

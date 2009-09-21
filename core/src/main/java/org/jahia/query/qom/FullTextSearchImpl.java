@@ -31,8 +31,10 @@
  */
 package org.jahia.query.qom;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.FullTextSearch;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.FullTextSearch;
+import javax.jcr.query.qom.StaticOperand;
+
 import org.jahia.exceptions.JahiaException;
 
 /**
@@ -93,8 +95,8 @@ public class FullTextSearchImpl extends ConstraintImpl implements FullTextSearch
         isMetadata = metadata;
     }
 
-    public String getFullTextSearchExpression() {
-        return fullTextSearchExpression;
+    public StaticOperand getFullTextSearchExpression() {
+        return null; //fullTextSearchExpression;
     }
 
     public void setFullTextSearchExpression(String fullTextSearchExpression) {

@@ -34,6 +34,7 @@ package org.jahia.taglibs.query;
 import org.jahia.query.qom.JahiaQueryObjectModelConstants;
 
 import javax.servlet.jsp.JspException;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 
 /**
  * Tag used to create a Greater Than Or Equal To ConstraintImpl
@@ -48,12 +49,12 @@ public class GreaterThanOrEqualToTag extends ComparisonTag  {
 
     public GreaterThanOrEqualToTag(){
         super();
-        this.setOperator(JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO);
+        this.setOperator(QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO);
     }
 
     public int doEndTag() throws JspException {
         int eval = super.doEndTag();
-        this.setOperator(JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO);
+        this.setOperator(QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO);
         return eval;
     }
 

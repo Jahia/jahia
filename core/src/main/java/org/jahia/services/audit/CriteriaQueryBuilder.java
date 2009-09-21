@@ -291,9 +291,9 @@ public class CriteriaQueryBuilder {
      * @param logic
      * @throws JahiaException
      */
-    public void addEventTimeCriterion(long time, int operator,  int logic) throws JahiaException {
+    public void addEventTimeCriterion(long time, String operator,  int logic) throws JahiaException {
         Criterion propExp = null;
-        if ( operator == JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO ){
+        if ( operator.equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO )){
             propExp = getPropertyExpression(LogsBasedQueryConstant.PROPERTY_TIME,operator, String.valueOf(time));
         }
         if ( propExp != null ){
@@ -311,8 +311,8 @@ public class CriteriaQueryBuilder {
      * @param logic
      * @throws JahiaException
      */
-    public void addEventTimeRangeCriterion(long lowerTime, int lowerOperator,
-                                           long upperTime, int upperOperator, int logic) throws JahiaException {
+    public void addEventTimeRangeCriterion(long lowerTime, String lowerOperator,
+                                           long upperTime, String upperOperator, int logic) throws JahiaException {
         Property prop = Property.forName(LogsBasedQueryConstant.PROPERTY_TIME);
         this.addCriterion(prop.between(new Long(lowerTime),new Long(upperTime)), logic);
     }
@@ -378,7 +378,7 @@ public class CriteriaQueryBuilder {
      * @param value
      */
     public static Criterion getEqPropertyExpression(String propName,Object value){
-        return getPropertyExpression(propName, JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO,value);
+        return getPropertyExpression(propName, JahiaQueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO,value);
     }
 
     /**
@@ -388,17 +388,17 @@ public class CriteriaQueryBuilder {
      * @param value
      * @return
      */
-    public static Criterion getPropertyExpression(String propName, int operator, Object value){
+    public static Criterion getPropertyExpression(String propName, String operator, Object value){
         Property propCrit = Property.forName(propName);
-        if ( operator == JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO ){
+        if ( operator .equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO )){
             return propCrit.eq(value);
-        } else if ( operator == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN ){
+        } else if ( operator .equals( JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN )){
             return propCrit.gt(value);
-        } else if ( operator == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN ){
+        } else if ( operator.equals( JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN )){
             return propCrit.lt(value);
-        } else if ( operator == JahiaQueryObjectModelConstants.OPERATOR_LIKE ){
+        } else if ( operator.equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_LIKE )){
             return propCrit.like(value.toString(),MatchMode.START);
-        } else if ( operator == JahiaQueryObjectModelConstants.OPERATOR_NOT_EQUAL_TO ){
+        } else if ( operator.equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO )){
             return propCrit.ne(value);
         }
         return null;

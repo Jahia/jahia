@@ -36,7 +36,7 @@ import java.util.List;
 
 import javax.servlet.jsp.JspException;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
+import javax.jcr.query.qom.Constraint;
 import org.apache.jackrabbit.spi.commons.query.qom.ConstraintImpl;
 import org.jahia.query.qom.QueryObjectModelFactoryImpl;
 

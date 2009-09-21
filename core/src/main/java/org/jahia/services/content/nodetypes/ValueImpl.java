@@ -36,11 +36,9 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.regex.Pattern;
+import java.math.BigDecimal;
 
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.ValueFormatException;
+import javax.jcr.*;
 
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.log4j.Logger;
@@ -193,5 +191,13 @@ public class ValueImpl implements Value {
             return true;
         }
         return true;
+    }
+
+    public Binary getBinary() throws RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

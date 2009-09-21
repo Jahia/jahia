@@ -39,12 +39,7 @@ import java.util.ArrayList;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Column;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Ordering;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelFactory;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Source;
+import javax.jcr.query.qom.*;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -237,7 +232,7 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
         Ordering ordering = null;
         QueryObjectModelFactory queryFactory = getQueryFactory();
         PropertyValueImpl propValue = (PropertyValueImpl) queryFactory
-                .propertyValue(propertyName.trim());
+                .propertyValue(null,propertyName.trim());
         propValue.setNumberValue(numberValue);
         propValue.setMetadata(metadata);
         propValue.setNumberFormat(numberFormat);
@@ -248,8 +243,7 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
             QueryObjectModelFactoryImpl ourQueryFactory = (QueryObjectModelFactoryImpl) queryFactory;
             if (order != null
                     && order.length() > 0
-                    && JahiaQueryObjectModelConstants.ORDER_DESCENDING == Integer
-                            .parseInt(order)) {
+                    && QueryObjectModelConstants.JCR_ORDER_DESCENDING.equals(order)) {
                 ordering = ourQueryFactory.descending(propValue,
                         localeSensitive);
             } else {
@@ -259,8 +253,7 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
         } else {
             if (order != null
                     && order.length() > 0
-                    && JahiaQueryObjectModelConstants.ORDER_DESCENDING == Integer
-                            .parseInt(order)) {
+                    && QueryObjectModelConstants.JCR_ORDER_DESCENDING.equals(order)) {
                 ordering = queryFactory.descending(propValue);
             } else {
                 ordering = queryFactory.ascending(propValue);

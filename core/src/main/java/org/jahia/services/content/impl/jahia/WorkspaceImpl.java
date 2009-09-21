@@ -39,8 +39,10 @@ import javax.jcr.*;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.QueryManager;
 import javax.jcr.lock.LockException;
+import javax.jcr.lock.LockManager;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.Version;
+import javax.jcr.version.VersionManager;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeTypeManager;
 import java.io.InputStream;
@@ -103,6 +105,26 @@ public class WorkspaceImpl implements Workspace {
     }
 
     public void restore(Version[] versions, boolean b) throws ItemExistsException, UnsupportedRepositoryOperationException, VersionException, LockException, InvalidItemStateException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public LockManager getLockManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public VersionManager getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void createWorkspace(String name) throws AccessDeniedException, UnsupportedRepositoryOperationException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void createWorkspace(String name, String srcWorkspace) throws AccessDeniedException, UnsupportedRepositoryOperationException, NoSuchWorkspaceException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void deleteWorkspace(String name) throws AccessDeniedException, UnsupportedRepositoryOperationException, NoSuchWorkspaceException, RepositoryException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 

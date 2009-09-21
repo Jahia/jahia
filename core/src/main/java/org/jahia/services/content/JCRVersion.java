@@ -75,4 +75,16 @@ public class JCRVersion extends JCRNodeDecorator implements Version {
         }
         return versions;
     }
+
+    public Node getFrozenNode() throws RepositoryException {
+        return getProvider().getNodeWrapper(getRealNode().getFrozenNode(), (JCRSessionWrapper) getSession());
+    }
+
+    public Version getLinearSuccessor() throws RepositoryException {
+        return (Version) getProvider().getNodeWrapper(getRealNode().getLinearSuccessor(), (JCRSessionWrapper) getSession());
+    }
+
+    public Version getLinearPredecessor() throws RepositoryException {
+        return (Version) getProvider().getNodeWrapper(getRealNode().getLinearPredecessor(), (JCRSessionWrapper) getSession());
+    }
 }

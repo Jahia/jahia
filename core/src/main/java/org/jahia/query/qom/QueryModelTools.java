@@ -43,7 +43,7 @@ import org.jahia.services.containers.ContainerQueryContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.JahiaTools;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Ordering;
+import javax.jcr.query.qom.Ordering;
 import java.util.*;
 
 /**
@@ -109,7 +109,7 @@ public class QueryModelTools {
             SortField sortField = new SortField(
                     propertyName,
                     ordering.isLocaleSensitive() ? locale : null,
-                    (ordering.getOrder() == JahiaQueryObjectModelConstants.ORDER_DESCENDING));
+                    (ordering.getOrder().equals(JahiaQueryObjectModelConstants.JCR_ORDER_DESCENDING)));
             sortFieldsList.add(sortField);
         }
         if (sortFieldsList.isEmpty()){
@@ -208,7 +208,7 @@ public class QueryModelTools {
                                 && fieldDef.getPropertyDefinition() != null) {
                             ExtendedPropertyDefinition propDef = fieldDef
                                     .getPropertyDefinition();
-                            if (type == SORTING_TYPE && propDef.isSortable()) {
+                            if (type == SORTING_TYPE && propDef.isQueryOrderable()) {
                                 prefix = JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX;
                             } else if (type == FACETING_TYPE
                                     && propDef.isFacetable()) {

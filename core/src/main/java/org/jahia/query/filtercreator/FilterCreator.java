@@ -31,9 +31,9 @@
  */
 package org.jahia.query.filtercreator;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Comparison;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
+import javax.jcr.query.qom.Comparison;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.QueryObjectModel;
 import org.jahia.data.containers.ContainerFilterInterface;
 import org.jahia.data.containers.ContainerSorterInterface;
 import org.jahia.exceptions.JahiaException;

@@ -36,11 +36,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.ChildNode;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Comparison;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.DescendantNode;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.FullTextSearch;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
+import javax.jcr.query.qom.ChildNode;
+import javax.jcr.query.qom.Comparison;
+import javax.jcr.query.qom.DescendantNode;
+import javax.jcr.query.qom.FullTextSearch;
+import javax.jcr.query.qom.QueryObjectModel;
 import org.apache.lucene.search.HitCollector;
 import org.jahia.api.Constants;
 import org.jahia.data.beans.PageBean;
@@ -276,7 +276,7 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
     throws JahiaException {
 
         ContainerFilterInterface filter = null;
-        String pathString = c.getPath();
+        String pathString = c.getParentPath();
         Object nodeObject = ServicesRegistry.getInstance().getQueryService()
                 .getPathObject(pathString,context);
         if (nodeObject==null){
@@ -288,7 +288,7 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
             ContentPage contentPage = (ContentPage)pageBean.getContentObject();
             try {
                 FullTextSearch fullTextSearch = ((QueryObjectModelImpl)queryModel).getQueryFactory()
-                    .fullTextSearch(FilterCreator.PAGE_PATH,contentPage.getPagePathString(context));
+                    .fullTextSearch(FilterCreator.PAGE_PATH,contentPage.getPagePathString(context), null);
                 return this.getFilter(fullTextSearch,queryModel,queryContext,context);
             } catch ( Exception t ){
                 throw new JahiaException("Error creating PagePath filter","Error creating PagePath filter",
@@ -316,7 +316,7 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
     throws JahiaException {
 
         ContainerFilterInterface filter = null;
-        String pathString = c.getPath();
+        String pathString = c.getAncestorPath();
         Object nodeObject = ServicesRegistry.getInstance().getQueryService()
                 .getPathObject(pathString,context);
         if (nodeObject==null){
@@ -328,7 +328,7 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
             ContentPage contentPage = (ContentPage)pageBean.getContentObject();
             try {
                 FullTextSearch fullTextSearch = ((QueryObjectModelImpl)queryModel).getQueryFactory()
-                    .fullTextSearch(FilterCreator.PAGE_PATH,contentPage.getPagePathString(context) + "*");
+                    .fullTextSearch(FilterCreator.PAGE_PATH,contentPage.getPagePathString(context) + "*", null);
                 return this.getFilter(fullTextSearch,queryModel,queryContext,context);
             } catch ( Exception t ){
                 throw new JahiaException("Error creating PagePath filter","Error creating PagePath filter",
@@ -412,7 +412,7 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
         QueryObjectModelImpl queryModelImpl = (QueryObjectModelImpl)queryModel;
         ContainerFilterInterface filter = null;
         ContainerSearcher searcher = null;
-        String searchExpression = c.getFullTextSearchExpression();
+        String searchExpression = c.getFullTextSearchExpression().toString();
         if ( searchExpression == null || "".equals(searchExpression.trim()) ){
             return null;
         }
@@ -564,12 +564,12 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
         if ( JahiaQueryObjectModelConstants.PUBLICATION_DATE.equals(propertyName) ){
             sorter = new ContainerSorterByTimebasedPublishingDateBean(queryContext.getContainerListID(),
                     JahiaQueryObjectModelConstants.PUBLICATION_DATE,context.getEntryLoadRequest());
-            sorter.setAscOrdering(ordering.getOrder()== JahiaQueryObjectModelConstants.ORDER_ASCENDING);
+            sorter.setAscOrdering(ordering.getOrder().equals(JahiaQueryObjectModelConstants.JCR_ORDER_ASCENDING));
             return sorter;
         } else if ( JahiaQueryObjectModelConstants.EXPIRATION_DATE.equals(propertyName) ){
             sorter = new ContainerSorterByTimebasedPublishingDateBean(queryContext.getContainerListID(),
                     JahiaQueryObjectModelConstants.EXPIRATION_DATE,context.getEntryLoadRequest());
-            sorter.setAscOrdering(ordering.getOrder()== JahiaQueryObjectModelConstants.ORDER_ASCENDING);
+            sorter.setAscOrdering(ordering.getOrder().equals(JahiaQueryObjectModelConstants.JCR_ORDER_ASCENDING));
             return sorter;
         }
         JahiaFieldDefinition fieldDef = QueryModelTools
@@ -608,7 +608,7 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
         }
         if ( sorter != null ){
             setSorterValueProvider(sorter,operand.getValueProviderClass());
-            sorter.setAscOrdering(ordering.getOrder()== JahiaQueryObjectModelConstants.ORDER_ASCENDING);
+            sorter.setAscOrdering(ordering.getOrder()== JahiaQueryObjectModelConstants.JCR_ORDER_ASCENDING);
             if (dbMaxResult > 0){
                 sorter.setDBMaxResult(dbMaxResult);
             }

@@ -37,15 +37,15 @@ import java.util.List;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.ChildNode;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Comparison;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.DescendantNode;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.FullTextSearch;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Literal;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Ordering;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.PropertyValue;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelFactory;
+import javax.jcr.query.qom.ChildNode;
+import javax.jcr.query.qom.Comparison;
+import javax.jcr.query.qom.DescendantNode;
+import javax.jcr.query.qom.FullTextSearch;
+import javax.jcr.query.qom.Literal;
+import javax.jcr.query.qom.Ordering;
+import javax.jcr.query.qom.PropertyValue;
+import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModelFactory;
 import org.jahia.data.beans.PageBean;
 import org.jahia.data.containers.ContainerFilterInterface;
 import org.jahia.data.containers.ContainerLuceneSorterBean;
@@ -106,7 +106,7 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
     throws JahiaException {
 
         ContainerFilterInterface filter = null;
-        String pathString = c.getPath();
+        String pathString = c.getParentPath();
         Object nodeObject = ServicesRegistry.getInstance().getQueryService()
                 .getPathObject(pathString,context);
         if (nodeObject==null){
@@ -118,7 +118,7 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
             ContentPage contentPage = (ContentPage)pageBean.getContentObject();
             try {
                 FullTextSearch fullTextSearch = ((QueryObjectModelImpl)queryModel).getQueryFactory()
-                    .fullTextSearch(FilterCreator.PAGE_PATH,contentPage.getPagePathString(context));
+                    .fullTextSearch(FilterCreator.PAGE_PATH,contentPage.getPagePathString(context), null);
                 return this.getFilter(fullTextSearch,queryModel,queryContext,context);
             } catch ( Exception t ){
                 throw new JahiaException("Error creating PagePath filter","Error creating PagePath filter",
@@ -146,7 +146,7 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
     throws JahiaException {
 
         ContainerFilterInterface filter = null;
-        String pathString = c.getPath();
+        String pathString = c.getAncestorPath();
         Object nodeObject = ServicesRegistry.getInstance().getQueryService()
                 .getPathObject(pathString,context);
         if (nodeObject==null){
@@ -158,7 +158,7 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
             ContentPage contentPage = (ContentPage)pageBean.getContentObject();
             try {
                 FullTextSearchImpl fullTextSearch = (FullTextSearchImpl)((QueryObjectModelImpl)queryModel).getQueryFactory()
-                    .fullTextSearch(FilterCreator.PAGE_PATH,contentPage.getPagePathString(context) + "*");
+                    .fullTextSearch(FilterCreator.PAGE_PATH,contentPage.getPagePathString(context) + "*", null);
                 return this.getFilter(fullTextSearch,queryModel,queryContext,context);
             } catch ( Exception t ){
                 throw new JahiaException("Error creating PagePath filter","Error creating PagePath filter",
@@ -185,11 +185,11 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
                                                ProcessingContext context)
     throws JahiaException {
 
-        int operator = c.getOperator();
+        String operator = c.getOperator();
         String luceneOperator = null;
         boolean wildCardSearch = false;
         PropertyValueImpl propValue = (PropertyValueImpl)c.getOperand1();
-        if ( operator == JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO ){
+        if (operator.equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO)){
             luceneOperator = "";
             if (((StaticOperandImpl)c.getOperand2()).isMultiValueANDLogic()){
                 luceneOperator = "+";
@@ -197,14 +197,14 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
             if (propValue != null && propValue.getValueProviderClass() != null){
                 return null;
             }
-        } else if ( operator == JahiaQueryObjectModelConstants.OPERATOR_LIKE ){
+        } else if ( operator .equals( JahiaQueryObjectModelConstants.JCR_OPERATOR_LIKE )){
             wildCardSearch = true;
-        } else if ( operator == JahiaQueryObjectModelConstants.OPERATOR_NOT_EQUAL_TO ){
+        } else if ( operator .equals( JahiaQueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO)){
             luceneOperator = "-";
-        } else if ( (operator == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN)
-                || (operator == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO)
-                || (operator == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN)
-                || (operator == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO) ){
+        } else if ( (operator.equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN))
+                || (operator .equals( JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO))
+                || (operator .equals( JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN))
+                || (operator .equals( JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO)) ){
             if (propValue != null && propValue.getValueProviderClass() != null){
                 return null;
             }
@@ -288,9 +288,9 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
         StaticOperandImpl lowerValue = (StaticOperandImpl)lowerRangeComp.getOperand2();
         StaticOperandImpl upperValue = (StaticOperandImpl)upperRangeComp.getOperand2();
 
-        int lowerOperator = lowerRangeComp.getOperator();
+        String lowerOperator = lowerRangeComp.getOperator();
         String lowerValueStr = lowerValue.getValueAsString();
-        int upperOperator = upperRangeComp.getOperator();
+        String upperOperator = upperRangeComp.getOperator();
         String upperValueStr = upperValue.getValueAsString();
         return getRangeQueryFilter(operand, lowerOperator, lowerValueStr, upperOperator,
                 upperValueStr, queryModel, queryContext, context);
@@ -320,19 +320,19 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
         String lowerValueStr = opValue.getValueAsString();
         String upperValueStr = opValue.getValueAsString();
 
-        int lowerOperator = c.getOperator();
-        int upperOperator = lowerOperator;
-        if ( lowerOperator== JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN ){
-            upperOperator = JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN;
+        String lowerOperator = c.getOperator();
+        String upperOperator = lowerOperator;
+        if ( lowerOperator== JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN ){
+            upperOperator = JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN;
             upperValueStr = String.valueOf(Long.MAX_VALUE);
-        } else if ( lowerOperator== JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO ){
-            upperOperator = JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO;
+        } else if ( lowerOperator== JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO ){
+            upperOperator = JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO;
             upperValueStr = String.valueOf(Long.MAX_VALUE);
-        } else if ( lowerOperator== JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN ){
-            lowerOperator = JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN;
+        } else if ( lowerOperator== JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN ){
+            lowerOperator = JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN;
             lowerValueStr = String.valueOf(Long.MIN_VALUE);
-        } else if ( lowerOperator== JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO ){
-            lowerOperator = JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO;
+        } else if ( lowerOperator== JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO ){
+            lowerOperator = JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO;
             lowerValueStr = String.valueOf(Long.MIN_VALUE);
         } else {
             return null;
@@ -356,9 +356,9 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
      * @throws JahiaException
      */
     protected ContainerFilterInterface getRangeQueryFilter(PropertyValueImpl operand,
-                                                                    int lowerOperator,
+                                                                    String lowerOperator,
                                                                     String lowerValue,
-                                                                    int upperOperator,
+                                                                    String upperOperator,
                                                                     String upperValue,
                                                                     QueryObjectModel queryModel,
                                                                     ContainerQueryContext queryContext,
@@ -366,8 +366,8 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
     throws JahiaException {
 
         StringBuffer searchExpression = new StringBuffer();
-        int operator = lowerOperator;
-        if ( operator == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN ){
+        String operator = lowerOperator;
+        if ( operator.equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN )){
             searchExpression.append("{");
         } else {
             searchExpression.append("[");
@@ -376,7 +376,7 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
         searchExpression.append(" ");
         searchExpression.append(upperValue);
         operator = upperOperator;
-        if ( operator == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN ){
+        if ( operator .equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN )){
             searchExpression.append("}");
         } else {
             searchExpression.append("]");
@@ -424,9 +424,9 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
                 try {
                     Literal literal = queryFactory.literal(val);
                     ((LiteralImpl)literal).setMultiValueANDLogic(false);
-                    PropertyValue prop = queryFactory.propertyValue(FilterCreator.CONTENT_DEFINITION_NAME);
+                    PropertyValue prop = queryFactory.propertyValue(FilterCreator.CONTENT_DEFINITION_NAME, null);
                     Comparison compConstraint = queryFactory.comparison(prop,
-                            JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO,literal);
+                            JahiaQueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO,literal);
                     ContainerFilterInterface filterBean = this.getFilter((ComparisonImpl)compConstraint,queryModel,
                             queryContext,context);
                     if (filterBean != null && filterBean instanceof ContainerSearcherToFilterAdapter){

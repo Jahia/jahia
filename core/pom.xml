@@ -395,9 +395,9 @@
         </dependency>
         <!-- Jackrabbit dependencies -->
         <dependency>
-            <groupId>jsr170</groupId>
-            <artifactId>jcr</artifactId>
-            <version>1.0</version>
+          <groupId>javax.jcr</groupId>
+          <artifactId>jcr</artifactId>
+          <version>2.0-b114</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>

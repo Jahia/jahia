@@ -414,8 +414,8 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
                 nt = NodeTypeRegistry.getInstance().getNodeType(containerType);
                 if (!availableTypesFound) {
                     if (nt.isAbstract()) {
-                        ExtendedNodeType[] subs = nt.getSubtypes();
-                        for (ExtendedNodeType sub : subs) {
+                        while (nt.getSubtypes().hasNext()) {
+                            ExtendedNodeType sub = (ExtendedNodeType) nt.getSubtypes().next();
                             if (!sub.getSystemId().equals("system-standard")) {
                                 JahiaTemplatesPackage defPackage = templateManagerService.getTemplatePackage(sub.getSystemId());
                                 if (defPackage != null)  {

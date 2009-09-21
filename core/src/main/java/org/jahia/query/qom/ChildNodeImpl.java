@@ -33,8 +33,8 @@ package org.jahia.query.qom;
 
 import org.jahia.exceptions.JahiaException;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.ChildNode;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
+import javax.jcr.query.qom.ChildNode;
+import javax.jcr.query.qom.Constraint;
 
 /**
  * Created by IntelliJ IDEA.
@@ -71,7 +71,7 @@ public class ChildNodeImpl extends ConstraintImpl implements ChildNode, Constrai
      *
      * @return the path; non-null
      */
-    public String getPath() {
+    public String getParentPath() {
         return this.path;
     }
 

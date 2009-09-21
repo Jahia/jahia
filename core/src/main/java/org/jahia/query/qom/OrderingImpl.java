@@ -33,8 +33,8 @@ package org.jahia.query.qom;
 
 import org.jahia.exceptions.JahiaException;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.DynamicOperand;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Ordering;
+import javax.jcr.query.qom.DynamicOperand;
+import javax.jcr.query.qom.Ordering;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,10 +46,10 @@ import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Ordering;
 public class OrderingImpl extends QOMNode implements Ordering {
 
     private PropertyValueImpl operand;
-    private int order;
+    private String order;
     private boolean localeSensitive;
 
-    public OrderingImpl(PropertyValueImpl operand, int order, boolean localeSensitive) {
+    public OrderingImpl(PropertyValueImpl operand, String order, boolean localeSensitive) {
         this.operand = operand;
         this.order = order;
         this.localeSensitive = localeSensitive;
@@ -63,11 +63,11 @@ public class OrderingImpl extends QOMNode implements Ordering {
         this.operand = operand;
     }
 
-    public int getOrder() {
+    public String getOrder() {
         return order;
     }
 
-    public void setOrder(int order) {
+    public void setOrder(String order) {
         this.order = order;
     }
 

@@ -40,6 +40,8 @@ import org.apache.jackrabbit.commons.xml.DocumentViewExporter;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 
 import javax.jcr.*;
+import javax.jcr.retention.RetentionManager;
+import javax.jcr.security.AccessControlManager;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -521,4 +523,39 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    public Node getNodeByIdentifier(String id) throws ItemNotFoundException, RepositoryException {
+        return getNodeByUUID(id);
+    }
+
+    public Property getProperty(String absPath) throws PathNotFoundException, RepositoryException {
+        return (Property) getItem(absPath);
+    }
+
+    public boolean nodeExists(String absPath) throws RepositoryException {
+        return itemExists(absPath);
+    }
+
+    public boolean propertyExists(String absPath) throws RepositoryException {
+        return itemExists(absPath);
+    }
+
+    public void removeItem(String absPath) throws VersionException, LockException, ConstraintViolationException, AccessDeniedException, RepositoryException {
+        getItem(absPath).remove();
+    }
+
+    public boolean hasPermission(String absPath, String actions) throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public boolean hasCapability(String s, Object o, Object[] objects) throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public AccessControlManager getAccessControlManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public RetentionManager getRetentionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
 }

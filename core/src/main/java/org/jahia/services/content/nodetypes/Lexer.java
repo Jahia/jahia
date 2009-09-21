@@ -34,6 +34,8 @@ package org.jahia.services.content.nodetypes;
 import java.io.StreamTokenizer;
 import java.io.Reader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.jahia.utils.ArrayUtils;
 
@@ -54,16 +56,23 @@ public class Lexer {
     public static final char DEFAULT = '=';
     public static final char CONSTRAINT = '<';
 
-    public static final String[] ABSTRACT = new String[] {"abstract", "abs", "a"};
     public static final String[] ORDERABLE = new String[] {"orderable", "ord", "o"};
     public static final String[] MIXIN = new String[]{"mixin", "mix", "m"};
+    public static final String[] ABSTRACT = new String[]{"abstract", "abs", "a"};
+    public static final String[] NOQUERY = new String[]{"noquery", "nq"};
+    public static final String[] QUERY = new String[]{"query", "q"};
+    public static final String[] PRIMARYITEM = new String[]{"primaryitem", "!"};
+
     public static final String[] VALIDATOR = new String[]{"validator", "val", "v"};
 
     public static final String[] PRIMARY = new String[]{"primary", "pri", "!"};
     public static final String[] AUTOCREATED = new String[]{"autocreated", "aut", "a"};
     public static final String[] MANDATORY = new String[]{"mandatory", "man", "m"};
     public static final String[] PROTECTED = new String[]{"protected", "pro", "p"};
+    public static final String[] MULTIPLE = new String[]{"multiple", "mul", "*"};
+    public static final String[] SNS = new String[]{"sns", "*", "multiple"};
     public static final String[] INTERNATIONALIZED = new String[]{"internationalized", "i15d", "i"};
+
     public static final String[] INDEXED = new String[]{"indexed", "ind", "x"};
     public static final String[] SCOREBOOST = new String[]{"scoreboost", "boost", "b"};
     public static final String[] NO = new String[]{"no","n"};
@@ -74,7 +83,11 @@ public class Lexer {
     public static final String[] SORTABLE = new String[]{"sortable"};    
     public static final String[] FACETABLE = new String[]{"facetable"};    
     public static final String[] FULLTEXTSEARCHABLE = new String[]{"fulltextsearchable", "fts"};
-    public static final String[] MULTIPLE = new String[]{"multiple", "mul", "*"};
+
+    public static final String[] QUERYOPS = new String[]{"queryops", "qop"};
+    public static final String[] NOFULLTEXT = new String[]{"nofulltext", "nof"};
+    public static final String[] NOQUERYORDER = new String[]{"noqueryorder", "nqord"};
+
     public static final String[] HIDDEN = new String[]{"hidden", "Hidden", "HIDDEN"};
 
     public static final String[] COPY = new String[]{"copy", "Copy", "COPY"};
@@ -86,12 +99,52 @@ public class Lexer {
 
     public static final String[] WORKFLOW = new String[]{"workflow", "Workflow", "WORKFLOW"};
 
-    public static final String[] ATTRIBUTE = ArrayUtils.join(PRIMARY,
-            AUTOCREATED, MANDATORY, PROTECTED, INTERNATIONALIZED, INDEXED,
-            SCOREBOOST, ANALYZER, SORTABLE, FACETABLE, FULLTEXTSEARCHABLE,
-            MULTIPLE, COPY, VERSION, INITIALIZE, COMPUTE, IGNORE, ABORT,
-            WORKFLOW, HIDDEN);
-    
+    public static final String[] PROP_ATTRIBUTE;
+    public static final String[] NODE_ATTRIBUTE;
+
+    static {
+        ArrayList<String> attr = new ArrayList<String>();
+        attr.addAll(Arrays.asList(PRIMARY));
+        attr.addAll(Arrays.asList(AUTOCREATED));
+        attr.addAll(Arrays.asList(MANDATORY));
+        attr.addAll(Arrays.asList(PROTECTED));
+        attr.addAll(Arrays.asList(INTERNATIONALIZED));
+        attr.addAll(Arrays.asList(INDEXED));
+        attr.addAll(Arrays.asList(SCOREBOOST));
+        attr.addAll(Arrays.asList(ANALYZER));
+        attr.addAll(Arrays.asList(SORTABLE));
+        attr.addAll(Arrays.asList(FACETABLE));
+        attr.addAll(Arrays.asList(FULLTEXTSEARCHABLE));
+        attr.addAll(Arrays.asList(MULTIPLE));
+        attr.addAll(Arrays.asList(QUERYOPS));
+        attr.addAll(Arrays.asList(NOFULLTEXT));
+        attr.addAll(Arrays.asList(NOQUERYORDER));
+        attr.addAll(Arrays.asList(COPY));
+        attr.addAll(Arrays.asList(VERSION));
+        attr.addAll(Arrays.asList(INITIALIZE));
+        attr.addAll(Arrays.asList(COMPUTE));
+        attr.addAll(Arrays.asList(IGNORE));
+        attr.addAll(Arrays.asList(ABORT));
+        attr.addAll(Arrays.asList(HIDDEN));
+        PROP_ATTRIBUTE = attr.toArray(new String[attr.size()]);
+        attr = new ArrayList<String>();
+        attr.addAll(Arrays.asList(PRIMARY));
+        attr.addAll(Arrays.asList(AUTOCREATED));
+        attr.addAll(Arrays.asList(MANDATORY));
+        attr.addAll(Arrays.asList(PROTECTED));
+        attr.addAll(Arrays.asList(INTERNATIONALIZED));
+        attr.addAll(Arrays.asList(SNS));
+        attr.addAll(Arrays.asList(COPY));
+        attr.addAll(Arrays.asList(VERSION));
+        attr.addAll(Arrays.asList(INITIALIZE));
+        attr.addAll(Arrays.asList(COMPUTE));
+        attr.addAll(Arrays.asList(IGNORE));
+        attr.addAll(Arrays.asList(ABORT));
+        attr.addAll(Arrays.asList(WORKFLOW));
+        attr.addAll(Arrays.asList(HIDDEN));
+        NODE_ATTRIBUTE = attr.toArray(new String[attr.size()]);
+    }
+
     public static final String[] STRING = {"string", "String", "STRING"};
     public static final String[] BINARY = {"binary", "Binary", "BINARY"};
     public static final String[] LONG = {"long", "Long", "LONG"};
@@ -204,15 +257,31 @@ public class Lexer {
         }
     }
 
+    /**
+     * Creates a failure exception including the current line number and systemid.
+     * @param message message
+     * @throws ParseException the created exception
+     */
     public void fail(String message) throws ParseException {
         throw new ParseException(message, st.lineno(), -1, filename);
     }
 
+    /**
+     * Creates a failure exception including the current line number and systemid.
+     * @param message message
+     * @param e root cause
+     * @throws ParseException the created exception
+     */
     public void fail(String message, Throwable e) throws ParseException {
         throw new ParseException(message, e, st.lineno(), -1, filename);
     }
 
-    public void fail(Throwable e) throws ParseException {
+     /**
+     * Creates a failure exception including the current line number and systemid.
+     * @param e root cause
+     * @throws ParseException the created exception
+     */
+     public void fail(Throwable e) throws ParseException {
         throw new ParseException(e, st.lineno(), -1, filename);
     }
 }

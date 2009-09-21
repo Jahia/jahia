@@ -31,7 +31,7 @@
  */
 package org.jahia.query.qom;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.DynamicOperand;
+import javax.jcr.query.qom.DynamicOperand;
 
 /**
  * Created by IntelliJ IDEA.

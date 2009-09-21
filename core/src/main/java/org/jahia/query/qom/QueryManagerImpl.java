@@ -36,7 +36,7 @@ import org.jahia.query.QueryService;
 
 import javax.jcr.query.Query;
 import javax.jcr.query.InvalidQueryException;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelFactory;
+import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 import java.util.Properties;

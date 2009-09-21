@@ -48,6 +48,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.nodetypes.JRCndWriter;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeTypeIterator;
@@ -55,6 +56,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author hollis
@@ -114,10 +117,23 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     protected void registerCustomNodeTypes(Workspace ws) throws IOException, RepositoryException {
         NodeTypeManagerImpl jntm  = (NodeTypeManagerImpl) ws.getNodeTypeManager();
         NodeTypeIterator nti = NodeTypeRegistry.getInstance().getAllNodeTypes();
-
+        List<ExtendedNodeType> nts = new ArrayList<ExtendedNodeType>();
+        while (nti.hasNext()) {
+            ExtendedNodeType nodeType = (ExtendedNodeType) nti.next();
+            if (!Constants.NT_NS.equals(nodeType.getNameObject().getUri()) && !Constants.MIX_NS.equals(nodeType.getNameObject().getUri())) {
+                // todo : remove temporary hack to avoid re-registration of nodes
+                try {
+                    if (!jntm.hasNodeType(nodeType.getName())) {
+                    nts.add(nodeType);
+                    }
+                } catch (RepositoryException e) {
+                    nts.add(nodeType);
+                }
+            }
+        }
         File cndOutFile = File.createTempFile("nodetypes",".cnd");
         cndOutFile.deleteOnExit();
-        JRCndWriter w = new JRCndWriter(nti, NodeTypeRegistry.getInstance().getNamespaces(), new FileWriter(cndOutFile), ws.getNodeTypeManager());
+        JRCndWriter w = new JRCndWriter(nts, NodeTypeRegistry.getInstance().getNamespaces(), new FileWriter(cndOutFile), ws.getNodeTypeManager());
         w.close();
         jntm.registerNodeTypes( new FileInputStream(cndOutFile), JackrabbitNodeTypeManager.TEXT_X_JCR_CND, true);
     }
@@ -131,12 +147,26 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         try {
             NodeTypeManagerImpl jntm  = (NodeTypeManagerImpl) ws.getNodeTypeManager();
             NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(systemId);
+            List<ExtendedNodeType> nts = new ArrayList<ExtendedNodeType>();
+            while (nti.hasNext()) {
+                ExtendedNodeType nodeType = (ExtendedNodeType) nti.next();
+                if (!Constants.NT_NS.equals(nodeType.getNameObject().getUri()) && !Constants.MIX_NS.equals(nodeType.getNameObject().getUri())) {
+                    // todo : remove temporary hack to avoid re-registration of nodes
+                    try {
+                        if (!jntm.hasNodeType(nodeType.getName())) {
+                        nts.add(nodeType);
+                        }
+                    } catch (RepositoryException e) {
+                        nts.add(nodeType);
+                    }
+                }
+            }
 
             cndOutFile = File.createTempFile("nodetypes",".cnd");
-            JRCndWriter w = new JRCndWriter(nti, NodeTypeRegistry.getInstance().getNamespaces(), new FileWriter(cndOutFile), ws.getNodeTypeManager());
+            JRCndWriter w = new JRCndWriter(nts, NodeTypeRegistry.getInstance().getNamespaces(), new FileWriter(cndOutFile), ws.getNodeTypeManager());
             w.close();
             jntm.registerNodeTypes( new FileInputStream(cndOutFile), JackrabbitNodeTypeManager.TEXT_X_JCR_CND, true);
-            cndOutFile.delete();
+//            cndOutFile.delete();
         } catch (IOException e) {
             logger.error("Cannot parse file "+cndOutFile, e);
         }

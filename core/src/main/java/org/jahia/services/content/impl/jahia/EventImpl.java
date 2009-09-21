@@ -32,6 +32,8 @@
 package org.jahia.services.content.impl.jahia;
 
 import javax.jcr.observation.Event;
+import javax.jcr.RepositoryException;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -62,6 +64,22 @@ public class EventImpl implements Event {
 
     public String getUserID() {
         return userID;
+    }
+
+    public String getIdentifier() throws RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Map getInfo() throws RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getUserData() throws RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public long getDate() throws RepositoryException {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

@@ -33,8 +33,8 @@ package org.jahia.query.qom;
 
 import org.jahia.exceptions.JahiaException;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Or;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.Or;
 
 /**
  * Created by IntelliJ IDEA.

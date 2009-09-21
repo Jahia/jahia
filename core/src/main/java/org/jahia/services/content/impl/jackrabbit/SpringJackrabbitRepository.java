@@ -199,6 +199,18 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
         return repository.getDescriptorKeys();
     }
 
+    public boolean isSingleValueDescriptor(String key) {
+        return repository.isSingleValueDescriptor(key);
+    }
+
+    public Value getDescriptorValue(String key) {
+        return repository.getDescriptorValue(key);
+    }
+
+    public Value[] getDescriptorValues(String key) {
+        return repository.getDescriptorValues(key);
+    }
+
     /**
      * Delegated to the underlying repository instance.
      */

@@ -94,6 +94,30 @@ public class QueryResultAdapter implements QueryResult {
                         public Value[] getValues() throws RepositoryException {
                             return row.getValues();
                         }
+
+                        public Node getNode() throws RepositoryException {
+                            throw new UnsupportedRepositoryOperationException();
+                        }
+
+                        public Node getNode(String selectorName) throws RepositoryException {
+                            throw new UnsupportedRepositoryOperationException();
+                        }
+
+                        public String getPath() throws RepositoryException {
+                            throw new UnsupportedRepositoryOperationException();
+                        }
+
+                        public String getPath(String selectorName) throws RepositoryException {
+                            throw new UnsupportedRepositoryOperationException();
+                        }
+
+                        public double getScore() throws RepositoryException {
+                            throw new UnsupportedRepositoryOperationException();
+                        }
+
+                        public double getScore(String selectorName) throws RepositoryException {
+                            throw new UnsupportedRepositoryOperationException();
+                        }
                     });
                 }
             }
@@ -122,5 +146,9 @@ public class QueryResultAdapter implements QueryResult {
 
     public void addResult(JCRWorkspaceWrapper.QueryResultWrapper result) {
         queryResults.add(result);
+    }
+
+    public String[] getSelectorNames() throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
     }
 }

@@ -31,8 +31,8 @@
  */
 package org.jahia.taglibs.query;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.ChildNode;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
+import javax.jcr.query.qom.ChildNode;
+import javax.jcr.query.qom.Constraint;
 import javax.servlet.jsp.JspException;
 
 /**
@@ -93,7 +93,7 @@ public class ChildNodeTag extends ConstraintTag  {
             return null;
         }
         if (selectorName==null || "".equals(selectorName.trim())){
-            childNode = this.getQueryFactory().childNode(path);
+            childNode = this.getQueryFactory().childNode(null,path);
         } else {
             childNode = this.getQueryFactory().childNode(selectorName.trim(),path);
         }

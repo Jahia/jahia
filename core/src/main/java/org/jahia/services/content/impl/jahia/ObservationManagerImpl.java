@@ -49,11 +49,10 @@ import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.bin.Jahia;
 
-import javax.jcr.observation.ObservationManager;
+import javax.jcr.observation.*;
 import javax.jcr.observation.EventListener;
-import javax.jcr.observation.EventListenerIterator;
-import javax.jcr.observation.Event;
 import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
 import java.util.*;
 
 /**
@@ -97,6 +96,17 @@ public class ObservationManagerImpl implements ObservationManager {
         return new EventListenerIteratorImpl(new HashSet<EventListener>(listeners.keySet()).iterator(), listeners.size());                
     }
 
+    public void setUserData(String userData) throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public EventJournal getEventJournal() throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public EventJournal getEventJournal(int i, String s, boolean b, String[] strings, String[] strings1) throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
 
     public static void fireEvents(List events) {
         for (ObservationManagerImpl observationManager : (Iterable<ObservationManagerImpl>) observationManagers) {

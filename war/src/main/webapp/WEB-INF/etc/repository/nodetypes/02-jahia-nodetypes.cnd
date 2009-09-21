@@ -29,7 +29,7 @@
 [jmix:originWS] mixin
   - j:originWS (string) protected
 
-[jmix:contentmetadata] > jmix:metadata, mix:createdBy, mix:lastModified, jmix:lastPublished, mix:title, jmix:categorized, jmix:keywords, jmix:thumbnail, jmix:originWS mixin
+[jmix:contentmetadata] > jmix:metadata, mix:lastModified, jmix:lastPublished, mix:title, jmix:categorized, jmix:keywords, jmix:thumbnail, jmix:originWS mixin
 
 //---------------------------------------------------------
 // Multi language
@@ -157,7 +157,7 @@
 // Categories
 //---------------------------------------------------------
 
-[jnt:category] > nt:base, mix:created, mix:createdBy, mix:lastModified, jmix:lastPublished, jmix:hierarchyNode, jmix:collection, mix:title
+[jnt:category] > nt:base, mix:referenceable, mix:created, mix:lastModified, jmix:lastPublished, jmix:hierarchyNode, jmix:collection, mix:title
 + * (jnt:category)
 - * (reference) multiple < jnt:category
 
@@ -266,7 +266,7 @@
  - j:virtualsitesFolderConfig (string)
  - j:virtualsitesFolderSkeleton (string)
 
-[jnt:virtualsite] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:contentmetadata
+[jnt:virtualsite] > nt:base, mix:referenceable, jmix:hierarchyNode, jmix:collection, mix:created, jmix:contentmetadata
  - j:title (string) protected
  - j:serverName (string) protected
  - j:description (string) protected
@@ -309,19 +309,19 @@
 
 [jmix:link] mixin
 
-[jnt:nodeReference] > nt:base, jmix:hierarchyNode, mix:created, jmix:contentmetadata
+[jnt:nodeReference] > nt:base, mix:referenceable, jmix:hierarchyNode, mix:created, jmix:contentmetadata
  - j:node (weakreference)
 
 [jnt:nodeLink] > jnt:nodeReference, jmix:link
 
-[jnt:externalLink] > nt:base, jmix:hierarchyNode, mix:created, jmix:link, jmix:contentmetadata
+[jnt:externalLink] > nt:base, mix:referenceable, jmix:hierarchyNode, mix:created, jmix:link, jmix:contentmetadata
  - j:url (string)
 
 //---------------------------------------------------------
 // Definition organization
 //---------------------------------------------------------
 
-[jmix:content] mixin
+[jmix:content] > mix:referenceable mixin
 
 [jmix:containerContent] > jmix:content mixin
 
@@ -335,7 +335,7 @@
 // Pages, content lists
 //---------------------------------------------------------
 
-[jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:navigation, jmix:contentmetadata
+[jnt:page] > nt:base, mix:referenceable, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:navigation, jmix:contentmetadata
  + * (nt:base) version
 
 [jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:contentmetadata, jmix:containerContent
@@ -386,9 +386,9 @@
 // Compatibility nodes
 //---------------------------------------------------------
 
-[jnt:container] > nt:base, mix:created, jmix:hierarchyNode, jmix:collection, jmix:contentmetadata
+[jnt:container] > nt:base, mix:referenceable, mix:created, jmix:hierarchyNode, jmix:collection, jmix:contentmetadata
 
-[jnt:containerList] > nt:base, mix:created, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:contentmetadata
+[jnt:containerList] > nt:base, mix:referenceable, mix:created, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:contentmetadata
  orderable
  + * (jnt:container)
 

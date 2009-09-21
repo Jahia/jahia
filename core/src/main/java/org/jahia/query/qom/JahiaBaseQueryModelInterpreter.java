@@ -90,7 +90,7 @@ public class JahiaBaseQueryModelInterpreter implements QueryObjectModelInterpret
             }
             return (Value)this.bindingVariableValues.get(variableName);
         } else if (o instanceof LiteralImpl){
-            return ((LiteralImpl)o).getValue();
+            return ((LiteralImpl)o).getLiteralValue();
         }
         return null;
     }

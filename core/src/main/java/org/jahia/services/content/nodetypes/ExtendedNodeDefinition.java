@@ -78,9 +78,10 @@ public class ExtendedNodeDefinition extends ExtendedItemDefinition implements No
         return res;
     }
 
-    public String[] getRequiredPrimaryTypesNames() {
+    public String[] getRequiredPrimaryTypeNames() {
         return requiredPrimaryTypes;
     }
+
 
     public void setRequiredPrimaryTypes(String[] requiredPrimaryTypes) {
         this.requiredPrimaryTypes = requiredPrimaryTypes;

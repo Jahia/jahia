@@ -77,12 +77,11 @@ public class JRCndWriter {
         this.out = out;
     }
 
-    public JRCndWriter(NodeTypeIterator nti, Map<String,String> namespaces, Writer out, NodeTypeManager ntManager) throws IOException {
+    public JRCndWriter(List<ExtendedNodeType> nti, Map<String,String> namespaces, Writer out, NodeTypeManager ntManager) throws IOException {
         this.out = out;
         this.ntManager = ntManager;
         writeNamespaces(namespaces);
-        while (nti.hasNext()) {
-            ExtendedNodeType ntd = (ExtendedNodeType) nti.nextNodeType();
+        for (ExtendedNodeType ntd : nti) {
             write(ntd);
         }
     }

@@ -34,10 +34,10 @@ package org.jahia.query.qom;
 import org.jahia.exceptions.JahiaException;
 
 import javax.jcr.Value;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Comparison;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.DynamicOperand;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.StaticOperand;
+import javax.jcr.query.qom.Comparison;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.DynamicOperand;
+import javax.jcr.query.qom.StaticOperand;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,9 +50,9 @@ public class ComparisonImpl extends ConstraintImpl implements Comparison, Constr
 
     private PropertyValueImpl operand1;
     private StaticOperandImpl operand2;
-    private int operator;
+    private String operator;
 
-    public ComparisonImpl( PropertyValueImpl operand1, int operator, StaticOperandImpl operand2 ) {
+    public ComparisonImpl( PropertyValueImpl operand1, String operator, StaticOperandImpl operand2 ) {
         this.operand1 = operand1;
         this.operator = operator;
         this.operand2 = operand2;
@@ -74,11 +74,11 @@ public class ComparisonImpl extends ConstraintImpl implements Comparison, Constr
         this.operand2 = operand2;
     }
 
-    public int getOperator() {
+    public String getOperator() {
         return operator;
     }
 
-    public void setOperator(int operator) {
+    public void setOperator(String operator) {
         this.operator = operator;
     }
 
@@ -102,7 +102,7 @@ public class ComparisonImpl extends ConstraintImpl implements Comparison, Constr
                 .append("\'");
         buffer.append(" operand2=");
         if ( this.operand2 != null ){
-            Value val = ((LiteralImpl)this.operand2).getValue();
+            Value val = ((LiteralImpl)this.operand2).getLiteralValue();
             if ( val != null ){
                 buffer.append(val.toString());
             } else {

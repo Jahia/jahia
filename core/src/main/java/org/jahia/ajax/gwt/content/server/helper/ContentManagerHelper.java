@@ -1294,7 +1294,7 @@ public class ContentManagerHelper {
                                         }
 
                                         if (!clear) {
-                                            String s = end.getRequiredPrimaryTypesNames()[UPLOAD];
+                                            String s = end.getRequiredPrimaryTypeNames()[UPLOAD];
                                             Node content = objectNode.addNode(prop.getName(), s.equals("nt:base") ? "jnt:resource" : s);
 
                                             content.setProperty(Constants.JCR_MIMETYPE, i.contentType);

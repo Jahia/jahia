@@ -240,7 +240,7 @@ public class JahiaCndReader {
      */
     private void doNodeTypeName(ExtendedNodeType ntd) throws ParseException,IOException {
         if (!currentTokenEquals(Lexer.BEGIN_NODE_TYPE_NAME)) {
-            lexer.fail("Missing '" + Lexer.BEGIN_NODE_TYPE_NAME + "' delimiter for beginning of node type name");
+            lexer.fail("Unexpected token '" + currentToken +"'");
         }
         nextToken();
         Name name = parseName(currentToken);
@@ -282,41 +282,41 @@ public class JahiaCndReader {
      * @throws ParseException
      */
     private void doOptions(ExtendedNodeType ntd) throws ParseException, IOException {
-        if (currentTokenEquals(Lexer.ABSTRACT)) {
-            ntd.setAbstract(true);
-            nextToken();
-        }
-
-        if (currentTokenEquals(Lexer.ORDERABLE)) {
-            ntd.setHasOrderableChildNodes(true);
-            nextToken();
-            if (currentTokenEquals(Lexer.MIXIN)) {
-                ntd.setMixin(true);
-                nextToken();
-            }
-        } else if (currentTokenEquals(Lexer.MIXIN)) {
-            ntd.setMixin(true);
-            nextToken();
+        boolean hasOption = true;
+        while (hasOption) {
             if (currentTokenEquals(Lexer.ORDERABLE)) {
-                ntd.setHasOrderableChildNodes(true);
                 nextToken();
-            }
-        }
-
-        if (currentTokenEquals(Lexer.ABSTRACT)) {
-            ntd.setAbstract(true);
-            nextToken();
-        }
-
-        if (currentTokenEquals(Lexer.VALIDATOR)) {
-            nextToken();
-            if (currentTokenEquals(Lexer.DEFAULT)) {
+//                ntd.setOrderableChildNodes(true);
+            } else if (currentTokenEquals(Lexer.MIXIN)) {
                 nextToken();
-                ntd.setValidator(currentToken);
+                ntd.setMixin(true);
+            } else if (currentTokenEquals(Lexer.ABSTRACT)) {
                 nextToken();
+                ntd.setAbstract(true);
+            } else if (currentTokenEquals(Lexer.NOQUERY)) {
+                nextToken();
+//                ntd.setQueryable(false);
+            } else if (currentTokenEquals(Lexer.QUERY)) {
+                nextToken();
+//                ntd.setQueryable(true);
+            } else if (currentTokenEquals(Lexer.PRIMARYITEM)) {
+                nextToken();
+                ntd.setPrimaryItemName(currentToken);
+                nextToken();
+            } else if (currentTokenEquals(Lexer.VALIDATOR)) {
+                nextToken();
+                if (currentTokenEquals(Lexer.DEFAULT)) {
+                    nextToken();
+                    ntd.setValidator(currentToken);
+                    nextToken();
+                } else {
+                    lexer.fail("Invalid validator");
+                }
             } else {
-                lexer.fail("Invalid validator");
+                hasOption = false;
             }
+
+            // todo handle new options
         }
     }
 
@@ -391,6 +391,7 @@ public class JahiaCndReader {
                     def.setMandatory(listNodeDef.isMandatory());
                     def.setSelectorOptions(listNodeDef.getSelectorOptions());
                     registry.addNodeType(listType.getNameObject(),listType);
+                    nodeTypesList.add(listType);
                 }
 //                listNodeDef.setAutoCreated(true);
 //                listNodeDef.setMandatory(true);
@@ -427,6 +428,7 @@ public class JahiaCndReader {
                     def.setDeclaringNodeType(listType);
                     def.setMandatory(listNodeDef.isMandatory());
                     registry.addNodeType(listType.getNameObject(),listType);
+                    nodeTypesList.add(listType);
                 }
 //                listNodeDef.setAutoCreated(true);
 //                listNodeDef.setMandatory(true);
@@ -645,7 +647,7 @@ public class JahiaCndReader {
      * @throws ParseException
      */
     private void doPropertyAttributes(ExtendedPropertyDefinition pdi, ExtendedNodeType ntd) throws ParseException, IOException {
-        while (currentTokenEquals(Lexer.ATTRIBUTE)) {
+        while (currentTokenEquals(Lexer.PROP_ATTRIBUTE)) {
             if (currentTokenEquals(Lexer.PRIMARY)) {
                 ntd.setPrimaryItemName(pdi.getName());
             } else if (currentTokenEquals(Lexer.AUTOCREATED)) {
@@ -698,7 +700,7 @@ public class JahiaCndReader {
                 }
                 
             } else if (currentTokenEquals(Lexer.SORTABLE)) {
-                pdi.setSortable(true);
+                pdi.setQueryOrderable(true);
             } else if (currentTokenEquals(Lexer.FACETABLE)) {
                 pdi.setFacetable(true);
             } else if (currentTokenEquals(Lexer.FULLTEXTSEARCHABLE)) {
@@ -706,11 +708,13 @@ public class JahiaCndReader {
                 if (currentTokenEquals(Lexer.DEFAULT)) {
                     nextToken();
                     if (currentTokenEquals(Lexer.NO)) {
-                        pdi.setFulltextSearchable(Boolean.FALSE);
+                        pdi.setFullTextSearchable(Boolean.FALSE);
                     } else if (currentTokenEquals(Lexer.YES)) {
-                        pdi.setFulltextSearchable(Boolean.TRUE);
+                        pdi.setFullTextSearchable(Boolean.TRUE);
                     }
                 }
+            } else if (currentTokenEquals(Lexer.FULLTEXTSEARCHABLE)) {
+                pdi.setFullTextSearchable(Boolean.TRUE);
             } else if (currentTokenEquals(Lexer.COPY)) {
                 pdi.setOnParentVersion(OnParentVersionAction.COPY);
             } else if (currentTokenEquals(Lexer.VERSION)) {
@@ -724,6 +728,9 @@ public class JahiaCndReader {
             } else if (currentTokenEquals(Lexer.ABORT)) {
                 pdi.setOnParentVersion(OnParentVersionAction.ABORT);
             }
+
+            //todo : handle new attributes
+
             nextToken();
         }
     }
@@ -870,7 +877,7 @@ public class JahiaCndReader {
      * @throws ParseException
      */
     private void doChildNodeAttributes(ExtendedNodeDefinition ndi, ExtendedNodeType ntd) throws ParseException, IOException {
-        while (currentTokenEquals(Lexer.ATTRIBUTE)) {
+        while (currentTokenEquals(Lexer.NODE_ATTRIBUTE)) {
             if (currentTokenEquals(Lexer.PRIMARY)) {
                 ntd.setPrimaryItemName(ndi.getName());
             } else if (currentTokenEquals(Lexer.AUTOCREATED)) {
@@ -904,6 +911,9 @@ public class JahiaCndReader {
                     lexer.fail("Invalid value for workflow " + currentToken);
                 }
             }
+
+            //todo : handle new attributes
+
             nextToken();
         }
     }

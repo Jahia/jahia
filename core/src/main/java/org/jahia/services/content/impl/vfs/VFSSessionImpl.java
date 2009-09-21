@@ -37,6 +37,8 @@ import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileObject;
 
 import javax.jcr.*;
+import javax.jcr.retention.RetentionManager;
+import javax.jcr.security.AccessControlManager;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -212,5 +214,45 @@ public class VFSSessionImpl implements Session {
 
     public void removeLockToken(String s) {
       
+    }
+
+    public Node getNodeByIdentifier(String id) throws ItemNotFoundException, RepositoryException {
+        return getNodeByUUID(id);
+    }
+
+    public Node getNode(String absPath) throws PathNotFoundException, RepositoryException {
+        return (Node) getItem(absPath);
+    }
+
+    public Property getProperty(String absPath) throws PathNotFoundException, RepositoryException {
+        return (Property) getItem(absPath);
+    }
+
+    public boolean nodeExists(String absPath) throws RepositoryException {
+        return itemExists(absPath);
+    }
+
+    public boolean propertyExists(String absPath) throws RepositoryException {
+        return itemExists(absPath);
+    }
+
+    public void removeItem(String absPath) throws VersionException, LockException, ConstraintViolationException, AccessDeniedException, RepositoryException {
+        getItem(absPath).remove();
+    }
+
+    public boolean hasPermission(String absPath, String actions) throws RepositoryException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean hasCapability(String s, Object o, Object[] objects) throws RepositoryException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public AccessControlManager getAccessControlManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public RetentionManager getRetentionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

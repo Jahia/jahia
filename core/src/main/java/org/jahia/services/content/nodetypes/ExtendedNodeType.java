@@ -44,6 +44,7 @@ import org.jahia.utils.i18n.ResourceBundleMarker;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeIterator;
 import java.util.*;
 
 /**
@@ -72,6 +73,7 @@ public class ExtendedNodeType implements NodeType {
     private boolean isMixin;
     private boolean hasOrderableChildNodes;
     private String primaryItemName;
+    private String[] declaredSupertypeNames = new String[0];
     private ExtendedNodeType[] declaredSupertypes = new ExtendedNodeType[0];
     private List<ExtendedNodeType> declaredSubtypes = new ArrayList<ExtendedNodeType>();
     private String validator;
@@ -142,8 +144,9 @@ public class ExtendedNodeType implements NodeType {
     public ExtendedNodeType[] getSupertypes() {
         List<ExtendedNodeType> l = new ArrayList<ExtendedNodeType>();
         boolean primaryFound = false;
-        for (int i = 0; i < declaredSupertypes.length; i++) {
-            ExtendedNodeType s = declaredSupertypes[i];
+        ExtendedNodeType[] d = getDeclaredSupertypes();
+        for (int i = 0; i < d.length; i++) {
+            ExtendedNodeType s = d[i];
             if (s != null) {
                 l.addAll(Arrays.asList(s.getSupertypes()));
                 l.add(s);
@@ -165,8 +168,9 @@ public class ExtendedNodeType implements NodeType {
     public ExtendedNodeType[] getPrimarySupertypes() {
         List<ExtendedNodeType> l = new ArrayList<ExtendedNodeType>();
         boolean primaryFound = false;
-        for (int i = 0; i < declaredSupertypes.length; i++) {
-            ExtendedNodeType s = declaredSupertypes[i];
+        ExtendedNodeType[] d = getDeclaredSupertypes();
+        for (int i = 0; i < d.length; i++) {
+            ExtendedNodeType s = d[i];
             if (s != null && !s.isMixin()) {
                 l.add(s);
                 l.addAll(Arrays.asList(s.getPrimarySupertypes()));
@@ -188,33 +192,44 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public void setDeclaredSupertypes(String[] declaredSupertypes) {
-        this.declaredSupertypes = new ExtendedNodeType[declaredSupertypes.length];
+        Arrays.sort(declaredSupertypes);
+        this.declaredSupertypeNames = declaredSupertypes;
+    }
+
+
+    void validateSupertypes() throws NoSuchNodeTypeException {        
+        this.declaredSupertypes = new ExtendedNodeType[declaredSupertypeNames.length];
         for (int i = 0; i < declaredSupertypes.length; i++) {
-            try {
-                this.declaredSupertypes[i] = registry.getNodeType(declaredSupertypes[i]);
-                this.declaredSupertypes[i].addSubType(this);
-            } catch (NoSuchNodeTypeException e) {
-                logger.error("No such supertype for "+getName(),e);
-            }
+            this.declaredSupertypes[i] = registry.getNodeType(declaredSupertypeNames[i]);
+            this.declaredSupertypes[i].addSubType(this);
         }
     }
 
     void addSubType(ExtendedNodeType subType) {
-        declaredSubtypes.add(subType);
+        if (!declaredSubtypes.contains(subType)) {
+            declaredSubtypes.add(subType);
+        }
     }
 
-    public ExtendedNodeType[] getDeclaredSubtypes() {
-        return declaredSubtypes.toArray(new ExtendedNodeType[declaredSubtypes.size()]);
+    public NodeTypeIterator getDeclaredSubtypes() {
+        return new NodeTypeIteratorImpl(declaredSubtypes.iterator(), declaredSubtypes.size());
     }
 
-    public ExtendedNodeType[] getSubtypes() {
+    public String[] getDeclaredSupertypeNames() {
+        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
+    public NodeTypeIterator getSubtypes() {
         List<ExtendedNodeType> l = new ArrayList<ExtendedNodeType>();
         for (Iterator<ExtendedNodeType> iterator = declaredSubtypes.iterator(); iterator.hasNext();) {
             ExtendedNodeType s =  iterator.next();
             l.add(s);
-            l.addAll(Arrays.asList(s.getSubtypes()));
+            while (s.getSubtypes().hasNext()) {
+                l.add((ExtendedNodeType) s.getSubtypes().next());
+            }
         }
-        return l.toArray(new ExtendedNodeType[l.size()]);
+        return new NodeTypeIteratorImpl(l.iterator(), l.size());
     }
 
     public ExtendedNodeType[] getMixinSubtypes() {
@@ -233,8 +248,9 @@ public class ExtendedNodeType implements NodeType {
         if (getName().equals(typeName) || Constants.NT_BASE.equals(typeName)) {
             return true;
         }
-        for (int i = 0; i < declaredSupertypes.length; i++) {
-            ExtendedNodeType s = declaredSupertypes[i];
+        ExtendedNodeType[] d = getDeclaredSupertypes();
+        for (int i = 0; i < d.length; i++) {
+            ExtendedNodeType s = d[i];
             if (s.isNodeType(typeName)) {
                 return true;
             }
@@ -403,7 +419,7 @@ public class ExtendedNodeType implements NodeType {
     void setNodeDefinition(String name, ExtendedNodeDefinition p) {
         if (name.equals("*")) {
             String s = "";
-            for (String s1 : p.getRequiredPrimaryTypesNames()) {
+            for (String s1 : p.getRequiredPrimaryTypeNames()) {
                 s += (s1 + " ");
             }
             unstructuredNodes.put(s.trim(), p);
@@ -494,4 +510,15 @@ public class ExtendedNodeType implements NodeType {
         return b;
     }
 
+    public boolean canRemoveNode(String nodeName) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean canRemoveProperty(String propertyName) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isQueryable() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

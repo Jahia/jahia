@@ -50,6 +50,8 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 import javax.jcr.*;
+import javax.jcr.retention.RetentionManager;
+import javax.jcr.security.AccessControlManager;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
@@ -58,6 +60,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.AccessControlException;
 import java.util.*;
+import java.math.BigDecimal;
 
 /**
  * Implementation of the JCR Session.
@@ -343,6 +346,22 @@ public class SessionImpl implements Session {
             public Value createValue(Node node) throws RepositoryException {
                 return null;  //To change body of implemented methods use File | Settings | File Templates.
             }
+
+            public Value createValue(BigDecimal value) {
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public Value createValue(Binary value) {
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public Value createValue(Node value, boolean weak) throws RepositoryException {
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public Binary createBinary(InputStream stream) throws RepositoryException {
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
         };
     }
 
@@ -382,6 +401,46 @@ public class SessionImpl implements Session {
 
     NodeImpl getJahiaContainerNode(ContentContainer cont) throws RepositoryException {
         return getContentNode(cont);
+    }
+
+    public Node getNodeByIdentifier(String id) throws ItemNotFoundException, RepositoryException {
+        return getNodeByUUID(id);
+    }
+
+    public Node getNode(String absPath) throws PathNotFoundException, RepositoryException {
+        return (Node) getItem(absPath);
+    }
+
+    public Property getProperty(String absPath) throws PathNotFoundException, RepositoryException {
+        return (Property) getItem(absPath);
+    }
+
+    public boolean nodeExists(String absPath) throws RepositoryException {
+        return itemExists(absPath);
+    }
+
+    public boolean propertyExists(String absPath) throws RepositoryException {
+        return itemExists(absPath);
+    }
+
+    public void removeItem(String absPath) throws VersionException, LockException, ConstraintViolationException, AccessDeniedException, RepositoryException {
+        getItem(absPath).remove();
+    }
+
+    public boolean hasPermission(String absPath, String actions) throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public boolean hasCapability(String s, Object o, Object[] objects) throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public AccessControlManager getAccessControlManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public RetentionManager getRetentionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
     }
 
     private JahiaContentNodeImpl getContentNode(ContentObject obj)

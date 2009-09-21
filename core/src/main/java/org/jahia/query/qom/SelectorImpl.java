@@ -33,7 +33,7 @@ package org.jahia.query.qom;
 
 import org.jahia.exceptions.JahiaException;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Selector;
+import javax.jcr.query.qom.Selector;
 
 /**
  * Class implementing the JSR-238 QOM <code>Selector</code> interface

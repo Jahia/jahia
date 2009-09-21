@@ -39,8 +39,8 @@ import org.jahia.query.qom.QueryExecute;
 import org.jahia.query.qom.SelectorImpl;
 import org.jahia.api.Constants;
 import org.xml.sax.ContentHandler;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Source;
+import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.Source;
 import org.apache.commons.lang.StringUtils;
 
 import javax.jcr.*;
@@ -48,8 +48,10 @@ import javax.jcr.observation.*;
 import javax.jcr.observation.EventListener;
 import javax.jcr.query.*;
 import javax.jcr.lock.LockException;
+import javax.jcr.lock.LockManager;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.Version;
+import javax.jcr.version.VersionManager;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeTypeManager;
 import java.io.InputStream;
@@ -186,6 +188,26 @@ public class JCRWorkspaceWrapper implements Workspace {
         throw new UnsupportedRepositoryOperationException();
     }
 
+    public LockManager getLockManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public VersionManager getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public void createWorkspace(String name) throws AccessDeniedException, UnsupportedRepositoryOperationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public void createWorkspace(String name, String srcWorkspace) throws AccessDeniedException, UnsupportedRepositoryOperationException, NoSuchWorkspaceException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public void deleteWorkspace(String name) throws AccessDeniedException, UnsupportedRepositoryOperationException, NoSuchWorkspaceException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
     /**
      *
      * @param queryObjectModel
@@ -288,6 +310,18 @@ public class JCRWorkspaceWrapper implements Workspace {
         public EventListenerIterator getRegisteredEventListeners() throws RepositoryException {
             return null;  //To change body of implemented methods use File | Settings | File Templates.
         }
+
+        public void setUserData(String userData) throws RepositoryException {
+            //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        public EventJournal getEventJournal() throws RepositoryException {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        public EventJournal getEventJournal(int i, String s, boolean b, String[] strings, String[] strings1) throws RepositoryException {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
+        }
     }
 
     class QueryManagerImpl extends org.jahia.query.qom.QueryManagerImpl {
@@ -373,7 +407,10 @@ public class JCRWorkspaceWrapper implements Workspace {
     class QueryWrapper implements Query {
         private String statement;
         private String language;
+        private long limit = -1;
+        private long offset = 0;
         private Map<JCRStoreProvider, Query> queries;
+        private Map<String, Value> vars;
         private Node node;
         private JahiaUser user;
 
@@ -381,6 +418,7 @@ public class JCRWorkspaceWrapper implements Workspace {
             this.statement = statement;
             this.language = language;
             this.user = user;
+            this.vars = new HashMap<String, Value>();
             init();
         }
 
@@ -389,6 +427,7 @@ public class JCRWorkspaceWrapper implements Workspace {
             this.statement = node.getProperty("jcr:statement").getString();
             this.language = node.getProperty("jcr:language").getString();
             this.user = user;
+            this.vars = new HashMap<String, Value>();
             init();
         }
 
@@ -447,6 +486,22 @@ public class JCRWorkspaceWrapper implements Workspace {
 
             return node;
         }
+
+        public void setLimit(long limit) {
+            this.limit = limit;
+        }
+
+        public void setOffset(long offset) {
+            this.offset = offset;
+        }
+
+        public void bindValue(String varName, Value value) throws IllegalArgumentException, RepositoryException {
+            vars.put(varName, value);
+        }
+
+        public String[] getBindVariableNames() throws RepositoryException {
+            return vars.keySet().toArray(new String[vars.size()]);
+        }
     }
 
     public class QueryResultWrapper implements QueryResult {
@@ -504,6 +559,10 @@ public class JCRWorkspaceWrapper implements Workspace {
                     ni.remove();
                 }
             };
+        }
+
+        public String[] getSelectorNames() throws RepositoryException {
+            throw new UnsupportedRepositoryOperationException();
         }
     }
 

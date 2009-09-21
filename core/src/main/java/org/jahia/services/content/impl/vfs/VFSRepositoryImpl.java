@@ -102,4 +102,19 @@ public class VFSRepositoryImpl implements Repository {
         return manager.resolveFile(root+path);
     }
 
+    public boolean isStandardDescriptor(String key) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isSingleValueDescriptor(String key) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Value getDescriptorValue(String key) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Value[] getDescriptorValues(String key) {
+        return new Value[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

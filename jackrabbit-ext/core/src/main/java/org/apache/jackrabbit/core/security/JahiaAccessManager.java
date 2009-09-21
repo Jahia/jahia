@@ -32,8 +32,8 @@
 package org.apache.jackrabbit.core.security;
 
 import org.apache.jackrabbit.core.HierarchyManager;
-import org.apache.jackrabbit.core.ItemId;
-import org.apache.jackrabbit.core.PropertyId;
+import org.apache.jackrabbit.core.id.ItemId;
+import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.security.authorization.AccessControlProvider;
 import org.apache.jackrabbit.core.security.authorization.Permission;
 import org.apache.jackrabbit.core.security.authorization.WorkspaceAccessManager;
@@ -48,8 +48,11 @@ import org.jahia.api.user.JahiaUserService;
 import org.jahia.jaas.JahiaPrincipal;
 
 import javax.jcr.*;
+import javax.jcr.lock.LockException;
+import javax.jcr.security.*;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
+import javax.jcr.version.VersionException;
 import javax.naming.NamingException;
 import javax.security.auth.Subject;
 import java.util.*;
@@ -72,7 +75,7 @@ import java.util.*;
  * Time: 17:58:41
  * To change this template use File | Settings | File Templates.
  */
-public class JahiaAccessManager implements AccessManager {
+public class JahiaAccessManager implements AccessManager, AccessControlManager {
     /**
      * Subject whose access rights this AccessManager should reflect
      */
@@ -391,6 +394,43 @@ public class JahiaAccessManager implements AccessManager {
         }
         Integer foundPermission = permissions.get(privilege);
         return foundPermission != null && (foundPermission & permission) != 0;
+    }
+
+    // todo : implements methods ..
+    public Privilege[] getSupportedPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
+        return new Privilege[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Privilege privilegeFromName(String privilegeName) throws AccessControlException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean hasPrivileges(String absPath, Privilege[] privileges) throws PathNotFoundException, RepositoryException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Privilege[] getPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
+        return new Privilege[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public AccessControlPolicy[] getPolicies(String absPath) throws PathNotFoundException, AccessDeniedException, RepositoryException {
+        return new AccessControlPolicy[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public AccessControlPolicy[] getEffectivePolicies(String absPath) throws PathNotFoundException, AccessDeniedException, RepositoryException {
+        return new AccessControlPolicy[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public AccessControlPolicyIterator getApplicablePolicies(String absPath) throws PathNotFoundException, AccessDeniedException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setPolicy(String absPath, AccessControlPolicy policy) throws PathNotFoundException, AccessControlException, AccessDeniedException, LockException, VersionException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void removePolicy(String absPath, AccessControlPolicy policy) throws PathNotFoundException, AccessControlException, AccessDeniedException, LockException, VersionException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public static synchronized Repository getRepository() throws NamingException {

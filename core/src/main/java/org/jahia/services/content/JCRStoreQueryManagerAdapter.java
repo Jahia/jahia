@@ -34,7 +34,7 @@ package org.jahia.services.content;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelFactory;
+import javax.jcr.query.qom.QueryObjectModelFactory;
 
 /**
  * Created by IntelliJ IDEA.

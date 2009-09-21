@@ -32,8 +32,8 @@
 package org.jahia.taglibs.query;
 
 import javax.jcr.ValueFactory;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelFactory;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.servlet.jsp.JspException;
 
 import org.jahia.taglibs.AbstractJahiaTag;

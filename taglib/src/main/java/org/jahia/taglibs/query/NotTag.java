@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
+import javax.jcr.query.qom.Constraint;
 import javax.servlet.jsp.JspException;
 
 /**

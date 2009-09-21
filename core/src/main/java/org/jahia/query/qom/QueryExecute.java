@@ -32,7 +32,7 @@
 package org.jahia.query.qom;
 
 import javax.jcr.query.QueryResult;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModel;
 
 /**
  * This interface is used by the QueryObjectModelImpl class to delegate the execution of its method <code>execute()</code>

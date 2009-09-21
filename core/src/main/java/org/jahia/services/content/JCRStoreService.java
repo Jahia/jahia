@@ -32,7 +32,7 @@
 package org.jahia.services.content;
 
 import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModel;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -956,4 +956,20 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         return info;
     }
 
+
+    public boolean isStandardDescriptor(String key) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isSingleValueDescriptor(String key) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Value getDescriptorValue(String key) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Value[] getDescriptorValues(String key) {
+        return new Value[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

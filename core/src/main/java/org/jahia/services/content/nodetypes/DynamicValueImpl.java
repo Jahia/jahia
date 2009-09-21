@@ -33,10 +33,12 @@ package org.jahia.services.content.nodetypes;
 
 import java.io.InputStream;
 import java.util.*;
+import java.math.BigDecimal;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
+import javax.jcr.Binary;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -90,6 +92,14 @@ public class DynamicValueImpl implements Value {
 
     public boolean getBoolean() throws ValueFormatException, IllegalStateException, RepositoryException {
         return getExpandedValue().getBoolean();
+    }
+
+    public Binary getBinary() throws RepositoryException {
+        return getExpandedValue().getBinary();
+    }
+
+    public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+        return getExpandedValue().getDecimal();
     }
 
     public int getType() {

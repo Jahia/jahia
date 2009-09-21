@@ -35,7 +35,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.utils.JahiaTools;
 
 import javax.jcr.Value;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.BindVariableValue;
+import javax.jcr.query.qom.BindVariableValue;
 
 /**
  * Created by IntelliJ IDEA.

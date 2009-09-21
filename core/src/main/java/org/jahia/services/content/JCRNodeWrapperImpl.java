@@ -61,6 +61,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.AccessControlException;
 import java.util.*;
+import java.math.BigDecimal;
 
 /**
  * Created by IntelliJ IDEA.
@@ -1367,6 +1368,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     return lock.isDeep();
                 }
 
+                public long getSecondsRemaining() throws RepositoryException {
+                    return lock.getSecondsRemaining();
+                }
+
+                public boolean isLockOwningSession() {
+                    return lock.isLockOwningSession();
+                }
+
                 public Node getNode() {
                     return JCRNodeWrapperImpl.this;
                 }
@@ -1799,7 +1808,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return epd;
             }
         }
-        throw new ConstraintViolationException("Cannot find definition for "+propertyName);
+        throw new ConstraintViolationException("Cannot find definition for "+propertyName + " on node "+ getName() + " ( "+ getPrimaryNodeTypeName() +")");
     }
 
 
@@ -1818,4 +1827,83 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
 
+    public Property setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if (exception != null) {
+            return null;
+        }
+
+        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name+"_"+locale.toString(), value), session, provider, getApplicablePropertyDefinition(name), name);
+            }
+        }
+
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(name,value), session, provider, epd);
+    }
+
+    public Property setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if (exception != null) {
+            return null;
+        }
+
+        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            if (epd != null && epd.isInternationalized()) {
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name+"_"+locale.toString(), value), session, provider, getApplicablePropertyDefinition(name), name);
+            }
+        }
+
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(name, value), session, provider, epd);
+    }
+
+    public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public PropertyIterator getProperties(String[] strings) throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public String getIdentifier() throws RepositoryException {
+        return objectNode.getIdentifier();
+    }
+
+    public PropertyIterator getReferences(String name) throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public PropertyIterator getWeakReferences() throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public PropertyIterator getWeakReferences(String name) throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public void setPrimaryType(String nodeTypeName) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public NodeIterator getSharedSet() throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public void removeSharedSet() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException() ;
+    }
+
+    public void removeShare() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public void followLifecycleTransition(String transition) throws UnsupportedRepositoryOperationException, InvalidLifecycleTransitionException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public String[] getAllowedLifecycleTransistions() throws UnsupportedRepositoryOperationException, RepositoryException {
+        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

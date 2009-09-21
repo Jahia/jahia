@@ -37,10 +37,12 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.PropertyDefinition;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Locale;
+import java.math.BigDecimal;
 
 /**
  * Represents a single JCR property.
@@ -213,4 +215,27 @@ public class PropertyImpl extends ItemImpl implements Property {
         return node;
     }
 
+    public void setValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setValue(BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Binary getBinary() throws ValueFormatException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Property getProperty() throws ItemNotFoundException, ValueFormatException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isMultiple() throws RepositoryException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

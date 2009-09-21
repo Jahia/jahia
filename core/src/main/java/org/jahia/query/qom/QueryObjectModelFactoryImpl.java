@@ -38,43 +38,44 @@ import java.util.Properties;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.QueryResult;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.And;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.BindVariableValue;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.ChildNode;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.ChildNodeJoinCondition;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Column;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Comparison;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.DescendantNode;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.DescendantNodeJoinCondition;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.DynamicOperand;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.EquiJoinCondition;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.FullTextSearch;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.FullTextSearchScore;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Join;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.JoinCondition;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Length;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Literal;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.LowerCase;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.NodeLocalName;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.NodeName;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Not;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Or;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Ordering;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.PropertyExistence;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.PropertyValue;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelConstants;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelFactory;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.SameNode;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.SameNodeJoinCondition;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Selector;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Source;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.StaticOperand;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.UpperCase;
+import javax.jcr.query.qom.And;
+import javax.jcr.query.qom.BindVariableValue;
+import javax.jcr.query.qom.ChildNode;
+import javax.jcr.query.qom.ChildNodeJoinCondition;
+import javax.jcr.query.qom.Column;
+import javax.jcr.query.qom.Comparison;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.DescendantNode;
+import javax.jcr.query.qom.DescendantNodeJoinCondition;
+import javax.jcr.query.qom.DynamicOperand;
+import javax.jcr.query.qom.EquiJoinCondition;
+import javax.jcr.query.qom.FullTextSearch;
+import javax.jcr.query.qom.FullTextSearchScore;
+import javax.jcr.query.qom.Join;
+import javax.jcr.query.qom.JoinCondition;
+import javax.jcr.query.qom.Length;
+import javax.jcr.query.qom.Literal;
+import javax.jcr.query.qom.LowerCase;
+import javax.jcr.query.qom.NodeLocalName;
+import javax.jcr.query.qom.NodeName;
+import javax.jcr.query.qom.Not;
+import javax.jcr.query.qom.Or;
+import javax.jcr.query.qom.Ordering;
+import javax.jcr.query.qom.PropertyExistence;
+import javax.jcr.query.qom.PropertyValue;
+import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModelConstants;
+import javax.jcr.query.qom.QueryObjectModelFactory;
+import javax.jcr.query.qom.SameNode;
+import javax.jcr.query.qom.SameNodeJoinCondition;
+import javax.jcr.query.qom.Selector;
+import javax.jcr.query.qom.Source;
+import javax.jcr.query.qom.StaticOperand;
+import javax.jcr.query.qom.UpperCase;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.expressions.SearchExpressionContext;
 import org.jahia.services.usermanager.JahiaUser;
@@ -199,9 +200,9 @@ public class QueryObjectModelFactoryImpl implements QueryObjectModelFactory {
      * @param right         the right node-tuple source; non-null
      * @param joinType      either
      *                      <ul>
-     *                      <li>{@link QueryObjectModelConstants#JOIN_TYPE_INNER},</li>
-     *                      <li>{@link QueryObjectModelConstants#JOIN_TYPE_LEFT_OUTER},</li>
-     *                      <li>{@link QueryObjectModelConstants#JOIN_TYPE_RIGHT_OUTER}</li>
+     *                      <li>{@link QueryObjectModelConstants#JCR_JOIN_TYPE_INNER},</li>
+     *                      <li>{@link QueryObjectModelConstants#JCR_JOIN_TYPE_LEFT_OUTER},</li>
+     *                      <li>{@link QueryObjectModelConstants#JCR_JOIN_TYPE_RIGHT_OUTER}</li>
      *                      </ul>
      * @param joinCondition the join condition; non-null
      * @return the join; non-null
@@ -374,13 +375,13 @@ public class QueryObjectModelFactoryImpl implements QueryObjectModelFactory {
      * @param operand1 the first operand; non-null
      * @param operator the operator; either
      *                 <ul>
-     *                 <li>{@link #OPERATOR_EQUAL_TO},</li>
-     *                 <li>{@link #OPERATOR_NOT_EQUAL_TO},</li>
-     *                 <li>{@link #OPERATOR_LESS_THAN},</li>
-     *                 <li>{@link #OPERATOR_LESS_THAN_OR_EQUAL_TO},</li>
-     *                 <li>{@link #OPERATOR_GREATER_THAN},</li>
-     *                 <li>{@link #OPERATOR_GREATER_THAN_OR_EQUAL_TO}, or</li>
-     *                 <li>{@link #OPERATOR_LIKE}</li>
+     *                 <li>{@link #JCR_OPERATOR_EQUAL_TO},</li>
+     *                 <li>{@link #JCR_OPERATOR_NOT_EQUAL_TO},</li>
+     *                 <li>{@link #JCR_OPERATOR_LESS_THAN},</li>
+     *                 <li>{@link #JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO},</li>
+     *                 <li>{@link #JCR_OPERATOR_GREATER_THAN},</li>
+     *                 <li>{@link #JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO}, or</li>
+     *                 <li>{@link #JCR_OPERATOR_LIKE}</li>
      *                 </ul>
      * @param operand2 the second operand; non-null
      * @return the constraint; non-null
@@ -390,7 +391,7 @@ public class QueryObjectModelFactoryImpl implements QueryObjectModelFactory {
     public Comparison comparison
             (
                     DynamicOperand operand1,
-                    int operator,
+                    String operator,
                     StaticOperand operand2
             ) throws InvalidQueryException, RepositoryException {
         return new ComparisonImpl((PropertyValueImpl) operand1, operator, (StaticOperandImpl) operand2);
@@ -773,7 +774,7 @@ public class QueryObjectModelFactoryImpl implements QueryObjectModelFactory {
      */
     public Ordering ascending(DynamicOperand operand)
             throws InvalidQueryException, RepositoryException {
-        return new OrderingImpl((PropertyValueImpl) operand, JahiaQueryObjectModelConstants.ORDER_ASCENDING, false);
+        return new OrderingImpl((PropertyValueImpl) operand, JahiaQueryObjectModelConstants.JCR_ORDER_ASCENDING, false);
     }    
     
     /**
@@ -786,7 +787,7 @@ public class QueryObjectModelFactoryImpl implements QueryObjectModelFactory {
      */
     public Ordering ascending(DynamicOperand operand, boolean localeSensitive)
             throws InvalidQueryException, RepositoryException {
-        return new OrderingImpl((PropertyValueImpl) operand, JahiaQueryObjectModelConstants.ORDER_ASCENDING, localeSensitive);
+        return new OrderingImpl((PropertyValueImpl) operand, JahiaQueryObjectModelConstants.JCR_ORDER_ASCENDING, localeSensitive);
     }
 
     /**
@@ -799,7 +800,7 @@ public class QueryObjectModelFactoryImpl implements QueryObjectModelFactory {
      */
     public Ordering descending(DynamicOperand operand)
             throws InvalidQueryException, RepositoryException {
-        return new OrderingImpl((PropertyValueImpl) operand, JahiaQueryObjectModelConstants.ORDER_DESCENDING, false);
+        return new OrderingImpl((PropertyValueImpl) operand, JahiaQueryObjectModelConstants.JCR_ORDER_DESCENDING, false);
     }    
     
     /**
@@ -812,7 +813,7 @@ public class QueryObjectModelFactoryImpl implements QueryObjectModelFactory {
      */
     public Ordering descending(DynamicOperand operand, boolean localeSensitive)
             throws InvalidQueryException, RepositoryException {
-        return new OrderingImpl((PropertyValueImpl) operand, JahiaQueryObjectModelConstants.ORDER_DESCENDING, localeSensitive);
+        return new OrderingImpl((PropertyValueImpl) operand, JahiaQueryObjectModelConstants.JCR_ORDER_DESCENDING, localeSensitive);
     }
 
     ///
@@ -938,5 +939,13 @@ public class QueryObjectModelFactoryImpl implements QueryObjectModelFactory {
      */
     QueryResult execute(QueryObjectModelImpl queryObjectModel) throws InvalidQueryException, RepositoryException {
         return JCRStoreService.getInstance().execute(queryObjectModel,user);
+    }
+
+    public Join join(Source left, Source right, String joinType, JoinCondition joinCondition) throws InvalidQueryException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public FullTextSearch fullTextSearch(String s, String s1, StaticOperand staticOperand) throws InvalidQueryException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
     }
 }

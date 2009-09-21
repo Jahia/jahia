@@ -73,7 +73,7 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     
     private boolean sortable = false;
     private boolean facetable = false;
-    private Boolean fulltextSearchable = null;
+    private boolean fulltextSearchable = false;
 
     public ExtendedPropertyDefinition(NodeTypeRegistry registry) {
         this.registry = registry;
@@ -199,11 +199,11 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
         this.analyzer = analyzer;
     }
 
-    public boolean isSortable() {
+    public boolean isQueryOrderable() {
         return sortable;
     }
 
-    public void setSortable(boolean sortable) {
+    public void setQueryOrderable(boolean sortable) {
         this.sortable = sortable;
     }
 
@@ -215,11 +215,16 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
         this.facetable = facetable;
     }
 
-    public Boolean getFulltextSearchable() {
+    public boolean isFullTextSearchable() {
         return fulltextSearchable;
     }
 
-    public void setFulltextSearchable(Boolean fulltextSearchable) {
+    public void setFullTextSearchable(boolean fulltextSearchable) {
         this.fulltextSearchable = fulltextSearchable;
     }
+
+    public String[] getAvailableQueryOperators() {
+        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 }

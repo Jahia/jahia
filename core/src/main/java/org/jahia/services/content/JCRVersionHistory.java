@@ -117,4 +117,35 @@ public class JCRVersionHistory extends JCRNodeDecorator implements VersionHistor
     public void removeVersion(String s) throws ReferentialIntegrityException, AccessDeniedException, UnsupportedRepositoryOperationException, VersionException, RepositoryException {
         getRealNode().removeVersion(s);
     }
+
+    public String getVersionableIdentifier() throws RepositoryException {
+        return getRealNode().getVersionableIdentifier();
+    }
+
+    public VersionIterator getAllLinearVersions() throws RepositoryException {
+        VersionIterator vi = getRealNode().getAllLinearVersions();
+        List l = new ArrayList();
+        while (vi.hasNext()) {
+            l.add((Version) getProvider().getNodeWrapper((Node) vi.nextVersion(), (JCRSessionWrapper) getSession()));
+        }
+        return new VersionIteratorImpl(l.iterator(), l.size());
+    }
+
+    public NodeIterator getAllLinearFrozenNodes() throws RepositoryException {
+        NodeIterator vi = getRealNode().getAllLinearFrozenNodes();
+        List l = new ArrayList();
+        while (vi.hasNext()) {
+            l.add(getProvider().getNodeWrapper(vi.nextNode(), (JCRSessionWrapper) getSession()));
+        }
+        return new NodeIteratorImpl(l.iterator(), l.size());
+    }
+
+    public NodeIterator getAllFrozenNodes() throws RepositoryException {
+        NodeIterator vi = getRealNode().getAllFrozenNodes();
+        List l = new ArrayList();
+        while (vi.hasNext()) {
+            l.add(getProvider().getNodeWrapper(vi.nextNode(), (JCRSessionWrapper) getSession()));
+        }
+        return new NodeIteratorImpl(l.iterator(), l.size());
+    }
 }

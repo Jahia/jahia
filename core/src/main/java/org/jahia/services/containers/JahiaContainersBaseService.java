@@ -31,7 +31,7 @@
  */
 package org.jahia.services.containers;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.*;
+import javax.jcr.query.qom.*;
 import org.jahia.bin.Jahia;
 import org.jahia.content.*;
 import org.jahia.content.events.ContentObjectDeleteEvent;
@@ -2324,8 +2324,8 @@ public class JahiaContainersBaseService extends JahiaContainersService {
     private Set<String> getAllSubTypeNames(String typeName) {
         Set<String> subTypeNames = new HashSet<String>();
         try {
-            for (ExtendedNodeType nodeType : NodeTypeRegistry.getInstance()
-                    .getNodeType(typeName).getSubtypes()) {
+            while (NodeTypeRegistry.getInstance().getNodeType(typeName).getSubtypes().hasNext()) {
+                ExtendedNodeType nodeType = (ExtendedNodeType) NodeTypeRegistry.getInstance().getNodeType(typeName).getSubtypes().next();
                 subTypeNames.add(nodeType.getName());
                 subTypeNames.addAll(getAllSubTypeNames(nodeType.getName()));
             }
@@ -2397,11 +2397,11 @@ public class JahiaContainersBaseService extends JahiaContainersService {
                         Literal literal = queryFactory.literal(val);
                         ((LiteralImpl) literal).setMultiValueANDLogic(false);
                         PropertyValue prop = queryFactory
-                                .propertyValue(FilterCreator.CONTENT_DEFINITION_NAME);
+                                .propertyValue(FilterCreator.CONTENT_DEFINITION_NAME, null);
                         Constraint constraint = queryFactory
                                 .comparison(
                                         prop,
-                                        JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO,
+                                        JahiaQueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO,
                                         literal);
                         if (pathConstraint != null) {
                             constraint = queryFactory.and(pathConstraint, constraint);

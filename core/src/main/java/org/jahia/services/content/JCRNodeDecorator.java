@@ -52,6 +52,7 @@ import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
 import java.io.InputStream;
 import java.util.*;
+import java.math.BigDecimal;
 
 /**
  * Created by IntelliJ IDEA.
@@ -107,7 +108,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.changePermissions(user, perm);        
     }
 
-    public boolean changePermissions(String user, Map<String,String> perm) {
+    public boolean changePermissions(String user, Map<String, String> perm) {
         return node.changePermissions(user, perm);
     }
 
@@ -395,12 +396,20 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.setProperty(s, inputStream);
     }
 
+    public Property setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        return node.setProperty(name, value);
+    }
+
     public Property setProperty(String s, boolean b) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, b);
     }
 
     public Property setProperty(String s, double v) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, v);
+    }
+
+    public Property setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        return node.setProperty(name, value);
     }
 
     public Property setProperty(String s, long l) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -427,6 +436,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getNodes(s);
     }
 
+    public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
+        return node.getNodes(nameGlobs);
+    }
+
     public Property getProperty(String s) throws PathNotFoundException, RepositoryException {
         return node.getProperty(s);
     }
@@ -439,6 +452,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getProperties(s);
     }
 
+    public PropertyIterator getProperties(String[] strings) throws RepositoryException {
+        return node.getProperties(strings);
+    }
+
     public Item getPrimaryItem() throws ItemNotFoundException, RepositoryException {
         return node.getPrimaryItem();
     }
@@ -447,12 +464,28 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getUUID();
     }
 
+    public String getIdentifier() throws RepositoryException {
+        return node.getIdentifier();
+    }
+
     public int getIndex() throws RepositoryException {
         return node.getIndex();
     }
 
     public PropertyIterator getReferences() throws RepositoryException {
         return node.getReferences();
+    }
+
+    public PropertyIterator getReferences(String name) throws RepositoryException {
+        return node.getReferences(name);
+    }
+
+    public PropertyIterator getWeakReferences() throws RepositoryException {
+        return node.getWeakReferences();
+    }
+
+    public PropertyIterator getWeakReferences(String name) throws RepositoryException {
+        return node.getWeakReferences(name);
     }
 
     public boolean hasNode(String s) throws RepositoryException {
@@ -481,6 +514,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public boolean isNodeType(String s) throws RepositoryException {
         return node.isNodeType(s);
+    }
+
+    public void setPrimaryType(String nodeTypeName) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        node.setPrimaryType(nodeTypeName);
     }
 
     public void addMixin(String s) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
@@ -527,6 +564,18 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getCorrespondingNodePath(s);
     }
 
+    public NodeIterator getSharedSet() throws RepositoryException {
+        return node.getSharedSet();
+    }
+
+    public void removeSharedSet() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        node.removeSharedSet();
+    }
+
+    public void removeShare() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        node.removeShare();
+    }
+
     public boolean isCheckedOut() throws RepositoryException {
         return node.isCheckedOut();
     }
@@ -569,6 +618,14 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public boolean holdsLock() throws RepositoryException {
         return node.holdsLock();
+    }
+
+    public void followLifecycleTransition(String transition) throws UnsupportedRepositoryOperationException, InvalidLifecycleTransitionException, RepositoryException {
+        node.followLifecycleTransition(transition);
+    }
+
+    public String[] getAllowedLifecycleTransistions() throws UnsupportedRepositoryOperationException, RepositoryException {
+        return node.getAllowedLifecycleTransistions();
     }
 
     public boolean isLocked() {
@@ -638,4 +695,5 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         node.remove();
     }
+
 }

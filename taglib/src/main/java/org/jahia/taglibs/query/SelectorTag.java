@@ -31,7 +31,7 @@
  */
 package org.jahia.taglibs.query;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Selector;
+import javax.jcr.query.qom.Selector;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspException;

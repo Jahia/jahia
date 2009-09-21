@@ -35,7 +35,7 @@ import org.jahia.data.containers.ContainerSorterByTimebasedPublishingDateBean;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.services.metadata.CoreMetadataConstant;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelConstants;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -139,7 +139,7 @@ public class JahiaQueryObjectModelConstants extends CoreMetadataConstant impleme
      * Map containings human readable operator label for each query operator.
      * Key is the Integer value of the operator and Value is a String.
      */
-    public static final Map<Integer, String> OPERATOR_LABELS;
+    public static final Map<String, String> OPERATOR_LABELS;
 
     public static final String BYTE_FORMAT = "Byte";
     public static final String SHORT_FORMAT = "Short";
@@ -149,13 +149,13 @@ public class JahiaQueryObjectModelConstants extends CoreMetadataConstant impleme
     public static final String DOUBLE_FORMAT = "Double";
 
     static {
-        OPERATOR_LABELS = new HashMap<Integer, String>();
-        OPERATOR_LABELS.put(new Integer(OPERATOR_EQUAL_TO),"=");
-        OPERATOR_LABELS.put(new Integer(OPERATOR_GREATER_THAN),">");
-        OPERATOR_LABELS.put(new Integer(OPERATOR_GREATER_THAN_OR_EQUAL_TO),">=");
-        OPERATOR_LABELS.put(new Integer(OPERATOR_LESS_THAN),"<");
-        OPERATOR_LABELS.put(new Integer(OPERATOR_LESS_THAN_OR_EQUAL_TO),"<=");
-        OPERATOR_LABELS.put(new Integer(OPERATOR_LIKE),"LIKE");
-        OPERATOR_LABELS.put(new Integer(OPERATOR_NOT_EQUAL_TO),"<>");
+        OPERATOR_LABELS = new HashMap<String, String>();
+        OPERATOR_LABELS.put(JCR_OPERATOR_EQUAL_TO,"=");
+        OPERATOR_LABELS.put(JCR_OPERATOR_GREATER_THAN,">");
+        OPERATOR_LABELS.put(JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO,">=");
+        OPERATOR_LABELS.put(JCR_OPERATOR_LESS_THAN,"<");
+        OPERATOR_LABELS.put(JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO,"<=");
+        OPERATOR_LABELS.put(JCR_OPERATOR_LIKE,"LIKE");
+        OPERATOR_LABELS.put(JCR_OPERATOR_NOT_EQUAL_TO,"<>");
     }
 }

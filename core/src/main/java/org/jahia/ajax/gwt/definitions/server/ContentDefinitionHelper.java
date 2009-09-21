@@ -50,6 +50,7 @@ import org.apache.log4j.Logger;
 import org.apache.commons.collections.FastHashMap;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.Value;
 import javax.jcr.RepositoryException;
 import java.util.*;
@@ -109,7 +110,7 @@ public class ContentDefinitionHelper {
                     GWTJahiaNodeDefinition node = new GWTJahiaNodeDefinition();
                     ExtendedNodeDefinition end = (ExtendedNodeDefinition)def;
                     item = node;
-                    node.setRequiredPrimaryTypes(end.getRequiredPrimaryTypesNames());
+                    node.setRequiredPrimaryTypes(end.getRequiredPrimaryTypeNames());
                     node.setDefaultPrimaryType(end.getDefaultPrimaryTypeName());
                     node.setAllowsSameNameSiblings(end.allowsSameNameSiblings());
                     node.setWorkflow(end.getWorkflow());
@@ -234,14 +235,14 @@ public class ContentDefinitionHelper {
         Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> map = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
         try {
             ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType("jmix:content");
-            ExtendedNodeType[] nts = nt.getDeclaredSubtypes();
-
-            for (ExtendedNodeType mainType : nts) {
+            while (nt.getDeclaredSubtypes().hasNext()) {
+                ExtendedNodeType mainType = (ExtendedNodeType) nt.getDeclaredSubtypes().next();
                 List<GWTJahiaNodeType> l = new ArrayList<GWTJahiaNodeType>();
                 map.put(getGWTJahiaNodeType(ctx,mainType), l);
-                for (ExtendedNodeType subType : mainType.getDeclaredSubtypes()) {
-                    l.add(getGWTJahiaNodeType(ctx,subType));
-                };
+                while (mainType.getDeclaredSubtypes().hasNext()) {
+                    ExtendedNodeType nodeType = (ExtendedNodeType) mainType.getDeclaredSubtypes().next();
+                    l.add(getGWTJahiaNodeType(ctx,nodeType));
+                }
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -290,9 +291,12 @@ public class ContentDefinitionHelper {
 //                                .getRequiredPrimaryTypes();
 //                    }
                     for (ExtendedNodeType extendedNodeType : requiredPrimaryTypes) {
-                        List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>(Arrays.asList(extendedNodeType.getSubtypes()));
-                        types.add(extendedNodeType);
-                        for (ExtendedNodeType nodeType : types) {
+                        if (!excludedTypes.contains(extendedNodeType.getName()) && !extendedNodeType.isMixin() && !extendedNodeType.isAbstract()) {
+                            gwtNodeTypes.add(getGWTJahiaNodeType(ctx, extendedNodeType));
+                        }
+
+                        while (extendedNodeType.getSubtypes().hasNext()) {
+                            ExtendedNodeType nodeType = (ExtendedNodeType) extendedNodeType.getSubtypes().next();
                             if (!excludedTypes.contains(nodeType.getName()) && !nodeType.isMixin() && !nodeType.isAbstract()) {
                                 gwtNodeTypes.add(getGWTJahiaNodeType(ctx, nodeType));
                             }
@@ -310,9 +314,9 @@ public class ContentDefinitionHelper {
                             + "' cannot be found in the registry", e);
                 }
                 if (baseNodeType != null) {
-                    ExtendedNodeType[] types = baseNodeType.getSubtypes();
-                    for (int i = 0; i < types.length; i++) {
-                        ExtendedNodeType nodeType = types[i];
+                    NodeTypeIterator types = baseNodeType.getSubtypes();
+                    while (types.hasNext()) {
+                        ExtendedNodeType nodeType = (ExtendedNodeType) types.next();
                         if (!excludedTypes.contains(nodeType.getName())) {
                             gwtNodeTypes.add(getGWTJahiaNodeType(ctx, nodeType));
                         }

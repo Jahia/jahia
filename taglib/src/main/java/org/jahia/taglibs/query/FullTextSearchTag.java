@@ -33,7 +33,7 @@ package org.jahia.taglibs.query;
 
 import javax.servlet.jsp.JspException;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
+import javax.jcr.query.qom.Constraint;
 import org.apache.log4j.Logger;
 import org.jahia.query.qom.FullTextSearchImpl;
 
@@ -71,8 +71,8 @@ public class FullTextSearchTag extends ConstraintTag  {
             return null;
         }
         try {
-            fullTextSearch = (FullTextSearchImpl)this.getQueryFactory()
-                    .fullTextSearch(this.propertyName,this.searchExpression);
+//            fullTextSearch = (FullTextSearchImpl)this.getQueryFactory()
+//                    .fullTextSearch(null,this.propertyName,this.searchExpression);
             fullTextSearch.setMetadata("true".equals(this.isMetadata));
         } catch ( Exception e ){
             logger.warn(e.getMessage(), e);

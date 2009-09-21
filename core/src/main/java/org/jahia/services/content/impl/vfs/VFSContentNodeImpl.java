@@ -53,6 +53,7 @@ import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.List;
+import java.math.BigDecimal;
 
 /**
  * Created by IntelliJ IDEA.
@@ -381,6 +382,63 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         return new VFSNodeImpl(content.getFile(), session);
+    }
+
+
+    public Property setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Property setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public PropertyIterator getProperties(String[] strings) throws RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getIdentifier() throws RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public PropertyIterator getReferences(String name) throws RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public PropertyIterator getWeakReferences() throws RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public PropertyIterator getWeakReferences(String name) throws RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setPrimaryType(String nodeTypeName) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public NodeIterator getSharedSet() throws RepositoryException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void removeSharedSet() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void removeShare() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void followLifecycleTransition(String transition) throws UnsupportedRepositoryOperationException, InvalidLifecycleTransitionException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String[] getAllowedLifecycleTransistions() throws UnsupportedRepositoryOperationException, RepositoryException {
+        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     class DataPropertyImpl extends VFSPropertyImpl {

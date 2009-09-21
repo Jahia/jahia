@@ -65,6 +65,7 @@ import java.io.InputStream;
 import java.io.File;
 import java.net.URLDecoder;
 import java.util.*;
+import java.math.BigDecimal;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.
@@ -438,11 +439,19 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             p.setValue(value);
         }
 
+        public void setValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+            p.setValue(value);
+        }
+
         public void setValue(long value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
             p.setValue(value);
         }
 
         public void setValue(double value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+            p.setValue(value);
+        }
+
+        public void setValue(BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
             p.setValue(value);
         }
 
@@ -474,12 +483,20 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             return p.getStream();
         }
 
+        public Binary getBinary() throws ValueFormatException, RepositoryException {
+            return p.getBinary();
+        }
+
         public long getLong() throws ValueFormatException, RepositoryException {
             return p.getLong();
         }
 
         public double getDouble() throws ValueFormatException, RepositoryException {
             return p.getDouble();
+        }
+
+        public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+            return p.getDecimal();
         }
 
         public Calendar getDate() throws ValueFormatException, RepositoryException {
@@ -492,6 +509,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         public Node getNode() throws ValueFormatException, RepositoryException {
             return p.getNode();
+        }
+
+        public Property getProperty() throws ItemNotFoundException, ValueFormatException, RepositoryException {
+            return p.getProperty();
         }
 
         public long getLength() throws ValueFormatException, RepositoryException {
@@ -508,6 +529,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         public int getType() throws RepositoryException {
             return p.getType();
+        }
+
+        public boolean isMultiple() throws RepositoryException {
+            return p.isMultiple();
         }
 
         public String getPath() throws RepositoryException {
@@ -615,6 +640,14 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
             public Date getTime() throws ValueFormatException, RepositoryException {
                 return v.getTime();
+            }
+
+            public Binary getBinary() throws RepositoryException {
+                return v.getBinary();
+            }
+
+            public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+                return v.getDecimal();
             }
         }
 

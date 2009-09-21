@@ -34,6 +34,7 @@ package org.jahia.taglibs.query;
 import org.jahia.query.qom.JahiaQueryObjectModelConstants;
 
 import javax.servlet.jsp.JspException;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 
 /**
  * Tag used to create a Less Than ConstraintImpl
@@ -48,12 +49,12 @@ public class LessThanTag extends ComparisonTag  {
 
     public LessThanTag(){
         super();
-        this.setOperator(JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN);
+        this.setOperator(QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN);
     }
 
     public int doEndTag() throws JspException {
         int eval = super.doEndTag();
-        this.setOperator(JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN);
+        this.setOperator(QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN);
         return eval;
     }
 

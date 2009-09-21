@@ -45,7 +45,7 @@ import org.jahia.services.containers.ContainerQueryContext;
 import org.jahia.utils.JahiaTools;
 
 import javax.jcr.Value;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.PropertyValue;
+import javax.jcr.query.qom.PropertyValue;
 import java.util.*;
 
 /**
@@ -185,14 +185,14 @@ public class ContainerQueryBuilder extends JahiaBaseQueryModelInterpreter {
                 String propName1 = ((PropertyValue)comp1.getOperand1()).getPropertyName();
                 String propName2 = ((PropertyValue)comp2.getOperand1()).getPropertyName();
                 if ( propName1.equals(propName2) && (
-                        (((comp1.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN)
-                        || (comp1.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO))
-                        && ((comp2.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN)
-                        || (comp2.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO)))
-                    ||  (((comp2.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN)
-                        || (comp2.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO))
-                        && ((comp1.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN)
-                        || (comp1.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO))) ) ) {
+                        (((comp1.getOperator() == JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN)
+                        || (comp1.getOperator() == JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO))
+                        && ((comp2.getOperator() == JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN)
+                        || (comp2.getOperator() == JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO)))
+                    ||  (((comp2.getOperator() == JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN)
+                        || (comp2.getOperator() == JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO))
+                        && ((comp1.getOperator() == JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN)
+                        || (comp1.getOperator() == JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO))) ) ) {
                     filter = getRangeQueryFilter(comp1,comp2);
                 } else {
                     filter = getChainedFilter(cItem,ContainerChainedFilter.AND);
@@ -250,14 +250,14 @@ public class ContainerQueryBuilder extends JahiaBaseQueryModelInterpreter {
                         String propName1 = ((PropertyValue)comp1.getOperand1()).getPropertyName();
                         String propName2 = ((PropertyValue)comp2.getOperand1()).getPropertyName();
                         if ( propName1.equals(propName2) && (
-                                (((comp1.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN)
-                                || (comp1.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO))
-                                && ((comp2.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN)
-                                || (comp2.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO)))
-                            ||  (((comp2.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN)
-                                || (comp2.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_GREATER_THAN_OR_EQUAL_TO))
-                                && ((comp1.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN)
-                                || (comp1.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO))) ) ) {
+                                (((comp1.getOperator() .equals( JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN))
+                                || (comp1.getOperator() .equals( JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO)))
+                                && ((comp2.getOperator() .equals( JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN))
+                                || (comp2.getOperator() .equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO))))
+                            ||  (((comp2.getOperator() .equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN))
+                                || (comp2.getOperator().equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO)))
+                                && ((comp1.getOperator().equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN))
+                                || (comp1.getOperator().equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO)))) ) ) {
                             filter = getRangeQueryFilter(comp1,comp2);
                             mergedRangeFilter.put(new Integer(i),new Integer(i));
                             mergedRangeFilter.put(new Integer(j),new Integer(j));
@@ -373,8 +373,8 @@ public class ContainerQueryBuilder extends JahiaBaseQueryModelInterpreter {
         }
         ComparisonImpl lowerComp = c1;
         ComparisonImpl upperComp = c2;
-        if ( (c1.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN) ||
-                (c1.getOperator() == JahiaQueryObjectModelConstants.OPERATOR_LESS_THAN_OR_EQUAL_TO) ){
+        if ( (c1.getOperator().equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN)) ||
+                (c1.getOperator().equals(JahiaQueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO)) ){
             lowerComp = c2;
             upperComp = c1;
         }
@@ -401,7 +401,7 @@ public class ContainerQueryBuilder extends JahiaBaseQueryModelInterpreter {
                 if (node == null) {
                     return;
                 }
-                String pathString = node.getPath();
+                String pathString = node.getParentPath();
                 Object nodeObject = ServicesRegistry.getInstance().getQueryService()
                         .getPathObject(pathString,context);
                 if (nodeObject==null){
@@ -450,7 +450,7 @@ public class ContainerQueryBuilder extends JahiaBaseQueryModelInterpreter {
                 if (node == null) {
                     return;
                 }
-                String pathString = node.getPath();
+                String pathString = node.getAncestorPath();
                 Object nodeObject = ServicesRegistry.getInstance().getQueryService()
                         .getPathObject(pathString,context);
                 if (nodeObject==null){

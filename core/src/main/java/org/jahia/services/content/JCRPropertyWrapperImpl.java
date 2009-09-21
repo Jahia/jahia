@@ -45,6 +45,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.version.VersionException;
 import java.io.InputStream;
 import java.util.Calendar;
+import java.math.BigDecimal;
 
 /**
  * Created by IntelliJ IDEA.
@@ -123,6 +124,14 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         property.setValue(node);
     }
 
+    public void setValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setValue(BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public Value getValue() throws ValueFormatException, RepositoryException {
         return new JCRValueWrapperImpl(property.getValue(),getDefinition(), getSession());
     }
@@ -169,6 +178,18 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         return session.getNodeByUUID(property.getString());
     }
 
+    public Binary getBinary() throws ValueFormatException, RepositoryException {
+        return property.getBinary();
+    }
+
+    public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+        return property.getDecimal();
+    }
+
+    public Property getProperty() throws ItemNotFoundException, ValueFormatException, RepositoryException {
+        return session.getProperty(property.getString());
+    }
+
     public long getLength() throws ValueFormatException, RepositoryException {
         return property.getLength();
     }
@@ -178,19 +199,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public ExtendedPropertyDefinition getDefinition() throws RepositoryException {
-        String name = def.getDeclaringNodeType().getName();
-        if (name.equals(Constants.NT_HIERARCHYNODE) && def.getName().equals(Constants.JCR_CREATED)) {
-            name = Constants.MIX_CREATED;
-        } else if (name.equals(Constants.NT_RESOURCE) && (def.getName().equals(Constants.JCR_MIMETYPE) || def.getName().equals(Constants.JCR_ENCODING))) {
-            name = Constants.MIX_MIMETYPE;
-        } else if (name.equals(Constants.NT_RESOURCE) && def.getName().equals(Constants.JCR_LASTMODIFIED)) {
-            name = Constants.MIX_LAST_MODIFIED;
-        } else {
-            return def;
-        }
-
-        ExtendedNodeType ent = NodeTypeRegistry.getInstance().getNodeType(name);
-        return ent.getPropertyDefinition(def.getName());
+        return def;
     }
 
     public int getType() throws RepositoryException {
@@ -247,5 +256,9 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         property.remove();
+    }
+
+    public boolean isMultiple() throws RepositoryException {
+        return def.isMultiple();
     }
 }

@@ -39,7 +39,7 @@ import java.util.Properties;
 
 import javax.jcr.Node;
 import javax.jcr.ValueFactory;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelFactory;
+import javax.jcr.query.qom.QueryObjectModelFactory;
 
 import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.jahia.data.beans.ContainerListBean;

@@ -34,6 +34,7 @@ package org.jahia.taglibs.query;
 import org.jahia.query.qom.JahiaQueryObjectModelConstants;
 
 import javax.servlet.jsp.JspException;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 
 /**
  * Tag used to create an Equal To ConstraintImpl
@@ -48,12 +49,12 @@ public class EqualToTag extends ComparisonTag  {
 
     public EqualToTag(){
         super();
-        this.setOperator(JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO);
+        this.setOperator(QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO);
     }
 
     public int doEndTag() throws JspException {
         int eval = super.doEndTag();
-        this.setOperator(JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO);
+        this.setOperator(QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO);
         return eval;
     }
 

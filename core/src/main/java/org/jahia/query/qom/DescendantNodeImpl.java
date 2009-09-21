@@ -33,8 +33,8 @@ package org.jahia.query.qom;
 
 import org.jahia.exceptions.JahiaException;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.DescendantNode;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.DescendantNode;
 
 /**
  * <code>DescendantNodeImpl</code>...
@@ -72,7 +72,7 @@ public class DescendantNodeImpl
      *
      * @return the path; non-null
      */
-    public String getPath() {
+    public String getAncestorPath() {
         return path;
     }
 

@@ -37,8 +37,9 @@ import org.jahia.query.qom.PropertyValueImpl;
 import org.jahia.query.qom.QueryModelTools;
 import org.jahia.utils.JahiaTools;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Comparison;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
+import javax.jcr.query.qom.Comparison;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.servlet.jsp.JspException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -66,7 +67,7 @@ public class ComparisonTag extends ConstraintTag  {
     private String multiValueANDLogic = "false";
     private String valueProviderClass;
 
-    private int operator = JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO;
+    private String operator = QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO;
     private List<String> value;
 
     public ComparisonTag(){        
@@ -75,7 +76,7 @@ public class ComparisonTag extends ConstraintTag  {
     public int doEndTag() throws JspException {
         int eval = super.doEndTag();
         comparison = null;
-        operator = JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO;
+        operator = QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO;
         value = null;
         propertyName = null;
         aliasNames = null;
@@ -104,11 +105,11 @@ public class ComparisonTag extends ConstraintTag  {
         return aliasNames;
     }    
 
-    public int getOperator() {
+    public String getOperator() {
         return operator;
     }
 
-    public void setOperator(int operator) {
+    public void setOperator(String operator) {
         this.operator = operator;
     }
 
@@ -192,7 +193,7 @@ public class ComparisonTag extends ConstraintTag  {
           throw new Exception("propertyName is empty or null");
         }
         PropertyValueImpl propValue = (PropertyValueImpl)this.getQueryFactory()
-                .propertyValue(this.getPropertyName().trim());
+                .propertyValue(null,this.getPropertyName().trim());
         propValue.setMultiValue("true".equals(this.getMultiValue()));
         propValue.setNumberValue("true".equals(this.getNumberValue()));
         propValue.setMetadata("true".equals(this.getMetadata()));

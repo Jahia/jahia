@@ -34,6 +34,7 @@ package org.jahia.taglibs.query;
 import org.jahia.query.qom.JahiaQueryObjectModelConstants;
 
 import javax.servlet.jsp.JspException;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 
 /**
  * Tag used to create a Like ConstraintImpl
@@ -48,12 +49,12 @@ public class LikeTag extends ComparisonTag  {
 
     public LikeTag(){
         super();
-        this.setOperator(JahiaQueryObjectModelConstants.OPERATOR_LIKE);
+        this.setOperator(QueryObjectModelConstants.JCR_OPERATOR_LIKE);
     }
 
     public int doEndTag() throws JspException {
         int eval = super.doEndTag();
-        this.setOperator(JahiaQueryObjectModelConstants.OPERATOR_LIKE);
+        this.setOperator(QueryObjectModelConstants.JCR_OPERATOR_LIKE);
         return eval;
     }
 

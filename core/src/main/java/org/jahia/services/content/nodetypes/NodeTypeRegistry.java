@@ -34,11 +34,9 @@ package org.jahia.services.content.nodetypes;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRStoreService;
 
-import javax.jcr.nodetype.NodeTypeManager;
-import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.*;
 import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -94,6 +92,13 @@ public class NodeTypeRegistry implements NodeTypeManager {
         if (ext.equalsIgnoreCase(".cnd")) {
             JahiaCndReader r = new JahiaCndReader(new FileReader(file),file.getPath(), systemId, this);
             r.parse();
+            for (ExtendedNodeType type : r.getNodeTypesList()) {
+                try {
+                    type.validateSupertypes();
+                } catch (NoSuchNodeTypeException e) {
+                    throw new ParseException("Cannot validate supertypes for : "+type.getName(),e,0,0,file.getPath());
+                }
+            }
         } else if (ext.equalsIgnoreCase(".grp")) {
             JahiaGroupingFileReader r = new JahiaGroupingFileReader(new FileReader(file), file.getName(),systemId, this);
             r.parse();            
@@ -223,4 +228,39 @@ public class NodeTypeRegistry implements NodeTypeManager {
         }
     }
 
+    public boolean hasNodeType(String name) throws RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public NodeTypeTemplate createNodeTypeTemplate() throws UnsupportedRepositoryOperationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public NodeTypeTemplate createNodeTypeTemplate(NodeTypeDefinition ntd) throws UnsupportedRepositoryOperationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public NodeDefinitionTemplate createNodeDefinitionTemplate() throws UnsupportedRepositoryOperationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public PropertyDefinitionTemplate createPropertyDefinitionTemplate() throws UnsupportedRepositoryOperationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public NodeType registerNodeType(NodeTypeDefinition ntd, boolean allowUpdate) throws InvalidNodeTypeDefinitionException, NodeTypeExistsException, UnsupportedRepositoryOperationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public NodeTypeIterator registerNodeTypes(NodeTypeDefinition[] ntds, boolean allowUpdate) throws InvalidNodeTypeDefinitionException, NodeTypeExistsException, UnsupportedRepositoryOperationException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public void unregisterNodeType(String name) throws UnsupportedRepositoryOperationException, NoSuchNodeTypeException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
+
+    public void unregisterNodeTypes(String[] names) throws UnsupportedRepositoryOperationException, NoSuchNodeTypeException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
+    }
 }

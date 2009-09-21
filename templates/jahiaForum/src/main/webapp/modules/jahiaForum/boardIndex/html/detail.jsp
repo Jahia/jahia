@@ -36,7 +36,7 @@
 <c:set var="numberOfThreads" value="${numberOfThreadsQuery.rows.size}"/>
 <div id="forum-body">
     <div class="topics">
-        <h2><a href="${url.base}${currentNode.path}.html"><jcr:nodeProperty node="${currentNode}"
+        <h2><a href="${url.base}${currentNode.parent.path}.html"><jcr:nodeProperty node="${currentNode}"
                                                                                    name="boardSubject"/></a></h2>
 
         <div class="forum-actions">

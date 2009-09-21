@@ -14,11 +14,23 @@
         <jcr:nodeProperty node="${lastModifiedNode}" name="jcr:createdBy" var="createdBy"/>
     </c:if>
 </c:forEach>
-<%--<div class="topic-subject">
-    <a href="${url.base}${currentNode.path}.html"><jcr:nodeProperty node="${currentNode}" name="topicSubject"/></a>
-    ${fn:length(currentNode.children)} Threads With
-    <c:if test="${numberOfPosts > 0}">${numberOfPosts} Posts. Last post <fmt:formatDate value="${lastModified.time}" type="both" dateStyle="full"/></c:if><c:if test="${numberOfPosts<=0}">No Posts</c:if>
-</div>--%>
+<c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
+    <form action="${url.base}${currentNode.path}" method="post"
+          id="jahia-forum-topic-delete-${currentNode.UUID}">
+        <input type="hidden" name="stayOnNode" value="${url.base}${renderContext.mainResource.node.path}"/>
+            <%-- Define the output format for the newly created node by default html or by stayOnNode--%>
+        <input type="hidden" name="newNodeOutputFormat" value="detail.html">
+        <input type="hidden" name="methodToCall" value="delete">
+    </form>
+</c:if>
+<ul class="forum-profile-icons">
+    <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
+        <li class="delete-post-icon"><a title="Delete this topic" href="#"
+                                        onclick="document.getElementById('jahia-forum-topic-delete-${currentNode.UUID}').submit();"><span>Delete this topic</span></a>
+        </li>
+    </c:if>
+
+</ul>
 <dl>
     <dt title="posts"><a class="forum-title" href="${url.base}${currentNode.path}.html"><jcr:nodeProperty
             node="${currentNode}" name="topicSubject"/></a>
@@ -34,6 +46,6 @@
                                                                                                            alt="View the latest post"
                                                                                                            src="/jahia/templates/jahia_forum/img/icon_topic_latest.gif"/>${createdBy.string}
         </a><br/><fmt:formatDate value="${lastModified.time}" dateStyle="full" type="both"/></span>
-    </c:if>
+        </c:if>
     </dd>
 </dl>

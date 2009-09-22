@@ -34,47 +34,54 @@ package org.jahia.taglibs.query;
 import javax.servlet.jsp.JspException;
 
 import javax.jcr.query.qom.Constraint;
-import org.apache.log4j.Logger;
-import org.jahia.query.qom.FullTextSearchImpl;
+import javax.jcr.query.qom.FullTextSearch;
+import javax.jcr.query.qom.Selector;
 
+import org.apache.log4j.Logger;
 
 /**
- * User: hollis
- * Date: 7 nov. 2007
- * Time: 15:33:24
+ * User: hollis Date: 7 nov. 2007 Time: 15:33:24
  */
 @SuppressWarnings("serial")
-public class FullTextSearchTag extends ConstraintTag  {
+public class FullTextSearchTag extends ConstraintTag {
 
-    private static Logger logger =
-        Logger.getLogger(FullTextSearchTag.class);
+    private static Logger logger = Logger.getLogger(FullTextSearchTag.class);
 
-    private FullTextSearchImpl fullTextSearch;
+    private FullTextSearch fullTextSearch;
 
     private String searchExpression;
+
     private String propertyName;
+
+    private String selectorName;
+
     private String isMetadata;
 
     public int doEndTag() throws JspException {
         int eval = super.doEndTag();
         fullTextSearch = null;
         propertyName = null;
-        isMetadata= null;
+        selectorName = null;
+        isMetadata = null;
         return eval;
     }
 
-    public Constraint getConstraint(){
-        if ( fullTextSearch != null ){
+    public Constraint getConstraint() {
+        if (fullTextSearch != null) {
             return fullTextSearch;
         }
-        if ( this.searchExpression == null || this.searchExpression.trim().equals("") ){
+        if (this.searchExpression == null || this.searchExpression.trim().equals("")) {
             return null;
         }
         try {
-//            fullTextSearch = (FullTextSearchImpl)this.getQueryFactory()
-//                    .fullTextSearch(null,this.propertyName,this.searchExpression);
-            fullTextSearch.setMetadata("true".equals(this.isMetadata));
-        } catch ( Exception e ){
+            String selector = selectorName;
+            if (selector == null && this.getQueryModelDefTag().getSource() instanceof Selector) {
+                selector = ((Selector) this.getQueryModelDefTag().getSource()).getSelectorName();
+            }
+
+            fullTextSearch = this.getQueryFactory().fullTextSearch(selector, this.propertyName,
+                    this.getQueryFactory().literal(this.getValueFactory().createValue(this.searchExpression)));
+        } catch (Exception e) {
             logger.warn(e.getMessage(), e);
         }
         return fullTextSearch;
@@ -94,6 +101,14 @@ public class FullTextSearchTag extends ConstraintTag  {
 
     public void setPropertyName(String propertyName) {
         this.propertyName = propertyName;
+    }
+
+    public String getSelectorName() {
+        return selectorName;
+    }
+
+    public void setSelectorName(String selectorName) {
+        this.selectorName = selectorName;
     }
 
     public String getMetadata() {

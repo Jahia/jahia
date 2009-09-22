@@ -32,14 +32,14 @@
 package org.jahia.services.containers;
 
 import org.jahia.params.ProcessingContext;
-import org.jahia.query.qom.JahiaQueryObjectModelConstants;
-import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.registries.ServicesRegistry;
 
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Properties;
+
+import javax.jcr.query.qom.QueryObjectModel;
 
 /**
  * Created by IntelliJ IDEA.
@@ -72,13 +72,11 @@ public class ContainerQueryContext {
      * @param context
      * @return
      */
-    public static ContainerQueryContext getQueryContext(QueryObjectModelImpl queryModel,
+    public static ContainerQueryContext getQueryContext(QueryObjectModel queryModel,
                                                         int containerListID,
                                                         Properties parameters, ProcessingContext context) {
         ContainerQueryContext newContext = new ContainerQueryContext(containerListID,
                 null,null,false);        
-        newContext.setFacetFilterQueryParamName((String) queryModel.getProperties().get(
-                JahiaQueryObjectModelConstants.FACET_FILTER_QUERY_PARAM_NAME));
         return newContext;
     }
 

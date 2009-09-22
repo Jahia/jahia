@@ -53,14 +53,7 @@ public class SortByTag extends AbstractJahiaTag {
 
     private String propertyName;
 
-    private String numberFormat;
-    private String numberValue;
-    private String valueProviderClass;
-    private String isMetadata;
-    private String aliasNames;    
-
     private String order;
-    private String localeSensitive = "false";
 
     public int doStartTag() throws JspException {
         queryModelDefTag = (QueryDefinitionTag) findAncestorWithClass(this, QueryDefinitionTag.class);
@@ -71,7 +64,7 @@ public class SortByTag extends AbstractJahiaTag {
             return EVAL_BODY_BUFFERED;
         }
         try {
-            this.queryModelDefTag.addOrdering(getPropertyName(), "true".equals(getNumberValue()), getNumberFormat(), "true".equals(getMetadata()), getValueProviderClass(), getOrder(), "true".equals(getLocaleSensitive()), getAliasNames());
+            this.queryModelDefTag.addOrdering(getPropertyName(), getOrder());
         } catch ( Exception t ){
             logger.debug("Error creating ordering clause",t);
             throw new JspException("Error creating Ordering node in SortBy Tag",t);
@@ -83,13 +76,7 @@ public class SortByTag extends AbstractJahiaTag {
         queryModelDefTag = null;
         propertyName = null;
         propertyName = null;
-        numberFormat = null;
-        numberValue = null;
-        isMetadata = null;
-        valueProviderClass = null;
         order = null;
-        localeSensitive = null;
-        aliasNames = null;        
         return EVAL_PAGE;
     }
 
@@ -101,38 +88,6 @@ public class SortByTag extends AbstractJahiaTag {
         this.propertyName = propertyName;
     }
 
-    public String getNumberFormat() {
-        return numberFormat;
-    }
-
-    public void setNumberFormat(String numberFormat) {
-        this.numberFormat = numberFormat;
-    }
-
-    public String getNumberValue() {
-        return numberValue;
-    }
-
-    public void setNumberValue(String numberValue) {
-        this.numberValue = numberValue;
-    }
-
-    public String getMetadata() {
-        return isMetadata;
-    }
-
-    public void setMetadata(String metadata) {
-        isMetadata = metadata;
-    }
-
-    public String getValueProviderClass() {
-        return valueProviderClass;
-    }
-
-    public void setValueProviderClass(String valueProviderClass) {
-        this.valueProviderClass = valueProviderClass;
-    }
-
     public String getOrder() {
         return order;
     }
@@ -140,21 +95,4 @@ public class SortByTag extends AbstractJahiaTag {
     public void setOrder(String order) {
         this.order = order;
     }
-
-    public String getLocaleSensitive() {
-        return localeSensitive;
-    }
-
-    public void setLocaleSensitive(String localeSensitive) {
-        this.localeSensitive = localeSensitive;
-    }
-
-    public void setAliasNames(String aliasNames) {
-        this.aliasNames = aliasNames;
-    }
-
-    public String getAliasNames() {
-        return aliasNames;
-    }
-
 }

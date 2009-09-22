@@ -51,7 +51,6 @@ import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.containers.JahiaContainerSet;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.services.JahiaService;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
@@ -1139,20 +1138,6 @@ public abstract class JahiaContainersService extends JahiaService {
      * @return
      */
     public abstract List<String> getContainerDefinitionNamesWithType(Set<String> types);    
-
-    /**
-     * Create a ContainerQueryBean from a given QueryObjectModel
-     *
-     * @param queryModel
-     * @param queryContextCtnID
-     * @param parameters
-     * @param jParams
-     * @throws JahiaException
-     * @return
-     */
-    public abstract ContainerQueryBean createContainerQueryBean(QueryObjectModelImpl queryModel, int queryContextCtnID,
-                                                                Properties parameters, ProcessingContext jParams)
-    throws JahiaException;
 
     /**
      * Returns a map of acl ids for the given list of ctnIds

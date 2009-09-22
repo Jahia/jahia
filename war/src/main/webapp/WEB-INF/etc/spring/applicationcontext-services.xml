@@ -403,34 +403,11 @@
         <property name="templateManagerService" ref="JahiaTemplateManagerService" />        
     </bean>
 
-    <bean id="JahiaDBFilterCreator" class="org.jahia.query.filtercreator.JahiaDBFilterCreator">
-        <property name="name" value="JahiaDBFilterCreator" />
-    </bean>
-    <bean id="JahiaSearchFilterCreator" class="org.jahia.query.filtercreator.JahiaSearchFilterCreator">
-        <property name="name" value="JahiaSearchFilterCreator" />
-    </bean>
     <bean id="QueryService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.query.QueryService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="defaultFilterCreators">
-                    <list>
-                        <ref bean="JahiaSearchFilterCreator" />                        
-                        <ref bean="JahiaDBFilterCreator" />                        
-                    </list>
-                </property>
-                <property name="filterCreators">
-                    <map>
-                        <entry>
-                            <key><value>JahiaDBFilterCreator</value></key>
-                            <ref bean="JahiaDBFilterCreator" />
-                        </entry>
-                        <entry>
-                            <key><value>JahiaSearchFilterCreator</value></key>
-                            <ref bean="JahiaSearchFilterCreator" />
-                        </entry>
-                    </map>
-                </property>
-            </bean>
+                <property name="jcrStoreService" ref="JCRStoreService" />
+            </bean>        
         </property>
     </bean>
 

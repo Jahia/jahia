@@ -65,14 +65,7 @@ public abstract class QueryManagerImpl implements javax.jcr.query.QueryManager {
         this.properties = properties;
     }
 
-    public QueryObjectModelFactory getQOMFactory() {
-        try {
-            return QueryService.getInstance().getQueryObjectModelFactory(getQueryExecute(), this.context, this.properties);
-        } catch (Throwable t){
-            logger.debug("Cannot instanciate the QueryObjectModelFactory",t);
-        }
-        return null;
-    }
+    public abstract QueryObjectModelFactory getQOMFactory(String path);
 
     /**
      *

@@ -32,13 +32,13 @@
 package org.jahia.taglibs.query;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.jsp.JspException;
 
+import javax.jcr.query.qom.And;
 import javax.jcr.query.qom.Constraint;
-import org.apache.jackrabbit.spi.commons.query.qom.ConstraintImpl;
-import org.jahia.query.qom.QueryObjectModelFactoryImpl;
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,9 +68,22 @@ public class AndTag extends ConstraintTag  {
             return null;
         }
         if ( this.constraints.size()==1 ){
-            andConstraint = (ConstraintImpl)this.constraints.get(0);
+            andConstraint = this.constraints.get(0);
         } else {
-            andConstraint = ((QueryObjectModelFactoryImpl)this.getQueryFactory()).and(this.constraints);
+            And andConstraint = null;
+            Iterator<Constraint> it = constraints.iterator();
+            Constraint c1 = null;
+            Constraint c2 = null;
+            while (it.hasNext()) {
+                if (andConstraint == null) {
+                    c1 = (Constraint) it.next();
+                    c2 = (Constraint) it.next();
+                    andConstraint = this.getQueryFactory().and(c1, c2);
+                } else {
+                    c1 = (Constraint) it.next();
+                    andConstraint = this.getQueryFactory().and(andConstraint, c1);
+                }
+            }
         }
         return andConstraint;
     }

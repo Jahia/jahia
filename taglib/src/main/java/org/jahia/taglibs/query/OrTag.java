@@ -38,8 +38,6 @@ import java.util.List;
 import javax.jcr.query.qom.Constraint;
 import javax.servlet.jsp.JspException;
 
-import org.jahia.query.qom.ConstraintImpl;
-
 /**
  * Created by IntelliJ IDEA.
  * User: hollis
@@ -71,7 +69,7 @@ public class OrTag extends ConstraintTag  {
             return null;
         }
         if ( this.constraints.size()==1 ){
-            orConstraint = (ConstraintImpl)this.constraints.get(0);
+            orConstraint = this.constraints.get(0);
         } else {
             Iterator<Constraint> it = constraints.iterator();
             Constraint c1 = it.next();

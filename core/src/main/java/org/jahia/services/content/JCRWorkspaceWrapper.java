@@ -36,10 +36,11 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.query.qom.QueryExecute;
-import org.jahia.query.qom.SelectorImpl;
 import org.jahia.api.Constants;
 import org.xml.sax.ContentHandler;
 import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModelFactory;
+import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.Source;
 import org.apache.commons.lang.StringUtils;
 
@@ -228,6 +229,16 @@ public class JCRWorkspaceWrapper implements Workspace {
                 if (qom != null){
                     qom.execute();
                 }
+            } else if (qm != null && qm instanceof JCRStoreQueryManagerAdapter) {
+                QueryObjectModel qom = qm.getQOMFactory().createQuery(queryObjectModel.getSource(),
+                        queryObjectModel.getConstraint(), queryObjectModel.getOrderings(),
+                        queryObjectModel.getColumns());
+                if (qom != null) {
+                    QueryResult result = qom.execute();
+                    if (result != null) {
+                        results.add(new QueryResultWrapper(jcrStoreProvider, result, session.getUser()));
+                    }
+                }
             }
         }
         return new QueryResultAdapter(results);
@@ -344,28 +355,15 @@ public class JCRWorkspaceWrapper implements Workspace {
                     List<JCRWorkspaceWrapper.QueryResultWrapper> results = new ArrayList<JCRWorkspaceWrapper.QueryResultWrapper>();
                     String nodeType = "";
                     Source source = queryObjectModel.getSource();
-                    if (source instanceof SelectorImpl) {
-                        nodeType = ((SelectorImpl)source).getNodeTypeName();
-                    } else if (source instanceof org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl) {
-                        nodeType = ((org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl)source).getNodeTypeName();
-                    }
+                    if (source instanceof Selector) {
+                        nodeType = ((Selector)source).getNodeTypeName();
+                    } 
 
                     for (JCRStoreProvider jcrStoreProvider : service.getProviders().values()) {
                         QueryManager qm = jcrStoreProvider.getQueryManager(session);
-                        if (!Constants.JAHIANT_FILE.equals(nodeType) && qm != null && qm instanceof org.jahia.query.qom.QueryManagerImpl)  {
-                            QueryObjectModel qom = ((org.jahia.query.qom.QueryManagerImpl)qm).getQOMFactory()
-                                    .createQuery(queryObjectModel.getSource(),
-                                    queryObjectModel.getConstraint(),queryObjectModel.getOrderings(),queryObjectModel.getColumns());
-                            if (qom != null){
-                                qom.execute();
-                            }
-                        }
-/* not activated yet
-                        else if (Constants.JAHIANT_FILE.equals(nodeType)
-                                && qm != null
+                        if (qm != null
                                 && qm instanceof JCRStoreQueryManagerAdapter) {
-                            QueryObjectModel qom = ((JCRStoreQueryManagerAdapter) qm)
-                                    .getQOMFactory().createQuery(
+                            QueryObjectModel qom = qm.getQOMFactory().createQuery(
                                             queryObjectModel.getSource(),
                                             queryObjectModel.getConstraint(),
                                             queryObjectModel.getOrderings(),
@@ -373,11 +371,11 @@ public class JCRWorkspaceWrapper implements Workspace {
                             if (qom != null) {
                                 QueryResult result = qom.execute();
                                 if (result != null) {
-                                    results.add(result);
+                                    results.add(new QueryResultWrapper(jcrStoreProvider, result, session.getUser()));
                                 }
                             }
                         }
-*/
+
                     }
                     return new QueryResultAdapter(results);
                 }
@@ -390,6 +388,14 @@ public class JCRWorkspaceWrapper implements Workspace {
 
         public Query getQuery(Node node) throws InvalidQueryException, RepositoryException {
             return new QueryWrapper(node,session.getUser());
+        }
+
+        public QueryObjectModelFactory getQOMFactory() {
+            return service.getProvider("/").getQueryManager(session).getQOMFactory();
+        }        
+        
+        public QueryObjectModelFactory getQOMFactory(String path) {
+            return service.getProvider(path).getQueryManager(session).getQOMFactory();
         }
 
         public String[] getSupportedQueryLanguages() throws RepositoryException {

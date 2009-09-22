@@ -31,7 +31,6 @@
  */
 package org.jahia.services.containers;
 
-import javax.jcr.query.qom.*;
 import org.jahia.bin.Jahia;
 import org.jahia.content.*;
 import org.jahia.content.events.ContentObjectDeleteEvent;
@@ -45,8 +44,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.*;
 import org.jahia.params.ProcessingContext;
-import org.jahia.query.filtercreator.FilterCreator;
-import org.jahia.query.qom.*;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 import org.jahia.registries.JahiaListenersRegistry;
 import org.jahia.registries.ServicesRegistry;
@@ -62,10 +59,7 @@ import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
 import org.jahia.services.workflow.WorkflowEvent;
-import org.jahia.utils.JahiaTools;
 
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.util.*;
 
@@ -2344,108 +2338,6 @@ public class JahiaContainersBaseService extends JahiaContainersService {
         return this.containerDefinitionManager.getContainerDefinitionNamesWithType(types);
     }    
 
-    /**
-     * Create a ContainerQueryBean from a given QueryObjectModel
-     *
-     * @param queryModel
-     * @param queryContextCtnID
-     * @param jParams
-     * @throws JahiaException
-     * @return
-     */
-    public ContainerQueryBean createContainerQueryBean(QueryObjectModelImpl queryModel, int queryContextCtnID,
-                                                       Properties parameters,
-                                                       ProcessingContext jParams) throws JahiaException {
-
-        if ( queryModel == null ){
-            return null;
-        }
-        boolean queryModelWithSelectorOnly = (queryModel.getConstraint()==null
-                && queryModel.getOrderings()==null);
-
-        ContainerQueryBuilder builder = new ContainerQueryBuilder(jParams,new HashMap<String, Value>());
-        ContainerQueryContext queryContext = ContainerQueryContext.getQueryContext(queryModel,
-                queryContextCtnID,parameters,jParams);
-
-        ContainerQueryBean queryBean = builder.getContainerQueryBean(queryModel,queryContext);
-        if (queryBean != null
-                && queryBean.getQueryContext().isSiteLevelQuery()
-                && (queryBean.getFilter() == null
-                        && queryBean.getSearcher() == null && queryBean
-                        .getSorter() == null)) {
-            boolean isJustOneSiteChildOrDescendantNodeConstraint = isJustOneSiteChildOrDescendantNodeConstraint(builder.getRootConstraint(), queryContext);
-            if (queryModelWithSelectorOnly || isJustOneSiteChildOrDescendantNodeConstraint) {
-                QueryObjectModelFactory queryFactory = queryModel.getQueryFactory();
-                Constraint pathConstraint = null;
-                if (isJustOneSiteChildOrDescendantNodeConstraint) {
-                    pathConstraint = builder.getRootConstraint().getConstraint();
-                }
-                // create a new query object model with a constraint when the Query Object Model only contains Selector
-                // but no Constraint and no Sorter
-                ValueFactory valueFactory = ServicesRegistry.getInstance()
-                        .getQueryService().getValueFactory();
-                List<String> definitions = queryBean.getQueryContext()
-                        .getContainerDefinitionsIncludingType(false);
-                if (definitions != null && !definitions.isEmpty()) {
-                    String[] definitionsAr = (String[]) definitions
-                            .toArray(new String[] {});
-                    String definitionNamesStr = JahiaTools
-                        .getStringArrayToString(definitionsAr,
-                            JahiaQueryObjectModelConstants.MULTI_VALUE_SEP);
-                    Value val = valueFactory.createValue(definitionNamesStr);
-                    try {
-                        Literal literal = queryFactory.literal(val);
-                        ((LiteralImpl) literal).setMultiValueANDLogic(false);
-                        PropertyValue prop = queryFactory
-                                .propertyValue(FilterCreator.CONTENT_DEFINITION_NAME, null);
-                        Constraint constraint = queryFactory
-                                .comparison(
-                                        prop,
-                                        JahiaQueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO,
-                                        literal);
-                        if (pathConstraint != null) {
-                            constraint = queryFactory.and(pathConstraint, constraint);
-                        }
-                        QueryObjectModel queryObjectModel = queryFactory
-                                .createQuery(queryModel.getSource(),
-                                        constraint, queryModel
-                                                .getOrderings(), queryModel
-                                                .getColumns());
-                        queryContext = ContainerQueryContext.getQueryContext((QueryObjectModelImpl) queryObjectModel,
-                                queryContextCtnID,parameters,jParams);
-                        queryBean = builder.getContainerQueryBean(
-                                (QueryObjectModelImpl) queryObjectModel,
-                                queryContext);
-                    } catch (Throwable t) {
-                        throw new JahiaException(
-                                "Failed creating ContainerQueryBean",
-                                "Failed creating ContainerQueryBean",
-                                JahiaException.APPLICATION_ERROR,
-                                JahiaException.ERROR_SEVERITY, t);
-                    }
-                }
-            }
-        }
-        return queryBean;
-    }
-    
-    protected boolean isJustOneSiteChildOrDescendantNodeConstraint(
-            ConstraintItem constraint, ContainerQueryContext queryContext) {
-        boolean justOneSiteDescendantNode = false;
-        if (constraint != null
-                && (constraint.getConstraint() instanceof DescendantNodeImpl || constraint
-                        .getConstraint() instanceof ChildNodeImpl)
-                && (constraint.getChildConstraintItems() == null
-                        || constraint.getChildConstraintItems().size() == 0 || constraint
-                        .getChildConstraintItems().size() == 1
-                        && constraint.equals(constraint
-                                .getChildConstraintItems().get(0)))) {
-            if (queryContext.isSiteLevelQuery()) {
-                justOneSiteDescendantNode = true;
-            }
-        }
-        return justOneSiteDescendantNode;
-    }
     /**
      * Returns a map of acl ids for the given list of ctnIds
      *

@@ -145,8 +145,9 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
             
             facetBean.setMultiple(fieldDef.getPropertyDefinition().isMultiple());
             
-            String fieldName = QueryModelTools.getFieldNameForSearchEngine(propertyName, false, queryContext
-                    .getContainerDefinitionNames(), jParams, QueryModelTools.FACETING_TYPE);
+            String fieldName = propertyName;
+                //QueryModelTools.getFieldNameForSearchEngine(propertyName, false, queryContext
+                //    .getContainerDefinitionNames(), jParams, QueryModelTools.FACETING_TYPE);
             String languageCode = LanguageCodeConverters.localeToLanguageTag(jParams.getLocale());
             if (fieldDef.getType() == FieldTypes.CATEGORY) {
                 String rootCategory = fieldDef.getItemDefinition().getSelectorOptions().get("root");

@@ -31,13 +31,10 @@
  */
 package org.jahia.query;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 import javax.jcr.query.qom.QueryObjectModelFactory;
 
@@ -48,15 +45,13 @@ import org.jahia.data.beans.SiteBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.query.filtercreator.FilterCreator;
 import org.jahia.query.qom.QueryExecute;
-import org.jahia.query.qom.QueryObjectModelFactoryImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.containers.ContentContainerList;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
 import org.jahia.services.content.impl.jahia.JahiaSiteNodeImpl;
-import org.jahia.services.expressions.SearchExpressionContext;
 import org.jahia.services.pages.ContentPage;
 
 /**
@@ -70,14 +65,11 @@ public class QueryService extends JahiaService {
 
     private static QueryService singletonInstance = null;
 
-    private List<FilterCreator> defaultFilterCreators;
-
-    private Map<String, FilterCreator> filterCreators;
-
     private ValueFactory valueFactory = ValueFactoryImpl.getInstance();
+    
+    private transient JCRStoreService jcrStoreService;
 
     protected QueryService() {
-        filterCreators = new HashMap<String, FilterCreator>();
     }
 
     /**
@@ -106,38 +98,9 @@ public class QueryService extends JahiaService {
 
     public void stop() {
     }
-
-    public Map<String, FilterCreator> getFilterCreators() {
-        return filterCreators;
-    }
-
-    public void setFilterCreators(Map<String, FilterCreator> filterCreators) {
-        this.filterCreators = filterCreators;
-    }
-
-    public void setDefaultFilterCreators(List<FilterCreator> defaultFilterCreators) {
-        this.defaultFilterCreators = defaultFilterCreators;
-    }
-
-    public List<FilterCreator> getDefaultFilterCreators(){
-        return defaultFilterCreators;
-    }
-
-    public List<FilterCreator> getFilterCreators(List<String> orderedNames){
-        List<FilterCreator> orderedFilterCreators = new ArrayList<FilterCreator>();
-        for (String filterCreatorName : orderedNames){
-            FilterCreator filterCreator = (FilterCreator)this.filterCreators.get(filterCreatorName.trim());
-            if (filterCreator != null){
-                orderedFilterCreators.add(filterCreator);
-            }
-        }
-        for (FilterCreator defaultFilterCreator : this
-                .getDefaultFilterCreators()) {
-            if (!orderedFilterCreators.contains(defaultFilterCreator)) {
-                orderedFilterCreators.add(defaultFilterCreator);
-            }
-        }
-        return orderedFilterCreators;
+    
+    public void setJcrStoreService(JCRStoreService jcrStoreService) {
+        this.jcrStoreService = jcrStoreService;
     }
 
     /**
@@ -151,8 +114,7 @@ public class QueryService extends JahiaService {
      */
     public QueryObjectModelFactory getQueryObjectModelFactory(QueryExecute queryExecute, ProcessingContext context, Properties properties)
             throws JahiaException {
-        SearchExpressionContext searchExpressionContext = new SearchExpressionContext(context);
-        return new QueryObjectModelFactoryImpl(queryExecute,properties,searchExpressionContext,context.getUser());
+        return jcrStoreService.getQueryManager(context.getUser()).getQOMFactory();
     }
 
     /**
@@ -209,11 +171,11 @@ public class QueryService extends JahiaService {
      * @throws JahiaException
      */
     public Object getPathObject(String pathString, ProcessingContext context)
-            throws JahiaException {
+            throws JahiaException, RepositoryException {
         if ("/".equals(pathString)){
             return pathString;
         }
-        Node n = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(pathString,context.getUser()).getRealNode();
+        Node n = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(context.getUser()).getNode(pathString).getRealNode();
         if (n instanceof JahiaContentNodeImpl) {
             Object result = ((JahiaContentNodeImpl)n).getContentObject();
             if (result instanceof ContentPage){

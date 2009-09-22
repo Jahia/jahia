@@ -46,13 +46,8 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
-import org.jahia.query.qom.JahiaQueryObjectModelConstants;
-import org.jahia.query.qom.PropertyValueImpl;
-import org.jahia.query.qom.QueryObjectModelFactoryImpl;
-import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.utils.JahiaTools;
 import org.jahia.query.qom.QOMBuilder;
 
 /**
@@ -183,10 +178,6 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
         if ( queryFactory != null ){
             try {
                 queryObjectModel = qomBuilder.createQOM();
-                
-                if (!getProperties().isEmpty() && queryObjectModel instanceof QueryObjectModelImpl) {
-                    ((QueryObjectModelImpl)queryObjectModel).setProperties(getProperties());                    
-                }
             } catch ( Exception t ){
                 logger.warn(t);
             }
@@ -226,38 +217,15 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
         this.qomBuilder.setOrderings(orderingsList);
     }
 
-    public void addOrdering(String propertyName, boolean numberValue,
-            String numberFormat, boolean metadata, String valueProviderClass,
-            String order, boolean localeSensitive, String aliasNames) throws RepositoryException {
+    public void addOrdering(String propertyName, String order) throws RepositoryException {
         Ordering ordering = null;
         QueryObjectModelFactory queryFactory = getQueryFactory();
-        PropertyValueImpl propValue = (PropertyValueImpl) queryFactory
-                .propertyValue(null,propertyName.trim());
-        propValue.setNumberValue(numberValue);
-        propValue.setMetadata(metadata);
-        propValue.setNumberFormat(numberFormat);
-        propValue.setValueProviderClass(valueProviderClass);
-        propValue.setAliasNames(JahiaTools.getTokens(aliasNames,","));
-                   
-        if (queryFactory instanceof QueryObjectModelFactoryImpl) {
-            QueryObjectModelFactoryImpl ourQueryFactory = (QueryObjectModelFactoryImpl) queryFactory;
-            if (order != null
-                    && order.length() > 0
-                    && QueryObjectModelConstants.JCR_ORDER_DESCENDING.equals(order)) {
-                ordering = ourQueryFactory.descending(propValue,
-                        localeSensitive);
-            } else {
-                ordering = ourQueryFactory
-                        .ascending(propValue, localeSensitive);
-            }
+        PropertyValue propValue = queryFactory.propertyValue(null, propertyName.trim());
+
+        if (order != null && order.length() > 0 && QueryObjectModelConstants.JCR_ORDER_DESCENDING.equals(order)) {
+            ordering = queryFactory.descending(propValue);
         } else {
-            if (order != null
-                    && order.length() > 0
-                    && QueryObjectModelConstants.JCR_ORDER_DESCENDING.equals(order)) {
-                ordering = queryFactory.descending(propValue);
-            } else {
-                ordering = queryFactory.ascending(propValue);
-            }
+            ordering = queryFactory.ascending(propValue);
         }
         this.qomBuilder.addOrdering(ordering);
     }

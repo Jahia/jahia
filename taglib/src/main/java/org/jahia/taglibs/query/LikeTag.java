@@ -31,8 +31,6 @@
  */
 package org.jahia.taglibs.query;
 
-import org.jahia.query.qom.JahiaQueryObjectModelConstants;
-
 import javax.servlet.jsp.JspException;
 import javax.jcr.query.qom.QueryObjectModelConstants;
 

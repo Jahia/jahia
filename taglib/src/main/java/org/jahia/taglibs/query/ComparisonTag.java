@@ -31,14 +31,12 @@
  */
 package org.jahia.taglibs.query;
 
-import org.jahia.query.qom.JahiaQueryObjectModelConstants;
-import org.jahia.query.qom.LiteralImpl;
-import org.jahia.query.qom.PropertyValueImpl;
 import org.jahia.query.qom.QueryModelTools;
-import org.jahia.utils.JahiaTools;
 
 import javax.jcr.query.qom.Comparison;
 import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.Literal;
+import javax.jcr.query.qom.PropertyValue;
 import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.servlet.jsp.JspException;
 import java.util.ArrayList;
@@ -59,13 +57,6 @@ public class ComparisonTag extends ConstraintTag  {
     private Comparison comparison;
 
     private String propertyName;
-    private String aliasNames;        
-    private String numberFormat;
-    private String numberValue;
-    private String isMetadata;
-    private String multiValue;
-    private String multiValueANDLogic = "false";
-    private String valueProviderClass;
 
     private String operator = QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO;
     private List<String> value;
@@ -79,13 +70,6 @@ public class ComparisonTag extends ConstraintTag  {
         operator = QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO;
         value = null;
         propertyName = null;
-        aliasNames = null;
-        numberFormat = null;
-        numberValue = null;
-        isMetadata= null;
-        multiValue = null;
-        multiValueANDLogic = "false";
-        valueProviderClass = null;
         return eval;
     }
 
@@ -97,14 +81,6 @@ public class ComparisonTag extends ConstraintTag  {
         this.propertyName = propertyName;
     }
     
-    public void setAliasNames(String aliasNames) {
-        this.aliasNames = aliasNames;
-    }
-
-    public String getAliasNames() {
-        return aliasNames;
-    }    
-
     public String getOperator() {
         return operator;
     }
@@ -137,54 +113,6 @@ public class ComparisonTag extends ConstraintTag  {
         }
     }
 
-    public String getNumberFormat() {
-        return numberFormat;
-    }
-
-    public void setNumberFormat(String numberFormat) {
-        this.numberFormat = numberFormat;
-    }
-
-    public String getNumberValue() {
-        return numberValue;
-    }
-
-    public void setNumberValue(String numberValue) {
-        this.numberValue = numberValue;
-    }
-
-    public String getMetadata() {
-        return isMetadata;
-    }
-
-    public void setMetadata(String metadata) {
-        isMetadata = metadata;
-    }
-
-    public String getMultiValue() {
-        return multiValue;
-    }
-
-    public void setMultiValue(String multiValue) {
-        this.multiValue = multiValue;
-    }
-
-    public String getMultiValueANDLogic() {
-        return multiValueANDLogic;
-    }
-
-    public void setMultiValueANDLogic(String multiValueANDLogic) {
-        this.multiValueANDLogic = multiValueANDLogic;
-    }
-
-    public String getValueProviderClass() {
-        return valueProviderClass;
-    }
-
-    public void setValueProviderClass(String valueProviderClass) {
-        this.valueProviderClass = valueProviderClass;
-    }
-
     public Constraint getConstraint() throws Exception {
         if ( comparison != null ){
             return comparison;
@@ -192,22 +120,11 @@ public class ComparisonTag extends ConstraintTag  {
         if ( !QueryModelTools.isNotEmptyStringOrNull(this.getPropertyName()) ){
           throw new Exception("propertyName is empty or null");
         }
-        PropertyValueImpl propValue = (PropertyValueImpl)this.getQueryFactory()
+        PropertyValue propValue = this.getQueryFactory()
                 .propertyValue(null,this.getPropertyName().trim());
-        propValue.setMultiValue("true".equals(this.getMultiValue()));
-        propValue.setNumberValue("true".equals(this.getNumberValue()));
-        propValue.setMetadata("true".equals(this.getMetadata()));
-        propValue.setNumberFormat(this.getNumberFormat());
-        propValue.setValueProviderClass(this.getValueProviderClass());
-        String[] aliasNames = JahiaTools.getTokens(this.getAliasNames(),",");
-        if (aliasNames != null){
-            propValue.setAliasNames(aliasNames);
-        }         
-        LiteralImpl literal = (LiteralImpl)this.getQueryFactory()
+        Literal literal = (Literal)this.getQueryFactory()
                 .literal(this.getValueFactory().createValue(this.getValue()));
-        literal.setMultiValueANDLogic("true".equals(this.getMultiValueANDLogic()));
         comparison = this.getQueryFactory().comparison( propValue, this.getOperator(), literal );
         return comparison;
     }
-
 }

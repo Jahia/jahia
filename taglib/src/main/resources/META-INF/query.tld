@@ -26,86 +26,6 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
-    <tag>
-        <description>Used to build ContainerQueryBean</description>
-        <name>containerQuery</name>
-        <tag-class>org.jahia.taglibs.query.ContainerQueryTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <description><![CDATA[
-                <p>Name of an existing QueryObjectModel stored in the Request scope of the PageContext
-                to use for building the concrete <code>ContainerQueryBean</code></p>]]>
-            </description>
-            <name>queryObjectModelBeanName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>The name of the target containerList in the Jahia Page for which the concrete  containerQueryBean
-                will be created.</p>
-                <p>The target containerList is the one that will hold the filtering containers. This attribute is
-                optional if this tag is enclosed inside a containerListTag. In this case, the target containerList
-                will be the one referred by the parent <code>containerListTag</code>.</p>]]>
-            </description>
-            <name>targetContainerListName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[<p>
-                The target containerList can be defined using its ID instead by its name. It is the one that will
-                hold the filtered containers. </p>
-                <p>This attribute is optional if this tag is enclosed inside a
-                containerListTag. In this case, the target containerList will be the one referred by the parent <code>containerListTag</code></p>.]]>
-            </description>
-            <name>targetContainerListID</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>Unique id used to identify this query object model.</p>
-                <p>The object representing the current query object model is added to the pageContext under this
-                name in the Request scope.</p>]]>
-            </description>
-            <name>id</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>Unique id used to identify this ContainerQueryBean.</p>
-                <p>The object representing the current ContainerQueryBean is added to the pageContext under this
-                name in the Request scope. It is only in the doEndTag that this bean is exposed.</p>]]>
-            </description>
-            <name>queryBeanID</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-    </tag>
-    <tag>
-        <description>Truly create a ContainerQueryBean instance</description>
-        <name>createContainerQueryBean</name>
-        <tag-class>org.jahia.taglibs.query.CreateContainerQueryBeanTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <description><![CDATA[
-                <p>Unique id used to identify this ContainerQueryBean.</p>
-                <p>The object representing the current ContainerQueryBean is added to the pageContext under this
-                name in the Request scope. It is only in the doEndTag that this bean is exposed.</p>]]>
-            </description>
-            <name>id</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-    </tag>
 
     <tag>
         <description>Used to define a comparison Constraint</description>
@@ -118,89 +38,6 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>Used only if numberValue is true.</p>
-                <p>Can be one of these values :
-                <ul>
-                <li> <code>JahiaQueryObjectModelConstants.BYTE_FORMAT (default)</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.SHORT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.LONG_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.DOUBLE_FORMAT</code></li>
-                </ul>
-                <p>JahiaIntegerField type will automatically use <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></p>
-                JahiaFloatField type will automatically use <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code>]]>
-            </description>
-            <name>numberFormat</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>true  : means a number conversion must be done.<p>
-                <p>false (default) :
-                Number conversion will be done automatically for Jahiafield of type JahiaIntegerField and JahiaFloatField.</p>
-                <p>When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>
-                <p>Jahia Fields of type Date should not use number conversion (numberValue to false) for optimized
-                performance.</p>]]>
-            </description>
-            <name>numberValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a property is a Jahia Metadata Field, this attribute should be set to true.</p>
-
-                <p>By default it's set to false and Jahia trys to resolve dynamically if a property is a Jahia Metadata
-                Field or a Jahia Container Field. When a Jahia Container Field and a Jahia Metadata Field have the
-                same name this is the Jahia Container Field that will be used. This is why it is always recommended to
-                set this attribute to true, to force Metadata Field usage.</p>]]>
-            </description>
-            <name>metadata</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>You must set this attribute to true only when you know that the property specified is a Jahia
-                Container Field or a Jahia Metadata Field that is multi-valued field (several values can be selected).
-                Default is false.</p>
-
-                <p>For optimized performance, you should not set this attribute to "true" unless required. Most metadata
-                fields (like creator, lastContributor, lastPublisher, creationDate, lastModificationDate,
-                lastPublishingDate) are single valued fields.</p>
-
-                <p>But when a comparison is using a Category metadata, you probably need this attribute to true.</p>
-
-               <p> When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>]]>
-            </description>
-            <name>multiValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a value is a String concatenation of multiples values, this attribute can be used to define what
-                logic must be used for comparison.</p>
-                <p>Set to false by default. This means an OR is used by default. The comparison is evaluated to true
-                if one the value matches.</p>
-
-                <p>true means that the comparison is successful only if all values matches.</p>]]>
-            </description>
-            <name>multiValueANDLogic</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -233,34 +70,6 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>It's possible to define a custom value provider (class implementing the interface
-                org.jahia.data.containers.ContainerFilterFieldValueProvider) that will be used
-                to return the value effectively used for filtering.</p>
-                <p>There is an existing implementation class :<br>
-                <code>org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable</code>
-                This value provider will return true or false depending if the jahiaFileField is
-                null or not, so that you can filter out containers which jahiaFileField is null
-                or not available in File repository.</p>
-                <p><code>&lt;query:equalTo valueProviderClass="org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable"
-                propertyName="file" value="true"/&gt;</code></p>
-                ]]>
-            </description>
-            <name>valueProviderClass</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
-                ]]>
-            </description>
-            <name>aliasNames</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
@@ -362,89 +171,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-                <p>Used only if numberValue is true.</p>
-                <p>Can be one of these values :
-                <ul>
-                <li> <code>JahiaQueryObjectModelConstants.BYTE_FORMAT (default)</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.SHORT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.LONG_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.DOUBLE_FORMAT</code></li>
-                </ul>
-                <p>JahiaIntegerField type will automatically use <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></p>
-                JahiaFloatField type will automatically use <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code>]]>
-            </description>
-            <name>numberFormat</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>true  : means a number conversion must be done.<p>
-                <p>false (default) :
-                Number conversion will be done automatically for Jahiafield of type JahiaIntegerField and JahiaFloatField.</p>
-                <p>When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>
-                <p>Jahia Fields of type Date should not use number conversion (numberValue to false) for optimized
-                performance.</p>]]>
-            </description>
-            <name>numberValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a property is a Jahia Metadata Field, this attribute should be set to true.</p>
-
-                <p>By default it's set to false and Jahia trys to resolve dynamically if a property is a Jahia Metadata
-                Field or a Jahia Container Field. When a Jahia Container Field and a Jahia Metadata Field have the
-                same name this is the Jahia Container Field that will be used. This is why it is always recommended to
-                set this attribute to true, to force Metadata Field usage.</p>]]>
-            </description>
-            <name>metadata</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>You must set this attribute to true only when you know that the property specified is a Jahia
-                Container Field or a Jahia Metadata Field that is multi-valued field (several values can be selected).
-                Default is false.</p>
-
-                <p>For optimized performance, you should not set this attribute to "true" unless required. Most metadata
-                fields (like creator, lastContributor, lastPublisher, creationDate, lastModificationDate,
-                lastPublishingDate) are single valued fields.</p>
-
-                <p>But when a comparison is using a Category metadata, you probably need this attribute to true.</p>
-
-               <p> When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>]]>
-            </description>
-            <name>multiValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a value is a String concatenation of multiples values, this attribute can be used to define what
-                logic must be used for comparison.</p>
-                <p>Set to false by default. This means an OR is used by default. The comparison is evaluated to true
-                if one the value matches.</p>
-
-                <p>true means that the comparison is successful only if all values matches.</p>]]>
-            </description>
-            <name>multiValueANDLogic</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -453,34 +179,6 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>It's possible to define a custom value provider (class implementing the interface
-                org.jahia.data.containers.ContainerFilterFieldValueProvider) that will be used
-                to return the value effectively used for filtering.</p>
-                <p>There is an existing implementation class :<br>
-                <code>org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable</code>
-                This value provider will return true or false depending if the jahiaFileField is
-                null or not, so that you can filter out containers which jahiaFileField is null
-                or not available in File repository.</p>
-                <p><code>&lt;query:equalTo valueProviderClass="org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable"
-                propertyName="file" value="true"/&gt;</code></p>
-                ]]>
-            </description>
-            <name>valueProviderClass</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
-                ]]>
-            </description>
-            <name>aliasNames</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
@@ -497,89 +195,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-                <p>Used only if numberValue is true.</p>
-                <p>Can be one of these values :
-                <ul>
-                <li> <code>JahiaQueryObjectModelConstants.BYTE_FORMAT (default)</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.SHORT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.LONG_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.DOUBLE_FORMAT</code></li>
-                </ul>
-                <p>JahiaIntegerField type will automatically use <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></p>
-                JahiaFloatField type will automatically use <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code>]]>
-            </description>
-            <name>numberFormat</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>true  : means a number conversion must be done.<p>
-                <p>false (default) :
-                Number conversion will be done automatically for Jahiafield of type JahiaIntegerField and JahiaFloatField.</p>
-                <p>When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>
-                <p>Jahia Fields of type Date should not use number conversion (numberValue to false) for optimized
-                performance.</p>]]>
-            </description>
-            <name>numberValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a property is a Jahia Metadata Field, this attribute should be set to true.</p>
-
-                <p>By default it's set to false and Jahia trys to resolve dynamically if a property is a Jahia Metadata
-                Field or a Jahia Container Field. When a Jahia Container Field and a Jahia Metadata Field have the
-                same name this is the Jahia Container Field that will be used. This is why it is always recommended to
-                set this attribute to true, to force Metadata Field usage.</p>]]>
-            </description>
-            <name>metadata</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>You must set this attribute to true only when you know that the property specified is a Jahia
-                Container Field or a Jahia Metadata Field that is multi-valued field (several values can be selected).
-                Default is false.</p>
-
-                <p>For optimized performance, you should not set this attribute to "true" unless required. Most metadata
-                fields (like creator, lastContributor, lastPublisher, creationDate, lastModificationDate,
-                lastPublishingDate) are single valued fields.</p>
-
-                <p>But when a comparison is using a Category metadata, you probably need this attribute to true.</p>
-
-               <p> When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>]]>
-            </description>
-            <name>multiValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a value is a String concatenation of multiples values, this attribute can be used to define what
-                logic must be used for comparison.</p>
-                <p>Set to false by default. This means an OR is used by default. The comparison is evaluated to true
-                if one the value matches.</p>
-
-                <p>true means that the comparison is successful only if all values matches.</p>]]>
-            </description>
-            <name>multiValueANDLogic</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -588,34 +203,6 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>It's possible to define a custom value provider (class implementing the interface
-                org.jahia.data.containers.ContainerFilterFieldValueProvider) that will be used
-                to return the value effectively used for filtering.</p>
-                <p>There is an existing implementation class :<br>
-                <code>org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable</code>
-                This value provider will return true or false depending if the jahiaFileField is
-                null or not, so that you can filter out containers which jahiaFileField is null
-                or not available in File repository.</p>
-                <p><code>&lt;query:equalTo valueProviderClass="org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable"
-                propertyName="file" value="true"/&gt;</code></p>
-                ]]>
-            </description>
-            <name>valueProviderClass</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
-                ]]>
-            </description>
-            <name>aliasNames</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
@@ -632,89 +219,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-                <p>Used only if numberValue is true.</p>
-                <p>Can be one of these values :
-                <ul>
-                <li> <code>JahiaQueryObjectModelConstants.BYTE_FORMAT (default)</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.SHORT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.LONG_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.DOUBLE_FORMAT</code></li>
-                </ul>
-                <p>JahiaIntegerField type will automatically use <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></p>
-                JahiaFloatField type will automatically use <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code>]]>
-            </description>
-            <name>numberFormat</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>true  : means a number conversion must be done.<p>
-                <p>false (default) :
-                Number conversion will be done automatically for Jahiafield of type JahiaIntegerField and JahiaFloatField.</p>
-                <p>When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>
-                <p>Jahia Fields of type Date should not use number conversion (numberValue to false) for optimized
-                performance.</p>]]>
-            </description>
-            <name>numberValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a property is a Jahia Metadata Field, this attribute should be set to true.</p>
-
-                <p>By default it's set to false and Jahia trys to resolve dynamically if a property is a Jahia Metadata
-                Field or a Jahia Container Field. When a Jahia Container Field and a Jahia Metadata Field have the
-                same name this is the Jahia Container Field that will be used. This is why it is always recommended to
-                set this attribute to true, to force Metadata Field usage.</p>]]>
-            </description>
-            <name>metadata</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>You must set this attribute to true only when you know that the property specified is a Jahia
-                Container Field or a Jahia Metadata Field that is multi-valued field (several values can be selected).
-                Default is false.</p>
-
-                <p>For optimized performance, you should not set this attribute to "true" unless required. Most metadata
-                fields (like creator, lastContributor, lastPublisher, creationDate, lastModificationDate,
-                lastPublishingDate) are single valued fields.</p>
-
-                <p>But when a comparison is using a Category metadata, you probably need this attribute to true.</p>
-
-               <p> When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>]]>
-            </description>
-            <name>multiValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a value is a String concatenation of multiples values, this attribute can be used to define what
-                logic must be used for comparison.</p>
-                <p>Set to false by default. This means an OR is used by default. The comparison is evaluated to true
-                if one the value matches.</p>
-
-                <p>true means that the comparison is successful only if all values matches.</p>]]>
-            </description>
-            <name>multiValueANDLogic</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -723,34 +227,6 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>It's possible to define a custom value provider (class implementing the interface
-                org.jahia.data.containers.ContainerFilterFieldValueProvider) that will be used
-                to return the value effectively used for filtering.</p>
-                <p>There is an existing implementation class :<br>
-                <code>org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable</code>
-                This value provider will return true or false depending if the jahiaFileField is
-                null or not, so that you can filter out containers which jahiaFileField is null
-                or not available in File repository.</p>
-                <p><code>&lt;query:equalTo valueProviderClass="org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable"
-                propertyName="file" value="true"/&gt;</code></p>
-                ]]>
-            </description>
-            <name>valueProviderClass</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
-                ]]>
-            </description>
-            <name>aliasNames</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
@@ -767,89 +243,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-                <p>Used only if numberValue is true.</p>
-                <p>Can be one of these values :
-                <ul>
-                <li> <code>JahiaQueryObjectModelConstants.BYTE_FORMAT (default)</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.SHORT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.LONG_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.DOUBLE_FORMAT</code></li>
-                </ul>
-                <p>JahiaIntegerField type will automatically use <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></p>
-                JahiaFloatField type will automatically use <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code>]]>
-            </description>
-            <name>numberFormat</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>true  : means a number conversion must be done.<p>
-                <p>false (default) :
-                Number conversion will be done automatically for Jahiafield of type JahiaIntegerField and JahiaFloatField.</p>
-                <p>When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>
-                <p>Jahia Fields of type Date should not use number conversion (numberValue to false) for optimized
-                performance.</p>]]>
-            </description>
-            <name>numberValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a property is a Jahia Metadata Field, this attribute should be set to true.</p>
-
-                <p>By default it's set to false and Jahia trys to resolve dynamically if a property is a Jahia Metadata
-                Field or a Jahia Container Field. When a Jahia Container Field and a Jahia Metadata Field have the
-                same name this is the Jahia Container Field that will be used. This is why it is always recommended to
-                set this attribute to true, to force Metadata Field usage.</p>]]>
-            </description>
-            <name>metadata</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>You must set this attribute to true only when you know that the property specified is a Jahia
-                Container Field or a Jahia Metadata Field that is multi-valued field (several values can be selected).
-                Default is false.</p>
-
-                <p>For optimized performance, you should not set this attribute to "true" unless required. Most metadata
-                fields (like creator, lastContributor, lastPublisher, creationDate, lastModificationDate,
-                lastPublishingDate) are single valued fields.</p>
-
-                <p>But when a comparison is using a Category metadata, you probably need this attribute to true.</p>
-
-               <p> When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>]]>
-            </description>
-            <name>multiValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a value is a String concatenation of multiples values, this attribute can be used to define what
-                logic must be used for comparison.</p>
-                <p>Set to false by default. This means an OR is used by default. The comparison is evaluated to true
-                if one the value matches.</p>
-
-                <p>true means that the comparison is successful only if all values matches.</p>]]>
-            </description>
-            <name>multiValueANDLogic</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -858,34 +251,6 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>It's possible to define a custom value provider (class implementing the interface
-                org.jahia.data.containers.ContainerFilterFieldValueProvider) that will be used
-                to return the value effectively used for filtering.</p>
-                <p>There is an existing implementation class :<br>
-                <code>org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable</code>
-                This value provider will return true or false depending if the jahiaFileField is
-                null or not, so that you can filter out containers which jahiaFileField is null
-                or not available in File repository.</p>
-                <p><code>&lt;query:equalTo valueProviderClass="org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable"
-                propertyName="file" value="true"/&gt;</code></p>
-                ]]>
-            </description>
-            <name>valueProviderClass</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
-                ]]>
-            </description>
-            <name>aliasNames</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
@@ -902,89 +267,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-                <p>Used only if numberValue is true.</p>
-                <p>Can be one of these values :
-                <ul>
-                <li> <code>JahiaQueryObjectModelConstants.BYTE_FORMAT (default)</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.SHORT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.LONG_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.DOUBLE_FORMAT</code></li>
-                </ul>
-                <p>JahiaIntegerField type will automatically use <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></p>
-                JahiaFloatField type will automatically use <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code>]]>
-            </description>
-            <name>numberFormat</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>true  : means a number conversion must be done.<p>
-                <p>false (default) :
-                Number conversion will be done automatically for Jahiafield of type JahiaIntegerField and JahiaFloatField.</p>
-                <p>When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>
-                <p>Jahia Fields of type Date should not use number conversion (numberValue to false) for optimized
-                performance.</p>]]>
-            </description>
-            <name>numberValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a property is a Jahia Metadata Field, this attribute should be set to true.</p>
-
-                <p>By default it's set to false and Jahia trys to resolve dynamically if a property is a Jahia Metadata
-                Field or a Jahia Container Field. When a Jahia Container Field and a Jahia Metadata Field have the
-                same name this is the Jahia Container Field that will be used. This is why it is always recommended to
-                set this attribute to true, to force Metadata Field usage.</p>]]>
-            </description>
-            <name>metadata</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>You must set this attribute to true only when you know that the property specified is a Jahia
-                Container Field or a Jahia Metadata Field that is multi-valued field (several values can be selected).
-                Default is false.</p>
-
-                <p>For optimized performance, you should not set this attribute to "true" unless required. Most metadata
-                fields (like creator, lastContributor, lastPublisher, creationDate, lastModificationDate,
-                lastPublishingDate) are single valued fields.</p>
-
-                <p>But when a comparison is using a Category metadata, you probably need this attribute to true.</p>
-
-               <p> When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>]]>
-            </description>
-            <name>multiValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a value is a String concatenation of multiples values, this attribute can be used to define what
-                logic must be used for comparison.</p>
-                <p>Set to false by default. This means an OR is used by default. The comparison is evaluated to true
-                if one the value matches.</p>
-
-                <p>true means that the comparison is successful only if all values matches.</p>]]>
-            </description>
-            <name>multiValueANDLogic</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -993,34 +275,6 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>It's possible to define a custom value provider (class implementing the interface
-                org.jahia.data.containers.ContainerFilterFieldValueProvider) that will be used
-                to return the value effectively used for filtering.</p>
-                <p>There is an existing implementation class :<br>
-                <code>org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable</code>
-                This value provider will return true or false depending if the jahiaFileField is
-                null or not, so that you can filter out containers which jahiaFileField is null
-                or not available in File repository.</p>
-                <p><code>&lt;query:equalTo valueProviderClass="org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable"
-                propertyName="file" value="true"/&gt;</code></p>
-                ]]>
-            </description>
-            <name>valueProviderClass</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
-                ]]>
-            </description>
-            <name>aliasNames</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
@@ -1037,89 +291,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-                <p>Used only if numberValue is true.</p>
-                <p>Can be one of these values :
-                <ul>
-                <li> <code>JahiaQueryObjectModelConstants.BYTE_FORMAT (default)</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.SHORT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.LONG_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.DOUBLE_FORMAT</code></li>
-                </ul>
-                <p>JahiaIntegerField type will automatically use <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></p>
-                JahiaFloatField type will automatically use <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code>]]>
-            </description>
-            <name>numberFormat</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>true  : means a number conversion must be done.<p>
-                <p>false (default) :
-                Number conversion will be done automatically for Jahiafield of type JahiaIntegerField and JahiaFloatField.</p>
-                <p>When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>
-                <p>Jahia Fields of type Date should not use number conversion (numberValue to false) for optimized
-                performance.</p>]]>
-            </description>
-            <name>numberValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a property is a Jahia Metadata Field, this attribute should be set to true.</p>
-
-                <p>By default it's set to false and Jahia trys to resolve dynamically if a property is a Jahia Metadata
-                Field or a Jahia Container Field. When a Jahia Container Field and a Jahia Metadata Field have the
-                same name this is the Jahia Container Field that will be used. This is why it is always recommended to
-                set this attribute to true, to force Metadata Field usage.</p>]]>
-            </description>
-            <name>metadata</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>You must set this attribute to true only when you know that the property specified is a Jahia
-                Container Field or a Jahia Metadata Field that is multi-valued field (several values can be selected).
-                Default is false.</p>
-
-                <p>For optimized performance, you should not set this attribute to "true" unless required. Most metadata
-                fields (like creator, lastContributor, lastPublisher, creationDate, lastModificationDate,
-                lastPublishingDate) are single valued fields.</p>
-
-                <p>But when a comparison is using a Category metadata, you probably need this attribute to true.</p>
-
-               <p> When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>]]>
-            </description>
-            <name>multiValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a value is a String concatenation of multiples values, this attribute can be used to define what
-                logic must be used for comparison.</p>
-                <p>Set to false by default. This means an OR is used by default. The comparison is evaluated to true
-                if one the value matches.</p>
-
-                <p>true means that the comparison is successful only if all values matches.</p>]]>
-            </description>
-            <name>multiValueANDLogic</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -1128,34 +299,6 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>It's possible to define a custom value provider (class implementing the interface
-                org.jahia.data.containers.ContainerFilterFieldValueProvider) that will be used
-                to return the value effectively used for filtering.</p>
-                <p>There is an existing implementation class :<br>
-                <code>org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable</code>
-                This value provider will return true or false depending if the jahiaFileField is
-                null or not, so that you can filter out containers which jahiaFileField is null
-                or not available in File repository.</p>
-                <p><code>&lt;query:equalTo valueProviderClass="org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable"
-                propertyName="file" value="true"/&gt;</code></p>
-                ]]>
-            </description>
-            <name>valueProviderClass</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
-                ]]>
-            </description>
-            <name>aliasNames</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
@@ -1172,89 +315,6 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-                <p>Used only if numberValue is true.</p>
-                <p>Can be one of these values :
-                <ul>
-                <li> <code>JahiaQueryObjectModelConstants.BYTE_FORMAT (default)</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.SHORT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.LONG_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.DOUBLE_FORMAT</code></li>
-                </ul>
-                <p>JahiaIntegerField type will automatically use <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></p>
-                JahiaFloatField type will automatically use <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code>]]>
-            </description>
-            <name>numberFormat</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>true  : means a number conversion must be done.<p>
-                <p>false (default) :
-                Number conversion will be done automatically for Jahiafield of type JahiaIntegerField and JahiaFloatField.</p>
-                <p>When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>
-                <p>Jahia Fields of type Date should not use number conversion (numberValue to false) for optimized
-                performance.</p>]]>
-            </description>
-            <name>numberValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a property is a Jahia Metadata Field, this attribute should be set to true.</p>
-
-                <p>By default it's set to false and Jahia trys to resolve dynamically if a property is a Jahia Metadata
-                Field or a Jahia Container Field. When a Jahia Container Field and a Jahia Metadata Field have the
-                same name this is the Jahia Container Field that will be used. This is why it is always recommended to
-                set this attribute to true, to force Metadata Field usage.</p>]]>
-            </description>
-            <name>metadata</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>You must set this attribute to true only when you know that the property specified is a Jahia
-                Container Field or a Jahia Metadata Field that is multi-valued field (several values can be selected).
-                Default is false.</p>
-
-                <p>For optimized performance, you should not set this attribute to "true" unless required. Most metadata
-                fields (like creator, lastContributor, lastPublisher, creationDate, lastModificationDate,
-                lastPublishingDate) are single valued fields.</p>
-
-                <p>But when a comparison is using a Category metadata, you probably need this attribute to true.</p>
-
-               <p> When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>]]>
-            </description>
-            <name>multiValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a value is a String concatenation of multiples values, this attribute can be used to define what
-                logic must be used for comparison.</p>
-                <p>Set to false by default. This means an OR is used by default. The comparison is evaluated to true
-                if one the value matches.</p>
-
-                <p>true means that the comparison is successful only if all values matches.</p>]]>
-            </description>
-            <name>multiValueANDLogic</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
                 <p>The value or a String concatenation of multiples values
                 separated by JahiaQueryObjectModelConstants.MULTI_VALUE_SEP.</p>
                 ]]>
@@ -1264,36 +324,6 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>It's possible to define a custom value provider (class implementing the interface
-                org.jahia.data.containers.ContainerFilterFieldValueProvider) that will be used
-                to return the value effectively used for filtering.</p>
-                <p>There is an existing implementation class :<br>
-                <code>org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable</code>
-                This value provider will return true or false depending if the jahiaFileField is
-                null or not, so that you can filter out containers which jahiaFileField is null
-                or not available in File repository.</p>
-                <p><code>&lt;query:equalTo valueProviderClass="org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable"
-                propertyName="file" value="true"/&gt;</code></p>
-                ]]>
-            </description>
-            <name>valueProviderClass</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
-                ]]>
-            </description>
-            <name>aliasNames</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-
-
     </tag>
     <tag>
         <description>Used to define a full text search Constraint</description>
@@ -1329,16 +359,14 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description><![CDATA[
-                    <p>set to true if the property is a metadata</p>
-                    <p>default is false</p>
-                    ]]>
+            <description>
+                Name of the selector.
             </description>
-            <name>metadata</name>
+            <name>selectorName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
+            <type>java.lang.String</type>
+        </attribute>        
     </tag>
     <tag>
         <description>Used to define an ordering. You can set multiple sortBy tag in the same query. </description>
@@ -1358,55 +386,6 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description><![CDATA[
-                <p>Used only if numberValue is true.</p>
-                <p>Can be one of these values :
-                <ul>
-                <li> <code>JahiaQueryObjectModelConstants.BYTE_FORMAT (default)</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.SHORT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.LONG_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code></li>
-                <li> <code>JahiaQueryObjectModelConstants.DOUBLE_FORMAT</code></li>
-                </ul>
-                <p>JahiaIntegerField type will automatically use <code>JahiaQueryObjectModelConstants.INTEGER_FORMAT</code></p>
-                JahiaFloatField type will automatically use <code>JahiaQueryObjectModelConstants.FLOAT_FORMAT</code>]]>
-            </description>
-              <name>numberFormat</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>true  : means a number conversion must be done.<p>
-                <p>false (default) :
-                Number conversion will be done automatically for Jahiafield of type JahiaIntegerField and JahiaFloatField.</p>
-                <p>When this attribute is true, it is recommended to use JahiaSearchFilterCreator instead of
-                JahiaDBFilterCreator because performance can be really poor with DB queries.</p>
-                <p>Jahia Fields of type Date should not use number conversion (numberValue to false) for optimized
-                performance.</p>]]>
-            </description>
-              <name>numberValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>When a property is a Jahia Metadata Field, this attribute should be set to true.</p>
-
-                <p>By default it's set to false and Jahia trys to resolve dynamically if a property is a Jahia Metadata
-                Field or a Jahia Container Field. When a Jahia Container Field and a Jahia Metadata Field have the
-                same name this is the Jahia Container Field that will be used. This is why it is always recommended to
-                set this attribute to true, to force Metadata Field usage.</p>]]>
-            </description>
-              <name>metadata</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
              <description><![CDATA[
                      <p>Default is "asc" for ascending order, "desc" for descending order.</p>
                      ]]>
@@ -1415,45 +394,6 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>It's possible to define a custom value provider (class implementing the interface
-                org.jahia.data.containers.ContainerFilterFieldValueProvider) that will be used
-                to return the value effectively used for filtering.</p>
-                <p>There is an existing implementation class :<br>
-                <code>org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable</code>
-                This value provider will return true or false depending if the jahiaFileField is
-                null or not, so that you can filter out containers which jahiaFileField is null
-                or not available in File repository.</p>
-                <p><code>&lt;query:equalTo valueProviderClass="org.jahia.data.containers.ContainerFilterFieldValueProviderImpl.FileIsAvailable"
-                propertyName="file" value="true"/&gt;</code></p>
-                ]]>
-            </description>
-             <name>valueProviderClass</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
-                ]]>
-            </description>
-            <name>aliasNames</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                    <p>false by default.</p>
-                    <p>Set to true if you want locale case sensitive ordering</p>
-                    ]]>
-            </description>
-            <name>localeSensitive</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
         </attribute>
     </tag>
     <tag>
@@ -1814,187 +754,4 @@
             <type>boolean</type>
         </attribute>
     </tag>
-    <tag>
-        <description>Creates facet filters to be held in cache</description>
-        <name>createFacetFilter</name>
-        <tag-class>org.jahia.taglibs.query.CreateFacetFilterTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>id</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>The facet name to identify the facet group</description>
-            <name>facetName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The property name for checking the facets.</description>
-            <name>propertyName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The value title which is required if propertyName is not set and the facet value is the result of a query.</description>
-            <name>valueTitle</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The name of the request scope parameter, where the FacetBean will be set</description>
-            <name>facetBeanId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The name of the request scope parameter, where the FacetBeanValue will be set</description>
-            <name>facetValueBeanId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <name>queryObjectModelBeanName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>targetContainerListName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>targetContainerListID</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>queryBeanID</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
-        <description>Returns the number of hits for a search/query per facet</description>
-        <name>getHitsPerFacetValue</name>
-        <tag-class>org.jahia.taglibs.query.GetHitsPerFacetValueTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <description>The name of the request scope parameter, where the FacetBean is set</description>
-            <name>facetBeanId</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The name of the request scope parameter, where the List of FacetValueBeans to process is set</description>
-            <name>facetValueBeanId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>The ID of a query bean to compare its results with the results of the facet.</description>
-            <name>mainQueryBeanId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>The query parameter name for the filter to be created in the URL for drilldown.</description>
-            <name>filterQueryParamName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Set true if the tag should create HTML directly</description>
-            <name>display</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description>The name of the request scope parameter, where the returned list of HitsPerFacetValueBean objects will be set</description>
-            <name>hitsPerFacetBeanId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
-        <description>Returns the applied facet filters</description>
-        <name>getAppliedFacetFilters</name>
-        <tag-class>org.jahia.taglibs.query.GetAppliedFacetFiltersTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <description>The query parameter name for the filter created in the URL for drilldown.</description>
-            <name>filterQueryParamName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>The name of the request scope parameter, where the List of AppliedFacetFilters beans will be set</description>
-            <name>appliedFacetsId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Should the tag create HTML or just return the result in a list of beans.</description>
-            <name>display</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description>The resource (text/image) which will be backed for the link if display is true</description>
-            <name>removeDisplayResource</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <function>
-        <description>Check whether a facet is currently applied to the query</description>
-        <name>isFacetApplied</name>
-        <function-class>org.jahia.taglibs.query.Functions</function-class>
-        <function-signature>boolean isFacetApplied(org.jahia.services.search.facets.FacetBean, java.util.List)
-        </function-signature>
-        <example>
-            &lt;query:getAppliedFacetFilters filterQueryParamName="filter" appliedFacetsId="appliedFacets"/"&gt;
-            &lt;c:if test="${query:isFacetApplied(eventDateFacet, appliedFacets}"&gt;
-        </example>
-    </function>
-
-    <function>
-        <description>Create the drill down URL for a facet value</description>
-        <name>getFacetDrillDownUrl</name>
-        <function-class>org.jahia.taglibs.query.Functions</function-class>
-        <function-signature>String getFacetDrillDownUrl(org.jahia.services.search.facets.FacetBean, org.jahia.services.search.facets.FacetValueBean, java.lang.String)
-        </function-signature>
-        <example>
-            &lt;query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventDateFacet" facetValueBeanId="eventDateFacetValue" filterQueryParamName="filter" hitsPerFacetBeanId="hitsPerEventFacetValues" display="false"/"&gt;
-            &lt;c:forEach var="hitsPerEventFacetValue" items="${hitsPerEventFacetValues}"&gt;
-              &lt;a href="${query:getDeleteFacetUrl(eventDateFacet, hitsPerEventFacetValue.facetValue, 'filter')}"&gt;hitsPerEventFacetValue.facetValue.title&lt;/a&gt; (hitsPerEventFacetValue.numberOfHits)
-            &lt;/c:forEach"&gt;
-        </example>
-    </function>
-
-    <function>
-        <description>Create the URL to remove the facet from value the filter</description>
-        <name>getDeleteFacetUrl</name>
-        <function-class>org.jahia.taglibs.query.Functions</function-class>
-        <function-signature>String getDeleteFacetUrl(org.jahia.services.search.facets.FacetBean, org.jahia.services.search.facets.FacetValueBean, java.lang.String)
-        </function-signature>
-        <example>
-            &lt;query:getAppliedFacetFilters filterQueryParamName="filter" appliedFacetsId="appliedFacets" display="false"/"&gt;
-            &lt;c:forEach var="appliedFacetFilter" items="${appliedFacets}"&gt;
-              &lt;c:forEach var="facetValue" items="${appliedFacetsFilter.facetValueBeans}"&gt;
-                &lt;a href="${query:getDeleteFacetUrl(appliedFacetFilter.facetBean, facetValue, 'filter')}"&gt;remove&lt;/a&gt;
-              &lt;/c:forEach"&gt;
-            &lt;/c:forEach"&gt;
-        </example>
-    </function>
 </taglib>

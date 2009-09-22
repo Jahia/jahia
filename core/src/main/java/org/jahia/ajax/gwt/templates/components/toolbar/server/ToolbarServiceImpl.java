@@ -52,7 +52,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
-import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
+import org.jahia.services.preferences.JahiaPreferencesQueryHelper;
 import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.preferences.toolbar.ToolbarJahiaPreference;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -375,7 +375,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
      */
     private JahiaPreference getToolbarPreference(String name, String type) {
         JahiaUser remoteJahiaUser = getRemoteJahiaUser();
-        return getToolbarJahiaPreferencesProvider().getJahiaPreference(remoteJahiaUser, JahiaPreferencesXpathHelper.getToolbarXpath(name, type));
+        return getToolbarJahiaPreferencesProvider().getJahiaPreference(remoteJahiaUser, JahiaPreferencesQueryHelper.getToolbarSQL(name, type));
     }
 
 

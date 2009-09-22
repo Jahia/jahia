@@ -112,10 +112,9 @@ public class JCRSQLTag extends AbstractJahiaTag {
                 QueryManager queryManager = session.getWorkspace().getQueryManager();
 
                 if (queryManager != null) {
-                    Query q = queryManager.createQuery(path, Query.SQL);
+                    Query q = queryManager.createQuery(path, Query.JCR_SQL2);
                     // execute query
                     queryResult = q.execute();
-
                     if (logger.isDebugEnabled()) {
                         logger.debug("Path[" + path + "] --> found [" + queryResult + "] values.");
                     }

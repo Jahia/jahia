@@ -32,7 +32,6 @@
 package org.jahia.services.preferences;
 
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.exceptions.JahiaException;
 
@@ -46,59 +45,59 @@ import java.util.HashMap;
  * Date: 11 mars 2009
  * Time: 15:06:47
  */
-public class JahiaPreferencesXpathHelper {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaPreferencesXpathHelper.class);
+public class JahiaPreferencesQueryHelper {
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaPreferencesQueryHelper.class);
 
-    public static String getSimpleXpath(String prefName) {
+    public static String getSimpleSQL(String prefName) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:prefName", prefName);
-        return convetToXpath(properties);
+        return convetToSQL(properties);
     }
 
-    public static String getToolbarXpath(String name, String type) {
+    public static String getToolbarSQL(String name, String type) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:toolbarName", name);
         properties.put("j:type", type);
-        return convetToXpath(properties);
+        return convetToSQL(properties);
     }
 
-    public static String getPageXpath(int pid, String prefName) {
+    public static String getPageSQL(int pid, String prefName) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:page", getPageUUID(pid));
         properties.put("j:prefName", prefName);
-        return convetToXpath(properties);
+        return convetToSQL(properties);
     }
 
-    public static String getLayoutmanagerXpath(int pid, String windowId) {
+    public static String getLayoutmanagerSQL(int pid, String windowId) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:page", pid);
         properties.put("j:windowId", windowId);
-        return convetToXpath(properties);
+        return convetToSQL(properties);
     }
 
-    public static String getLayoutmanagerXpath(int pid) {
+    public static String getLayoutmanagerSQL(int pid) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:page", getPageUUID(pid));
-        return convetToXpath(properties);
+        return convetToSQL(properties);
     }
 
-    public static String getPortletXpath(String portletName, String prefName) {
+    public static String getPortletSQL(String portletName, String prefName) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:portletName", portletName);
         properties.put("j:prefName", prefName);
-        return convetToXpath(properties);
+        return convetToSQL(properties);
     }
 
-    public static String getPortletXpath(String portletName) {
+    public static String getPortletSQL(String portletName) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:portletName", portletName);
-        return convetToXpath(properties);
+        return convetToSQL(properties);
     }
 
-    public static String getBookmarkXpath(int pid) {
+    public static String getBookmarkSQL(int pid) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:page", getPageUUID(pid));
-        return convetToXpath(properties);
+        return convetToSQL(properties);
     }
 
     /**
@@ -123,31 +122,23 @@ public class JahiaPreferencesXpathHelper {
      * @param propertiesMap
      * @return
      */
-    public static String convetToXpath(Map<String, Object> propertiesMap) {
+    public static String convetToSQL(Map<String, Object> propertiesMap) {
         StringBuffer prefPath = new StringBuffer();
         if (propertiesMap != null && !propertiesMap.isEmpty()) {
             Iterator<?> propertiesIterator = propertiesMap.keySet().iterator();
             boolean isFirstProperty = true;
-            boolean hasProperties = false;
             while (propertiesIterator.hasNext()) {
                 String propertyName = (String) propertiesIterator.next();
                 String propertyvalue = propertiesMap.get(propertyName).toString();
                 // add only if value is not null
                 if (propertyvalue != null) {
                     if (isFirstProperty) {
-                        prefPath.append("[");
                         isFirstProperty = false;
                     } else {
                         prefPath.append(" and ");
                     }
-                    hasProperties = true;
-                    prefPath.append("@" + propertyName + "='" + propertyvalue + "'");
+                    prefPath.append("p.[").append(propertyName).append("]='").append(propertyvalue).append("'");
                 }
-            }
-
-            //close
-            if (hasProperties) {
-                prefPath.append("]");
             }
         }
         return prefPath.toString();
@@ -162,26 +153,18 @@ public class JahiaPreferencesXpathHelper {
         if (propertiesMap != null && !propertiesMap.isEmpty()) {
             Iterator<?> propertiesIterator = propertiesMap.keySet().iterator();
             boolean isFirstProperty = true;
-            boolean hasProperties = false;
             while (propertiesIterator.hasNext()) {
                 String propertyName = (String) propertiesIterator.next();
-                String propertyvalue = propertiesMap.get(propertyName).toString();
+                String propertyvalue = propertiesMap.get(propertyName);
                 // add only if value is not null
                 if (propertyvalue != null) {
                     if (isFirstProperty) {
-                        prefPath.append("[");
                         isFirstProperty = false;
                     } else {
                         prefPath.append(" and ");
                     }
-                    hasProperties = true;
-                    prefPath.append("@" + propertyName + "='" + propertyvalue + "'");
+                    prefPath.append("p.[").append(propertyName).append("]='").append(propertyvalue).append("'");
                 }
-            }
-
-            //close
-            if (hasProperties) {
-                prefPath.append("]");
             }
         }
         return prefPath.toString();

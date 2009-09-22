@@ -374,11 +374,11 @@ public class ContentTest extends TestCase {
             String name = "testSearch" + System.currentTimeMillis() + ".txt";
             JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
             session.save();
-            nodes.add(testFile.getUUID());
+            nodes.add(testFile.getIdentifier());
 
             // Do the query
             QueryManager qm = JCRStoreService.getInstance().getQueryManager(ctx.getUser());
-            Query query = qm.createQuery("//element(*,jnt:file)[(jcr:contains(jcr:content, '456bcd'))]", Query.XPATH);
+            Query query = qm.createQuery("select * from [jnt:file] as f where contains(f.[jcr:content], '456bcd')", Query.JCR_SQL2);
             QueryResult queryResult = query.execute();
             RowIterator it = queryResult.getRows();
             assertTrue("Bad result number ("+ it.getSize() + " instead of 1)", (it.getSize() == 1));

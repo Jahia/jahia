@@ -39,7 +39,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
-import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
+import org.jahia.services.preferences.JahiaPreferencesQueryHelper;
 import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
@@ -87,7 +87,7 @@ public class BookmarkAjaxActionImpl extends AjaxAction {
             JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
 
             // delete a bookmarksJahiaPreferenceKey
-            jahiaPreferencesProvider.deleteJahiaPreference(processingContext.getUser(), JahiaPreferencesXpathHelper.getBookmarkXpath(processingContext.getPageID()));
+            jahiaPreferencesProvider.deleteJahiaPreference(processingContext.getUser(), JahiaPreferencesQueryHelper.getBookmarkSQL(processingContext.getPageID()));
 
             // set preference
             return "";

@@ -40,7 +40,7 @@
         <p>${fields['j:about']}</p>
     </div>
     <div class="user-body">
-        <jcr:xpath var="result" xpath="//element(*, jnt:page)[@jcr:createdBy='${currentNode.name}']"/>
+        <jcr:sql var="result" sql="select * from [jnt:page] as p where p.[jcr:createdBy]='${currentNode.name}'"/>
         <h5>My pages:</h5>
         <c:if test="${result.nodes.size == 0}">
             <p>${currentNode.name} has not created any pages so far</p>

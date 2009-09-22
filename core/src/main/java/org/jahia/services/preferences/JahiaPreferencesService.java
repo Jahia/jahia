@@ -228,7 +228,7 @@ public class JahiaPreferencesService extends JahiaService {
     public String getGenericPreferenceValue(String key, Principal principal) {
         try {
 
-            JahiaPreference preference = getGenericPreferencesProvider().getJahiaPreference(principal, JahiaPreferencesXpathHelper.getSimpleXpath(key));
+            JahiaPreference preference = getGenericPreferencesProvider().getJahiaPreference(principal, JahiaPreferencesQueryHelper.getSimpleSQL(key));
             if (preference != null) {
                 try {
                     return ((GenericJahiaPreference) preference.getNode()).getPrefValue();
@@ -276,7 +276,7 @@ public class JahiaPreferencesService extends JahiaService {
      */
     public String getPagePreferenceValue(String key, ProcessingContext jParams) {
         try {
-            JahiaPreference<PageJahiaPreference> preference = getPagePreferencesProvider().getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getPageXpath(jParams.getPageID(), key));
+            JahiaPreference<PageJahiaPreference> preference = getPagePreferencesProvider().getJahiaPreference(jParams.getUser(), JahiaPreferencesQueryHelper.getPageSQL(jParams.getPageID(), key));
             if (preference != null) {
                 return preference.getNode().getPrefValue();
             }
@@ -302,7 +302,7 @@ public class JahiaPreferencesService extends JahiaService {
             JahiaPreferencesProvider<GenericJahiaPreference> basicProvider = getGenericPreferencesProvider();
 
             // create generic preference key
-            JahiaPreference<GenericJahiaPreference> preference = basicProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getSimpleXpath(prefName));
+            JahiaPreference<GenericJahiaPreference> preference = basicProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesQueryHelper.getSimpleSQL(prefName));
             if (preference == null) {
                 if(prefValue == null){
                     return;
@@ -343,7 +343,7 @@ public class JahiaPreferencesService extends JahiaService {
             JahiaPreferencesProvider<PageJahiaPreference> pageProvider = getPagePreferencesProvider();
 
             // create generic preference key
-            JahiaPreference<PageJahiaPreference> preference = pageProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getPageXpath(jParams.getPageID(), prefName));
+            JahiaPreference<PageJahiaPreference> preference = pageProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesQueryHelper.getPageSQL(jParams.getPageID(), prefName));
             if (preference == null) {
                 preference = pageProvider.createJahiaPreferenceNode(jParams);
                 PageJahiaPreference node = preference.getNode();

@@ -61,7 +61,7 @@
     </ul>
 </c:forEach>
 <h3>Executing an XPath expression [//element(*, nt:query)] for retrieving all saved search:</h3>
-<jcr:xpath var="savedSearchIterator" xpath="//element(*, nt:query)"/>
+<jcr:sql var="savedSearchIterator" sql="select * from [nt:query]"/>
 <c:if test="${savedSearchIterator.nodes.size == 0}">
     No saved searches found
 </c:if>
@@ -74,7 +74,7 @@
 </c:forEach>
 
 <h3>Executing an XPath expression [//element(*, jnt:portlet)] for retrieving all mashups:</h3>
-<jcr:xpath var="allMashupsIterator" xpath="//element(*, jnt:portlet)"/>
+<jcr:sql var="allMashupsIterator" sql="select * from [jnt:portlet]"/>
 <c:if test="${allMashupsIterator.nodes.size == 0}">
     No mashups found
 </c:if>

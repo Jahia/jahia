@@ -1234,7 +1234,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         ch.startElement(JAHIA_URI, "users", "jahia:users", attr);
 
-        List<String> l = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserList("jahia_db");
+        List<String> l = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserList("jahia_jcr");
         for (Iterator<String> iterator = l.iterator(); iterator.hasNext();) {
             String userkey = (String) iterator.next();
             JahiaDBUser jahiaUser = (JahiaDBUser) userManagerService.lookupUserByKey(userkey);

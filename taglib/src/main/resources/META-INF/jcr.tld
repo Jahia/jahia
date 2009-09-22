@@ -100,37 +100,7 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
-    </tag>
-    <tag>
-        <description>
-            Exposes into the template scope the result (as the javax.jcr.query.QueryResult instance) of the JCR query
-            based on the provided XPath expression.
-            You can then access to javax.jcr.NodeIterator using var.nodes or to javax.jcr.query.RowIterator using var.rows.
-            If no items match the query an empty result is exposed. This condition can be checked using nodes.size or rows.size method.
-        </description>
-        <name>xpath</name>
-        <tag-class>org.jahia.taglibs.jcr.query.JCRXPathTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <description>the name of the exposed bean will received a javax.jcr.query.QueryResult</description>
-            <name>var</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>the XPath expression</description>
-            <name>xpath</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>the scope of the bean (see PageContext)</description>
-            <name>scope</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-    </tag>
+    </tag>    
     <tag>
         <description>
             Exposes into the template scope the result (as the javax.jcr.query.QueryResult instance) of the JCR query

@@ -5,7 +5,7 @@
 <%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:statement" var="query"/>
-<jcr:xpath var="savedSearchIterator" xpath="${query.string}"/>
+<jcr:sql var="savedSearchIterator" sql="${query.string}"/>
 <c:if test="${savedSearchIterator.nodes.size == 0}">
     <p>No search results found</p>
 </c:if>

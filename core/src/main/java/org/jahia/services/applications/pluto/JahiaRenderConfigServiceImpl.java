@@ -140,13 +140,13 @@ public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
     /**
      * Create query that returns all portlet-instances depending on the connected user
      *
-     * @return
-     * @throws RepositoryException
+     * @return a Query
+     * @throws RepositoryException in case of error
      */
     private static Query createAllPortletsQuery() throws RepositoryException {
-        String s = "//element(*, jnt:portlet)";
+        String s = "select * from [jnt:portlet]";
         QueryManager queryManager = getJcrStoreService().getQueryManager(Jahia.getThreadParamBean().getUser());
-        return queryManager.createQuery(s, Query.XPATH);
+        return queryManager.createQuery(s, Query.JCR_SQL2);
     }
 
 

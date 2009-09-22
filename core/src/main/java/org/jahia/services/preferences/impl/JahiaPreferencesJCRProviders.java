@@ -33,7 +33,7 @@ package org.jahia.services.preferences.impl;
 
 import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreference;
-import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
+import org.jahia.services.preferences.JahiaPreferencesQueryHelper;
 import org.jahia.services.preferences.exception.JahiaPreferencesNotValidException;
 import org.jahia.services.preferences.exception.JahiaPreferenceNotDefinedAttributeException;
 import org.jahia.services.preferences.exception.JahiaPreferenceNotDefinedPropertyException;
@@ -42,7 +42,6 @@ import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.apache.jackrabbit.util.ISO9075;
 
 import javax.jcr.Node;
@@ -212,7 +211,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
      * @return
      */
     public List<JahiaPreference<T>> findJahiaPreferences(Principal principal, String xpath) {
-        NodeIterator ni = findPreferenceNodeByJahiaPreferenceXPath(principal, xpath);
+        NodeIterator ni = findPreferenceNodeByJahiaPreferenceSQL(principal, xpath);
         if (ni == null) {
             return new ArrayList<JahiaPreference<T>>();
         }
@@ -243,7 +242,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
      *
      */
     public void deleteJahiaPreference(Principal principal, String xpath) throws JahiaPreferenceNotDefinedAttributeException {
-        NodeIterator ni = findPreferenceNodeByJahiaPreferenceXPath(principal, xpath);
+        NodeIterator ni = findPreferenceNodeByJahiaPreferenceSQL(principal, xpath);
         while (ni.hasNext()) {
             try {
                 Node next = ni.nextNode();
@@ -296,7 +295,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
             node.getParent().save();
             logger.debug("Jahia preference [" + jahiaPreference + "] saved.");
 
-            logger.debug("[" + node.getPath() + JahiaPreferencesXpathHelper.convetToXpath2(node.getPropertiesAsString()) + "] saved.");
+            logger.debug("[" + node.getPath() + JahiaPreferencesQueryHelper.convetToXpath2(node.getPropertiesAsString()) + "] saved.");
         } catch (RepositoryException re) {
             logger.error("Error while setting preference " + jahiaPreference, re);
         }
@@ -399,7 +398,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
         } else {
             principalName = ((JahiaGroup) principal).getGroupname();
         }
-        return "content/users/" + ISO9075.encode(principalName) + "/preferences/";
+        return "/content/users/" + ISO9075.encode(principalName) + "/preferences/";
     }
 
     /**
@@ -407,15 +406,9 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
      * @param partialXPath
      * @return
      */
-    private NodeIterator findPreferenceNodeByJahiaPreferenceXPath(Principal p, String partialXPath) {
-        // create XPath value by JahiaPreferenceKey
-        String xpathNode = getPreferenceProviderNodePath(p);
-        StringBuffer prefPath = new StringBuffer(xpathNode);
-        prefPath.append(PREFERENCE);
-        if (partialXPath != null) {
-            prefPath.append(partialXPath);
-        }
-        return findNodeIteratorByXpath(p, prefPath.toString());
+    private NodeIterator findPreferenceNodeByJahiaPreferenceSQL(Principal p, String partialXPath) {
+        String path = getPreferenceProviderNodePath(p);
+        return findNodeIteratorBySQL(p, "select * from ["+getNodeType()+"] as p where ischildnode(p,["+path+"])"+(partialXPath!=null?" and "+partialXPath:""));
     }
 
 
@@ -427,7 +420,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
      * @return
      * @throws RepositoryException
      */
-    private NodeIterator findNodeIteratorByXpath(Principal p, String path) {
+    private NodeIterator findNodeIteratorBySQL(Principal p, String path) {
         logger.debug("Find node by xpath[ " + path + " ]");
         if (p instanceof JahiaGroup) {
             logger.warn("Preference provider not implemented for JahiaGroup");
@@ -436,7 +429,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
         try {
             QueryManager queryManager = getJCRStoreService().getQueryManager((JahiaUser) p);
             if (queryManager != null) {
-                Query q = queryManager.createQuery(path, Query.XPATH);
+                Query q = queryManager.createQuery(path, Query.JCR_SQL2);
                 // execute query
                 QueryResult queryResult = q.execute();
 

@@ -186,8 +186,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         try {
             Session session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT j:nodename FROM " + Constants.JAHIANT_GROUP + " ORDER BY j:nodename";
-                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
+                String query = "SELECT group.[j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group ORDER BY group.[j:nodename]";
+                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
                 while (rows.hasNext()) {
@@ -218,8 +218,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             Session session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
                 String siteName = sitesService.getSite(siteID).getSiteKey();
-                String query = "SELECT j:nodename FROM " + Constants.JAHIANT_GROUP + " WHERE jcr:path LIKE '/" + Constants.CONTENT + "/sites/" + siteName + "/groups/%' ORDER BY j:nodename";
-                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
+                String query = "SELECT group.[j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[jcr:path] LIKE '/" + Constants.CONTENT + "/sites/" + siteName + "/groups/%' ORDER BY group.[j:nodename]";
+                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
                 while (rows.hasNext()) {
@@ -250,8 +250,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         try {
             Session session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT j:nodename FROM " + Constants.JAHIANT_GROUP + " ORDER BY j:nodename";
-                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
+                String query = "SELECT group[j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group ORDER BY group.[j:nodename]";
+                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
                 while (rows.hasNext()) {
@@ -281,8 +281,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             Session session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
                 String siteName = sitesService.getSite(siteID).getSiteKey();
-                String query = "SELECT j:nodename FROM " + Constants.JAHIANT_GROUP + " WHERE jcr:path LIKE '/" + Constants.CONTENT + "/sites/" + siteName + "/groups/%' ORDER BY j:nodename";
-                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
+                String query = "SELECT group.[j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[jcr:path] LIKE '/" + Constants.CONTENT + "/sites/" + siteName + "/groups/%' ORDER BY group.[j:nodename]";
+                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
                 while (rows.hasNext()) {
@@ -326,8 +326,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             try {
                 Session session = jcrStoreService.getSystemSession();
                 if (session.getWorkspace().getQueryManager() != null) {
-                    String query = "SELECT * FROM jnt:member where j:member = '" + jcrUser.getNodeUuid() + "' ORDER BY j:nodename";
-                    Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
+                    String query = "SELECT * FROM [jnt:member] as m where m.[j:member] = '" + jcrUser.getNodeUuid() + "' ORDER BY m.[j:nodename]";
+                    Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                     QueryResult qr = q.execute();
                     NodeIterator nodes = qr.getNodes();
                     while (nodes.hasNext()) {
@@ -501,8 +501,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 JCRUser jcrUser = (JCRUser) user;
                 Session session = jcrStoreService.getSystemSession();
                 if (session.getWorkspace().getQueryManager() != null) {
-                    String query = "SELECT * FROM jnt:member where j:member = '" + jcrUser.getNodeUuid() + "' ORDER BY j:nodename";
-                    Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
+                    String query = "SELECT * FROM [jnt:member] as m where m.[j:member] = '" + jcrUser.getNodeUuid() + "' ORDER BY m.[j:nodename]";
+                    Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                     QueryResult qr = q.execute();
                     NodeIterator nodes = qr.getNodes();
                     while (nodes.hasNext()) {
@@ -520,11 +520,11 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
 
     public Set<JahiaGroup> searchGroups(int siteID, Properties searchCriterias) {
         Set<JahiaGroup> users = new HashSet<JahiaGroup>();
-
+        Session session = null;
         try {
-            Session session = jcrStoreService.getSystemSession();
+            session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
-                StringBuffer query = new StringBuffer("SELECT * FROM " + Constants.JAHIANT_GROUP);
+                StringBuffer query = new StringBuffer("SELECT * FROM [" + Constants.JAHIANT_GROUP+"] as g");
                 if (searchCriterias != null && searchCriterias.size() > 0) {
                     // Avoid wildcard attribute
                     if (!(searchCriterias.containsKey("*") && searchCriterias.size() == 1 && searchCriterias.getProperty("*").equals("*"))) {
@@ -543,21 +543,21 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                                 propertyValue = propertyValue + "%";
                             }
                             if ("*".equals(propertyKey)) {
-                                query.append("CONTAINS(*,'" + propertyValue + "')");
+                                query.append("CONTAINS(g.*,'" + propertyValue.replaceAll("%","") + "')");
                             } else {
-                                query.append(propertyKey.replaceAll("\\.", "\\\\.")).append(" LIKE '").append(propertyValue).append("'");
+                                query.append("g.["+propertyKey.replaceAll("\\.", "\\\\.")+"]").append(" LIKE '").append(propertyValue).append("'");
                             }
                             if (objectIterator.hasNext()) {
-                                query.append(" AND ");
+                                query.append(" OR ");
                             }
                         }
                     }
                 }
-                query.append(" ORDER BY j:nodename");
+                query.append(" ORDER BY g.[j:nodename]");
                 if (logger.isDebugEnabled()) {
                     logger.debug(query);
                 }
-                Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(), Query.SQL);
+                Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(), Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 NodeIterator ni = qr.getNodes();
                 while (ni.hasNext()) {
@@ -567,6 +567,10 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             }
         } catch (RepositoryException e) {
             logger.error(e);
+        } finally {
+            if(session!=null) {
+                session.logout();
+            }
         }
         return users;
     }

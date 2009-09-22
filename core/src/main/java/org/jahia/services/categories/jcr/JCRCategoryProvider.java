@@ -254,15 +254,16 @@ public class JCRCategoryProvider {
             Session session = jcrStoreService.getThreadSession(paramBean
                     .getUser());
             if (session.getWorkspace().getQueryManager() != null) {
-                StringBuffer query = new StringBuffer("SELECT * FROM "
+                StringBuffer query = new StringBuffer("SELECT * FROM ["
                         + Constants.JAHIANT_CATEGORY);
-                query.append(" WHERE " + Constants.NODENAME + " = '"
-                        + categoryKey + "' ");
+                query.append("] as cat WHERE cat.[" + Constants.NODENAME + "] = '");
+                query.append(categoryKey);
+                query.append("' ");
                 if (logger.isDebugEnabled()) {
                     logger.debug(query);
                 }
                 Query q = session.getWorkspace().getQueryManager().createQuery(
-                        query.toString(), Query.SQL);
+                        query.toString(), Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 NodeIterator ni = qr.getNodes();
                 while (ni.hasNext()) {
@@ -289,16 +290,17 @@ public class JCRCategoryProvider {
             Session session = jcrStoreService.getThreadSession(paramBean
                     .getUser());
             if (session.getWorkspace().getQueryManager() != null) {
-                StringBuffer query = new StringBuffer("SELECT * FROM "
+                StringBuffer query = new StringBuffer("SELECT * FROM ["
                         + Constants.JAHIANT_CATEGORY);
-                query.append(" WHERE " + Constants.NODENAME + " LIKE '"
-                        + categoryKey + "%' ");
-                query.append(" ORDER BY " + Constants.NODENAME);
+                query.append("] as cat WHERE cat.[" + Constants.NODENAME + "] LIKE '");
+                query.append(categoryKey);
+                query.append("%' ");
+                query.append(" ORDER BY cat.[" + Constants.NODENAME+"]");
                 if (logger.isDebugEnabled()) {
                     logger.debug(query);
                 }
                 Query q = session.getWorkspace().getQueryManager().createQuery(
-                        query.toString(), Query.SQL);
+                        query.toString(), Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 NodeIterator ni = qr.getNodes();
                 while (ni.hasNext()) {

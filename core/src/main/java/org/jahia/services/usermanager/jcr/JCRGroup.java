@@ -320,8 +320,8 @@ public class JCRGroup extends JahiaGroup {
 
     private void removeMember(JCRSessionWrapper session, Node members, JCRUser jcrUser) throws RepositoryException {
         if (session.getWorkspace().getQueryManager() != null) {
-            String query = "SELECT * FROM jnt:member where j:member = '" + jcrUser.getNodeUuid() + "' AND jcr:path LIKE '" + members.getPath() + "/%' ORDER BY j:nodename";
-            Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
+            String query = "SELECT * FROM [jnt:member] as m where m.[j:member] = '" + jcrUser.getNodeUuid() + "' AND m.[jcr:path] LIKE '" + members.getPath() + "/%' ORDER BY m.[j:nodename]";
+            Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
             QueryResult qr = q.execute();
             NodeIterator nodes = qr.getNodes();
             while (nodes.hasNext()) {

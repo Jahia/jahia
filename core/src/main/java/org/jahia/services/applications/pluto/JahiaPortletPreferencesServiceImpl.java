@@ -38,7 +38,7 @@ import org.apache.pluto.driver.container.DefaultPortletPreferencesService;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreference;
-import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
+import org.jahia.services.preferences.JahiaPreferencesQueryHelper;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.usermanager.JahiaUser;
 import javax.portlet.PortletRequest;
@@ -81,7 +81,7 @@ public class JahiaPortletPreferencesServiceImpl extends DefaultPortletPreference
             JahiaPreferencesProvider portletPreferenceProvider = jahiaPreferencesService.getPreferencesProviderByType("portlet");
             JahiaUser jahiaUser = (JahiaUser) request.getUserPrincipal();
             String portletName = portletWindow.getPortletDefinition().getApplication().getContextPath() + "." + portletWindow.getPortletDefinition().getPortletName();
-            List<JahiaPreference> foundPreferences = portletPreferenceProvider.findJahiaPreferences(jahiaUser, JahiaPreferencesXpathHelper.getPortletXpath(portletName));
+            List<JahiaPreference> foundPreferences = portletPreferenceProvider.findJahiaPreferences(jahiaUser, JahiaPreferencesQueryHelper.getPortletSQL(portletName));
             if (foundPreferences == null) {
                 return  new HashMap<String,PortletPreference>();
             }
@@ -123,7 +123,7 @@ public class JahiaPortletPreferencesServiceImpl extends DefaultPortletPreference
             Collection<PortletPreference > preferences = stringPortletPreferenceMap.values();
             for (PortletPreference curPlutoPreference : preferences) {
                 String portletName = portletWindow.getPortletDefinition().getApplication().getContextPath() + "." + portletWindow.getPortletDefinition().getPortletName();
-                JahiaPreference portletPreference = portletPreferenceProvider.getJahiaPreference(request.getUserPrincipal(), JahiaPreferencesXpathHelper.getPortletXpath(portletName, curPlutoPreference.getName()));
+                JahiaPreference portletPreference = portletPreferenceProvider.getJahiaPreference(request.getUserPrincipal(), JahiaPreferencesQueryHelper.getPortletSQL(portletName, curPlutoPreference.getName()));
                 if (portletPreference == null) {
                     portletPreference = portletPreferenceProvider.createJahiaPreferenceNode(request.getUserPrincipal());
                     JahiaPortletPreference node = (JahiaPortletPreference) portletPreference.getNode();

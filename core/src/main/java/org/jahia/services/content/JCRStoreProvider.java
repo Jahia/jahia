@@ -564,7 +564,7 @@ public class JCRStoreProvider {
         Session session = getSystemSession(user.getUsername());
         try {
             if (session.getWorkspace().getQueryManager() != null) {
-                Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM jmix:virtualsitesFolder", Query.SQL);
+                Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jmix:virtualsitesFolder]", Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 NodeIterator ni = qr.getNodes();
                 try {
@@ -614,7 +614,7 @@ public class JCRStoreProvider {
         Session session = getSystemSession(username);
         try {
             if (session.getWorkspace().getQueryManager() != null) {
-            Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM jmix:usersFolder", Query.SQL);
+            Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jmix:usersFolder]", Query.JCR_SQL2);
             QueryResult qr = q.execute();
             NodeIterator ni = qr.getNodes();
             try {
@@ -680,13 +680,13 @@ public class JCRStoreProvider {
 
     public List<JCRNodeWrapper> getUserFolders(String site, JahiaUser user) throws RepositoryException {
         String username = ISO9075.encode(encodeInternalName(user.getUsername()));
-        String xp = "//element("+ username +", jnt:user)";
+        String sql = "select * from [jnt:user] as user where user.[j:nodename]= '"+username+"'";
 
         if (site != null) {
             site = ISO9075.encode(encodeInternalName(site));
-            xp = "//element("+site+", jnt:virtualsite)" + xp;
+            sql = "select user from [jnt:user] as user right outer join [jnt:virtualsite] as site on isdescendantnode(user,site) where user.[j:nodename]= '"+username+ "' and site:[j:nodename] = '"+site+"'";
         }
-        List<JCRNodeWrapper> results = queryFolders(service.getThreadSession(user), xp);
+        List<JCRNodeWrapper> results = queryFolders(service.getThreadSession(user), sql);
         if (site != null) {
             results.addAll(getUserFolders(null, user));
         }
@@ -695,13 +695,14 @@ public class JCRStoreProvider {
 
     public List<JCRNodeWrapper> getImportDropBoxes(String site, JahiaUser user) throws RepositoryException {
         String username = ISO9075.encode(encodeInternalName(user.getUsername()));
-        String xp = "//element("+ username +", jnt:user)//element(*, jnt:importDropBox)";
+        String sql = "select imp.* from [jnt:importDropBox] as imp right outer join [jnt:user] as user on ischildnode(imp,user) where user.[j:nodename]= '"+username+"'";
 
         if (site != null) {
             site = ISO9075.encode(encodeInternalName(site));
-            xp = "//element("+site+", jnt:virtualsite)" + xp;
+            sql = "select imp.* from jnt:importDropBox as imp right outer join [jnt:user] as user on ischildnode(imp,user) right outer join [jnt:virtualsite] as site on isdescendantnode(imp,site) where user.[j:nodename]= '"+username+ "' and site.[j:nodename] = '"+site+"'";
         }
-        List<JCRNodeWrapper> results = queryFolders(service.getThreadSession(user), xp);
+
+        List<JCRNodeWrapper> results = queryFolders(service.getThreadSession(user), sql);
         if (site != null) {
             results.addAll(getImportDropBoxes(null, user));
         }
@@ -710,17 +711,16 @@ public class JCRStoreProvider {
 
     public List<JCRNodeWrapper> getSiteFolders(String site, JahiaUser user) throws RepositoryException {
         site = ISO9075.encode(encodeInternalName(site));
-        String xp = "//element("+site+", jnt:virtualsite)";
+        String xp = "select * from [jnt:virtualsite] as site where site.[j:nodename] = '"+site+"'";
 
-        List<JCRNodeWrapper> results = queryFolders(service.getThreadSession(user), xp);
-        return results;
+        return queryFolders(service.getThreadSession(user), xp);
     }
 
-    private List<JCRNodeWrapper> queryFolders(JCRSessionWrapper session, String xp) throws RepositoryException {
+    private List<JCRNodeWrapper> queryFolders(JCRSessionWrapper session, String sql) throws RepositoryException {
         List<JCRNodeWrapper> results = new ArrayList<JCRNodeWrapper>();
         QueryManager queryManager = session.getProviderSession(this).getWorkspace().getQueryManager();
         if (queryManager != null) {
-            Query q = queryManager.createQuery(xp, Query.XPATH);
+            Query q = queryManager.createQuery(sql, Query.JCR_SQL2);
             QueryResult qr = q.execute();
             NodeIterator ni = qr.getNodes();
             while (ni.hasNext()) {

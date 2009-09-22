@@ -116,7 +116,7 @@ public class AxisListener extends DefaultEventListener {
 
     private QueryResult getQueryResults(Session s, QueryResult qr) throws RepositoryException {
         if(qr == null ) {
-            Query q = s.getWorkspace().getQueryManager().createQuery("SELECT * FROM jnt:axisView", Query.SQL);
+            Query q = s.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:axisView]", Query.JCR_SQL2);
             qr = q.execute();
         }
         return qr;
@@ -151,7 +151,7 @@ public class AxisListener extends DefaultEventListener {
                     }
                 }
 
-                Query q = s.getWorkspace().getQueryManager().createQuery("SELECT * FROM jnt:symLink where jcr:path LIKE '"+rootAxis.getPath()+"/%' and j:link='"+n.getUUID()+"'", Query.SQL);
+                Query q = s.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:symLink] as sym where sym.[jcr:path] LIKE '"+rootAxis.getPath()+"/%' and sym.[j:link]='"+n.getIdentifier()+"'", Query.JCR_SQL2);
                 qr = q.execute();
                 NodeIterator ni2 = qr.getNodes();
                 while (ni2.hasNext()) {

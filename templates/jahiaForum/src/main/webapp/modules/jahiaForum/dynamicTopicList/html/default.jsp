@@ -4,7 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<jcr:xpath var="topics" xpath="//element(*,jahiaForum:topic)"/>
+<jcr:sql var="topics" sql="select * from [jahiaForum:topic]"/>
 <c:if test="${topics.nodes.size == 0}">
     No Topics Found
 </c:if>

@@ -33,9 +33,8 @@ package org.jahia.services.toolbar.resolver.impl;
 
 import org.jahia.services.toolbar.resolver.VisibilityResolver;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
-import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
+import org.jahia.services.preferences.JahiaPreferencesQueryHelper;
 import org.jahia.services.preferences.JahiaPreference;
-import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.data.JahiaData;
 import org.jahia.registries.ServicesRegistry;
@@ -75,7 +74,7 @@ public class BookmarkActionVisibilityResolver implements VisibilityResolver {
             ProcessingContext processingContext = jahiaData.getProcessingContext();
 
             // create a bookmarksJahiaPreferenceKey
-            JahiaPreference bookmarksJahiaPreference = jahiaPreferencesProvider.getJahiaPreference(processingContext.getUser(), JahiaPreferencesXpathHelper.getBookmarkXpath(processingContext.getPageID()));
+            JahiaPreference bookmarksJahiaPreference = jahiaPreferencesProvider.getJahiaPreference(processingContext.getUser(), JahiaPreferencesQueryHelper.getBookmarkSQL(processingContext.getPageID()));
 
             return bookmarksJahiaPreference == null;
         } catch (JahiaPreferenceProviderException e) {

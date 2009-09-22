@@ -130,7 +130,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
      */
     public void saveAsDefault(String containerUUID) throws GWTJahiaServiceException {
 //        try {
-//            JahiaPreference<JCRLayoutNode> userLayoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(jahiaPageContext.getPid()));
+//            JahiaPreference<JCRLayoutNode> userLayoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesQueryHelper.getLayoutmanagerSQL(jahiaPageContext.getPid()));
 //
 //            JCRNodeWrapper layoutmanagerNode = findLayoutmanagerNode();
 //            if (layoutmanagerNode != null) {
@@ -182,7 +182,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     }
 
     public void restoreDefault(String containerUUID) throws GWTJahiaServiceException {
-//        JahiaPreference<JCRLayoutNode> layoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(jahiaPageContext.getPid()));
+//        JahiaPreference<JCRLayoutNode> layoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesQueryHelper.getLayoutmanagerSQL(jahiaPageContext.getPid()));
 //        if (layoutmanagerNode != null) {
 //            getLayoutManagerJahiaPreferencesProvider().deleteJahiaPreference(layoutmanagerNode);
 //        }
@@ -198,7 +198,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
 
 
 //            // get layout manager node
-//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(jahiaPageContext.getPid()));
+//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesQueryHelper.getLayoutmanagerSQL(jahiaPageContext.getPid()));
 //            if (layoutmanagerJahiaPreference == null) {
 //                layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
 //                // update page
@@ -251,7 +251,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
 //            ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(pid, false);
 //
 //            // get layout manager node
-//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(pid));
+//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesQueryHelper.getLayoutmanagerSQL(pid));
 //            if (layoutmanagerJahiaPreference == null) {
 //                layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
 //                // update page
@@ -307,7 +307,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     public void saveLayoutmanagerConfig(GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig) throws GWTJahiaServiceException {
 //        try {
 ////             create layout[@pid] node
-//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(getContainerUUID.getPid()));
+//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesQueryHelper.getLayoutmanagerSQL(getContainerUUID.getPid()));
 //            if (layoutmanagerJahiaPreference == null) {
 //                layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
 //                ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(getContainerUUID.getPid(), false);
@@ -334,7 +334,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
         gwtLayoutManagerConfig.setLiveDraggable(true);
         gwtLayoutManagerConfig.setLiveQuickbarVisible(true);
 //        try {
-//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(retrieveParamBean().getPageID()));
+//            JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesQueryHelper.getLayoutmanagerSQL(retrieveParamBean().getPageID()));
 //
 //            JCRLayoutNode node = null;
 //            if (layoutmanagerJahiaPreference != null) {
@@ -419,7 +419,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
 
             JCRNodeWrapper containerNode = jcrStoreService.getNodeByUUID(containerUUID, getRemoteJahiaUser());
 
-//            JahiaPreference<JCRLayoutNode> layoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(getContainerUUID.getPid()));
+//            JahiaPreference<JCRLayoutNode> layoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesQueryHelper.getLayoutmanagerSQL(getContainerUUID.getPid()));
 //
 //            if (layoutmanagerNode != null) {
 //                logger.debug("Layoutmanager config found for user [" + getRemoteUser() + "]");

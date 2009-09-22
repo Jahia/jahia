@@ -141,7 +141,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             }
             jcrSessionWrapper.save();
             jcrStoreService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE , Constants.LIVE_WORKSPACE, null, Jahia.getThreadParamBean().getUser(), true, true);
-            return new JCRUser(userNode.getUUID(), jcrStoreService);
+            return new JCRUser(userNode.getIdentifier(), jcrStoreService);
         } catch (RepositoryException e) {
             logger.error(e);
         } catch (IOException e) {
@@ -203,8 +203,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
         try {
             session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT j:nodename FROM " + Constants.JAHIANT_USER + " ORDER BY j:nodename";
-                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
+                String query = "SELECT u.[j:nodename] FROM [" + Constants.JAHIANT_USER + "] as u ORDER BY u.[j:nodename]";
+                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
                 while (rows.hasNext()) {
@@ -236,8 +236,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
         try {
             session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT j:nodename FROM " + Constants.JAHIANT_USER + " ORDER BY j:nodename";
-                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
+                String query = "SELECT u.[j:nodename] FROM [" + Constants.JAHIANT_USER + "] as u ORDER BY u.[j:nodename]";
+                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
                 while (rows.hasNext()) {
@@ -289,7 +289,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             session = jcrStoreService.getSystemSession();
             Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name);
             if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                JCRUser user = new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
+                JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrStoreService);
                 cache.put(name,user);
                 return user;
             }
@@ -323,7 +323,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             session = jcrStoreService.getSystemSession();
             Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name.trim());
             if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                JCRUser user = new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
+                JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrStoreService);
                 cache.put(name,user);
                 return user;
             }
@@ -353,7 +353,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             session = jcrStoreService.getSystemSession();
             Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name.trim());
             if (usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                JCRUser user = new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
+                JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrStoreService);
                 cache.put(name,user);
                 return user;
             }
@@ -373,7 +373,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
 
 
     public JahiaUser lookupUserByKey(String name, String searchAttributeName) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     /**
@@ -393,11 +393,11 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
         try {
             session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
-                StringBuffer query = new StringBuffer("SELECT * FROM " + Constants.JAHIANT_USER);
+                StringBuffer query = new StringBuffer("SELECT * FROM [" + Constants.JAHIANT_USER+"] as u");
                 if (searchCriterias != null && searchCriterias.size() > 0) {
                     // Avoid wildcard attribute
                     if (!(searchCriterias.containsKey("*") && searchCriterias.size() == 1 && searchCriterias.getProperty("*").equals("*"))) {
-                        query.append(" WHERE "+JCRUser.J_EXTERNAL+" = 'false' ");
+                        query.append(" WHERE u.["+JCRUser.J_EXTERNAL+"] = 'false' ");
                         Iterator<Map.Entry<Object, Object>> objectIterator = searchCriterias.entrySet().iterator();
                         if (objectIterator.hasNext()) {
                                 query.append(" AND ");
@@ -419,26 +419,26 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                                 }
                             }
                             if ("*".equals(propertyKey)) {
-                                query.append("CONTAINS(*,'" + propertyValue + "')");
+                                query.append("CONTAINS(u.*,'" + propertyValue.replaceAll("%","") + "')");
                             } else {
-                                query.append(propertyKey.replaceAll("\\.", "___")).append(" LIKE '").append(propertyValue).append("'");
+                                query.append("u.["+propertyKey.replaceAll("\\.", "___")+"]").append(" LIKE '").append(propertyValue).append("'");
                             }
                             if (objectIterator.hasNext()) {
-                                query.append(" AND ");
+                                query.append(" OR ");
                             }
                         }
                     }
                 }
-                query.append(" ORDER BY j:nodename");
+                query.append(" ORDER BY u.[j:nodename]");
                 if (logger.isDebugEnabled()) {
                     logger.debug(query);
                 }
-                Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(), Query.SQL);
+                Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(), Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 NodeIterator ni = qr.getNodes();
                 while (ni.hasNext()) {
                     Node usersFolderNode = ni.nextNode();
-                    users.add(new JCRUser(usersFolderNode.getUUID(), jcrStoreService));
+                    users.add(new JCRUser(usersFolderNode.getIdentifier(), jcrStoreService));
                 }
             }
         } catch (RepositoryException e) {
@@ -474,8 +474,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
         try {
             session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT * FROM " + Constants.JAHIANT_USER + " WHERE j:nodename = '" + name + "'";
-                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
+                String query = "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u WHERE u.[j:nodename] = '" + name + "'";
+                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 NodeIterator ni = qr.getNodes();
                 return ni.hasNext();

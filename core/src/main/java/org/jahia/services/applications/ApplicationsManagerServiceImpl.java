@@ -273,8 +273,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         try {
             session = jcrStoreService.getSystemSession();
             if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT * FROM jnt:portletDefinition where j:context = '"+context+"' ORDER BY j:context";
-                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
+                String query = "SELECT * FROM [jnt:portletDefinition] as def where def.[j:context] = '"+context+"' ORDER BY def.[j:context]";
+                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 final NodeIterator nodes = qr.getNodes();
                 while (nodes.hasNext()) {
@@ -308,8 +308,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         try {
                 Session session = jcrStoreService.getSystemSession();
                 if (session.getWorkspace().getQueryManager() != null) {
-                    String query = "SELECT * FROM jnt:portletDefinition ORDER BY j:context";
-                    Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.SQL);
+                    String query = "SELECT * FROM [jnt:portletDefinition] as def ORDER BY def.[j:context]";
+                    Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                     QueryResult qr = q.execute();
                     final NodeIterator nodes = qr.getNodes();
                     while (nodes.hasNext()) {

@@ -55,6 +55,9 @@ public class Templates implements ValueInitializer {
 
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
         ExtendedNodeType nt = (ExtendedNodeType) context.get("currentDefinition");
+        if (nt == null) {
+            return new Value[0];
+        }
         SortedSet<Template> templates = getTemplatesSet(nt);
 
         List<Value> vs = new ArrayList<Value>();

@@ -83,7 +83,7 @@ file            pdfVersion
 date            startDate
 date            endDate
 smallText       location facetable sortable
-sharedSmallText eventsType (choicelist) facetable sortable < resourceBundle(resources.eventsType)
+sharedSmallText eventsType (choicelist[resourceBundle]) facetable sortable < meeting,consumer.show,road.show,conference
 bigText         body
 
 [web_templates:answerJobContainer] > jnt:container

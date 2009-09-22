@@ -42,9 +42,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 
 import javax.jcr.Value;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeIterator;
+import javax.jcr.nodetype.*;
 import java.util.*;
 
 /**
@@ -519,6 +517,120 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public boolean isQueryable() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return true;
     }
+
+    public NodeTypeDefinition getNodeTypeDefinition() {
+        return new Definition();
+    }
+
+    class Definition implements NodeTypeDefinition {
+        public String getName() {
+            return name.toString();
+        }
+
+        public String[] getDeclaredSupertypeNames() {
+            String[] d = declaredSupertypeNames;
+
+            ExtendedPropertyDefinition[] defs = ExtendedNodeType.this.getDeclaredPropertyDefinitions();
+            for (ExtendedPropertyDefinition def : defs) {
+                if (def.isInternationalized()) {
+                    String[] newRes = new String[d.length+1];
+                    System.arraycopy(d, 0, newRes, 0, d.length);
+                    newRes[d.length] = "jmix:i18n";
+                    return newRes;
+                }
+            }
+
+            return d;
+        }
+
+        public boolean isAbstract() {
+            return isAbstract;
+        }
+
+        public boolean isMixin() {
+            return isMixin;
+        }
+
+        public boolean hasOrderableChildNodes() {
+            return hasOrderableChildNodes;
+        }
+
+        public boolean isQueryable() {
+            return true;
+        }
+
+        public String getPrimaryItemName() {
+            return primaryItemName;
+        }
+
+        public PropertyDefinition[] getDeclaredPropertyDefinitions() {
+            ExtendedPropertyDefinition[] defs = ExtendedNodeType.this.getDeclaredPropertyDefinitions();
+            List<PropertyDefinition> r = new ArrayList<PropertyDefinition>();
+            for (final ExtendedPropertyDefinition def : defs) {
+                if (!def.isInternationalized()) {
+                    r.add(new PropertyDefinition() {
+                        public int getRequiredType() {
+                            return def.getRequiredType();
+                        }
+
+                        public String[] getValueConstraints() {
+                            return def.getValueConstraints();
+                        }
+
+                        public Value[] getDefaultValues() {
+                            return def.getDefaultValues();
+                        }
+
+                        public boolean isMultiple() {
+                            return def.isMultiple();
+                        }
+
+                        public String[] getAvailableQueryOperators() {
+                            return def.getAvailableQueryOperators();
+                        }
+
+                        public boolean isFullTextSearchable() {
+                            return def.isFullTextSearchable();
+                        }
+
+                        public boolean isQueryOrderable() {
+                            return def.isQueryOrderable();
+                        }
+
+                        public NodeType getDeclaringNodeType() {
+                            return def.getDeclaringNodeType();
+                        }
+
+                        public String getName() {
+                            return def.getName();
+                        }
+
+                        public boolean isAutoCreated() {
+                            return def.isAutoCreated();
+                        }
+
+                        public boolean isMandatory() {
+                            return def.isMandatory();
+                        }
+
+                        public int getOnParentVersion() {
+                            return def.getOnParentVersion();
+                        }
+
+                        public boolean isProtected() {
+                            return false;
+                        }
+                    });
+                }
+            }
+            return r.toArray(new PropertyDefinition[r.size()]);
+        }
+
+        public NodeDefinition[] getDeclaredChildNodeDefinitions() {
+            return ExtendedNodeType.this.getDeclaredChildNodeDefinitions();
+        }
+    }
+
 }

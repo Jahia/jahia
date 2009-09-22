@@ -53,6 +53,9 @@ import java.io.File;
 public class Skins implements ValueInitializer {
 
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
+        if (jParams == null) {
+            return new Value[0];
+        }
         String tplPkgName = jParams.getSite().getTemplatePackageName();
         JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(tplPkgName);
         SortedSet skins = new TreeSet();

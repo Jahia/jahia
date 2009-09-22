@@ -67,6 +67,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.hibernate.manager.JahiaObjectManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.manager.JahiaObjectDelegate;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 
 /**
  * Created by IntelliJ IDEA.
@@ -344,17 +345,30 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                     emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField, locale));
                 } else {
                     ExtendedPropertyDefinition propertyDefinition = def.getPropertyDefinition();
+                    String[] vcs = propertyDefinition.getValueConstraints();
+                    List<String> constraints = Arrays.asList(vcs);
                     if (propertyDefinition != null && !propertyDefinition.isMultiple()) {
-                        Value v = new ValueImpl(value, PropertyType.STRING);
-                        fields.add(new JahiaFieldPropertyImpl(getSession(), this, propertyDefinition, v, contentField, locale));
+                        if (value.startsWith("<jahia-resource")) {
+                            value = ResourceBundleMarker.parseMarkerValue(value).getResourceKey();
+                        }
+                        if (constraints.isEmpty() || constraints.contains(value)) {
+                            Value v = new ValueImpl(value, PropertyType.STRING);
+                            fields.add(new JahiaFieldPropertyImpl(getSession(), this, propertyDefinition, v, contentField, locale));
+                        }
                     } else {
                         String[] strings = value.split("\\$\\$\\$");
-                        Value[] values = new Value[strings.length];
+                        List<Value> values = new ArrayList<Value>();
                         for (int i = 0; i < strings.length; i++) {
                             String string = strings[i];
-                            values[i] = new ValueImpl(string,propertyDefinition.getRequiredType());
-                        }
-                        fields.add(new JahiaFieldPropertyImpl(getSession(), this, propertyDefinition, values, contentField, locale));
+
+                            if (string.startsWith("<jahia-resource")) {
+                                string = ResourceBundleMarker.parseMarkerValue(string).getResourceKey();
+                            }
+                            if (constraints.isEmpty() || constraints.contains(value)) {
+                                values.add(new ValueImpl(string,propertyDefinition.getRequiredType()));
+                            }
+                        };
+                        fields.add(new JahiaFieldPropertyImpl(getSession(), this, propertyDefinition, values.toArray(new Value[values.size()]), contentField, locale));
                     }
                 }
                 break;

@@ -97,6 +97,10 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
     private Map<String,Integer> permissions;
 
+    private static Session systemSession;
+
+    private Map<String,Boolean> cache = new HashMap<String,Boolean>();
+
     /**
      * Empty constructor
      */
@@ -136,7 +140,6 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
         permissions.put("jcr:getAccessControlPolicy", Permission.READ);
         permissions.put("jcr:setAccessControlPolicy", Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY);
         permissions.put("jcr:all", Permission.READ + Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE + Permission.NODE_TYPE_MNGMT);
-
     }
 
     public void close() throws Exception {
@@ -186,27 +189,38 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
             return true;
         }
 
-        Session s = null;
+        if (cache.containsKey(absPath.toString() + " : " + permissions)) {
+            return cache.get(absPath.toString() + " : " + permissions);
+        }
+        
         try {
-            s = getRepository().login(org.jahia.jaas.JahiaLoginModule.getSystemCredentials());
-            NamespaceResolver nr = new SessionNamespaceResolver(s);
+            synchronized (JahiaAccessManager.class) {
+                if (systemSession == null || !systemSession.isLive()) {
+                    systemSession = getRepository().login(org.jahia.jaas.JahiaLoginModule.getSystemCredentials());
+                }
+            }
+
+            NamespaceResolver nr = new SessionNamespaceResolver(systemSession);
 
             PathResolver pr = new DefaultNamePathResolver(nr);
             String jcrPath = pr.getJCRPath(absPath);
 
             if (p.getDeniedPathes() != null && p.getDeniedPathes().contains(jcrPath)) {
+                cache.put(absPath.toString() + " : " + permissions, false);
                 return false;
             }
 
             if (p.isSystem()) {
+                cache.put(absPath.toString() + " : " + permissions, true);
                 return true;
             }
             // Always deny write access on system folders
-            if (s.itemExists(jcrPath)) {
-                Item i = s.getItem(jcrPath);
+            if (systemSession.itemExists(jcrPath)) {
+                Item i = systemSession.getItem(jcrPath);
                 if (i.isNode() && permissions != Permission.READ) {
                     String ntName = ((Node) i).getPrimaryNodeType().getName();
                     if (ntName.equals(Constants.JAHIANT_SYSTEMFOLDER) || ntName.equals("rep:root")) {
+                        cache.put(absPath.toString() + " : " + permissions, false);
                         return false;
                     }
                 }
@@ -216,17 +230,18 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
             // Administrators are always granted
             if (service.isServerAdmin(p.getName())) {
+                cache.put(absPath.toString() + " : " + permissions, true);
                 return true;
             }
 
             String site = null;
 
             int depth = 1;
-            while (!s.itemExists(jcrPath)) {
+            while (!systemSession.itemExists(jcrPath)) {
                 jcrPath = pr.getJCRPath(absPath.getAncestor(depth++));
             }
 
-            Item i = s.getItem(jcrPath);
+            Item i = systemSession.getItem(jcrPath);
 
             if (i instanceof Version) {
                 i = ((Version)i).getContainingHistory();
@@ -249,17 +264,15 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
             }
 
             if (service.isAdmin(p.getName(),site)) {
+                cache.put(absPath.toString() + " : " + permissions, true);
                 return true;
             }
 
-            return recurseonACPs(jcrPath, s, permissions, site, service);
+            return recurseonACPs(jcrPath, systemSession, permissions, site, service);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (s != null) {
-                s.logout();
-            }
         }
+        cache.put(absPath.toString() + " : " + permissions, false);
         return true;
     }
 

@@ -71,7 +71,7 @@ public class Lexer {
     public static final String[] PROTECTED = new String[]{"protected", "pro", "p"};
     public static final String[] MULTIPLE = new String[]{"multiple", "mul", "*"};
     public static final String[] SNS = new String[]{"sns", "*", "multiple"};
-    public static final String[] INTERNATIONALIZED = new String[]{"internationalized", "i15d", "i"};
+    public static final String[] INTERNATIONALIZED = new String[]{"internationalized", "i15d", "i18n", "i"};
 
     public static final String[] INDEXED = new String[]{"indexed", "ind", "x"};
     public static final String[] SCOREBOOST = new String[]{"scoreboost", "boost", "b"};

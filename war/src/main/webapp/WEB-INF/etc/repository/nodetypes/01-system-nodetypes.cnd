@@ -105,8 +105,8 @@
  */
 [mix:title]
   mixin
-  - jcr:title (STRING)
-  - jcr:description (STRING)
+  - jcr:title (STRING) i18n
+  - jcr:description (STRING) i18n
 
 /**
  * This mixin node type can be used to add standardized creation information

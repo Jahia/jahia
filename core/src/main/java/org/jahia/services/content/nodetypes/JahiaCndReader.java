@@ -813,7 +813,7 @@ public class JahiaCndReader {
         if (!currentTokenEquals(Lexer.BEGIN_TYPE)) {
             return;
         }
-        if (ndi.getRequiredPrimaryTypes() == null) {
+        if (ndi.getRequiredPrimaryTypeNames() == null) {
             List<String> types = new ArrayList<String>();
             do {
                 nextToken();

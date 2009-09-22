@@ -97,7 +97,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
     private Map<String,Integer> permissions;
 
-    private static Session systemSession;
+    private Session securitySession;
 
     private Map<String,Boolean> cache = new HashMap<String,Boolean>();
 
@@ -110,13 +110,17 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
     }
 
     public void init(AMContext amContext) throws AccessDeniedException, Exception {
-        init(amContext, null, null);
+        init(amContext, null, null, null);
+    }
+
+    public void init(AMContext amContext, AccessControlProvider acProvider, WorkspaceAccessManager wspAccessManager) throws AccessDeniedException, Exception {
+        init(amContext, null, null, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void init(AMContext context, AccessControlProvider acProvider, WorkspaceAccessManager wspAccessManager) throws AccessDeniedException, Exception {
+    public void init(AMContext context, AccessControlProvider acProvider, WorkspaceAccessManager wspAccessManager, Session securitySession) throws AccessDeniedException, Exception {
         if (initialized) {
             throw new IllegalStateException("already initialized");
         }
@@ -125,6 +129,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
         subject = context.getSubject();
         hierMgr = context.getHierarchyManager();
         workspaceName = context.getWorkspaceName();
+        this.securitySession = securitySession;
 
         Set principals = subject.getPrincipals(JahiaPrincipal.class);
         if (!principals.isEmpty()) {
@@ -194,13 +199,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
         }
         
         try {
-            synchronized (JahiaAccessManager.class) {
-                if (systemSession == null || !systemSession.isLive()) {
-                    systemSession = getRepository().login(org.jahia.jaas.JahiaLoginModule.getSystemCredentials());
-                }
-            }
-
-            NamespaceResolver nr = new SessionNamespaceResolver(systemSession);
+            NamespaceResolver nr = new SessionNamespaceResolver(securitySession);
 
             PathResolver pr = new DefaultNamePathResolver(nr);
             String jcrPath = pr.getJCRPath(absPath);
@@ -215,8 +214,8 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                 return true;
             }
             // Always deny write access on system folders
-            if (systemSession.itemExists(jcrPath)) {
-                Item i = systemSession.getItem(jcrPath);
+            if (securitySession.itemExists(jcrPath)) {
+                Item i = securitySession.getItem(jcrPath);
                 if (i.isNode() && permissions != Permission.READ) {
                     String ntName = ((Node) i).getPrimaryNodeType().getName();
                     if (ntName.equals(Constants.JAHIANT_SYSTEMFOLDER) || ntName.equals("rep:root")) {
@@ -237,11 +236,11 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
             String site = null;
 
             int depth = 1;
-            while (!systemSession.itemExists(jcrPath)) {
+            while (!securitySession.itemExists(jcrPath)) {
                 jcrPath = pr.getJCRPath(absPath.getAncestor(depth++));
             }
 
-            Item i = systemSession.getItem(jcrPath);
+            Item i = securitySession.getItem(jcrPath);
 
             if (i instanceof Version) {
                 i = ((Version)i).getContainingHistory();
@@ -268,7 +267,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                 return true;
             }
 
-            return recurseonACPs(jcrPath, systemSession, permissions, site, service);
+            return recurseonACPs(jcrPath, securitySession, permissions, site, service);
         } catch (Exception e) {
             e.printStackTrace();
         }

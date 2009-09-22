@@ -138,17 +138,16 @@ public class JahiaSecurityManager implements JackrabbitSecurityManager {
 
     public AccessManager getAccessManager(Session session, AMContext amContext) throws RepositoryException {
         checkInitialized();
-        AccessManagerConfig amConfig = getSecurityConfig().getAccessManagerConfig();
         try {
-            AccessManager accessMgr = (AccessManager) amConfig.newInstance();
-            accessMgr.init(amContext);
+            JahiaAccessManager accessMgr = new JahiaAccessManager();
+            accessMgr.init(amContext, null, null, securitySession);
             return accessMgr;
         } catch (AccessDeniedException ade) {
             // re-throw
             throw ade;
         } catch (Exception e) {
             // wrap in RepositoryException
-            String msg = "Failed to instantiate AccessManager (" + amConfig.getClassName() + ")";
+            String msg = "Failed to instantiate JahiaAccessManager";
             log.error(msg, e);
             throw new RepositoryException(msg, e);
         }

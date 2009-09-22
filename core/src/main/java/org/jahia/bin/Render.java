@@ -104,7 +104,9 @@ public class Render extends HttpServlet {
             path = path.substring(index);
 
             RenderContext renderContext = createRenderContext(req, resp, paramBean.getUser());
-
+            if ("live".equals(workspace) && renderContext.isEditMode()) {
+                throw new AccessDeniedException();
+            }
             renderContext.setTemplateWrapper("fullpage");
 
             try {
@@ -180,8 +182,6 @@ public class Render extends HttpServlet {
 
                 resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, errMsg);
             }
-        } catch (PathNotFoundException e) {
-        	ErrorHandler.getInstance().handle(e, req, resp);
         } catch (Exception e) {
         	ErrorHandler.getInstance().handle(e, req, resp);
         } finally {

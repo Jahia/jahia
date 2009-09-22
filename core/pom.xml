@@ -380,7 +380,7 @@
         <dependency>
             <groupId>asm</groupId>
             <artifactId>asm</artifactId>
-            <version>2.2.3</version>
+            <version>3.1</version>
         </dependency>
         <dependency>
             <groupId>cglib</groupId>
@@ -477,7 +477,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.3</version>
+            <version>1.5.6</version>
         </dependency>
         <!--
             todo : migrate org.jahia.services.content.automation.ExifExtractor to 2.4.0 when final
@@ -593,7 +593,7 @@
         <dependency>
             <groupId>net.sourceforge.nekohtml</groupId>
             <artifactId>nekohtml</artifactId>
-            <version>1.9.7</version>
+            <version>1.9.9</version>
         </dependency>
         <dependency>
             <groupId>opensymphony</groupId>

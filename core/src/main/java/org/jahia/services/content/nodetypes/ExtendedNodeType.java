@@ -52,9 +52,9 @@ import java.util.*;
  * Time: 14:02:22
  */
 public class ExtendedNodeType implements NodeType {
-    
+
     private static final transient Logger logger = Logger.getLogger(ExtendedNodeType.class);
-    
+
     private NodeTypeRegistry registry;
     private String systemId;
     private List<ExtendedItemDefinition> items = new ArrayList<ExtendedItemDefinition>();
@@ -195,7 +195,7 @@ public class ExtendedNodeType implements NodeType {
     }
 
 
-    void validateSupertypes() throws NoSuchNodeTypeException {        
+    void validateSupertypes() throws NoSuchNodeTypeException {
         this.declaredSupertypes = new ExtendedNodeType[declaredSupertypeNames.length];
         for (int i = 0; i < declaredSupertypes.length; i++) {
             this.declaredSupertypes[i] = registry.getNodeType(declaredSupertypeNames[i]);
@@ -483,6 +483,14 @@ public class ExtendedNodeType implements NodeType {
         return true;
     }
 
+    public boolean canRemoveNode(String nodeName) {
+        return true;
+    }
+
+    public boolean canRemoveProperty(String propertyName) {
+        return true;
+    }
+
     void setPropertyDefinition(String name, ExtendedPropertyDefinition p) {
         if (name.equals("*")) {
             unstructuredProperties.put(p.getRequiredType(), p);
@@ -588,14 +596,6 @@ public class ExtendedNodeType implements NodeType {
         b &= !isSystemType();
         b &= !isMetadataType();
         return b;
-    }
-
-    public boolean canRemoveNode(String nodeName) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public boolean canRemoveProperty(String propertyName) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public boolean isQueryable() {

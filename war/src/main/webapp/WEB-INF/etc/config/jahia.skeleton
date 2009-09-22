@@ -523,11 +523,11 @@ clusterCacheMaxBatchSize                               = 100000
 ######################################################################
 # Set this parameter to true to completely deactivate indexing for
 # this cluster node.  
-indexing.disabled                                      = false
+indexing.disabled                                      = true
 # Should this server perform local indexing?
 # 1: index, 0: do not index ,just read (e.g. when sharing the 
 # same index directory in a clustered environment)
-indexing.localIndexing                                 = 1
+indexing.localIndexing                                 = 0
 # The root directory for search indexes. In a clustered environment
 # with a single indexing node should point to the network share, where
 # the indexes are located

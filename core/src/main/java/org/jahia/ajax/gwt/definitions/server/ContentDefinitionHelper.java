@@ -235,12 +235,14 @@ public class ContentDefinitionHelper {
         Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> map = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
         try {
             ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType("jmix:content");
-            while (nt.getDeclaredSubtypes().hasNext()) {
-                ExtendedNodeType mainType = (ExtendedNodeType) nt.getDeclaredSubtypes().next();
+            NodeTypeIterator typeIterator = nt.getDeclaredSubtypes();
+            while (typeIterator.hasNext()) {
+                ExtendedNodeType mainType = (ExtendedNodeType) typeIterator.next();
                 List<GWTJahiaNodeType> l = new ArrayList<GWTJahiaNodeType>();
                 map.put(getGWTJahiaNodeType(ctx,mainType), l);
-                while (mainType.getDeclaredSubtypes().hasNext()) {
-                    ExtendedNodeType nodeType = (ExtendedNodeType) mainType.getDeclaredSubtypes().next();
+                NodeTypeIterator subtypes = mainType.getDeclaredSubtypes();
+                while (subtypes.hasNext()) {
+                    ExtendedNodeType nodeType = (ExtendedNodeType) subtypes.next();
                     l.add(getGWTJahiaNodeType(ctx,nodeType));
                 }
             }

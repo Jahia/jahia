@@ -123,7 +123,7 @@
 
 [jnt:peopleContainer] > jnt:container, jmix:structuredContent
  sharedSmallText peopleFirstname
- sharedSmallText peopleLastname sortable
+ sharedSmallText peopleLastname
  date peopleBirthdate
  sharedSmallText peopleCivility (choicelist) analyzer='keyword' < 'M.','Mme.','Mlle.'
  sharedSmallText peopleGender (choicelist) analyzer='keyword' < 'male','female'
@@ -193,14 +193,14 @@
  integer videoHeight = '0'
  integer videoHspace = '0'
  integer videoVspace = '0'
- sharedSmallText videoAutostart (choicelist) analyzer='keyword' fulltextsearchable=no < 'true','false'
- sharedSmallText videoInvokeURLs (choicelist) analyzer='keyword' fulltextsearchable=no < 'true','false'
- sharedSmallText videoEnablecontextmenu (choicelist) analyzer='keyword' fulltextsearchable=no < '0','1'
- sharedSmallText videoShowstatusbar (choicelist) analyzer='keyword' fulltextsearchable=no < '0','1'
- sharedSmallText videoShowcontrols (choicelist) analyzer='keyword' fulltextsearchable=no < '0','1'
- sharedSmallText videoAutosize (choicelist) analyzer='keyword' fulltextsearchable=no < 'true','false'
- integer videoDisplaysize = '0' analyzer='keyword' fulltextsearchable=no
- sharedSmallText videoLoop (choicelist) analyzer='keyword' fulltextsearchable=no < 'true','false'
+ sharedSmallText videoAutostart (choicelist) analyzer='keyword' nofulltext < 'true','false'
+ sharedSmallText videoInvokeURLs (choicelist) analyzer='keyword' nofulltext < 'true','false'
+ sharedSmallText videoEnablecontextmenu (choicelist) analyzer='keyword' nofulltext < '0','1'
+ sharedSmallText videoShowstatusbar (choicelist) analyzer='keyword' nofulltext < '0','1'
+ sharedSmallText videoShowcontrols (choicelist) analyzer='keyword' nofulltext < '0','1'
+ sharedSmallText videoAutosize (choicelist) analyzer='keyword' nofulltext < 'true','false'
+ integer videoDisplaysize = '0' analyzer='keyword' nofulltext
+ sharedSmallText videoLoop (choicelist) analyzer='keyword' nofulltext < 'true','false'
 
 [jnt:videoBox] > jnt:box
  containerList videoContainer (jnt:videoContainer)
@@ -213,17 +213,17 @@
 
 [jnt:flashContainer] > jnt:container, jmix:structuredContent
  file flashSourceFlashContainer
- sharedSmallText widthFlashContainer analyzer='keyword' fulltextsearchable=no
- sharedSmallText heightFlashContainer analyzer='keyword' fulltextsearchable=no
- sharedSmallText flashPlayerFlashContainer = '9' analyzer='keyword' fulltextsearchable=no
- sharedSmallText idFlashContainer analyzer='keyword' fulltextsearchable=no
+ sharedSmallText widthFlashContainer analyzer='keyword' nofulltext
+ sharedSmallText heightFlashContainer analyzer='keyword' nofulltext
+ sharedSmallText flashPlayerFlashContainer = '9' analyzer='keyword' nofulltext
+ sharedSmallText idFlashContainer analyzer='keyword' nofulltext
  sharedSmallText nameFlashContainer
- sharedSmallText swliveconnectFlashContainer (choicelist) analyzer='keyword' fulltextsearchable=no < 'true', 'false'
+ sharedSmallText swliveconnectFlashContainer (choicelist) analyzer='keyword' nofulltext < 'true', 'false'
  sharedSmallText playFlashContainer (choicelist) indexed=no < 'true','false'
  sharedSmallText loopFlashContainer (choicelist) indexed=no < 'true','false'
  sharedSmallText menuFlashContainer (choicelist) indexed=no < 'true','false'
- sharedSmallText qualityFlashContainer (choicelist) analyzer='keyword' fulltextsearchable=no < 'low','high','autolow','autohigh','best'
- sharedSmallText scaleFlashContainer (choicelist) analyzer='keyword' fulltextsearchable=no < 'default','noborder','exactfit'
+ sharedSmallText qualityFlashContainer (choicelist) analyzer='keyword' nofulltext < 'low','high','autolow','autohigh','best'
+ sharedSmallText scaleFlashContainer (choicelist) analyzer='keyword' nofulltext < 'default','noborder','exactfit'
  sharedSmallText alignFlashContainer (choicelist) indexed=no < 'l','r','t','b'
  sharedSmallText salignFlashContainer (choicelist) indexed=no < 'l','r','t','b','tl','tr','bl','br'
  sharedSmallText wmodeFlashContainer (choicelist) indexed=no < 'window','opaque','transparent'

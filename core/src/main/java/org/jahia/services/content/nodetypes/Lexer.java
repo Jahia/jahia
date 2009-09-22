@@ -80,8 +80,9 @@ public class Lexer {
     public static final String[] TOKENIZED = new String[]{"tokenized","tok","t"};
     public static final String[] UNTOKENIZED = new String[]{"untokenized","untok","u"};
     public static final String[] ANALYZER = new String[]{"analyzer"};
-    public static final String[] SORTABLE = new String[]{"sortable"};    
-    public static final String[] FACETABLE = new String[]{"facetable"};    
+    public static final String[] FACETABLE = new String[]{"facetable"};
+
+    public static final String[] SORTABLE = new String[]{"sortable"};
     public static final String[] FULLTEXTSEARCHABLE = new String[]{"fulltextsearchable", "fts"};
 
     public static final String[] QUERYOPS = new String[]{"queryops", "qop"};
@@ -144,6 +145,14 @@ public class Lexer {
         attr.addAll(Arrays.asList(HIDDEN));
         NODE_ATTRIBUTE = attr.toArray(new String[attr.size()]);
     }
+
+    public static final String QUEROPS_EQUAL = "=";
+    public static final String QUEROPS_NOTEQUAL = "<>";
+    public static final String QUEROPS_LESSTHAN = "<";
+    public static final String QUEROPS_LESSTHANOREQUAL = "<=";
+    public static final String QUEROPS_GREATERTHAN = ">";
+    public static final String QUEROPS_GREATERTHANOREQUAL = ">=";
+    public static final String QUEROPS_LIKE = "LIKE";
 
     public static final String[] STRING = {"string", "String", "STRING"};
     public static final String[] BINARY = {"binary", "Binary", "BINARY"};

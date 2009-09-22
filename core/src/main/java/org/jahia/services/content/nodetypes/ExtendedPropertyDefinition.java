@@ -71,9 +71,10 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     private double scoreboost = 1.;
     private String analyzer;
     
-    private boolean sortable = false;
+    private boolean queryOrderable = true;
+    private boolean fulltextSearchable = true;
     private boolean facetable = false;
-    private boolean fulltextSearchable = false;
+    private String[] availableQueryOperators;
 
     public ExtendedPropertyDefinition(NodeTypeRegistry registry) {
         this.registry = registry;
@@ -200,11 +201,11 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     }
 
     public boolean isQueryOrderable() {
-        return sortable;
+        return queryOrderable;
     }
 
     public void setQueryOrderable(boolean sortable) {
-        this.sortable = sortable;
+        this.queryOrderable = sortable;
     }
 
     public boolean isFacetable() {
@@ -224,7 +225,10 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     }
 
     public String[] getAvailableQueryOperators() {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return availableQueryOperators;
     }
 
+    public void setAvailableQueryOperators(String[] availableQueryOperators) {
+        this.availableQueryOperators = availableQueryOperators;
+    }
 }

@@ -32,10 +32,12 @@
 package org.jahia.services.content.nodetypes;
 
 import org.apache.log4j.Logger;
+import org.apache.jackrabbit.spi.commons.nodetype.compact.*;
 import org.jahia.api.Constants;
 
 import javax.jcr.PropertyType;
 import javax.jcr.Value;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.OnParentVersionAction;
 import java.io.IOException;
@@ -295,10 +297,10 @@ public class JahiaCndReader {
                 ntd.setAbstract(true);
             } else if (currentTokenEquals(Lexer.NOQUERY)) {
                 nextToken();
-//                ntd.setQueryable(false);
+                ntd.setQueryable(false);
             } else if (currentTokenEquals(Lexer.QUERY)) {
                 nextToken();
-//                ntd.setQueryable(true);
+                ntd.setQueryable(true);
             } else if (currentTokenEquals(Lexer.PRIMARYITEM)) {
                 nextToken();
                 ntd.setPrimaryItemName(currentToken);
@@ -700,10 +702,12 @@ public class JahiaCndReader {
                 }
                 
             } else if (currentTokenEquals(Lexer.SORTABLE)) {
+                // deprecated , use NOQUERYORDER
                 pdi.setQueryOrderable(true);
             } else if (currentTokenEquals(Lexer.FACETABLE)) {
                 pdi.setFacetable(true);
             } else if (currentTokenEquals(Lexer.FULLTEXTSEARCHABLE)) {
+                // deprecated , use NOFULLTEXT
                 nextToken();
                 if (currentTokenEquals(Lexer.DEFAULT)) {
                     nextToken();
@@ -713,8 +717,6 @@ public class JahiaCndReader {
                         pdi.setFullTextSearchable(Boolean.TRUE);
                     }
                 }
-            } else if (currentTokenEquals(Lexer.FULLTEXTSEARCHABLE)) {
-                pdi.setFullTextSearchable(Boolean.TRUE);
             } else if (currentTokenEquals(Lexer.COPY)) {
                 pdi.setOnParentVersion(OnParentVersionAction.COPY);
             } else if (currentTokenEquals(Lexer.VERSION)) {
@@ -727,12 +729,55 @@ public class JahiaCndReader {
                 pdi.setOnParentVersion(OnParentVersionAction.IGNORE);
             } else if (currentTokenEquals(Lexer.ABORT)) {
                 pdi.setOnParentVersion(OnParentVersionAction.ABORT);
+            } else if (currentTokenEquals(Lexer.NOFULLTEXT)) {
+                pdi.setFullTextSearchable(false);
+            } else if (currentTokenEquals(Lexer.NOQUERYORDER)) {
+                pdi.setQueryOrderable(false);
+            } else if (currentTokenEquals(Lexer.QUERYOPS)) {
+                doPropertyQueryOperators(pdi);
             }
 
-            //todo : handle new attributes
 
             nextToken();
         }
+    }
+
+    /**
+     * processes the property query operators
+     *
+     * @param pd the property definition builder
+     * @throws ParseException if an error occurs
+     */
+    private void doPropertyQueryOperators(ExtendedPropertyDefinition pd)
+            throws ParseException {
+        if (!currentTokenEquals(Lexer.QUERYOPS)) {
+            return;
+        }
+        nextToken();
+
+        String[] ops = currentToken.split(",");
+        List<String> queryOps = new LinkedList<String>();
+        for (String op : ops) {
+            String s = op.trim();
+            if (s.equals(Lexer.QUEROPS_EQUAL)) {
+                queryOps.add(QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO);
+            } else if (s.equals(Lexer.QUEROPS_NOTEQUAL)) {
+                queryOps.add(QueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO);
+            } else if (s.equals(Lexer.QUEROPS_LESSTHAN)) {
+                queryOps.add(QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN);
+            } else if (s.equals(Lexer.QUEROPS_LESSTHANOREQUAL)) {
+                queryOps.add(QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO);
+            } else if (s.equals(Lexer.QUEROPS_GREATERTHAN)) {
+                queryOps.add(QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN);
+            } else if (s.equals(Lexer.QUEROPS_GREATERTHANOREQUAL)) {
+                queryOps.add(QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO);
+            } else if (s.equals(Lexer.QUEROPS_LIKE)) {
+                queryOps.add(QueryObjectModelConstants.JCR_OPERATOR_LIKE);
+            } else {
+                lexer.fail("'" + s + "' is not a valid query operator");
+            }
+        }
+        pd.setAvailableQueryOperators(queryOps.toArray(new String[queryOps.size()]));
     }
 
     /**

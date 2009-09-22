@@ -75,6 +75,7 @@ public class ExtendedNodeType implements NodeType {
     private ExtendedNodeType[] declaredSupertypes = new ExtendedNodeType[0];
     private List<ExtendedNodeType> declaredSubtypes = new ArrayList<ExtendedNodeType>();
     private String validator;
+    private boolean queryable = true;
 
     public ExtendedNodeType(NodeTypeRegistry registry, String systemId) {
         this.registry = registry;
@@ -128,6 +129,14 @@ public class ExtendedNodeType implements NodeType {
 
     public void setHasOrderableChildNodes(boolean hasOrderableChildNodes) {
         this.hasOrderableChildNodes = hasOrderableChildNodes;
+    }
+
+    public boolean isQueryable() {
+        return queryable;
+    }
+
+    public void setQueryable(boolean queryable) {
+        this.queryable = queryable;
     }
 
     public String getPrimaryItemName() {
@@ -596,10 +605,6 @@ public class ExtendedNodeType implements NodeType {
         b &= !isSystemType();
         b &= !isMetadataType();
         return b;
-    }
-
-    public boolean isQueryable() {
-        return true;
     }
 
     public NodeTypeDefinition getNodeTypeDefinition() {

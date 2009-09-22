@@ -381,24 +381,106 @@ public class ExtendedNodeType implements NodeType {
         this.groupedItems = groupedItems;
     }
 
-    public boolean canSetProperty(String s, Value value) {
+    public boolean canSetProperty(String propertyName, Value value) {
+        if (getPropertyDefinitionsAsMap().containsKey(propertyName)) {
+            ExtendedPropertyDefinition propertyDefinition = getPropertyDefinitionsAsMap().get(propertyName);
+            if (!propertyDefinition.isMultiple()) {
+                if (canSetProperty(value, propertyDefinition))  {
+                    return true;
+                }
+            }
+        }
+        Collection<ExtendedPropertyDefinition> unstruct = getUnstructuredPropertyDefinitions().values();
+        for (ExtendedPropertyDefinition definition : unstruct) {
+            if (!definition.isMultiple()) {
+                if (canSetProperty(value,definition))  {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
-    public boolean canSetProperty(String s, Value[] values) {
+    private boolean canSetProperty(Value v , ExtendedPropertyDefinition propDef) {
+        return !propDef.isMultiple() && v.getType() == propDef.getRequiredType();
+    }
+
+
+    public boolean canSetProperty(String propertyName, Value[] values) {
+        if (getPropertyDefinitionsAsMap().containsKey(propertyName)) {
+            ExtendedPropertyDefinition propertyDefinition = getPropertyDefinitionsAsMap().get(propertyName);
+            if (propertyDefinition.isMultiple()) {
+                if (canSetProperty(values, propertyDefinition))  {
+                    return true;
+                }
+            }
+        }
+        Collection<ExtendedPropertyDefinition> unstruct = getUnstructuredPropertyDefinitions().values();
+        for (ExtendedPropertyDefinition definition : unstruct) {
+            if (definition.isMultiple()) {
+                if (canSetProperty(values,definition))  {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
-    public boolean canAddChildNode(String s) {
+    private boolean canSetProperty(Value[] values , ExtendedPropertyDefinition propDef) {
+        if (!propDef.isMultiple()) {
+            return false;
+        }
+        for (Value value : values) {
+            if (value.getType() != propDef.getRequiredType()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean canAddChildNode(String childNodeName) {
+        if (getChildNodeDefinitionsAsMap().containsKey(childNodeName)) {
+            if (getChildNodeDefinitionsAsMap().get(childNodeName).getDefaultPrimaryType() != null) {
+                return true;
+            }
+        }
         return false;
     }
 
-    public boolean canAddChildNode(String s, String s1) {
+    public boolean canAddChildNode(String childNodeName, String nodeTypeName) {
+        try {
+            ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
+            if (getChildNodeDefinitionsAsMap().containsKey(childNodeName)) {
+                if (canAddChildNode(nt,getChildNodeDefinitionsAsMap().get(childNodeName)))  {
+                    return true;
+                }
+            }
+            Collection<ExtendedNodeDefinition> unstruct = getUnstructuredChildNodeDefinitions().values();
+            for (ExtendedNodeDefinition definition : unstruct) {
+                if (canAddChildNode(nt,definition))  {
+                    return true;
+                }
+            }
+        } catch (NoSuchNodeTypeException e) {
+            logger.error("Cannot find node type : "+nodeTypeName);
+            return false;
+        }
         return false;
     }
+
+    private boolean canAddChildNode(ExtendedNodeType nt, ExtendedNodeDefinition nodeDef) {
+        String[] epd = nodeDef.getRequiredPrimaryTypeNames();
+        for (String s : epd) {
+            if (!nt.isNodeType(s)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     public boolean canRemoveItem(String s) {
-        return false;
+        return true;
     }
 
     void setPropertyDefinition(String name, ExtendedPropertyDefinition p) {

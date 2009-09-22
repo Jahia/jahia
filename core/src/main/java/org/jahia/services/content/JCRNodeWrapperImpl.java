@@ -1888,15 +1888,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public NodeIterator getSharedSet() throws RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return new NodeIteratorImpl(new ArrayList().iterator(), 0);
     }
 
     public void removeSharedSet() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException() ;
+        objectNode.removeSharedSet();
+        return;
     }
 
     public void removeShare() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        objectNode.removeShare();
+        return;
     }
 
     public void followLifecycleTransition(String transition) throws UnsupportedRepositoryOperationException, InvalidLifecycleTransitionException, RepositoryException {

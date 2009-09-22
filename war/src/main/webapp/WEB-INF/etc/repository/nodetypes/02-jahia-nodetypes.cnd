@@ -157,7 +157,7 @@
 // Categories
 //---------------------------------------------------------
 
-[jnt:category] > nt:base, mix:referenceable, mix:created, mix:lastModified, jmix:lastPublished, jmix:hierarchyNode, jmix:collection, mix:title
+[jnt:category] > nt:base, mix:referenceable, mix:created, mix:lastModified, jmix:lastPublished, jmix:hierarchyNode, jmix:collection, mix:title, jmix:i18n
 + * (jnt:category)
 - * (reference) multiple < jnt:category
 

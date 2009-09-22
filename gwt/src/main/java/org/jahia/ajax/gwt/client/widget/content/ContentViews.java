@@ -182,7 +182,7 @@ public class ContentViews extends TopRightComponent {
             if (getLinker() != null) {
                 getLinker().loading("searching content...");
             }
-            service.search(text, 0, new AsyncCallback<List<GWTJahiaNode>>() {
+            service.search(text, 0, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), new AsyncCallback<List<GWTJahiaNode>>() {
                 public void onFailure(Throwable throwable) {
                     Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage());
                     if (getLinker() != null) {

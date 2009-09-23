@@ -4,27 +4,6 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%--<div>
-    <c:if test="${jcr:isNodeType(currentNode.parent.parent, 'jahiaForum:boardIndex')}">
-        <a href="${url.base}${currentNode.parent.parent.path}.detail.html">${currentNode.parent.parent.propertiesAsString['boardSubject']}</a>&nbsp;>>&nbsp;
-    </c:if>
-    <c:if test="${jcr:isNodeType(currentNode.parent, 'jahiaForum:topic')}">
-        <a href="${url.base}${currentNode.parent.path}.html">${currentNode.parent.propertiesAsString['topicSubject']}</a>&nbsp;>>&nbsp;
-    </c:if>
-    ${currentNode.propertiesAsString['threadSubject']}
-</div>
-<ul>
-    <c:forEach items="${currentNode.editableChildren}" var="subchild" varStatus="status">
-        <li>
-            <template:module node="${subchild}" template="default"/>
-        </li>
-    </c:forEach>
-    <c:if test="${renderContext.user.name != 'guest'}">
-        <li>
-            <template:module node="${currentNode}" template="newPostForm"/>
-        </li>
-    </c:if>
-</ul>--%>
 <div id="forum-body">
     <div class="posts">
         <h2><a href="${url.base}${currentNode.parent.path}.html"><jcr:nodeProperty node="${currentNode}"

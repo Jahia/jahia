@@ -29,10 +29,10 @@
     <template:module node="${currentNode}" template="newTopicForm"/>
 </c:if>--%>
 <jcr:sql var="numberOfPostsQuery"
-         sql="select jcr:uuid from jahiaForum:post  where jcr:path like '${currentNode.path}/%/%'"/>
+         sql="select [jcr:uuid] from [jahiaForum:post] as p  where isdescendantnode(p,['${currentNode.path}'])"/>
 <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
 <jcr:sql var="numberOfThreadsQuery"
-         sql="select jcr:uuid from jahiaForum:thread  where jcr:path like '${currentNode.path}/%'"/>
+         sql="select [jcr:uuid] from [jahiaForum:thread] as t  where isdescendantnode(t,['${currentNode.path}'])"/>
 <c:set var="numberOfThreads" value="${numberOfThreadsQuery.rows.size}"/>
 <div id="forum-body">
     <div class="topics">

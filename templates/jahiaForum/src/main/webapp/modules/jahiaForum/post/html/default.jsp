@@ -48,7 +48,7 @@
     <div class="content">${content.string}</div>
 </div>
 <jcr:sql var="numberOfPostsQuery"
-         sql="select jcr:uuid from jahiaForum:post  where jcr:createdBy = '${createdBy.string}'"/>
+         sql="select [jcr:uuid] from [jahiaForum:post] as p  where p.[jcr:createdBy] = '${createdBy.string}'"/>
 <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
 <dl class="forum-postprofile">
     <dt>

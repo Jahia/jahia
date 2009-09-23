@@ -5,7 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jcr:sql var="numberOfPostsQuery"
-         sql="select * from jahiaForum:post  where jcr:path like '${currentNode.path}/%/%' order by jcr:lastModified desc"/>
+         sql="select * from [jahiaForum:post] as post  where isdescendantnode(post, ['${currentNode.path}']) order by post.[jcr:lastModified] desc"/>
 <c:set var="numberOfPosts" value="${numberOfPostsQuery.nodes.size}"/>
 <c:forEach items="${numberOfPostsQuery.nodes}" var="node" varStatus="status" end="2">
     <c:if test="${status.first}">

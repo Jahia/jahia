@@ -89,7 +89,7 @@ public class JCRSQLTag extends AbstractJahiaTag {
      * @param p
      *            the principal
      * @param path
-     *            an Xpath expression to perform the JCR query
+     *            a JCR_SLQ2 expression to perform the query
      * @return the {@link javax.jcr.NodeIterator} instance with the results of the query;
      *         returns empty iterator if nothing is found
      */

@@ -32,11 +32,12 @@
 package org.jahia.services.preferences;
 
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.preferences.exception.*;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.preferences.exception.JahiaPreferenceNotDefinedAttributeException;
+import org.jahia.services.preferences.exception.JahiaPreferenceNotDefinedPropertyException;
+import org.jahia.services.preferences.exception.JahiaPreferencesNotValidException;
 
 import java.security.Principal;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -84,47 +85,40 @@ public interface JahiaPreferencesProvider<T extends JCRNodeWrapper> {
 
 
     /**
-     * Get jahia preference by a jahia preference key attributes. A jahia preference key is dynamically created.
-     *
-     * @param xpathKey
-     * @return
-     * @throws JahiaPreferenceNotDefinedAttributeException
-     *          if the jahia preference key attributes map contains a un-valid attributes.
+     * Get the existing JahiaPreference associated to this path
+     * @param principal the user for searching the preference
+     * @param sqlConstraint the sql constraint of the preference
+     * @return a JahiaPreference if found null otherwise
      */
-    abstract public JahiaPreference<T> getJahiaPreference(Principal principal, String xpathKey);
+    abstract public JahiaPreference<T> getJahiaPreference(Principal principal, String sqlConstraint);
 
 
     /**
-     *
-     * @param principal
-     * @param xpathKey
-     * @param notNull
-     * @return
+     * Get or create the requested preference at the path
+     * @param principal the user for searching the preference
+     * @param sqlConstraint the sql constraint of the preference
+     * @param notNull if true create the preference if not found
+     * @return a JahiaPreference if prefrence found or notNull is true, null otherwise
      */
-    abstract public JahiaPreference<T> getJahiaPreference(Principal principal, String xpathKey, boolean notNull);
+    abstract public JahiaPreference<T> getJahiaPreference(Principal principal, String sqlConstraint, boolean notNull);
 
 
     /**
-     * Get all preferences of a principal
+     * Get all preferences of a user.
      * WARNING: if there is lots of preferences, it can be time consuming.
-     *
-     * @param principal
-     * @return
+     * @param principal the user for whom we want the prefrences
+     * @return a List of all JahiaPreference for this user
      */
     abstract public List<JahiaPreference<T>> getJahiaAllPreferences(Principal principal);
 
 
     /**
-     * Get a List of preferences depending on the revelant properties
-     * Example:
-     * JahiaPreferenceKey = {pid,wid}
-     * getJahiaPreferencesByPartialKey(key,{wid}) --> get list of preferences with key.getWid() == wid ; pid properties is ignored.
-     *
-     * @param principal
-     * @param xpath
-     * @return
+     * Find all preferences for a user mathing certain sqlConstraint
+     * @param principal the user for whom we want the prefrences
+     * @param sqlConstraint the sql constraint of the preference
+     * @return a List of all JahiaPreference for this user
      */
-    abstract public List<JahiaPreference<T>> findJahiaPreferences(Principal principal, String xpath);
+    abstract public List<JahiaPreference<T>> findJahiaPreferences(Principal principal, String sqlConstraint);
 
 
     /**
@@ -137,30 +131,27 @@ public interface JahiaPreferencesProvider<T extends JCRNodeWrapper> {
     abstract public List<JahiaPreference<T>> getAllJahiaPreferences(ProcessingContext processingContext);
 
     /**
-     * Delete a jahia preference that has a key created from jahiaPreferenceKeyAttributes.
+     * Delete Jahia Preference
      *
-     * @param principal
-     * @param xpath
+     * @param principal the user for whom we want the prefrences
+     * @param sqlConstraint the sql constraint of the preference
      * @throws JahiaPreferenceNotDefinedAttributeException
-     *
      */
-    abstract public void deleteJahiaPreference(Principal principal, String xpath) throws JahiaPreferenceNotDefinedAttributeException;
+    abstract public void deleteJahiaPreference(Principal principal, String sqlConstraint) throws JahiaPreferenceNotDefinedAttributeException;
 
 
     /**
-     * Delete a jahia preference.
+     * Delete Jahia Prefernce
      *
-     * @param jahiaPreference
+     * @param jahiaPreference the preference to delete
      */
     abstract public void deleteJahiaPreference(JahiaPreference<T> jahiaPreference);
 
 
     /**
-     * Set a jahia preference.
+     * Set Jahia preference
      *
-     * @param jahiaPreference
-     * @throws JahiaPreferencesNotValidException
-     *
+     * @param jahiaPreference the preference to set
      */
     abstract public void setJahiaPreference(JahiaPreference<T> jahiaPreference);
 

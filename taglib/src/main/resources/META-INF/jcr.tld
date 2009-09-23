@@ -104,7 +104,7 @@
     <tag>
         <description>
             Exposes into the template scope the result (as the javax.jcr.query.QueryResult instance) of the JCR query
-            based on the provided XPath expression.
+            based on the provided JCR_SQL2 expression.
             You can then access to javax.jcr.NodeIterator using var.nodes or to javax.jcr.query.RowIterator using var.rows.
             If no items match the query an empty result is exposed. This condition can be checked using nodes.size or rows.size method.
         </description>

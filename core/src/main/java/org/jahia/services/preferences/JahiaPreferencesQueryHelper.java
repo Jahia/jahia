@@ -51,61 +51,55 @@ public class JahiaPreferencesQueryHelper {
     public static String getSimpleSQL(String prefName) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:prefName", prefName);
-        return convetToSQL(properties);
+        return convertToSQL(properties);
     }
 
     public static String getToolbarSQL(String name, String type) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:toolbarName", name);
         properties.put("j:type", type);
-        return convetToSQL(properties);
+        return convertToSQL(properties);
     }
 
     public static String getPageSQL(int pid, String prefName) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:page", getPageUUID(pid));
         properties.put("j:prefName", prefName);
-        return convetToSQL(properties);
+        return convertToSQL(properties);
     }
 
     public static String getLayoutmanagerSQL(int pid, String windowId) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:page", pid);
         properties.put("j:windowId", windowId);
-        return convetToSQL(properties);
+        return convertToSQL(properties);
     }
 
     public static String getLayoutmanagerSQL(int pid) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:page", getPageUUID(pid));
-        return convetToSQL(properties);
+        return convertToSQL(properties);
     }
 
     public static String getPortletSQL(String portletName, String prefName) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:portletName", portletName);
         properties.put("j:prefName", prefName);
-        return convetToSQL(properties);
+        return convertToSQL(properties);
     }
 
     public static String getPortletSQL(String portletName) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:portletName", portletName);
-        return convetToSQL(properties);
+        return convertToSQL(properties);
     }
 
     public static String getBookmarkSQL(int pid) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:page", getPageUUID(pid));
-        return convetToSQL(properties);
+        return convertToSQL(properties);
     }
 
-    /**
-     * Get page uuid
-     *
-     * @param pid
-     * @return
-     */
     private static String getPageUUID(int pid) {
         try {
             ContentPage page = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(pid, false);
@@ -117,12 +111,12 @@ public class JahiaPreferencesQueryHelper {
     }
 
     /**
-     * Convert a map to an xpath
+     * Convert a map of String Object to an sqlConstraint
      *
-     * @param propertiesMap
-     * @return
+     * @param propertiesMap Map of property key value
+     * @return a string containing sql constraint to be used with JahiaPreferencesProvider
      */
-    public static String convetToSQL(Map<String, Object> propertiesMap) {
+    public static String convertToSQL(Map<String, Object> propertiesMap) {
         StringBuffer prefPath = new StringBuffer();
         if (propertiesMap != null && !propertiesMap.isEmpty()) {
             Iterator<?> propertiesIterator = propertiesMap.keySet().iterator();
@@ -145,10 +139,12 @@ public class JahiaPreferencesQueryHelper {
     }
 
     /**
-     * @param propertiesMap
-     * @return
+     * Convert a map of String String to an sqlConstraint
+     *
+     * @param propertiesMap Map of property key value
+     * @return a string containing sql constraint to be used with JahiaPreferencesProvider
      */
-    public static String convetToXpath2(Map<String, String> propertiesMap) {
+    public static String convertToSQLPureStringProperties(Map<String, String> propertiesMap) {
         StringBuffer prefPath = new StringBuffer();
         if (propertiesMap != null && !propertiesMap.isEmpty()) {
             Iterator<?> propertiesIterator = propertiesMap.keySet().iterator();

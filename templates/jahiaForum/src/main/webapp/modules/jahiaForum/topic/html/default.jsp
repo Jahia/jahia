@@ -52,7 +52,9 @@
             <div class="clear"></div>
             <span class="forum-corners-bottom"><span></span></span>
         </div>
+        <c:if test="${renderContext.user.name != 'guest'}">
         <template:module node="${currentNode}" template="newThreadForm"/>
+        </c:if>
         <div class="forum-actions">
             <div class="forum-pagination">
                 ${fn:length(currentNode.children)} threads

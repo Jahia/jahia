@@ -57,10 +57,12 @@
     </dt>
     <br/>
     <dd><strong>Posts:</strong> ${numberOfPosts}</dd>
+    <c:if test="${not empty userNode}">
     <dd><strong>Joined:</strong> <jcr:nodeProperty node="${userNode}" name="jcr:lastModified"
                                                    var="userCreated"/><fmt:formatDate value="${userCreated.time}"
                                                                                       type="both" dateStyle="full"/>
     </dd>
+        </c:if>
 </dl>
 <div class="back2top"><a title="Top" class="top" href="#wrap">Top</a></div>
 <div class="clear"></div>

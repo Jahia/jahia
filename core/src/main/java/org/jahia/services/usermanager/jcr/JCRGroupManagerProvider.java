@@ -322,9 +322,10 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         List<String> groups = new ArrayList<String>();
 
         if (user instanceof JCRUser) {
+            Session session = null;
             JCRUser jcrUser = (JCRUser) user;
             try {
-                Session session = jcrStoreService.getSystemSession();
+                session = jcrStoreService.getSystemSession();
                 if (session.getWorkspace().getQueryManager() != null) {
                     String query = "SELECT * FROM [jnt:member] as m where m.[j:member] = '" + jcrUser.getNodeUuid() + "' ORDER BY m.[j:nodename]";
                     Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
@@ -333,7 +334,12 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     while (nodes.hasNext()) {
                         Node memberNode = nodes.nextNode();
                         Node group = memberNode.getParent().getParent();
-                        int siteID = sitesService.getSiteByKey(group.getParent().getParent().getName()).getID();
+                        int siteID;
+                        try {
+                            siteID = sitesService.getSiteByKey(group.getParent().getParent().getName()).getID();
+                        } catch (NullPointerException e) {
+                            siteID = 0;
+                        }
                         groups.add(group.getName() + ":" + siteID);
                     }
                 }
@@ -341,6 +347,10 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 logger.error(e);
             } catch (JahiaException e) {
                 logger.error(e);
+            } finally {
+                if(session!=null) {
+                    session.logout();
+                }
             }
         }
         return groups;

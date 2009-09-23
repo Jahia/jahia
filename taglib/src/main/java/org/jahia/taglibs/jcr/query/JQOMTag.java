@@ -44,12 +44,10 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.taglibs.query.QueryDefinitionTag;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.QueryObjectModel;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Locale;
@@ -60,7 +58,7 @@ import java.util.Locale;
  */
 @SuppressWarnings("serial")
 public class JQOMTag extends QueryDefinitionTag {
-    private static final Logger logger = Logger.getLogger(JCRSQLTag.class);
+    private static final Logger logger = Logger.getLogger(JQOMTag.class);
 
     private int scope = PageContext.PAGE_SCOPE;
 

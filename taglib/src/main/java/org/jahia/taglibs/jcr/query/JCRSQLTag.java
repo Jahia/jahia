@@ -55,6 +55,7 @@ import java.util.Locale;
 /**
  * Tag implementation for exposing a result of XPath JCR query into the template scope.
  */
+@SuppressWarnings("serial")
 public class JCRSQLTag extends AbstractJahiaTag {
     private static final Logger logger = Logger.getLogger(JCRSQLTag.class);
     private int scope = PageContext.PAGE_SCOPE;
@@ -70,7 +71,7 @@ public class JCRSQLTag extends AbstractJahiaTag {
         try {
             final ProcessingContext ctx = getProcessingContext();
             if (ctx != null) {
-                pageContext.setAttribute(var, findQueryResultByXpath(ctx.getUser(), sql), scope);
+                pageContext.setAttribute(var, findQueryResultBySQL(ctx.getUser(), sql), scope);
             } else {
                 logger.error("ProcessingContext instance is null.");
             }
@@ -92,7 +93,7 @@ public class JCRSQLTag extends AbstractJahiaTag {
      * @return the {@link javax.jcr.NodeIterator} instance with the results of the query;
      *         returns empty iterator if nothing is found
      */
-    private QueryResult findQueryResultByXpath(Principal p, String path) {
+    private QueryResult findQueryResultBySQL(Principal p, String path) {
         QueryResult queryResult = null;
         if (logger.isDebugEnabled()) {
             logger.debug("Find node by xpath[ " + path + " ]");

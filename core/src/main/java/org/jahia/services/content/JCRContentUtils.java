@@ -314,32 +314,32 @@ public final class JCRContentUtils {
 
     /**
      * Convert a string to a JCR search expression literal, suitable for use in
-     * jcr:contains() (inside XPath queries). The characters - and " have
+     * jcr:contains() (inside XPath) or contains (SQL2). The characters - and " have
      * special meaning, and may be escaped with a backslash to obtain their
-     * literal value. See JSR-170 spec v1.0, Sec. 6.6.5.2.
+     * literal value. See JSR-283 spec v2.0, Sec. 4.6.6.19.
      * 
      * @param str
      *            Any string.
-     * @return A valid XPath 2.0 string literal suitable for use in
-     *         jcr:contains(), including enclosing quotes.
+     * @return A valid string literal suitable for use in
+     *         JCR contains clauses, including enclosing quotes.
      */
     public static String stringToJCRSearchExp(String str) {
         // Escape ' and \ everywhere, preceding them with \ except when \
         // appears
         // in one of the combinations \" or \-
-        return stringToXPathLiteral(str.replaceAll("\\\\(?![-\"])", "\\\\\\\\")
+        return stringToQueryLiteral(str.replaceAll("\\\\(?![-\"])", "\\\\\\\\")
                 .replaceAll("'", "\\\\'").replaceAll("\"", "\\\\\""));
     }
 
     /**
-     * Convert a string to an XPath 2.0 string literal, suitable for inclusion
-     * in a query. See JSR-170 spec v1.0, Sec. 6.6.4.9.
+     * Convert a string to a literal, suitable for inclusion
+     * in a query. See JSR-283 spec v2.0, Sec. 4.6.6.19.
      * 
      * @param str
      *            Any string.
-     * @return A valid XPath 2.0 string literal, including enclosing quotes.
+     * @return A valid JCR query string literal, including enclosing quotes.
      */
-    public static String stringToXPathLiteral(String str) {
+    public static String stringToQueryLiteral(String str) {
         // Single quotes needed for jcr:contains()
         return "'" + str.replaceAll("'", "''") + "'";
     }

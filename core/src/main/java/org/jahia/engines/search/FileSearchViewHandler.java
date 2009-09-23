@@ -32,7 +32,7 @@
 package org.jahia.engines.search;
 
 import static org.jahia.services.content.JCRContentUtils.stringToJCRSearchExp;
-import static org.jahia.services.content.JCRContentUtils.stringToXPathLiteral;
+import static org.jahia.services.content.JCRContentUtils.stringToQueryLiteral;
 
 import java.io.StringReader;
 import java.io.Writer;
@@ -40,10 +40,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.ValueFactory;
-import javax.jcr.ValueFormatException;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -61,8 +57,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRStoreProvider;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.search.savedsearch.JahiaSavedSearch;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.JahiaTools;
@@ -427,9 +421,9 @@ public class FileSearchViewHandler extends AbstractSearchViewHandler {
     private String getMimeTypeConstraint(String mimeType) {
 
         return mimeType.contains("*") ? "jcr:like(jcr:content/@jcr:mimeType,"
-                + stringToXPathLiteral(StringUtils.replaceChars(mimeType, '*',
+                + stringToQueryLiteral(StringUtils.replaceChars(mimeType, '*',
                         '%')) + ")" : "jcr:content/@jcr:mimeType="
-                + stringToXPathLiteral(mimeType);
+                + stringToQueryLiteral(mimeType);
     }
 
     private String getNodeType(String docType) {

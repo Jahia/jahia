@@ -186,7 +186,7 @@ public class SubscriptionsActionItem extends BaseActionItem {
                 "Cancel"));
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                window.close();
+                window.hide();
             }
         });
 
@@ -235,7 +235,7 @@ public class SubscriptionsActionItem extends BaseActionItem {
                         mb
                                 .setMessage(success ? "Subscriptions updated sucessfully"
                                         : "Unable to update subscriptions status");
-                        window.close();
+                        window.hide();
                         mb.show();
                     }
                 });

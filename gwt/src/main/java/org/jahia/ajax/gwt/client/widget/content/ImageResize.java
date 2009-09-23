@@ -31,22 +31,22 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
  *
@@ -56,9 +56,9 @@ import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
  */
 public class ImageResize extends Window {
 
-    private ManagerLinker m_linker ;
+    private Linker m_linker ;
 
-    public ImageResize(final ManagerLinker linker, final GWTJahiaNode n) {
+    public ImageResize(final Linker linker, final GWTJahiaNode n) {
         super() ;
 
         m_linker = linker ;
@@ -165,7 +165,7 @@ public class ImageResize extends Window {
 
              public void onSuccess(Object result) {
                 hide();
-                m_linker.refreshTable();
+                m_linker.refreshMainComponent();
              }
          });
     }

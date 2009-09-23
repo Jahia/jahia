@@ -59,7 +59,7 @@ public class MainModule extends ContentPanel implements Module {
             }
         };
         getHeader().addListener(Events.OnClick, listener);
-        getHeader().addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this));                
+        getHeader().addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,editLinker));                
     }
 
     public EditLinker getEditLinker() {

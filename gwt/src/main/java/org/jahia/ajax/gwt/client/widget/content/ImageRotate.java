@@ -31,22 +31,21 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
  *
@@ -56,9 +55,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class ImageRotate extends Window {
 
-    private ManagerLinker m_linker ;
+    private Linker m_linker ;
 
-    public ImageRotate(final ManagerLinker linker, final GWTJahiaNode n) {
+    public ImageRotate(final Linker linker, final GWTJahiaNode n) {
         super() ;
 
         m_linker = linker ;
@@ -125,7 +124,7 @@ public class ImageRotate extends Window {
 
              public void onSuccess(Object result) {
                 hide();
-                m_linker.refreshTable();
+                m_linker.refreshMainComponent();
              }
          });
     }

@@ -6,14 +6,17 @@ import com.extjs.gxt.ui.client.widget.Info;
 
 public class EditContentEnginePopupListener implements Listener<ComponentEvent> {
     private final Module module;
+    private final EditLinker editLinker;
 
-    public EditContentEnginePopupListener(Module simpleModule) {
-        this.module = simpleModule;
+    public EditContentEnginePopupListener(Module module, EditLinker editLinker) {
+        //To change body of created methods use File | Settings | File Templates.
+        this.module = module;
+        this.editLinker = editLinker;
     }
 
     public void handleEvent(ComponentEvent ce) {
         if (module.getNode().isWriteable()) {
-            new EditContentEngine(module.getNode()).show();
+            new EditContentEngine(module.getNode(),editLinker).show();
         } else {
             Info.display("Rights Restriction", "You do not have rights to edit this content");
         }

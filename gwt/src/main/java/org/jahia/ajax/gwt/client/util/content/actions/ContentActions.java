@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.util.content.actions;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -39,23 +40,22 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
-import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
-import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
-import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
 import org.jahia.ajax.gwt.client.widget.content.*;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
+import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
+import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -76,8 +76,8 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void copy(final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void copy(final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() > 0) {
             linker.loading(Messages.getResource("fm_copying"));
             service.copy(selectedItems, new AsyncCallback() {
@@ -89,7 +89,7 @@ public class ContentActions {
                 public void onSuccess(Object o) {
                     CopyPasteEngine.getInstance().setCopiedPaths(selectedItems);
                     linker.loaded();
-                    linker.handleNewSelection();
+                    linker.select(null);
                 }
             });
         }
@@ -100,8 +100,8 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void cut(final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void cut(final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() > 0) {
             final List<GWTJahiaNode> actualSelection = new ArrayList<GWTJahiaNode>();
             final List<GWTJahiaNode> lockedFiles = new ArrayList<GWTJahiaNode>();
@@ -130,7 +130,7 @@ public class ContentActions {
                     public void onSuccess(Object o) {
                         CopyPasteEngine.getInstance().setCutPaths(actualSelection);
                         linker.loaded();
-                        linker.handleNewSelection();
+                        linker.select(null);
 
                     }
                 });
@@ -143,10 +143,10 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void paste(final ManagerLinker linker) {
-        GWTJahiaNode m = (GWTJahiaNode) linker.getTreeSelection();
+    public static void paste(final Linker linker) {
+        GWTJahiaNode m = linker.getMainNode();
         if (m == null) {
-            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 m = selectedItems.get(0);
             }
@@ -161,19 +161,19 @@ public class ContentActions {
                 }
 
                 public void onSuccess(Object o) {
-                    boolean refreshAll = false;
+                    boolean refresh = false;
                     for (GWTJahiaNode n : copyPasteEngine.getCopiedPaths()) {
                         if (!n.isFile()) {
-                            refreshAll = true;
+                            refresh = true;
                             break;
                         }
                     }
                     copyPasteEngine.onPastedPath();
                     linker.loaded();
-                    if (refreshAll) {
-                        linker.refreshAll();
+                    if (refresh) {
+                        linker.refresh();
                     } else {
-                        linker.refreshTable();
+                        linker.refreshMainComponent();
                     }
                 }
             });
@@ -185,10 +185,10 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void pasteReference(final ManagerLinker linker) {
+    public static void pasteReference(final Linker linker) {
         GWTJahiaNode m = null;
 
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1 && selectedItems.get(0) != null && !selectedItems.get(0).isFile()) {
             m = selectedItems.get(0);
             if (m != null && !m.isFile()) {
@@ -202,26 +202,26 @@ public class ContentActions {
                         }
 
                         public void onSuccess(Object o) {
-                            boolean refreshAll = false;
+                            boolean refresh = false;
                             for (GWTJahiaNode n : copyPasteEngine.getCopiedPaths()) {
                                 if (!n.isFile()) {
-                                    refreshAll = true;
+                                    refresh = true;
                                     break;
                                 }
                             }
                             copyPasteEngine.onPastedPath();
                             linker.loaded();
-                            if (refreshAll) {
-                                linker.refreshAll();
+                            if (refresh) {
+                                linker.refresh();
                             } else {
-                                linker.refreshTable();
+                                linker.refreshMainComponent();
                             }
                         }
                     });
                 }
             }
         } else {
-            m = (GWTJahiaNode) linker.getTreeSelection();
+            m = linker.getMainNode();
             if (m != null && !m.isFile()) {
                 linker.loading(Messages.getResource("fm_pastingref"));
                 final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
@@ -232,19 +232,19 @@ public class ContentActions {
                     }
 
                     public void onSuccess(Object o) {
-                        boolean refreshAll = false;
+                        boolean refresh = false;
                         for (GWTJahiaNode n : copyPasteEngine.getCopiedPaths()) {
                             if (!n.isFile()) {
-                                refreshAll = true;
+                                refresh = true;
                                 break;
                             }
                         }
                         copyPasteEngine.onPastedPath();
                         linker.loaded();
-                        if (refreshAll) {
-                            linker.refreshAll();
+                        if (refresh) {
+                            linker.refresh();
                         } else {
-                            linker.refreshTable();
+                            linker.refreshMainComponent();
                         }
                     }
                 });
@@ -260,7 +260,7 @@ public class ContentActions {
      * @param sources
      * @param target
      */
-    public static void move(final ManagerLinker linker, final List<GWTJahiaNode> sources, GWTJahiaNode target) {
+    public static void move(final Linker linker, final List<GWTJahiaNode> sources, GWTJahiaNode target) {
         service.paste(sources, target.getPath(), true, new AsyncCallback() {
             public void onFailure(Throwable throwable) {
                 Window.alert("Paste failed :\n" + throwable.getLocalizedMessage());
@@ -268,19 +268,19 @@ public class ContentActions {
             }
 
             public void onSuccess(Object o) {
-                boolean refreshAll = false;
+                boolean refresh = false;
                 for (GWTJahiaNode n : sources) {
                     if (!n.isFile()) {
-                        refreshAll = true;
+                        refresh = true;
                         break;
                     }
                 }
 
                 linker.loaded();
-                if (refreshAll) {
-                    linker.refreshAll();
+                if (refresh) {
+                    linker.refresh();
                 } else {
-                    linker.refreshTable();
+                    linker.refreshMainComponent();
                 }
             }
         });
@@ -291,10 +291,10 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void upload(final ManagerLinker linker) {
-        GWTJahiaNode m = (GWTJahiaNode) linker.getTreeSelection();
+    public static void upload(final Linker linker) {
+        GWTJahiaNode m = (GWTJahiaNode) linker.getMainNode();
         if (m == null) {
-            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 m = selectedItems.get(0);
             }
@@ -309,8 +309,8 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void download(final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void download(final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selection = selectedItems.get(0);
             download(linker, selection, selection.getUrl());
@@ -324,7 +324,7 @@ public class ContentActions {
      * @param selection
      * @param url
      */
-    public static void download(ManagerLinker linker, GWTJahiaNode selection, String url) {
+    public static void download(Linker linker, GWTJahiaNode selection, String url) {
         if (selection != null && selection.isFile().booleanValue()) {
             linker.loading(Messages.getResource("fm_downloading"));
             if (url != null) {
@@ -349,8 +349,8 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void preview(final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void preview(final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selection = selectedItems.get(0);
             if (selection != null && selection.isFile().booleanValue()) {
@@ -364,11 +364,11 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void openWebFolder(final ManagerLinker linker) {
-        List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void openWebFolder(final Linker linker) {
+        List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         final GWTJahiaNode selection;
         if (selectedItems == null || selectedItems.size() > 1 || (selectedItems.size() == 1 && selectedItems.get(0).isFile())) {
-            selection = (GWTJahiaNode) linker.getTreeSelection();
+            selection = (GWTJahiaNode) linker.getMainNode();
         } else {
             selection = selectedItems.get(0);
         }
@@ -404,10 +404,10 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void createFolder(final ManagerLinker linker) {
-        GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
+    public static void createFolder(final Linker linker) {
+        GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
         if (parent == null) {
-            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 parent = selectedItems.get(0);
             }
@@ -424,7 +424,7 @@ public class ContentActions {
 
                     public void onSuccess(Object o) {
                         linker.loaded();
-                        linker.refreshAll();
+                        linker.refresh();
                     }
                 });
             }
@@ -436,10 +436,10 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void showMashupWizard(final ManagerLinker linker) {
-        GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
+    public static void showMashupWizard(final Linker linker) {
+        GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
         if (parent == null) {
-            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 parent = selectedItems.get(0);
             }
@@ -455,10 +455,10 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void showRSSForm(final ManagerLinker linker) {
-        GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
+    public static void showRSSForm(final Linker linker) {
+        GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
         if (parent == null) {
-            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 parent = selectedItems.get(0);
             }
@@ -473,7 +473,7 @@ public class ContentActions {
             w.setWidth(350);
             w.add(new FormQuickRSS(parent.getPath()) {
                 public void onMashupCreated() {
-                    linker.refreshTable();
+                    linker.refreshMainComponent();
                 }
             });
             w.setScrollMode(Style.Scroll.AUTO);
@@ -487,10 +487,10 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void showGoogleGadgetForm(final ManagerLinker linker) {
-        GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
+    public static void showGoogleGadgetForm(final Linker linker) {
+        GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
         if (parent == null) {
-            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 parent = selectedItems.get(0);
             }
@@ -506,7 +506,7 @@ public class ContentActions {
             w.add(new FormQuickGoogleGadget(parent.getPath()) {
                 @Override
                 public void onMashupCreated() {
-                    linker.refreshTable();
+                    linker.refreshMainComponent();
                 }
             });
             w.setScrollMode(Style.Scroll.AUTO);
@@ -523,10 +523,10 @@ public class ContentActions {
      * Show deploy portlet form
      * @param linker
      */
-    public static void showDeployPortletForm(final ManagerLinker linker) {
-        GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
+    public static void showDeployPortletForm(final Linker linker) {
+        GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
         if (parent == null) {
-            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 parent = selectedItems.get(0);
             }
@@ -555,7 +555,7 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void showContentWizard(final ManagerLinker linker) {
+    public static void showContentWizard(final Linker linker) {
         showContentWizard(linker, null);
     }
 
@@ -566,7 +566,7 @@ public class ContentActions {
      * @param linker
      * @param nodeType
      */
-    public static void showContentWizard(final ManagerLinker linker, final String nodeType) {
+    public static void showContentWizard(final Linker linker, final String nodeType) {
         if(nodeType ==  null){
             showContentWizardByNodeType(linker, null);
             return;
@@ -596,10 +596,10 @@ public class ContentActions {
      * @param linker
      * @param nodeType
      */
-    public static void showContentWizardByNodeType(final ManagerLinker linker, final GWTJahiaNodeType nodeType) {
-        GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection();
+    public static void showContentWizardByNodeType(final Linker linker, final GWTJahiaNodeType nodeType) {
+        GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
         if (parent == null) {
-            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {
                 parent = selectedItems.get(0);
             }
@@ -614,10 +614,10 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void mountFolder(final ManagerLinker linker) {
-//        GWTJahiaNode parent = (GWTJahiaNode) linker.getTreeSelection() ;
+    public static void mountFolder(final Linker linker) {
+//        GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode() ;
 //        if (parent == null) {
-//            final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection() ;
+//            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes() ;
 //            if (selectedItems != null && selectedItems.size() == 1) {
 //                parent = selectedItems.get(0) ;
 //            }
@@ -632,8 +632,8 @@ public class ContentActions {
      *
      * @param linker
      */
-    public static void unmountFolder(final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void unmountFolder(final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             GWTJahiaNode selection = selectedItems.get(0);
             if (selection.isLocked()) {
@@ -650,15 +650,15 @@ public class ContentActions {
 
                     public void onSuccess(Object o) {
                         linker.loaded();
-                        linker.refreshAll();
+                        linker.refresh();
                     }
                 });
             }
         }
     }
 
-    public static void remove(final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void remove(final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() > 0) {
             boolean rem;
             boolean containFolder = false;
@@ -702,9 +702,9 @@ public class ContentActions {
                         public void onSuccess(Object o) {
                             linker.loaded();
                             if (refreshTree) {
-                                linker.refreshAll();
+                                linker.refresh();
                             } else {
-                                linker.refreshTable();
+                                linker.refreshMainComponent();
                             }
                         }
                     });
@@ -713,8 +713,8 @@ public class ContentActions {
         }
     }
 
-    public static void rename(final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void rename(final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selection = selectedItems.get(0);
             if (selection != null) {
@@ -735,9 +735,9 @@ public class ContentActions {
                         public void onSuccess(Object o) {
                             linker.loaded();
                             if (folder) {
-                                linker.refreshAll();
+                                linker.refresh();
                             } else {
-                                linker.refreshTable();
+                                linker.refreshMainComponent();
                             }
                         }
                     });
@@ -748,9 +748,9 @@ public class ContentActions {
         }
     }
 
-    public static void zip(final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
-        final GWTJahiaNode parentItem = (GWTJahiaNode) linker.getTreeSelection();
+    public static void zip(final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
+        final GWTJahiaNode parentItem = (GWTJahiaNode) linker.getMainNode();
         if (parentItem != null && selectedItems != null && selectedItems.size() > 0) {
             final GWTJahiaNode selection = selectedItems.get(0);
             if (selection != null) {
@@ -784,7 +784,7 @@ public class ContentActions {
         }
     }
 
-    private static void forceZip(final List<GWTJahiaNode> selectedItems, final String archName, final ManagerLinker linker) {
+    private static void forceZip(final List<GWTJahiaNode> selectedItems, final String archName, final Linker linker) {
         List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
         for (GWTJahiaNode node : selectedItems) {
             selectedPaths.add(node.getPath());
@@ -797,13 +797,13 @@ public class ContentActions {
 
             public void onSuccess(Object o) {
                 linker.loaded();
-                linker.refreshTable();
+                linker.refreshMainComponent();
             }
         });
     }
 
-    public static void unzip(final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void unzip(final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() > 0) {
             linker.loading(Messages.getResource("fm_unzipping"));
             List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
@@ -820,14 +820,14 @@ public class ContentActions {
 
                 public void onSuccess(Object o) {
                     linker.loaded();
-                    linker.refreshAll();
+                    linker.refresh();
                 }
             });
         }
     }
 
-    public static void lock(boolean lock, final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void lock(boolean lock, final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() > 0) {
             List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
             List<String> lockedBySystem = new LinkedList<String>();
@@ -869,20 +869,20 @@ public class ContentActions {
                     public void onFailure(Throwable throwable) {
                         MessageBox.alert("Error", throwable.getLocalizedMessage(), null);
                         linker.loaded();
-                        linker.refreshTable();
+                        linker.refreshMainComponent();
                     }
 
                     public void onSuccess(Object o) {
                         linker.loaded();
-                        linker.refreshTable();
+                        linker.refreshMainComponent();
                     }
                 });
             }
         }
     }
 
-    public static void cropImage(final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void cropImage(final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selectedNode = selectedItems.get(0);
             if (selectedNode != null) {
@@ -891,8 +891,8 @@ public class ContentActions {
         }
     }
 
-    public static void resizeImage(final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void resizeImage(final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selectedNode = selectedItems.get(0);
             if (selectedNode != null) {
@@ -901,8 +901,8 @@ public class ContentActions {
         }
     }
 
-    public static void rotateImage(final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void rotateImage(final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selectedNode = selectedItems.get(0);
             if (selectedNode != null) {
@@ -911,23 +911,23 @@ public class ContentActions {
         }
     }
 
-    public static void exportContent(final ManagerLinker linker) {
-        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+    public static void exportContent(final Linker linker) {
+        final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
             GWTJahiaNode selectedNode = selectedItems.get(0);
             if (selectedNode != null) {
                 new ContentExport(linker, selectedNode).show();
             }
         } else {
-            GWTJahiaNode selectedNode = (GWTJahiaNode) linker.getTreeSelection();
+            GWTJahiaNode selectedNode = linker.getMainNode();
             if (selectedNode != null) {
                 new ContentExport(linker, selectedNode).show();
             }
         }
     }
 
-    public static void importContent(final ManagerLinker linker) {
-        final GWTJahiaNode selectedNode = (GWTJahiaNode) linker.getTreeSelection();
+    public static void importContent(final Linker linker) {
+        final GWTJahiaNode selectedNode = linker.getMainNode();
         if (selectedNode != null) {
             new ContentImport(linker, selectedNode).show();
         }

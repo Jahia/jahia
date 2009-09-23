@@ -31,15 +31,14 @@
  */
 package org.jahia.ajax.gwt.client.widget.content.wizard;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -47,11 +46,10 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow.ContentWizardCard;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Label;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Wizard card responsible for displaying a form for entering content data.
@@ -138,7 +136,7 @@ public class ContentFormCard extends ContentWizardCard {
                             getWizardWindow().getLinker()
                                     .setSelectPathAfterDataUpdate(
                                             result.getPath());
-                            getWizardWindow().getLinker().refreshTable();
+                            getWizardWindow().getLinker().refreshMainComponent();
                         }
                         MessageBox
                                 .info(

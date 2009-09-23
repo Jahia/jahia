@@ -33,23 +33,23 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.google.gwt.user.client.ui.*;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +64,7 @@ public class FileUploader extends Window {
     private int fieldCount = 0;
     private FormPanel form;
 
-    public FileUploader(final ManagerLinker linker, final GWTJahiaNode location) {
+    public FileUploader(final Linker linker, final GWTJahiaNode location) {
         super();
         setHeading(Messages.getResource("fm_uploadFiles"));
         setSize(500, 200);
@@ -246,11 +246,11 @@ public class FileUploader extends Window {
         show();
     }
 
-    private void endUpload(CheckBox unzip, ManagerLinker linker) {
+    private void endUpload(CheckBox unzip, Linker linker) {
         if (unzip.getValue().booleanValue()) {
-            linker.refreshAll();
+            linker.refresh();
         } else {
-            linker.refreshTable();
+            linker.refreshMainComponent();
         }
 
         hide();

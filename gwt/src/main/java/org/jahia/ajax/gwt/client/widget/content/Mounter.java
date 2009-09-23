@@ -31,22 +31,22 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.AdapterField;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.form.AdapterField;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
-import com.allen_sauer.gwt.log.client.Log;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
  * Created by IntelliJ IDEA.
@@ -56,7 +56,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
  */
 public class Mounter extends Window {
 
-    public Mounter(final ManagerLinker linker) {
+    public Mounter(final Linker linker) {
         super() ;
         setHeading(Messages.getResource("fm_mount"));
         setSize(500, 250);
@@ -121,7 +121,7 @@ public class Mounter extends Window {
                         bar.reset() ;
                         linker.loaded() ;
                         hide();
-                        linker.refreshAll();
+                        linker.refresh();
                     }
 
                 });

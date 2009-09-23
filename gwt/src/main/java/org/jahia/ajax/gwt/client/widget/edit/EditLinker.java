@@ -36,6 +36,10 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
+import org.jahia.ajax.gwt.client.widget.Linker;
+
+import java.util.List;
+import java.util.ArrayList;
 
 
 /**
@@ -45,7 +49,7 @@ import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
  * @since : JAHIA 6.1
  *        Created : 24 août 2009
  */
-public class EditLinker {
+public class EditLinker implements Linker {
     private GWTJahiaNode sidePanelSelectedNode;
     private Module selectedModule;
     private Module previouslySelectedModule;
@@ -115,22 +119,30 @@ public class EditLinker {
 
     public void onModuleSelection(Module selection) {
         selectedModule = selection;
-        selection.setDraggable(false);
-        if(previouslySelectedModule!=null) {
-            final String path = previouslySelectedModule.getPath();
-            final String s = selectedModule.getPath();
-            if(!path.equals(s) && path.contains(s)) {
-                previouslySelectedModule = null;
-                return;
+        if (selectedModule != null) {
+            selection.setDraggable(false);
+            if (previouslySelectedModule != null) {
+                final String path = previouslySelectedModule.getPath();
+                final String s = selectedModule.getPath();
+                if (!path.equals(s) && path.contains(s)) {
+                    previouslySelectedModule = null;
+                    return;
+                }
             }
         }
         handleNewModuleSelection();
-        selectedModule.setDraggable(true);
+        if (selectedModule != null) {
+            selectedModule.setDraggable(true);
+        }
     }
 
     public void refresh() {
         mainModule.refresh();
         toolbar.refresh();
+    }
+
+    public GWTJahiaNode getSelectedNode() {
+        return getSelectedModule().getNode();
     }
 
     public void handleNewModuleSelection() {
@@ -162,4 +174,35 @@ public class EditLinker {
     }
 
 
+    public void select(Object o) {
+        if(o==null || o instanceof Module) {
+            onModuleSelection((Module) o);
+        }
+    }
+
+    public void refreshMainComponent() {
+        getMainModule().refresh();
+    }
+
+    public GWTJahiaNode getMainNode() {
+        return getMainModule().getNode();
+    }
+
+    public List<GWTJahiaNode> getSelectedNodes() {
+        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+        nodes.add(getSelectedNode());
+        return nodes;
+    }
+
+    public void loaded() {
+        // todo:implements 
+    }
+
+    public void loading(String resource) {
+        // todo:implements
+    }
+
+    public void setSelectPathAfterDataUpdate(String path) {
+        // todo:implements
+    }
 }

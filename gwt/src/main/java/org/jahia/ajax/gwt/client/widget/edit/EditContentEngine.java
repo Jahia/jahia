@@ -34,26 +34,24 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.ArrayList;
@@ -71,8 +69,6 @@ public class EditContentEngine extends Window {
 
     private String contentPath;
 
-    private ContentPanel contentPanel;
-
     private TabPanel tabs;
 
     private AsyncTabItem contentTab;
@@ -84,7 +80,7 @@ public class EditContentEngine extends Window {
     private AsyncTabItem versionsTab;
 
     private AsyncTabItem workflowTab;
-    private EditLinker editLinker = null;
+    private Linker linker = null;
     private GWTJahiaNode parent = null;
     private GWTJahiaNodeType type = null;
     private String targetPath = null;
@@ -96,8 +92,10 @@ public class EditContentEngine extends Window {
      * Initializes an instance of this class.
      *
      * @param node the content object to be edited
+     * @param linker the edit linker for refresh purpose
      */
-    public EditContentEngine(GWTJahiaNode node) {
+    public EditContentEngine(GWTJahiaNode node, Linker linker) {
+        this.linker = linker;
         contentPath = node.getPath();
         if (node.getNodeTypes().contains("jnt:nodeReference")) {
             isReference = true;
@@ -106,13 +104,13 @@ public class EditContentEngine extends Window {
         initTabs(true);
     }
 
-    public EditContentEngine(EditLinker editLinker, GWTJahiaNode parent, GWTJahiaNodeType type, String targetPath) {
-        this(editLinker, parent, type, targetPath, false, false);
+    public EditContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, String targetPath) {
+        this(linker, parent, type, targetPath, false, false);
 
     }
 
-    public EditContentEngine(EditLinker editLinker, GWTJahiaNode parent, GWTJahiaNodeType type, String targetPath, boolean createInParentAndMoveOnTop, boolean showMetadataTitleInContentTab) {
-        this.editLinker = editLinker;
+    public EditContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, String targetPath, boolean createInParentAndMoveOnTop, boolean showMetadataTitleInContentTab) {
+        this.linker = linker;
         this.parent = parent;
         this.type = type;
         if (!"*".equals(targetPath)) {
@@ -289,7 +287,7 @@ public class EditContentEngine extends Window {
                 public void onSuccess(Object o) {
                     Info.display("", "Properties saved");
                     editContentEngine.hide();
-                    editLinker.getMainModule().refresh();
+                    linker.refreshMainComponent();
                 }
             });
         }
@@ -316,7 +314,7 @@ public class EditContentEngine extends Window {
                     public void onSuccess(Object o) {
                         Info.display("", "Node created");
                         editContentEngine.hide();
-                        editLinker.getMainModule().refresh();
+                        linker.refreshMainComponent();
                     }
                 });
             } else {
@@ -329,7 +327,7 @@ public class EditContentEngine extends Window {
                     public void onSuccess(GWTJahiaNode node) {
                         Info.display("", "Node created");
                         editContentEngine.hide();
-                        editLinker.getMainModule().refresh();
+                        linker.refreshMainComponent();
                     }
                 });
             }

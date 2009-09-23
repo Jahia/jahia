@@ -1,42 +1,38 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.core.El;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.core.El;
-import com.extjs.gxt.ui.client.util.SwallowEvent;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.RootPanel;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,10 +46,10 @@ public class EditActions {
     /**
      * Create page
      *
-     * @param editLinker
+     * @param linker
      */
-    public static void createPage(final EditLinker editLinker) {
-        if (editLinker.getMainModule().getNode() != null) {
+    public static void createPage(final Linker linker) {
+        if (linker.getMainNode() != null) {
             JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:page", new AsyncCallback<GWTJahiaNodeType>() {
                 public void onFailure(Throwable throwable) {
                     Log.error("", throwable);
@@ -61,7 +57,7 @@ public class EditActions {
                 }
 
                 public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
-                    new EditContentEngine(editLinker, editLinker.getMainModule().getNode(), gwtJahiaNodeType, null, false, true).show();
+                    new EditContentEngine(linker, linker.getMainNode(), gwtJahiaNodeType, null, false, true).show();
                 }
             });
         }
@@ -74,9 +70,9 @@ public class EditActions {
      *
      * @param editLinker
      */
-    public static void edit(EditLinker editLinker) {
-        if (editLinker.getMainModule() != null) {
-            new EditContentEngine(editLinker.getMainModule().getNode()).show();
+    public static void edit(Linker linker) {
+        if (linker.getMainNode() != null) {
+            new EditContentEngine(linker.getMainNode(),linker).show();
         }
     }
 
@@ -84,14 +80,14 @@ public class EditActions {
     /**
      * Publish selected content
      *
-     * @param editLinker
+     * @param linker
      */
-    public static void publish(final EditLinker editLinker) {
-        if (editLinker.getSelectedModule().getNode() != null) {
-            JahiaContentManagementService.App.getInstance().getPublicationInfo(editLinker.getSelectedModule().getNode().getPath(), true,
+    public static void publish(final Linker linker) {
+        if (linker.getSelectedNode() != null) {
+            JahiaContentManagementService.App.getInstance().getPublicationInfo(linker.getSelectedNode().getPath(), true,
                     new AsyncCallback<GWTJahiaPublicationInfo>() {
                         public void onSuccess(GWTJahiaPublicationInfo result) {
-                            new PublicationStatusWindow(editLinker, result).show();
+                            new PublicationStatusWindow(linker, result).show();
                         }
 
                         public void onFailure(Throwable caught) {
@@ -106,11 +102,11 @@ public class EditActions {
     /**
      * Unpublish selected content
      *
-     * @param editLinker
+     * @param linker
      */
-    public static void unpublish(final EditLinker editLinker) {
-        if (editLinker.getSelectedModule().getNode() != null) {
-            JahiaContentManagementService.App.getInstance().unpublish(editLinker.getSelectedModule().getNode().getPath(), new AsyncCallback() {
+    public static void unpublish(final Linker linker) {
+        if (linker.getSelectedNode() != null) {
+            JahiaContentManagementService.App.getInstance().unpublish(linker.getSelectedNode().getPath(), new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
                     com.google.gwt.user.client.Window.alert("Cannot unpublish " + caught.getMessage());
@@ -118,7 +114,7 @@ public class EditActions {
 
                 public void onSuccess(Object result) {
                     Info.display(Messages.getResource("publication_unpublished_title"), Messages.getResource("publication_unpublished_text"));
-                    editLinker.refresh();
+                    linker.refresh();
                 }
             });
         }
@@ -128,13 +124,13 @@ public class EditActions {
     /**
      * Switch lock
      *
-     * @param editLinker
+     * @param linker
      */
-    public static void switchLock(final EditLinker editLinker) {
-        if (editLinker.getSelectedModule() != null) {
+    public static void switchLock(final Linker linker) {
+        if (linker.getSelectedNode() != null) {
             List<String> paths = new ArrayList<String>(1);
-            paths.add(editLinker.getSelectedModule().getNode().getPath());
-            final boolean isLock = !editLinker.getSelectedModule().getNode().isLocked();
+            paths.add(linker.getSelectedNode().getPath());
+            final boolean isLock = !linker.getSelectedNode().isLocked();
             JahiaContentManagementService.App.getInstance().setLock(paths, isLock, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
                     Log.error("", throwable);
@@ -142,7 +138,7 @@ public class EditActions {
                 }
 
                 public void onSuccess(Object o) {
-                    editLinker.getMainModule().refresh();
+                    linker.refreshMainComponent();
                 }
             });
         }
@@ -153,12 +149,12 @@ public class EditActions {
     /**
      * Delete content
      *
-     * @param editLinker
+     * @param linker
      */
-    public static void delete(final EditLinker editLinker) {
-        if (editLinker.getSelectedModule() != null) {
+    public static void delete(final Linker linker) {
+        if (linker.getSelectedNode() != null) {
             List<String> paths = new ArrayList<String>(1);
-            paths.add(editLinker.getSelectedModule().getNode().getPath());
+            paths.add(linker.getSelectedNode().getPath());
             JahiaContentManagementService.App.getInstance().deletePaths(paths, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
                     Log.error("", throwable);
@@ -166,8 +162,8 @@ public class EditActions {
                 }
 
                 public void onSuccess(Object o) {
-                    editLinker.refresh();
-                    editLinker.onModuleSelection(null);
+                    linker.refresh();
+                    linker.select(null);
                 }
             });
         }
@@ -249,10 +245,8 @@ public class EditActions {
     }
 
     private static class PublicationStatusWindow extends Window {
-        private EditLinker editLinker;
 
-        private PublicationStatusWindow(final EditLinker editLinker, GWTJahiaPublicationInfo info) {
-            this.editLinker = editLinker;
+        private PublicationStatusWindow(final Linker linker, GWTJahiaPublicationInfo info) {
             setScrollMode(Style.Scroll.AUTO);
             setHeading("Publish");
             setSize(800, 500);
@@ -343,7 +337,7 @@ public class EditActions {
                 public void componentSelected(ButtonEvent event) {
                     ok.setEnabled(false);
                     cancel.setEnabled(false);
-                    JahiaContentManagementService.App.getInstance().publish(editLinker.getSelectedModule().getNode().getPath(), new AsyncCallback() {
+                    JahiaContentManagementService.App.getInstance().publish(linker.getSelectedNode().getPath(), new AsyncCallback() {
                         public void onFailure(Throwable caught) {
                             Log.error("Cannot publish", caught);
                             com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
@@ -352,7 +346,7 @@ public class EditActions {
 
                         public void onSuccess(Object result) {
                             Info.display(Messages.getResource("publication_published_title"), Messages.getResource("publication_published_text"));
-                            editLinker.refresh();
+                            linker.refresh();
                             hide();
                         }
                     });

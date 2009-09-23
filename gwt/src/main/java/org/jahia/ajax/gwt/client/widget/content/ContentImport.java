@@ -31,21 +31,20 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
 
 /**
  *
@@ -55,9 +54,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class ContentImport extends Window {
 
-    private ManagerLinker m_linker ;
+    private Linker m_linker ;
 
-    public ContentImport(final ManagerLinker linker, final GWTJahiaNode n) {
+    public ContentImport(final Linker linker, final GWTJahiaNode n) {
         super() ;
 
         m_linker = linker ;
@@ -106,7 +105,7 @@ public class ContentImport extends Window {
             }
 
             public void onSuccess(Object result) {
-                m_linker.refreshAll();
+                m_linker.refresh();
                 hide();
             }
         });

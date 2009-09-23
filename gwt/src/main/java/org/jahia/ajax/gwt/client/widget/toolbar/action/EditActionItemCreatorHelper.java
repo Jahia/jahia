@@ -1,12 +1,12 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.ModuleSelectionHandler;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
-import org.jahia.ajax.gwt.client.widget.edit.Module;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo; /**
+import org.jahia.ajax.gwt.client.widget.edit.EditActions;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.Module;
+import org.jahia.ajax.gwt.client.widget.toolbar.handler.ModuleSelectionHandler; /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
  *
@@ -51,7 +51,7 @@ public class EditActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ActionItemItf createEditCreateActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
+    public static ActionItemItf createEditCreateActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         ActionItemItf actionItem = new CreatePageActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
@@ -63,7 +63,7 @@ public class EditActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ActionItemItf createEditPublishActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
+    public static ActionItemItf createEditPublishActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         ActionItemItf actionItem = new PublishActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
@@ -75,7 +75,7 @@ public class EditActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ActionItemItf createEditUnpublishActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
+    public static ActionItemItf createEditUnpublishActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         ActionItemItf actionItem = new UnpublishActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
@@ -99,7 +99,7 @@ public class EditActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ActionItemItf createEditLockActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
+    public static ActionItemItf createEditLockActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         ActionItemItf actionItem = new LockActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
@@ -111,7 +111,7 @@ public class EditActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ActionItemItf createEditUnlockActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
+    public static ActionItemItf createEditUnlockActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         ActionItemItf actionItem = new UnlockActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
@@ -123,7 +123,7 @@ public class EditActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ActionItemItf createEditEditActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
+    public static ActionItemItf createEditEditActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         ActionItemItf actionItem = new EditContentActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
@@ -135,15 +135,15 @@ public class EditActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ActionItemItf createEditDeleteActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
+    public static ActionItemItf createEditDeleteActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         ActionItemItf actionItem = new DeleteActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
 
     private static class CreatePageActionItem extends BaseActionItem {
-        private final EditLinker linker;
+        private final Linker linker;
 
-        public CreatePageActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+        public CreatePageActionItem(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
             super(gwtToolbarItem);
             this.linker = linker;
         }
@@ -154,9 +154,9 @@ public class EditActionItemCreatorHelper {
     }
 
     private static class PublishActionItem extends BaseActionItem implements ModuleSelectionHandler {
-        private final EditLinker linker;
+        private final Linker linker;
 
-        public PublishActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+        public PublishActionItem(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
             super(gwtToolbarItem);
             this.linker = linker;
             setEnabled(false);
@@ -175,9 +175,9 @@ public class EditActionItemCreatorHelper {
     }
 
     private static class UnpublishActionItem extends BaseActionItem implements ModuleSelectionHandler {
-        private final EditLinker linker;
+        private final Linker linker;
 
-        public UnpublishActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+        public UnpublishActionItem(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
             super(gwtToolbarItem);
             this.linker = linker;
             setEnabled(false);
@@ -212,9 +212,9 @@ public class EditActionItemCreatorHelper {
     }
 
     private static class LockActionItem extends BaseActionItem implements ModuleSelectionHandler {
-        private final EditLinker linker;
+        private final Linker linker;
 
-        public LockActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+        public LockActionItem(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
             super(gwtToolbarItem);
             this.linker = linker;
             setEnabled(false);
@@ -232,9 +232,9 @@ public class EditActionItemCreatorHelper {
     }
 
     private static class UnlockActionItem extends BaseActionItem implements ModuleSelectionHandler {
-        private final EditLinker linker;
+        private final Linker linker;
 
-        public UnlockActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+        public UnlockActionItem(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
             super(gwtToolbarItem);
             this.linker = linker;
             setEnabled(false);
@@ -252,9 +252,9 @@ public class EditActionItemCreatorHelper {
     }
 
     private static class EditContentActionItem extends BaseActionItem implements ModuleSelectionHandler {
-        private final EditLinker linker;
+        private final Linker linker;
 
-        public EditContentActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+        public EditContentActionItem(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
             super(gwtToolbarItem);
             this.linker = linker;
             setEnabled(false);
@@ -272,9 +272,9 @@ public class EditActionItemCreatorHelper {
     }
 
     private static class DeleteActionItem extends BaseActionItem implements ModuleSelectionHandler {
-        private final EditLinker linker;
+        private final Linker linker;
 
-        public DeleteActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+        public DeleteActionItem(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
             super(gwtToolbarItem);
             this.linker = linker;
             setEnabled(false);

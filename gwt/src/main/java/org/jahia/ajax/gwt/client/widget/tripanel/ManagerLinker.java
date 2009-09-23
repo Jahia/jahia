@@ -33,6 +33,10 @@ package org.jahia.ajax.gwt.client.widget.tripanel;
 
 import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.widget.Component;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.Linker;
+
+import java.util.List;
 
 /**
  * This is the linker that allow communication between all the browser components.
@@ -40,7 +44,7 @@ import com.extjs.gxt.ui.client.widget.Component;
  * @author rfelden
  * @version 19 juin 2008 - 10:45:20
  */
-public class ManagerLinker {
+public class ManagerLinker implements Linker {
 
     // Components
     private LeftComponent m_leftComponent;
@@ -283,5 +287,35 @@ public class ManagerLinker {
     ////////////////////////
     public void setSelectPathAfterDataUpdate(String path) {
         m_topRightComponent.setSelectPathAfterDataUpdate(path);
+    }
+
+    public GWTJahiaNode getMainNode() {
+        return (GWTJahiaNode) getTreeSelection();
+    }
+
+    public GWTJahiaNode getSelectedNode() {
+        Object node = getTableSelection();
+        if(node == null) {
+            node = getTreeSelection();
+        } else {
+            node = ((List<GWTJahiaNode>) node).get(0);
+        }
+        return (GWTJahiaNode) node;
+    }
+
+    public void refresh() {
+        refreshAll();
+    }
+
+    public void refreshMainComponent() {
+        refreshTable();
+    }
+
+    public void select(Object o) {
+        handleNewSelection();
+    }
+
+    public List<GWTJahiaNode> getSelectedNodes() {
+        return (List<GWTJahiaNode>) getTableSelection();
     }
 }

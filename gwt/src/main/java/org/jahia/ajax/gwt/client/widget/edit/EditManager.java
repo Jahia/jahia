@@ -30,20 +30,14 @@ public class EditManager extends ContentPanel {
         sidePanel = new SidePanel();
         add(sidePanel, data);
 
-        data = new BorderLayoutData(Style.LayoutRegion.NORTH, 26);
         toolbar =  new ActionToolbarLayoutContainer();
-
         setTopComponent(toolbar);
-
-
-        //setTopComponent(toolbar);
 
         setScrollMode(Style.Scroll.AUTO);
         add(mainModule = new MainModule(path, template), new BorderLayoutData(Style.LayoutRegion.CENTER));
 
         editLinker = new EditLinker(mainModule, sidePanel, toolbar);
         editLinker.setLocale(locale);
-
     }
 
     public MainModule getMainModule() {

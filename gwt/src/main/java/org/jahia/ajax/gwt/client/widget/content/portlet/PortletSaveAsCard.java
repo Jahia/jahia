@@ -87,7 +87,7 @@ public class PortletSaveAsCard extends MashupWizardCard {
             public void onSuccess(GWTJahiaNode result) {
                 if (getLinker() != null) {
                     getLinker().setSelectPathAfterDataUpdate(result.getPath());
-                    getLinker().refreshTable();
+                    getLinker().refreshMainComponent();
                 }
                 getPortletWizardWindow().onPortletCreated();
                 getPortletWizardWindow().hide();

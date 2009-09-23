@@ -62,7 +62,7 @@ public class SimpleModule extends LayoutContainer implements Module {
                 }
             };
             addListener(Events.OnClick, listener);
-            addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this));
+            addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,mainModule.getEditLinker()));
     }
 
     public String getModuleId() {

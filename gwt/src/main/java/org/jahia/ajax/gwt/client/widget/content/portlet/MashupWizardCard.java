@@ -31,11 +31,11 @@
  */
 package org.jahia.ajax.gwt.client.widget.content.portlet;
 
-import org.jahia.ajax.gwt.client.widget.wizard.WizardCard;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNewPortletInstance;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.wizard.WizardCard;
 
 /**
  * User: ktlili
@@ -74,7 +74,7 @@ public abstract class MashupWizardCard extends WizardCard {
         return getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getPortletType();
     }
 
-    public ManagerLinker getLinker() {
+    public Linker getLinker() {
         if (getPortletWizardWindow() == null) {
             return null;
         }

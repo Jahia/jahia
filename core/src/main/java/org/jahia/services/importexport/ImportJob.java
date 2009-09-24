@@ -33,22 +33,17 @@
 
 import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
-
-import java.io.InputStream;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.commons.io.IOUtils;
+import org.jahia.api.Constants;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.TreeOperationResult;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.mail.GroovyMimeMessagePreparator;
 import org.jahia.services.mail.MailService;
@@ -60,14 +55,17 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.UserProperty;
 import org.jahia.services.workflow.AbstractActivationJob;
 import org.jahia.services.workflow.PublishAllJob;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.api.Constants;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import java.io.InputStream;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -168,7 +166,7 @@ public class ImportJob extends BackgroundJob {
                         JCRNodeWrapper source = imported.getJCRNode(context);
                         Node parent = source.getParent();
                         if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
-                            Node dest = JCRStoreService.getInstance().getThreadSession(context.getUser()).getNode("/content/sites/"+parent.getName());
+                            Node dest = JCRSessionFactory.getInstance().getThreadSession(context.getUser()).getNode("/content/sites/"+parent.getName());
                             source.copyFile(dest.getPath());
                             if (source.hasNode("j:acl")) {
                                 dest.addMixin("jmix:accessControlled");

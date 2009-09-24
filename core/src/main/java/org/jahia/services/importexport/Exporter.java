@@ -44,6 +44,7 @@ import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.fields.ContentApplicationField;
 import org.jahia.services.fields.ContentBigTextField;
 import org.jahia.services.fields.ContentField;
@@ -115,11 +116,16 @@ public abstract class Exporter {
                     }
                 case ContentFieldTypes.FILE:
                     if (files != null) {
-                        JCRNodeWrapper file = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(value, jParams.getUser());
-                        if (file.isValid() && !files.contains(file)) {
-                            files.add(file);
-                            value = file.getPath();
-                        } else {
+                        try {
+                            JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNode(value);
+                            if (file.isValid() && !files.contains(file)) {
+                                files.add(file);
+                                value = file.getPath();
+                            } else {
+                                value = "";
+                            }
+                        } catch (RepositoryException e) {
+                            logger.error(e);
                             value = "";
                         }
                     }
@@ -195,10 +201,14 @@ public abstract class Exporter {
             ContentField contentField = (ContentField) object;
             String value = contentField.getValue(jParams, entryState);
 
-            JCRNodeWrapper file = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(value, jParams.getUser());
-            if (file.isValid() && !files.contains(file)) {
-                logger.debug("Found file for "+object.getObjectKey() + " : " +file.getPath());
-                files.add(file);
+            try {
+                JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNode(value);
+                if (file.isValid() && !files.contains(file)) {
+                    logger.debug("Found file for "+object.getObjectKey() + " : " +file.getPath());
+                    files.add(file);
+                }
+            } catch (RepositoryException e) {
+                logger.error(e);
             }
         } else if (object instanceof ContentBigTextField) {
             String value = ((ContentBigTextField)object).getValue(jParams, entryState);
@@ -246,7 +256,7 @@ public abstract class Exporter {
             }
             b.replace(from,to,fname);
             try {
-                JCRNodeWrapper f = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(URLDecoder.decode(fname), jParams.getUser());
+                JCRNodeWrapper f = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNode(URLDecoder.decode(fname,"UTF-8"));
                 if (f.isValid()) {
                     files.add(f);
                 }

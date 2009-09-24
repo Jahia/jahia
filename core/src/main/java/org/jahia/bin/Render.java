@@ -8,6 +8,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
@@ -258,7 +259,7 @@ public class Render extends HttpServlet {
     }
 
     private void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
-        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(renderContext.getUser(), workspace, locale);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(renderContext.getUser(), workspace, locale);
         Node node = session.getNode(path);
         Set<Map.Entry> set = req.getParameterMap().entrySet();
         for (Map.Entry entry : set) {
@@ -273,7 +274,7 @@ public class Render extends HttpServlet {
     }
 
     private void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
-        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(renderContext.getUser(), workspace, locale);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(renderContext.getUser(), workspace, locale);
         String[] subPaths = path.split("/");
         String lastPath = subPaths[subPaths.length - 1];
         StringBuffer realPath = new StringBuffer();
@@ -330,7 +331,7 @@ public class Render extends HttpServlet {
     }
 
 	private void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
-        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(renderContext.getUser(), workspace, locale);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(renderContext.getUser(), workspace, locale);
         Node node = session.getNode(path);
         Node parent = node.getParent();
         node.remove();
@@ -383,8 +384,8 @@ public class Render extends HttpServlet {
         if (logger.isDebugEnabled()) {
         	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         }
-        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(user, workspace, locale);
-        JCRSessionWrapper systemSession = ServicesRegistry.getInstance().getJCRStoreService().getSystemSession(null, workspace);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(user, workspace, locale);
+        JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getSystemSession(null, workspace);
 
         JCRNodeWrapper node = null;
 

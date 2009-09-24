@@ -36,60 +36,59 @@
 //
 package org.jahia.services.sites;
 
-import java.util.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.FileInputStream;
-import java.io.Serializable;
-
+import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.content.ContentObject;
 import org.jahia.data.JahiaDOMObject;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.events.JahiaEvent;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.hibernate.manager.JahiaSiteLanguageListManager;
 import org.jahia.hibernate.manager.JahiaSiteManager;
 import org.jahia.hibernate.manager.JahiaSitePropertyManager;
-import org.jahia.hibernate.manager.JahiaSiteLanguageListManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaAclEntry;
+import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.acl.JahiaACLManagerService;
+import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
+import org.jahia.services.importexport.ExtendedImportResult;
+import org.jahia.services.importexport.ImportAction;
+import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.importexport.ImportJob;
+import org.jahia.services.lock.LockKey;
+import org.jahia.services.lock.LockRegistry;
+import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageBaseService;
 import org.jahia.services.pages.JahiaPageService;
-import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageInfoInterface;
+import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.search.JahiaSearchService;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.workflow.WorkflowInfo;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.acl.JahiaACLManagerService;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.importexport.ImportJob;
-import org.jahia.services.importexport.ExtendedImportResult;
-import org.jahia.services.importexport.ImportAction;
-import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.lock.LockKey;
-import org.jahia.services.lock.LockRegistry;
-import org.jahia.services.search.JahiaSearchService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.params.ProcessingContext;
-import org.jahia.content.ContentObject;
-import org.jahia.api.Constants;
-import org.quartz.JobDetail;
 import org.quartz.JobDataMap;
-import org.apache.log4j.Logger;
+import org.quartz.JobDetail;
 
-import javax.jcr.RepositoryException;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Jahia Multi Sites Management Service
@@ -123,7 +122,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     protected JahiaGroupManagerService groupService;
     protected JahiaFileWatcherService fileWatcherService;
     protected JahiaACLManagerService jahiaAclService;
-
+    protected JCRSessionFactory sessionFactory;
     public synchronized boolean isStarted() {
         return started;
     }
@@ -154,6 +153,10 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
     public void setJahiaAclService(JahiaACLManagerService jahiaAclService) {
         this.jahiaAclService = jahiaAclService;
+    }
+
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
     /**
@@ -550,7 +553,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                     JCRNodeWrapper source = page.getContentPage().getJCRNode(jParams);
                     Node parent = source.getParent();
                     if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
-                        Node dest = JCRStoreService.getInstance().getThreadSession(jParams.getUser()).getNode("/content/sites/"+parent.getName());
+                        Node dest = sessionFactory.getThreadSession(jParams.getUser()).getNode("/content/sites/"+parent.getName());
                         source.copyFile(dest.getPath());
                         dest.save();
                     }

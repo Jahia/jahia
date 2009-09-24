@@ -39,12 +39,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaFieldXRef;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.DefaultEventListener;
-import org.jahia.services.content.JCRFileContent;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreProvider;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.*;
 import org.jahia.services.content.textextraction.TextExtractionListener;
 import org.jahia.services.content.textextraction.TextExtractorJob;
 import org.jahia.services.fields.ContentField;
@@ -95,7 +90,7 @@ public class ExtractionService {
     private String textFilterClasses = null;
 
     private static TextExtractor extractor = null;
-
+    private JCRTemplate jcrTemplate;
     public static synchronized ExtractionService getInstance() {
         if (instance == null) {
             instance = new ExtractionService();
@@ -120,6 +115,10 @@ public class ExtractionService {
      */
     public void setExtractors(Map<String, Extractor> extractors) {
         this.extractors = extractors;
+    }
+
+    public void setJcrTemplate(JCRTemplate jcrTemplate) {
+        this.jcrTemplate = jcrTemplate;
     }
 
     /**
@@ -172,12 +171,12 @@ public class ExtractionService {
      * @param context the Jahia processing context
      * @throws IOException
      */
-    public void extractText(JCRStoreProvider provider, String sourcePath, String extractionNodePath,
-            ProcessingContext context) throws IOException {
+    public void extractText(final JCRStoreProvider provider, final String sourcePath, final String extractionNodePath,
+            final ProcessingContext context) throws IOException {
         try {
-            JCRSessionWrapper s = JCRStoreService.getInstance().getSystemSession();
-            try {
-                JCRNodeWrapper file = s.getNode(sourcePath);
+            jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRNodeWrapper file = session.getNode(sourcePath);
                 JCRFileContent fileContent = file.getFileContent();
                 Node n = file.getRealNode().getNode(Constants.JCR_CONTENT);
 
@@ -191,7 +190,7 @@ public class ExtractionService {
                     final Reader reader = getExtractor().extractText(stream, type, encoding);
                     try {
                         if (extractionNodePath != null && extractionNodePath.length() > 0) {
-                            n = s.getNode(extractionNodePath);
+                            n = session.getNode(extractionNodePath);
                             n.setProperty(Constants.ORIGINAL_UUID, file.getStorageName());
                         }
                         n.setProperty(Constants.EXTRACTED_TEXT, new InputStream() {
@@ -219,7 +218,7 @@ public class ExtractionService {
                         });
                         n.setProperty(Constants.EXTRACTION_DATE, new GregorianCalendar());
                         n.save();
-                        s.save();
+                        session.save();
                     } finally {
                         reader.close();
                     }
@@ -229,10 +228,9 @@ public class ExtractionService {
                 } finally {
                     IOUtils.closeQuietly(stream);
                 }
-
-            } finally {
-                s.logout();
-            }
+                return null;
+                }
+            });
         } catch (RepositoryException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Cannot extract content: " + e.getMessage(), e);
@@ -283,73 +281,75 @@ public class ExtractionService {
      * @param jParams Jahia processing context
      * @return extracted text from document or null if not extracted yet
      */
-    public String getExtractedText(JCRNodeWrapper file, ProcessingContext jParams) {
-        String extractedText = null;
+    public String getExtractedText(final JCRNodeWrapper file, ProcessingContext jParams) {
+
         if (isExtractedByEventListener(file)) {
-            extractedText = file.getFileContent().getExtractedText();
+            return file.getFileContent().getExtractedText();
         } else {
+            String extractedText = null;
             if (getContentTypes().contains(file.getFileContent().getContentType())) {
-                boolean triggerExtraction = false;
-                JCRSessionWrapper session = null;
-                JCRNodeWrapper n = null;
+                final boolean[] triggerExtraction = new boolean[]{false};
+                final JCRNodeWrapper[] n = new JCRNodeWrapper[]{null};
                 try {
-                    session = getJCRStoreService().getSystemSession();
-                    JCRNodeWrapper textExtractionNode = findTextExtractionNode(session);
-                    try {
-                        n = (JCRNodeWrapper) textExtractionNode.getNode(file.getPath());
-                    } catch (PathNotFoundException ex) {
-                    }
-                    if (n == null) {
-                        for (String pathElement : file.getPath().split("/")) {
-                            if (pathElement.length() > 0) {
-                                if (!textExtractionNode.hasNode(pathElement)) {
-                                    textExtractionNode = textExtractionNode.addNode(pathElement, !pathElement
-                                            .equals(file.getName()) ? TEXTEXTRACTS_TYPE : TEXTEXTRACT_TYPE);
-                                    triggerExtraction = true;                                    
-                                } else {
-                                    textExtractionNode = (JCRNodeWrapper) textExtractionNode.getNode(pathElement);
+                    extractedText = jcrTemplate.doExecuteWithSystemSession(new JCRCallback<String>() {
+                        public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            JCRNodeWrapper textExtractionNode = findTextExtractionNode(session);
+                            try {
+                                n[0] = (JCRNodeWrapper) textExtractionNode.getNode(file.getPath());
+                            } catch (PathNotFoundException ex) {
+                            }
+                            if (n[0] == null) {
+                                for (String pathElement : file.getPath().split("/")) {
+                                    if (pathElement.length() > 0) {
+                                        if (!textExtractionNode.hasNode(pathElement)) {
+                                            textExtractionNode = textExtractionNode.addNode(pathElement,
+                                                                                            !pathElement.equals(
+                                                                                                    file.getName()) ? TEXTEXTRACTS_TYPE : TEXTEXTRACT_TYPE);
+                                            triggerExtraction[0] = true;
+                                        } else {
+                                            textExtractionNode = (JCRNodeWrapper) textExtractionNode.getNode(
+                                                    pathElement);
+                                        }
+                                    }
+                                }
+                                n[0] = textExtractionNode;
+                            }
+                            if (triggerExtraction[0]) {
+                                session.save();
+                            }
+                            if (!triggerExtraction[0] && n[0].hasProperty(Constants.EXTRACTION_DATE)) {
+                                Date lastModified = file.getLastModifiedAsDate();
+                                Date extractionDate = new Date(n[0].getProperty(
+                                        Constants.EXTRACTION_DATE).getDate().getTimeInMillis());
+                                if (extractionDate.before(lastModified)) {
+                                    triggerExtraction[0] = true;
                                 }
                             }
+                            if (!triggerExtraction[0]) {
+                                return n[0].getProperty(Constants.EXTRACTED_TEXT).getString();
+                            }
+                            return "";
                         }
-                        n = textExtractionNode;
-                    }
-                    if (triggerExtraction) {
-                        session.save();
-                    }
-                    if (!triggerExtraction && n.hasProperty(Constants.EXTRACTION_DATE)) {
-                        Date lastModified = file.getLastModifiedAsDate();
-                        Date extractionDate = new Date(n.getProperty(Constants.EXTRACTION_DATE).getDate()
-                                .getTimeInMillis());
-                        if (extractionDate.before(lastModified)) {
-                            triggerExtraction = true;
-                        }
-                    }
-                    if (!triggerExtraction) {
-                        extractedText = n.getProperty(Constants.EXTRACTED_TEXT).getString();
-                    }
+                    });
                 } catch (RepositoryException e) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Cannot extract content: " + e.getMessage(), e);
                     } else {
                         logger.warn("Cannot extract content: " + e.getMessage());
                     }
-                } finally {
-                    if (session != null) {
-                        session.logout();
-                    }
                 }
                 try {
-                    if (triggerExtraction) {
+                    if (triggerExtraction[0]) {
                         JahiaUser member = jParams.getUser();
 
                         if (jParams == null) {
-                            jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(), System
-                                    .currentTimeMillis(), null, member, null);
+                            jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(),
+                                                            System.currentTimeMillis(), null, member, null);
                             jParams.setCurrentLocale(Locale.getDefault());
                         }
 
                         JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for " + file.getName(),
-                                TextExtractorJob.class, jParams);
+                                                                           TextExtractorJob.class, jParams);
 
                         SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
                         JobDataMap jobDataMap;
@@ -357,7 +357,7 @@ public class ExtractionService {
                         jobDataMap.put(TextExtractorJob.PROVIDER, file.getProvider().getMountPoint());
                         jobDataMap.put(TextExtractorJob.PATH, file.getPath());
                         jobDataMap.put(TextExtractorJob.NAME, file.getName());
-                        jobDataMap.put(TextExtractorJob.EXTRACTNODE_PATH, n.getPath());
+                        jobDataMap.put(TextExtractorJob.EXTRACTNODE_PATH, n[0].getPath());
                         jobDataMap.put(BackgroundJob.JOB_TYPE, TextExtractorJob.EXTRACTION_TYPE);
                         schedulerServ.scheduleJobNow(jobDetail);
                     }
@@ -365,8 +365,8 @@ public class ExtractionService {
                     logger.error(e.getMessage(), e);
                 }
             }
+            return extractedText;
         }
-        return extractedText;
     }
 
     private boolean isExtractedByEventListener(JCRNodeWrapper file) {
@@ -400,10 +400,6 @@ public class ExtractionService {
             logger.error(e.toString(), e);
         }
         return node;
-    }
-
-    private JCRStoreService getJCRStoreService() {
-        return ServicesRegistry.getInstance().getJCRStoreService();
     }
 
     private void triggerJahiaFileReferenceReindexation(String storageName, JCRStoreProvider provider,

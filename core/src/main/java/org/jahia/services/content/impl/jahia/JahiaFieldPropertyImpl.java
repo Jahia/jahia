@@ -31,32 +31,31 @@
  */
 package org.jahia.services.content.impl.jahia;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.ExtendedPropertyType;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.fields.ContentField;
-import org.jahia.services.version.JahiaSaveVersion;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.data.fields.JahiaField;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.content.ContentDefinition;
+import org.jahia.content.ContentObject;
 import org.jahia.data.fields.FieldTypes;
-import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.data.fields.JahiaBigTextField;
+import org.jahia.data.fields.JahiaField;
+import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
-import org.jahia.content.ContentObject;
-import org.jahia.content.ContentDefinition;
-import org.apache.commons.lang.StringUtils;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
+import org.jahia.services.fields.ContentField;
+import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.version.JahiaSaveVersion;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.version.VersionException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * JCR property implementation for Jahia field.
@@ -150,7 +149,7 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
     private void updateField(String v, JahiaField field) throws RepositoryException {
         int fieldType = field.getType();
         if (fieldType == FieldTypes.FILE) {
-            JCRNodeWrapper object = (JCRNodeWrapper) JCRStoreService.getInstance().getThreadSession(getProcessingContext().getUser()).getNodeByUUID(v);
+            JCRNodeWrapper object = (JCRNodeWrapper) JCRSessionFactory.getInstance().getThreadSession(getProcessingContext().getUser()).getNodeByUUID(v);
             JahiaFileField fField = object.getJahiaFileField();
             field.setValue(v);
             field.setObject(fField);

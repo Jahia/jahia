@@ -71,7 +71,7 @@ public class JCRSessionWrapper implements Session {
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(JCRSessionWrapper.class);
 
-    private JCRStoreService service;
+    private JCRSessionFactory sessionFactory;
     private JahiaUser user;
     private boolean isSystem = true;
     private Credentials credentials;
@@ -85,24 +85,24 @@ public class JCRSessionWrapper implements Session {
     private Map<String,String> nsToPrefix = new HashMap<String,String>();
     private Map<String,String> prefixToNs = new HashMap<String,String>();
 
-    public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale, JCRStoreService service) {
+    public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale, JCRSessionFactory sessionFactory) {
         this.user = user;
         this.isSystem = isSystem;
         this.credentials = credentials;
-        this.workspace = new JCRWorkspaceWrapper(workspace, this, service);
+        this.workspace = new JCRWorkspaceWrapper(workspace, this, sessionFactory);
         this.locale = locale;
-        this.service = service;
+        this.sessionFactory = sessionFactory;
     }
 
 
 
     public Node getRootNode() throws RepositoryException {
-        JCRStoreProvider provider = service.getProvider("/");
+        JCRStoreProvider provider = sessionFactory.getProvider("/");
         return provider.getNodeWrapper("/", this);
     }
 
     public Repository getRepository() {
-        return service;
+        return sessionFactory;
     }
 
     public String getUserID() {
@@ -130,7 +130,7 @@ public class JCRSessionWrapper implements Session {
     }
 
     public JCRNodeWrapper getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
-        for (JCRStoreProvider provider : service.getProviderList()) {
+        for (JCRStoreProvider provider : sessionFactory.getProviderList()) {
             if (!provider.isInitialized()) {
                 logger.debug("Provider " + provider.getKey() + " / " + provider.getClass().getName() + " is not yet initialized, skipping...");
                 continue;
@@ -151,7 +151,7 @@ public class JCRSessionWrapper implements Session {
     }
 
     public JCRNodeWrapper getNodeByUUID(String providerKey, String uuid) throws ItemNotFoundException, RepositoryException {
-        JCRStoreProvider provider = service.getProviders().get(providerKey);
+        JCRStoreProvider provider = sessionFactory.getProviders().get(providerKey);
         if (provider == null) {
             throw new ItemNotFoundException(uuid);
         }
@@ -161,14 +161,14 @@ public class JCRSessionWrapper implements Session {
     }
 
     public Item getItem(String path) throws PathNotFoundException, RepositoryException {
-        Map<String, JCRStoreProvider> dynamicMountPoints = service.getDynamicMountPoints();
-        for (Iterator<String> iterator = dynamicMountPoints.keySet().iterator(); iterator.hasNext();) {
-            String mp = iterator.next();
-            if (path.startsWith(mp+"/")) {
+        Map<String, JCRStoreProvider> dynamicMountPoints = sessionFactory.getDynamicMountPoints();
+        for (String mp : dynamicMountPoints.keySet()) {
+            if (path.startsWith(mp + "/")) {
                 String localPath = path.substring(mp.length());
                 JCRStoreProvider provider = dynamicMountPoints.get(mp);
 //                Item item = getProviderSession(provider).getItem(localPath);
-                Item item = getProviderSession(provider).getItem(provider.getRelativeRoot() + provider.encodeInternalName(localPath));
+                Item item = getProviderSession(provider).getItem(
+                        provider.getRelativeRoot() + provider.encodeInternalName(localPath));
                 if (item.isNode()) {
                     return provider.getNodeWrapper((Node) item, this);
                 } else {
@@ -176,10 +176,9 @@ public class JCRSessionWrapper implements Session {
                 }
             }
         }
-        Map<String, JCRStoreProvider> mountPoints = service.getMountPoints();
-        for (Iterator<String> iterator = mountPoints.keySet().iterator(); iterator.hasNext();) {
-            String mp = iterator.next();
-            if (mp.equals("/") || path.equals(mp) || path.startsWith(mp+"/")) {
+        Map<String, JCRStoreProvider> mountPoints = sessionFactory.getMountPoints();
+        for (String mp : mountPoints.keySet()) {
+            if (mp.equals("/") || path.equals(mp) || path.startsWith(mp + "/")) {
                 String localPath = path;
                 if (!mp.equals("/")) {
                     localPath = path.substring(mp.length());
@@ -189,7 +188,8 @@ public class JCRSessionWrapper implements Session {
                     localPath = "/";
                 }
 //                Item item = getProviderSession(provider).getItem(localPath);
-                Item item = getProviderSession(provider).getItem(provider.getRelativeRoot() + provider.encodeInternalName(localPath));
+                Item item = getProviderSession(provider).getItem(
+                        provider.getRelativeRoot() + provider.encodeInternalName(localPath));
                 if (item.isNode()) {
                     return provider.getNodeWrapper((Node) item, this);
                 } else {

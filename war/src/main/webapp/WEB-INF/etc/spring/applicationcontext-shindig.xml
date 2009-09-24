@@ -5,7 +5,7 @@
 
     <bean id="jahiaShindigService" class="org.jahia.services.shindig.JahiaShindigService">
         <constructor-arg index="0" ref="JahiaUserManagerService" />
-        <constructor-arg index="1" ref="JCRStoreService" />
+        <constructor-arg index="1" ref="jcrTemplate" />
     </bean>
 
 </beans>

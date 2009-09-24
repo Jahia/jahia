@@ -31,13 +31,6 @@
  */
  package org.jahia.services.search.valves;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaField;
@@ -52,16 +45,14 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRFileContent;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.automation.ExtractionService;
 import org.jahia.services.fields.ContentField;
-import org.jahia.services.search.DocumentField;
-import org.jahia.services.search.IndexableDocument;
-import org.jahia.services.search.JahiaFieldIndexableDocument;
-import org.jahia.services.search.JahiaSearchConstant;
-import org.jahia.services.search.SearchIndexationPipeline;
+import org.jahia.services.search.*;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.LanguageCodeConverters;
+
+import java.util.*;
 
 /**
  * <p>
@@ -347,7 +338,7 @@ public class FieldSearchIndexProcessValveImpl implements
             String strVal = null;
             ProcessingContext context = (ProcessingContext) contextMap.get(SearchIndexationPipeline.PROCESSING_CONTEXT);
 
-            JCRNodeWrapper file = JCRStoreService.getInstance().getThreadSession(context.getUser()).getNode(jcrPath);
+            JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(context.getUser()).getNode(jcrPath);
 
             if (file != null && file.isValid() && !file.isCollection()) {
                 JCRFileContent fileContent = file.getFileContent();

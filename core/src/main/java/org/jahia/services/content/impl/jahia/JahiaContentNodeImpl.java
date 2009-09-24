@@ -31,43 +31,38 @@
  */
 package org.jahia.services.content.impl.jahia;
 
-import java.util.*;
-
-import javax.jcr.Item;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.Value;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-
 import org.jahia.content.ContentDefinition;
 import org.jahia.content.ContentObject;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.manager.JahiaObjectDelegate;
+import org.jahia.hibernate.manager.JahiaObjectManager;
+import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.timebasedpublishing.DayInWeekBean;
 import org.jahia.services.timebasedpublishing.RangeRetentionRule;
 import org.jahia.services.timebasedpublishing.RetentionRule;
-import org.jahia.services.timebasedpublishing.DayInWeekBean;
-import org.jahia.params.ProcessingContext;
-import org.jahia.hibernate.manager.JahiaObjectManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.hibernate.manager.JahiaObjectDelegate;
+import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.i18n.ResourceBundleMarker;
+
+import javax.jcr.*;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -327,7 +322,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             }
             case FieldTypes.APPLICATION: {
                 try {
-                    JCRNodeWrapper portlet = JCRStoreService.getInstance().getThreadSession(getSession().getJahiaUser()).getNodeByUUID(contentField.getJahiaField(elr).getRawValue());
+                    JCRNodeWrapper portlet = JCRSessionFactory.getInstance().getThreadSession(getSession().getJahiaUser()).getNodeByUUID(contentField.getJahiaField(elr).getRawValue());
                     if (portlet != null) {
                         Value v = new ValueImpl(portlet.getUUID(), PropertyType.REFERENCE);
                         fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));

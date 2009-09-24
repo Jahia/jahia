@@ -63,7 +63,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
             getRootNode();
             return true;
         } catch (RepositoryException e) {
-            getProvider().getService().getDynamicMountPoints().remove(getPath());
+            getProvider().getSessionFactory().getDynamicMountPoints().remove(getPath());
             return false;
         }
     }
@@ -104,14 +104,15 @@ public class JCRMountPointNode extends JCRNodeDecorator {
 
     private JCRNodeWrapper getRootNode() throws RepositoryException {
         JCRStoreProvider provider = null;
-        if (!getProvider().getService().getDynamicMountPoints().containsKey(getPath())) {
+        Map<String, JCRStoreProvider> dynamicMountPoints = getProvider().getSessionFactory().getDynamicMountPoints();
+        if (!dynamicMountPoints.containsKey(getPath())) {
             if (isNodeType("jnt:vfsMountPoint")) {
                 Map<String, Object> m = new HashMap<String, Object>();
                 m.put("root",getProperty("j:root").getString());
                 provider = mount(VFSContentStoreProvider.class, getPath(), getUUID(), m);
             }
         } else {
-            provider = getProvider().getService().getDynamicMountPoints().get(getPath());
+            provider = dynamicMountPoints.get(getPath());
         }
 
         if (provider != null) {
@@ -121,7 +122,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
     }
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        getProvider().getService().unmount(getProvider());
+        getProvider().getSessionFactory().unmount(getProvider());
         super.remove();
     }
 

@@ -34,8 +34,8 @@ package org.jahia.services.usermanager.jcr;
 
 import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.*;
 
 import javax.jcr.Node;
@@ -57,7 +57,7 @@ public class JCRUser implements JahiaUser {
     private static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
     private static final String PROVIDER_NAME = "jcr";
     private final String nodeUuid;
-    private final JCRStoreService jcrStoreService;
+    private final JCRSessionFactory sessionFactory;
     static final String J_PASSWORD = "j:password";
     public static final String J_EXTERNAL = "j:external";
     public static final String J_EXTERNAL_SOURCE = "j:externalSource";
@@ -65,9 +65,9 @@ public class JCRUser implements JahiaUser {
     private Properties properties;
     private UserProperties userProperties;
 
-    public JCRUser(String nodeUuid, JCRStoreService jcrStoreService) {
+    public JCRUser(String nodeUuid, JCRSessionFactory sessionFactory) {
         this.nodeUuid = nodeUuid;
-        this.jcrStoreService = jcrStoreService;
+        this.sessionFactory = sessionFactory;
     }
 
 
@@ -81,7 +81,7 @@ public class JCRUser implements JahiaUser {
         JCRSessionWrapper session = null;
         try {
             if (name == null) {
-                session = jcrStoreService.getSystemSession();
+                session = sessionFactory.getSystemSession();
                 name = getNode(session).getName();
             }
             return name;
@@ -150,7 +150,7 @@ public class JCRUser implements JahiaUser {
             properties = new Properties();
             JCRSessionWrapper session = null;
             try {
-                session = jcrStoreService.getSystemSession();
+                session = sessionFactory.getSystemSession();
                 PropertyIterator iterator = getNode(session).getProperties();
                 for (; iterator.hasNext();) {
                     Property property = iterator.nextProperty();
@@ -183,7 +183,7 @@ public class JCRUser implements JahiaUser {
             userProperties = new UserProperties();
             JCRSessionWrapper session = null;
             try {
-                session = jcrStoreService.getSystemSession();
+                session = sessionFactory.getSystemSession();
                 PropertyIterator iterator = getNode(session).getProperties();
                 for (; iterator.hasNext();) {
                     Property property = iterator.nextProperty();
@@ -237,7 +237,7 @@ public class JCRUser implements JahiaUser {
     public boolean removeProperty(String key) {
         JCRSessionWrapper session = null;
         try {
-            session = jcrStoreService.getSystemSession();
+            session = sessionFactory.getSystemSession();
             Node node = getNode(session);
             Property property = node.getProperty(key);
             if (property != null) {
@@ -270,7 +270,7 @@ public class JCRUser implements JahiaUser {
     public boolean setProperty(String key, String value) {
         JCRSessionWrapper session = null;
         try {
-            session = jcrStoreService.getSystemSession();
+            session = sessionFactory.getSystemSession();
             Node node = getNode(session);
             node.setProperty(key, value);
             node.save();

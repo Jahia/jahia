@@ -428,7 +428,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public List<JCRNodeWrapper> getChildren() {
         List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
         if (provider.getService() != null) {
-            Map<String, JCRStoreProvider> mountPoints = provider.getService().getMountPoints();
+            Map<String, JCRStoreProvider> mountPoints = provider.getSessionFactory().getMountPoints();
             for (String key : mountPoints.keySet()) {
                 if (!key.equals("/")) {
                     String mpp = key.substring(0, key.lastIndexOf('/'));
@@ -471,7 +471,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public List<JCRNodeWrapper> getChildren(String name) {
         List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
         if (provider.getService() != null) {
-            Map<String, JCRStoreProvider> mountPoints = provider.getService().getMountPoints();
+            Map<String, JCRStoreProvider> mountPoints = provider.getSessionFactory().getMountPoints();
 
             if (mountPoints.containsKey(getPath()+"/"+name)) {
                 list.add(mountPoints.get(getPath()+"/"+name).getNodeWrapper("/", session));
@@ -1170,7 +1170,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return false;
         }
-        JCRStoreProvider destProvider = provider.getService().getProvider(dest);
+        JCRStoreProvider destProvider = provider.getSessionFactory().getProvider(dest);
         if (destProvider != provider) {
             boolean result = copyFile(dest);
             return result && deleteFile() == OK;

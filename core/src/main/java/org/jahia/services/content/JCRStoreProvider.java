@@ -111,6 +111,15 @@ public class JCRStoreProvider {
 
     private JCRStoreService service;
 
+    public JCRSessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    private JCRSessionFactory sessionFactory;
     protected Repository repo = null;
 
     private boolean isMainStorage = false;
@@ -275,7 +284,7 @@ public class JCRStoreProvider {
             String tmpAuthenticationType = authenticationType;
             authenticationType = "shared";
 
-            getService().addProvider(getKey(), getMountPoint(), this);
+            getSessionFactory().addProvider(getKey(), getMountPoint(), this);
 
             initNodeTypes();
             initObservers();
@@ -380,7 +389,7 @@ public class JCRStoreProvider {
 
     public void stop() {
         running = false;
-        service.removeProvider(key);
+        getSessionFactory().removeProvider(key);
     }
 
     public boolean isRunning() {
@@ -512,7 +521,7 @@ public class JCRStoreProvider {
 
     public JCRNodeWrapper getNodeWrapper(String localPath, JahiaUser user) {
         try {
-            JCRSessionWrapper session = service.getThreadSession(user);
+            JCRSessionWrapper session = getSessionFactory().getThreadSession(user);
             return getNodeWrapper(localPath, session);
         } catch (RepositoryException e) {
             logger.error("Repository error",e);
@@ -686,7 +695,7 @@ public class JCRStoreProvider {
             site = ISO9075.encode(encodeInternalName(site));
             sql = "select user from [jnt:user] as user right outer join [jnt:virtualsite] as site on isdescendantnode(user,site) where user.[j:nodename]= '"+username+ "' and site:[j:nodename] = '"+site+"'";
         }
-        List<JCRNodeWrapper> results = queryFolders(service.getThreadSession(user), sql);
+        List<JCRNodeWrapper> results = queryFolders(sessionFactory.getThreadSession(user), sql);
         if (site != null) {
             results.addAll(getUserFolders(null, user));
         }
@@ -702,7 +711,7 @@ public class JCRStoreProvider {
             sql = "select imp.* from jnt:importDropBox as imp right outer join [jnt:user] as user on ischildnode(imp,user) right outer join [jnt:virtualsite] as site on isdescendantnode(imp,site) where user.[j:nodename]= '"+username+ "' and site.[j:nodename] = '"+site+"'";
         }
 
-        List<JCRNodeWrapper> results = queryFolders(service.getThreadSession(user), sql);
+        List<JCRNodeWrapper> results = queryFolders(sessionFactory.getThreadSession(user), sql);
         if (site != null) {
             results.addAll(getImportDropBoxes(null, user));
         }
@@ -713,7 +722,7 @@ public class JCRStoreProvider {
         site = ISO9075.encode(encodeInternalName(site));
         String xp = "select * from [jnt:virtualsite] as site where site.[j:nodename] = '"+site+"'";
 
-        return queryFolders(service.getThreadSession(user), xp);
+        return queryFolders(sessionFactory.getThreadSession(user), xp);
     }
 
     private List<JCRNodeWrapper> queryFolders(JCRSessionWrapper session, String sql) throws RepositoryException {
@@ -835,23 +844,23 @@ public class JCRStoreProvider {
     }
 
     public Session getThreadSession(JahiaUser user) throws RepositoryException {
-        return service.getThreadSession(user).getProviderSession(this);
+        return sessionFactory.getThreadSession(user).getProviderSession(this);
     }
 
     public Session getThreadSession(JahiaUser user, String workspace) throws RepositoryException {
-        return service.getThreadSession(user, workspace).getProviderSession(this);
+        return sessionFactory.getThreadSession(user, workspace).getProviderSession(this);
     }
 
     public Session getSystemSession() throws RepositoryException {
-        return service.getSystemSession().getProviderSession(this);
+        return sessionFactory.getSystemSession().getProviderSession(this);
     }
 
     public Session getSystemSession(String user) throws RepositoryException {
-        return service.getSystemSession(user).getProviderSession(this);
+        return sessionFactory.getSystemSession(user).getProviderSession(this);
     }
 
     public Session getSystemSession(String user, String workspace) throws RepositoryException {
-        return service.getSystemSession(user, workspace).getProviderSession(this);
+        return sessionFactory.getSystemSession(user, workspace).getProviderSession(this);
     }
 
     public boolean isInitialized() {

@@ -31,32 +31,33 @@
  */
 package org.jahia.services.content;
 
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.usermanager.JahiaUser;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.query.qom.QueryExecute;
-import org.jahia.api.Constants;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.usermanager.JahiaUser;
 import org.xml.sax.ContentHandler;
+
+import javax.jcr.*;
+import javax.jcr.lock.LockException;
+import javax.jcr.lock.LockManager;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NodeTypeManager;
+import javax.jcr.observation.EventJournal;
+import javax.jcr.observation.EventListener;
+import javax.jcr.observation.EventListenerIterator;
+import javax.jcr.observation.ObservationManager;
+import javax.jcr.query.*;
 import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.Source;
-import org.apache.commons.lang.StringUtils;
-
-import javax.jcr.*;
-import javax.jcr.observation.*;
-import javax.jcr.observation.EventListener;
-import javax.jcr.query.*;
-import javax.jcr.lock.LockException;
-import javax.jcr.lock.LockManager;
-import javax.jcr.version.VersionException;
 import javax.jcr.version.Version;
+import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionManager;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.NodeTypeManager;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -67,11 +68,11 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class JCRWorkspaceWrapper implements Workspace {
-    private JCRStoreService service;
+    private JCRSessionFactory service;
     private String name;
     private JCRSessionWrapper session;
 
-    public JCRWorkspaceWrapper(String name, JCRSessionWrapper session, JCRStoreService service) {
+    public JCRWorkspaceWrapper(String name, JCRSessionWrapper session, JCRSessionFactory service) {
         this.name = name;
         this.service = service;
         this.session = session;

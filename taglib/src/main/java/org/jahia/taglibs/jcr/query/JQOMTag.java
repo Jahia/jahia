@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.QueryResultAdapter;
 import org.jahia.services.render.Resource;
@@ -129,7 +129,7 @@ public class JQOMTag extends QueryDefinitionTag {
                     workspace = currentResource.getWorkspace();
                     locale = currentResource.getLocale();
                 }                
-                JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession((JahiaUser) p, workspace, locale);
+                JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession((JahiaUser) p, workspace, locale);
                 queryResult = session.getWorkspace().execute(queryModel);                
                 // execute query
                 if (logger.isDebugEnabled()) {

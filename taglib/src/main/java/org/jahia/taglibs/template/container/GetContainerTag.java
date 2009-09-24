@@ -31,14 +31,14 @@
  */
 package org.jahia.taglibs.template.container;
 
-import org.jahia.taglibs.ValueJahiaTag;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.content.JCRJahiaContentNode;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRNodeWrapper;
+import org.apache.log4j.Logger;
 import org.jahia.data.beans.ContainerBean;
 import org.jahia.params.ProcessingContext;
-import org.apache.log4j.Logger;
+import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.content.JCRJahiaContentNode;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.taglibs.ValueJahiaTag;
 
 /**
  * Allows to retrieve a specific container displayed on the current page, knowing its container id.
@@ -88,7 +88,7 @@ public class GetContainerTag extends ValueJahiaTag implements ContainerSupport {
                 ctn = ContentContainer.getContainer(containerID);
             } else if (path != null) {
                 try {
-                    JCRNodeWrapper nodeWrapper = JCRStoreService.getInstance().getThreadSession(jParams.getUser()).getNode(getPath());
+                    JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNode(getPath());
                     if (nodeWrapper.isValid() && nodeWrapper instanceof JCRJahiaContentNode) {
                         JCRJahiaContentNode jahiaContentNode = (JCRJahiaContentNode) nodeWrapper;
                         ctn = (ContentContainer) jahiaContentNode.getContentObject();

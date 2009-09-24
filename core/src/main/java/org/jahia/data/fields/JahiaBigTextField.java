@@ -35,7 +35,6 @@
 package org.jahia.data.fields;
 
 import net.htmlparser.jericho.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.extractor.HTMLTextExtractor;
 import org.apache.log4j.Logger;
@@ -52,7 +51,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.params.SessionState;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.fields.ContentBigTextField;
 import org.jahia.services.fields.ContentFieldTools;
 import org.jahia.services.pages.ContentPage;
@@ -67,19 +66,12 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.TextHtml;
 
 import javax.jcr.RepositoryException;
-
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -227,7 +219,7 @@ public class JahiaBigTextField extends JahiaField implements
             JCRNodeWrapper file = null;
             try {
                 String[] versions = path.split("\\?");
-                final JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(jParams.getUser()).getNode(versions[0]);
+                final JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNode(versions[0]);
 
                 if (versions.length > 1 && versions[1].contains("v=")) {
                     String versionId = versions[1].split("=")[1];
@@ -744,7 +736,7 @@ public class JahiaBigTextField extends JahiaField implements
                     String path = URLDecoder.decode(hrefValue.substring((URL_MARKER + JahiaFieldXRefManager.FILE).length()), "UTF-8");
                     try {
                         String[] versions = path.split("\\?");
-                        final JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(processingContext.getUser()).getNode(versions[0]);
+                        final JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(processingContext.getUser()).getNode(versions[0]);
                         boolean versionExists = false;
                         if(versions.length>1 && versions[1].contains("v=")) {
                             String versionId = versions[1].split("=")[1];

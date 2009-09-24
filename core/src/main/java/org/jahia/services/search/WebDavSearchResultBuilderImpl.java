@@ -31,21 +31,20 @@
  */
  package org.jahia.services.search;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.jahia.data.search.JahiaSearchHit;
 import org.jahia.data.search.JahiaSearchHitInterface;
 import org.jahia.data.search.JahiaSearchResult;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.RepositoryException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Default implementation to build Webdav Search Result from a collection of
@@ -74,11 +73,11 @@ public class WebDavSearchResultBuilderImpl extends
 
         JahiaSearchResult result = new JahiaSearchResult(this, parsedObjects);
         result.setUseBitSet(false);
-        JCRStoreService fileService = JCRStoreService.getInstance();
+        JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
 
         for (ParsedObject obj : parsedObjects) {
             String uri = obj.getValue("uri");
-            JCRNodeWrapper node = fileService.getThreadSession(user).getNode(uri);
+            JCRNodeWrapper node = sessionFactory.getThreadSession(user).getNode(uri);
             if (node != null && node.isValid()) {
                 JahiaSearchHit hit = new JahiaSearchHit(obj);
                 hit.setType(JahiaSearchHitInterface.WEBDAVFILE_TYPE);

@@ -32,28 +32,22 @@
 package org.jahia.services.publication;
 
 import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.params.ProcessingContext;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.TestHelper;
 
+import javax.jcr.*;
 import java.io.InputStream;
 import java.util.*;
-
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 
 /**
  * Unit test for publish / unpublish using JCR
@@ -87,9 +81,9 @@ public class PublicationTest extends TestCase {
         try {
             JCRStoreService jcrService = ServicesRegistry.getInstance()
                     .getJCRStoreService();
-            JCRSessionWrapper session = jcrService.getThreadSession(ctx
+            JCRSessionWrapper session = jcrService.getSessionFactory().getThreadSession(ctx
                     .getUser());
-            JCRSessionWrapper liveSession = jcrService.getThreadSession(ctx
+            JCRSessionWrapper liveSession = jcrService.getSessionFactory().getThreadSession(ctx
                     .getUser(), Constants.LIVE_WORKSPACE);
 
             Set<String> languages = null;
@@ -163,7 +157,7 @@ public class PublicationTest extends TestCase {
     public void testPublishUnpublishPageWithContent() throws Exception {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
                 .getJCRStoreService();
-        JCRSessionWrapper session = jcrService.getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = jcrService.getSessionFactory().getThreadSession(ctx.getUser());
         try {
             InputStream importStream = getClass().getClassLoader()
                     .getResourceAsStream("imports/importJCR.xml");
@@ -266,8 +260,8 @@ public class PublicationTest extends TestCase {
             boolean publishParent) throws RepositoryException {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
                 .getJCRStoreService();
-        JCRSessionWrapper session = jcrService.getThreadSession(ctx.getUser());
-        JCRSessionWrapper liveSession = jcrService.getThreadSession(ctx
+        JCRSessionWrapper session = jcrService.getSessionFactory().getThreadSession(ctx.getUser());
+        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getThreadSession(ctx
                 .getUser(), Constants.LIVE_WORKSPACE);
         Map<String, Long> publishedDateForObjects = new HashMap<String, Long>();
         addNodeAndDependands(pageNodeToPublish, languages,
@@ -341,7 +335,7 @@ public class PublicationTest extends TestCase {
             throws RepositoryException {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
                 .getJCRStoreService();
-        JCRSessionWrapper session = jcrService.getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = jcrService.getSessionFactory().getThreadSession(ctx.getUser());
         Map<String, Long> publishedDateForObjects = new HashMap<String, Long>();
         addNodeAndDependands(pageNodeToPublish, languages,
                 publishedDateForObjects);
@@ -349,7 +343,7 @@ public class PublicationTest extends TestCase {
         jcrService.unpublish(pageNodeToPublish.getPath(), languages, session
                 .getUser());
 
-        JCRSessionWrapper liveSession = jcrService.getThreadSession(ctx
+        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getThreadSession(ctx
                 .getUser(), Constants.LIVE_WORKSPACE);
 
         for (Map.Entry<String, Long> publishedDateForObject : publishedDateForObjects

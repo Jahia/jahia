@@ -40,7 +40,7 @@ import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryBean;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
@@ -69,7 +69,7 @@ import java.util.*;
 public class JCRCategoryProvider {
     private transient static Logger logger = Logger
             .getLogger(JCRCategoryProvider.class);
-    private transient JCRStoreService jcrStoreService;
+    private transient JCRSessionFactory sessionFactory;
     private static JCRCategoryProvider mCategoryProvider;
 
     /**
@@ -86,10 +86,10 @@ public class JCRCategoryProvider {
 
     /**
      * Setting the JCR store service (done via Spring)
-     * @param jcrStoreService
+     * @param sessionFactory
      */
-    public void setJcrStoreService(JCRStoreService jcrStoreService) {
-        this.jcrStoreService = jcrStoreService;
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
     /**
@@ -100,7 +100,7 @@ public class JCRCategoryProvider {
         JCRNodeWrapper rootNodeWrapper = null;
         ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
-            JCRSessionWrapper jcrSessionWrapper = jcrStoreService
+            JCRSessionWrapper jcrSessionWrapper = sessionFactory
                     .getThreadSession(paramBean.getUser());
             rootNodeWrapper = jcrSessionWrapper.getNode("/" + Constants.CONTENT
                     + "/categories");
@@ -119,7 +119,7 @@ public class JCRCategoryProvider {
         JCRNodeWrapper rootNodeWrapper = null;
         List<Category> rootCategories = new ArrayList<Category>();
         try {
-            JCRSessionWrapper jcrSessionWrapper = jcrStoreService
+            JCRSessionWrapper jcrSessionWrapper = sessionFactory
                     .getThreadSession(user);
             rootNodeWrapper = jcrSessionWrapper.getNode("/" + Constants.CONTENT
                     + "/categories");
@@ -147,7 +147,7 @@ public class JCRCategoryProvider {
         ProcessingContext paramBean = Jahia.getThreadParamBean();
         Category newCategory = null;
         try {
-            JCRSessionWrapper jcrSessionWrapper = jcrStoreService
+            JCRSessionWrapper jcrSessionWrapper = sessionFactory
                     .getThreadSession(paramBean.getUser());
             JCRNodeWrapper parentNodeWrapper = getParentNode(parentCategory,
                     jcrSessionWrapper);
@@ -175,7 +175,7 @@ public class JCRCategoryProvider {
         Category categoryByUUID = null;
         ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
-            JCRSessionWrapper session = jcrStoreService
+            JCRSessionWrapper session = sessionFactory
                     .getThreadSession(paramBean.getUser());
             Node categoryNode = session.getNodeByUUID(categoryUUID);
             categoryByUUID = new Category(
@@ -198,7 +198,7 @@ public class JCRCategoryProvider {
         Category categoryByUUID = null;
         ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
-            JCRSessionWrapper session = jcrStoreService
+            JCRSessionWrapper session = sessionFactory
                     .getThreadSession(paramBean.getUser());
             Node categoryNode = session.getNode(categoryPath);
             categoryByUUID = new Category(
@@ -221,7 +221,7 @@ public class JCRCategoryProvider {
         ProcessingContext paramBean = Jahia.getThreadParamBean();
         Category newCategory = null;
         try {
-            JCRSessionWrapper jcrSessionWrapper = jcrStoreService
+            JCRSessionWrapper jcrSessionWrapper = sessionFactory
                     .getThreadSession(paramBean.getUser());
             JCRNodeWrapper parentNodeWrapper = null;
             if (parentCategory != null) {
@@ -251,7 +251,7 @@ public class JCRCategoryProvider {
         final List<Category> result = new ArrayList<Category>();
         try {
             ProcessingContext paramBean = Jahia.getThreadParamBean();
-            Session session = jcrStoreService.getThreadSession(paramBean
+            Session session = sessionFactory.getThreadSession(paramBean
                     .getUser());
             if (session.getWorkspace().getQueryManager() != null) {
                 StringBuffer query = new StringBuffer("SELECT * FROM ["
@@ -287,7 +287,7 @@ public class JCRCategoryProvider {
         final List<Category> result = new ArrayList<Category>();
         ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
-            Session session = jcrStoreService.getThreadSession(paramBean
+            Session session = sessionFactory.getThreadSession(paramBean
                     .getUser());
             if (session.getWorkspace().getQueryManager() != null) {
                 StringBuffer query = new StringBuffer("SELECT * FROM ["
@@ -348,7 +348,7 @@ public class JCRCategoryProvider {
         Map<String, String> result = new HashMap<String, String>();
         ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
-            Session session = jcrStoreService.getThreadSession(paramBean
+            Session session = sessionFactory.getThreadSession(paramBean
                     .getUser());
             Node categoryNode = session.getNodeByUUID(category
                     .getJahiaCategory().getId());
@@ -385,7 +385,7 @@ public class JCRCategoryProvider {
         String title = null;
         ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
-            Session session = jcrStoreService.getThreadSession(paramBean
+            Session session = sessionFactory.getThreadSession(paramBean
                     .getUser(), null, locale);
             Node categoryNode = session.getNodeByUUID(category
                     .getJahiaCategory().getId());
@@ -413,7 +413,7 @@ public class JCRCategoryProvider {
             String title) throws JahiaException {
         ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
-            Session session = jcrStoreService.getThreadSession(paramBean
+            Session session = sessionFactory.getThreadSession(paramBean
                     .getUser(), null, locale);
             Node categoryNode = session.getNodeByUUID(category
                     .getJahiaCategory().getId());
@@ -434,7 +434,7 @@ public class JCRCategoryProvider {
             throws JahiaException {
         ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
-            Session session = jcrStoreService.getThreadSession(paramBean
+            Session session = sessionFactory.getThreadSession(paramBean
                     .getUser(), null, locale);
             Node categoryNode = session.getNodeByUUID(category
                     .getJahiaCategory().getId());
@@ -455,7 +455,7 @@ public class JCRCategoryProvider {
     public void removeCategory(CategoryBean categoryBean) throws JahiaException {
         ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
-            JCRSessionWrapper jcrSessionWrapper = jcrStoreService
+            JCRSessionWrapper jcrSessionWrapper = sessionFactory
                     .getThreadSession(paramBean.getUser());
             Node node = null;
             if (categoryBean.getId() == null) {
@@ -539,7 +539,7 @@ public class JCRCategoryProvider {
             throws JahiaException {
         List<Category> rootCategories = new ArrayList<Category>();
         try {
-            JCRSessionWrapper jcrSessionWrapper = jcrStoreService
+            JCRSessionWrapper jcrSessionWrapper = sessionFactory
                     .getThreadSession(user);
             JCRNodeWrapper parentNodeWrapper = getParentNode(parentCategory,
                     jcrSessionWrapper);

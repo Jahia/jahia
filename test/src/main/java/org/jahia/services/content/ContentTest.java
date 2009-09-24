@@ -7,20 +7,19 @@ import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.impl.jahia.JahiaContentStoreProvider;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
-import javax.jcr.query.*;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.query.*;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.ByteArrayInputStream;
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This is a test case
@@ -29,8 +28,7 @@ public class ContentTest extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
-        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
-        final Map<String, JCRStoreProvider> mountPoints = service.getMountPoints();
+        final Map<String, JCRStoreProvider> mountPoints = JCRSessionFactory.getInstance().getMountPoints();
         for (String providerRoot : mountPoints.keySet()) {
             if (mountPoints.get(providerRoot) instanceof JahiaContentStoreProvider) {
                 continue;
@@ -41,7 +39,7 @@ public class ContentTest extends TestCase {
             Method[] methods = ContentTest.class.getMethods();
             for (Method method : methods) {
                 if (method.getName().startsWith("test")) {
-                    suite.addTest(new ContentTest(method.getName(),providerRoot));
+                    suite.addTest(new ContentTest(method.getName(), providerRoot));
                 }
             }
         }
@@ -65,19 +63,21 @@ public class ContentTest extends TestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRSessionWrapper session = service.getSystemSession();
-        for (String node : nodes) {
-            session.getNodeByUUID(node).remove();
-        }
-        session.save();
-        session.logout();
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                for (String node : nodes) {
+                    session.getNodeByUUID(node).remove();
+                }
+                session.save();
+                return null;
+            }
+        });
         nodes.clear();
     }
 
     @Override
     public String getName() {
-        return super.getName() + " in " +providerRoot ;
+        return super.getName() + " in " + providerRoot;
     }
 
     /**
@@ -86,9 +86,8 @@ public class ContentTest extends TestCase {
      * @throws RepositoryException
      */
     public void testCreateFolder() throws Exception {
-        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
 
-        JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -122,9 +121,8 @@ public class ContentTest extends TestCase {
      * @throws RepositoryException
      */
     public void testUpload() throws Exception {
-        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
 
-        JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -141,14 +139,18 @@ public class ContentTest extends TestCase {
 
             assertTrue(providerRoot + " : Created file is not valid", testFile.isValid());
 
-            assertEquals(providerRoot + " : Size is not the same", value.length(), testFile.getFileContent().getContentLength());
-            assertEquals(providerRoot + " : Mime type is not the same", mimeType, testFile.getFileContent().getContentType());
+            assertEquals(providerRoot + " : Size is not the same", value.length(),
+                         testFile.getFileContent().getContentLength());
+            assertEquals(providerRoot + " : Mime type is not the same", mimeType,
+                         testFile.getFileContent().getContentType());
 
             long creationDate = testFile.getCreationDateAsDate().getTime();
-            assertTrue(providerRoot+ " : Creation date invalid", creationDate < (System.currentTimeMillis() + 600000) && creationDate > (System.currentTimeMillis()-600000));
+            assertTrue(providerRoot + " : Creation date invalid",
+                       creationDate < (System.currentTimeMillis() + 600000) && creationDate > (System.currentTimeMillis() - 600000));
 
             long lastModifiedDate = testFile.getLastModifiedAsDate().getTime();
-            assertTrue(providerRoot+ " : Modification date invalid", lastModifiedDate < (System.currentTimeMillis()+600000) && lastModifiedDate > (System.currentTimeMillis()-600000));
+            assertTrue(providerRoot + " : Modification date invalid",
+                       lastModifiedDate < (System.currentTimeMillis() + 600000) && lastModifiedDate > (System.currentTimeMillis() - 600000));
 
             testFile = session.getNode(providerRoot + "/" + name);
 
@@ -170,9 +172,8 @@ public class ContentTest extends TestCase {
      * @throws RepositoryException
      */
     public void testSetStringProperty() throws Exception {
-        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
 
-        JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -195,13 +196,15 @@ public class ContentTest extends TestCase {
             testCollection = session.getNode(providerRoot + "/" + name);
             try {
                 String actual = testCollection.getProperty("jcr:description").getString();
-                assertEquals("getProperty() Property value is not the same",value, actual);
+                assertEquals("getProperty() Property value is not the same", value, actual);
             } catch (PathNotFoundException e) {
                 fail("getProperty() cannot find property");
             }
 
-            assertEquals("getPropertyAsString() : Property value is not the same",value, testCollection.getPropertyAsString("jcr:description"));
-            assertEquals("getPropertiesAsString() : Property value is not the same",value, testCollection.getPropertiesAsString().get("jcr:description"));
+            assertEquals("getPropertyAsString() : Property value is not the same", value,
+                         testCollection.getPropertyAsString("jcr:description"));
+            assertEquals("getPropertiesAsString() : Property value is not the same", value,
+                         testCollection.getPropertiesAsString().get("jcr:description"));
 
             boolean found = false;
             PropertyIterator pi = testCollection.getProperties();
@@ -225,9 +228,8 @@ public class ContentTest extends TestCase {
      * @throws RepositoryException
      */
     public void testRename() throws Exception {
-        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
 
-        JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -268,9 +270,7 @@ public class ContentTest extends TestCase {
      * @throws RepositoryException
      */
     public void testMove() throws Exception {
-        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
-
-        JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -309,9 +309,7 @@ public class ContentTest extends TestCase {
      * Test lock / unlock operations
      */
     public void testLock() throws Exception {
-        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
-
-        JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -359,9 +357,8 @@ public class ContentTest extends TestCase {
      * @throws RepositoryException
      */
     public void testSearch() throws Exception {
-        JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
 
-        JCRSessionWrapper session = service.getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -378,14 +375,16 @@ public class ContentTest extends TestCase {
 
             // Do the query
             QueryManager qm = JCRStoreService.getInstance().getQueryManager(ctx.getUser());
-            Query query = qm.createQuery("select * from [jnt:file] as f where contains(f.[jcr:content], '456bcd')", Query.JCR_SQL2);
+            Query query = qm.createQuery("select * from [jnt:file] as f where contains(f.[jcr:content], '456bcd')",
+                                         Query.JCR_SQL2);
             QueryResult queryResult = query.execute();
             RowIterator it = queryResult.getRows();
-            assertTrue("Bad result number ("+ it.getSize() + " instead of 1)", (it.getSize() == 1));
+            assertTrue("Bad result number (" + it.getSize() + " instead of 1)", (it.getSize() == 1));
             while (it.hasNext()) {
                 Row row = it.nextRow();
                 String path = row.getValue(JcrConstants.JCR_PATH).getString();
-                assertEquals("Wrong file found ('" + path + "' instead of '" + testFile.getPath()+ "')",testFile.getPath(),path);
+                assertEquals("Wrong file found ('" + path + "' instead of '" + testFile.getPath() + "')",
+                             testFile.getPath(), path);
             }
         } finally {
             session.logout();

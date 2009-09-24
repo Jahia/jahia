@@ -53,9 +53,8 @@ import org.jahia.ajax.gwt.content.server.helper.JCRVersioningHelper;
 import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
@@ -66,9 +65,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -256,9 +255,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace) throws GWTJahiaServiceException {
-        JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
         try {
-            JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
+            JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(getUser()).getNode(path);
             if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
@@ -288,9 +286,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void resizeImage(String path, String target, int width, int height, boolean forceReplace) throws GWTJahiaServiceException {
-        JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
         try {
-            JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
+            JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(getUser()).getNode(path);
             if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
@@ -319,9 +316,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void rotateImage(String path, String target, boolean clockwise, boolean forceReplace) throws GWTJahiaServiceException {
-        JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
         try {
-            JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
+            JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(getUser()).getNode(path);
             if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
@@ -366,8 +362,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaNodeVersion> getVersions(String path) throws GWTJahiaServiceException {
         try {
-            JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
-            return JCRVersioningHelper.getVersions(jcr.getThreadSession(getUser()).getNode(path), retrieveParamBean());
+            return JCRVersioningHelper.getVersions(JCRSessionFactory.getInstance().getThreadSession(getUser()).getNode(path), retrieveParamBean());
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -505,9 +500,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 
     public void saveNodeTemplate(String path, String template) throws GWTJahiaServiceException {
-        JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
         try {
-            JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
+            JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(getUser()).getNode(path);
             if ("--unset--".equals(template)) {
                 if (node.hasProperty("j:defaultTemplate")) {
                     node.getProperty("j:defaultTemplate").remove();

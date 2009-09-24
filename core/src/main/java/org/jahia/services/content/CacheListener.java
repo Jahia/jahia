@@ -31,15 +31,6 @@
  */
 package org.jahia.services.content;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.observation.Event;
-import javax.jcr.observation.EventIterator;
-
 import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentContainerListKey;
 import org.jahia.exceptions.JahiaException;
@@ -52,6 +43,13 @@ import org.jahia.services.cache.ContainerHTMLCache;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.webdav.UsageEntry;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.EventIterator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Listener for flushing container HTML cache entries.
@@ -86,7 +84,7 @@ public class CacheListener extends DefaultEventListener {
     }
 
     public void onEvent(EventIterator eventIterator) {
-        Set<String> nodes = new HashSet<String>();
+        final Set<String> nodes = new HashSet<String>();
         while (eventIterator.hasNext()) {
             Event event = eventIterator.nextEvent();
             try {
@@ -117,22 +115,23 @@ public class CacheListener extends DefaultEventListener {
             }
         }
         if (!nodes.isEmpty()) {
-            JCRSessionWrapper session = null;
             try {
-                session = JCRStoreService.getInstance().getSystemSession();
-
-                for (Iterator<String> iterator = nodes.iterator(); iterator.hasNext();) {
-                    String s = iterator.next();
-                    JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(provider.decodeInternalName(s));
-                    flushNodeRefs(n);
-                    cache.remove(n.getPath());
-                }
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            } finally {
-                if (session != null) {
-                    session.logout();
-                }
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        try {
+                            for (String s : nodes) {
+                                JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(provider.decodeInternalName(s));
+                                flushNodeRefs(n);
+                                cache.remove(n.getPath());
+                            }
+                        } catch (JahiaException e) {
+                            logger.error(e);
+                        }
+                        return null;
+                    }
+                });
+            } catch (RepositoryException e) {
+                logger.error(e);
             }
         }
 //        System.out.println("----------------> "+nodes);

@@ -50,10 +50,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPortletNode;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.InsertionSortedMap;
@@ -62,7 +59,6 @@ import org.xml.sax.SAXException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.portlet.PortletMode;
@@ -82,8 +78,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     /**
      * logging
      */
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(ApplicationsManagerServiceImpl.class);
+    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(
+            ApplicationsManagerServiceImpl.class);
 
     /**
      * the instance *
@@ -109,7 +105,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      */
     private Map<String, ApplicationsManagerProvider> managerProviders = new InsertionSortedMap<String, ApplicationsManagerProvider>();
 
-    private JCRStoreService jcrStoreService;
+    private JCRTemplate jcrTemplate;
 
     private CacheService cacheService;
     private JahiaGroupManagerService groupManagerService;
@@ -138,8 +134,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         this.servletContextManager = servletContextManager;
     }
 
-    public void setJcrStoreService(JCRStoreService jcrStoreService) {
-        this.jcrStoreService = jcrStoreService;
+    public void setJcrTemplate(JCRTemplate jcrTemplate) {
+        this.jcrTemplate = jcrTemplate;
     }
 
     public PlutoServices getPlutoServices() {
@@ -179,8 +175,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             loadAllApplications();
         } catch (Exception e) {
             throw new JahiaInitializationException(
-                    "JahiaApplicationsManagerBaseService.init, exception occured : "
-                    + e.getMessage(), e);
+                    "JahiaApplicationsManagerBaseService.init, exception occured : " + e.getMessage(), e);
         }
 
         supportedPortletModes.add(PortletMode.VIEW);
@@ -211,8 +206,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * @param appID the appID
      * @return ApplicationBean, the Application Definition
      */
-    public ApplicationBean getApplication(String appID)
-            throws JahiaException {
+    public ApplicationBean getApplication(final String appID) throws JahiaException {
 
         checkIsLoaded();
 
@@ -220,8 +214,12 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         if (app == null) {
             // try to load from db
             try {
-                final JCRNodeWrapper wrapper = (JCRNodeWrapper) jcrStoreService.getSystemSession().getNodeByUUID(appID);
-                app = fromNodeToBean(wrapper);
+
+                app = jcrTemplate.doExecuteWithSystemSession(new JCRCallback<ApplicationBean>() {
+                    public ApplicationBean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        return fromNodeToBean(session.getNodeByUUID(appID));
+                    }
+                });
             } catch (RepositoryException e) {
                 logger.error(e, e);
             }
@@ -234,10 +232,10 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     }
 
     private ApplicationBean fromNodeToBean(JCRNodeWrapper wrapper) throws RepositoryException {
-        return new ApplicationBean(wrapper.getUUID(), wrapper.getPropertyAsString("j:name"), wrapper.getPropertyAsString("j:context"),
-                                                   wrapper.getProperty("j:isVisible").getBoolean(),
-                                                   wrapper.getPropertyAsString("j:description"),
-                                                   wrapper.getPropertyAsString("j:type"));
+        return new ApplicationBean(wrapper.getUUID(), wrapper.getPropertyAsString("j:name"),
+                                   wrapper.getPropertyAsString("j:context"), wrapper.getProperty(
+                        "j:isVisible").getBoolean(), wrapper.getPropertyAsString("j:description"),
+                                   wrapper.getPropertyAsString("j:type"));
     }
 
     /**
@@ -246,8 +244,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * @param context , the context
      * @return ApplicationBean, the Application Definition
      */
-    public ApplicationBean getApplicationByContext(String context)
-            throws JahiaException {
+    public ApplicationBean getApplicationByContext(String context) throws JahiaException {
 
         checkIsLoaded();
 
@@ -267,29 +264,27 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         return app;
     }
 
-    private ApplicationBean getApplicationByContextAndJCRCall(String context) {
-        ApplicationBean app = null;
-        Session session = null;
+    private ApplicationBean getApplicationByContextAndJCRCall(final String context) {
         try {
-            session = jcrStoreService.getSystemSession();
-            if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT * FROM [jnt:portletDefinition] as def where def.[j:context] = '"+context+"' ORDER BY def.[j:context]";
-                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
-                QueryResult qr = q.execute();
-                final NodeIterator nodes = qr.getNodes();
-                while (nodes.hasNext()) {
-                    JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodes.next();
-                    app = fromNodeToBean(nodeWrapper);
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<ApplicationBean>() {
+                public ApplicationBean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    if (session.getWorkspace().getQueryManager() != null) {
+                        String query = "SELECT * FROM [jnt:portletDefinition] as def where def.[j:context] = '" + context + "' ORDER BY def.[j:context]";
+                        Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
+                        QueryResult qr = q.execute();
+                        final NodeIterator nodes = qr.getNodes();
+                        if (nodes.hasNext()) {
+                            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodes.next();
+                            return fromNodeToBean(nodeWrapper);
+                        }
+                    }
+                    return null;
                 }
-            }
+            });
         } catch (RepositoryException e) {
             logger.error(e);
-        } finally {
-            if(session!=null) {
-                session.logout();
-            }
+            return null;
         }
-        return app;
     }
 
     /**
@@ -297,31 +292,34 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      *
      * @return Iterator an enumerations of ApplicationBean or null if empty
      */
-    public List<ApplicationBean> getApplications()
-            throws JahiaException {
+    public List<ApplicationBean> getApplications() throws JahiaException {
 
         checkIsLoaded();
 
         syncPlutoWithDB();
 
-        List<ApplicationBean> apps = new ArrayList<ApplicationBean>();
         try {
-                Session session = jcrStoreService.getSystemSession();
-                if (session.getWorkspace().getQueryManager() != null) {
-                    String query = "SELECT * FROM [jnt:portletDefinition] as def ORDER BY def.[j:context]";
-                    Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
-                    QueryResult qr = q.execute();
-                    final NodeIterator nodes = qr.getNodes();
-                    while (nodes.hasNext()) {
-                        JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodes.next();
-                        apps.add(fromNodeToBean(nodeWrapper));
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<List<ApplicationBean>>() {
+                public List<ApplicationBean> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    List<ApplicationBean> apps = new ArrayList<ApplicationBean>();
+                    if (session.getWorkspace().getQueryManager() != null) {
+                        String query = "SELECT * FROM [jnt:portletDefinition] as def ORDER BY def.[j:context]";
+                        Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
+                        QueryResult qr = q.execute();
+                        final NodeIterator nodes = qr.getNodes();
+                        while (nodes.hasNext()) {
+                            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodes.next();
+                            apps.add(fromNodeToBean(nodeWrapper));
+                        }
+                        Collections.sort(apps, dummyComparator);
                     }
+                    return apps;
                 }
-            } catch (RepositoryException e) {
-                logger.error(e);
-            }
-        Collections.sort(apps, dummyComparator);
-        return apps;
+            });
+        } catch (RepositoryException e) {
+            logger.error(e);
+            return new ArrayList<ApplicationBean>();
+        }
     }
 
     /**
@@ -331,8 +329,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * @param visible status
      * @return false on error
      */
-    public boolean setVisible(String appID, boolean visible)
-            throws JahiaException {
+    public boolean setVisible(String appID, boolean visible) throws JahiaException {
 
         checkIsLoaded();
 
@@ -351,40 +348,38 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * @param app the app Definition
      * @return false on error
      */
-    public boolean addDefinition(ApplicationBean app)
-            throws JahiaException {
+    public boolean addDefinition(final ApplicationBean app) throws JahiaException {
 
         checkIsLoaded();
 
         if (app == null) {
             return false;
         }
-        JCRSessionWrapper jcrSessionWrapper = null;
+        boolean ret = false;
         try {
-            jcrSessionWrapper = jcrStoreService.getSystemSession();
-            final JCRNodeWrapper parentNode = jcrSessionWrapper.getNode("/content/portletdefinitions");
-            final String name = app.getName().replaceAll("/", "___");
-            final JCRNodeWrapper wrapper = parentNode.addNode(name, "jnt:portletDefinition");
-            wrapper.setProperty("j:context", app.getContext());
-            wrapper.setProperty("j:name", app.getName());
-            wrapper.setProperty("j:description", app.getDescription());
-            wrapper.setProperty("j:type", app.getType());
-            wrapper.setProperty("j:isVisible", app.isVisible());
-            wrapper.revokeAllPermissions();
-            wrapper.changePermissions("g:guest","r-");
-            wrapper.changePermissions("u:root","rw");
-            parentNode.save();
-            app.setID(wrapper.getUUID());
+            ret = jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    final JCRNodeWrapper parentNode = session.getNode("/content/portletdefinitions");
+                    final String name = app.getName().replaceAll("/", "___");
+                    final JCRNodeWrapper wrapper = parentNode.addNode(name, "jnt:portletDefinition");
+                    wrapper.setProperty("j:context", app.getContext());
+                    wrapper.setProperty("j:name", app.getName());
+                    wrapper.setProperty("j:description", app.getDescription());
+                    wrapper.setProperty("j:type", app.getType());
+                    wrapper.setProperty("j:isVisible", app.isVisible());
+                    wrapper.revokeAllPermissions();
+                    wrapper.changePermissions("g:guest", "r-");
+                    wrapper.changePermissions("u:root", "rw");
+                    session.save();
+                    app.setID(wrapper.getIdentifier());
+                    return true;
+                }
+            });
         } catch (RepositoryException e) {
             logger.error(e, e);
-        } finally {
-            if(jcrSessionWrapper!=null) {
-                jcrSessionWrapper.logout();
-            }
         }
-
         putInApplicationCache(app);
-        return true;
+        return ret;
     }
 
     /**
@@ -394,28 +389,34 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * @param app the app Definition
      * @return false on error
      */
-    public boolean saveDefinition(ApplicationBean app)
-            throws JahiaException {
+    public boolean saveDefinition(final ApplicationBean app) throws JahiaException {
 
         checkIsLoaded();
 
         if (app == null) {
             return false;
         }
+        boolean ret = false;
         try {
-            final JCRNodeWrapper wrapper = (JCRNodeWrapper) jcrStoreService.getSystemSession().getNodeByUUID(app.getID());
-            wrapper.setProperty("j:context", app.getContext());
-            wrapper.setProperty("j:name", app.getName());
-            wrapper.setProperty("j:description", app.getDescription());
-            wrapper.setProperty("j:type", app.getType());
-            wrapper.setProperty("j:isVisible", app.isVisible());
-            wrapper.save();
-            app.setID(wrapper.getUUID());
+            ret = jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    final JCRNodeWrapper wrapper = session.getNodeByUUID(app.getID());
+                    wrapper.setProperty("j:context", app.getContext());
+                    wrapper.setProperty("j:name", app.getName());
+                    wrapper.setProperty("j:description", app.getDescription());
+                    wrapper.setProperty("j:type", app.getType());
+                    wrapper.setProperty("j:isVisible", app.isVisible());
+                    session.save();
+                    app.setID(wrapper.getIdentifier());
+                    return true;
+                }
+            });
+
         } catch (RepositoryException e) {
             logger.error(e, e);
         }
         putInApplicationCache(app);
-        return true;
+        return ret;
     }
 
     /**
@@ -427,13 +428,17 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      *          generated if there was an error while removing the application
      *          data from persistant storage area
      */
-    public void removeApplication(String appID)
-            throws JahiaException {
+    public void removeApplication(final String appID) throws JahiaException {
 
         checkIsLoaded();
         try {
-            final JCRNodeWrapper wrapper = (JCRNodeWrapper) jcrStoreService.getSystemSession().getNodeByUUID(appID);
-            wrapper.remove();
+            jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    session.getNodeByUUID(appID).remove();
+                    session.save();
+                    return null;
+                }
+            });
         } catch (RepositoryException e) {
             logger.error(e, e);
         }
@@ -446,8 +451,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * When deleting an Application definition, should call this method to
      * remove unused groups
      */
-    public void deleteApplicationGroups(ApplicationBean app)
-            throws JahiaException {
+    public void deleteApplicationGroups(ApplicationBean app) throws JahiaException {
 
         checkIsLoaded();
 
@@ -475,8 +479,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     /**
      * create groups for each context, that is for each field id
      */
-    public void createApplicationGroups(EntryPointInstance entryPointInstance)
-            throws JahiaException {
+    public void createApplicationGroups(EntryPointInstance entryPointInstance) throws JahiaException {
         // update roles
         final String context = entryPointInstance.getContextName();
         WebAppContext appContext = getApplicationContext(getApplicationByContext(context));
@@ -487,8 +490,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         while (updatedRoles.hasNext()) {
             role = updatedRoles.next();
             groupName = entryPointInstance.getID() + "_" + role;
-            groupManagerService.createGroup(0,
-                                            groupName, null, true); // Hollis all app role groups are of site 0 !!!
+            groupManagerService.createGroup(0, groupName, null, true); // Hollis all app role groups are of site 0 !!!
         }
 
     }
@@ -498,8 +500,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * delete groups associated with a gived context, that is attached to a field id
      * and all its members
      */
-    public void deleteApplicationGroups(EntryPointInstance entryPointInstance)
-            throws JahiaException {
+    public void deleteApplicationGroups(EntryPointInstance entryPointInstance) throws JahiaException {
         final String context = entryPointInstance.getContextName();
 
         WebAppContext appContext = getApplicationContext(getApplicationByContext(context));
@@ -510,7 +511,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         while (roles.hasNext()) {
             role = roles.next();
             groupName = new StringBuffer().append(entryPointInstance.getID()).append("_").append(role).toString();
-            JahiaGroup grp = groupManagerService.lookupGroup(0, groupName); // Hollis : All App group roles are in site 0 !!!
+            JahiaGroup grp = groupManagerService.lookupGroup(0,
+                                                             groupName); // Hollis : All App group roles are in site 0 !!!
             if (grp != null) {
                 // delete all members
                 grp.removeMembers();
@@ -527,8 +529,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * @param siteID the site id
      * @return JahiaDOMObject a DOM representation of this object
      */
-    public JahiaDOMObject getApplicationDefsAsDOM(int siteID)
-            throws JahiaException {
+    public JahiaDOMObject getApplicationDefsAsDOM(int siteID) throws JahiaException {
         return null;
     }
 
@@ -538,8 +539,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * @param id , the application id
      * @return the application context , null if not found
      */
-    public WebAppContext getApplicationContext(String id)
-            throws JahiaException {
+    public WebAppContext getApplicationContext(String id) throws JahiaException {
         return servletContextManager.getApplicationContext(id);
     }
 
@@ -550,8 +550,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * @param appBean the Application bean for which to retrieve the context
      * @return the application context , null if not found
      */
-    public WebAppContext getApplicationContext(ApplicationBean appBean)
-            throws JahiaException {
+    public WebAppContext getApplicationContext(ApplicationBean appBean) throws JahiaException {
         return servletContextManager.getApplicationContext(appBean);
     }
 
@@ -564,41 +563,48 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * @return the created instance for the entry point definition.
      * @throws JahiaException
      */
-    public EntryPointInstance createEntryPointInstance(EntryPointDefinition entryPointDefinition, String path)
+    public EntryPointInstance createEntryPointInstance(EntryPointDefinition entryPointDefinition, final String path)
             throws JahiaException {
         if (entryPointDefinition == null) {
             return null;
         }
-        ApplicationBean appBean = getApplication(entryPointDefinition.getApplicationID());
+        final ApplicationBean appBean = getApplication(entryPointDefinition.getApplicationID());
         ApplicationsManagerProvider appProvider = getProvider(appBean);
         EntryPointInstance epInstance = null;
         try {
             epInstance = appProvider.createEntryPointInstance(entryPointDefinition);
             // Create the new entry point instance with its acl id binded to the one of its application parent
         } catch (JahiaException je) {
-            logger.error("Error while trying to retrieve entry point definitions for application " + appBean.getID(), je);
+            logger.error("Error while trying to retrieve entry point definitions for application " + appBean.getID(),
+                         je);
         }
         if (epInstance != null) {
             try {
-                final JCRNodeWrapper parentNode = jcrStoreService.getThreadSession(Jahia.getThreadParamBean().getUser()).getNode(path);
-                final String name = epInstance.getResKeyName() != null ? epInstance.getResKeyName() : appBean.getName().replaceAll("/", "___") + Math.round(Math.random() * 1000000l);
-                final JCRPortletNode wrapper = (JCRPortletNode) parentNode.addNode(name, "jnt:portlet");
-                final String scope = epInstance.getCacheScope();
-                if (scope != null) {
-                    wrapper.setProperty("j:cacheScope", scope);
-                }
-                wrapper.setApplication(appBean.getID(),epInstance.getDefName());
-//                wrapper.setProperty("j:applicationID",epInstance.getApplicationID());
-//                wrapper.setProperty("j:definitionName",epInstance.getDefName());
-                wrapper.setProperty("j:expirationTime", epInstance.getExpirationTime());
-                parentNode.save();
-                epInstance.setID(wrapper.getUUID());
+                final EntryPointInstance epInstance1 = epInstance;
+                return jcrTemplate.doExecute(new JCRCallback<EntryPointInstance>() {
+                    public EntryPointInstance doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        final JCRNodeWrapper parentNode = session.getNode(path);
+                        final String name = epInstance1.getResKeyName() != null ? epInstance1.getResKeyName() : appBean.getName().replaceAll(
+                                "/", "___") + Math.round(Math.random() * 1000000l);
+                        final JCRPortletNode wrapper = (JCRPortletNode) parentNode.addNode(name, "jnt:portlet");
+                        final String scope = epInstance1.getCacheScope();
+                        if (scope != null) {
+                            wrapper.setProperty("j:cacheScope", scope);
+                        }
+                        wrapper.setApplication(appBean.getID(), epInstance1.getDefName());
+                        wrapper.setProperty("j:expirationTime", epInstance1.getExpirationTime());
+                        session.save();
+                        epInstance1.setID(wrapper.getUUID());
+                        return epInstance1;
+                    }
+                }, false, Jahia.getThreadParamBean().getUser(), null, null);
+
             } catch (RepositoryException e) {
                 logger.error(e, e);
             }
             entryPointCache.put(ENTRY_POINT_INSTANCE + epInstance.getID(), epInstance);
         }
-        return epInstance;
+        return null;
     }
 
     /**
@@ -630,7 +636,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         try {
             return appProvider.getAppEntryPointDefinitions(appBean);
         } catch (JahiaException je) {
-            logger.error("Error while trying to retrieve entry point definitions for application " + appBean.getID(), je);
+            logger.error("Error while trying to retrieve entry point definitions for application " + appBean.getID(),
+                         je);
             return Collections.emptyList();
         }
     }
@@ -646,30 +653,38 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * @throws JahiaException thrown if there was an error communicating with
      *                        the persistence system.
      */
-    public EntryPointInstance getEntryPointInstance(String epInstanceID)
-            throws JahiaException {
-        EntryPointInstance entryPointInstanceByID = entryPointCache.get(ENTRY_POINT_INSTANCE + epInstanceID);
-        if (entryPointInstanceByID == null && epInstanceID != null && !"".equals(epInstanceID) && !"<empty>".equals(epInstanceID)) {
+    public EntryPointInstance getEntryPointInstance(final String epInstanceID) throws JahiaException {
+        final EntryPointInstance[] entryPointInstanceByID = new EntryPointInstance[]{entryPointCache.get(
+                ENTRY_POINT_INSTANCE + epInstanceID)};
+        if (entryPointInstanceByID[0] == null && epInstanceID != null && !"".equals(epInstanceID) && !"<empty>".equals(
+                epInstanceID)) {
             try {
-                final JCRPortletNode node = (JCRPortletNode) jcrStoreService.getNodeByUUID(epInstanceID, Jahia.getThreadParamBean().getUser());
-                entryPointInstanceByID = new EntryPointInstance(node.getUUID(), node.getContextName(), node.getDefinitionName(), node.getName());
-                if (node.hasProperty("j:cacheScope")) {
-                    entryPointInstanceByID.setCacheScope(node.getProperty("j:cacheScope").getString());
-                }
-                if (node.hasProperty("j:expirationTime")) {
-                    entryPointInstanceByID.setExpirationTime(node.getProperty("j:expirationTime").getLong());
-                }
-                entryPointCache.put(ENTRY_POINT_INSTANCE + epInstanceID, entryPointInstanceByID);
+                return jcrTemplate.doExecute(new JCRCallback<EntryPointInstance>() {
+                    public EntryPointInstance doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        final JCRPortletNode node = (JCRPortletNode) session.getNodeByUUID(epInstanceID);
+                        entryPointInstanceByID[0] = new EntryPointInstance(node.getUUID(), node.getContextName(),
+                                                                           node.getDefinitionName(), node.getName());
+                        if (node.hasProperty("j:cacheScope")) {
+                            entryPointInstanceByID[0].setCacheScope(node.getProperty("j:cacheScope").getString());
+                        }
+                        if (node.hasProperty("j:expirationTime")) {
+                            entryPointInstanceByID[0].setExpirationTime(node.getProperty("j:expirationTime").getLong());
+                        }
+                        entryPointCache.put(ENTRY_POINT_INSTANCE + epInstanceID, entryPointInstanceByID[0]);
+                        return entryPointInstanceByID[0];
+                    }
+                }, false, Jahia.getThreadParamBean().getUser(), null, null);
+
             } catch (javax.jcr.ItemNotFoundException e) {
                 // user can't not access to portlet instance: intance doen't exist or user has no reqs ACL
-                logger.debug("User " + Jahia.getThreadParamBean().getUser().getName() + " could not load the portlet instance :" + epInstanceID);
+                logger.debug(
+                        "User " + Jahia.getThreadParamBean().getUser().getName() + " could not load the portlet instance :" + epInstanceID);
                 return null;
-            }
-            catch (RepositoryException e) {
+            } catch (RepositoryException e) {
                 logger.error(e, e);
             }
         }
-        return entryPointInstanceByID;
+        return entryPointInstanceByID[0];
     }
 
     /**
@@ -680,15 +695,19 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * @throws JahiaException thrown if there was an error communicating with
      *                        the persistence system.
      */
-    public void removeEntryPointInstance(String epInstanceID)
-            throws JahiaException {
+    public void removeEntryPointInstance(final String epInstanceID) throws JahiaException {
         try {
             if (epInstanceID != null) {
-                final Node node = jcrStoreService.getNodeByUUID(epInstanceID, Jahia.getThreadParamBean().getUser());
-                final JCRNodeWrapper parentNode = (JCRNodeWrapper) node.getParent();
-                node.remove();
-                parentNode.save();
-                entryPointCache.remove(ENTRY_POINT_INSTANCE + epInstanceID);
+                jcrTemplate.doExecute(new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        final Node node = session.getNodeByUUID(epInstanceID);
+                        node.remove();
+                        session.save();
+                        entryPointCache.remove(ENTRY_POINT_INSTANCE + epInstanceID);
+                        return null;
+                    }
+                }, false, Jahia.getThreadParamBean().getUser(), null, null);
+
             }
         } catch (RepositoryException e) {
             logger.error(e, e);
@@ -720,14 +739,12 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     /**
      * throw an exception if the service hasn't been loaded successfully
      */
-    private void checkIsLoaded()
-            throws JahiaException {
+    private void checkIsLoaded() throws JahiaException {
 
         if (!isLoaded) {
-            throw new JahiaException(
-                    "Error accessing a service that was not initialized successfully",
-                    "Error accessing a service that was not initialized successfully",
-                    JahiaException.SERVICE_ERROR, JahiaException.CRITICAL_SEVERITY);
+            throw new JahiaException("Error accessing a service that was not initialized successfully",
+                                     "Error accessing a service that was not initialized successfully",
+                                     JahiaException.SERVICE_ERROR, JahiaException.CRITICAL_SEVERITY);
         }
 
     }
@@ -804,9 +821,13 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         try {
             digester.parse(supportedPortletModesConfigFile);
         } catch (IOException ioe) {
-            logger.error("Error while trying to load support portlet modes from file " + supportedPortletModesConfigFile, ioe);
+            logger.error(
+                    "Error while trying to load support portlet modes from file " + supportedPortletModesConfigFile,
+                    ioe);
         } catch (SAXException saxe) {
-            logger.error("Error while trying to load support portlet modes from file " + supportedPortletModesConfigFile, saxe);
+            logger.error(
+                    "Error while trying to load support portlet modes from file " + supportedPortletModesConfigFile,
+                    saxe);
         }
 
     }
@@ -851,9 +872,13 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         try {
             digester.parse(supportedWindowStatesConfigFile);
         } catch (IOException ioe) {
-            logger.error("Error while trying to load support portlet modes from file " + supportedWindowStatesConfigFile, ioe);
+            logger.error(
+                    "Error while trying to load support portlet modes from file " + supportedWindowStatesConfigFile,
+                    ioe);
         } catch (SAXException saxe) {
-            logger.error("Error while trying to load support portlet modes from file " + supportedWindowStatesConfigFile, saxe);
+            logger.error(
+                    "Error while trying to load support portlet modes from file " + supportedWindowStatesConfigFile,
+                    saxe);
         }
 
     }
@@ -879,25 +904,27 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     public void registerListeners() {
         // register listener
         plutoServices.getPortletRegistryService().addPortletRegistryListener(new PortletRegistryListener() {
-            public void portletApplicationRegistered(
-                    PortletRegistryEvent evt) {
+            public void portletApplicationRegistered(PortletRegistryEvent evt) {
                 servletContextManager.removeContextFromCache(evt.getApplicationName());
                 try {
-	                syncPlutoWithDB();
+                    syncPlutoWithDB();
                 } catch (Exception e) {
-	                logger.error("Error registering application '" + evt.getApplicationName() + "'. Cause: " + e.getMessage(), e);
+                    logger.error(
+                            "Error registering application '" + evt.getApplicationName() + "'. Cause: " + e.getMessage(),
+                            e);
                 }
             }
 
-            public void portletApplicationRemoved(
-                    PortletRegistryEvent evt) {
-            	// do nothing
+            public void portletApplicationRemoved(PortletRegistryEvent evt) {
+                // do nothing
             }
         });
         try {
             syncPlutoWithDB();
         } catch (Exception e) {
-            logger.error("Error synchronizing deployed portlets state with the internal registry. Cause: " + e.getMessage(), e);
+            logger.error(
+                    "Error synchronizing deployed portlets state with the internal registry. Cause: " + e.getMessage(),
+                    e);
         }
     }
 

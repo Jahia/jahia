@@ -32,6 +32,7 @@
 package org.jahia.engines.importexport;
 
 import org.apache.log4j.Logger;
+import org.jahia.bin.JahiaAdministration;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.data.JahiaData;
@@ -42,24 +43,21 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.lock.LockKey;
-import org.jahia.services.lock.LockRegistry;
 import org.jahia.services.lock.LockPrerequisites;
-import org.jahia.services.sites.SiteLanguageSettings;
+import org.jahia.services.lock.LockRegistry;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.categories.CategoryService;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.bin.JahiaAdministration;
-import org.xml.sax.SAXException;
 
+import javax.jcr.Node;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import javax.jcr.Node;
 import java.net.HttpURLConnection;
 import java.util.*;
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -233,7 +231,7 @@ public class ExportEngine implements JahiaEngine {
                 return;
             } else if ("jcr".equals(processingContext.getParameter("exportformat"))) {
                 resp.setContentType("text/xml");
-                JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(jParams.getUser());
+                JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser());
                 Node node = session.getNode(processingContext.getParameter("path"));
                 session.exportDocumentView(node.getPath(), outputStream, true, false);
                 outputStream.close();

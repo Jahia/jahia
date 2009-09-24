@@ -31,32 +31,31 @@
  */
 package org.jahia.ajax.gwt.content.server;
 
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.params.ParamBean;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.bin.Jahia;
-import org.jahia.ajax.gwt.content.server.helper.ContentManagerHelper;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.content.server.helper.ContentManagerHelper;
+import org.jahia.bin.Jahia;
+import org.jahia.params.ParamBean;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.jcr.RepositoryException;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.jcr.RepositoryException;
 import java.io.*;
-import java.util.*;
 import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -72,7 +71,6 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
     public static final int UNKNOWN_ERROR = 9;
 
     private static Logger logger = Logger.getLogger(GWTFileManagerUploadServlet.class) ;
-    private JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService() ;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.debug("Entered GWT upload servlet") ;
@@ -215,7 +213,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
 
         JCRNodeWrapper locationFolder;
         try {
-            locationFolder = jcr.getThreadSession(user).getNode(location);
+            locationFolder = JCRSessionFactory.getInstance().getThreadSession(user).getNode(location);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             return BAD_LOCATION;

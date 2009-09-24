@@ -1,6 +1,7 @@
 /**
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,48 +20,27 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
+ * http://www.jahia.com/license"
  *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
+ * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bin.filters.jcr;
+package org.jahia.services.content;
 
-import org.jahia.bin.Jahia;
-import org.jahia.services.content.JCRSessionFactory;
-
-import javax.servlet.*;
-import java.io.IOException;
+import javax.jcr.RepositoryException;
 
 /**
  * Created by IntelliJ IDEA.
- * User: toto
- * Date: 25 févr. 2008
- * Time: 12:59:04
- * To change this template use File | Settings | File Templates.
+ *
+ * @author : rincevent
+ * @since : JAHIA 6.1
+ *        Created : 23 sept. 2009
  */
-public class JcrSessionFilter implements Filter {
-
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
-
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        try {
-            filterChain.doFilter (servletRequest, servletResponse );
-        } finally {
-            if (Jahia.isInitiated()) {
-                JCRSessionFactory.getInstance().closeAllSessions();
-            }
-        }
-    }
-
-    public void destroy() {
-
-    }
+public interface JCRCallback<T> {
+    T doInJCR(JCRSessionWrapper session) throws RepositoryException;
 }

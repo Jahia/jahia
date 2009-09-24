@@ -31,19 +31,10 @@
  */
  package org.jahia.services.search.valves;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import org.jahia.bin.Jahia;
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.containers.JahiaContainerDefinition;
-import org.jahia.data.fields.FieldTypes;
-import org.jahia.data.fields.JahiaBigTextField;
-import org.jahia.data.fields.JahiaField;
-import org.jahia.data.fields.JahiaFieldDefinition;
-import org.jahia.data.fields.JahiaFileFieldWrapper;
+import org.jahia.data.fields.*;
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.JahiaFieldXRefManager;
@@ -54,18 +45,15 @@ import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.fields.ContentField;
-import org.jahia.services.search.DocumentField;
-import org.jahia.services.search.IndexableDocument;
-import org.jahia.services.search.JahiaContainerIndexableDocument;
-import org.jahia.services.search.JahiaSearchConstant;
-import org.jahia.services.search.SearchIndexationPipeline;
+import org.jahia.services.search.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.bin.Jahia;
+
+import java.util.*;
 
 /**
  * <p>Title: </p>
@@ -238,7 +226,7 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                     }
 //                    JahiaUser root = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdminUser(0);
                     JahiaUser root = Jahia.getThreadParamBean().getUser();
-                    JCRNodeWrapper file = JCRStoreService.getInstance().getThreadSession(root).getNode(
+                    JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(root).getNode(
                             fField.getRealName());
 
                     if (file.isValid () && !file.isCollection ()) {

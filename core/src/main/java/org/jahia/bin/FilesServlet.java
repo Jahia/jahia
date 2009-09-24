@@ -38,25 +38,24 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheFactory;
 import org.jahia.services.content.JCRFileContent;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.jcr.RepositoryException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
-import java.net.URLDecoder;
 
 /**
  * Serves resources from the JCR repository.
@@ -114,7 +113,7 @@ public class FilesServlet extends HttpServlet {
 
         JCRNodeWrapper n;
         try {
-            n = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(jahiaUser).getNode(p);
+            n = JCRSessionFactory.getInstance().getThreadSession(jahiaUser).getNode(p);
         } catch (RepositoryException e) {
             logger.error("Error accesing path : "+p+" for user "+jahiaUser,e);
             res.sendError(HttpServletResponse.SC_NOT_FOUND,e.getLocalizedMessage());

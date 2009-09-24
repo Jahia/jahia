@@ -109,6 +109,7 @@ public class ContentManagerHelper {
     public final static String OPEN_PATHS_SEPARATOR = "-_-";
 
     private static JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
+    private static JCRSessionFactory sessionFactory = jcr.getSessionFactory();
     private static Logger logger = Logger.getLogger(ContentManagerHelper.class);
     private static final int UPLOAD_NEW_VERSION = 3;
     private static final int UPLOAD_AUTO_RENAME = 1;
@@ -191,7 +192,7 @@ public class ContentManagerHelper {
         JahiaUser user = context.getUser();
         JCRNodeWrapper node = null;
         try {
-            node = jcr.getThreadSession(user, workspace, locale).getNode(folder != null ? folder.getPath() : "/");
+            node = sessionFactory.getThreadSession(user, workspace, locale).getNode(folder != null ? folder.getPath() : "/");
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
         }
@@ -349,7 +350,7 @@ public class ContentManagerHelper {
             }
         } else if (key.equals(JCRClientUtils.USERS_REPOSITORY)) {
             try {
-                NodeIterator ni = jcr.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode("/content/users").getNodes();
+                NodeIterator ni = sessionFactory.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode("/content/users").getNodes();
                 while (ni.hasNext()) {
                     Node node = (Node) ni.next();
                     GWTJahiaNode jahiaNode = getGWTJahiaNode((JCRNodeWrapper) node.getNode("files"),true);
@@ -550,7 +551,7 @@ public class ContentManagerHelper {
                 queryStore = user.createCollection("savedSearch");
                 createdSearchFolder = true;
             } else {
-                queryStore = jcr.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(user.getPath() + "/savedSearch");
+                queryStore = sessionFactory.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(user.getPath() + "/savedSearch");
             }
             String path = queryStore.getPath() + "/" + name;
             if (checkExistence(path, context.getUser())) {
@@ -562,7 +563,7 @@ public class ContentManagerHelper {
             } else {
                 queryStore.save();
             }
-            return getGWTJahiaNode(jcr.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(path),true);
+            return getGWTJahiaNode(sessionFactory.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(path),true);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not store query");
@@ -579,13 +580,13 @@ public class ContentManagerHelper {
                 throw new GWTJahiaServiceException("Could not store query with null name");
             }
 
-            JCRNodeWrapper parent = jcr.getThreadSession(context.getUser(), workspace).getNode(path);
+            JCRNodeWrapper parent = sessionFactory.getThreadSession(context.getUser(), workspace).getNode(path);
             name = findAvailableName(parent, name, context.getUser());
             Query q = createQuery(searchString, context);
             q.storeAsNode(path + "/" + name);
             parent.saveSession();
 
-            return getGWTJahiaNode(jcr.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(path+"/"+name),true);
+            return getGWTJahiaNode(sessionFactory.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(path+"/"+name),true);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not store query");
@@ -627,7 +628,7 @@ public class ContentManagerHelper {
 
     public static GWTJahiaNode getNode(String path, String workspace, ProcessingContext jParams) throws GWTJahiaServiceException {
         try {
-            return getGWTJahiaNode(jcr.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode(path),true);
+            return getGWTJahiaNode(sessionFactory.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode(path),true);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -636,7 +637,7 @@ public class ContentManagerHelper {
 
     public static GWTJahiaNode getParentNode(String path, String workspace, ProcessingContext jParams) throws GWTJahiaServiceException {
         try {
-            return getGWTJahiaNode((JCRNodeWrapper) jcr.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode(path).getParent(),true);
+            return getGWTJahiaNode((JCRNodeWrapper) sessionFactory.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode(path).getParent(),true);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -696,7 +697,7 @@ public class ContentManagerHelper {
         } else {
             n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, aclContext, f.getProvider().getKey(), f.isWriteable(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
 
-            if (JCRStoreService.getInstance().getMountPoints().containsKey(f.getPath())) {
+            if (sessionFactory.getMountPoints().containsKey(f.getPath())) {
                 n.setDeleteable(false);
             }
  	
@@ -812,7 +813,7 @@ public class ContentManagerHelper {
         for (String path : paths) {
             JCRNodeWrapper node;
             try {
-                node = jcr.getThreadSession(user).getNode(path);
+                node = sessionFactory.getThreadSession(user).getNode(path);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(e.toString()).toString());
@@ -899,7 +900,7 @@ public class ContentManagerHelper {
         for (String path : paths) {
             JCRNodeWrapper nodeToDelete;
             try {
-                nodeToDelete = jcr.getThreadSession(user).getNode(path);
+                nodeToDelete = sessionFactory.getThreadSession(user).getNode(path);
             } catch (RepositoryException e) {
                 missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(e.toString()).toString());
                 continue;
@@ -951,7 +952,7 @@ public class ContentManagerHelper {
     public static String getDownloadPath(String path, JahiaUser user) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
-            node = jcr.getThreadSession(user).getNode(path);
+            node = sessionFactory.getThreadSession(user).getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(e.toString());
@@ -965,7 +966,7 @@ public class ContentManagerHelper {
     public static String getAbsolutePath(String path, ParamBean jParams) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
-            node = jcr.getThreadSession(jParams.getUser()).getNode(path);
+            node = sessionFactory.getThreadSession(jParams.getUser()).getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -981,7 +982,7 @@ public class ContentManagerHelper {
         for (GWTJahiaNode aNode : paths) {
             JCRNodeWrapper node;
             try {
-                node = jcr.getThreadSession(user).getNode(aNode.getPath());
+                node = sessionFactory.getThreadSession(user).getNode(aNode.getPath());
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 missedPaths.add(new StringBuilder(aNode.getDisplayName()).append(" could not be accessed : ").append(e.toString()).toString());
@@ -1005,7 +1006,7 @@ public class ContentManagerHelper {
         for (GWTJahiaNode aNode : paths) {
             JCRNodeWrapper node;
             try {
-                node = jcr.getThreadSession(user).getNode(aNode.getPath());
+                node = sessionFactory.getThreadSession(user).getNode(aNode.getPath());
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 missedPaths.add(new StringBuilder(aNode.getDisplayName()).append(" could not be accessed : ").append(e.toString()).toString());
@@ -1030,7 +1031,7 @@ public class ContentManagerHelper {
         List<String> missedPaths = new ArrayList<String>();
         for (GWTJahiaNode aNode : pathsToCopy) {
             try {
-                final JCRSessionWrapper session = jcr.getThreadSession(user);
+                final JCRSessionWrapper session = sessionFactory.getThreadSession(user);
                 JCRNodeWrapper node = session.getNode(aNode.getPath());
 
                 String name = node.getName();
@@ -1142,7 +1143,7 @@ public class ContentManagerHelper {
     public static void rename(String path, String newName, JahiaUser user) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
-            node = jcr.getThreadSession(user).getNode(path);
+            node = sessionFactory.getThreadSession(user).getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -1169,7 +1170,7 @@ public class ContentManagerHelper {
     public static Map<String, GWTJahiaNodeProperty> getProperties(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
         JCRNodeWrapper objectNode;
         try {
-            objectNode = jcr.getThreadSession(jParams.getUser(), null, jParams.getLocale()).getNode(path);
+            objectNode = sessionFactory.getThreadSession(jParams.getUser(), null, jParams.getLocale()).getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -1243,7 +1244,7 @@ public class ContentManagerHelper {
         for (GWTJahiaNode aNode : nodes) {
             JCRNodeWrapper objectNode;
             try {
-                objectNode = jcr.getThreadSession(user, workspace, locale).getNode(aNode.getPath());
+                objectNode = sessionFactory.getThreadSession(user, workspace, locale).getNode(aNode.getPath());
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(aNode.getDisplayName()).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -1361,7 +1362,7 @@ public class ContentManagerHelper {
     public static GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, ProcessingContext context) throws GWTJahiaServiceException {
         JCRNodeWrapper parentNode;
         try {
-            parentNode = jcr.getThreadSession(context.getUser(), null, context.getLocale()).getNode(parentPath);
+            parentNode = sessionFactory.getThreadSession(context.getUser(), null, context.getLocale()).getNode(parentPath);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -1408,7 +1409,7 @@ public class ContentManagerHelper {
 
     public static GWTJahiaNode unsecureCreateNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, ProcessingContext context) throws GWTJahiaServiceException {
         try {
-            if (jcr.getThreadSession(context.getUser()).getNode(parentPath + "/" + name).isValid()) {
+            if (sessionFactory.getThreadSession(context.getUser()).getNode(parentPath + "/" + name).isValid()) {
                 throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
             }
         } catch (PathNotFoundException e) {
@@ -1422,7 +1423,7 @@ public class ContentManagerHelper {
         }
         JCRNodeWrapper parentNode;
         try {
-            parentNode = jcr.getThreadSession(context.getUser()).getNode(parentPath);
+            parentNode = sessionFactory.getThreadSession(context.getUser()).getNode(parentPath);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -1457,7 +1458,7 @@ public class ContentManagerHelper {
     public static GWTJahiaNodeACL getACL(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
-            node = jcr.getThreadSession(jParams.getUser()).getNode(path);
+            node = sessionFactory.getThreadSession(jParams.getUser()).getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -1513,7 +1514,7 @@ public class ContentManagerHelper {
     public static void setACL(String path, GWTJahiaNodeACL acl, ProcessingContext jParams) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
-            node = jcr.getThreadSession(jParams.getUser()).getNode(path);
+            node = sessionFactory.getThreadSession(jParams.getUser()).getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -1537,7 +1538,7 @@ public class ContentManagerHelper {
     public static List<GWTJahiaNodeUsage> getUsages(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
-            node = jcr.getThreadSession(jParams.getUser()).getNode(path);
+            node = sessionFactory.getThreadSession(jParams.getUser()).getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -1562,7 +1563,7 @@ public class ContentManagerHelper {
         for (String path : paths) {
             JCRNodeWrapper nodeToZip;
             try {
-                nodeToZip = jcr.getThreadSession(user).getNode(path);
+                nodeToZip = sessionFactory.getThreadSession(user).getNode(path);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(e.toString()).toString());
@@ -1585,7 +1586,7 @@ public class ContentManagerHelper {
             }
             JCRNodeWrapper parent;
             try {
-                parent = jcr.getThreadSession(user).getNode(parentPath);
+                parent = sessionFactory.getThreadSession(user).getNode(parentPath);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -1619,7 +1620,7 @@ public class ContentManagerHelper {
         for (String path : paths) {
             JCRNodeWrapper nodeToUnzip;
             try {
-                nodeToUnzip = jcr.getThreadSession(user).getNode(path);
+                nodeToUnzip = sessionFactory.getThreadSession(user).getNode(path);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(e.toString()).toString());
@@ -1642,7 +1643,7 @@ public class ContentManagerHelper {
             }
             JCRNodeWrapper parent;
             try {
-                parent = jcr.getThreadSession(user).getNode(parentPath);
+                parent = sessionFactory.getThreadSession(user).getNode(parentPath);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -1684,7 +1685,7 @@ public class ContentManagerHelper {
         if (user.isAdminMember(UPLOAD)) {
             JCRSessionWrapper session = null;
             try {
-                session = jcr.getSystemSession(user.getName());
+                session = sessionFactory.getSystemSession(user.getName());
                 JCRNodeWrapper parent = session.getNode("/content");
                 JCRNodeWrapper mounts;
                 try {
@@ -1810,7 +1811,7 @@ public class ContentManagerHelper {
             if (checkExistence(parentPath + "/" + name, context.getUser())) {
                 throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
             }
-            JCRNodeWrapper parentNode = jcr.getThreadSession(context.getUser()).getNode(parentPath);
+            JCRNodeWrapper parentNode = sessionFactory.getThreadSession(context.getUser()).getNode(parentPath);
             JCRPortletNode node = (JCRPortletNode) addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), gwtJahiaNewPortletInstance.getProperties());
 
             node.setApplication(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getApplicationId(), gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName());
@@ -2007,7 +2008,7 @@ public class ContentManagerHelper {
      */
     public static void uploadedFile(String location, String tmpName, int operation, String newName, ProcessingContext ctx) throws GWTJahiaServiceException {
         try {
-            JCRNodeWrapper parent = jcr.getThreadSession(ctx.getUser()).getNode(location);
+            JCRNodeWrapper parent = sessionFactory.getThreadSession(ctx.getUser()).getNode(location);
             switch (operation) {
                 case UPLOAD_NEW_VERSION:
                     JCRNodeWrapper node = (JCRNodeWrapper) parent.getNode(newName);
@@ -2073,8 +2074,8 @@ public class ContentManagerHelper {
      */
     public static void restoreNode(String nodeUuid, String versionUuid, ProcessingContext ctx) {
         try {
-            JCRNodeWrapper node = (JCRNodeWrapper) jcr.getThreadSession(ctx.getUser()).getNodeByUUID(nodeUuid);
-            Version version = (Version) jcr.getThreadSession(ctx.getUser()).getNodeByUUID(versionUuid);
+            JCRNodeWrapper node = (JCRNodeWrapper) sessionFactory.getThreadSession(ctx.getUser()).getNodeByUUID(nodeUuid);
+            Version version = (Version) sessionFactory.getThreadSession(ctx.getUser()).getNodeByUUID(versionUuid);
             node.checkout();
             node.restore(version, true);
             node.checkpoint();
@@ -2173,7 +2174,7 @@ public class ContentManagerHelper {
             if (locale == null) {
                 locale = ctx.getLocale();
             }
-            JCRSessionWrapper session = jcr.getThreadSession(ctx.getUser(), workspace, locale);
+            JCRSessionWrapper session = sessionFactory.getThreadSession(ctx.getUser(), workspace, locale);
             JCRNodeWrapper node = session.getNode(path);
             Resource r = new Resource(node, "html", null, template);
             ctx.getRequest().setAttribute("mode", "edit");
@@ -2202,7 +2203,7 @@ public class ContentManagerHelper {
 	public static boolean isFileAccessibleForCurrentContainer(ParamBean paramBean, String path) {
 		try {
 			// first let's check the JCR node ACLs
-			JCRNodeWrapper node = jcr.getThreadSession(paramBean.getUser()).getNode(path);
+			JCRNodeWrapper node = sessionFactory.getThreadSession(paramBean.getUser()).getNode(path);
 			Map<String, Map<String, String>> m = node.getActualAclEntries();
 			List<String> jcrReadGroups = new ArrayList<String>();
 			List<String> jcrReadUsers = new ArrayList<String>();
@@ -2318,7 +2319,7 @@ public class ContentManagerHelper {
     public static Map<String, String> getStoredPasswordsProviders(JahiaUser user) {
         Map<String, String> results = new HashMap<String,String>();
         results.put(null, user.getUsername());
-        for (JCRStoreProvider provider : jcr.getProviders().values()) {
+        for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
             if ("storedPasswords".equals(provider.getAuthenticationType())) {
                 results.put (provider.getKey(), user.getProperty("storedUsername_"+provider.getKey()));
             }
@@ -2357,7 +2358,7 @@ public class ContentManagerHelper {
                 try {
                     switch (format) {
                         case XMLFormatDetectionHandler.JCR_DOCVIEW: {
-                            JCRSessionWrapper session = jcr.getThreadSession(jParams.getUser());
+                            JCRSessionWrapper session = sessionFactory.getThreadSession(jParams.getUser());
 
                             session.importXML(parentPath, new FileInputStream(tempFile), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                             session.save();
@@ -2385,12 +2386,12 @@ public class ContentManagerHelper {
     }
 
     public static void move(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
-        JCRSessionWrapper session = jcr.getThreadSession(user);
+        JCRSessionWrapper session = sessionFactory.getThreadSession(user);
         session.getWorkspace().move(sourcePath, targetPath);
     }
 
     public static void moveOnTopOf(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
-        JCRSessionWrapper session = jcr.getThreadSession(user);
+        JCRSessionWrapper session = sessionFactory.getThreadSession(user);
         final JCRNodeWrapper srcNode = session.getNode(sourcePath);
         final JCRNodeWrapper targetNode = session.getNode(targetPath);
         final JCRNodeWrapper targetParent = (JCRNodeWrapper) targetNode.getParent();
@@ -2406,7 +2407,7 @@ public class ContentManagerHelper {
     }
 
     public static void moveAtEnd(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
-        JCRSessionWrapper session = jcr.getThreadSession(user);
+        JCRSessionWrapper session = sessionFactory.getThreadSession(user);
         final JCRNodeWrapper srcNode = session.getNode(sourcePath);
         final JCRNodeWrapper targetNode = session.getNode(targetPath);
         if (srcNode.getParent().getPath().equals(targetNode.getPath())) {
@@ -2423,7 +2424,7 @@ public class ContentManagerHelper {
     public static List<String[]> getTemplatesSet(String path, ProcessingContext ctx) throws GWTJahiaServiceException {
         List<String[]> templatesPath = new ArrayList<String[]>();
         try {
-            JCRNodeWrapper node = jcr.getThreadSession(ctx.getUser()).getNode(path);
+            JCRNodeWrapper node = sessionFactory.getThreadSession(ctx.getUser()).getNode(path);
             String def = null;
             if (node.hasProperty("j:defaultTemplate")) {
                 templatesPath.add(new String[]{"--unset--","--unset--"});

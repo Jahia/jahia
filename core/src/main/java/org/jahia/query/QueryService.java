@@ -31,13 +31,6 @@
  */
 package org.jahia.query;
 
-import java.util.Properties;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.ValueFactory;
-import javax.jcr.query.qom.QueryObjectModelFactory;
-
 import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.jahia.data.beans.ContainerListBean;
 import org.jahia.data.beans.PageBean;
@@ -46,13 +39,19 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.query.qom.QueryExecute;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.containers.ContentContainerList;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
 import org.jahia.services.content.impl.jahia.JahiaSiteNodeImpl;
 import org.jahia.services.pages.ContentPage;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.ValueFactory;
+import javax.jcr.query.qom.QueryObjectModelFactory;
+import java.util.Properties;
 
 /**
  * Created by IntelliJ IDEA.
@@ -175,7 +174,7 @@ public class QueryService extends JahiaService {
         if ("/".equals(pathString)){
             return pathString;
         }
-        Node n = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(context.getUser()).getNode(pathString).getRealNode();
+        Node n = JCRSessionFactory.getInstance().getThreadSession(context.getUser()).getNode(pathString).getRealNode();
         if (n instanceof JahiaContentNodeImpl) {
             Object result = ((JahiaContentNodeImpl)n).getContentObject();
             if (result instanceof ContentPage){

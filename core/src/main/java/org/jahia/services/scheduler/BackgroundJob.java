@@ -31,12 +31,6 @@
  */
  package org.jahia.services.scheduler;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.log4j.Logger;
@@ -47,6 +41,7 @@ import org.jahia.params.BasicURLGeneratorImpl;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.URLGenerator;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockService;
 import org.jahia.services.pages.ContentPage;
@@ -55,13 +50,9 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.workflow.AbstractActivationJob;
 import org.jahia.utils.LanguageCodeConverters;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.SchedulerException;
-import org.quartz.StatefulJob;
-import org.quartz.Trigger;
+import org.quartz.*;
+
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -226,7 +217,7 @@ public abstract class BackgroundJob implements StatefulJob {
             }
             data.put(JOB_STATUS, status);
             this.postExecution(jobExecutionContext, context);
-            ServicesRegistry.getInstance().getJCRStoreService().closeAllSessions();
+            JCRSessionFactory.getInstance().closeAllSessions();
 
             try {
                 ServicesRegistry.getInstance().getSchedulerService().endRequest();

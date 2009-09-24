@@ -1,40 +1,32 @@
 package org.jahia.services.shindig;
 
-import org.apache.shindig.social.opensocial.spi.*;
-import org.apache.shindig.social.opensocial.model.Person;
-import org.apache.shindig.social.opensocial.model.Activity;
-import org.apache.shindig.social.opensocial.model.MessageCollection;
-import org.apache.shindig.social.opensocial.model.Message;
-import org.apache.shindig.social.core.model.PersonImpl;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.apache.shindig.auth.SecurityToken;
+import org.apache.shindig.common.util.ImmediateFuture;
+import org.apache.shindig.protocol.DataCollection;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
-import org.apache.shindig.protocol.DataCollection;
 import org.apache.shindig.protocol.model.SortOrder;
-import org.apache.shindig.protocol.conversion.BeanConverter;
-import org.apache.shindig.common.util.ImmediateFuture;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerRoutingService;
-import org.jahia.services.usermanager.JahiaGroupManagerRoutingService;
-import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.apache.shindig.social.opensocial.model.Activity;
+import org.apache.shindig.social.opensocial.model.Message;
+import org.apache.shindig.social.opensocial.model.MessageCollection;
+import org.apache.shindig.social.opensocial.model.Person;
+import org.apache.shindig.social.opensocial.spi.*;
 import org.jahia.api.Constants;
-import org.json.JSONObject;
-import org.json.JSONException;
-import org.json.JSONArray;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.jcr.JCRUser;
 
-import java.util.concurrent.Future;
-import java.util.*;
-
-import com.google.common.collect.Maps;
-import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Lists;
-
-import javax.servlet.http.HttpServletResponse;
 import javax.jcr.*;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import java.util.concurrent.Future;
 
 /**
  * Implementation of the Shindig person service, mapping Shindig people to Jahia users.
@@ -54,11 +46,11 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
     };
         
     private JahiaUserManagerService jahiaUserManagerService;
-    private JCRStoreService jcrStoreService;
+    private JCRTemplate jcrTemplate;
 
-    public JahiaShindigService(JahiaUserManagerService jahiaUserManagerService, JCRStoreService jcrStoreService) {
+    public JahiaShindigService(JahiaUserManagerService jahiaUserManagerService, JCRTemplate jcrTemplate) {
         this.jahiaUserManagerService = jahiaUserManagerService;
-        this.jcrStoreService = jcrStoreService;
+        this.jcrTemplate = jcrTemplate;
     }
 
     /* -- PERSON SERVICE IMPLEMENTATION -- */
@@ -175,44 +167,46 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
         return null;
     }
 
-    private Map<String, Object> getPersonAppData(String id, Set<String> fields) throws RepositoryException {
-        Map<String, Object> appData = null;
-        JCRSessionWrapper session = jcrStoreService.getSystemSession();
-        Node userNode = session.getNode("/" + Constants.CONTENT + "/users/" + id);
-        Node appDataFolderNode;
-        if (!userNode.hasNode("appdata")) {
-            appDataFolderNode = userNode.addNode("appdata", Constants.NT_FOLDER);
-            session.save();
-        } else {
-            appDataFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + id + "/appdata");
-        }
-        if (appDataFolderNode != null) {
-          if (fields.contains(Person.Field.APP_DATA.toString())) {
-            appData = Maps.newHashMap();
-            @SuppressWarnings("unchecked")
-            PropertyIterator dataPropertyIterator = appDataFolderNode.getProperties();
-            while (dataPropertyIterator.hasNext()) {
-              Property currentDataProperty = dataPropertyIterator.nextProperty();
-              appData.put(currentDataProperty.getName(), currentDataProperty.getValue());
-            }
-          } else {
-            String appDataPrefix = Person.Field.APP_DATA.toString() + ".";
-            for (String field : fields) {
-              if (field.startsWith(appDataPrefix)) {
-                if (appData == null) {
-                  appData = Maps.newHashMap();
+    private Map<String, Object> getPersonAppData(final String id, final Set<String> fields) throws RepositoryException {
+        return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Map<String, Object>>() {
+            public Map<String, Object> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                Map<String, Object> appData = null;
+                Node userNode = session.getNode("/" + Constants.CONTENT + "/users/" + id);
+                Node appDataFolderNode;
+                if (!userNode.hasNode("appdata")) {
+                    appDataFolderNode = userNode.addNode("appdata", Constants.NT_FOLDER);
+                    session.save();
+                } else {
+                    appDataFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + id + "/appdata");
                 }
+                if (appDataFolderNode != null) {
+                    if (fields.contains(Person.Field.APP_DATA.toString())) {
+                        appData = Maps.newHashMap();
+                        @SuppressWarnings(
+                                "unchecked") PropertyIterator dataPropertyIterator = appDataFolderNode.getProperties();
+                        while (dataPropertyIterator.hasNext()) {
+                            Property currentDataProperty = dataPropertyIterator.nextProperty();
+                            appData.put(currentDataProperty.getName(), currentDataProperty.getValue());
+                        }
+                    } else {
+                        String appDataPrefix = Person.Field.APP_DATA.toString() + ".";
+                        for (String field : fields) {
+                            if (field.startsWith(appDataPrefix)) {
+                                if (appData == null) {
+                                    appData = Maps.newHashMap();
+                                }
 
-                String appDataField = field.substring(appDataPrefix.length());
-                if (appDataFolderNode.hasProperty(appDataField)) {
-                  appData.put(appDataField, appDataFolderNode.getProperty(appDataField).getValue());
+                                String appDataField = field.substring(appDataPrefix.length());
+                                if (appDataFolderNode.hasProperty(appDataField)) {
+                                    appData.put(appDataField, appDataFolderNode.getProperty(appDataField).getValue());
+                                }
+                            }
+                        }
+                    }
                 }
-              }
+                return appData;
             }
-          }
-        }
-
-        return appData;
+        });
     }
 
     /**
@@ -220,57 +214,64 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
      * and convert them appropriately.
      * @param jahiaUser the JahiaUser to use to create the Shindig Person.
      */
-    private JahiaPersonImpl loadPersonPropertiesFromJCR(JahiaUser jahiaUser) throws RepositoryException {
-        JahiaPersonImpl jahiaPersonImpl = new JahiaPersonImpl(jahiaUser);
-        String name = jahiaUser.getUserKey().split("}")[1];
-        JCRSessionWrapper session = jcrStoreService.getSystemSession();
-        Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name);
-        JCRUser jcrUser = null;
-        if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-            jcrUser = new JCRUser(usersFolderNode.getUUID(), jcrStoreService);
-        } else {
-            return null;
-        }
+    private JahiaPersonImpl loadPersonPropertiesFromJCR(final JahiaUser jahiaUser) throws RepositoryException {
+        return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JahiaPersonImpl>() {
+            public JahiaPersonImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JahiaPersonImpl jahiaPersonImpl = new JahiaPersonImpl(jahiaUser);
+                String name = jahiaUser.getUserKey().split("}")[1];
+                Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name);
+                JCRUser jcrUser = null;
+                if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
+                    jcrUser = new JCRUser(usersFolderNode.getUUID(), jcrTemplate.getSessionFactory());
+                } else {
+                    return null;
+                }
 
-        return jahiaPersonImpl;
+                return jahiaPersonImpl;
+            }
+        });
     }
 
     /**
      * Get the set of user id's from a user and group
      */
     private Set<String> getIdSet(UserId user, GroupId group, SecurityToken token) throws RepositoryException {
-      String userId = user.getUserId(token);
+      final String userId = user.getUserId(token);
 
       if (group == null) {
         return ImmutableSortedSet.of(userId);
       }
 
-      Set<String> returnVal = Sets.newLinkedHashSet();
+      final Set<String> returnVal = Sets.newLinkedHashSet();
       switch (group.getType()) {
       case all:
       case friends:
-          JCRSessionWrapper session = jcrStoreService.getSystemSession();
-          Node userNode = session.getNode("/" + Constants.CONTENT + "/users/" + userId);
-          Node usersFolderNode;
-          if (!userNode.hasNode("friends")) {
-              usersFolderNode = userNode.addNode("friends", Constants.NT_FOLDER);
-              session.save();
-          } else {
-              usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + userId + "/friends");
-          }
-          Node members = usersFolderNode.getNode("j:members");
-          if (members != null) {
-            NodeIterator iterator = members.getNodes();
-            while (iterator.hasNext()) {
-                Node member = (Node) iterator.next();
-                if (member.isNodeType(Constants.JAHIANT_MEMBER)) {
-                    JahiaUser jahiaUser = jahiaUserManagerService.lookupUser(member.getName());
-                    if(jahiaUser!=null) {
-                        returnVal.add(member.getName());
-                    }
-                }
-            }
-          }
+          jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
+              public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                  Node userNode = session.getNode("/" + Constants.CONTENT + "/users/" + userId);
+                  Node usersFolderNode;
+                  if (!userNode.hasNode("friends")) {
+                      usersFolderNode = userNode.addNode("friends", Constants.NT_FOLDER);
+                      session.save();
+                  } else {
+                      usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + userId + "/friends");
+                  }
+                  Node members = usersFolderNode.getNode("j:members");
+                  if (members != null) {
+                      NodeIterator iterator = members.getNodes();
+                      while (iterator.hasNext()) {
+                          Node member = (Node) iterator.next();
+                          if (member.isNodeType(Constants.JAHIANT_MEMBER)) {
+                              JahiaUser jahiaUser = jahiaUserManagerService.lookupUser(member.getName());
+                              if (jahiaUser != null) {
+                                  returnVal.add(member.getName());
+                              }
+                          }
+                      }
+                  }
+                  return null;
+              }
+          });
           break;
       case groupId:
         break;

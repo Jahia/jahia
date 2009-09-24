@@ -13,7 +13,7 @@
 	
     <bean id="JCRGroupManagerProvider" class="org.jahia.services.usermanager.jcr.JCRGroupManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="key" value="jahia_jcr"/>
-        <property name="jcrStoreService" ref="JCRStoreService"/>
+        <property name="jcrTemplate" ref="jcrTemplate"/>
         <property name="sitesService" ref="JahiaSitesService"/>
         <property name="cacheService" ref="JahiaCacheService"/>
         <property name="defaultProvider" value="true"/>

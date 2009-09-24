@@ -25,7 +25,7 @@
         <property name="mountPoint" value="/"/>
         <property name="webdavPath" value="${jahia.deploy.war.contextPath}/repository/default"/>
         <property name="rmibind" value="jackrabbit"/>
-
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="listeners">
             <map>
                 <entry key="default">
@@ -59,7 +59,7 @@
         <property name="key" value="jahia"/>
         <property name="rmibind" value="jahia"/>
         <property name="processingContextFactory" ref="org.jahia.params.ProcessingContextFactory"/>
-
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="listeners">
             <map>
                 <entry key="default">
@@ -83,10 +83,38 @@
         <property name="mountPoint" value="/content/jahia"/>
     </bean>
 
+    <bean id="jcrSessionFactory" class="org.jahia.services.content.JCRSessionFactory" factory-method="getInstance" lazy-init="true">
+        <property name="userService" ref="JahiaUserManagerService"/>
+        <property name="descriptors">
+            <map>
+                <entry key="jcr.specification.version" value="1.0"/>
+                <entry key="jcr.specification.name"
+                       value="Content Repository API for Java(TM) Technology Specification"/>
+                <entry key="jcr.repository.vendor" value="Jahia"/>
+                <entry key="jcr.repository.vendor.url" value="http://www.jahia.org/"/>
+                <entry key="jcr.repository.name" value="Crazy Jane"/>
+                <entry key="jcr.repository.version" value="6.5"/>
+                <entry key="level.1.supported" value="true"/>
+                <entry key="level.2.supported" value="true"/>
+                <entry key="option.transactions.supported" value="true"/>
+                <entry key="option.versioning.supported" value="true"/>
+                <entry key="option.observation.supported" value="false"/>
+                <entry key="option.locking.supported" value="true"/>
+                <entry key="option.query.sql.supported" value="true"/>
+                <entry key="query.xpath.pos.index" value="true"/>
+                <entry key="query.xpath.doc.order" value="false"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="jcrTemplate" class="org.jahia.services.content.JCRTemplate" factory-method="getInstance">
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
+    </bean>
+
     <bean id="JCRStoreService" class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate"
           factory-method="getInstance" lazy-init="true">
-        <property name="userService" ref="JahiaUserManagerService"/>
         <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="decorators">
             <map>
                 <entry key="nt:file" value="org.jahia.services.content.JCRFileNode"/>

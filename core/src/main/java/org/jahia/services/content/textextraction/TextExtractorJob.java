@@ -32,7 +32,7 @@
 package org.jahia.services.content.textextraction;
 
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.automation.ExtractionService;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -57,7 +57,7 @@ public class TextExtractorJob extends BackgroundJob {
         String path = (String) jobExecutionContext.getJobDetail().getJobDataMap().get(PATH);
         String extractNodePath = (String) jobExecutionContext.getJobDetail().getJobDataMap().get(EXTRACTNODE_PATH);        
 
-        JCRStoreProvider provider = (JCRStoreProvider) ServicesRegistry.getInstance().getJCRStoreService().getMountPoints().get(providerPath);
+        JCRStoreProvider provider = (JCRStoreProvider) JCRSessionFactory.getInstance().getMountPoints().get(providerPath);
 
         ExtractionService.getInstance().extractText(provider, path, extractNodePath, processingContext);
     }

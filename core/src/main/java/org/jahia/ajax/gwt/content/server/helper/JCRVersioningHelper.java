@@ -35,10 +35,9 @@ import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRVersionHistory;
 
 import javax.jcr.RepositoryException;
@@ -56,7 +55,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class JCRVersioningHelper {
-    private static JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
+    private static JCRSessionFactory jcr = JCRSessionFactory.getInstance();
     private static Logger logger = Logger.getLogger(JCRVersioningHelper.class);
 
     /**

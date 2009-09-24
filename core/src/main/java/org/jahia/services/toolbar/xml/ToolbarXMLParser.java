@@ -125,7 +125,7 @@ public class ToolbarXMLParser {
 
                 // set state
                 String state = currentToolbarElement.getAttributeValue("state");
-                toolbar.setState(state);
+                toolbar.setState(state != null && state.length() > 0 ? state : "top");
 
                 // set displayed
                 String displayed = currentToolbarElement.getAttributeValue("displayed");

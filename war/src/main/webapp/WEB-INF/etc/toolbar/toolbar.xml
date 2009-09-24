@@ -14,6 +14,8 @@
         <toolbar name="mashup-manager" ref-type="org.jahia.toolbar.manager.mashups.menu"/>
         <toolbar name="mashup-manager" ref-type="org.jahia.toolbar.manager.mashups.shortcuts"/>
 
+        <toolbar name="portlet-definition-manager" ref-type="org.jahia.toolbar.manager.portletDefinitions.shortcuts"/>
+        
         <toolbar name="site-manager" ref-type="org.jahia.toolbar.manager.sites.menu"/>
         <toolbar name="site-manager" ref-type="org.jahia.toolbar.manager.sites.shortcuts"/>
 
@@ -140,6 +142,14 @@
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
         </toolbar>
         <!-- end of the Mashup Manager -->
+
+        <!-- Portlet Definition Manager -->
+        <toolbar type="org.jahia.toolbar.manager.portletDefinitions.shortcuts">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.PortletDefinitionManager.shortcuts.new"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.PortletDefinitionManager.shortcuts.modify"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+        </toolbar>
+        <!-- end of the Portlet Definition Manager -->
 
         <!-- Site Manager -->
         <toolbar type="org.jahia.toolbar.manager.sites.menu">
@@ -629,6 +639,12 @@
             <item ref-type="org.jahia.toolbar.item.ContentAction.createMashup"/>
             <item ref-type="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
             <item ref-type="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.PortletDefinitionManager.shortcuts.new" layout="button">
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createPortletDefinition"/>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.PortletDefinitionManager.shortcuts.modify" layout="button">
+            <item ref-type="org.jahia.toolbar.item.ContentAction.delete"/>
         </itemsgroup>
         <itemsgroup type="org.jahia.toolbar.itemsgroup.SiteManager.shortcuts.file.new" layout="button">
             <item ref-type="org.jahia.toolbar.item.EditAction.createPage"/>

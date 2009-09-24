@@ -86,6 +86,7 @@ public class ActionItemFactory extends ActionItemFactoryItf {
     public static final String CONTENT_ACTION_CREATE_FOLDER = "org.jahia.toolbar.item.ContentAction.createFolder";
     public static final String CONTENT_ACTION_CREATE_GOOGLE_GADGET_MASHUP = "org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup";
     public static final String CONTENT_ACTION_CREATE_MASHUP = "org.jahia.toolbar.item.ContentAction.createMashup";
+    public static final String CONTENT_ACTION_CREATE_PORTLET_DEFINITION = "org.jahia.toolbar.item.ContentAction.createPortletDefinition";
     public static final String CONTENT_ACTION_CREATE_RSS_MASHUP = "org.jahia.toolbar.item.ContentAction.createRssMashup";
     public static final String CONTENT_ACTION_CROP = "org.jahia.toolbar.item.ContentAction.crop";
     public static final String CONTENT_ACTION_CUT = "org.jahia.toolbar.item.ContentAction.cut";
@@ -180,6 +181,8 @@ public class ActionItemFactory extends ActionItemFactoryItf {
             actionItem = ContentActionItemCreatorHelper.createNewGadgetItem(linker);
         }else if (type.equalsIgnoreCase(CONTENT_ACTION_CREATE_MASHUP)) {
             actionItem = ContentActionItemCreatorHelper.createNewMashupItem(linker);
+        }else if (type.equalsIgnoreCase(CONTENT_ACTION_CREATE_PORTLET_DEFINITION)) {
+            actionItem = ContentActionItemCreatorHelper.createDeployPortletDefinition(linker);
         }else if (type.equalsIgnoreCase(CONTENT_ACTION_CREATE_RSS_MASHUP)) {
             actionItem = ContentActionItemCreatorHelper.createNewRSSItem(linker);
         }else if (type.equalsIgnoreCase(CONTENT_ACTION_CROP)) {

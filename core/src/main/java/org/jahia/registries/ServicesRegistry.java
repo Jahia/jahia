@@ -73,7 +73,6 @@ import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sso.CasService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
-import org.jahia.services.toolbar.JahiaToolbarService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteUserManagerService;
@@ -539,10 +538,6 @@ public class ServicesRegistry {
 
     public CacheKeyGeneratorService getCacheKeyGeneratorService() {
         return (CacheKeyGeneratorService) getService("CacheKeyGeneratorService");
-    }
-
-     public JahiaToolbarService getJahiaToolbarService() {
-        return (JahiaToolbarService) getService(JAHIA_TOOLBAR_SERVICE);
     }
 
     public JahiaOpenSearchService getOpenSearchService() {

@@ -34,7 +34,6 @@ package org.jahia.services.templates;
 import static org.jahia.services.templates.TemplateDeploymentDescriptorHelper.TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.automation.RulesListener;
-import org.jahia.services.toolbar.JahiaToolbarService;
 
 import java.io.File;
 import java.util.*;
@@ -73,11 +72,6 @@ class TemplatePackageRegistry {
                 File rootFolder = getPackageRootFolder(pkg);
                 List<File> files = new LinkedList<File>();
                 files.add(new File(rootFolder, TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME));
-                File toolbarDescriptor = new File(rootFolder,
-                        JahiaToolbarService.TOOLBAR_DESCRIPTOR_FILENAME);
-                if (toolbarDescriptor.exists()) {
-                    files.add(toolbarDescriptor);
-                }
                 if (!pkg.getDefinitionsFiles().isEmpty()) {
                     for (String name : pkg.getDefinitionsFiles()) {
                         files.add(new File(rootFolder, name));
@@ -411,13 +405,9 @@ class TemplatePackageRegistry {
                         + "' changed. Restarting JahiaTemplateManagerService");
                 JahiaTemplateManagerService service = ServicesRegistry
                         .getInstance().getJahiaTemplateManagerService();
-                JahiaToolbarService toobarService = ServicesRegistry
-                        .getInstance().getJahiaToolbarService();
                 try {
                     service.stop();
                     service.start();
-                    toobarService.stop();
-                    toobarService.start();
                 } catch (Exception ex) {
                     logger
                             .error(

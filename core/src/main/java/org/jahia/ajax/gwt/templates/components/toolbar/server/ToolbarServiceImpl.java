@@ -58,7 +58,6 @@ import org.jahia.services.preferences.toolbar.ToolbarJahiaPreference;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.scheduler.ProcessAction;
-import org.jahia.services.toolbar.JahiaToolbarService;
 import org.jahia.services.toolbar.bean.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.AbstractActivationJob;
@@ -71,6 +70,7 @@ import org.jahia.content.ContentPageKey;
 import org.jahia.content.ContentObject;
 import org.jahia.analytics.data.GAdataCollector;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
@@ -88,7 +88,6 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
     private static Map<String, Class<?>> CLASS_CACHE = new HashMap<String, Class<?>>();
 
     private static final ServicesRegistry SERVICES_REGISTRY = ServicesRegistry.getInstance();
-    private static transient JahiaToolbarService JAHIA_TOOLBAR_SERVICE;
     private static transient SchedulerService SCHEDULER_SERVICE;
 
     /**
@@ -102,10 +101,10 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             JahiaData jData = retrieveJahiaData(pageContext);
             // there is no pref or toolbar are hided
             // get all tool bars
-            ToolbarSet toolbarSet = getToolbarService().getToolbarSet(retrieveParamBean(pageContext));
+            ToolbarSet toolbarSet = (ToolbarSet) SpringContextSingleton.getBean(toolbarGroup);
             Visibility visibility = toolbarSet.getVisibility();
             if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
-                GWTJahiaToolbarSet gwtJahiaToolbarSet = createGWTToolbarSet(toolbarGroup, toolbarSet, pageContext);
+                GWTJahiaToolbarSet gwtJahiaToolbarSet = createGWTToolbarSet(toolbarSet, pageContext);
                 return gwtJahiaToolbarSet;
             } else {
                 logger.info("Toolbar are not visible.");
@@ -118,8 +117,8 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         }
     }
 
-    private GWTJahiaToolbarSet createGWTToolbarSet(String toolbarGroup, ToolbarSet toolbarSet, GWTJahiaPageContext pageContext) {
-        if (toolbarSet.getToolbarList() == null || toolbarSet.getToolbarList().isEmpty()) {
+    private GWTJahiaToolbarSet createGWTToolbarSet(ToolbarSet toolbarSet, GWTJahiaPageContext pageContext) {
+        if (toolbarSet.getToolbars() == null || toolbarSet.getToolbars().isEmpty()) {
             logger.debug("toolbar set list is empty");
             return null;
         }
@@ -127,10 +126,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
 
         // create  a gwtJahiaToolbarSet
         GWTJahiaToolbarSet gwtJahiaToolbarSet = new GWTJahiaToolbarSet();
-        for (Toolbar toolbar : toolbarSet.getToolbarList()) {
-        	if (!toolbarGroup.equals(toolbar.getName())) {
-        		continue;
-        	}
+        for (Toolbar toolbar : toolbarSet.getToolbars()) {
             // add only tool bar that the user can view
             Visibility visibility = toolbar.getVisibility();
             if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
@@ -220,7 +216,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
 
     private GWTJahiaToolbar createGWTToolbar(GWTJahiaPageContext pageContext, Toolbar toolbar) {
         // don't add the tool bar if  has no items group
-        if (toolbar.getItemsGroupList() == null || toolbar.getItemsGroupList().isEmpty()) {
+        if (toolbar.getItemsGroups() == null || toolbar.getItemsGroups().isEmpty()) {
             logger.debug("toolbar[" + toolbar.getName() + "] itemsgroup list is empty");
             return null;
         }
@@ -260,7 +256,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         // load items-group
         List<GWTJahiaToolbarItemsGroup> gwtToolbarItemsGroupList = new ArrayList<GWTJahiaToolbarItemsGroup>();
         int index = 0;
-        for (ItemsGroup itemsGroup : toolbar.getItemsGroupList()) {
+        for (ItemsGroup itemsGroup : toolbar.getItemsGroups()) {
             // add only itemsgroup that the user can view
             Visibility visibility = itemsGroup.getVisibility();
             if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
@@ -323,7 +319,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
 
     private GWTJahiaToolbarItemsGroup createGWTItemsGroup(GWTJahiaPageContext page, String toolbarName, int index, ItemsGroup itemsGroup) {
         // don't add the items group if  has no items group
-        if (itemsGroup.getItemList() == null || itemsGroup.getItemList().isEmpty()) {
+        if (itemsGroup.getItems() == null || itemsGroup.getItems().isEmpty()) {
             logger.debug("toolbar[" + toolbarName + "] itemlist is empty");
             return null;
         }
@@ -333,9 +329,9 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
 
         List<GWTJahiaToolbarItem> gwtToolbarItemsList = new ArrayList<GWTJahiaToolbarItem>();
         // create items from definition
-        for (int i = 0; i < itemsGroup.getItemList().size(); i++) {
+        for (int i = 0; i < itemsGroup.getItems().size(); i++) {
             // case of item
-            Object o = itemsGroup.getItemList().get(i);
+            Object o = itemsGroup.getItems().get(i);
             if (o instanceof Item) {
                 Item item = (Item) o;
                 // add only item that the user can view
@@ -349,7 +345,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                         gwtToolbarItemsList.add(gwtToolbarItem);
                     }
                 } else {
-                    logger.debug("Item: " + item.getTitleResourceBundleKey() + ":  not visible");
+                    logger.debug("Item: " + item.getTitleKey() + ":  not visible");
                 }
             }
             // case of items provider
@@ -376,7 +372,32 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup = new GWTJahiaToolbarItemsGroup();
         gwtToolbarItemsGroup.setId(toolbarName + "_" + index);
         gwtToolbarItemsGroup.setType(itemsGroup.getType());
-        gwtToolbarItemsGroup.setLayout(itemsGroup.getLayout());
+
+        String layout= itemsGroup.getLayout();
+        int layoutInt=0;
+        if (layout.equalsIgnoreCase("button")) {
+            layoutInt = ToolbarConstants.ITEMSGROUP_BUTTON;
+        } else if (layout.equalsIgnoreCase("label")) {
+            layoutInt = ToolbarConstants.ITEMSGROUP_LABEL;
+        } else if (layout.equalsIgnoreCase("button-label")) {
+            layoutInt = ToolbarConstants.ITEMSGROUP_BUTTON_LABEL;
+        } else if (layout.equalsIgnoreCase("menu")) {
+            layoutInt = ToolbarConstants.ITEMSGROUP_MENU;
+        } else if (layout.equalsIgnoreCase("menu-radio")) {
+            layoutInt = ToolbarConstants.ITEMSGROUP_MENU_RADIO;
+        } else if (layout.equalsIgnoreCase("menu-checkbox")) {
+            layoutInt = ToolbarConstants.ITEMSGROUP_MENU_CHECKBOX;
+        } else if (layout.equalsIgnoreCase("select")) {
+            layoutInt = ToolbarConstants.ITEMSGROUP_SELECT;
+        } else if (layout.equalsIgnoreCase("box")) {
+            layoutInt = ToolbarConstants.ITEMSGROUP_BOX;
+        } else if (layout.equalsIgnoreCase("tab")) {
+            layoutInt = ToolbarConstants.ITEMSGROUP_TABS;
+        } else {
+            logger.debug("Warning: layout " + itemsGroup.getLayout() + " unknown.");
+        }
+        gwtToolbarItemsGroup.setLayout(layoutInt);        
+
         gwtToolbarItemsGroup.setNeedSeparator(itemsGroup.isSeparator());
         gwtToolbarItemsGroup.setMediumIconStyle(itemsGroup.getMediumIconStyle());
         gwtToolbarItemsGroup.setMinIconStyle(itemsGroup.getMinIconStyle());
@@ -419,10 +440,10 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
 
         // GWTJahiaToolbarItem
         GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
-        gwtToolbarItem.setTitle(getResources(paramBean, item.getTitleResourceBundleKey()));
+        gwtToolbarItem.setTitle(getResources(paramBean, item.getTitleKey()));
         gwtToolbarItem.setType(item.getType());
         gwtToolbarItem.setDisplayTitle(item.isDisplayTitle());
-        gwtToolbarItem.setDescription(getResources(paramBean, item.getDescriptionResourceBundleKey()));
+        gwtToolbarItem.setDescription(getResources(paramBean, item.getDescriptionKey()));
         gwtToolbarItem.setMediumIconStyle(item.getMediumIconStyle());
         gwtToolbarItem.setMinIconStyle(item.getMinIconStyle());
         if (item.getSelected() != null) {
@@ -431,7 +452,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             gwtToolbarItem.setSelected(false);
         }
         Map<String, GWTJahiaProperty> pMap = new HashMap<String, GWTJahiaProperty>();
-        for (Property currentProperty : item.getPropertyList()) {
+        for (Property currentProperty : item.getProperties()) {
             GWTJahiaProperty gwtProperty = new GWTJahiaProperty();
             gwtProperty.setName(currentProperty.getName());
             gwtProperty.setValue(currentProperty.getRealValue(jData));
@@ -674,18 +695,6 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         return gwtProcessJobInfo;
     }
 
-
-    /**
-     * Get Toolbar Service
-     *
-     * @return
-     */
-    private JahiaToolbarService getToolbarService() {
-        if (JAHIA_TOOLBAR_SERVICE == null) {
-            JAHIA_TOOLBAR_SERVICE = ServicesRegistry.getInstance().getJahiaToolbarService();
-        }
-        return JAHIA_TOOLBAR_SERVICE;
-    }
 
     /**
      * Get Scheduler Service

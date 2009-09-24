@@ -31,6 +31,8 @@
  */
 package org.jahia.services.toolbar.bean;
 
+import org.springframework.beans.factory.BeanNameAware;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,19 +42,29 @@ import java.util.List;
  * Date: 7 avr. 2008
  * Time: 09:04:48
  */
-public class Toolbar implements Serializable {
+public class Toolbar implements Serializable, BeanNameAware {
+    private static List<Toolbar> alls = new ArrayList<Toolbar>();
+
     private int index;
     private String name;
     private boolean settings;
     private String titleKey;
     private String type;
-    private String state;
-    private boolean draggable;
-    private boolean mandatory;
-    private boolean displayed;
-    private boolean displayTitle;
-    private List<ItemsGroup> itemsGroupList = new ArrayList<ItemsGroup>();
+    private String state = "top";
+    private boolean draggable = false;
+    private boolean mandatory = false;
+    private boolean displayed  = true;
+    private boolean displayTitle = false;
+    private List<ItemsGroup> itemsGroups = new ArrayList<ItemsGroup>();
     private Visibility visibility;
+
+    public static List<Toolbar> getAlls() {
+        return alls;
+    }
+
+    public Toolbar() {
+        alls.add(this);
+    }
 
     public int getIndex() {
         return index;
@@ -135,13 +147,16 @@ public class Toolbar implements Serializable {
     }
 
 
-    public List<ItemsGroup> getItemsGroupList() {
-        return itemsGroupList;
+    public List<ItemsGroup> getItemsGroups() {
+        return itemsGroups;
     }
 
+    public void setItemsGroups(List<ItemsGroup> itemsGroups) {
+        this.itemsGroups = itemsGroups;
+    }
 
     public void addItemsGroup(ItemsGroup itemsGroup) {
-        this.itemsGroupList.add(itemsGroup);
+        this.itemsGroups.add(itemsGroup);
     }
 
     public Visibility getVisibility() {
@@ -150,5 +165,10 @@ public class Toolbar implements Serializable {
 
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
+    }
+
+    public void setBeanName(String name) {
+        setName(name);
+        setType(name);
     }
 }

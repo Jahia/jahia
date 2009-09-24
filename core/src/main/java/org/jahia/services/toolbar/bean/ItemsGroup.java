@@ -31,6 +31,8 @@
  */
 package org.jahia.services.toolbar.bean;
 
+import org.springframework.beans.factory.BeanNameAware;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
@@ -40,16 +42,16 @@ import java.io.Serializable;
  * Date: 7 avr. 2008
  * Time: 09:05:11
  */
-public class ItemsGroup implements Serializable {
+public class ItemsGroup implements Serializable, BeanNameAware {
     private String id;
     private String type;
     private String titleKey;
     private Visibility visibility;
     private String mediumIconStyle;
     private String minIconStyle;
-    private int layout;
+    private String layout;
     private boolean separator;
-    private List itemList = new ArrayList();
+    private List items = new ArrayList();
 
     public String getId() {
         return id;
@@ -99,7 +101,7 @@ public class ItemsGroup implements Serializable {
         this.minIconStyle = minIconStyle;
     }
 
-    public int getLayout() {
+    public String getLayout() {
         return layout;
     }
 
@@ -111,19 +113,28 @@ public class ItemsGroup implements Serializable {
         this.separator = separator;
     }
 
-    public void setLayout(int layout) {
+    public void setLayout(String layout) {
         this.layout = layout;
     }
 
-    public List getItemList() {
-        return itemList;
+    public List getItems() {
+        return items;
+    }
+
+    public void setItems(List items) {
+        this.items = items;
     }
 
     public void addItem(Item item) {
-        itemList.add(item);
+        items.add(item);
     }
 
     public void addItemsProvider(ItemsProvider itemsProvider) {
-        itemList.add(itemsProvider);
+        items.add(itemsProvider);
     }
+
+    public void setBeanName(String name) {
+        setType(name);
+    }
+
 }

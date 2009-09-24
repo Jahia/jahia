@@ -642,7 +642,7 @@ public class JahiaACLManagerService extends JahiaService {
         }
         if ("toolbars".equals(groupName)) {
             // build toolbars permission list based on the current site toolbars
-            List<Toolbar> toolbars = ServicesRegistry.getInstance().getJahiaToolbarService().getToolbars();
+            List<Toolbar> toolbars = Toolbar.getAlls();
             permissionList = new ArrayList<String>(toolbars.size());
             for (Toolbar toolbar : toolbars) {
                 permissionList.add(ManageSitePermissions.SITE_PERMISSIONS_PREFIX + "*." + toolbar.getVisibility().getSiteActionPermission());

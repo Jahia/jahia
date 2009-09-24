@@ -1,0 +1,2409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="editmode" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.editmode"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="category-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.manager.categories.menu"/>
+                <ref bean="org.jahia.toolbar.manager.categories.shortcuts"/>
+            </list>
+        </property>
+    </bean>
+
+
+            <!--<toolbar name="content-manager" ref-type="org.jahia.toolbar.manager.content.menu"/>-->
+            <!--<toolbar name="content-manager" ref-type="org.jahia.toolbar.manager.content.shortcuts"/>-->
+
+            <!--<toolbar name="document-manager" ref-type="org.jahia.toolbar.manager.documents.menu"/>-->
+            <!--<toolbar name="document-manager" ref-type="org.jahia.toolbar.manager.documents.shortcuts"/>-->
+
+            <!--<toolbar name="mashup-manager" ref-type="org.jahia.toolbar.manager.mashups.menu"/>-->
+            <!--<toolbar name="mashup-manager" ref-type="org.jahia.toolbar.manager.mashups.shortcuts"/>-->
+
+            <!--<toolbar name="portlet-definition-manager" ref-type="org.jahia.toolbar.manager.portletDefinitions.shortcuts"/>-->
+
+            <!--<toolbar name="site-manager" ref-type="org.jahia.toolbar.manager.sites.menu"/>-->
+            <!--<toolbar name="site-manager" ref-type="org.jahia.toolbar.manager.sites.shortcuts"/>-->
+
+            <!--<toolbar name="workflow" ref-type="org.jahia.toolbar.workflow" state="top" draggable="true" displayed="false"
+                     mandatory="false" display-title="true"/>
+
+            <toolbar name="bookmarks" ref-type="org.jahia.toolbar.bookmarks" state="top" draggable="true" displayed="false"
+                     mandatory="false" display-title="true"/>
+
+            <toolbar name="breadcrumb" ref-type="org.jahia.toolbar.breadcrumb" state="top" draggable="true"
+                     displayed="false" mandatory="false" display-title="true"/>
+
+            <toolbar name="caches" ref-type="org.jahia.toolbar.caches" state="top" draggable="true" displayed="false"
+                     mandatory="false" display-title="true"/>
+
+            <toolbar name="statistics" ref-type="org.jahia.toolbar.statistics" state="top" draggable="true"
+                     displayed="false"
+                     mandatory="false" display-title="true"/>
+
+            <toolbar name="subscriptions" ref-type="org.jahia.toolbar.subscriptions" state="top" draggable="true"
+                     displayed="false"
+                     mandatory="false" display-title="true"/>-->
+
+    <!-- switching mode -->
+    <bean id="org.jahia.toolbar.editmode" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.newedit.Switchingmode"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.newedit.PageProperties"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.newedit.LanguageSwitcher"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.newedit.EditAction"/>
+                <!--<ref bean="org.jahia.toolbar.itemsgroup.ContentAction"/>-->
+                <ref bean="org.jahia.toolbar.itemsgroup.newedit.Tools"/>
+                <!--<ref bean="org.jahia.toolbar.itemsgroup.newedit.Workflow"/>-->
+                <ref bean="org.jahia.toolbar.itemsgroup.newedit.Cache"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.newedit.Preview"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.newedit.User"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.newedit.Admin"/>
+            </list>
+        </property>
+    </bean>
+    <!-- switching mode -->
+    <bean id="org.jahia.toolbar.switchingmode" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="titleKey" value="toolbar.switchingmode"/>
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.SwitchingMode.tab"/>
+
+                <ref bean="org.jahia.toolbar.itemsgroup.User"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.sites"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.View"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.Tools"/>
+
+                <ref bean="org.jahia.toolbar.itemsgroup.License"/>
+                <!-- push to right-->
+                <ref bean="org.jahia.toolbar.itemsgroup.Fill"/>
+
+                <!-- items groups that depends on the selected mode-->
+                <ref bean="org.jahia.toolbar.itemsgroup.Notification"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.Page"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.PreviewMode"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.CompareMode"/>
+                <!--<ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>-->
+
+            </list>
+        </property>
+    </bean>
+
+    <!-- Category Manager -->
+    <bean id="org.jahia.toolbar.manager.categories.menu" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.CategoryManager.menu.file"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.manager.categories.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.CategoryManager.shortcuts.file.new"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+            </list>
+        </property>
+    </bean>
+    <!-- end of the Category Manager -->
+
+    <!-- Content Manager -->
+    <bean id="org.jahia.toolbar.manager.content.menu" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.file"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.remote"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.image"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.manager.content.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.new"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+            </list>
+        </property>
+    </bean>
+    <!-- end of the Content Manager -->
+
+    <!-- Document Manager -->
+    <bean id="org.jahia.toolbar.manager.documents.menu" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.DocumentManager.menu.file"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.remote"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.image"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.manager.documents.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.file.new"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+            </list>
+        </property>
+    </bean>
+    <!-- end of the Document Manager -->
+
+    <!-- Mashup Manager -->
+    <bean id="org.jahia.toolbar.manager.mashups.menu" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.MashupManager.menu.file"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.manager.mashups.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.MashupManager.shortcuts.file.new"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+            </list>
+        </property>
+    </bean>
+    <!-- end of the Mashup Manager -->
+
+    <!-- Portlet Definition Manager -->
+    <bean id="org.jahia.toolbar.manager.portletDefinitions.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.PortletDefinitionManager.shortcuts.new"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.PortletDefinitionManager.shortcuts.modify"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+            </list>
+        </property>
+    </bean>
+    <!-- end of the Portlet Definition Manager -->
+
+    <!-- Site Manager -->
+    <bean id="org.jahia.toolbar.manager.sites.menu" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.SiteManager.menu.file"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.manager.sites.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.SiteManager.shortcuts.file.new"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+            </list>
+        </property>
+    </bean>
+    <!-- end of the Site Manager -->
+
+    <!-- workflow -->
+    <bean id="org.jahia.toolbar.workflow" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="titleKey" value="toolbar.workflow"/>
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.QuickWorkflow"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- user -->
+    <bean id="org.jahia.toolbar.user" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="titleKey" value="toolbar.user"/>
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.bookmarks"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.history"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- bookmarks -->
+    <bean id="org.jahia.toolbar.bookmarks" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="titleKey" value="toolbar.bookmarks"/>
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.bookmarks"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- breadcrumb -->
+    <bean id="org.jahia.toolbar.breadcrumb" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="titleKey" value="toolbar.breadcrumb"/>
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.history"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- caches -->
+    <bean id="org.jahia.toolbar.caches" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="titleKey" value="toolbar.caches"/>
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.Flush"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.Cache"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.statistics" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="titleKey" value="toolbar.itemgroups.statistics"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.SimpleVisibilityResolver"/>
+                <property name="inputResolver" value="statistics"/>
+            </bean>
+        </property>
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.Statistics"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- subscriptions -->
+    <bean id="org.jahia.toolbar.subscriptions" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="titleKey" value="toolbar.subscriptions.toolbar.title"/>
+        <property name="itemsGroups">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.Subscriptions"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- fill: allows to 'push' itemsgroup after this one to the rigth -->
+    <bean id="org.jahia.toolbar.itemsgroup.Fill" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.Fill"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.License" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.License"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- User-->
+    <bean id="org.jahia.toolbar.itemsgroup.User" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.itemgroups.user"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.User"/>
+                <ref bean="org.jahia.toolbar.item.Logout"/>
+                <ref bean="org.jahia.toolbar.item.MySettings"/>
+                <ref bean="org.jahia.toolbar.item.Admin"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Session -->
+    <bean id="org.jahia.toolbar.itemsgroup.Session" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.itemgroups.sessionmanagement"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.Logout"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- SwitchinkMode:  buttons -->
+    <bean id="org.jahia.toolbar.itemsgroup.SwitchingMode" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="titleKey" value="toolbar.itemgroups.switchingmode"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver"/>
+                <property name="inputResolver" value="all"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.Live"/>
+                <ref bean="org.jahia.toolbar.item.Preview"/>
+                <!--<ref bean="org.jahia.toolbar.item.AdvancedPreview" display-title="false"/>-->
+                <ref bean="org.jahia.toolbar.item.Compare"/>
+                <!--<ref bean="org.jahia.toolbar.item.AdvancedCompare" display-title="false"/>-->
+                <ref bean="org.jahia.toolbar.item.Edit"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- switching mode: tabs-->
+    <bean id="org.jahia.toolbar.itemsgroup.SwitchingMode.tab" class="org.jahia.services.toolbar.bean.ItemsGroup"
+          parent="org.jahia.toolbar.itemsgroup.SwitchingMode">
+        <property name="layout" value="tab"/>
+    </bean>
+    <!-- SwitchinkMode:  menu-radio -->
+    <bean id="org.jahia.toolbar.itemsgroup.SwitchingMode.radio" class="org.jahia.services.toolbar.bean.ItemsGroup"
+          parent="org.jahia.toolbar.itemsgroup.SwitchingMode">
+        <property name="layout" value="menu-radio"/>
+    </bean>
+
+    <!-- SwitchinkMode:  menu-checkbox -->
+    <bean id="org.jahia.toolbar.itemsgroup.SwitchingMode.checkbox" class="org.jahia.services.toolbar.bean.ItemsGroup"
+          parent="org.jahia.toolbar.itemsgroup.SwitchingMode">
+        <property name="layout" value="menu-checkbox"/>
+    </bean>
+
+    <!-- page itemsGroup-->
+    <bean id="org.jahia.toolbar.itemsgroup.Page" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="titleKey" value="toolbar.itemgroups.page"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.PageProperties"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.View" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu-checkbox"/>
+        <property name="titleKey" value="toolbar.view"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.acldiff"/>
+                <ref bean="org.jahia.toolbar.item.timebasepublishing"/>
+                <ref bean="org.jahia.toolbar.item.integrity"/>
+                <ref bean="org.jahia.toolbar.item.inlineediting"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.ToolbarsTitle"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- items that are visible only during the edit mode context-->
+    <bean id="org.jahia.toolbar.itemsgroup.Notification" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+                <property name="mode" value="edit"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.Notification"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- items that are visible only during the preview mode context-->
+    <bean id="org.jahia.toolbar.itemsgroup.PreviewMode" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+                <property name="mode" value="preview"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.AdvancedPreview"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- items that are visible only during the compare mode context-->
+    <bean id="org.jahia.toolbar.itemsgroup.CompareMode" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+                <property name="mode" value="compare"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.AdvancedCompare"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- tools-->
+    <bean id="org.jahia.toolbar.itemsgroup.Tools" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.itemgroups.tools"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.FileManager"/>
+                <ref bean="org.jahia.toolbar.item.MashupManager"/>
+                <ref bean="org.jahia.toolbar.item.ContentManager"/>
+                <ref bean="org.jahia.toolbar.item.CategoryManager"/>
+                <ref bean="org.jahia.toolbar.item.SiteManager"/>
+                <ref bean="org.jahia.toolbar.item.GWTWorkflow"/>
+                <ref bean="org.jahia.toolbar.item.Pdisplay"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Flush -->
+    <bean id="org.jahia.toolbar.itemsgroup.Flush" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.itemgroups.flushcachemenu"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.FlushSite"/>
+                <ref bean="org.jahia.toolbar.item.FlushPage"/>
+                <ref bean="org.jahia.toolbar.item.FlushAllCaches"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Workflow -->
+    <bean id="org.jahia.toolbar.itemsgroup.Workflow" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="mode" value="edit,preview,compare"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.itemgroups.workflow"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.GWTWorkflow"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Monitoring -->
+    <bean id="org.jahia.toolbar.itemsgroup.Monitoring" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="mode" value="edit,preview,compare"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.itemgroups.monitoring"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.Pdisplay"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Quick Workflow -->
+    <bean id="org.jahia.toolbar.itemsgroup.QuickWorkflow" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="mode" value="edit,preview,compare"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.itemgroups.quickworkflow"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-action-min"/>
+        <property name="items">
+            <list>
+                <!--<items-provider-->
+                        <!--class="org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl.JahiaItemsGroupFactoryImpl"-->
+                        <!--input="quick.workflow"/>-->
+            </list>
+        </property>
+    </bean>
+
+    <!-- Caches-->
+    <bean id="org.jahia.toolbar.itemsgroup.Cache" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu-radio"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.itemgroups.cache"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.CacheOn"/>
+                <ref bean="org.jahia.toolbar.item.CacheDebug"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Widgets -->
+    <bean id="org.jahia.toolbar.itemsgroup.widgets" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.itemgroups.bookmarks"/>
+        <property name="items">
+            <list>
+                <!--<items-provider-->
+                        <!--class="org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl.JahiaItemsGroupFactoryImpl"-->
+                        <!--input="bookmarks"/>-->
+            </list>
+        </property>
+    </bean>
+
+    <!-- history-->
+    <bean id="org.jahia.toolbar.itemsgroup.history" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="items">
+            <list>
+                <!--<items-provider-->
+                        <!--class="org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl.JahiaItemsGroupFactoryImpl"-->
+                        <!--input="history"/>-->
+            </list>
+        </property>
+    </bean>
+
+    <!-- bookmarks-->
+    <bean id="org.jahia.toolbar.itemsgroup.bookmarks" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="titleKey" value="toolbar.itemgroups.bookmarks"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-bookmarks-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-bookmarks-max"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.bookmarkCurrentPage"/>
+                <ref bean="org.jahia.toolbar.item.deleteBookmarkCurrentPage"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <!--<items-provider-->
+                        <!--class="org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl.JahiaItemsGroupFactoryImpl"-->
+                        <!--input="bookmarks"/>-->
+
+            </list>
+        </property>
+    </bean>
+
+    <!-- sites-->
+    <bean id="org.jahia.toolbar.itemsgroup.sites" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu-radio"/>
+        <property name="titleKey" value="toolbar.itemgroups.sites"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-sites-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-sites-max"/>
+        <property name="items">
+            <list>
+                <!--<items-provider-->
+                        <!--class="org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl.JahiaItemsGroupFactoryImpl"-->
+                        <!--input="sites"/>-->
+            </list>
+        </property>
+    </bean>
+
+    <!-- statistics-->
+    <bean id="org.jahia.toolbar.itemsgroup.Statistics" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="titleKey" value="toolbar.itemgroups.statistics"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+                <property name="mode" value="edit"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.PageStat"/>
+                <ref bean="org.jahia.toolbar.item.SiteStat"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- language switcher -->
+    <bean id="org.jahia.toolbar.itemsgroup.LanguageSwitcher" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.LanguageSwitcher"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- subscriptions -->
+    <bean id="org.jahia.toolbar.itemsgroup.Subscriptions" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.Subscriptions"/>
+                <ref bean="org.jahia.toolbar.item.Newsletter"/>
+                <ref bean="org.jahia.toolbar.item.NewsletterTest"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- new edit mode-->
+    <bean id="org.jahia.toolbar.itemsgroup.newedit.Switchingmode" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.Live"/>
+                <ref bean="org.jahia.toolbar.item.Edit"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.newedit.PageProperties" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="button.pageSettings"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-pageproperties-min"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.PageProperties"/>
+                <ref bean="org.jahia.toolbar.item.PageStat"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.newedit.LanguageSwitcher" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.LanguageSwitcher"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.newedit.EditAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.EditAction.createPage"/>
+                <ref bean="org.jahia.toolbar.item.EditAction.publish"/>
+                <ref bean="org.jahia.toolbar.item.EditAction.unpublish"/>
+                <ref bean="org.jahia.toolbar.item.EditAction.viewPublishStatus"/>
+                <ref bean="org.jahia.toolbar.item.EditAction.lock"/>
+                <ref bean="org.jahia.toolbar.item.EditAction.unlock"/>
+                <ref bean="org.jahia.toolbar.item.EditAction.edit"/>
+                <ref bean="org.jahia.toolbar.item.EditAction.delete"/>
+                <ref bean="org.jahia.toolbar.item.ClipBoard"/>
+                <ref bean="org.jahia.toolbar.item.EditAction.status"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.ContentAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.delete"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.copy"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.newedit.Tools" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.itemgroups.tools"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.FileManager"/>
+                <ref bean="org.jahia.toolbar.item.MashupManager"/>
+                <ref bean="org.jahia.toolbar.item.ContentManager"/>
+                <ref bean="org.jahia.toolbar.item.CategoryManager"/>
+                <ref bean="org.jahia.toolbar.item.SiteManager"/>
+                <ref bean="org.jahia.toolbar.item.GWTWorkflow"/>
+                <ref bean="org.jahia.toolbar.item.Pdisplay"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.newedit.Workflow" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="mode" value="edit,preview,compare"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.itemgroups.quickworkflow"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-action-min"/>
+        <property name="items">
+            <list>
+                <!--<items-provider-->
+                        <!--class="org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl.JahiaItemsGroupFactoryImpl"-->
+                        <!--input="quick.workflow"/>-->
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.newedit.Cache" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu-radio"/>
+        <property name="titleKey" value="toolbar.itemgroups.cache"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.FlushSite"/>
+                <ref bean="org.jahia.toolbar.item.FlushPage"/>
+                <ref bean="org.jahia.toolbar.item.FlushAllCaches"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.newedit.Preview" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button-label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.Preview"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.newedit.User" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="toolbar.itemgroups.user"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-user-min"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.Logout"/>
+                <ref bean="org.jahia.toolbar.item.MySettings"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.newedit.Admin" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-admin-min"/>
+        <property name="titleKey" value="button.administration"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.Admin"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Content Manager item groups -->
+    <!-- drop-down menus -->
+    <bean id="org.jahia.toolbar.itemsgroup.CategoryManager.menu.file"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createCategory"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.export"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.import"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.ContentManager.menu.file" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createFolder"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createContentList"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createContent"/>
+                <ref bean="org.jahia.toolbar.item.EditAction.createPage"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createMashup"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.upload"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.download"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.lock"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.unlock"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.zip"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.unzip"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.editMenu.label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.rename"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.delete"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.copy"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.cut"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.paste"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.pasteReference"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.ContentManager.menu.remote"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.remoteMenu.label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.mount"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.unmount"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.ContentManager.menu.image"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.imageMenu.label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.crop"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.resize"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.rotate"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.ContentManager.menu.view" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.refresh"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.DocumentManager.menu.file"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createFolder"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.upload"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.download"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.preview"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.lock"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.unlock"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.zip"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.unzip"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.MashupManager.menu.file" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createFolder"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createMashup"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.SiteManager.menu.file" class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.EditAction.createPage"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.lock"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.unlock"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- shortcut buttons -->
+    <bean id="org.jahia.toolbar.itemsgroup.CategoryManager.shortcuts.file.new"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createCategory"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.export"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.import"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.new"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createFolder"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createContentList"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createContent"/>
+                <ref bean="org.jahia.toolbar.item.EditAction.createPage"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createMashup"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.upload"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.download"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.webfolder"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.rename"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.delete"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.copy"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.cut"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.paste"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.pasteReference"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.refresh"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.file.new"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.UserAgentVisibilityResolver"/>
+                <property name="inputResolver" value="ie"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createFolder"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.upload"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.download"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.preview"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.webfolder"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.MashupManager.shortcuts.file.new"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createFolder"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createMashup"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
+                <ref bean="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.PortletDefinitionManager.shortcuts.new"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button"/>
+        <property name="items">
+            <list>
+                <!--<ref bean="org.jahia.toolbar.item.ContentAction.createPortletDefinition"/>-->
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.PortletDefinitionManager.shortcuts.modify"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.ContentAction.delete"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.SiteManager.shortcuts.file.new"
+          class="org.jahia.services.toolbar.bean.ItemsGroup">
+        <property name="layout" value="button"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.EditAction.createPage"/>
+            </list>
+        </property>
+    </bean>
+    <!-- end of Content Manager item groups -->
+
+    <!-- base item: open window, redirect, display info, ajax action, separator-->
+    <bean id="org.jahia.toolbar.item.OpenWindow" class="org.jahia.services.toolbar.bean.Item">
+        <property name="type" value="org.jahia.toolbar.item.OpenWindow"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="value" value="http://www.jahia.org"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.item.OpenEngineWindow" class="org.jahia.services.toolbar.bean.Item">
+        <property name="type" value="org.jahia.toolbar.item.OpenEngineWindow"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="windowName"/>
+                    <property name="value" value="enginePopupWindow"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="parameters"/>
+                    <property name="value" value="menubar=no,location=no,resizable=yes,scrollbars=yes,status=yes,width=1020,height=730"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Redirect item-->
+    <bean id="org.jahia.toolbar.item.RedirectWindow" class="org.jahia.services.toolbar.bean.Item">
+        <property name="type" value="org.jahia.toolbar.item.RedirectWindow"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="value" value="http://www.jahia.org"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- base item: open window, redirect, display info, ajax action, separator-->
+    <bean id="org.jahia.toolbar.item.OpenHTMLWindow" class="org.jahia.services.toolbar.bean.Item">
+        <property name="type" value="org.jahia.toolbar.item.OpenHTMLWindow"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="html"/>
+                    <property name="value" value="simple test"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Ajax Action item-->
+    <bean id="org.jahia.toolbar.item.AjaxAction" class="org.jahia.services.toolbar.bean.Item">
+        <property name="type" value="org.jahia.toolbar.item.AjaxAction"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="classAction"/>
+                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.SimpleAjaxActionImpl"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="action"/>
+                    <property name="value" value="userInfo"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="onSuccess"/>
+                    <property name="value" value="info"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="onFailureMessage"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.ResourceBundlePropertyResolver"/>
+                    <property name="inputProvider" value="toolbar.ajaxaction.failure"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- InfoPanel item-->
+    <bean id="org.jahia.toolbar.item.InfoPanel" class="org.jahia.services.toolbar.bean.Item">
+        <property name="type" value="org.jahia.toolbar.item.InfoPanel"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="info"/>
+                    <property name="value" value="Jahia"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Separator item-->
+    <bean id="org.jahia.toolbar.item.Separator" class="org.jahia.services.toolbar.bean.Item"/>
+
+    <!-- fill item-->
+    <bean id="org.jahia.toolbar.item.Fill" class="org.jahia.services.toolbar.bean.Item"/>
+
+    <bean id="org.jahia.toolbar.item.Toolbars" class="org.jahia.services.toolbar.bean.Item"/>
+
+    <bean id="org.jahia.toolbar.item.ToolbarsTitle" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.Toolbars">
+        <property name="titleKey" value="toolbar.view.toolbars"/>
+    </bean>
+
+    <!-- License information -->
+    <bean id="org.jahia.toolbar.item.License" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.InfoPanel">
+        <property name="titleKey" value=""/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+                <property name="mode" value="edit"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="info"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.InfoPropertyResolver"/>
+                    <property name="inputProvider" value="license_30"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Connected user -->
+    <bean id="org.jahia.toolbar.item.User" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.InfoPanel">
+        <property name="titleKey" value="button.user"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-user-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-user-normal"/>
+        <property name="descriptionKey" value="operationMode.live"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="info"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.InfoPropertyResolver"/>
+                    <property name="inputProvider" value="user"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Live-->
+    <bean id="org.jahia.toolbar.item.Live" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.RedirectWindow">
+        <property name="titleKey" value="operationMode.live"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-live-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-live-normal"/>
+        <property name="descriptionKey" value="operationMode.live"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true" />
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver" />
+                <property name="inputResolver" value="live" />
+            </bean>
+        </property>
+
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="js.url"/>
+                    <property name="value" value="liveUrl"/>
+                </bean>
+            </list>
+        </property>
+        <property name="selected">
+            <bean class="org.jahia.services.toolbar.bean.Selected">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
+                <property name="inputResolver" value="live"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- Compare -->
+    <bean id="org.jahia.toolbar.item.Compare" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.RedirectWindow">
+        <property name="titleKey" value="operationMode.compare"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-compare-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-compare-normal"/>
+        <property name="descriptionKey" value="operationMode.compare"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver" />
+                <property name="inputResolver" value="compare" />
+            </bean>
+        </property>
+
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="js.url"/>
+                    <property name="value" value="compareUrl"/>
+                </bean>
+            </list>
+        </property>
+        <property name="selected">
+            <bean class="org.jahia.services.toolbar.bean.Selected">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
+                <property name="inputResolver" value="compare"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- Advanced Compare -->
+    <bean id="org.jahia.toolbar.item.AdvancedCompare" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="button.advancedcompare"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-compare-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-compare-normal"/>
+        <property name="descriptionKey" value="operationMode.compare"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver" />
+                <property name="inputResolver" value="compare" />
+            </bean>
+        </property>
+    </bean>
+
+    <!-- Preview-->
+    <bean id="org.jahia.toolbar.item.Preview" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.RedirectWindow">
+        <property name="titleKey" value="operationMode.preview"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-preview-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-preview-normal"/>
+        <property name="descriptionKey" value="operationMode.preview"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver" />
+                <property name="inputResolver" value="preview" />
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="js.url"/>
+                    <property name="value" value="previewUrl"/>
+                </bean>
+            </list>
+        </property>
+        <property name="selected">
+            <bean class="org.jahia.services.toolbar.bean.Selected">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
+                <property name="inputResolver" value="preview"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- Advanced Preview-->
+    <bean id="org.jahia.toolbar.item.AdvancedPreview" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="button.advancedpreview"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-preview-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-preview-normal"/>
+        <property name="descriptionKey" value="operationMode.preview"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver" />
+                <property name="inputResolver" value="preview" />
+            </bean>
+        </property>
+    </bean>
+
+    <!-- Edit-->
+    <bean id="org.jahia.toolbar.item.Edit" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.RedirectWindow">
+        <property name="titleKey" value="operationMode.edit"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-edit-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-edit-normal"/>
+        <property name="descriptionKey" value="operationMode.edit"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver" />
+                <property name="inputResolver" value="edit" />
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="js.url"/>
+                    <property name="value" value="editUrl"/>
+                </bean>
+            </list>
+        </property>
+        <property name="selected">
+            <bean class="org.jahia.services.toolbar.bean.Selected">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
+                <property name="inputResolver" value="edit"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- My settings-->
+    <bean id="org.jahia.toolbar.item.MySettings" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.RedirectWindow">
+        <property name="titleKey" value="button.mySettings"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-mysettings-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-mysettings-normal"/>
+        <property name="descriptionKey" value="button.mySettings"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="mysettings"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Administration -->
+    <bean id="org.jahia.toolbar.item.Admin" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.RedirectWindow">
+        <property name="titleKey" value="button.administration"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-admin-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-admin-normal"/>
+        <property name="descriptionKey" value="button.administration"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="admin.JahiaAdministration"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="admin"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- File Manager -->
+    <bean id="org.jahia.toolbar.item.FileManager" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.OpenWindow">
+        <property name="titleKey" value="button.filemanager"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-filemanager-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-filemanager-normal"/>
+        <property name="descriptionKey" value="button.filemanager"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="engines.filemanager"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="gwtfilemanager"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Content Manager -->
+    <bean id="org.jahia.toolbar.item.ContentManager" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.OpenWindow">
+        <property name="titleKey" value="button.contentmanager"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-contentmanager-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-contentmanager-normal"/>
+        <property name="descriptionKey" value="button.contentmanager"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="engines.contentmanager"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="contentmanager"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Mashup Manager -->
+    <bean id="org.jahia.toolbar.item.MashupManager" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.OpenWindow">
+        <property name="titleKey" value="button.mashupmanager"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-mashupmanager-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-mashupmanager-normal"/>
+        <property name="descriptionKey" value="button.filemanager"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="engines.mashupmanager"/>
+            </bean>
+        </property>
+
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="gwtmashupmanager"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Category Manager -->
+    <bean id="org.jahia.toolbar.item.CategoryManager" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.OpenWindow">
+        <property name="titleKey" value="button.categorymanager"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-categorymanager-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-categorymanager-normal"/>
+        <property name="descriptionKey" value="button.categorymanager"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="engines.categorymanager"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="gwtcategorymanager"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Category Manager -->
+    <bean id="org.jahia.toolbar.item.SiteManager" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.OpenWindow">
+        <property name="titleKey" value="button.sitemanager"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-sitemanager-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-sitemanager-normal"/>
+        <property name="descriptionKey" value="button.sitemanager"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="engines.sitemanager"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="gwtsitemanager"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- GWT Workflow Manager -->
+    <bean id="org.jahia.toolbar.item.GWTWorkflow" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.OpenWindow">
+        <property name="titleKey" value="button.workflow"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-workflow-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-workflow-normal"/>
+        <property name="descriptionKey" value="button.workflow"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="mode" value="edit,preview,compare"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="gwtworkflowmanager"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Publish Page -->
+    <bean id="org.jahia.toolbar.item.PublishPage" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="titleKey" value="button.publishpage"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="mode" value="edit"/>
+            </bean>
+        </property>
+        <property name="descriptionKey" value="button.publishpage.description"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-publishpage-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-publishpage-normal"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="addComment"/>
+                    <property name="value" value="true"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="onSuccess"/>
+                    <property name="value" value="notification"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="classAction"/>
+                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.QuickValidationActionImpl"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Principal aliasing -->
+    <!--item type="org.jahia.toolbar.item.PrincipalAliasing" parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="titleKey" value="button.principalAliasing"/>
+        <property name="descriptionKey" value="button.principalAliasing.description"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+                <property name="mode" value="edit,compare,preview"/>
+            </bean>
+        </property>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-principalAliasing-min"/>
+<property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-principalAliasing-normal"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="onSuccess"/>
+                    <property name="value" value="redirect"/>
+                </bean>
+            </list>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="classAction"/>
+                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.PrincipalAliasingAjaxActionImpl"/>
+                </bean>
+            </list>
+        </property>
+    </item-->
+
+    <!-- Page properties -->
+    <bean id="org.jahia.toolbar.item.PageProperties" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.OpenEngineWindow">
+        <property name="titleKey" value="button.pageSettings"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-pageproperties-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-pageproperties-normal"/>
+        <property name="descriptionKey" value="button.pageSettings"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="mode" value="edit,preview,compare"/>
+                <property name="pageACL" value="write"/>
+            </bean>
+        </property>
+
+
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="pageproperties"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- P-display -->
+    <bean id="org.jahia.toolbar.item.Pdisplay" class="org.jahia.services.toolbar.bean.Item" parent="org.jahia.toolbar.item.OpenWindow">
+        <property name="titleKey" value="button.monitor"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-monitor-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-monitor-normal"/>
+        <property name="descriptionKey" value="button.monitor"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="mode" value="edit"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="monitor"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Logout -->
+    <bean id="org.jahia.toolbar.item.Logout" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.RedirectWindow">
+        <property name="titleKey" value="button.logout"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-logout-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-logout-normal"/>
+        <property name="descriptionKey" value="button.logout"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="logout"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Login -->
+    <bean id="org.jahia.toolbar.item.Login" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.RedirectWindow">
+        <property name="titleKey" value="button.login"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-login-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-login-normal"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="false"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="login"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- cache_on -->
+    <bean id="org.jahia.toolbar.item.CacheOn" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.RedirectWindow">
+        <property name="titleKey" value="button.cacheon"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-login-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-login-normal"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="false"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="cache_on"/>
+                </bean>
+            </list>
+        </property>
+        <property name="selected">
+            <bean class="org.jahia.services.toolbar.bean.Selected">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.CacheModeSelectedResolver"/>
+                <property name="inputResolver" value="cache_on"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- cache_off -->
+    <bean id="org.jahia.toolbar.item.CacheDebug" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.RedirectWindow">
+        <property name="titleKey" value="button.cachedebug"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-login-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-login-normal"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="false"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="url"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="inputProvider" value="cache_debug"/>
+                </bean>
+            </list>
+        </property>
+        <property name="selected">
+            <bean class="org.jahia.services.toolbar.bean.Selected">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.CacheModeSelectedResolver"/>
+                <property name="inputResolver" value="cache_debug"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- flush all caches -->
+    <bean id="org.jahia.toolbar.item.FlushAllCaches" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="serverActionPermission" value="admin.status.ManageStatus"/>
+            </bean>
+        </property>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-flushall-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-flushall-normal"/>
+        <property name="titleKey" value="button.flushAll"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="classAction"/>
+                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.FlushAjaxActionImpl"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="action"/>
+                    <property name="value" value="flushAllCaches"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- flush site -->
+    <bean id="org.jahia.toolbar.item.FlushSite" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="serverActionPermission" value="admin.status.ManageStatus"/>
+            </bean>
+        </property>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-flushall-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-flushall-normal"/>
+        <property name="titleKey" value="button.flushSite"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="classAction"/>
+                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.FlushAjaxActionImpl"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="action"/>
+                    <property name="value" value="flushSite"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- flush page -->
+    <bean id="org.jahia.toolbar.item.FlushPage" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-flushall-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-flushall-normal"/>
+        <property name="titleKey" value="button.flushPage"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="classAction"/>
+                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.FlushAjaxActionImpl"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="action"/>
+                    <property name="value" value="flushPage"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- clip board-->
+    <bean id="org.jahia.toolbar.item.ClipBoard" class="org.jahia.services.toolbar.bean.Item"/>
+
+    <!-- ACL diff -->
+    <bean id="org.jahia.toolbar.item.acldiff" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="titleKey" value="button.acldiff"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-acldiff-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-acldiff-normal"/>
+        <property name="descriptionKey" value="button.acldiff"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+                <property name="mode" value="edit"/>
+            </bean>
+        </property>
+        <property name="selected">
+            <bean class="org.jahia.services.toolbar.bean.Selected">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
+                <property name="inputResolver" value="acldiff.activated"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="toggle"/>
+                    <property name="value" value="true"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="onSuccess"/>
+                    <property name="value" value="refresh"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="classAction"/>
+                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="prefName"/>
+                    <property name="value" value="acldiff.activated"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- display time base publishing -->
+    <bean id="org.jahia.toolbar.item.timebasepublishing" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="titleKey" value="button.timebasepublishing"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-timebasepublishing-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-timebasepublishing-normal"/>
+        <property name="descriptionKey" value="button.timebasepublishing"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+                <property name="mode" value="edit"/>
+            </bean>
+        </property>
+        <property name="selected">
+            <bean class="org.jahia.services.toolbar.bean.Selected">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
+                <property name="inputResolver" value="timebasepublishing.activated"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="toggle"/>
+                    <property name="value" value="true"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="onSuccess"/>
+                    <property name="value" value="refresh"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="classAction"/>
+                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="prefName"/>
+                    <property name="value" value="timebasepublishing.activated"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- display inlineediting -->
+    <bean id="org.jahia.toolbar.item.inlineediting" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="titleKey" value="button.inlineediting"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-inlineediting-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-inlineediting-normal"/>
+        <property name="descriptionKey" value="button.inlineediting"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+                <property name="mode" value="edit"/>
+            </bean>
+        </property>
+        <property name="selected">
+            <bean class="org.jahia.services.toolbar.bean.Selected">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
+                <property name="inputResolver" value="inlineediting.activated"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="toggle"/>
+                    <property name="value" value="true"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="flushPageCache"/>
+                    <property name="value" value="true"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="onSuccess"/>
+                    <property name="value" value="refresh"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="classAction"/>
+                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="prefName"/>
+                    <property name="value" value="inlineediting.activated"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.item.integrity" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="titleKey" value="button.integrity"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-integrity-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-integrity-normal"/>
+        <property name="descriptionKey" value="button.integrity.description"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.IntegrityVisibilityResolver"/>
+            </bean>
+        </property>
+        <property name="selected">
+            <bean class="org.jahia.services.toolbar.bean.Selected">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
+                <property name="inputResolver" value="integrity.activated"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="toggle"/>
+                    <property name="value" value="true"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="onSuccess"/>
+                    <property name="value" value="refresh"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="classAction"/>
+                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="prefName"/>
+                    <property name="value" value="integrity.activated"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- UserInfo -->
+    <bean id="org.jahia.toolbar.item.UserInfo" parent="org.jahia.toolbar.item.AjaxAction"/>
+
+    <!-- Notification -->
+    <bean id="org.jahia.toolbar.item.Notification" class="org.jahia.services.toolbar.bean.Item">
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-notification-ok"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-notification-ok"/>
+    </bean>
+
+
+    <!-- LicenseInfo -->
+    <bean id="org.jahia.toolbar.item.LicenseInfo" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="action"/>
+                    <property name="value" value="licenseInfo"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Site statistics -->
+    <bean id="org.jahia.toolbar.item.SiteStat" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="titleKey" value="button.statistics.site"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-sitestat-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-sitestat-normal"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="addComment"/>
+                    <property name="value" value="siteStats"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <!-- Page statistics-->
+    <bean id="org.jahia.toolbar.item.PageStat" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="titleKey" value="button.statistics.page"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-sitestat-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-sitestat-normal"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="addComment"/>
+                    <property name="value" value="pageStats"/>
+                </bean>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.SimpleVisibilityResolver" />
+                <property name="inputResolver" value="pageStats" />
+            </bean>
+        </property>
+    </bean>
+
+
+    <!-- bookmark current page -->
+    <bean id="org.jahia.toolbar.item.bookmarkCurrentPage" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.BookmarkActionVisibilityResolver" />
+                <property name="inputResolver" value="bookmark.current.page" />
+            </bean>
+        </property>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-bookmarkadd-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-bookmarkadd-normal"/>
+        <property name="titleKey" value="button.bookmarkCurrentPage"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="onSuccess"/>
+                    <property name="value" value="refresh"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="classAction"/>
+                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.BookmarkAjaxActionImpl"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="action"/>
+                    <property name="value" value="bookmark.current.page"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <!-- delete bookmark current page -->
+    <bean id="org.jahia.toolbar.item.deleteBookmarkCurrentPage" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="titleKey" value="button.deleteBookmarkCurrentPage"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.BookmarkActionVisibilityResolver" />
+                <property name="inputResolver" value="delete.bookmark.current.page" />
+            </bean>
+        </property>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-bookmarkdelete-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-bookmarkdelete-normal"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="onSuccess"/>
+                    <property name="value" value="refresh"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="classAction"/>
+                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.BookmarkAjaxActionImpl"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="action"/>
+                    <property name="value" value="bookmark.delete.current.page"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- language switcher -->
+    <bean id="org.jahia.toolbar.item.LanguageSwitcher" class="org.jahia.services.toolbar.bean.Item"/>
+
+    <!-- subscriptions -->
+    <bean id="org.jahia.toolbar.item.Subscriptions" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.subscriptions.button.page.title"/>
+        <property name="descriptionKey" value="toolbar.subscriptions.button.page.description"/>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-subscriptions-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-subscriptions-normal"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="events"/>
+                    <property name="value" value="contentPublished,commentAdded"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- newsletter -->
+    <bean id="org.jahia.toolbar.item.Newsletter" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.AjaxAction">
+        <property name="titleKey" value="toolbar.subscriptions.button.newsletter.title"/>
+        <property name="descriptionKey" value="toolbar.subscriptions.button.newsletter.description"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.SendAsNewsletterVisibilityResolver" />
+            </bean>
+        </property>
+        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-subscriptions-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-subscriptions-normal"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="classAction"/>
+                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.SendAsNewsletterActionImpl"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="confirmation"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.ResourceBundlePropertyResolver"/>
+                    <property name="inputProvider" value="toolbar.subscriptions.button.newsletter.confirmation"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="onSuccess"/>
+                    <property name="value" value="info"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.item.NewsletterTest" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.Newsletter">
+        <property name="titleKey" value="toolbar.subscriptions.button.newsletterTest.title"/>
+        <property name="descriptionKey" value="toolbar.subscriptions.button.newsletterTest.description"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="prompt"/>
+                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.ResourceBundlePropertyResolver"/>
+                    <property name="inputProvider" value="toolbar.subscriptions.button.newsletterTest.description"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property" >
+                    <property name="name" value="action"/>
+                    <property name="value" value="test"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- new edit mode buttons: create -->
+    <bean id="org.jahia.toolbar.item.EditAction.createPage" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.edit.button.newpage"/>
+        <property name="minIconStyle" value="fm-newpage"/>
+        <property name="mediumIconStyle" value="fm-newpage"/>
+        <property name="descriptionKey" value="New Page"/>
+    </bean>
+
+
+    <!-- new edit mode buttons: publish -->
+    <bean id="org.jahia.toolbar.item.EditAction.publish" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.edit.button.publish"/>
+        <property name="minIconStyle" value="fm-newcontent"/>
+        <property name="mediumIconStyle" value="fm-newcontent"/>
+        <property name="descriptionKey" value="publish"/>
+    </bean>
+
+    <!-- new edit mode buttons: unpublish -->
+    <bean id="org.jahia.toolbar.item.EditAction.unpublish" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.edit.button.unpublish"/>
+        <property name="minIconStyle" value="fm-newcontent"/>
+        <property name="mediumIconStyle" value="fm-newcontent"/>
+        <property name="descriptionKey" value="unpublish"/>
+    </bean>
+
+    <!-- new edit mode buttons: unpublish -->
+    <bean id="org.jahia.toolbar.item.EditAction.viewPublishStatus" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.edit.button.status"/>
+        <property name="minIconStyle" value="fm-newcontent"/>
+        <property name="mediumIconStyle" value="fm-newcontent"/>
+        <property name="descriptionKey" value="toolbar.edit.button.status"/>
+    </bean>
+
+    <!-- new edit mode buttons: lock -->
+    <bean id="org.jahia.toolbar.item.EditAction.lock" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.edit.button.lock"/>
+        <property name="minIconStyle" value="fm-lock"/>
+        <property name="mediumIconStyle" value="fm-lock"/>
+        <property name="descriptionKey" value="lock"/>
+    </bean>
+
+    <!-- new edit mode buttons: unlock -->
+    <bean id="org.jahia.toolbar.item.EditAction.unlock" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.edit.button.unlock"/>
+        <property name="minIconStyle" value="fm-unlock"/>
+        <property name="mediumIconStyle" value="fm-unlock"/>
+        <property name="descriptionKey" value="unlock"/>
+    </bean>
+
+    <!-- new edit mode buttons: edit -->
+    <bean id="org.jahia.toolbar.item.EditAction.edit" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.edit.button.edit"/>
+        <property name="minIconStyle" value="fm-edit"/>
+        <property name="mediumIconStyle" value="fm-edit"/>
+        <property name="descriptionKey" value="edit"/>
+    </bean>
+
+    <!-- new edit mode buttons: delete -->
+    <bean id="org.jahia.toolbar.item.EditAction.delete" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.edit.button.remove"/>
+        <property name="minIconStyle" value="fm-remove"/>
+        <property name="mediumIconStyle" value="fm-remove"/>
+        <property name="descriptionKey" value="delete"/>
+    </bean>
+
+    <!-- new edit mode buttons: status -->
+    <bean id="org.jahia.toolbar.item.EditAction.status" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.edit.button.status"/>
+        <property name="descriptionKey" value="status"/>
+    </bean>
+
+    <!-- new content action buttons  -->
+    <bean id="org.jahia.toolbar.item.ContentAction.copy" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.copy"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.createCategory" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.ContentAction.createContentList" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.ContentAction.createContent" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.ContentAction.createFolder" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.createFolder"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"
+          class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.ContentAction.createMashup" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.ContentAction.createRssMashup" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.ContentAction.crop" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.crop"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.cut" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.cut"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.delete" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.edit.button.contentAction.delete"/>
+        <property name="descriptionKey" value="toolbar.manager.button.delete"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.download" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.download"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.export" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.ContentAction.import" class="org.jahia.services.toolbar.bean.Item"/>
+
+    <bean id="org.jahia.toolbar.item.ContentAction.lock" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.lock"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.mount" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.mount"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.paste" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.paste"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.pasteReference" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.pasteReference"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.preview" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.preview"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.refresh" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.refresh"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.rename" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.rename"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.resize" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.resize"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.rotate" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.rotate"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.unlock" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.unlock"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.unmount" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.unmount"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.upload" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.upload"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.unzip" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.unzip"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.webfolder" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.webfolder"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.UserAgentVisibilityResolver"/>
+                <property name="inputResolver" value="ie"/>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.item.ContentAction.zip" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.zip"/>
+    </bean>
+    <!-- end of new content action buttons -->
+
+</beans>

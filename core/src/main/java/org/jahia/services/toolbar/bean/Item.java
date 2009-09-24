@@ -31,6 +31,8 @@
  */
 package org.jahia.services.toolbar.bean;
 
+import org.springframework.beans.factory.BeanNameAware;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,26 +42,17 @@ import java.util.List;
  * Date: 7 avr. 2008
  * Time: 09:05:20
  */
-public class Item implements Serializable {
-    private String id;
+public class Item implements Serializable, BeanNameAware {
     private String type;
     private String mediumIconStyle;
     private String minIconStyle;
-    private String titleResourceBundleKey;
-    private boolean displayTitle;
-    private String descriptionResourceBundleKey;
+    private String titleKey;
+    private boolean displayTitle = true;
+    private String descriptionKey;
     private Visibility visibility;
     private Selected selected;
-    private List<Property>  propertyList = new ArrayList();
+    private List<Property> properties = new ArrayList();
 
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getType() {
         return type;
@@ -85,12 +78,12 @@ public class Item implements Serializable {
         this.minIconStyle = minIconStyle;
     }
 
-    public String getTitleResourceBundleKey() {
-        return titleResourceBundleKey;
+    public String getTitleKey() {
+        return titleKey;
     }
 
-    public void setTitleResourceBundleKey(String titleResourceBundleKey) {
-        this.titleResourceBundleKey = titleResourceBundleKey;
+    public void setTitleKey(String titleKey) {
+        this.titleKey = titleKey;
     }
 
     public boolean isDisplayTitle() {
@@ -101,12 +94,12 @@ public class Item implements Serializable {
         this.displayTitle = displayTitle;
     }
 
-    public String getDescriptionResourceBundleKey() {
-        return descriptionResourceBundleKey;
+    public String getDescriptionKey() {
+        return descriptionKey;
     }
 
-    public void setDescriptionResourceBundleKey(String descriptionResourceBundleKey) {
-        this.descriptionResourceBundleKey = descriptionResourceBundleKey;
+    public void setDescriptionKey(String descriptionKey) {
+        this.descriptionKey = descriptionKey;
     }
 
     public Visibility getVisibility() {
@@ -125,13 +118,21 @@ public class Item implements Serializable {
         this.selected = selected;
     }
 
-    public List<Property> getPropertyList() {
-        return propertyList;
+    public void setProperties(List<Property> properties) {
+        this.properties = properties;
+    }
+
+    public List<Property> getProperties() {
+        return properties;
     }
 
     public void addPropertyList(Property  property) {
-        this.propertyList.add(property);
+        this.properties.add(property);
     }
 
-    
+    public void setBeanName(String name) {
+        if (type == null) {
+            setType(name);
+        }
+    }
 }

@@ -40,15 +40,15 @@ import java.util.List;
  * Time: 09:04:39
  */
 public class ToolbarSet implements Serializable {
-    private List<Toolbar> toolbarList;
+    private List<Toolbar> toolbars;
     private Visibility visibility;
 
-    public List<Toolbar> getToolbarList() {
-        return toolbarList;
+    public List<Toolbar> getToolbars() {
+        return toolbars;
     }
 
-    public void setToolbarList(List<Toolbar> toolbarList) {
-        this.toolbarList = toolbarList;
+    public void setToolbars(List<Toolbar> toolbars) {
+        this.toolbars = toolbars;
     }
 
     public Visibility getVisibility() {

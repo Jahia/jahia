@@ -61,7 +61,6 @@
             </map>
         </property>
     </bean>
-     <bean id="JahiaToolbarService" class="org.jahia.services.toolbar.JahiaToolbarService" parent="jahiaServiceTemplate" factory-method="getInstance"/>
     <bean id="JahiaPageTemplateService" parent="proxyTemplate" depends-on="org.jahia.hibernate.manager.JahiaTemplateManager,org.jahia.hibernate.manager.JahiaLinkManager">
         <property name="target">
             <bean class="org.jahia.services.pages.JahiaPageTemplateBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">

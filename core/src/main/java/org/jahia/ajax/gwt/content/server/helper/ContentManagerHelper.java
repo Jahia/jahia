@@ -2584,6 +2584,21 @@ public class ContentManagerHelper {
     }
 
     /**
+     * Publish a list of nodes into the live workspace.
+     * Referenced nodes will also be published.
+     * Parent node must be published, or will be published if publishParent is true.
+     *
+     * @param paths list of paths of the nodes to publish
+     * @param languages Set of languages to publish if null publish all languages
+     * @param user the user for obtaining the jcr session
+     * @param publishParent Recursively publish the parents
+     * @throws GWTJahiaServiceException in case of any RepositoryException
+     */
+    public static void publish(List<String> paths, Set<String> languages, JahiaUser user, boolean publishParent) throws GWTJahiaServiceException {
+    	// TODO implement me!
+    }
+
+    /**
      * Get the publication status information for a particular path.
      * @param path to get publication info from
      * @param user the user for obtaining the jcr session

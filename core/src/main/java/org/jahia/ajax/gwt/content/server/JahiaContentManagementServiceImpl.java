@@ -526,9 +526,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws  GWTJahiaServiceException
      */
     public void publish(String path) throws GWTJahiaServiceException {
-        long l = System.currentTimeMillis();
         ContentManagerHelper.publish(path, null, retrieveParamBean().getUser(), false);
-        System.out.println("-->"+(System.currentTimeMillis() - l));
+    }
+
+    /**
+     * Publish the specified paths.
+     * @param paths the list of node paths to publish, will not auto publish the parents
+     * @throws  GWTJahiaServiceException
+     */
+    public void publish(List<String> paths) throws GWTJahiaServiceException {
+        ContentManagerHelper.publish(paths, null, retrieveParamBean().getUser(), false);
     }
 
     /**

@@ -2,6 +2,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
@@ -14,15 +15,20 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -31,6 +37,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -266,6 +273,11 @@ public class EditActions {
 
 
             List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+            
+            CheckBoxSelectionModel<GWTJahiaPublicationInfo> sm = new CheckBoxSelectionModel<GWTJahiaPublicationInfo>();
+            sm.setSelectionMode(SelectionMode.MULTI);
+            configs.add(sm.getColumn()); 
+            
             ColumnConfig column = new ColumnConfig();  
             column.setId("path");
             column.setHeader(Messages.getResource("publication_path"));
@@ -320,9 +332,18 @@ public class EditActions {
 //            store.add((List<GWTJahiaPublicationInfo>) info.getChildren(), true);
             ColumnModel cm = new ColumnModel(configs);
 
-            Grid<GWTJahiaPublicationInfo> g = new Grid<GWTJahiaPublicationInfo>(store, cm);
-            g.setStripeRows(true);
+            final Grid<GWTJahiaPublicationInfo> g = new Grid<GWTJahiaPublicationInfo>(store, cm) {
 
+				@Override
+                protected void afterRenderView() {
+	                super.afterRenderView();
+                    getSelectionModel().selectAll();
+                }
+            	
+            };
+            g.setStripeRows(true);
+            g.setSelectionModel(sm);
+            g.addPlugin(sm);
             add(g);
 
             final Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
@@ -335,7 +356,11 @@ public class EditActions {
                 public void componentSelected(ButtonEvent event) {
                     ok.setEnabled(false);
                     cancel.setEnabled(false);
-                    JahiaContentManagementService.App.getInstance().publish(linker.getSelectedNode().getPath(), new AsyncCallback() {
+                    List<String> selectedPaths = new ArrayList<String>();
+                    for (GWTJahiaPublicationInfo info : g.getSelectionModel().getSelectedItems()) {
+	                    selectedPaths.add(info.getPath());
+                    }
+                    JahiaContentManagementService.App.getInstance().publish(selectedPaths, new AsyncCallback() {
                         public void onFailure(Throwable caught) {
                             Log.error("Cannot publish", caught);
                             com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());

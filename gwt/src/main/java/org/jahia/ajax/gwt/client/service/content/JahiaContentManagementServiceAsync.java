@@ -173,15 +173,23 @@ public interface JahiaContentManagementServiceAsync {
     /**
      * Publish the specified path.
      * @param path the path to publish, will not auto publish the parents
-     * @param async Local implementation of callback to react on return fo asyncronous call to publish
+     * @param async Local implementation of callback to react on return for asynchronous call to publish
      * @throws forward GWTJahiaServiceException
      */
     void publish(String path, AsyncCallback async);
 
     /**
+     * Publish the specified paths.
+     * @param paths the list of node paths to publish
+     * @param async Local implementation of callback to react on return for asynchronous call to publish
+     * @throws forward GWTJahiaServiceException
+     */
+    void publish(List<String> paths, AsyncCallback async);
+
+    /**
      * Unpublish the specified path and its subnodes.
      * @param path the path to unpublish, will not unpublish the references
-     * @param async Local implementation of callback to react on return fo asyncronous call to unpublish
+     * @param async Local implementation of callback to react on return for asynchronous call to unpublish
      * @throws forward GWTJahiaServiceException
      */
     void unpublish(String path, AsyncCallback async);
@@ -189,7 +197,7 @@ public interface JahiaContentManagementServiceAsync {
     /**
      * Get the publication status information for a particular path.
      * @param path path to get publication info from
-     * @param async Local implementation of callback to react on return fo asyncronous call to getPublicationInfo
+     * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
      * @throws forward GWTJahiaServiceException
      */
     void getPublicationInfo(String path, boolean includeReferences, AsyncCallback<GWTJahiaPublicationInfo> async);
@@ -197,7 +205,7 @@ public interface JahiaContentManagementServiceAsync {
     /**
      * Get the publication status information for a particular path.
      * @param pathes path to get publication info from
-     * @param async Local implementation of callback to react on return fo asyncronous call to getPublicationInfo
+     * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
      * @throws forward GWTJahiaServiceException
      */
     void getPublicationInfo(List<String> pathes, AsyncCallback<Map<String,GWTJahiaPublicationInfo>> async);

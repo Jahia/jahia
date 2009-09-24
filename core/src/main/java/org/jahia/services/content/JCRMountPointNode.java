@@ -116,7 +116,8 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         }
 
         if (provider != null) {
-            return provider.getNodeWrapper("/", (JCRSessionWrapper) getSession());
+            JCRSessionWrapper sessionWrapper = (JCRSessionWrapper) getSession();
+            return provider.getNodeWrapper(sessionWrapper.getProviderSession(provider).getRootNode(), sessionWrapper);
         }
         return null;
     }

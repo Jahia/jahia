@@ -528,16 +528,6 @@ public class JCRStoreProvider {
         return s;
     }
 
-    public JCRNodeWrapper getNodeWrapper(String localPath, JahiaUser user) {
-        try {
-            JCRSessionWrapper session = getSessionFactory().getThreadSession(user);
-            return getNodeWrapper(localPath, session);
-        } catch (RepositoryException e) {
-            logger.error("Repository error",e);
-            return null;
-        }
-    }
-
     public NodeType getNodeType(String name) throws RepositoryException {
         Session session = getSystemSession();
         try {
@@ -545,10 +535,6 @@ public class JCRStoreProvider {
         } finally {
             session.logout();
         }
-    }
-
-    public JCRNodeWrapper getNodeWrapper(String localPath, JCRSessionWrapper session) {
-        return service.decorate(new JCRNodeWrapperImpl(localPath, session, this));
     }
 
     public JCRNodeWrapper getNodeWrapper(Node objectNode, JCRSessionWrapper session) {

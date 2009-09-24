@@ -31,8 +31,6 @@
  */
 package org.jahia.services.content;
 
-import org.jahia.data.containers.JahiaContainer;
-import org.jahia.data.fields.JahiaField;
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
@@ -70,10 +68,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public Node getRealNode() {
         return node.getRealNode();
-    }
-
-    public int getTransactionStatus() {
-        return node.getTransactionStatus();
     }
 
     public JahiaUser getUser() {
@@ -142,10 +136,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public String getStorageName() {
         return node.getStorageName();
-    }
-
-    public Exception getException() {
-        return node.getException();
     }
 
     public String getAbsoluteUrl(ParamBean jParams) {

@@ -63,7 +63,6 @@ public class WebDAVTemplate {
      *            an action to be performed on the WebDAV resource
      */
     public void transactionalCall(WebDAVCallback action) {
-        try {
             boolean ok = action.doInWebDAV(file);
             if (ok) {
                 try {
@@ -72,14 +71,5 @@ public class WebDAVTemplate {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
             }
-        } finally {
-            if (file.getTransactionStatus() == Status.STATUS_ACTIVE) {
-                try {
-                    file.refresh(false);
-                } catch (RepositoryException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-            }
-        }
     }
 }

@@ -69,7 +69,6 @@ public class FilesAclImportHandler extends DefaultHandler {
             String acl = attributes.getValue(ImportExportBaseService.JAHIA_URI, "fileacl");
             JCRNodeWrapper f = JahiaWebdavBaseService.getInstance ().getDAVFileAccess (path, jParams.getUser());
             if (f.isValid()) {
-                try {
                     if (acl != null && acl.length() > 0) {
                         StringTokenizer st = new StringTokenizer(acl, "|");
                         while (st.hasMoreElements()) {
@@ -126,16 +125,6 @@ public class FilesAclImportHandler extends DefaultHandler {
                     } catch (RepositoryException e) {
                         logger.error("error",e);                        
                     }
-                } finally {
-                    if (f.getTransactionStatus() == Status.STATUS_ACTIVE) {
-                        try {
-                            f.refresh(false);
-                        } catch (RepositoryException e) {
-                            logger.error("error",e);
-
-                        }
-                    }
-                }                    
             }
         }
     }

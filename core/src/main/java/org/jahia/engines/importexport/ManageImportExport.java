@@ -243,15 +243,9 @@ public class ManageImportExport {
                         uploadname = "importInto_" + dkey + "_" + dateOfExport + ext;
                     }
                     
-                    try {
                         importFolder.uploadFile(uploadname, new FileInputStream(file),
                                 contentType);
                         importFolder.save();
-                    } finally {
-                        if (importFolder.getTransactionStatus() == Status.STATUS_ACTIVE) {
-                            importFolder.refresh(false);
-                        }
-                    }                    
                 }
                 return result;
             } catch (Exception e) {

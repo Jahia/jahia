@@ -102,10 +102,6 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     public void stop() {
     }
 
-    public JCRNodeWrapper getNodeWrapper(String path, JCRSessionWrapper session) {
-        return getService().decorate(new JackrabbitNodeWrapper(path, session, this));
-    }
-
     public JCRNodeWrapper getNodeWrapper(Node objectNode, JCRSessionWrapper session) {
         return getService().decorate(new JackrabbitNodeWrapper(objectNode, session, this));
     }

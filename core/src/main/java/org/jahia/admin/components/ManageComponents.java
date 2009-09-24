@@ -321,10 +321,6 @@ public class ManageComponents extends AbstractAdministrationModule {
         JCRNodeWrapper locationFolder = jcr.getFileNode(location, user);
 
         locationFolder.getUrl();
-        Exception ex = locationFolder.getException();
-        if (ex != null) {
-            logger.error("Exception building the node", ex);
-        }
 
         if (!locationFolder.isWriteable()) {
             logger.debug("destination is not writable for user " + user.getName());

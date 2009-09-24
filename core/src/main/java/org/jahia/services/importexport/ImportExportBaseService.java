@@ -1048,14 +1048,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     parentDir.createCollection(name.substring(name.lastIndexOf('/') + 1));
                 } catch (RepositoryException e) {
                     logger.error("RepositoryException", e);
-                } finally {
-                    if (parentDir.getTransactionStatus() == Status.STATUS_ACTIVE) {
-                        try {
-                            parentDir.refresh(false);
-                        } catch (RepositoryException e) {
-                            logger.error("error", e);
-                        }
-                    }
                 }
                 dir = JCRStoreService.getInstance().getSessionFactory().getThreadSession(jParams.getUser()).getNode(name);
                 logger.debug("Folder created " + name);
@@ -1082,14 +1074,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     res.saveSession();
                 } catch (RepositoryException e) {
                     logger.error("RepositoryException", e);
-                } finally {
-                    if (parentDir.getTransactionStatus() == Status.STATUS_ACTIVE) {
-                        try {
-                            parentDir.refresh(false);
-                        } catch (RepositoryException e) {
-                            logger.error("error", e);
-                        }
-                    }
                 }
             } else {
                 logger.debug("Try to add file " + path + " - already exists");

@@ -70,9 +70,7 @@ public class JCRQueryNode extends JCRNodeDecorator {
                     list.add(nodeWrapper);
                 } else {
                     JCRNodeWrapper child = getProvider().getNodeWrapper(node, (JCRSessionWrapper) getSession());
-                    if (child.getException() == null) {
-                        list.add(child);
-                    }
+                    list.add(child);
                 }
             }
             return list;

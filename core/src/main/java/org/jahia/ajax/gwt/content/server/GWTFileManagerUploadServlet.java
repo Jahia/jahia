@@ -219,11 +219,6 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             return BAD_LOCATION;
         }
 
-        Exception ex = locationFolder.getException() ;
-        if (ex != null) {
-            logger.error("Exception building the node", ex) ;
-        }
-
         if (!locationFolder.isWriteable()) {
             logger.debug("destination is not writable for user " + user.getName()) ;
             return READONLY;

@@ -79,8 +79,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     Node getRealNode();
 
-    int getTransactionStatus();
-
     JahiaUser getUser();
 
     boolean isValid();
@@ -122,8 +120,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     JahiaFileField getJahiaFileField ();
 
     String getStorageName();
-
-    Exception getException();
 
     String getAbsoluteUrl(ParamBean jParams);
 

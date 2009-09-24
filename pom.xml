@@ -71,11 +71,10 @@
                       <groupId>com.atlassian.maven.plugins</groupId>
                       <artifactId>maven-clover2-plugin</artifactId>
                       <configuration>
-                          <generateHistorical>true</generateHistorical>
+                          <generateHistorical>false</generateHistorical>
                           <targetPercentage>7%</targetPercentage>
                           <!--<generateXml>true</generateXml>-->
                           <generatePdf>true</generatePdf>
-                          <historyDir>${user.home}/history-${version}</historyDir>
                           <!--
                           <cloverDatabase>/foo/bar</cloverDatabase>
                           <cloverMergeDatabase>/foo/bar</cloverMergeDatabase>

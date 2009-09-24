@@ -80,9 +80,9 @@ public class ContentToolbar extends TopBar {
     public ContentToolbar(ManagerConfiguration config, ManagerLinker linker) {
         configuration = config ;
         initWithLinker(linker);
-        m_component = new LayoutContainer(new RowLayout());
-        createUi();
-//        createDynamicUi();
+//        m_component = new LayoutContainer(new RowLayout());
+//        createUi();
+        createDynamicUi();
     }
 
     private void createDynamicUi() {

@@ -80,11 +80,19 @@ public class ActionItemFactory extends ActionItemFactoryItf {
 
     // content action button
     public static final String CONTENT_ACTION_COPY = "org.jahia.toolbar.item.ContentAction.copy";
+    public static final String CONTENT_ACTION_CREATE_CATEGORY = "org.jahia.toolbar.item.ContentAction.createCategory";
+    public static final String CONTENT_ACTION_CREATE_CONTENT = "org.jahia.toolbar.item.ContentAction.createContent";
+    public static final String CONTENT_ACTION_CREATE_CONTENT_LIST = "org.jahia.toolbar.item.ContentAction.createContentList";
     public static final String CONTENT_ACTION_CREATE_FOLDER = "org.jahia.toolbar.item.ContentAction.createFolder";
+    public static final String CONTENT_ACTION_CREATE_GOOGLE_GADGET_MASHUP = "org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup";
+    public static final String CONTENT_ACTION_CREATE_MASHUP = "org.jahia.toolbar.item.ContentAction.createMashup";
+    public static final String CONTENT_ACTION_CREATE_RSS_MASHUP = "org.jahia.toolbar.item.ContentAction.createRssMashup";
     public static final String CONTENT_ACTION_CROP = "org.jahia.toolbar.item.ContentAction.crop";
     public static final String CONTENT_ACTION_CUT = "org.jahia.toolbar.item.ContentAction.cut";
     public static final String CONTENT_ACTION_DELETE = "org.jahia.toolbar.item.ContentAction.delete";
     public static final String CONTENT_ACTION_DOWNLOAD = "org.jahia.toolbar.item.ContentAction.download";
+    public static final String CONTENT_ACTION_EXPORT = "org.jahia.toolbar.item.ContentAction.export";
+    public static final String CONTENT_ACTION_IMPORT = "org.jahia.toolbar.item.ContentAction.import";
     public static final String CONTENT_ACTION_LOCK = "org.jahia.toolbar.item.ContentAction.lock";
     public static final String CONTENT_ACTION_MOUNT = "org.jahia.toolbar.item.ContentAction.mount";
     public static final String CONTENT_ACTION_PASTE = "org.jahia.toolbar.item.ContentAction.paste";
@@ -160,8 +168,20 @@ public class ActionItemFactory extends ActionItemFactoryItf {
             actionItem = EditActionItemCreatorHelper.createEditUnpublishActionItem(gwtToolbarItem,linker);
         }else if (type.equalsIgnoreCase(CONTENT_ACTION_COPY)) {
             actionItem = ContentActionItemCreatorHelper.createCopyItem(linker);
+        }else if (type.equalsIgnoreCase(CONTENT_ACTION_CREATE_CATEGORY)) {
+            actionItem = ContentActionItemCreatorHelper.createNewCategoryItem(linker);
+        }else if (type.equalsIgnoreCase(CONTENT_ACTION_CREATE_CONTENT)) {
+            actionItem = ContentActionItemCreatorHelper.createNewContentItem(linker);
+        }else if (type.equalsIgnoreCase(CONTENT_ACTION_CREATE_CONTENT_LIST)) {
+            actionItem = ContentActionItemCreatorHelper.createNewContentListItem(linker);
         }else if (type.equalsIgnoreCase(CONTENT_ACTION_CREATE_FOLDER)) {
             actionItem = ContentActionItemCreatorHelper.createNewFolderItem(linker);
+        }else if (type.equalsIgnoreCase(CONTENT_ACTION_CREATE_GOOGLE_GADGET_MASHUP)) {
+            actionItem = ContentActionItemCreatorHelper.createNewGadgetItem(linker);
+        }else if (type.equalsIgnoreCase(CONTENT_ACTION_CREATE_MASHUP)) {
+            actionItem = ContentActionItemCreatorHelper.createNewMashupItem(linker);
+        }else if (type.equalsIgnoreCase(CONTENT_ACTION_CREATE_RSS_MASHUP)) {
+            actionItem = ContentActionItemCreatorHelper.createNewRSSItem(linker);
         }else if (type.equalsIgnoreCase(CONTENT_ACTION_CROP)) {
             actionItem = ContentActionItemCreatorHelper.createCropItem(linker);
         }else if (type.equalsIgnoreCase(CONTENT_ACTION_CUT)) {
@@ -170,6 +190,10 @@ public class ActionItemFactory extends ActionItemFactoryItf {
             actionItem = ContentActionItemCreatorHelper.createRemoveItem(linker);
         }else if (type.equalsIgnoreCase(CONTENT_ACTION_DOWNLOAD)) {
             actionItem = ContentActionItemCreatorHelper.createDownloadItem(linker);
+        }else if (type.equalsIgnoreCase(CONTENT_ACTION_EXPORT)) {
+            actionItem = ContentActionItemCreatorHelper.createExportItem(linker);
+        }else if (type.equalsIgnoreCase(CONTENT_ACTION_IMPORT)) {
+            actionItem = ContentActionItemCreatorHelper.createImportItem(linker);
         }else if (type.equalsIgnoreCase(CONTENT_ACTION_LOCK)) {
             actionItem = ContentActionItemCreatorHelper.createLockItem(linker);
         }else if (type.equalsIgnoreCase(CONTENT_ACTION_MOUNT)) {

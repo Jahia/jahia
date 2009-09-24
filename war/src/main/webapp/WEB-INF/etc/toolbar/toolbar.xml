@@ -1,10 +1,21 @@
 <toolbars id="org.jahia.toolbars.default">
     <display>
-        <toolbar name="editmode" ref-type="org.jahia.toolbar.editmode" state="top" displayed="true" mandatory="true" display-title="true"/>
-        <!-- 
-        <toolbar name="document-manager" ref-type="org.jahia.toolbar.manager.documents.menu" state="top" displayed="true" mandatory="true" display-title="true"/>
-        <toolbar name="document-manager" ref-type="org.jahia.toolbar.manager.documents.shortcuts" state="top" displayed="true" mandatory="true" display-title="true"/>
-         -->
+        <toolbar name="editmode" ref-type="org.jahia.toolbar.editmode"/>
+
+        <toolbar name="category-manager" ref-type="org.jahia.toolbar.manager.categories.menu"/>
+        <toolbar name="category-manager" ref-type="org.jahia.toolbar.manager.categories.shortcuts"/>
+        
+        <toolbar name="content-manager" ref-type="org.jahia.toolbar.manager.content.menu"/>
+        <toolbar name="content-manager" ref-type="org.jahia.toolbar.manager.content.shortcuts"/>
+
+        <toolbar name="document-manager" ref-type="org.jahia.toolbar.manager.documents.menu"/>
+        <toolbar name="document-manager" ref-type="org.jahia.toolbar.manager.documents.shortcuts"/>
+
+        <toolbar name="mashup-manager" ref-type="org.jahia.toolbar.manager.mashups.menu"/>
+        <toolbar name="mashup-manager" ref-type="org.jahia.toolbar.manager.mashups.shortcuts"/>
+
+        <toolbar name="site-manager" ref-type="org.jahia.toolbar.manager.sites.menu"/>
+        <toolbar name="site-manager" ref-type="org.jahia.toolbar.manager.sites.shortcuts"/>
 
         <!--<toolbar name="workflow" ref-type="org.jahia.toolbar.workflow" state="top" draggable="true" displayed="false"
                  mandatory="false" display-title="true"/>
@@ -66,6 +77,85 @@
 
         </toolbar>
 
+        <!-- Category Manager -->
+        <toolbar type="org.jahia.toolbar.manager.categories.menu">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.CategoryManager.menu.file"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+        </toolbar>
+        <toolbar type="org.jahia.toolbar.manager.categories.shortcuts">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.CategoryManager.shortcuts.file.new"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+        </toolbar>
+        <!-- end of the Category Manager -->
+
+        <!-- Content Manager -->
+        <toolbar type="org.jahia.toolbar.manager.content.menu">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.file"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.remote"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.image"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+        </toolbar>
+        <toolbar type="org.jahia.toolbar.manager.content.shortcuts">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.new"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+        </toolbar>
+        <!-- end of the Content Manager -->
+
+        <!-- Document Manager -->
+        <toolbar type="org.jahia.toolbar.manager.documents.menu">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.file"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.remote"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.image"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+        </toolbar>
+        <toolbar type="org.jahia.toolbar.manager.documents.shortcuts">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.file.new"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+        </toolbar>
+        <!-- end of the Document Manager -->
+
+        <!-- Mashup Manager -->
+        <toolbar type="org.jahia.toolbar.manager.mashups.menu">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.MashupManager.menu.file"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+        </toolbar>
+        <toolbar type="org.jahia.toolbar.manager.mashups.shortcuts">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.MashupManager.shortcuts.file.new"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+        </toolbar>
+        <!-- end of the Mashup Manager -->
+
+        <!-- Site Manager -->
+        <toolbar type="org.jahia.toolbar.manager.sites.menu">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.SiteManager.menu.file"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+        </toolbar>
+        <toolbar type="org.jahia.toolbar.manager.sites.shortcuts">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.SiteManager.shortcuts.file.new"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+        </toolbar>
+        <!-- end of the Site Manager -->
+
         <!-- workflow -->
         <toolbar type="org.jahia.toolbar.workflow">
             <title-resourcebundle-key key="toolbar.workflow"/>
@@ -113,20 +203,6 @@
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.Subscriptions"/>
         </toolbar>
         
-        <toolbar type="org.jahia.toolbar.manager.documents.menu">
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.file"/>
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.edit"/>
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.remote"/>
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.image"/>
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.view"/>
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
-        </toolbar>
-        <toolbar type="org.jahia.toolbar.manager.documents.shortcuts">
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.file.new"/>
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.file.modify"/>
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.copy"/>
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.refresh"/>
-        </toolbar>
     </custom-toolbar>
     <!-- defines itemsgroup-->
     <custom-itemsgroup>
@@ -414,7 +490,62 @@
             <item ref-type="org.jahia.toolbar.item.Admin"/>
         </itemsgroup>
 
-		<!-- Content Manager item group -->
+		<!-- Content Manager item groups -->
+		<!-- drop-down menus -->
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.CategoryManager.menu.file" layout="menu">
+        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createCategory"/>
+            <item ref-type="org.jahia.toolbar.item.Separator"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.export"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.import"/>
+        </itemsgroup>
+		
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.ContentManager.menu.file" layout="menu">
+        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createFolder"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createContentList"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createContent"/>
+            <item ref-type="org.jahia.toolbar.item.EditAction.createPage"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createMashup"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.upload"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.download"/>
+            <item ref-type="org.jahia.toolbar.item.Separator"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.lock"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.unlock"/>
+            <item ref-type="org.jahia.toolbar.item.Separator"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.zip"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.unzip"/>
+        </itemsgroup>
+
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit" layout="menu">
+        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.editMenu.label"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.rename"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.delete"/>
+            <item ref-type="org.jahia.toolbar.item.Separator"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.copy"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.cut"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.paste"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.pasteReference"/>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.ContentManager.menu.remote" layout="menu">
+        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.remoteMenu.label"/>
+        	<item ref-type="org.jahia.toolbar.item.ContentAction.mount"/>
+        	<item ref-type="org.jahia.toolbar.item.ContentAction.unmount"/>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.ContentManager.menu.image" layout="menu">
+        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.imageMenu.label"/>
+        	<item ref-type="org.jahia.toolbar.item.ContentAction.crop"/>
+        	<item ref-type="org.jahia.toolbar.item.ContentAction.resize"/>
+        	<item ref-type="org.jahia.toolbar.item.ContentAction.rotate"/>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.ContentManager.menu.view" layout="menu">
+        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+        	<item ref-type="org.jahia.toolbar.item.ContentAction.refresh"/>
+            <item ref-type="org.jahia.toolbar.item.Separator"/>
+        </itemsgroup>
+
         <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.file" layout="menu">
         	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
             <item ref-type="org.jahia.toolbar.item.ContentAction.createFolder"/>
@@ -428,33 +559,60 @@
             <item ref-type="org.jahia.toolbar.item.ContentAction.zip"/>
             <item ref-type="org.jahia.toolbar.item.ContentAction.unzip"/>
         </itemsgroup>
-        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.edit" layout="menu">
-        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.editMenu.label"/>
+
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.MashupManager.menu.file" layout="menu">
+        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createFolder"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createMashup"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
+        </itemsgroup>
+        
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.SiteManager.menu.file" layout="menu">
+        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+            <item ref-type="org.jahia.toolbar.item.EditAction.createPage"/>
+            <item ref-type="org.jahia.toolbar.item.Separator"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.lock"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.unlock"/>
+        </itemsgroup>
+
+		<!-- shortcut buttons -->
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.CategoryManager.shortcuts.file.new" layout="button">
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createCategory"/>
+            <item ref-type="org.jahia.toolbar.item.Separator"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.export"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.import"/>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.new" layout="button">
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createFolder"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createContentList"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createContent"/>
+            <item ref-type="org.jahia.toolbar.item.EditAction.createPage"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createMashup"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.upload"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.download"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.webfolder">
+	            <visibility>
+	                <value-resolver class="org.jahia.services.toolbar.resolver.impl.UserAgentVisibilityResolver" input="ie"/>
+	            </visibility>
+            </item>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify" layout="button">
             <item ref-type="org.jahia.toolbar.item.ContentAction.rename"/>
             <item ref-type="org.jahia.toolbar.item.ContentAction.delete"/>
-            <item ref-type="org.jahia.toolbar.item.Separator"/>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy" layout="button">
             <item ref-type="org.jahia.toolbar.item.ContentAction.copy"/>
             <item ref-type="org.jahia.toolbar.item.ContentAction.cut"/>
             <item ref-type="org.jahia.toolbar.item.ContentAction.paste"/>
             <item ref-type="org.jahia.toolbar.item.ContentAction.pasteReference"/>
         </itemsgroup>
-        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.remote" layout="menu">
-        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.remoteMenu.label"/>
-        	<item ref-type="org.jahia.toolbar.item.ContentAction.mount"/>
-        	<item ref-type="org.jahia.toolbar.item.ContentAction.unmount"/>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh" layout="button">
+            <item ref-type="org.jahia.toolbar.item.ContentAction.refresh"/>
         </itemsgroup>
-        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.image" layout="menu">
-        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.imageMenu.label"/>
-        	<item ref-type="org.jahia.toolbar.item.ContentAction.crop"/>
-        	<item ref-type="org.jahia.toolbar.item.ContentAction.resize"/>
-        	<item ref-type="org.jahia.toolbar.item.ContentAction.rotate"/>
-        </itemsgroup>
-        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.view" layout="menu">
-        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
-        	<item ref-type="org.jahia.toolbar.item.ContentAction.refresh"/>
-            <item ref-type="org.jahia.toolbar.item.Separator"/>
-        </itemsgroup>
-        
+
         <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.file.new" layout="button">
             <item ref-type="org.jahia.toolbar.item.ContentAction.createFolder"/>
             <item ref-type="org.jahia.toolbar.item.ContentAction.upload"/>
@@ -466,19 +624,16 @@
 	            </visibility>
             </item>
         </itemsgroup>
-        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.file.modify" layout="button">
-            <item ref-type="org.jahia.toolbar.item.ContentAction.rename"/>
-            <item ref-type="org.jahia.toolbar.item.ContentAction.delete"/>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.MashupManager.shortcuts.file.new" layout="button">
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createFolder"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createMashup"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
         </itemsgroup>
-        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.copy" layout="button">
-            <item ref-type="org.jahia.toolbar.item.ContentAction.copy"/>
-            <item ref-type="org.jahia.toolbar.item.ContentAction.cut"/>
-            <item ref-type="org.jahia.toolbar.item.ContentAction.paste"/>
-            <item ref-type="org.jahia.toolbar.item.ContentAction.pasteReference"/>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.SiteManager.shortcuts.file.new" layout="button">
+            <item ref-type="org.jahia.toolbar.item.EditAction.createPage"/>
         </itemsgroup>
-        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.refresh" layout="button">
-            <item ref-type="org.jahia.toolbar.item.ContentAction.refresh"/>
-        </itemsgroup>
+        <!-- end of Content Manager item groups -->
     </custom-itemsgroup>
     
     <!-- defines items-->
@@ -1114,9 +1269,15 @@
         <item type="org.jahia.toolbar.item.ContentAction.copy">
             <title-resourcebundle-key key="toolbar.manager.button.copy"/>
         </item>
+        <item type="org.jahia.toolbar.item.ContentAction.createCategory"/>
+        <item type="org.jahia.toolbar.item.ContentAction.createContentList"/>
+        <item type="org.jahia.toolbar.item.ContentAction.createContent"/>
         <item type="org.jahia.toolbar.item.ContentAction.createFolder">
             <title-resourcebundle-key key="toolbar.manager.button.createFolder"/>
         </item>
+        <item type="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
+        <item type="org.jahia.toolbar.item.ContentAction.createMashup"/>
+        <item type="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
         <item type="org.jahia.toolbar.item.ContentAction.crop">
             <title-resourcebundle-key key="toolbar.manager.button.crop"/>
         </item>
@@ -1130,6 +1291,8 @@
         <item type="org.jahia.toolbar.item.ContentAction.download">
             <title-resourcebundle-key key="toolbar.manager.button.download"/>
         </item>
+        <item type="org.jahia.toolbar.item.ContentAction.export"/>
+        <item type="org.jahia.toolbar.item.ContentAction.import"/>
         <item type="org.jahia.toolbar.item.ContentAction.lock">
             <title-resourcebundle-key key="toolbar.manager.button.lock"/>
         </item>

@@ -56,6 +56,9 @@ import org.jahia.services.version.EntrySaveRequest;
 import org.jahia.services.webdav.JahiaWebdavBaseService;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.sharing.FieldSharingManager;
+import org.apache.commons.lang.StringUtils;
+
+import javax.jcr.RepositoryException;
 
 public class JahiaFileFieldWrapper extends JahiaField implements JahiaAllowApplyChangeToAllLangField {
 
@@ -135,17 +138,19 @@ public class JahiaFileFieldWrapper extends JahiaField implements JahiaAllowApply
         JahiaFileField fField;
 
         //if (((loadFlag & LoadFlags.FILE) != 0) || loadFlag == -1) {
-        if (jParams != null) {
-            if (jParams.getSiteID() == this.getJahiaID()) {
-                fField = JahiaWebdavBaseService.getInstance().getJahiaFileField(jParams, val);
+        String providerKey = StringUtils.substringBefore(val,":");
+        String uuid  = StringUtils.substringAfter(val,":");
+        try {
+            if (jParams != null) {
+                fField = JCRStoreService.getInstance().getSessionFactory().getThreadSession(jParams.getUser()).getNodeByUUID(providerKey, uuid).getJahiaFileField();
             } else {
-                fField = JahiaWebdavBaseService.getInstance().getJahiaFileField(jParams, ServicesRegistry.getInstance().getJahiaSitesService().getSite(getSiteID()), jParams.getUser(), val);
+                fField = JCRStoreService.getInstance().getSessionFactory().getThreadSession(null).getNodeByUUID(providerKey, uuid).getJahiaFileField();
             }
-        } else {
-            fField = JahiaWebdavBaseService.getInstance().getJahiaFileField(ServicesRegistry.getInstance().getJahiaSitesService().getSite(getSiteID()), val);
+            this.setObject(fField);
+        } catch (RepositoryException e) {
+            logger.error("Cannot set file field",e); 
         }
 
-        this.setObject(fField);
         //}
     }
 

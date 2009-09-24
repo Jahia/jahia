@@ -5,13 +5,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <bean id="coreEngine" class="org.jahia.engines.core.Core_Engine" />
-    <bean id="addContainerEngine" class="org.jahia.engines.addcontainer.AddContainer_Engine">
-        <property name="lockRegistry" ref="LockService" />
-    </bean>
-    <bean id="updateContainerEngine" class="org.jahia.engines.updatecontainer.UpdateContainer_Engine" />
-    <bean id="deleteContainerEngine" class="org.jahia.engines.deletecontainer.DeleteContainer_Engine">
-        <property name="pageService" ref="JahiaPageService" />
-    </bean>
     <bean id="restoreContainerEngine" class="org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine" />
     <bean id="searchEngine" class="org.jahia.engines.search.Search_Engine" />
     <bean id="loginEngine" class="org.jahia.engines.login.Login_Engine">
@@ -20,11 +13,6 @@
     <bean id="logoutEngine" class="org.jahia.engines.logout.Logout_Engine">
     	<property name="cookieAuthConfig" ref="cookieAuthConfig"/>
     </bean>
-    <bean id="pagePropertiesEngine" class="org.jahia.engines.pages.PageProperties_Engine" >
-        <property name="cacheService" ref="JahiaCacheService" />
-        <property name="lockService" ref="LockService" />
-    </bean>
-    <bean id="containerListPropertiesEngine" class="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine" />
     <bean id="siteMapEngine" class="org.jahia.engines.sitemap.SiteMap_Engine" />
     <bean id="selectPageEngine" class="org.jahia.engines.selectpage.SelectPage_Engine" />
     <bean id="templateEngine" class="org.jahia.engines.template.Template_Engine" />
@@ -48,15 +36,10 @@
         <property name="engineInstances">
             <list>
                 <ref bean="coreEngine" />
-                <ref bean="addContainerEngine" />
-                <ref bean="updateContainerEngine" />
-                <ref bean="deleteContainerEngine" />
                 <ref bean="restoreContainerEngine" />
                 <ref bean="searchEngine" />
                 <ref bean="loginEngine" />
                 <ref bean="logoutEngine" />
-                <ref bean="pagePropertiesEngine" />
-                <ref bean="containerListPropertiesEngine" />
                 <ref bean="siteMapEngine" />
                 <ref bean="selectPageEngine" />
                 <ref bean="templateEngine" />

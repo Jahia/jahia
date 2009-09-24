@@ -39,7 +39,6 @@ import org.jahia.data.events.JahiaEventListener;
 import org.jahia.data.fields.FieldsEditHelper;
 import org.jahia.data.fields.FieldsEditHelperAbstract;
 import org.jahia.data.fields.JahiaField;
-import org.jahia.engines.metadata.Metadata_Engine;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.version.EntryLoadRequest;
 
@@ -69,42 +68,6 @@ public class ContentCreationDateListener extends JahiaEventListener {
     }
 
     public void metadataEngineAfterInit (JahiaEvent theEvent) {
-        if ( metadataName == null || theEvent == null ){
-            return;
-        }
-        try {
-            String attribPrefix = Metadata_Engine.ENGINE_NAME + ".";
-            ProcessingContext jParams = theEvent.getProcessingContext();
-            Map engineMap = (Map) jParams.getSessionState().getAttribute(
-                "jahia_session_engineMap");
-
-            FieldsEditHelper feh = (FieldsEditHelper)engineMap.get(attribPrefix
-                +FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
-
-            String creationDate = null;
-            JahiaField theField = feh.getField(this.getMetadataName());
-            if (theField == null) {
-                logger.info("Requested metadata field ["+this.getMetadataName()+"] not found!");
-                return;
-            }
-            String fieldValue = "";
-            if (theField != null && theField.getObject() != null) {
-                fieldValue = ( (String) theField.getObject()).trim();
-                if (!"".equals(fieldValue)) {
-                    creationDate = fieldValue;
-                }
-            }
-            if ( creationDate == null ){
-                creationDate = String.valueOf(theEvent.getEventTime());
-            }
-
-            // we want to init the creation date field
-            theField.setObject(creationDate);
-            feh.addUpdatedField(theField.getID(),theField.getLanguageCode());
-
-        } catch ( Exception t ){
-            logger.debug("Exception processing event metadataEngineAfterInit",t);
-        }
     }
 
     public void contentObjectCreated(JahiaEvent theEvent){

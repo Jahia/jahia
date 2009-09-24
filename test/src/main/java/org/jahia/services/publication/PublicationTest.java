@@ -37,9 +37,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -79,8 +77,8 @@ public class PublicationTest extends TestCase {
 
     public void testPublishUnpublishHomePageWithAccessCheck() throws Exception {
         try {
-            JCRStoreService jcrService = ServicesRegistry.getInstance()
-                    .getJCRStoreService();
+            JCRPublicationService jcrService = ServicesRegistry.getInstance()
+                    .getJCRPublicationService();
             JCRSessionWrapper session = jcrService.getSessionFactory().getThreadSession(ctx
                     .getUser());
             JCRSessionWrapper liveSession = jcrService.getSessionFactory().getThreadSession(ctx
@@ -258,8 +256,8 @@ public class PublicationTest extends TestCase {
     private void testPublishNodeWithContentInLanguages(
             JCRNodeWrapper pageNodeToPublish, Set<String> languages,
             boolean publishParent) throws RepositoryException {
-        JCRStoreService jcrService = ServicesRegistry.getInstance()
-                .getJCRStoreService();
+        JCRPublicationService jcrService = ServicesRegistry.getInstance()
+                .getJCRPublicationService();
         JCRSessionWrapper session = jcrService.getSessionFactory().getThreadSession(ctx.getUser());
         JCRSessionWrapper liveSession = jcrService.getSessionFactory().getThreadSession(ctx
                 .getUser(), Constants.LIVE_WORKSPACE);
@@ -333,8 +331,8 @@ public class PublicationTest extends TestCase {
     private void testUnpublishNodeWithContentInLanguages(
             JCRNodeWrapper pageNodeToPublish, Set<String> languages)
             throws RepositoryException {
-        JCRStoreService jcrService = ServicesRegistry.getInstance()
-                .getJCRStoreService();
+        JCRPublicationService jcrService = ServicesRegistry.getInstance()
+                .getJCRPublicationService();
         JCRSessionWrapper session = jcrService.getSessionFactory().getThreadSession(ctx.getUser());
         Map<String, Long> publishedDateForObjects = new HashMap<String, Long>();
         addNodeAndDependands(pageNodeToPublish, languages,

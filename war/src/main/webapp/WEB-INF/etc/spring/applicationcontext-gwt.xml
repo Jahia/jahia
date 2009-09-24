@@ -34,7 +34,6 @@
     <bean name="actionMenuServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtActionMenuService"/>
     </bean>
-    <bean name="gwtActionMenuService" class="org.jahia.ajax.gwt.templates.components.actionmenus.server.ActionMenuServiceImpl" scope="prototype"/>
 
     <bean name="baseServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaService"/>

@@ -38,6 +38,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -84,10 +85,18 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     private int error = 0;
 
-    public DocumentViewImportHandler(ProcessingContext jParams, File archive, List<String> fileList) {
-        this.jParams = jParams;
+    private JCRSessionWrapper session;
 
-        JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getFileNode("/", jParams.getUser());
+    public DocumentViewImportHandler(ProcessingContext jParams, File archive, List<String> fileList) throws IOException {
+        this.jParams = jParams;
+        JCRNodeWrapper node = null;
+        try {
+            session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getThreadSession(jParams.getUser());
+            node = (JCRNodeWrapper) session.getRootNode();
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+            throw new IOException();
+        }
         nodes.add(node);
         pathes.add("");
 
@@ -131,8 +140,15 @@ public class DocumentViewImportHandler extends DefaultHandler {
             if ("jnt:importDropBox".equals(pt)) {
                 ignorePath = path;
             }
-            JCRNodeWrapper child = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(path, jParams.getUser());
-            if (!child.isValid() || child.getDefinition().allowsSameNameSiblings()) {
+            JCRNodeWrapper child = null;
+
+            boolean isValid = true;
+            try {
+                child = session.getNode(path);
+            } catch (PathNotFoundException e) {
+                isValid = false;
+            }
+            if (!isValid || child.getDefinition().allowsSameNameSiblings()) {
                 if (nodes.peek().isWriteable()) {
                     child = nodes.peek().addNode(decodedQName, pt);
 
@@ -167,8 +183,11 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     setAttributes(child, atts);
                 }
             }
-
-            nodes.push(child);
+            if (child == null) {
+                error ++;
+            } else {
+                nodes.push(child);
+            }
 
         } catch (RepositoryException re) {
             logger.error("Cannot import "+ pathes.pop(),re);

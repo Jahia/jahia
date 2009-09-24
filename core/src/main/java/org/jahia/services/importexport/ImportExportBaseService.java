@@ -75,6 +75,7 @@ import org.jahia.services.categories.CategoryService;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.mail.GroovyMimeMessagePreparator;
 import org.jahia.services.mail.MailService;
@@ -104,10 +105,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.NodeIterator;
-import javax.jcr.ItemNotFoundException;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.transaction.Status;
 import javax.xml.parsers.ParserConfigurationException;
@@ -204,16 +202,16 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             synchronized (args) {
                 List<File> files = (List<File>) args;
                 if (!files.isEmpty()) {
-                    JCRNodeWrapper dest = ServicesRegistry.getInstance().getJCRStoreService().getFileNode("/content/imports", JahiaAdminUser.getAdminUser(0));
-                    for (Iterator<File> iterator = files.iterator(); iterator.hasNext();) {
-                        try {
-                            File file = (File) iterator.next();
-                            dest.uploadFile(file.getName(), new FileInputStream(file), Jahia.getStaticServletConfig().getServletContext().getMimeType(file.getName()));
-                        } catch (Exception t) {
-                            logger.error("file observer error : ", t);
-                        }
-                    }
                     try {
+                        JCRNodeWrapper dest = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getThreadSession(JahiaAdminUser.getAdminUser(0)).getNode("/content/imports");
+                        for (Iterator<File> iterator = files.iterator(); iterator.hasNext();) {
+                            try {
+                                File file = (File) iterator.next();
+                                dest.uploadFile(file.getName(), new FileInputStream(file), Jahia.getStaticServletConfig().getServletContext().getMimeType(file.getName()));
+                            } catch (Exception t) {
+                                logger.error("file observer error : ", t);
+                            }
+                        }
                         dest.save();
                     } catch (RepositoryException e) {
                         logger.error("error", e);
@@ -314,7 +312,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         // export shared files -->
         Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>();
-        files.add(ServicesRegistry.getInstance().getJCRStoreService().getFileNode("/content", processingContext.getUser()));
+        try {
+            JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getThreadSession(processingContext.getUser());
+            files.add(session.getNode("/content"));
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+            throw new IOException(e.getMessage());
+        }
 
         zout.putNextEntry(new ZipEntry("shared.zip"));
         ZipOutputStream zzout = new ZipOutputStream(zout);
@@ -574,7 +578,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                         String encodedName = ISO9075.encode(name);
                         String currentpath = stack.peek() + "/" + name;
-                        String pt = JCRStoreService.getInstance().getFileNode(currentpath, file.getUser()).getPrimaryNodeTypeName();
+                        String pt = JCRStoreService.getInstance().getSessionFactory().getThreadSession(file.getUser()).getNode(currentpath).getPrimaryNodeTypeName();
                         AttributesImpl atts = new AttributesImpl();
                         atts.addAttribute(Constants.JCR_NS, "primaryType", "jcr:primaryType", CDATA, pt);
                         ch.startElement("", encodedName, encodedName, atts);
@@ -1000,42 +1004,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return obj;
     }
 
-    private JCRNodeWrapper ensureDir(String name, ProcessingContext jParams, JahiaSite site, Map<String, String> pathMapping) {
-        JCRNodeWrapper dir = JCRStoreService.getInstance().getFileNode(name, jParams.getUser());
-        if (!dir.isValid()) {
-            int endIndex = name.lastIndexOf('/');
-            if (endIndex == -1) {
-                logger.warn("Cannot create folder " + name);
-                return null;
-            }
-            JCRNodeWrapper parentDir = ensureDir(name.substring(0, endIndex), jParams, site, pathMapping);
-            if (parentDir == null) {
-                return null;
-            }
-            if (Constants.JAHIANT_VIRTUALSITES_FOLDER.equals(parentDir.getPrimaryNodeTypeName())) {
-                dir = JCRStoreService.getInstance().getFileNode(parentDir.getPath() + "/" + site.getSiteKey(), jParams.getUser());
-            } else {
-                try {
-                    parentDir.createCollection(name.substring(name.lastIndexOf('/') + 1));
-                } catch (RepositoryException e) {
-                    logger.error("RepositoryException", e);
-                } finally {
-                    if (parentDir.getTransactionStatus() == Status.STATUS_ACTIVE) {
-                        try {
-                            parentDir.refresh(false);
-                        } catch (RepositoryException e) {
-                            logger.error("error", e);
-                        }
-                    }
-                }
-                dir = JCRStoreService.getInstance().getFileNode(name, jParams.getUser());
-                logger.debug("Folder created " + name);
-            }
-        } else {
+    private JCRNodeWrapper ensureDir(String name, ProcessingContext jParams, JahiaSite site, Map<String, String> pathMapping) throws RepositoryException {
+        JCRNodeWrapper dir = null;
+        try {
+            dir = JCRStoreService.getInstance().getSessionFactory().getThreadSession(jParams.getUser()).getNode(name);
+
             String current = name;
 
             while (current.lastIndexOf('/') > 0) {
-                JCRNodeWrapper currentNode = JCRStoreService.getInstance().getFileNode(current, jParams.getUser());
+                JCRNodeWrapper currentNode = JCRStoreService.getInstance().getSessionFactory().getThreadSession(jParams.getUser()).getNode(current);
 
                 if (Constants.JAHIANT_VIRTUALSITE.equals(currentNode.getPrimaryNodeTypeName())) {
                     if (currentNode.getName().equals(site.getSiteKey())) {
@@ -1054,38 +1031,73 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 //                int endIndex = name.lastIndexOf('/');
 //                dir = JahiaWebdavBaseService.getInstance().getDAVFileAccess(name.substring(0, endIndex)+"/"+site.getSiteKey(), jParams.getUser());
 //            }
+        } catch (PathNotFoundException pnfe) {
+            int endIndex = name.lastIndexOf('/');
+            if (endIndex == -1) {
+                logger.warn("Cannot create folder " + name);
+                return null;
+            }
+            JCRNodeWrapper parentDir = ensureDir(name.substring(0, endIndex), jParams, site, pathMapping);
+            if (parentDir == null) {
+                return null;
+            }
+            if (Constants.JAHIANT_VIRTUALSITES_FOLDER.equals(parentDir.getPrimaryNodeTypeName())) {
+                dir = (JCRNodeWrapper) parentDir.getNode(site.getSiteKey());
+            } else {
+                try {
+                    parentDir.createCollection(name.substring(name.lastIndexOf('/') + 1));
+                } catch (RepositoryException e) {
+                    logger.error("RepositoryException", e);
+                } finally {
+                    if (parentDir.getTransactionStatus() == Status.STATUS_ACTIVE) {
+                        try {
+                            parentDir.refresh(false);
+                        } catch (RepositoryException e) {
+                            logger.error("error", e);
+                        }
+                    }
+                }
+                dir = JCRStoreService.getInstance().getSessionFactory().getThreadSession(jParams.getUser()).getNode(name);
+                logger.debug("Folder created " + name);
+            }
         }
         return dir;
     }
 
     public void ensureFile(String path, InputStream inputStream, String type, ProcessingContext jParams, JahiaSite destSite, Map<String, String> pathMapping) {
         String name = path.substring(path.lastIndexOf('/') + 1);
-        JCRNodeWrapper parentDir = ensureDir(path.substring(0, path.lastIndexOf('/')), jParams, destSite, pathMapping);
-        JCRNodeWrapper dest = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(parentDir.getPath() + "/" + name, jParams.getUser());
-        logger.debug("Try to add file " + path + " - already exists=" + dest.isValid());
-        if (!dest.isValid()) {
-            if (parentDir == null) {
-                logger.warn("Cannot create folder " + path.lastIndexOf('/'));
-                return;
-            }
+        try {
+            JCRNodeWrapper parentDir = ensureDir(path.substring(0, path.lastIndexOf('/')), jParams, destSite, pathMapping);
 
-            logger.debug("Add file to " + parentDir.getPath() + " (valid=" + parentDir.isValid() + ")");
-            try {
-                JCRNodeWrapper res = parentDir.uploadFile(name, inputStream, type);
-                logger.debug("File added -> " + res);
-                res.saveSession();
-            } catch (RepositoryException e) {
-                logger.error("RepositoryException", e);
-            } finally {
-                if (parentDir.getTransactionStatus() == Status.STATUS_ACTIVE) {
-                    try {
-                        parentDir.refresh(false);
-                    } catch (RepositoryException e) {
-                        logger.error("error", e);
+            if (!parentDir.hasNode(name)) {
+                if (parentDir == null) {
+                    logger.warn("Cannot create folder " + path.lastIndexOf('/'));
+                    return;
+                }
+
+                logger.debug("Add file to " + parentDir.getPath() + " (valid=" + parentDir.isValid() + ")");
+                try {
+                    JCRNodeWrapper res = parentDir.uploadFile(name, inputStream, type);
+                    logger.debug("File added -> " + res);
+                    res.saveSession();
+                } catch (RepositoryException e) {
+                    logger.error("RepositoryException", e);
+                } finally {
+                    if (parentDir.getTransactionStatus() == Status.STATUS_ACTIVE) {
+                        try {
+                            parentDir.refresh(false);
+                        } catch (RepositoryException e) {
+                            logger.error("error", e);
+                        }
                     }
                 }
+            } else {
+                logger.debug("Try to add file " + path + " - already exists");
             }
+        } catch (RepositoryException e) {
+            logger.debug("Cannot add file", e);
         }
+
     }
 
     public ContentObject importDocument(ContentObject parent, String lang, ProcessingContext jParams, InputStream inputStream, boolean updateOnly, boolean setUuid, List<ImportAction> actions, ExtendedImportResult result, Map<String, String> uuidMapping, Map<String, String> pathMapping, Map<String, Map<String, String>> typeMapping, Map<String, String> tplMapping, Map<String, String> importedMapping) {
@@ -1972,7 +1984,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private void resolveCrossReferences(Map<String,String> uuidMapping, Map<String,String> references, JahiaUser user) {
         try {
-            JCRNodeWrapper refRoot = JCRStoreService.getInstance().getFileNode("/content/referencesKeeper", user);
+            JCRNodeWrapper refRoot = JCRStoreService.getInstance().getSessionFactory().getThreadSession(user).getNode("/content/referencesKeeper");
             NodeIterator ni = refRoot.getNodes();
             while (ni.hasNext()) {
                 Node refNode = ni.nextNode();
@@ -1980,7 +1992,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 if (uuidMapping.containsKey(uuid)) {
                     String pName = refNode.getProperty("j:propertyName").getString();
                     String refuuid = refNode.getProperty("j:node").getString();
-                    Node n = JCRStoreService.getInstance().getNodeByUUID(refuuid, user);
+                    Node n = JCRStoreService.getInstance().getSessionFactory().getThreadSession(user).getNodeByUUID(refuuid);
                     n.setProperty(pName,uuidMapping.get(uuid));
                     n.save();
                     refNode.remove();

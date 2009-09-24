@@ -75,6 +75,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.webdav.JahiaWebdavBaseService;
@@ -1441,10 +1442,16 @@ public class ImportHandler extends DefaultHandler {
                     }
                 }
             }
-            JCRNodeWrapper object = JahiaWebdavBaseService.getInstance().getDAVFileAccess(value, jParams.getUser());
-            JahiaFileField fField = object.getJahiaFileField();
-            field.setValue(value);
-            field.setObject(fField);
+            try {
+                JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getThreadSession(jParams.getUser());
+                JCRNodeWrapper object = session.getNode(value);
+
+                JahiaFileField fField = object.getJahiaFileField();
+                field.setValue(value);
+                field.setObject(fField);
+            } catch (RepositoryException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         } else if(fieldType == FieldTypes.APPLICATION) {
             if (pathMapping != null) {
                 for (String map : pathMapping.keySet()) {
@@ -1455,7 +1462,8 @@ public class ImportHandler extends DefaultHandler {
                 }
             }
             try {
-                JCRNodeWrapper object = JCRStoreService.getInstance().getFileNode(value, jParams.getUser());
+                JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getThreadSession(jParams.getUser());
+                JCRNodeWrapper object = session.getNode(value);
 
                 field.setValue(object.getUUID());
             } catch (RepositoryException e) {

@@ -31,9 +31,6 @@
  */
  package org.jahia.services.search;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentObject;
@@ -47,9 +44,6 @@ import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.events.JahiaEventListener;
-import org.jahia.engines.addcontainer.AddContainer_Engine;
-import org.jahia.engines.deletecontainer.DeleteContainer_Engine;
-import org.jahia.engines.updatecontainer.UpdateContainer_Engine;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.SerializableParamBean;
 import org.jahia.registries.ServicesRegistry;
@@ -61,6 +55,9 @@ import org.jahia.services.search.indexingscheduler.impl.condition.ActionRuleCond
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.timebasedpublishing.RetentionRuleEvent;
 import org.jahia.services.workflow.WorkflowEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -451,19 +448,7 @@ public class JahiaSearchListener extends JahiaEventListener {
     }
 
     private String getActionPerformed(JahiaEvent je){
-        String actionPerformed = null;
-        if (je.getSource().getClass().getName().equals(UpdateContainer_Engine.class.getName())){
-            actionPerformed = ActionRuleCondition.UPDATE_ENGINE;
-        } else if (je.getSource().getClass().getName().equals(AddContainer_Engine.class.getName())){
-            actionPerformed = ActionRuleCondition.ADD_ENGINE;
-        }  else if (je.getSource().getClass().getName().equals(DeleteContainer_Engine.class.getName())){
-            actionPerformed = ActionRuleCondition.DELETE_ENGINE;
-        } else if (je.getSource().getClass().getName().toLowerCase().indexOf("form") > -1){
-            actionPerformed = ActionRuleCondition.STORE_FORM_IN_TEMPLATE;
-        } else if (je.getSource().getClass().getName().toLowerCase().indexOf("copy") > -1) {
-            actionPerformed = ActionRuleCondition.COPY_JOB;
-        }
-        return actionPerformed;
+        return null;
     }
 
     private String getCurrentActionPerformed(){

@@ -31,29 +31,12 @@
  */
 package org.jahia.taglibs.uicomponents.actionmenu;
 
-import org.jahia.data.beans.*;
-import org.jahia.data.JahiaData;
-import org.jahia.data.fields.JahiaField;
-import org.jahia.data.fields.FieldTypes;
-import org.jahia.data.fields.JahiaPageField;
-import org.jahia.content.ObjectKey;
-import org.jahia.ajax.gwt.client.core.JahiaType;
-import org.jahia.ajax.gwt.client.util.Constants;
-import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
-import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuLabelProvider;
-import org.jahia.ajax.gwt.client.widget.actionmenu.actions.ActionMenuIcon;
-import org.jahia.params.ProcessingContext;
-import org.jahia.services.acl.JahiaACLManagerService;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.preferences.user.UserPreferencesHelper;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.exceptions.JahiaException;
 import org.apache.log4j.Logger;
+import org.jahia.data.beans.ContentBean;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ProcessingContext;
 
 import javax.servlet.jsp.PageContext;
-import java.util.Iterator;
 
 /**
  * Helper class for rendering action menu.
@@ -76,7 +59,7 @@ public class ActionMenuOutputter {
     private PageContext pageContext;
     private String contentObjectName;
     private String objectKey;
-    private int actionType = ActionMenuIcon.CONTAINERLIST_UPDATE;
+    private int actionType = 0;
 
     // custom attributes
     private String bundleName = null;
@@ -174,162 +157,7 @@ public class ActionMenuOutputter {
      *                                sthg bad happened
      */
     public String getOutput() throws ClassNotFoundException, JahiaException {
-        final RequestBean requestBean = (RequestBean) pageContext.findAttribute("currentRequest");
-
-        if (requestBean == null) {
-            return "";
-        }
-
-        // if non edit mode, useless
-        if (!requestBean.isEditMode()) {
-            return "";
-        }
-
-        // check if a content bean has been passed
-        if (contentObject == null && contentObjectName != null) {
-            contentObject = (ContentBean) pageContext.findAttribute(contentObjectName);
-        }
-
-        // if unexisting content, useless as well
-        if (contentObject == null && objectKey == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("nothing for " + contentObjectName);
-            }
-            return "";
-        }
-
-        // set the content bean
-        else if (contentObject == null) {
-            contentObject = JahiaObjectCreator.getContentBeanFromObjectKey(objectKey, processingContext);
-        }
-
-        // generate the object key string
-        else if (objectKey == null) {
-            objectKey = contentObject.getBeanType() + ObjectKey.KEY_SEPARATOR + contentObject.getID();
-        }
-
-        boolean picker = false ;
-
-        // various checks
-        // get the content object type
-        String contentType = objectKey.substring(0, objectKey.indexOf(ObjectKey.KEY_SEPARATOR));
-        String type = null ;
-        // container list case
-        if (contentType.equals(ContainerListBean.TYPE)) {
-            final ContainerListBean listBean = (ContainerListBean) contentObject;
-            final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-            if (listBean.getFullSize() == 0 &&
-                    aclService.getSiteActionPermission("engines.languages." + processingContext.getLocale().toString(),
-                            processingContext.getUser(),
-                            JahiaBaseACL.READ_RIGHTS, processingContext.getSiteID()) <= 0) {
-                logger.debug("empty list / no rights for the current language");
-                return "";
-            }
-            type = ActionMenuLabelProvider.CONTAINER_LIST ;
-        } else {
-            if (contentType.equals(ContainerBean.TYPE)) {
-                type = ActionMenuLabelProvider.CONTAINER ;
-            } else if (contentType.equals(FieldBean.TYPE)) {
-                type = ActionMenuLabelProvider.FIELD ;
-            } else if (contentType.equals(PageBean.TYPE)) {
-                type = ActionMenuLabelProvider.PAGE ;
-            }
-            picker = contentObject.isPicker() ;
-        }
-
-        try {
-            if (contentObject.getID() > 0 && !contentObject.getACL().getPermission(processingContext.getUser(), JahiaBaseACL.WRITE_RIGHTS)) {
-                // if the user doesn't have Write access on the object, don't display the GUI
-                return "";
-            }
-        } catch (Exception t) {
-            logger.error(t.getMessage(), t);
-            return "";
-        }
-
-        // workflow stuff
-        final boolean showWorkflow = UserPreferencesHelper.isDisplayWorkflowState(processingContext.getUser()) && contentObject.isIndependantWorkflow();
-        String wfKey = null ;
-        if (showWorkflow && (!PageBean.TYPE.equals(contentType))) {
-            String wfKeyTemp = objectKey ;
-            if (ContainerBean.TYPE.equals(contentType)) {
-                final ContentContainer cont = (ContentContainer) contentObject.getContentObject();
-                try {
-                    int jahiaPageID = -1;
-                    final Iterator<JahiaField> en = cont.getJahiaContainer(processingContext, processingContext.getEntryLoadRequest()).getFields();
-                    while (en.hasNext()) {
-                        final JahiaField field = (JahiaField) en.next();
-                        if (field.getType() == FieldTypes.PAGE) {
-                            final JahiaPageField pageField = (JahiaPageField) field;
-                            final JahiaPage dest = (JahiaPage) pageField.getObject();
-                            if (dest == null) continue;
-                            jahiaPageID = dest.getID();
-                            if (jahiaPageID > 0) break;
-                        }
-                    }
-                    if (jahiaPageID > 0) {
-                        wfKeyTemp = new StringBuilder(PageBean.TYPE).append("_").append(jahiaPageID).toString() ;
-                    }
-                } catch (Exception e) {
-                    logger.error(e, e);
-                }
-            } else {
-                wfKeyTemp = new StringBuilder(contentType).append(ObjectKey.KEY_SEPARATOR).append(contentObject.getID()).toString();
-            }
-            wfKey = wfKeyTemp ;
-        }
-
-        ContentBean parentContentObject = contentObject.getParent();
-        if (parentContentObject != null && parentContentObject.isPicker()) {
-            return "";
-        }
-
-        // generate a unique ID
-        String uid = new StringBuilder(objectKey).append(Constants.UID_SEPARATOR).append(System.currentTimeMillis() % Constants.MODULO).append("_").append(Math.random()).toString() ;
-
-        // generate the div that will receive the action menu
-        StringBuilder buf = new StringBuilder();
-        String objClass = objectKey.substring(0, objectKey.indexOf("_")) ;
-        buf.append("<div class=\"action-menu-icons ").append(objClass).append("\" ").append(JahiaType.JAHIA_TYPE).append("=\"").append(JahiaType.ACTION_MENU).append("\" ");
-        if (wfKey != null) {
-            buf.append("wfkey=\"").append(wfKey).append("\" ");
-        }
-        if (bundleName != null) {
-            buf.append("bundlename=\"").append(bundleName).append("\" ");
-        }
-        if (namePostFix != null) {
-            buf.append("namepostfix=\"").append(namePostFix).append("\" ");
-        }
-        if (iconStyle != null) {
-            buf.append("iconstyle=\"").append(iconStyle).append("\" ");
-        } else {
-            String icon = null ;
-            if (actionType == ActionMenuIcon.CONTAINER_ADD) {
-                icon = "addContainer" ;
-            } else if (actionType == ActionMenuIcon.CONTAINER_EDIT) {
-                if (picker) {
-                    icon = "editPickerContainer" ;
-                } else {
-                    icon = "editContainer" ;
-                }
-            }
-            if (icon != null) {
-                buf.append("iconstyle=\"").append(icon).append("\" ");
-            }
-        }
-        buf.append("actionType=\"").append(String.valueOf(actionType)).append("\" ");
-        if (!toolbarView) {
-            buf.append("toolbarview=\"false\" ");
-        }
-        if (labelKey != null) {
-            final JahiaData jData = (JahiaData) pageContext.getRequest().getAttribute("org.jahia.data.JahiaData");
-            labelKey = ActionMenuLabelProvider.getIconLabel(bundleName, labelKey, type, jData.getProcessingContext());
-            buf.append("labelkey=\"").append(labelKey).append("\" ");
-        }
-        buf.append("id=\"").append(uid).append("\"></div>\n") ;
-
-        // end tag
-        return buf.toString();
+        return "";
     }
 
 }

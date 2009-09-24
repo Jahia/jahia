@@ -11,7 +11,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <singleModuleName>org.jahia.ajax.gwt.template.general.edit.Edit</singleModuleName>
+        <singleModuleName>org.jahia.ajax.gwt.module.edit.Edit</singleModuleName>
     </properties>
     <pluginRepositories>
         <pluginRepository>
@@ -75,20 +75,12 @@
                             <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
                             <modules>
-                                <module>org.jahia.ajax.gwt.template.general.edit.Edit</module>
                                 <module>org.jahia.ajax.gwt.template.general.live.Live</module>
                                 <module>org.jahia.ajax.gwt.template.guest.live.Live</module>
-                                <module>org.jahia.ajax.gwt.template.layoutmanager.edit.Edit</module>
                                 <module>org.jahia.ajax.gwt.template.layoutmanager.live.Live</module>
-                                <!--<module>org.jahia.ajax.gwt.template.mediagallery.edit.Edit</module>-->
-                                <!--<module>org.jahia.ajax.gwt.template.mediagallery.live.Live</module>-->
-                                <!--<module>org.jahia.ajax.gwt.template.opensearch.edit.Edit</module>-->
-                                <!--<module>org.jahia.ajax.gwt.template.opensearch.live.Live</module>-->
 
                                 <module>org.jahia.ajax.gwt.module.acleditor.ACLEditor</module>
                                 <module>org.jahia.ajax.gwt.module.admin.Admin</module>
-                                <!--<module>org.jahia.ajax.gwt.module.categorymanager.CategoryManager</module>-->
-                                <!--<module>org.jahia.ajax.gwt.module.categorypicker.CategoryPicker</module>-->
                                 <module>org.jahia.ajax.gwt.module.contentmanager.ContentManager</module>
                                 <module>org.jahia.ajax.gwt.module.contentpicker.ContentPicker</module>
                                 <module>org.jahia.ajax.gwt.module.definition.ContentDefinition</module>

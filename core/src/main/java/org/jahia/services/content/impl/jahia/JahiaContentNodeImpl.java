@@ -59,6 +59,7 @@ import org.jahia.services.timebasedpublishing.RetentionRule;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.i18n.ResourceBundleMarker;
+import org.apache.commons.lang.StringUtils;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -310,10 +311,24 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             }
             case FieldTypes.FILE: {
                 try {
-                    JCRNodeWrapper file = JCRStoreService.getInstance().getFileNode(value, getSession().getJahiaUser());
-                    if (file.isValid()) {
-                        Value v = new ValueImpl(file.getUUID(), PropertyType.REFERENCE);
-                        fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
+                    if (value.startsWith("/")) {
+                        try {
+                            JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getThreadSession(getSession().getJahiaUser()).getNode(value);
+                            Value v = new ValueImpl(file.getUUID(), PropertyType.REFERENCE);
+                            fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
+                        } catch (PathNotFoundException e) {
+
+                        }
+                    } else {
+                        try {
+                            String providerKey = StringUtils.substringBefore(value,":");
+                            String uuid  = StringUtils.substringAfter(value,":");
+                            JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getThreadSession(getSession().getJahiaUser()).getNodeByUUID(providerKey, uuid);
+                            Value v = new ValueImpl(file.getUUID(), PropertyType.REFERENCE);
+                            fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
+                        } catch (ItemNotFoundException e) {
+
+                        }
                     }
                 } catch (RepositoryException e) {
                     e.printStackTrace();

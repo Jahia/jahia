@@ -47,7 +47,6 @@ import org.jahia.data.events.JahiaEventListener;
 import org.jahia.data.fields.FieldsEditHelper;
 import org.jahia.data.fields.FieldsEditHelperAbstract;
 import org.jahia.data.fields.JahiaField;
-import org.jahia.engines.metadata.Metadata_Engine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.containers.ContentContainer;
@@ -102,11 +101,9 @@ public class ContentLastModificationDateListener extends JahiaEventListener {
     }
 
     public void metadataEngineAfterInit(JahiaEvent theEvent) {
-        processEvent("metadataEngineAfterInit", theEvent);
     }
 
     public void metadataEngineBeforeSave(JahiaEvent theEvent) {
-        processEvent("metadataEngineBeforeSave", theEvent);
     }
 
     public void containerUpdated(JahiaEvent theEvent) {
@@ -291,47 +288,5 @@ public class ContentLastModificationDateListener extends JahiaEventListener {
         }
     }
 
-    public void processEvent(String eventName, JahiaEvent theEvent) {
-        if (metadataName == null || theEvent == null) {
-            return;
-        }
-        try {
-            String attribPrefix = Metadata_Engine.ENGINE_NAME + ".";
-            ProcessingContext jParams = theEvent.getProcessingContext();
-            Map engineMap = (Map) jParams.getSessionState().getAttribute(
-                    "jahia_session_engineMap");
-
-            FieldsEditHelper feh = (FieldsEditHelper) engineMap.get(attribPrefix
-                    + FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
-
-            JahiaField theField = feh.getField(this.getMetadataName());
-            if (theField == null) {
-                logger.info("Requested metadata field [" + this.getMetadataName() + "] not found!");
-                return;
-            }
-            String fieldValue = null;
-            if ("metadataEngineAfterInit".equals(eventName)) {
-                String oldValue = "";
-                if (theField.getObject() != null) {
-                    oldValue = ((String) theField.getObject()).trim();
-                    if (!"".equals(oldValue)) {
-                        return;
-                    }
-                }
-                fieldValue = String.valueOf(theEvent.getEventTime());
-
-                // we want to init the creation date field
-                if (fieldValue != null) {
-                    theField.setObject(fieldValue);
-                    feh.addUpdatedField(theField.getID(), theField.getLanguageCode());
-                }
-            } else if ("metadataEngineBeforeSave".equals(eventName)) {
-//                theField.setObject(String.valueOf(theEvent.getEventTime()));
-//                feh.addUpdatedField(theField.getID(),theField.getLanguageCode());
-            }
-        } catch (Exception t) {
-            logger.debug("Exception processing event " + eventName, t);
-        }
-    }
 
 }

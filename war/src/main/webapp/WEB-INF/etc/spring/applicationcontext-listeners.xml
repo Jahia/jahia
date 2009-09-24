@@ -12,34 +12,32 @@
 # Note that if you modify the default listeners, some sub-systems may no
 # longer work correctly.
 -->
-    <bean id="LoggingEventListener" class="org.jahia.services.audit.LoggingEventListener" >
-        <property name="MAuditLogManager" ref="JahiaAuditLogManagerService" />
+    <bean id="LoggingEventListener" class="org.jahia.services.audit.LoggingEventListener">
+        <property name="MAuditLogManager" ref="JahiaAuditLogManagerService"/>
     </bean>
     <bean id="ContainersChangeEventListener" class="org.jahia.data.containers.ContainersChangeEventListener">
-        <property name="clusterService" ref="clusterService" />
+        <property name="clusterService" ref="clusterService"/>
     </bean>
 
     <bean id="SiteMapEventListener" class="org.jahia.data.viewhelper.sitemap.SiteMapEventListener">
-        <property name="jahiaSiteMapService" ref="JahiaSiteMapService" />
+        <property name="jahiaSiteMapService" ref="JahiaSiteMapService"/>
     </bean>
     <bean id="WorkflowEventListener" class="org.jahia.services.workflow.WorkflowEventListener">
-        <property name="workflowService" ref="WorkflowService" />
-        <property name="jahiaSitesService" ref="JahiaSitesService" />
-        <property name="jahiaUserManagerService" ref="JahiaUserManagerService" />
-        <property name="cacheService" ref="JahiaCacheService" />
+        <property name="workflowService" ref="WorkflowService"/>
+        <property name="jahiaSitesService" ref="JahiaSitesService"/>
+        <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
+        <property name="cacheService" ref="JahiaCacheService"/>
     </bean>
-    <!--
-    <bean id="ChangeContentPickerListener" class="org.jahia.services.importexport.ChangeContentPickerListener" />
-    -->
-    <bean id="ActivationContentPickerListener" class="org.jahia.services.importexport.ActivationContentPickerListener" >
-        <property name="siteservice" ref="JahiaSitesService" />
+    <bean id="ActivationContentPickerListener" class="org.jahia.services.importexport.ActivationContentPickerListener">
+        <property name="siteservice" ref="JahiaSitesService"/>
     </bean>
-    <bean id="TimeBasedPublishingEventListener" class="org.jahia.services.timebasedpublishing.TimeBasedPublishingEventListener" >
-        <property name="tbpServ" ref="TimeBasedPublishingService" />
+    <bean id="TimeBasedPublishingEventListener"
+          class="org.jahia.services.timebasedpublishing.TimeBasedPublishingEventListener">
+        <property name="tbpServ" ref="TimeBasedPublishingService"/>
     </bean>
-    <bean id="CacheEventListener" class="org.jahia.services.cache.CacheEventListener" />
-    <bean id="JCRSiteListener" class="org.jahia.services.content.JCRSiteListener" />
-    <bean id="JCRListener" class="org.jahia.services.content.impl.jahia.JCRListener" />
+    <bean id="CacheEventListener" class="org.jahia.services.cache.CacheEventListener"/>
+    <bean id="JCRSiteListener" class="org.jahia.services.content.JCRSiteListener"/>
+    <bean id="JCRListener" class="org.jahia.services.content.impl.jahia.JCRListener"/>
 
     <!--
 # Activate the JSP Event listener if you want to be able to implement JSP
@@ -69,16 +67,16 @@
          -->
     </bean>
 
-<!--
-# Activate the Groovy Event listener if you want to be able to implement event
-# listeners using Groovy files. In order to do this you can either modify the
-# default /events/eventlistener.groovy file or include an
-# "eventlistener.groovy" file in your template directory.
--->
-    <bean id="GroovyEventListener" class="org.jahia.services.events.GroovyEventListener" >
+    <!--
+    # Activate the Groovy Event listener if you want to be able to implement event
+    # listeners using Groovy files. In order to do this you can either modify the
+    # default /events/eventlistener.groovy file or include an
+    # "eventlistener.groovy" file in your template directory.
+    -->
+    <bean id="GroovyEventListener" class="org.jahia.services.events.GroovyEventListener">
         <property name="listenerFileName" value="EventListener.groovy"/>
         <property name="defaultListenerFilePath" value="events/EventListener.groovy"/>
-        <property name="groovyScriptEngine" ref="groovyScriptEngine" />
+        <property name="groovyScriptEngine" ref="groovyScriptEngine"/>
         <property name="skipEvents">
             <set>
                 <value>pageLoadedFromCache</value>
@@ -86,29 +84,29 @@
         </property>
         <property name="handleEvents">
             <set>
-            <!-- by default this list is empty and no event is handled by Groovy listener -->
+                <!-- by default this list is empty and no event is handled by Groovy listener -->
             </set>
         </property>
     </bean>
 
-    <bean id="JahiaSearchListener" class="org.jahia.services.search.JahiaSearchListener" />
+    <bean id="JahiaSearchListener" class="org.jahia.services.search.JahiaSearchListener"/>
 
     <bean id="listenersRegistry" class="org.jahia.registries.JahiaListenersRegistry">
         <property name="listeners">
             <list>
-                <ref bean="LoggingEventListener" />
-                <ref bean="ContainersChangeEventListener" />
-                <ref bean="SiteMapEventListener" />
-                <ref bean="WorkflowEventListener" />
+                <ref bean="LoggingEventListener"/>
+                <ref bean="ContainersChangeEventListener"/>
+                <ref bean="SiteMapEventListener"/>
+                <ref bean="WorkflowEventListener"/>
                 <!--ref bean="ChangeContentPickerListener" /-->
-                <ref bean="ActivationContentPickerListener" />
-                <ref bean="TimeBasedPublishingEventListener" />
-                <ref bean="CacheEventListener" />
-                <ref bean="JCRSiteListener" />
-                <ref bean="JCRListener" />
-                <ref bean="JSPEventListener" />
-                <ref bean="GroovyEventListener" />
-                <ref bean="JahiaSearchListener" />
+                <ref bean="ActivationContentPickerListener"/>
+                <ref bean="TimeBasedPublishingEventListener"/>
+                <ref bean="CacheEventListener"/>
+                <ref bean="JCRSiteListener"/>
+                <ref bean="JCRListener"/>
+                <ref bean="JSPEventListener"/>
+                <ref bean="GroovyEventListener"/>
+                <ref bean="JahiaSearchListener"/>
                 <bean class="org.jahia.services.notification.NotificationService$NotificationEventListener"/>
             </list>
         </property>

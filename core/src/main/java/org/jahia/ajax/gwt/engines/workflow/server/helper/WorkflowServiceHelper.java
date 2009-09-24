@@ -36,7 +36,6 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowHistoryEntry;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLabel;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
-import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuURIFormatter;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.content.ContentPageKey;
@@ -803,7 +802,7 @@ public class WorkflowServiceHelper {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Cannot acquire lock for object " + objectKey + " by " + currentUser.getUsername());
                     }
-                    String stealLockUrl = ActionMenuURIFormatter.drawUrlCheckWriteAccess(jParams, "lock", lockKey, false, false) ;
+                    String stealLockUrl = null;//ActionMenuURIFormatter.drawUrlCheckWriteAccess(jParams, "lock", lockKey, false, false) ;
                     if (stealLockUrl != null && stealLockUrl.trim().length() > 0) {
                         workflowElement.setStealLock(stealLockUrl);
                     }

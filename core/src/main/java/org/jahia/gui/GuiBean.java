@@ -55,7 +55,6 @@ import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.containers.JahiaContainerListPagination;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.engines.JahiaEngine;
-import org.jahia.engines.containerlistproperties.ContainerListProperties_Engine;
 import org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.AdvPreviewSettings;
@@ -997,12 +996,6 @@ public class GuiBean {
                     }
                 }
 
-                if (engineName.equals(ContainerListProperties_Engine.ENGINE_NAME)) {
-                    if (containerList.getID() == 0 && processingContext.getPage().checkAdminAccess(getUser())
-                            || containerList.getID() != 0 && containerList.checkWriteAccess(getUser())) {
-                        return theEngine.renderLink(processingContext, anObject);
-                    }
-                } else {
                     // Add Container
                     if (containerList.getID() == 0 &&
                             processingContext.getPage().checkWriteAccess(getUser(), true) ||
@@ -1010,7 +1003,6 @@ public class GuiBean {
                                     containerList.checkWriteAccess(getUser())) {
                         return theEngine.renderLink(processingContext, anObject);
                     }
-                }
             } else if (anObject instanceof ApplicationBean) {
                 ApplicationBean bean = (ApplicationBean) anObject;
                 if(JCRContentUtils.hasPermission(getUser(), Constants.JCR_WRITE_RIGHTS,bean.getID())) {

@@ -36,7 +36,6 @@ import org.jahia.content.*;
 import org.jahia.data.ConnectionTypes;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.JahiaFieldDefinition;
-import org.jahia.engines.shared.Category_Field;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
@@ -60,6 +59,7 @@ public class ContentCategoryField extends ContentField {
     private static final long serialVersionUID = -503491586581014649L;
     private static org.apache.log4j.Logger logger
             = org.apache.log4j.Logger.getLogger (ContentCategoryField.class);
+    public static final String NOSELECTION_MARKER = "$$$NO_SELECTION_MARKER$$$";
 
     protected ContentCategoryField (Integer ID,
                                                Integer jahiaID,
@@ -270,7 +270,7 @@ public class ContentCategoryField extends ContentField {
                     }
 
                     if (newStagedValue != null && !"".equals(newStagedValue.trim())
-                            && !Category_Field.NOSELECTION_MARKER.equals(newStagedValue)){
+                            && !NOSELECTION_MARKER.equals(newStagedValue)){
 
                         // now we can add the current object key to all the selected
                         // categories.
@@ -383,8 +383,6 @@ public class ContentCategoryField extends ContentField {
      * the text file corresponding to the field entry
      *
      * @param deleteEntryState the entry state to delete
-     * @param jParams          ProcessingContext needed to destroy page related data such as
-     *                         fields, sub pages, as well as generated JahiaEvents.
      */
     @Override
     protected void deleteEntry(EntryStateable deleteEntryState) throws JahiaException {

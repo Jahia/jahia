@@ -330,7 +330,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
     private JCRNodeWrapper getPreferencesNode(Principal principal) {
         String nodePath = "/" + getPreferencesNodePath(principal);
         try {
-            return getJCRStoreService().getFileNode(nodePath, (JahiaUser) principal);
+            return getJCRStoreService().getSessionFactory().getThreadSession((JahiaUser) principal).getNode(nodePath);
         } catch (Exception e) {
             logger.error("Node path = [" + nodePath + "]");
             logger.error(e, e);

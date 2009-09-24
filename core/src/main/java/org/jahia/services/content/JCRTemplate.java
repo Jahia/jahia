@@ -19,16 +19,18 @@ public class JCRTemplate {
     public JCRSessionFactory getSessionFactory() {
         return sessionFactory;
     }
-     public<X> X doExecuteWithSystemSession(JCRCallback<X> callback) throws RepositoryException {
-         return doExecute(callback,true,null,null,null);
-     }
-    public<X> X doExecute(JCRCallback<X> callback, boolean useSystemSession, JahiaUser user, String workspace, Locale locale) throws RepositoryException {
+
+    public <X> X doExecuteWithSystemSession(JCRCallback<X> callback) throws RepositoryException {
+        return doExecute(callback, true, null, null, null);
+    }
+
+    public <X> X doExecute(JCRCallback<X> callback, boolean useSystemSession, JahiaUser user, String workspace, Locale locale) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
             session = (useSystemSession ? sessionFactory.getSystemSession(user != null ? user.getName() : null,
-                                                                                               workspace) : sessionFactory.getThreadSession(user, workspace, locale));
+                    workspace) : sessionFactory.getThreadSession(user, workspace, locale));
             return callback.doInJCR(session);
-        }  finally {
+        } finally {
             if (session != null && useSystemSession) {
                 session.logout();
             }

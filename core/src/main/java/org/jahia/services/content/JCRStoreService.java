@@ -360,42 +360,43 @@ public class JCRStoreService extends JahiaService implements ServletContextAware
      * @deprecated Use getThreadSession().getNode()
      */
     public JCRNodeWrapper getFileNode(String path, JahiaUser user) {
-        // Todo Suppress this method
-        if (path != null) {
-            if (path.startsWith("/")) {
-                for (Iterator<String> iterator = sessionFactory.getDynamicMountPoints().keySet().iterator(); iterator.hasNext();) {
-                    String mp = iterator.next();
-                    if (path.startsWith(mp + "/")) {
-                        String localPath = path.substring(mp.length());
-                        JCRStoreProvider provider = sessionFactory.getDynamicMountPoints().get(mp);
-                        return provider.getNodeWrapper(provider.getRelativeRoot() + localPath, user);
-                    }
-                }
-                for (Iterator<String> iterator = sessionFactory.getMountPoints().keySet().iterator(); iterator.hasNext();) {
-                    String mp = iterator.next();
-                    if (mp.equals("/") || path.equals(mp) || path.startsWith(mp + "/")) {
-                        String localPath = path;
-                        if (!mp.equals("/")) {
-                            localPath = path.substring(mp.length());
-                        }
-                        JCRStoreProvider provider = sessionFactory.getMountPoints().get(mp);
-                        if (localPath.equals("")) {
-                            localPath = "/";
-                        }
-                        return provider.getNodeWrapper(provider.getRelativeRoot() + localPath, user);
-                    }
-                }
-                return null;
-            } else if (path.length() > 0 && path.contains(":")) {
-                int index = path.indexOf(":");
-                String key = path.substring(0, index);
-                String localPath = path.substring(index + 1);
-                JCRStoreProvider provider = sessionFactory.getProviders().get(key);
-                if (provider != null) {
-                    return provider.getNodeWrapper(provider.getRelativeRoot() + localPath, user);
-                }
-            }
-        }
-        return new JCRNodeWrapperImpl("?", null, null);
+        throw new UnsupportedOperationException("getFileNode: "+path);
+//        // Todo Suppress this method
+//        if (path != null) {
+//            if (path.startsWith("/")) {
+//                for (Iterator<String> iterator = sessionFactory.getDynamicMountPoints().keySet().iterator(); iterator.hasNext();) {
+//                    String mp = iterator.next();
+//                    if (path.startsWith(mp + "/")) {
+//                        String localPath = path.substring(mp.length());
+//                        JCRStoreProvider provider = sessionFactory.getDynamicMountPoints().get(mp);
+//                        return provider.getNodeWrapper(provider.getRelativeRoot() + localPath, user);
+//                    }
+//                }
+//                for (Iterator<String> iterator = sessionFactory.getMountPoints().keySet().iterator(); iterator.hasNext();) {
+//                    String mp = iterator.next();
+//                    if (mp.equals("/") || path.equals(mp) || path.startsWith(mp + "/")) {
+//                        String localPath = path;
+//                        if (!mp.equals("/")) {
+//                            localPath = path.substring(mp.length());
+//                        }
+//                        JCRStoreProvider provider = sessionFactory.getMountPoints().get(mp);
+//                        if (localPath.equals("")) {
+//                            localPath = "/";
+//                        }
+//                        return provider.getNodeWrapper(provider.getRelativeRoot() + localPath, user);
+//                    }
+//                }
+//                return null;
+//            } else if (path.length() > 0 && path.contains(":")) {
+//                int index = path.indexOf(":");
+//                String key = path.substring(0, index);
+//                String localPath = path.substring(index + 1);
+//                JCRStoreProvider provider = sessionFactory.getProviders().get(key);
+//                if (provider != null) {
+//                    return provider.getNodeWrapper(provider.getRelativeRoot() + localPath, user);
+//                }
+//            }
+//        }
+//        return new JCRNodeWrapperImpl("?", null, null);
     }
 }

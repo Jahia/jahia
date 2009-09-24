@@ -47,14 +47,10 @@ import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.events.JahiaEventListener;
-import org.jahia.engines.pages.PageProperties_Engine;
-import org.jahia.engines.shared.Page_Field;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.JahiaFieldXRefManager;
 import org.jahia.hibernate.manager.JahiaObjectManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.hibernate.model.JahiaFieldXRef;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.clusterservice.ClusterCacheMessage;
@@ -271,32 +267,6 @@ public class CacheEventListener extends JahiaEventListener {
                 }
                 else if (container instanceof ContentPage) {
                     invalidatePage(container, languageCodes, true);
-                }
-            }
-        } else if (je.getSource() instanceof PageProperties_Engine
-                || je.getSource() instanceof Page_Field) {
-            ContentObject container = (ContentObject) je.getObject();
-            Set<String> languageCodes = getLanguageCodes(je
-                    .getProcessingContext().getLocale().toString(), container);
-            if (container != null) {
-                invalidatePage(container, languageCodes, true);
-                // invalidate bigtexts referencing pages
-                try {
-                    if (fieldXRefManager == null) {
-                        fieldXRefManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldXRefManager.class.getName());
-                    }
-                    Collection<JahiaFieldXRef> c = fieldXRefManager.getReferencesForTarget(JahiaFieldXRefManager.PAGE + container.getID());
-                    for (JahiaFieldXRef fieldXRef : c) {
-                        ContentField contentField = ContentField.getField(fieldXRef.getComp_id().getFieldId());
-                        for (String languageCode : languageCodes) {
-                            invalidate((ContentObjectKey) contentField.getParent(EntryLoadRequest.STAGED).getObjectKey(), ProcessingContext.EDIT, languageCode);
-                            invalidate((ContentObjectKey) contentField.getParent(EntryLoadRequest.STAGED).getObjectKey(), ProcessingContext.COMPARE, languageCode);
-                            invalidate((ContentObjectKey) contentField.getParent(EntryLoadRequest.STAGED).getObjectKey(), ProcessingContext.PREVIEW, languageCode);
-                            invalidate((ContentObjectKey) contentField.getParent(EntryLoadRequest.STAGED).getObjectKey(), ProcessingContext.NORMAL, languageCode);
-                        }
-                    }
-                } catch (JahiaException e) {
-                    e.printStackTrace();
                 }
             }
         }

@@ -44,10 +44,7 @@ import org.jahia.content.events.ContentUndoStagingEvent;
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.events.JahiaEventListener;
-import org.jahia.data.fields.FieldsEditHelper;
-import org.jahia.data.fields.FieldsEditHelperAbstract;
 import org.jahia.data.fields.JahiaField;
-import org.jahia.engines.metadata.Metadata_Engine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.containers.ContentContainer;
@@ -125,11 +122,9 @@ public class ContentLastContributorListener extends JahiaEventListener {
     }
 
     public void metadataEngineAfterInit (JahiaEvent theEvent) {
-        processEvent("metadataEngineAfterInit",theEvent);
     }
 
     public void metadataEngineBeforeSave (JahiaEvent theEvent) {
-        processEvent("metadataEngineBeforeSave",theEvent);
     }
 
     public void containerUpdated(JahiaEvent theEvent) {
@@ -322,50 +317,6 @@ public class ContentLastContributorListener extends JahiaEventListener {
             if (resetStagingLoadRequest) {
                 jParams.setSubstituteEntryLoadRequest(savedEntryLoadRequest);
             }
-        }
-    }
-
-    public void processEvent (String eventName, JahiaEvent theEvent) {
-        if ( metadataName == null || theEvent == null ){
-            return;
-        }
-        try {
-            String attribPrefix = Metadata_Engine.ENGINE_NAME + ".";
-            ProcessingContext jParams = theEvent.getProcessingContext();
-            Map engineMap = (Map) jParams.getSessionState().getAttribute(
-                "jahia_session_engineMap");
-
-            FieldsEditHelper feh = (FieldsEditHelper)engineMap.get(attribPrefix
-                                                                   +FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
-
-            String lastContributor = null;
-            JahiaField theField = feh.getField(this.getMetadataName());
-            if (theField == null) {
-                logger.info("Requested metadata field ["+this.getMetadataName()+"] not found!");
-                return;
-            }
-            if ( "metadataEngineAfterInit".equals(eventName) ){
-                String fieldValue = "";
-                if (theField.getValue() != null) {
-                    fieldValue = ( theField.getValue()).trim();
-                    if (!"".equals(fieldValue)) {
-                        return;
-                    }
-                }
-                lastContributor = jParams.getUser().getUsername();
-
-                // we want to init the creation date field
-                if (lastContributor != null) {
-                    theField.setValue(lastContributor);
-                    feh.addUpdatedField(theField.getID(),theField.getLanguageCode());
-                }
-            } else if ( "metadataEngineBeforeSave".equals(eventName) ){
-                // we want set the last contributor field
-//                theField.setValue(jParams.getUser().getUsername());
-//                feh.addUpdatedField(theField.getID(),theField.getLanguageCode());
-            }
-        } catch ( Exception t ){
-            logger.debug("Exception processing event " + eventName, t);
         }
     }
 

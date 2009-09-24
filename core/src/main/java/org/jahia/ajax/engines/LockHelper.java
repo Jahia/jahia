@@ -45,7 +45,6 @@ import org.jahia.data.fields.JahiaContentFieldFacade;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.engines.EngineLanguageHelper;
 import org.jahia.engines.JahiaEngine;
-import org.jahia.engines.deletecontainer.DeleteContainer_Engine;
 import org.jahia.engines.workflow.ManageWorkflow;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
@@ -180,9 +179,6 @@ public final class LockHelper {
             theContainer = jahiaContentContainerFacade.getContainer(elh
                     .getCurrentEntryLoadRequest(), true);
 
-        } else if (DeleteContainer_Engine.ENGINE_NAME.equals(engineMap
-                .get(JahiaEngine.ENGINE_NAME_PARAM))) {
-            theContainer = (JahiaContainer) engineMap.get("theContainer");
         }
 
         if (theContainer != null) {

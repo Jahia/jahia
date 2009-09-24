@@ -34,7 +34,6 @@ package org.jahia.taglibs.template.container;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.apache.struts.taglib.TagUtils;
-import org.jahia.ajax.gwt.client.widget.actionmenu.actions.ActionMenuIcon;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentContainerListKey;
@@ -497,24 +496,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
                                 actionMenuNameLabelKey = null;
                             }
                             final String actionMenu;
-                            if (this.id != null && this.id.length() > 0) {
-                                actionMenu = new ActionMenuOutputter(context, pageContext, null, this.id,
-                                        null, ActionMenuIcon.CONTAINER_EDIT, getResourceBundle(), actionMenuNamePostFix, actionMenuNameLabelKey, actionMenuIconStyle).
-                                        getOutput();
-                            } else {
-                                actionMenu = new ActionMenuOutputter(context, pageContext, null, null,
-                                        "ContentContainer_" + this.container.getID(), ActionMenuIcon.CONTAINER_EDIT, getResourceBundle(),
-                                        actionMenuNamePostFix, actionMenuNameLabelKey, actionMenuIconStyle).getOutput();
-                            }
-                            if (actionMenu != null && actionMenu.length() > 0) {
-                                menu.append(actionMenu);
-                                if (!displayActionMenuAtBottom) {
-                                    menu.append(bodyContentTmp);
-                                }
-                                buf.append(menu);
-                            } else {
                                 shouldWeDisplayActionMenus = false;
-                            }
 
                         } catch (Exception e) {
                             logger.error("Error while generating Action menu", e);

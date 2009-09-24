@@ -53,7 +53,6 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.widget.actionmenu.actions.ActionMenuIcon;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentContainerListKey;
 import org.jahia.data.JahiaData;
@@ -376,13 +375,13 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                     final String actionMenu;
                     if (this.id != null && this.id.length() > 0) {
                         if (getContainerList().getDefinition().getContainerListType() != JahiaContainerDefinition.SINGLE_TYPE || getContainerList().size() == 0) {
-                            actionMenu = new ActionMenuOutputter(jData.getProcessingContext(), pageContext, null, this.id, null, ActionMenuIcon.CONTAINERLIST_UPDATE, getResourceBundle(), actionMenuNamePostFix, actionMenuNameLabelKey, actionMenuIconStyle).getOutput();
+                            actionMenu = null;
                         }
                         else {
                                actionMenu = null;
                         }
                     } else {
-                        actionMenu = new ActionMenuOutputter(jData.getProcessingContext(), pageContext, null, null, "ContentContainerList_" + getContainerList().getID(), ActionMenuIcon.CONTAINERLIST_UPDATE, getResourceBundle(), actionMenuNamePostFix, actionMenuNameLabelKey, actionMenuIconStyle).getOutput();
+                        actionMenu = null;
                     }
 
                     if (actionMenu != null && actionMenu.length() > 0) {
@@ -578,10 +577,8 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                         actionMenuNameLabelKey = null;
                     }
                     if (this.id != null && this.id.length() > 0) {
-                        buf.append(new ActionMenuOutputter(jParams, pageContext, null, this.id, null, ActionMenuIcon.CONTAINERLIST_UPDATE, getResourceBundle(), actionMenuNamePostFix, actionMenuNameLabelKey, actionMenuIconStyle).getOutput());
 
                     } else if (this.containerList != null) {
-                        buf.append(new ActionMenuOutputter(jParams, pageContext, null, null, "ContentContainerList_" + this.containerList.getID(), ActionMenuIcon.CONTAINERLIST_UPDATE, getResourceBundle(), actionMenuNamePostFix, actionMenuNameLabelKey, actionMenuIconStyle).getOutput());
                     }
                 }
             } catch (Exception e) {

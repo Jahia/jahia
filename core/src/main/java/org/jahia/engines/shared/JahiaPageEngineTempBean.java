@@ -55,7 +55,7 @@ public class JahiaPageEngineTempBean implements Serializable {
     private int pageLinkID;
     private String creator;
     private int linkFieldID;
-    private String operation = Page_Field.RESET_LINK;
+    private String operation = "removeLink";
     private boolean sharedTitle;
     private boolean deleteOldContainer = true;
     private boolean hideFromNavigationMenu = false;

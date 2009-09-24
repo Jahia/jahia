@@ -46,7 +46,6 @@ import org.apache.struts.validator.FieldChecks;
 import org.apache.struts.validator.Resources;
 import org.jahia.bin.Jahia;
 import org.jahia.engines.shared.JahiaPageEngineTempBean;
-import org.jahia.engines.shared.Page_Field;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.sites.SiteLanguageSettings;
 
@@ -350,8 +349,7 @@ public class JahiaFieldChecks extends FieldChecks {
             JahiaPageEngineTempBean pageBean = (JahiaPageEngineTempBean) pageBeans
                     .get(fieldName);
 
-            if (pageBean == null
-                    || Page_Field.RESET_LINK.equals(pageBean.getOperation())) {
+            if (pageBean == null) {
                 fieldValid = true;
             }
         }

@@ -1087,7 +1087,6 @@ public class ContentManagerHelper {
 
     private static String findAvailableName(JCRNodeWrapper dest, String name, JahiaUser user) {
         int i = UPLOAD_AUTO_RENAME;
-        JCRNodeWrapper target = jcr.getFileNode(dest.getPath() + "/" + name, user);
 
         String basename = name;
         int dot = basename.lastIndexOf('.');
@@ -1101,10 +1100,17 @@ public class ContentManagerHelper {
             basename = basename.substring(UPLOAD, und);
         }
 
-        while (target.getException() == null) {
-            name = basename + "_" + (i++) + ext;
-            target = jcr.getFileNode(dest.getPath() + "/" + name, user);
-        }
+        JCRNodeWrapper target = null;
+        do {
+            try {
+                target = sessionFactory.getThreadSession(user).getNode(dest.getPath() + "/" + name);
+                name = basename + "_" + (i++) + ext;
+            } catch (RepositoryException e) {
+                break;
+            }
+
+        } while (true);
+
         return name;
     }
 
@@ -2474,12 +2480,13 @@ public class ContentManagerHelper {
     public static void pasteReferenceOnTopOf(GWTJahiaNode aNode, String destinationPath, String name, JahiaUser user, boolean moveOnTop) throws GWTJahiaServiceException {
         try {
             final JCRNodeWrapper targetParent;
-            JCRNodeWrapper targetNode = jcr.getFileNode(destinationPath, user);
+            JCRSessionWrapper session = sessionFactory.getThreadSession(user);
+            JCRNodeWrapper targetNode = session.getNode(destinationPath);
             if(moveOnTop)
             targetParent = (JCRNodeWrapper) targetNode.getParent();
             else targetParent = targetNode;
             if (targetParent.isCollection() && targetParent.isWriteable()) {
-                JCRNodeWrapper node = jcr.getFileNode(aNode.getPath(), user);
+                JCRNodeWrapper node = session.getNode(aNode.getPath());
                 if (node.hasPermission(JCRNodeWrapper.READ)) {
                     name = findAvailableName(targetParent, name, user);
                     doPasteReference(targetParent, node, name);
@@ -2501,15 +2508,17 @@ public class ContentManagerHelper {
         List<String> missedPaths = new ArrayList<String>();
 
         final JCRNodeWrapper targetParent;
-        JCRNodeWrapper targetNode = jcr.getFileNode(destinationPath, user);
-        if(moveOnTop) {
+        JCRNodeWrapper targetNode;
         try {
-            targetParent = (JCRNodeWrapper) targetNode.getParent();
+            targetNode = sessionFactory.getThreadSession(user).getNode(destinationPath);
+
+            if(moveOnTop) {
+                targetParent = (JCRNodeWrapper) targetNode.getParent();
+            } else {
+                targetParent = targetNode;
+            }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
-        }
-        } else {
-            targetParent = targetNode;
         }
 
         for (GWTJahiaNode aNode : pathsToCopy) {

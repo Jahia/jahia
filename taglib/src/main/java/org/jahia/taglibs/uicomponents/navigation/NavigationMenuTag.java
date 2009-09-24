@@ -33,7 +33,6 @@ package org.jahia.taglibs.uicomponents.navigation;
 
 import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.widget.actionmenu.actions.ActionMenuIcon;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentContainerListKey;
@@ -578,10 +577,6 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                         out.append(">\n");
 
                         if (!hideActionMenus && displayActionMenuBeforeLink) {
-                            String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerBean(linkContainer, jParams), containerListName, linkContainer.getContentContainer().getObjectKey().toString(), ActionMenuIcon.CONTAINER_EDIT, getResourceBundle(), "navlink", "navlink", actionMenuIconStyle).getOutput(false);
-                            if (actionMenuDisplay != null) {
-                                out.append(actionMenuDisplay);
-                            }
                         }
 
                         String dispLink = link.getHighLightDiffTitle(jParams);
@@ -607,10 +602,6 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                         out.append(dispLink).append("</a>");
 
                         if (!hideActionMenus && !displayActionMenuBeforeLink) {
-                            String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerBean(linkContainer, jParams), containerListName, linkContainer.getContentContainer().getObjectKey().toString(), ActionMenuIcon.CONTAINER_EDIT, getResourceBundle(), "navlink", "navlink", actionMenuIconStyle).getOutput(false);
-                            if (actionMenuDisplay != null) {
-                                out.append(actionMenuDisplay);
-                            }
                         }
 
                         out.append("\n");
@@ -625,27 +616,6 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                 } else {
                     // no navlink
                     if (editMode && !hideActionMenus) {
-                        String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerBean(linkContainer, jParams), containerListName, linkContainer.getContentContainer().getObjectKey().toString(), ActionMenuIcon.CONTAINER_EDIT, getResourceBundle(), "navlink", "navlink", actionMenuIconStyle).getOutput(false);
-                        if (actionMenuDisplay != null) {
-                            if (begin) {
-                                if (cssClassName == null) {
-                                    out.append("<ul class=\"level_").append(level).append("\">");
-                                } else {
-                                    out.append("<ul class=\"level_").append(level).append(" ").append(cssClassName).append("\">");
-                                }
-                                begin = false;
-                            }
-
-                            out.append("<li>\n");
-                            if (displayActionMenuBeforeLink) {
-                                out.append(actionMenuDisplay);
-                                out.append("<a><span>n.d.</span></a>");
-                            } else {
-                                out.append("<a><span>n.d.</span></a>");
-                                out.append(actionMenuDisplay);
-                            }
-                            out.append("</li>\n");
-                        }
                     }
                 }
             }
@@ -809,10 +779,6 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                     }
 
                     if (!hideActionMenus) {
-                        String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerBean(linkContainer, jParams), containerListName, linkContainer.getContentContainer().getObjectKey().toString(), ActionMenuIcon.CONTAINER_EDIT, getResourceBundle(), "navlink", "navlink", actionMenuIconStyle).getOutput(false);
-                        if (actionMenuDisplay != null) {
-                            navMenuItemBean.setActionMenu(actionMenuDisplay);
-                        }
                     }
                     if (link != null) {
                         String title = link.getTitle();

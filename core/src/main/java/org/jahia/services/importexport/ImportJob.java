@@ -44,6 +44,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.mail.GroovyMimeMessagePreparator;
 import org.jahia.services.mail.MailService;
@@ -99,7 +100,8 @@ public class ImportJob extends BackgroundJob {
         InputStream inputStream = null;
 
         String uri = (String) jobDataMap.get(URI);
-        JCRNodeWrapper f = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(uri, context.getUser());
+        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getThreadSession(context.getUser());
+        JCRNodeWrapper f = session.getNode(uri);
         inputStream = f.getFileContent().downloadFile();
 
         List<ImportAction> actions = new ArrayList<ImportAction>();

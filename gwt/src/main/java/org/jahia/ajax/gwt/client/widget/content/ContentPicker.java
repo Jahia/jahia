@@ -71,7 +71,7 @@ public class ContentPicker extends TriPanelBrowserLayout {
         }
 
         // construction of the UI components
-        TopBar toolbar = new ContentToolbar(config) ;
+        TopBar toolbar = new ContentToolbar(config, linker) ;
         TopRightComponent filepicker = new ContentPickerContainer(rootPath, selectedNodes, config, callback, multiple, allowThumbs) ;
 
         

@@ -270,7 +270,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     gwtToolbarItem.setDisplayTitle(true);
                     gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
                     
-                    gwtToolbarItem.setType(ActionItemFactory.ORG_JAHIA_TOOLBAR_ITEM_OPEN_WINDOW);
+                    gwtToolbarItem.setType(ActionItemFactory.OPEN_WINDOW);
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.WIDTH, "1020"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.HEIGHT, "730"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
@@ -283,7 +283,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     gwtToolbarItem.setDisplayTitle(true);
                     gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
 
-                    gwtToolbarItem.setType(ActionItemFactory.ORG_JAHIA_TOOLBAR_ITEM_OPEN_WINDOW);
+                    gwtToolbarItem.setType(ActionItemFactory.OPEN_WINDOW);
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.WIDTH, "1020"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.HEIGHT, "730"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
@@ -385,7 +385,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
             // create the toolitem
             GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
             gwtToolbarItem.setTitle(title);
-            gwtToolbarItem.setType(ActionItemFactory.ORG_JAHIA_TOOLBAR_ITEM_REDIRECT_WINDOW);
+            gwtToolbarItem.setType(ActionItemFactory.REDIRECT_WINDOW);
             gwtToolbarItem.setDisplayTitle(true);
 
             // add url property
@@ -416,7 +416,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
             // create the toolitem
             GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
             gwtToolbarItem.setTitle(label);
-            gwtToolbarItem.setType(ActionItemFactory.ORG_JAHIA_TOOLBAR_ITEM_QUICK_WORKFLOW);
+            gwtToolbarItem.setType(ActionItemFactory.QUICK_WORKFLOW);
             gwtToolbarItem.setDisplayTitle(true);
 
             // add url property
@@ -457,7 +457,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
         // create the toolitem
         GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
         gwtToolbarItem.setTitle(label);
-        gwtToolbarItem.setType(ActionItemFactory.ORG_JAHIA_TOOLBAR_ITEM_QUICK_WORKFLOW);
+        gwtToolbarItem.setType(ActionItemFactory.QUICK_WORKFLOW);
         gwtToolbarItem.setDisplayTitle(true);
 
         // add label property

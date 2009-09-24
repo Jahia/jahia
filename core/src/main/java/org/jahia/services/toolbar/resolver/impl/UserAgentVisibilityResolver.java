@@ -29,42 +29,46 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.service.toolbar;
+package org.jahia.services.toolbar.resolver.impl;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
-import org.jahia.ajax.gwt.client.data.toolbar.analytics.GWTJahiaAnalyticsParameter;
-import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
-import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
-
-import java.util.Map;
+import org.jahia.data.JahiaData;
+import org.jahia.gui.GuiBean;
+import org.jahia.services.toolbar.resolver.VisibilityResolver;
 
 /**
- * User: jahia
- * Date: 4 mars 2008
- * Time: 15:57:22
+ * Enables toolbar item based on the user agent.
+ *
+ * @author Sergiy Shyrkov
+ *
  */
-public interface ToolbarServiceAsync {
-    public void getGWTToolbars(String toolbarGroup, GWTJahiaPageContext pageContext, AsyncCallback<GWTJahiaToolbarSet> async);
+public class UserAgentVisibilityResolver implements VisibilityResolver {
 
-    public void execute(GWTJahiaPageContext pageContext, Map<String, GWTJahiaProperty> gwtPropertiesMap, AsyncCallback<GWTJahiaAjaxActionResult> async);
-
-    public void updateGWTJahiaStateInfo(GWTJahiaPageContext pageContext,GWTJahiaStateInfo gwtJahiaStateInfo, AsyncCallback<GWTJahiaStateInfo> async);
-
-    public void quickValidate(String objectKey, String lang, String action, String comment, AsyncCallback async);
-
-    public void quickAddToBatch(String objectKey, String lang, String action, AsyncCallback async);
-
-    public void publishAll(String comment, AsyncCallback async) ;
-
-    public void getGAdata(GWTJahiaAnalyticsParameter p,AsyncCallback<Map<String, String>> async);
-
-    public void getGAsiteProperties(int pid,AsyncCallback<Map<String, String>> async);
-
-    public void isTracked(AsyncCallback<Boolean> async);
-
-   
+	/* (non-Javadoc)
+	 * @see org.jahia.services.toolbar.resolver.VisibilityResolver#isVisible(org.jahia.data.JahiaData, java.lang.String)
+	 */
+	public boolean isVisible(JahiaData jData, String userAgent) {
+		boolean matches = false;
+		GuiBean gui = jData.getGui();
+		if ("ie".equals(userAgent)) {
+			matches = gui.isIE();
+		} else if ("ie4".equals(userAgent)) {
+			matches = gui.isIE4();
+		} else if ("ie5".equals(userAgent)) {
+			matches = gui.isIE5();
+		} else if ("ie6".equals(userAgent)) {
+			matches = gui.isIE6();
+		} else if ("ie7".equals(userAgent)) {
+			matches = gui.isIE7();
+		} else if ("ns".equals(userAgent)) {
+			matches = gui.isNS();
+		} else if ("ns4".equals(userAgent)) {
+			matches = gui.isNS4();
+		} else if ("ns6".equals(userAgent)) {
+			matches = gui.isNS6();
+		} else if ("opera".equals(userAgent)) {
+			matches = gui.isOpera();
+		}
+		return matches;
+	}
 
 }

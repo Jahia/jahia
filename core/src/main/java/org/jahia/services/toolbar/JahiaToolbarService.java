@@ -129,7 +129,7 @@ public class JahiaToolbarService extends JahiaService {
         ToolbarSet toolbarSet = toolbarSetMap.get(templateSetName);
         if (toolbarSet == null) {
             // get all toolbar.xml paths
-            List<String> toolbarFilePaths = getToobalDescriptorPaths(processingContext);
+            List<String> toolbarFilePaths = getToolbarDescriptorPaths(processingContext);
 
             // get ToolbarSet from XML descriptor
             ToolbarXMLParser toolbarXMLParser = getToolbarXMLParser(toolbarFilePaths);
@@ -159,7 +159,7 @@ public class JahiaToolbarService extends JahiaService {
         return toolbarXMLParser;
     }
 
-    private List<String> getToobalDescriptorPaths(ProcessingContext processingContext) {
+    private List<String> getToolbarDescriptorPaths(ProcessingContext processingContext) {
         JahiaTemplatesPackage jahiaTemplatesPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(processingContext.getSite().getTemplatePackageName());
         List<String> templateSourcePaths = jahiaTemplatesPackage.getLookupPath();
         List<String> toolbarFilePaths = new ArrayList<String>();

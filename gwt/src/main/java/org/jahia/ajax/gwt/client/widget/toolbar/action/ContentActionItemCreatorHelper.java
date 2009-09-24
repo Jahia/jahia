@@ -45,103 +45,83 @@ import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
  */
 public class ContentActionItemCreatorHelper {
     public static ContentActionItem createRotateItem(final Linker linker) {
-        ContentActionItem rotate = new RotateActionItem(linker);
-        return rotate;
+        return new RotateActionItem(linker);
     }
 
     public static ContentActionItem createCropItem(final Linker linker) {
-        ContentActionItem crop = new CropActionItem(linker);
-        return crop;
+        return new CropActionItem(linker);
     }
 
     public static ContentActionItem createUnzipItem(final Linker linker) {
-        ContentActionItem unzip = new UnzipActionItem(linker);
-        return unzip;
+        return new UnzipActionItem(linker);
     }
 
     public static ContentActionItem createUnlockItem(final Linker linker) {
-        ContentActionItem unlock = new UnlockActionItem(linker);
-        return unlock;
+        return new UnlockActionItem(linker);
     }
 
     public static ContentActionItem createWebfolderItem(final Linker linker) {
-        ContentActionItem webFolder = new WebfolderActionItem(linker);
-        return webFolder;
+        return new WebfolderActionItem(linker);
     }
 
     public static ContentActionItem createNewFolderItem(final Linker linker) {
-        ContentActionItem newFolder = new NewFolderActionItem(linker);
-        return newFolder;
+        return new NewFolderActionItem(linker);
     }
 
     public static ContentActionItem createCutItem(final Linker linker) {
-        ContentActionItem cut = new CutActionItem(linker);
-        return cut;
+        return new CutActionItem(linker);
     }
 
     public static ContentActionItem createRemoveItem(final Linker linker) {
-        ContentActionItem remove = new RemoveActionItem(linker);
-        return remove;
+        return new RemoveActionItem(linker);
     }
 
     public static ContentActionItem createPasteItem(final Linker linker) {
-        ContentActionItem paste = new PasteActionItem(linker);
-        return paste;
+        return new PasteActionItem(linker);
     }
 
     public static ContentActionItem createPasteReferenceItem(final Linker linker) {
-        ContentActionItem paste = new PasteReferenceActionItem(linker);
-        return paste;
+        return new PasteReferenceActionItem(linker);
     }
 
     public static ContentActionItem createCopyItem(final Linker linker) {
-        ContentActionItem copy = new CopyActionItem(linker);
-        return copy;
+        return new CopyActionItem(linker);
     }
 
     public static ContentActionItem createRenameItem(final Linker linker) {
-        ContentActionItem rename = new RenameActionItem(linker);
-        return rename;
+        return new RenameActionItem(linker);
     }
 
     public static ContentActionItem createResizeItem(final Linker linker) {
-        ContentActionItem resize = new ResizeActionItem(linker);
-        return resize;
+        return new ResizeActionItem(linker);
     }
 
     public static ContentActionItem createMountItem(final Linker linker) {
-        ContentActionItem mount = new MountActionItem(linker);
-        return mount;
+        return new MountActionItem(linker);
     }
 
     public static ContentActionItem createUnmountItem(final Linker linker) {
-        ContentActionItem mount = new UnmountActionItem(linker);
-        return mount;
+        return new UnmountActionItem(linker);
     }
 
     public static ContentActionItem createZipItem(final Linker linker) {
-        ContentActionItem zip = new ZipActionItem(linker);
-        return zip;
+        return new ZipActionItem(linker);
     }
 
     public static ContentActionItem createLockItem(final Linker linker) {
-        ContentActionItem lock = new LockActionItem(linker);
-        return lock;
+        return new LockActionItem(linker);
     }
 
     public static ContentActionItem createDownloadItem(final Linker linker) {
-        ContentActionItem download = new DownloadActionItem(linker);
-        return download;
+        return new DownloadActionItem(linker);
     }
 
     public static ContentActionItem createPreviewItem(final Linker linker) {
-        ContentActionItem download = new PreviewActionItem(linker);
-        return download;
+        return new PreviewActionItem(linker);
     }
 
     public static ContentActionItem createUploadItem(final Linker linker) {
-        ContentActionItem upload = new UploadActionItem(linker);
-        return upload;
+        return new UploadActionItem(linker);
     }
 
     /**
@@ -151,8 +131,7 @@ public class ContentActionItemCreatorHelper {
      * @return
      */
     public static ContentActionItem createNewMashupItem(final Linker linker) {
-        ContentActionItem newMashup = new NewMashupActionItem(linker);
-        return newMashup;
+        return new NewMashupActionItem(linker);
     }
 
     /**
@@ -162,8 +141,7 @@ public class ContentActionItemCreatorHelper {
      * @return
      */
     public static ContentActionItem createNewRSSItem(final Linker linker) {
-        ContentActionItem newMashup = new NewRssActionItem(linker);
-        return newMashup;
+        return new NewRssActionItem(linker);
     }
 
     /**
@@ -173,8 +151,7 @@ public class ContentActionItemCreatorHelper {
      * @return
      */
     public static ContentActionItem createNewGadgetItem(final Linker linker) {
-        ContentActionItem newMashup = new NewGadgetActionItem(linker);
-        return newMashup;
+        return new NewGadgetActionItem(linker);
     }
 
     /**
@@ -184,8 +161,7 @@ public class ContentActionItemCreatorHelper {
      * @return
      */
     public static ContentActionItem createNewCategoryItem(final Linker linker) {
-        ContentActionItem newCategory = new NewCategoryActionItem(linker);
-        return newCategory;
+        return new NewCategoryActionItem(linker);
     }
 
     /**
@@ -195,8 +171,7 @@ public class ContentActionItemCreatorHelper {
      * @return
      */
     public static ContentActionItem createDeployPortletDefinition(final Linker linker) {
-        ContentActionItem actionItem = new DeployPortletDefinitionActionItem(linker);
-        return actionItem;
+        return new DeployPortletDefinitionActionItem(linker);
     }
 
     /**
@@ -206,8 +181,7 @@ public class ContentActionItemCreatorHelper {
      * @return
      */
     public static ContentActionItem createNewContentItem(final Linker linker) {
-        ContentActionItem newContent = new NewContentActionItem(linker);
-        return newContent;
+        return new NewContentActionItem(linker);
     }
 
     /**
@@ -218,32 +192,35 @@ public class ContentActionItemCreatorHelper {
      */
     public static ContentActionItem createNewPageContentItem(final Linker linker) {
 
-        ContentActionItem newPageContent = new NewPageActionItem(linker);
-        return newPageContent;
+        return new NewPageActionItem(linker);
     }
 
     /**
-     * Item that  loows creating a new page
+     * Item that allows creating a new page
      *
      * @param linker
      * @return
      */
     public static ContentActionItem createNewContentListItem(final Linker linker) {
-
-        ContentActionItem newContentListItem = new NewContentListActionItem(linker);
-        return newContentListItem;
+        return new NewContentListActionItem(linker);
     }
 
     public static ContentActionItem createExportItem(final Linker linker) {
-        ContentActionItem exportItem = new ExportActionItem(linker);
-        return exportItem;
+        return new ExportActionItem(linker);
     }
 
     public static ContentActionItem createImportItem(final Linker linker) {
-        ContentActionItem importItem = new ImportActionItem(linker);
-        return importItem;
+        return new ImportActionItem(linker);
     }
 
+    public static ContentActionItem createRefreshItem(final Linker linker) {
+    	return new ContentActionItem(Messages.getResource("fm_refresh"), "fm-refresh") {
+            public void onSelection() {
+                linker.refresh();
+            }
+        };
+    }
+    
     private static class RotateActionItem extends ContentActionItem implements ManagerSelectionHandler {
         private final Linker linker;
 

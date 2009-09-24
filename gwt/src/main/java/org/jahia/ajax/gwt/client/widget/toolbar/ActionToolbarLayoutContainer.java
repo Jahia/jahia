@@ -10,10 +10,9 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionItemFactory;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.Module;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -22,39 +21,29 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
+ * Action toolbar container widget.
  * User: ktlili
  * Date: Sep 4, 2009
  * Time: 4:17:57 PM
- * To change this template use File | Settings | File Templates.
  */
 public class ActionToolbarLayoutContainer extends LayoutContainer {
     private List<ActionToolbar> actionToolbars = new ArrayList<ActionToolbar>();
-    private EditLinker editLinker;
-    private ManagerLinker managerLinker;
+    private Linker linker;
+    private String toolbarGroup;
 
-    public  ActionToolbarLayoutContainer() {
-        loadToolbars(false);
+    public  ActionToolbarLayoutContainer(String toolbarGroup) {
+    	super();
+    	this.toolbarGroup = toolbarGroup;
         setLayout(new RowLayout());
-    }
-
-    public void initWithLinker(EditLinker linker) {
-        this.editLinker = linker;
-    }
-
-    public void initWithLinker(ManagerLinker linker) {
-        this.managerLinker = linker;
     }
 
     /**
      * Load toolbar
-     *
-     * @param reset
      */
-    public void loadToolbars(final boolean reset) {
+    private void loadToolbars() {
         GWTJahiaPageContext gwtJahiaPageContext = getJahiaGWTPageContext();
         // load toolbars
-        ToolbarService.App.getInstance().getGWTToolbars(gwtJahiaPageContext, reset, new AsyncCallback<GWTJahiaToolbarSet>() {
+        ToolbarService.App.getInstance().getGWTToolbars(toolbarGroup, gwtJahiaPageContext, new AsyncCallback<GWTJahiaToolbarSet>() {
             public void onSuccess(GWTJahiaToolbarSet gwtJahiaToolbarSet) {
                 long begin = System.currentTimeMillis();
                 if (gwtJahiaToolbarSet != null) {
@@ -104,7 +93,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
      * @param gwtToolbar
      */
     public void addActionToolbar(GWTJahiaToolbar gwtToolbar) {
-        ActionToolbar actionToolbar = new ActionToolbar(gwtToolbar, new ActionItemFactory(editLinker, managerLinker));
+        ActionToolbar actionToolbar = new ActionToolbar(gwtToolbar, new ActionItemFactory(linker));
         if (gwtToolbar.getState().isDisplay()) {
             actionToolbar.createToolBar();
             add(actionToolbar);
@@ -126,31 +115,6 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
         page.setPid(JahiaGWTParameters.getPID());
         page.setMode(JahiaGWTParameters.getOperationMode());
         return page;
-    }
-
-    /**
-     * Get edit linker
-     *
-     * @return
-     */
-    public EditLinker getEditLinker() {
-        return editLinker;
-    }
-
-    /**
-     * Set edit linker
-     *
-     * @param editLinker
-     */
-    public void setEditLinker(EditLinker editLinker) {
-        this.editLinker = editLinker;
-    }
-
-    /**
-     * Refresh
-     */
-    public void refresh() {
-        handleNewModuleSelection(editLinker.getSelectedModule());
     }
 
     /**
@@ -204,5 +168,11 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
 
     }
 
+    public void initWithLinker(Linker linker) {
+        this.linker = linker;
+    }
 
+    public void init() {
+        loadToolbars();
+    }
 }

@@ -7,11 +7,10 @@ import com.extjs.gxt.ui.client.Style;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
 /**
- * Created by IntelliJ IDEA.
+ * Edit mode manager widget.
  * User: toto
  * Date: Aug 18, 2009
  * Time: 5:55:47 PM
- * To change this template use File | Settings | File Templates.
  */
 public class EditManager extends ContentPanel {
 
@@ -30,7 +29,8 @@ public class EditManager extends ContentPanel {
         sidePanel = new SidePanel();
         add(sidePanel, data);
 
-        toolbar =  new ActionToolbarLayoutContainer();
+        toolbar =  new ActionToolbarLayoutContainer("editmode");
+        toolbar.init();
         setTopComponent(toolbar);
 
         setScrollMode(Style.Scroll.AUTO);

@@ -35,11 +35,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Sep 4, 2009
  * Time: 4:14:11 PM
- * To change this template use File | Settings | File Templates.
  */
 public class EditActions {
 
@@ -68,7 +66,7 @@ public class EditActions {
     /**
      * Dispay edit content window
      *
-     * @param editLinker
+     * @param linker
      */
     public static void edit(Linker linker) {
         if (linker.getMainNode() != null) {
@@ -172,7 +170,7 @@ public class EditActions {
 
     private static Map<LayoutContainer, Module> containers = new HashMap<LayoutContainer, Module>();
 
-    public static void viewPublishedStatus(final EditLinker editLinker) {
+    public static void viewPublishedStatus(final Linker linker) {
         if (!containers.isEmpty()) {
             for (LayoutContainer ctn : containers.keySet()) {
                 RootPanel.get().remove(ctn);
@@ -230,7 +228,7 @@ public class EditActions {
                     ctn.addListener(Events.OnClick, removeListener);
                 }
             }
-            editLinker.getMainModule().addScrollListener(new ScrollListener() {
+            ((EditLinker)linker).getMainModule().addScrollListener(new ScrollListener() {
                 @Override
                 public void widgetScrolled(ComponentEvent ce) {
                     for (LayoutContainer container : containers.keySet()) {

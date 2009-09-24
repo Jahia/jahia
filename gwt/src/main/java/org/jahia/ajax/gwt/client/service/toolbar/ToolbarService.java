@@ -40,12 +40,10 @@ import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
 import org.jahia.ajax.gwt.client.data.toolbar.analytics.GWTJahiaAnalyticsParameter;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,18 +73,12 @@ public interface ToolbarService extends RemoteService {
 
     }
 
-    public GWTJahiaToolbarSet getGWTToolbars(GWTJahiaPageContext page,boolean reset) throws GWTJahiaServiceException;
-
-    public void updateToolbars(GWTJahiaPageContext page, List<GWTJahiaToolbar> toolbarList) throws GWTJahiaServiceException;
-
-    public void updateToolbar(GWTJahiaPageContext pageContext, GWTJahiaToolbar gwtToolbar)  throws GWTJahiaServiceException;
+    public GWTJahiaToolbarSet getGWTToolbars(String toolbarGroup, GWTJahiaPageContext page) throws GWTJahiaServiceException;
 
     public GWTJahiaAjaxActionResult execute(GWTJahiaPageContext page, Map<String, GWTJahiaProperty> gwtPropertiesMap)throws GWTJahiaServiceException;
 
     public GWTJahiaStateInfo updateGWTJahiaStateInfo(GWTJahiaPageContext pageContext,GWTJahiaStateInfo gwtJahiaStateInfo)throws GWTJahiaServiceException;
     
-    public GWTJahiaToolbar loadGWTToolbar(GWTJahiaPageContext pageContext, GWTJahiaToolbar gwtToolbar);
-
     public void quickValidate(String objectKey, String lang, String action, String comment) throws GWTJahiaServiceException;
 
     public void quickAddToBatch(String objectKey, String lang, String action) throws GWTJahiaServiceException;

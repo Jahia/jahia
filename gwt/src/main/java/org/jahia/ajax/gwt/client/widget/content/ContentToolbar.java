@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 import org.jahia.ajax.gwt.client.widget.language.LanguageSwitcher;
 import org.jahia.ajax.gwt.client.widget.language.LanguageSelectedListener;
@@ -65,7 +66,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * The action toolbar container.
  *
  * @author rfelden
  * @version 7 juil. 2008 - 14:17:12
@@ -76,20 +77,19 @@ public class ContentToolbar extends TopBar {
 
     private ManagerConfiguration configuration ;
 
-    public ContentToolbar(ManagerConfiguration config) {
+    public ContentToolbar(ManagerConfiguration config, ManagerLinker linker) {
         configuration = config ;
+        initWithLinker(linker);
         m_component = new LayoutContainer(new RowLayout());
         createUi();
+//        createDynamicUi();
     }
 
     private void createDynamicUi() {
-      m_component = new ActionToolbarLayoutContainer(){
-            @Override
-            public void afterToolbarLoading() {
-               createUi();
-            }
-        };
-        ((ActionToolbarLayoutContainer)m_component).initWithLinker(getLinker());
+    	ActionToolbarLayoutContainer toolbarContainer = new ActionToolbarLayoutContainer(configuration.getToolbarGroup());
+    	toolbarContainer.initWithLinker(getLinker());
+    	toolbarContainer.init();
+    	m_component = toolbarContainer;
     }
 
     private void createUi() {

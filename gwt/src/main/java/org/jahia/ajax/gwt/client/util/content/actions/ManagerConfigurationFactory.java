@@ -93,6 +93,8 @@ public class ManagerConfigurationFactory {
         ManagerConfiguration completeManagerConfig = new ManagerConfiguration();
         completeManagerConfig.setEnableTextMenu(true);
         
+        completeManagerConfig.setToolbarGroup("content-manager");
+        
         ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
         ContentActionItem newFolder = ContentActionItemCreatorHelper.createNewFolderItem(linker);
         file.addItem(newFolder);
@@ -201,6 +203,8 @@ public class ManagerConfigurationFactory {
         fileManagerConfig.setEnableTextMenu(true);
         fileManagerConfig.setDisplayProvider(true);
         
+        fileManagerConfig.setToolbarGroup("document-manager");
+        
         fileManagerConfig.addColumn("providerKey");
         fileManagerConfig.addColumn("ext");
         fileManagerConfig.addColumn("locked");
@@ -303,6 +307,8 @@ public class ManagerConfigurationFactory {
         ManagerConfiguration filePickerConfig = new ManagerConfiguration();
         filePickerConfig.setEnableTextMenu(false);
 
+        filePickerConfig.setToolbarGroup("file-picker");
+        
         ContentActionItemGroup file = new ContentActionItemGroup(Messages.getResource("fm_fileMenu"));
         ContentActionItem newFolder = ContentActionItemCreatorHelper.createNewFolderItem(linker);
         filePickerConfig.addItem(newFolder);
@@ -373,6 +379,8 @@ public class ManagerConfigurationFactory {
         mashupManagerConfig.setEnableFileDoubleClick(false);
         mashupManagerConfig.setDisplayExt(false);
         mashupManagerConfig.setDisplaySize(false);
+        
+        mashupManagerConfig.setToolbarGroup("mashup-manager");
         
         mashupManagerConfig.addColumn("locked");
         mashupManagerConfig.addColumn("name");
@@ -447,6 +455,8 @@ public class ManagerConfigurationFactory {
         mashupPickerConfig.setDisplayExt(false);
         mashupPickerConfig.setDisplaySize(false);
 
+        mashupPickerConfig.setToolbarGroup("mashup-picker");
+        
         // only one column here : name
         mashupPickerConfig.addColumn("name");
 
@@ -511,6 +521,8 @@ public class ManagerConfigurationFactory {
         categoryManagerConfig.setDisplaySize(false);
         categoryManagerConfig.setDisplayDate(false);
         
+        categoryManagerConfig.setToolbarGroup("category-manager");
+        
         categoryManagerConfig.addColumn("locked");
         categoryManagerConfig.addColumn("name");
         categoryManagerConfig.addColumn("path");
@@ -569,6 +581,8 @@ public class ManagerConfigurationFactory {
         categoryPickerConfig.setDisplayExt(false);
         categoryPickerConfig.setDisplaySize(false);
 
+        categoryPickerConfig.setToolbarGroup("category-picker");
+        
         // only one column here : name
         categoryPickerConfig.addColumn("name");
 
@@ -629,6 +643,8 @@ public class ManagerConfigurationFactory {
         portletDefinitionManagerConf.setDisplayExt(false);
         portletDefinitionManagerConf.setDisplaySize(false);
 
+        portletDefinitionManagerConf.setToolbarGroup("portlet-definition-manager");
+        
         // only one column here : name
         portletDefinitionManagerConf.addColumn("name");
 
@@ -670,6 +686,8 @@ public class ManagerConfigurationFactory {
         cfg.setEnableTextMenu(true);
         cfg.setDisplaySize(false);
         cfg.setDisplayDate(false);
+        
+        cfg.setToolbarGroup("site-manager");
         
         cfg.addColumn("ext");
         cfg.addColumn("locked");

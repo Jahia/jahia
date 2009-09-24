@@ -79,7 +79,7 @@ public class ContentManager extends TriPanelBrowserViewport {
 
         final ContentViews filesViews = new ContentViews(config);
         BottomRightComponent tabs = new ContentDetails(config);
-        TopBar toolbar = new ContentToolbar(config) {
+        TopBar toolbar = new ContentToolbar(config, linker) {
             protected void setListView() {
                 filesViews.switchToListView();
             }

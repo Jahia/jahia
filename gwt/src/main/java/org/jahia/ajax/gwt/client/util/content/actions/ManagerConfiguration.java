@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.client.util.content.actions;
 
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -40,7 +41,7 @@ import java.util.ArrayList;
  * User: rfelden
  * Date: 7 janv. 2009 - 11:24:10
  */
-public class ManagerConfiguration {
+public class ManagerConfiguration implements Serializable {
 
     private List<ActionItemItf> items;
     private List<ContentActionItemGroup> groupedItems;
@@ -67,7 +68,9 @@ public class ManagerConfiguration {
     private boolean displayDate = true;
     private boolean displayProvider = false;
     
-    private boolean allowCollections = true;
+    private String toolbarGroup; 
+    
+	private boolean allowCollections = true;
 
     public ManagerConfiguration() {
         items = new ArrayList<ActionItemItf>();
@@ -240,4 +243,13 @@ public class ManagerConfiguration {
 	public void setAllowCollections(boolean allowConnections) {
     	this.allowCollections = allowConnections;
     }
+	
+    public String getToolbarGroup() {
+    	return toolbarGroup;
+    }
+
+	public void setToolbarGroup(String toolbarGroup) {
+    	this.toolbarGroup = toolbarGroup;
+    }
+
 }

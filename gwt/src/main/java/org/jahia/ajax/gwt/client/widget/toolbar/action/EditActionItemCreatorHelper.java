@@ -3,7 +3,6 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.Module;
 import org.jahia.ajax.gwt.client.widget.toolbar.handler.ModuleSelectionHandler; /**
@@ -87,7 +86,7 @@ public class EditActionItemCreatorHelper {
      * @param linker
      * @return
      */
-    public static ActionItemItf createEditViewPublishStatusActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final EditLinker linker) {
+    public static ActionItemItf createEditViewPublishStatusActionItem(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         ActionItemItf actionItem = new ViewPublishStatusActionItem(gwtToolbarItem, linker);
         return actionItem;
     }
@@ -196,9 +195,9 @@ public class EditActionItemCreatorHelper {
     }
 
     private static class ViewPublishStatusActionItem extends BaseActionItem implements ModuleSelectionHandler {
-        private final EditLinker linker;
+        private final Linker linker;
 
-        public ViewPublishStatusActionItem(GWTJahiaToolbarItem gwtToolbarItem, EditLinker linker) {
+        public ViewPublishStatusActionItem(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
             super(gwtToolbarItem);
             this.linker = linker;
         }

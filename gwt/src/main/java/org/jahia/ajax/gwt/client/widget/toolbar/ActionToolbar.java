@@ -192,7 +192,7 @@ public class ActionToolbar extends ToolBar {
      * @return
      */
     protected boolean isSeparator(GWTJahiaToolbarItem gwtToolbarItem) {
-        return gwtToolbarItem.getType() != null && gwtToolbarItem.getType().equalsIgnoreCase(ActionItemFactory.ORG_JAHIA_TOOLBAR_ITEM_SEPARATOR);
+        return gwtToolbarItem.getType() != null && gwtToolbarItem.getType().equalsIgnoreCase(ActionItemFactory.SEPARATOR);
     }
 
     /**

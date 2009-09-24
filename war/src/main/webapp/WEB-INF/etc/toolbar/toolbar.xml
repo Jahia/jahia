@@ -1,6 +1,10 @@
 <toolbars id="org.jahia.toolbars.default">
     <display>
         <toolbar name="editmode" ref-type="org.jahia.toolbar.editmode" state="top" displayed="true" mandatory="true" display-title="true"/>
+        <!-- 
+        <toolbar name="document-manager" ref-type="org.jahia.toolbar.manager.documents.menu" state="top" displayed="true" mandatory="true" display-title="true"/>
+        <toolbar name="document-manager" ref-type="org.jahia.toolbar.manager.documents.shortcuts" state="top" displayed="true" mandatory="true" display-title="true"/>
+         -->
 
         <!--<toolbar name="workflow" ref-type="org.jahia.toolbar.workflow" state="top" draggable="true" displayed="false"
                  mandatory="false" display-title="true"/>
@@ -107,6 +111,21 @@
         <toolbar type="org.jahia.toolbar.subscriptions">
             <title-resourcebundle-key key="toolbar.subscriptions.toolbar.title"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.Subscriptions"/>
+        </toolbar>
+        
+        <toolbar type="org.jahia.toolbar.manager.documents.menu">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.file"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.edit"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.remote"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.image"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.view"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+        </toolbar>
+        <toolbar type="org.jahia.toolbar.manager.documents.shortcuts">
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.file.new"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.file.modify"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.copy"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.refresh"/>
         </toolbar>
     </custom-toolbar>
     <!-- defines itemsgroup-->
@@ -395,8 +414,73 @@
             <item ref-type="org.jahia.toolbar.item.Admin"/>
         </itemsgroup>
 
-
+		<!-- Content Manager item group -->
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.file" layout="menu">
+        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createFolder"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.upload"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.download"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.preview"/>
+            <item ref-type="org.jahia.toolbar.item.Separator"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.lock"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.unlock"/>
+            <item ref-type="org.jahia.toolbar.item.Separator"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.zip"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.unzip"/>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.edit" layout="menu">
+        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.editMenu.label"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.rename"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.delete"/>
+            <item ref-type="org.jahia.toolbar.item.Separator"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.copy"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.cut"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.paste"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.pasteReference"/>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.remote" layout="menu">
+        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.remoteMenu.label"/>
+        	<item ref-type="org.jahia.toolbar.item.ContentAction.mount"/>
+        	<item ref-type="org.jahia.toolbar.item.ContentAction.unmount"/>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.image" layout="menu">
+        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.imageMenu.label"/>
+        	<item ref-type="org.jahia.toolbar.item.ContentAction.crop"/>
+        	<item ref-type="org.jahia.toolbar.item.ContentAction.resize"/>
+        	<item ref-type="org.jahia.toolbar.item.ContentAction.rotate"/>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.menu.view" layout="menu">
+        	<title-resourcebundle-key key="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+        	<item ref-type="org.jahia.toolbar.item.ContentAction.refresh"/>
+            <item ref-type="org.jahia.toolbar.item.Separator"/>
+        </itemsgroup>
+        
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.file.new" layout="button">
+            <item ref-type="org.jahia.toolbar.item.ContentAction.createFolder"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.upload"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.download"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.preview"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.webfolder">
+	            <visibility>
+	                <value-resolver class="org.jahia.services.toolbar.resolver.impl.UserAgentVisibilityResolver" input="ie"/>
+	            </visibility>
+            </item>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.file.modify" layout="button">
+            <item ref-type="org.jahia.toolbar.item.ContentAction.rename"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.delete"/>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.copy" layout="button">
+            <item ref-type="org.jahia.toolbar.item.ContentAction.copy"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.cut"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.paste"/>
+            <item ref-type="org.jahia.toolbar.item.ContentAction.pasteReference"/>
+        </itemsgroup>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.refresh" layout="button">
+            <item ref-type="org.jahia.toolbar.item.ContentAction.refresh"/>
+        </itemsgroup>
     </custom-itemsgroup>
+    
     <!-- defines items-->
     <custom-item>
         <!-- base item: open window, redirect, display info, ajax action, separator-->
@@ -1026,18 +1110,72 @@
             <property name="editSelectionHandler" value="status"/>
         </item>
 
-
-        <!-- new content  buttons  -->
+        <!-- new content action buttons  -->
         <item type="org.jahia.toolbar.item.ContentAction.copy">
-            <title-resourcebundle-key key="toolbar.edit.button.contentAction.copy"/>
-            <description-resourcebundle-key key="contentAction.copy"/>
+            <title-resourcebundle-key key="toolbar.manager.button.copy"/>
         </item>
-
+        <item type="org.jahia.toolbar.item.ContentAction.createFolder">
+            <title-resourcebundle-key key="toolbar.manager.button.createFolder"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.crop">
+            <title-resourcebundle-key key="toolbar.manager.button.crop"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.cut">
+            <title-resourcebundle-key key="toolbar.manager.button.cut"/>
+        </item>
         <item type="org.jahia.toolbar.item.ContentAction.delete">
             <title-resourcebundle-key key="toolbar.edit.button.contentAction.delete"/>
-            <description-resourcebundle-key key="contentAction.delete"/>
+            <description-resourcebundle-key key="toolbar.manager.button.delete"/>
         </item>
-
+        <item type="org.jahia.toolbar.item.ContentAction.download">
+            <title-resourcebundle-key key="toolbar.manager.button.download"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.lock">
+            <title-resourcebundle-key key="toolbar.manager.button.lock"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.mount">
+            <title-resourcebundle-key key="toolbar.manager.button.mount"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.paste">
+            <title-resourcebundle-key key="toolbar.manager.button.paste"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.pasteReference">
+            <title-resourcebundle-key key="toolbar.manager.button.pasteReference"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.preview">
+            <title-resourcebundle-key key="toolbar.manager.button.preview"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.refresh">
+            <title-resourcebundle-key key="toolbar.manager.button.refresh"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.rename">
+            <title-resourcebundle-key key="toolbar.manager.button.rename"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.resize">
+            <title-resourcebundle-key key="toolbar.manager.button.resize"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.rotate">
+            <title-resourcebundle-key key="toolbar.manager.button.rotate"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.unlock">
+            <title-resourcebundle-key key="toolbar.manager.button.unlock"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.unmount">
+            <title-resourcebundle-key key="toolbar.manager.button.unmount"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.upload">
+            <title-resourcebundle-key key="toolbar.manager.button.upload"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.unzip">
+            <title-resourcebundle-key key="toolbar.manager.button.unzip"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.webfolder">
+            <title-resourcebundle-key key="toolbar.manager.button.webfolder"/>
+        </item>
+        <item type="org.jahia.toolbar.item.ContentAction.zip">
+            <title-resourcebundle-key key="toolbar.manager.button.zip"/>
+        </item>
+        <!-- end of new content action buttons -->
 
     </custom-item>
 </toolbars>

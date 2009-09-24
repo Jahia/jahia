@@ -108,7 +108,7 @@ public class RequestDispatcherScript implements Script {
         String templatePath;
 
         for (String template : resource.getTemplates()) {
-            List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(nt.getName());            
+            List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(nt.getName().replace(":","_"));            
             for (JahiaTemplatesPackage aPackage : packages) {
                 String currentTemplatePath = aPackage.getRootFolderPath();
                 templatePath = getTemplatePath(resource.getTemplateType(), template, nt, currentTemplatePath);
@@ -124,7 +124,7 @@ public class RequestDispatcherScript implements Script {
             List<ExtendedNodeType> nodeTypeList = Arrays.asList(nt.getSupertypes());
             Collections.reverse(nodeTypeList);
             for (ExtendedNodeType st : nodeTypeList) {
-                packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(st.getName());
+                packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(st.getName().replace(":","_"));
                 for (JahiaTemplatesPackage aPackage : packages) {
                     String currentTemplatePath = aPackage.getRootFolderPath();
                     templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath);
@@ -144,7 +144,7 @@ public class RequestDispatcherScript implements Script {
     }
 
     private String getTemplatePath(String templateType, String template, ExtendedNodeType nt, String currentTemplatePath) {
-        String modulePath = currentTemplatePath + "/modules/" + nt.getAlias().replace(':','/') + "/" + templateType +   "/" + template.replace('.','/') + ".jsp";
+            String modulePath = currentTemplatePath + "/" + nt.getAlias().replace(':','_') + "/" + templateType +   "/" + template.replace('.','/') + ".jsp";
         try {
             if (Jahia.getStaticServletConfig().getServletContext().getResource(modulePath) != null) {
                 return modulePath;

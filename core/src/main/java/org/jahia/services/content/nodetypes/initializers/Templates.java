@@ -80,7 +80,7 @@ public class Templates implements ValueInitializer {
         Collections.reverse(nodeTypeList);
 
         for (ExtendedNodeType type : nodeTypeList) {
-            List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(type.getName());
+            List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(type.getName().replace(":","_"));
             for (JahiaTemplatesPackage aPackage : packages) {
                 getTemplatesSet(type, templates, templateType, aPackage.getRootFolder(), aPackage);
             }

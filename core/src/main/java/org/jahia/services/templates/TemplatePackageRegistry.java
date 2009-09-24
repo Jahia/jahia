@@ -255,19 +255,15 @@ class TemplatePackageRegistry {
             }
         }
 
-        File[] files = new File(rootFolder,"modules").listFiles();
+        File[] files = rootFolder.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
                 File[] subFiles = file.listFiles();
-                for (File subFile : subFiles) {
-                    if (subFile.isDirectory()) {
-                        String key = file.getName() + ":" + subFile.getName();
-                        if (!packagesPerModule.containsKey(key)) {
-                            packagesPerModule.put(key, new ArrayList<JahiaTemplatesPackage>());
-                        }
-                        packagesPerModule.get(key).add(templatePackage);
-                    }
+                String key = file.getName();
+                if (!packagesPerModule.containsKey(key)) {
+                    packagesPerModule.put(key, new ArrayList<JahiaTemplatesPackage>());
                 }
+                packagesPerModule.get(key).add(templatePackage);
             }
         }
     }

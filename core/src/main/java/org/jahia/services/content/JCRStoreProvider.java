@@ -110,14 +110,7 @@ public class JCRStoreProvider {
     private JahiaSitesService sitesService;
 
     private JCRStoreService service;
-
-    public JCRSessionFactory getSessionFactory() {
-        return sessionFactory;
-    }
-
-    public void setSessionFactory(JCRSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+    private JCRPublicationService publicationService;
 
     private JCRSessionFactory sessionFactory;
     protected Repository repo = null;
@@ -277,6 +270,22 @@ public class JCRStoreProvider {
 
     public void setService(JCRStoreService service) {
         this.service = service;
+    }
+
+    public JCRSessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public JCRPublicationService getPublicationService() {
+        return publicationService;
+    }
+
+    public void setPublicationService(JCRPublicationService publicationService) {
+        this.publicationService = publicationService;
     }
 
     public void start() throws JahiaInitializationException {
@@ -607,7 +616,7 @@ public class JCRStoreProvider {
 //                            }
 
                             session.save();
-                            service.publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, user, false, true);
+                            publicationService.publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, user, false, true);
                         }
                     }
                 } catch (IOException e) {
@@ -657,7 +666,7 @@ public class JCRStoreProvider {
                                         JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
                                     }
                                     session.save();
-                                    service.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, Jahia.getThreadParamBean().getUser(), true, true);
+                                    publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, Jahia.getThreadParamBean().getUser(), true, true);
                                 } catch (RepositoryException e1) {
                                     logger.error("Cannot save", e1);
                                 }

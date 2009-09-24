@@ -32,7 +32,7 @@
  package org.jahia.services.importexport;
 
 import org.apache.log4j.Logger;
-import org.jahia.content.ObjectKey;
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.model.JahiaAclEntry;
 import org.jahia.params.ProcessingContext;
@@ -42,20 +42,17 @@ import org.jahia.services.acl.JahiaACLException;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
+import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.pages.ContentPage;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.api.Constants;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.*;
-
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -238,7 +235,7 @@ public class CategoriesImportHandler extends DefaultHandler {
     @Override
     public void endDocument() throws SAXException {
         try {
-            ServicesRegistry.getInstance().getJCRStoreService().publish("/content/categories", Constants.EDIT_WORKSPACE,  Constants.LIVE_WORKSPACE, null, ctx.getUser(), true, true);
+            ServicesRegistry.getInstance().getJCRPublicationService().publish("/content/categories", Constants.EDIT_WORKSPACE,  Constants.LIVE_WORKSPACE, null, ctx.getUser(), true, true);
         } catch (RepositoryException e) {
             logger.error("Cannot puiblish categories ",e);
         }

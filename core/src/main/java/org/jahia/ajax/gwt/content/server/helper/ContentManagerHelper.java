@@ -110,6 +110,7 @@ public class ContentManagerHelper {
 
     private static JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
     private static JCRSessionFactory sessionFactory = jcr.getSessionFactory();
+    private static JCRPublicationService publicationService = JCRPublicationService.getInstance();
     private static Logger logger = Logger.getLogger(ContentManagerHelper.class);
     private static final int UPLOAD_NEW_VERSION = 3;
     private static final int UPLOAD_AUTO_RENAME = 1;
@@ -2566,7 +2567,7 @@ public class ContentManagerHelper {
      */
     public static void publish(String path, Set<String> languages, JahiaUser user, boolean publishParent) throws GWTJahiaServiceException {
         try {
-            jcr.publish(path, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, user, publishParent, false);
+            publicationService.publish(path, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, user, publishParent, false);
         } catch (RepositoryException e) {
             logger.error("repository exception",e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -2582,7 +2583,7 @@ public class ContentManagerHelper {
      */
     public static GWTJahiaPublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences,JahiaUser user) throws GWTJahiaServiceException {
         try {
-            PublicationInfo pubInfo = jcr.getPublicationInfo(path,  user, languages, includesReferences);
+            PublicationInfo pubInfo = publicationService.getPublicationInfo(path,  user, languages, includesReferences);
             return convert(path, pubInfo);
         } catch (RepositoryException e) {
             logger.error("repository exception",e);
@@ -2614,7 +2615,7 @@ public class ContentManagerHelper {
      */
     public static void unpublish(String path, Set<String> languages, JahiaUser user) throws GWTJahiaServiceException {
         try {
-            jcr.unpublish(path, languages, user);
+            publicationService.unpublish(path, languages, user);
         } catch (RepositoryException e) {
             logger.error("repository exception",e);
             throw new GWTJahiaServiceException(e.getMessage());

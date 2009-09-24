@@ -65,7 +65,7 @@ import java.util.*;
 public class JCRUserManagerProvider extends JahiaUserManagerProvider {
     private transient static Logger logger = Logger.getLogger(JCRUserManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
-    private transient JCRStoreService storeService;
+    private transient JCRPublicationService publicationService;
     private static JCRUserManagerProvider mUserManagerService;
     private transient CacheService cacheService;
     private transient Cache cache;
@@ -95,8 +95,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
         this.jcrTemplate = jcrTemplate;
     }
 
-    public void setStoreService(JCRStoreService storeService) {
-        this.storeService = storeService;
+    public void setPublicationService(JCRPublicationService publicationService) {
+        this.publicationService = publicationService;
     }
 
     public void setCacheService(CacheService cacheService) {
@@ -153,7 +153,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                         userNode.setProperty(key, (String) entry.getValue());
                     }
                     jcrSessionWrapper.save();
-                    storeService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                    publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                                          Jahia.getThreadParamBean().getUser(), true, true);
                     return new JCRUser(userNode.getIdentifier(), jcrTemplate.getSessionFactory());
                 }

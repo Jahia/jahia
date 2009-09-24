@@ -47,6 +47,7 @@ import org.jahia.services.categories.CategoryService;
 import org.jahia.services.cluster.ClusterService;
 import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.events.JahiaEventGeneratorService;
 import org.jahia.services.fetchers.JahiaFetcherService;
@@ -202,6 +203,8 @@ public class ServicesRegistry {
     private static final String SCHEDULER_SERVICE = "SchedulerService";
 
     private static final String JCRSTORE_SERVICE = "JCRStoreService";
+
+    private static final String JCRPUBLICATION_SERVICE = "jcrPublicationService";
 
     private static final String IMPORTEXPORT_SERVICE = "ImportExportService";
 
@@ -487,6 +490,10 @@ public class ServicesRegistry {
 
     public JCRStoreService getJCRStoreService() {
         return (JCRStoreService) getService(JCRSTORE_SERVICE);
+    }
+
+    public JCRPublicationService getJCRPublicationService() {
+        return (JCRPublicationService) getService(JCRPUBLICATION_SERVICE);
     }
 
     // BEGIN [added by Pascal Aubry for CAS authentication]

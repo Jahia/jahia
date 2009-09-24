@@ -26,6 +26,7 @@
         <property name="webdavPath" value="${jahia.deploy.war.contextPath}/repository/default"/>
         <property name="rmibind" value="jackrabbit"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
+        <property name="publicationService" ref="jcrPublicationService"/>
         <property name="listeners">
             <map>
                 <entry key="default">
@@ -60,6 +61,7 @@
         <property name="rmibind" value="jahia"/>
         <property name="processingContextFactory" ref="org.jahia.params.ProcessingContextFactory"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
+        <property name="publicationService" ref="jcrPublicationService"/>
         <property name="listeners">
             <map>
                 <entry key="default">
@@ -140,6 +142,10 @@
             </map>
         </property>
         <property name="servletContextAttributeName" value="jcrStoreService"/>
+    </bean>
+
+    <bean id="jcrPublicationService" class="org.jahia.services.content.JCRPublicationService" factory-method="getInstance">
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
 
 </beans>

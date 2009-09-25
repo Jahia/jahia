@@ -12,7 +12,7 @@
 <c:forEach var="child" items="${currentNode.nodes}">
     <li>
         <c:if test="${jcr:isNodeType(child, 'jnt:group')}" var="isGroup">
-            <%@ include file="groups.jspf" %>
+            <%@ include file="folder.groups.jspf" %>
         </c:if>
         <c:if test="${!isGroup}">
             <a href="${baseUrl}${child.path}.html">${child.name}</a>            

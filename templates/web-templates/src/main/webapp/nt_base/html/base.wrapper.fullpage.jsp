@@ -33,13 +33,13 @@
 --%>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
-<%@ include file="../../../common/declarations.jspf" %>
+<%@ include file="../../common/declarations.jspf" %>
 <c:set var="useGWT" value="${!empty param.useGWT}"/>
 <template:module node="${currentNode}" forcedTemplate="${currentResource.resolvedTemplate}" var="content" templateWrapper="bodywrapper"/>
 <template:template gwtForGuest="${useGWT}">
     <template:templateHead>
         <!-- All headers and declarations global meta and css-->
-        <%@ include file="../../../common/head.jspf" %>
+        <%@ include file="../../common/head.jspf" %>
         <utility:applicationResources/>
         <c:if test="${ !empty param.rssFeed }">
             <link rel="alternate" type="application/rss+xml" title="web templates : news"

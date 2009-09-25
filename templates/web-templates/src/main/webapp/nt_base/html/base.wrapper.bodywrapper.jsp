@@ -33,7 +33,7 @@
 --%>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
-<%@ include file="../../../common/declarations.jspf" %>
+<%@ include file="../../common/declarations.jspf" %>
 <div id="bodywrapper">
     <jcr:node var="rootPage" path="/content/sites/${renderContext.site.siteKey}/home" />
     <div id="contentArea">
@@ -61,7 +61,7 @@
                             <a href="${url.edit}"><fmt:message key="edit"/></a>
                         </li>
                     </c:if>
-                    <li class="topshortcuts-print"><a href="#" onclick="javascript:window.print()">
+                    <li class="topshortcuts-print"><a href="base.wrapper.bodywrapper.jsp#" onclick="javascript:window.print()">
                         <fmt:message key="web_templates.print"/></a>
                     </li>
                     <li class="topshortcuts-typoincrease">

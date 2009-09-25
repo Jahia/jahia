@@ -33,6 +33,7 @@ package org.jahia.services.render;
 
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.apache.log4j.Logger;
 
 import javax.jcr.RepositoryException;
@@ -125,7 +126,7 @@ public class Resource {
         if (template != null && template.length() > 0) {
             l.add(template);
         }
-        l.add("default");
+        l.add("");
         return l;
     }
 

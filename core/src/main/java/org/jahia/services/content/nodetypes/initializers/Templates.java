@@ -90,7 +90,7 @@ public class Templates implements ValueInitializer {
     }
 
     private static void getTemplatesSet(ExtendedNodeType nt, Map<String,Template> templates, String templateType, String currentTemplatePath, JahiaTemplatesPackage tplPackage) {
-        String path = currentTemplatePath + "/modules/" + nt.getAlias().replace(':', '/') + "/"+ templateType;
+        String path = currentTemplatePath + "/" + nt.getAlias().replace(':','_') + "/" + templateType;
 
         File f = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath()+ "/"+ path);
         if (f.exists()) {

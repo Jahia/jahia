@@ -64,7 +64,6 @@ public class ExtendedNodeType implements NodeType {
     private Map<String, ExtendedPropertyDefinition> properties = new ListOrderedMap();
     private Map<String, ExtendedNodeDefinition> unstructuredNodes = new ListOrderedMap();
     private Map<Integer, ExtendedPropertyDefinition> unstructuredProperties = new ListOrderedMap();
-
     private Name name;
     private String alias;
     private boolean isAbstract;
@@ -76,6 +75,8 @@ public class ExtendedNodeType implements NodeType {
     private List<ExtendedNodeType> declaredSubtypes = new ArrayList<ExtendedNodeType>();
     private String validator;
     private boolean queryable = true;
+    private String localName;
+    private String prefix;
 
     public ExtendedNodeType(NodeTypeRegistry registry, String systemId) {
         this.registry = registry;
@@ -609,6 +610,16 @@ public class ExtendedNodeType implements NodeType {
 
     public NodeTypeDefinition getNodeTypeDefinition() {
         return new Definition();
+    }
+
+    public String getLocalName() {
+        localName = this.name.getLocalName();
+        return localName;
+    }
+
+    public String getPrefix() {
+        prefix = this.name.getPrefix();
+        return prefix;
     }
 
     class Definition implements NodeTypeDefinition {

@@ -144,9 +144,10 @@ public class RequestDispatcherScript implements Script {
     }
 
     private String getTemplatePath(String templateType, String template, ExtendedNodeType nt, String currentTemplatePath) {
-            String modulePath = currentTemplatePath + "/" + nt.getAlias().replace(':','_') + "/" + templateType +   "/" + template.replace('.','/') + ".jsp";
+        String templatePath = nt.getLocalName() + ( template.equals("")?"":".") + template + ".jsp";
+        String modulePath = currentTemplatePath + "/" + nt.getAlias().replace(':','_') + "/" + templateType +   "/" + templatePath;
         try {
-            if (Jahia.getStaticServletConfig().getServletContext().getResource(modulePath) != null) {
+                if (Jahia.getStaticServletConfig().getServletContext().getResource(modulePath) != null) {
                 return modulePath;
             }
         } catch (MalformedURLException e) {

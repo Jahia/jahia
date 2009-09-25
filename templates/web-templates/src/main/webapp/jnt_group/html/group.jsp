@@ -1,6 +1,5 @@
 <%@page import="org.jahia.registries.ServicesRegistry"%>
 <%@page import="org.jahia.services.usermanager.JahiaUser"%>
-<%@ page import="org.jahia.services.content.JCRSessionFactory" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
@@ -41,7 +40,7 @@
                     <jcr:nodeProperty node="${subchild}" name="j:member" var="memberRef"/>
                     <c:set var="uuid" value="${memberRef.string}"/> 
                     <%
-                    pageContext.setAttribute("member", JCRSessionFactory.getInstance().getThreadSession((JahiaUser)pageContext.getAttribute("currentUser")).getNodeByUUID((String) pageContext.getAttribute("uuid")));
+                    pageContext.setAttribute("member", ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID((String) pageContext.getAttribute("uuid"), (JahiaUser)pageContext.getAttribute("currentUser")));
                     %>
                     <div>
                         <c:if test="${jcr:isNodeType(member, 'jnt:group')}" var="isGroup">

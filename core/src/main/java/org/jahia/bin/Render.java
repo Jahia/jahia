@@ -1,3 +1,34 @@
+/**
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
 package org.jahia.bin;
 
 import org.apache.log4j.Logger;
@@ -15,9 +46,13 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
+import org.springframework.web.context.ServletConfigAware;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.jcr.*;
-import javax.servlet.ServletException;
+import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,32 +60,25 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.*;
-import java.text.MessageFormat;
 
 /**
- * Rendering servlet. Resolves the node and the template, and renders it by executing the appropriate script
+ * Rendering controller. Resolves the node and the template, and renders it by executing the appropriate script.
  */
-public class Render extends HttpServlet {
-    private static final String METHOD_DELETE = "DELETE";
-    private static final String METHOD_HEAD = "HEAD";
-    private static final String METHOD_GET = "GET";
-    private static final String METHOD_OPTIONS = "OPTIONS";
-    private static final String METHOD_POST = "POST";
-    private static final String METHOD_PUT = "PUT";
-    private static final String METHOD_TRACE = "TRACE";
+public class Render extends HttpServlet implements Controller, ServletConfigAware {
+    protected static final String METHOD_DELETE = "DELETE";
+    protected static final String METHOD_HEAD = "HEAD";
+    protected static final String METHOD_GET = "GET";
+    protected static final String METHOD_OPTIONS = "OPTIONS";
+    protected static final String METHOD_POST = "POST";
+    protected static final String METHOD_PUT = "PUT";
+    protected static final String METHOD_TRACE = "TRACE";
+    
+    protected static final String HEADER_IFMODSINCE = "If-Modified-Since";
+    protected static final String HEADER_LASTMOD = "Last-Modified";
 
-    private static final String HEADER_IFMODSINCE = "If-Modified-Since";
-    private static final String HEADER_LASTMOD = "Last-Modified";
-
-    private static final String LSTRING_FILE =
-            "javax.servlet.http.LocalStrings";
-    private static ResourceBundle lStrings =
-            ResourceBundle.getBundle(LSTRING_FILE);
+    protected static final Set<String> reservedParameters;
 
     private static Logger logger = Logger.getLogger(Render.class);
-
-    private static String renderServletPath;
-    private static List<String> reservedParameters;
 
     public static final String NODE_TYPE = "nodeType";
     public static final String NODE_NAME = "nodeName";
@@ -59,7 +87,7 @@ public class Render extends HttpServlet {
     public static final String METHOD_TO_CALL = "methodToCall";
 
     static {
-        reservedParameters = new ArrayList<String>();
+        reservedParameters = new HashSet<String>();
         reservedParameters.add(NODE_TYPE);
         reservedParameters.add(NODE_NAME);
         reservedParameters.add(NEW_NODE_OUTPUT_FORMAT);
@@ -67,142 +95,8 @@ public class Render extends HttpServlet {
         reservedParameters.add(METHOD_TO_CALL);
     }
 
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        if (getServletConfig().getInitParameter("render-servlet-path") != null) {
-            renderServletPath = getServletConfig().getInitParameter("render-servlet-path");
-        }
-    }
-
-    public static String getRenderServletPath() {
-        return renderServletPath;
-    }
-
-    @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String method = req.getMethod();
-        if(req.getParameter(METHOD_TO_CALL)!=null) {
-            method = req.getParameter(METHOD_TO_CALL).toUpperCase();
-        }
-        long startTime = System.currentTimeMillis();
-
-        ProcessingContext paramBean = null;
-
-        String path = req.getPathInfo();
-
-        try {
-            Object old = req.getSession(true).getAttribute(ParamBean.SESSION_SITE);
-            paramBean = Jahia.createParamBean(req, resp, req.getSession());
-            req.getSession(true).setAttribute(ParamBean.SESSION_SITE, old);
-
-            int index = path.indexOf('/', 1);
-            String workspace = path.substring(1, index);
-            path = path.substring(index);
-
-            index = path.indexOf('/', 1);
-            String lang = path.substring(1, index);
-            path = path.substring(index);
-
-            RenderContext renderContext = createRenderContext(req, resp, paramBean.getUser());
-            if ("live".equals(workspace) && renderContext.isEditMode()) {
-                throw new AccessDeniedException();
-            }
-            renderContext.setTemplateWrapper("fullpage");
-
-            try {
-                if (workspace.equals("default")) {
-                    if (renderContext.isEditMode()) {
-                        paramBean.setOperationMode("edit");
-                    } else {
-                        paramBean.setOperationMode("preview");
-                    }
-                } else if (workspace.equals("live")) {
-                    paramBean.setOperationMode("normal");
-                }
-            } catch (JahiaException e) {
-                logger.error(e.getMessage(), e);
-            }
-            Locale locale = LanguageCodeConverters.languageCodeToLocale(lang);
-            paramBean.setCurrentLocale(locale);
-            paramBean.getSessionState().setAttribute(ParamBean.SESSION_LOCALE, locale);
-
-            if (method.equals(METHOD_GET)) {
-                Resource resource = resolveResource(workspace, locale, path, renderContext.getUser(), paramBean);
-                renderContext.setMainResource(resource);
-                renderContext.setSite(paramBean.getSite());
-                
-                long lastModified = getLastModified(resource, renderContext);
-
-                if (lastModified == -1) {
-                    // servlet doesn't support if-modified-since, no reason
-                    // to go through further expensive logic
-                    doGet(req, resp, renderContext, resource);
-                } else {
-                    long ifModifiedSince = req.getDateHeader(HEADER_IFMODSINCE);
-                    if (ifModifiedSince < (lastModified / 1000 * 1000)) {
-                        // If the servlet mod time is later, call doGet()
-                        // Round down to the nearest second for a proper compare
-                        // A ifModifiedSince of -1 will always be less
-                        maybeSetLastModified(resp, lastModified);
-                        doGet(req, resp, renderContext, resource);
-                    } else {
-                        resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                    }
-                }
-            } else if (method.equals(METHOD_HEAD)) {
-                long lastModified = getLastModified(req);
-                maybeSetLastModified(resp, lastModified);
-                doHead(req, resp);
-
-            } else if (method.equals(METHOD_POST)) {
-                doPost(req, resp, renderContext, path, workspace, locale);
-
-            } else if (method.equals(METHOD_PUT)) {
-                doPut(req, resp, renderContext, path, workspace, locale);
-
-            } else if (method.equals(METHOD_DELETE)) {
-                doDelete(req, resp,renderContext, path, workspace, locale);
-
-            } else if (method.equals(METHOD_OPTIONS)) {
-                doOptions(req, resp);
-
-            } else if (method.equals(METHOD_TRACE)) {
-                doTrace(req, resp);
-
-            } else {
-                //
-                // Note that this means NO servlet supports whatever
-                // method was requested, anywhere on this server.
-                //
-
-                String errMsg = lStrings.getString("http.method_not_implemented");
-                Object[] errArgs = new Object[1];
-                errArgs[0] = method;
-                errMsg = MessageFormat.format(errMsg, errArgs);
-
-                resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, errMsg);
-            }
-        } catch (Exception e) {
-        	ErrorHandler.getInstance().handle(e, req, resp);
-        } finally {
-            if (logger.isInfoEnabled()) {
-                StringBuilder sb = new StringBuilder(100);
-                sb.append("Rendered [").append(req.getRequestURI());
-                if (paramBean != null && paramBean.getUser() != null) {
-                    sb.append("] user=[").append(paramBean.getUser().getUsername());
-                }
-                sb.append("] ip=[").append(req.getRemoteAddr()).append(
-                        "] sessionID=[").append(req.getSession(true).getId())
-                        .append("] in [").append(
-                        System.currentTimeMillis() - startTime).append(
-                        "ms]");
-                logger.info(sb.toString());
-            }
-        }
-
-    }
-
+    private transient ServletConfig servletConfig;
+    
     /**
      * Returns the time the <code>HttpServletRequest</code>
      * object was last modified,
@@ -235,7 +129,7 @@ public class Render extends HttpServlet {
      * written.  A subclass might have set this header already, so we
      * check.
      */
-    private void maybeSetLastModified(HttpServletResponse resp, long lastModified) {
+    protected void maybeSetLastModified(HttpServletResponse resp, long lastModified) {
         if (resp.containsHeader(HEADER_LASTMOD))
             return;
         if (lastModified >= 0)
@@ -246,7 +140,7 @@ public class Render extends HttpServlet {
         return new RenderContext(req, resp, user);
     }
 
-    private void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws RepositoryException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws RepositoryException, IOException {
         String out = RenderService.getInstance().render(resource, renderContext);
 
         resp.setContentType("text/html");
@@ -258,7 +152,7 @@ public class Render extends HttpServlet {
         writer.close();
     }
 
-    private void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(renderContext.getUser(), workspace, locale);
         Node node = session.getNode(path);
         Set<Map.Entry> set = req.getParameterMap().entrySet();
@@ -273,7 +167,7 @@ public class Render extends HttpServlet {
         performRedirect(null, null, req, resp);
     }
 
-    private void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(renderContext.getUser(), workspace, locale);
         String[] subPaths = path.split("/");
         String lastPath = subPaths[subPaths.length - 1];
@@ -330,7 +224,7 @@ public class Render extends HttpServlet {
         performRedirect(url, path, req, resp);
     }
 
-	private void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(renderContext.getUser(), workspace, locale);
         Node node = session.getNode(path);
         Node parent = node.getParent();
@@ -342,7 +236,7 @@ public class Render extends HttpServlet {
         performRedirect(url, path, req, resp);
     }
 
-	private void performRedirect(String url, String path, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	protected void performRedirect(String url, String path, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String renderedURL = null;
         String outputFormat = req.getParameter(NEW_NODE_OUTPUT_FORMAT);
         if(outputFormat==null || "".equals(outputFormat.trim())) {
@@ -380,7 +274,7 @@ public class Render extends HttpServlet {
      * @throws PathNotFoundException if the resource cannot be resolved
      * @throws RepositoryException
      */
-    private Resource resolveResource(String workspace, Locale locale, String path, JahiaUser user, ProcessingContext ctx) throws RepositoryException {
+	protected Resource resolveResource(String workspace, Locale locale, String path, JahiaUser user, ProcessingContext ctx) throws RepositoryException {
         if (logger.isDebugEnabled()) {
         	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         }
@@ -455,5 +349,140 @@ public class Render extends HttpServlet {
         return r;
     }
 
+	public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        String method = req.getMethod();
+        if(req.getParameter(METHOD_TO_CALL)!=null) {
+            method = req.getParameter(METHOD_TO_CALL).toUpperCase();
+        }
+        long startTime = System.currentTimeMillis();
 
+        ProcessingContext paramBean = null;
+
+        String path = req.getPathInfo();
+
+        try {
+            Object old = req.getSession(true).getAttribute(ParamBean.SESSION_SITE);
+            paramBean = Jahia.createParamBean(req, resp, req.getSession());
+            req.getSession(true).setAttribute(ParamBean.SESSION_SITE, old);
+
+            path = path.substring(path.indexOf('/', 1));
+            
+            int index = path.indexOf('/', 1);
+            String workspace = path.substring(1, index);
+            path = path.substring(index);
+
+            index = path.indexOf('/', 1);
+            String lang = path.substring(1, index);
+            path = path.substring(index);
+
+            RenderContext renderContext = createRenderContext(req, resp, paramBean.getUser());
+            if ("live".equals(workspace) && renderContext.isEditMode()) {
+                throw new AccessDeniedException();
+            }
+            renderContext.setTemplateWrapper("fullpage");
+
+            try {
+                if (workspace.equals("default")) {
+                    if (renderContext.isEditMode()) {
+                        paramBean.setOperationMode("edit");
+                    } else {
+                        paramBean.setOperationMode("preview");
+                    }
+                } else if (workspace.equals("live")) {
+                    paramBean.setOperationMode("normal");
+                }
+            } catch (JahiaException e) {
+                logger.error(e.getMessage(), e);
+            }
+            Locale locale = LanguageCodeConverters.languageCodeToLocale(lang);
+            paramBean.setCurrentLocale(locale);
+            paramBean.getSessionState().setAttribute(ParamBean.SESSION_LOCALE, locale);
+
+            if (method.equals(METHOD_GET)) {
+                Resource resource = resolveResource(workspace, locale, path, renderContext.getUser(), paramBean);
+                renderContext.setMainResource(resource);
+                renderContext.setSite(paramBean.getSite());
+                
+                long lastModified = getLastModified(resource, renderContext);
+
+                if (lastModified == -1) {
+                    // servlet doesn't support if-modified-since, no reason
+                    // to go through further expensive logic
+                    doGet(req, resp, renderContext, resource);
+                } else {
+                    long ifModifiedSince = req.getDateHeader(HEADER_IFMODSINCE);
+                    if (ifModifiedSince < (lastModified / 1000 * 1000)) {
+                        // If the servlet mod time is later, call doGet()
+                        // Round down to the nearest second for a proper compare
+                        // A ifModifiedSince of -1 will always be less
+                        maybeSetLastModified(resp, lastModified);
+                        doGet(req, resp, renderContext, resource);
+                    } else {
+                        resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                    }
+                }
+            } else if (method.equals(METHOD_HEAD)) {
+                doHead(req, resp);
+
+            } else if (method.equals(METHOD_POST)) {
+                doPost(req, resp, renderContext, path, workspace, locale);
+
+            } else if (method.equals(METHOD_PUT)) {
+                doPut(req, resp, renderContext, path, workspace, locale);
+
+            } else if (method.equals(METHOD_DELETE)) {
+                doDelete(req, resp,renderContext, path, workspace, locale);
+
+            } else if (method.equals(METHOD_OPTIONS)) {
+                doOptions(req, resp);
+
+            } else if (method.equals(METHOD_TRACE)) {
+                doTrace(req, resp);
+
+            } else {
+                //
+                // Note that this means NO servlet supports whatever
+                // method was requested, anywhere on this server.
+                //
+                resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
+            }
+        } catch (Exception e) {
+        	ErrorHandler.getInstance().handle(e, req, resp);
+        } finally {
+            if (logger.isInfoEnabled()) {
+                StringBuilder sb = new StringBuilder(100);
+                sb.append("Rendered [").append(req.getRequestURI());
+                if (paramBean != null && paramBean.getUser() != null) {
+                    sb.append("] user=[").append(paramBean.getUser().getUsername());
+                }
+                sb.append("] ip=[").append(req.getRemoteAddr()).append(
+                        "] sessionID=[").append(req.getSession(true).getId())
+                        .append("] in [").append(
+                        System.currentTimeMillis() - startTime).append(
+                        "ms]");
+                logger.info(sb.toString());
+            }
+        }
+	    return null;
+    }
+
+	public void setServletConfig(ServletConfig servletConfig) {
+		this.servletConfig = servletConfig;
+    }
+
+	@Override
+    public ServletConfig getServletConfig() {
+	    return servletConfig;
+    }
+
+	@Override
+    public String getServletName() {
+	    return getServletConfig().getServletName();
+    }
+
+	public static String getRenderServletPath() {
+	    // TODO move this into configuration
+	    return "/cms/render";
+    }
+	
 }

@@ -38,7 +38,7 @@
             If you change it, please also add a corresponding servlet mapping for 'Jahia' servlet.
         </description>
         <param-name>defaultJahiaServletPath</param-name>
-        <param-value>${jahia.deploy.war.servletPath}</param-value>
+        <param-value>/Jahia</param-value>
     </context-param>
 
     <context-param>
@@ -138,7 +138,7 @@
             </description>
             <param-name>noCacheResources</param-name>
             <!-- Disable cache for JSPs and '.nocache.' GWT resources -->
-            <param-value>(.*${jahia.deploy.war.servletPath}(/.*)?|.*/render/live/.*|.*/render/default/.*|.*\.jsp(\?.*)?|.*/gwt/.*\.nocache\..*)</param-value>
+            <param-value>(.*/Jahia(/.*)?|.*/render/live/.*|.*/render/default/.*|.*\.jsp(\?.*)?|.*/gwt/.*\.nocache\..*)</param-value>
         </init-param>
     </filter>
 
@@ -288,11 +288,11 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
-        <url-pattern>${jahia.deploy.war.servletPath}</url-pattern>
+        <url-pattern>/Jahia</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
-        <url-pattern>${jahia.deploy.war.servletPath}/*</url-pattern>
+        <url-pattern>/Jahia/*</url-pattern>
     </filter-mapping>
 
     <filter-mapping>
@@ -607,26 +607,6 @@
     </servlet>
 
     <servlet>
-        <servlet-name>Render</servlet-name>
-        <servlet-class>org.jahia.bin.Render</servlet-class>
-        <init-param>
-            <param-name>render-servlet-path</param-name>
-            <param-value>/render</param-value>
-        </init-param>
-        <load-on-startup>99</load-on-startup>
-    </servlet>
-
-    <servlet>
-        <servlet-name>Edit</servlet-name>
-        <servlet-class>org.jahia.bin.Edit</servlet-class>
-        <init-param>
-            <param-name>edit-servlet-path</param-name>
-            <param-value>/edit</param-value>
-        </init-param>
-        <load-on-startup>99</load-on-startup>
-    </servlet>
-
-    <servlet>
         <servlet-name>Test</servlet-name>
         <servlet-class>org.jahia.bin.TestServlet</servlet-class>
         <load-on-startup>99</load-on-startup>
@@ -745,6 +725,15 @@
         </init-param>
     </servlet>
 
+    <servlet>
+        <servlet-name>RendererDispatcherServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>WEB-INF/etc/spring/applicationcontext-renderer.xml</param-value>
+        </init-param>
+    </servlet>
+    
 <!-- Shindig servlets -->
     <!-- Render a Gadget -->
     <servlet>
@@ -876,7 +865,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Jahia</servlet-name>
-        <url-pattern>${jahia.deploy.war.servletPath}/*</url-pattern>
+        <url-pattern>/Jahia/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>JahiaAdministration</servlet-name>
@@ -935,14 +924,6 @@
         <url-pattern>/files/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Render</servlet-name>
-        <url-pattern>/render/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Edit</servlet-name>
-        <url-pattern>/edit/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>Test</servlet-name>
         <url-pattern>/test/*</url-pattern>
     </servlet-mapping>
@@ -987,6 +968,11 @@
     <servlet-mapping>
         <servlet-name>GWTDispatcherServlet</servlet-name>
         <url-pattern>*.gwt</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>RendererDispatcherServlet</servlet-name>
+        <url-pattern>/cms/*</url-pattern>
     </servlet-mapping>
 
 <!-- Shindig servlet mappings -->

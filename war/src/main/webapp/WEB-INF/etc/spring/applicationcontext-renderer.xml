@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+       
+    <bean name="rendererMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+            	<entry key="/render/**">
+            		<bean name="org.jahia.bin.Render" class="org.jahia.bin.Render"/>
+            	</entry>
+            	<entry key="/edit/**">
+            		<bean name="org.jahia.bin.Edit" class="org.jahia.bin.Edit"/>
+            	</entry>
+            </map>
+        </property>
+    </bean>
+</beans>

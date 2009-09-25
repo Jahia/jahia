@@ -144,7 +144,7 @@ public class RequestDispatcherScript implements Script {
     }
 
     private String getTemplatePath(String templateType, String template, ExtendedNodeType nt, String currentTemplatePath) {
-        String templatePath = nt.getLocalName() + ( template.equals("")?"":".") + template + ".jsp";
+        String templatePath = nt.getLocalName() + ( template.equals("default")?"":"." + template )  + ".jsp";
         String modulePath = currentTemplatePath + "/" + nt.getAlias().replace(':','_') + "/" + templateType +   "/" + templatePath;
         try {
                 if (Jahia.getStaticServletConfig().getServletContext().getResource(modulePath) != null) {

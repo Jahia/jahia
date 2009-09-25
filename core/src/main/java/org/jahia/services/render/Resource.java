@@ -126,7 +126,7 @@ public class Resource {
         if (template != null && template.length() > 0) {
             l.add(template);
         }
-        l.add("");
+        l.add("default");
         return l;
     }
 

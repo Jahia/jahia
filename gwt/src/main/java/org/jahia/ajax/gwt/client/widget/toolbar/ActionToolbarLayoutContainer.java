@@ -12,7 +12,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
-import org.jahia.ajax.gwt.client.widget.toolbar.ActionItemFactory;
 import org.jahia.ajax.gwt.client.widget.edit.Module;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -93,7 +92,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
      * @param gwtToolbar
      */
     public void addActionToolbar(GWTJahiaToolbar gwtToolbar) {
-        ActionToolbar actionToolbar = new ActionToolbar(gwtToolbar, new ActionItemFactory(linker));
+        ActionToolbar actionToolbar = new ActionToolbar(gwtToolbar, linker);
         if (gwtToolbar.getState().isDisplay()) {
             actionToolbar.createToolBar();
             add(actionToolbar);

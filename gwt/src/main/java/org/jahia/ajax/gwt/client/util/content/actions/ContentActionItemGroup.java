@@ -31,26 +31,27 @@
  */
 package org.jahia.ajax.gwt.client.util.content.actions;
 
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  * User: rfelden
  * Date: 7 janv. 2009 - 14:09:05
  */
-public class ContentActionItemGroup {
+public class ContentActionItemGroup implements Serializable {
 
     private String groupLabel;
-    private List<ActionItemItf> items ;
+    private List<ActionItem> items ;
 
     public ContentActionItemGroup(String name) {
         groupLabel = name ;
-        items = new ArrayList<ActionItemItf>() ;
+        items = new ArrayList<ActionItem>() ;
     }
 
-    public void addItem(ActionItemItf item) {
+    public void addItem(ActionItem item) {
         items.add(item) ;
     }
 
@@ -58,7 +59,7 @@ public class ContentActionItemGroup {
         return groupLabel;
     }
 
-    public List<ActionItemItf> getItems() {
+    public List<ActionItem> getItems() {
         return items;
     }
 }

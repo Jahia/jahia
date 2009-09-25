@@ -31,39 +31,19 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
-import org.jahia.ajax.gwt.client.widget.language.LanguageSwitcher;
-import org.jahia.ajax.gwt.client.widget.language.LanguageSelectedListener;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ContentActionItem;
-import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
-import org.jahia.ajax.gwt.client.util.content.actions.*;
-import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.service.JahiaServiceAsync;
-import org.jahia.ajax.gwt.client.service.JahiaService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.allen_sauer.gwt.log.client.Log;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActionItemGroup;
+import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * The action toolbar container.
@@ -75,175 +55,23 @@ public class ContentToolbar extends TopBar {
 
     private LayoutContainer m_component;
 
-    private ManagerConfiguration configuration ;
+    private ManagerConfiguration configuration;
 
     public ContentToolbar(ManagerConfiguration config, ManagerLinker linker) {
-        configuration = config ;
+        configuration = config;
         initWithLinker(linker);
-//        m_component = new LayoutContainer(new RowLayout());
-//        createUi();
         createDynamicUi();
     }
 
     private void createDynamicUi() {
-    	ActionToolbarLayoutContainer toolbarContainer = new ActionToolbarLayoutContainer(configuration.getToolbarGroup());
-    	toolbarContainer.initWithLinker(getLinker());
-    	toolbarContainer.init();
-    	m_component = toolbarContainer;
-    }
-
-    private void createUi() {
-        //m_component = new LayoutContainer(new RowLayout());
-
-        ToolBar menus = new ToolBar();
-        ToolBar shortcuts = new ToolBar();
-        //menus.setHeight(21);
-
-        // refresh item not bound to any configuration
-        ContentActionItem refresh = new ContentActionItem(Messages.getResource("fm_refresh"), "fm-refresh") {
-            public void onSelection() {
-                getLinker().refreshTable();
-            }
-        };
-
-        // toolbar createion
-        for (ActionItemItf item: configuration.getItems()) {
-            Component b = item.getTextToolitem();
-            if (b != null) {
-                shortcuts.add(b);
-            } else {
-                shortcuts.add(new SeparatorToolItem());
-            }
-
-        }
-        shortcuts.add(new SeparatorToolItem()) ;
-        shortcuts.add(refresh.getTextToolitem()) ;
-
-        // text menu creation
-        if (configuration.isEnableTextMenu() && configuration.getGroupedItems().size() > 0) {
-            for (ContentActionItemGroup group: configuration.getGroupedItems()) {
-                final Menu menu = new Menu() ;
-                for (ActionItemItf item: group.getItems()) {
-                    menu.add(item.getMenuItem()) ;
-                }
-
-                if (Messages.getResource("fm_remoteMenu").equals(group.getGroupLabel())) {
-                    JahiaContentManagementService.App.getInstance().getStoredPasswordsProviders(new AsyncCallback<Map<String, String>>() {
-                        public void onSuccess(Map<String, String> map) {
-                            final String username = map.get(null);
-                            for (final String key : map.keySet()) {
-                                if (key != null) {
-
-                                    final String loginLabel = Messages.getResource("fm_login") + " " + key;
-                                    final String logoutLabel = Messages.getResource("fm_logout") + " " + key;
-
-                                    final MenuItem item = new MenuItem(loginLabel);
-                                    if (map.get(key) != null) {
-                                        item.setText(logoutLabel);
-                                    } else {
-                                        item.setText(loginLabel);
-                                    }
-
-                                    item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                                        public void componentSelected(MenuEvent event) {
-                                            if (item.getText().equals(loginLabel)) {
-                                                new PasswordPrompt(getLinker(), username, key, item, logoutLabel).show();
-                                            } else {
-                                                JahiaContentManagementService.App.getInstance().storePasswordForProvider(key, null, null, new AsyncCallback() {
-                                                    public void onSuccess(Object o) {
-                                                        item.setText(loginLabel);
-                                                        getLinker().refreshAll();
-                                                    }
-
-                                                    public void onFailure(Throwable throwable) {
-                                                        Log.error(Messages.getResource("fm_fail"), throwable);
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    });
-                                    menu.add(item);
-                                }
-                            }
-                        }
-
-                        public void onFailure(Throwable throwable) {
-                            Log.error("error", throwable);
-                        }
-                    });
-
-                }
-
-
-                Button mMenu = new Button(group.getGroupLabel()) ;
-                mMenu.setMenu(menu);
-                menus.add(mMenu) ;
-            }
-
-            // add the views menu (not part of the config)
-            MenuItem list = new MenuItem(Messages.getResource("fm_list"), new SelectionListener<MenuEvent>() {
-                public void componentSelected(MenuEvent event) {
-                    setListView();
-                }
-            });
-            list.setIconStyle("fm-tableview");
-            MenuItem thumbs = new MenuItem(Messages.getResource("fm_thumbs"), new SelectionListener<MenuEvent>() {
-                public void componentSelected(MenuEvent event) {
-                    setThumbView();
-                }
-            });
-            thumbs.setIconStyle("fm-iconview");
-            MenuItem detailedThumbs = new MenuItem(Messages.getResource("fm_icons_detailed"), new SelectionListener<MenuEvent>() {
-                public void componentSelected(MenuEvent event) {
-                    setDetailedThumbView();
-                }
-            });
-            detailedThumbs.setIconStyle("fm-iconview-detailed");
-            MenuItem templates = new MenuItem("Template view", new SelectionListener<MenuEvent>() {
-                public void componentSelected(MenuEvent event) {
-                    setTemplateView();
-                }
-            });
-            templates.setIconStyle("fm-templateview");
-            Menu menu = new Menu() ;
-            menu.add(refresh.getMenuItem()) ;
-            menu.add(new SeparatorMenuItem()) ;
-            menu.add(list) ;
-            menu.add(thumbs) ;
-            Button mMenu = new Button(Messages.getResource("fm_viewMenu")) ;
-            menu.add(templates) ;
-            mMenu.setMenu(menu);
-            menus.add(mMenu) ;
-
-            LanguageSwitcher languageSwitcher = new LanguageSwitcher(true, true, false, false, JahiaGWTParameters.getLanguage(), false, new LanguageSelectedListener() {
-                private final JahiaServiceAsync jahiaServiceAsync = JahiaService.App.getInstance();
-
-                public void onLanguageSelected(String languageSelected) {
-                    jahiaServiceAsync.changeLocaleForAllPagesAndEngines(languageSelected, new AsyncCallback() {
-                        public void onFailure(Throwable throwable) {
-                        }
-
-                        public void onSuccess(Object o) { // TODO chained rpc calls are ugly... well, not so bad after all
-                            Window.Location.reload();
-                        }
-                    });
-                }
-            });
-            Button item = new Button("loading...") ;
-            item.setEnabled(false);
-            languageSwitcher.init(item);
-
-            menus.add(item);
-
-
-            m_component.add(menus) ;
-        }
-
-        m_component.add(shortcuts);
+        ActionToolbarLayoutContainer toolbarContainer = new ActionToolbarLayoutContainer(configuration.getToolbarGroup());
+        toolbarContainer.initWithLinker(getLinker());
+        toolbarContainer.init();
+        m_component = toolbarContainer;
     }
 
     // override to handle view switching
-   /* protected void switchView(Button switchView) {
+    /* protected void switchView(Button switchView) {
     }*/
 
     protected void setListView() {
@@ -252,16 +80,16 @@ public class ContentToolbar extends TopBar {
     protected void setThumbView() {
     }
 
-    protected void setDetailedThumbView(){
+    protected void setDetailedThumbView() {
     }
 
-    protected void setTemplateView(){
+    protected void setTemplateView() {
     }
 
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelectionEl) {
         List<GWTJahiaNode> topTableSelection = (List<GWTJahiaNode>) topTableSelectionEl;
 
-        boolean isTreeSelection = leftTreeSelection != null ;
+        boolean isTreeSelection = leftTreeSelection != null;
         boolean isParentWriteable = (isTreeSelection) ? (((GWTJahiaNode) leftTreeSelection).isWriteable() && !((GWTJahiaNode) leftTreeSelection).isLocked()) : false;
         boolean isWritable = false;
         boolean isDeleteable = false;
@@ -269,22 +97,22 @@ public class ContentToolbar extends TopBar {
         boolean isLocked = false;
         boolean isSingleFile = false;
         boolean isSingleFolder = false;
-        boolean isPasteAllowed = isTreeSelection ? CopyPasteEngine.getInstance().canCopyTo((GWTJahiaNode) leftTreeSelection) : false ;
-        boolean isZip = false ;
-        boolean isImage = false ;
-        boolean isTableSelection = false ;
-        boolean isMount = false ;
+        boolean isPasteAllowed = isTreeSelection ? CopyPasteEngine.getInstance().canCopyTo((GWTJahiaNode) leftTreeSelection) : false;
+        boolean isZip = false;
+        boolean isImage = false;
+        boolean isTableSelection = false;
+        boolean isMount = false;
         if (topTableSelection != null && topTableSelection.size() > 0) {
             if (leftTreeSelection != null) {
-                isTreeSelection = true ;
+                isTreeSelection = true;
             }
             if (!isTreeSelection) {
-                GWTJahiaNode parent = (GWTJahiaNode) topTableSelection.get(0).getParent() ;
+                GWTJahiaNode parent = (GWTJahiaNode) topTableSelection.get(0).getParent();
                 if (parent != null) {
                     isParentWriteable = parent.isWriteable();
                 }
             }
-            isTableSelection = true ;
+            isTableSelection = true;
             isWritable = true;
             isDeleteable = true;
             isLockable = true;
@@ -300,30 +128,30 @@ public class ContentToolbar extends TopBar {
                 isSingleFolder = !isSingleFile;
             }
             if (isSingleFolder) {
-                isMount = topTableSelection.get(0).getInheritedNodeTypes().contains("jnt:mountPoint")  || topTableSelection.get(0).getNodeTypes().contains("jnt:mountPoint");
+                isMount = topTableSelection.get(0).getInheritedNodeTypes().contains("jnt:mountPoint") || topTableSelection.get(0).getNodeTypes().contains("jnt:mountPoint");
             }
             if (!isTreeSelection) {
                 if (isSingleFolder) {
-                    isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo(topTableSelection.get(0)) ;
+                    isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo(topTableSelection.get(0));
                 } else {
-                    isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo((GWTJahiaNode) topTableSelection.get(0).getParent()) ;
+                    isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo((GWTJahiaNode) topTableSelection.get(0).getParent());
                 }
             }
-            int extIndex = topTableSelection.get(0).getName().lastIndexOf(".") ;
+            int extIndex = topTableSelection.get(0).getName().lastIndexOf(".");
             if (extIndex > 0 && topTableSelection.get(0).getName().substring(extIndex).equalsIgnoreCase(".zip")) {
-                isZip = true ;
+                isZip = true;
             }
-            isImage = topTableSelection.get(0).getNodeTypes().contains("jmix:image") ;
+            isImage = topTableSelection.get(0).getNodeTypes().contains("jmix:image");
         }
-        
-        for (ContentActionItemGroup group: configuration.getGroupedItems()) {
-            for (ActionItemItf item: group.getItems()) {
-                if (item instanceof ManagerSelectionHandler) {
-                    ((ManagerSelectionHandler)item).enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
-                }
-            }
-        }
-        
+
+//        for (ContentActionItemGroup group : configuration.getGroupedItems()) {
+//            for (ActionItem item : group.getItems()) {
+//                if (item instanceof ManagerSelectionHandler) {
+//                    ((ManagerSelectionHandler) item).enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
+//                }
+//            }
+//        }
+
         //m_component.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
 
     }

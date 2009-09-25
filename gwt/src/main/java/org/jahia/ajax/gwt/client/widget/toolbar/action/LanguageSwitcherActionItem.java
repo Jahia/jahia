@@ -41,7 +41,8 @@ import org.jahia.ajax.gwt.client.widget.language.LanguageSelectedListener;
 import org.jahia.ajax.gwt.client.widget.language.LanguageSwitcher;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,7 +50,7 @@ import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
  * Date: 27 nov. 2008
  * Time: 11:35:12
  */
-public class LanguageSwitcherActionItem implements ActionItemItf {
+public class LanguageSwitcherActionItem implements ActionItem {
 
 
     public Component getTextToolitem() {
@@ -90,7 +91,6 @@ public class LanguageSwitcherActionItem implements ActionItemItf {
         return null;
     }
 
-    public void setGwtToolbarItem(GWTJahiaToolbarItem gwtToolbarItem) {
-
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
     }
 }

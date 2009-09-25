@@ -37,7 +37,8 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.util.Formatter;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 
 import com.extjs.gxt.ui.client.event.*;
@@ -54,19 +55,16 @@ import java.util.Map;
  * Date: 4 avr. 2008
  * Time: 13:32:32
  */
-public abstract class BaseActionItem implements ActionItemItf {
+public abstract class BaseActionItem implements ActionItem {
     private GWTJahiaToolbarItem gwtToolbarItem;
 
-    private Component textToolitem = null;
-    private MenuItem menuItem = null;
-    private MenuItem contextMenuItem = null;
+    private transient Component textToolitem = null;
+    private transient MenuItem menuItem = null;
+    private transient MenuItem contextMenuItem = null;
+    protected transient Linker linker;
 
     public BaseActionItem() {}
 
-
-    public BaseActionItem(GWTJahiaToolbarItem gwtToolbarItem) {
-        this.setGwtToolbarItem(gwtToolbarItem);
-    }
 
     /**
      * Get texxt tooliem
@@ -214,7 +212,8 @@ public abstract class BaseActionItem implements ActionItemItf {
         return gwtToolbarItem;
     }
 
-    public void setGwtToolbarItem(GWTJahiaToolbarItem gwtToolbarItem) {
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
+        this.linker = linker;
         this.gwtToolbarItem = gwtToolbarItem;
     }
 

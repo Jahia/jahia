@@ -31,17 +31,16 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.*;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ContentActionItem;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 
 /**
  * User: ktlili
  * Date: 18 sept. 2008
  * Time: 12:29:05
  */
-public class FillActionItem extends ContentActionItem {
+public class FillActionItem extends BaseActionItem {
     public Component getTextToolitem() {
         return new FillToolItem();
     }

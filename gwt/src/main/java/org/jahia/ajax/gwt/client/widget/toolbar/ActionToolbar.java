@@ -14,11 +14,13 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.SeparatorActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.handler.SidePanelSelectionHandler;
 import org.jahia.ajax.gwt.client.widget.toolbar.handler.ModuleSelectionHandler;
 import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
 import org.jahia.ajax.gwt.client.widget.edit.Module;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -30,15 +32,14 @@ import java.util.ArrayList;
  * Time: 11:43:54 AM
  */
 public class ActionToolbar extends ToolBar {
-    private List<ActionItemItf> items = new ArrayList<ActionItemItf>();
+    private Linker linker;
+    private List<ActionItem> items = new ArrayList<ActionItem>();
     private GWTJahiaToolbar gwtToolbar;
     private boolean loaded = false;
-    private ActionItemFactoryItf actionItemFactoryItf;
 
-
-    public ActionToolbar(GWTJahiaToolbar gwtToolbar, ActionItemFactoryItf actionItemFactoryItf) {
+    public ActionToolbar(GWTJahiaToolbar gwtToolbar, Linker linker) {
         this.gwtToolbar = gwtToolbar;
-        this.actionItemFactoryItf = actionItemFactoryItf;
+        this.linker = linker;
     }
 
 
@@ -82,7 +83,6 @@ public class ActionToolbar extends ToolBar {
      * @param gwtToolbarItemsGroup
      */
     public void createItemGroup(final GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup) {
-        final ActionItemFactoryItf actionFactory = getActionItemFactory();
         final List<GWTJahiaToolbarItem> toolbarItemsGroupList = gwtToolbarItemsGroup.getGwtToolbarItems();
         final Menu menu = new Menu();
         boolean addMenu = false;
@@ -91,11 +91,13 @@ public class ActionToolbar extends ToolBar {
             // add items
             final GWTJahiaToolbarItem gwtToolbarItem = toolbarItemsGroupList.get(i);
             Component toolItem = null;
-            final ActionItemItf actionItem = actionFactory.createActionItem(gwtToolbarItem);
+            final ActionItem actionItem = gwtToolbarItem.getActionItem();
 
             if (actionItem == null && !isSeparator(gwtToolbarItem)) {
                 printProviderNotFoundError(gwtToolbarItem);
             } else if (actionItem != null) {
+                actionItem.init(gwtToolbarItem,linker);
+
                 Log.debug(gwtToolbarItem.getType() + " - items group layout =" + gwtToolbarItemsGroup.getLayout());
                 if (gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_MENU || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_MENU_RADIO || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_MENU_CHECKBOX) {
                     // handle case of menuSeparator
@@ -192,16 +194,7 @@ public class ActionToolbar extends ToolBar {
      * @return
      */
     protected boolean isSeparator(GWTJahiaToolbarItem gwtToolbarItem) {
-        return gwtToolbarItem.getType() != null && gwtToolbarItem.getType().equalsIgnoreCase(ActionItemFactory.SEPARATOR);
-    }
-
-    /**
-     * Get provider helper
-     *
-     * @return
-     */
-    public ActionItemFactoryItf getActionItemFactory() {
-        return this.actionItemFactoryItf;
+        return gwtToolbarItem.getActionItem() != null && gwtToolbarItem.getActionItem() instanceof SeparatorActionItem;
     }
 
 
@@ -211,7 +204,7 @@ public class ActionToolbar extends ToolBar {
      * @param selectedModule
      */
     public void handleNewModuleSelection(Module selectedModule) {
-        for (ActionItemItf item : items) {
+        for (ActionItem item : items) {
             if (item instanceof ModuleSelectionHandler) {
                 ((ModuleSelectionHandler)item).handleNewModuleSelection(selectedModule);
             }
@@ -224,7 +217,7 @@ public class ActionToolbar extends ToolBar {
      * @param node
      */
     public void handleNewSidePanelSelection(GWTJahiaNode node) {
-        for (ActionItemItf item : items) {
+        for (ActionItem item : items) {
             if (item instanceof SidePanelSelectionHandler) {
                 ((SidePanelSelectionHandler)item).handleNewSidePanelSelection(node);
             }
@@ -249,7 +242,7 @@ public class ActionToolbar extends ToolBar {
      * @param isMount
      */
     public void enableOnConditions(boolean isTreeSelection, boolean isTableSelection, boolean isWritable, boolean isDeleteable, boolean isParentWritable, boolean isSingleFile, boolean isSingleFolder, boolean isPasteAllowed, boolean isLockable, boolean isLocked, boolean isZip, boolean isImage, boolean isMount) {
-        for (ActionItemItf item : items) {
+        for (ActionItem item : items) {
             if (item instanceof ManagerSelectionHandler) {
                 ((ManagerSelectionHandler)item).enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWritable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
             }
@@ -260,7 +253,7 @@ public class ActionToolbar extends ToolBar {
      * diable all
      */
     public void allDisable() {
-        for (ActionItemItf item : items) {
+        for (ActionItem item : items) {
             item.setEnabled(false);
         }
     }

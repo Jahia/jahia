@@ -45,6 +45,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.analytics.GWTJahiaAnalyticsParamet
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaProcessJobInfo;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
 import org.jahia.data.JahiaData;
@@ -272,7 +273,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                         }
                     }
                 } else {
-                    logger.debug("toolbar[" + gwtToolbar.getName() + "] - itemsGroup [" + itemsGroup.getType() + "," + itemsGroup.getTitleKey() + "]  not visible");
+                    logger.debug("toolbar[" + gwtToolbar.getName() + "] - itemsGroup [" + itemsGroup.getId() + "," + itemsGroup.getTitleKey() + "]  not visible");
                 }
             } else {
                 GWTJahiaToolbarItemsGroup gwtItemsGroup = new GWTJahiaToolbarItemsGroup();
@@ -353,7 +354,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         // creat items-group
         GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup = new GWTJahiaToolbarItemsGroup();
         gwtToolbarItemsGroup.setId(toolbarName + "_" + index);
-        gwtToolbarItemsGroup.setType(itemsGroup.getType());
+        gwtToolbarItemsGroup.setType(itemsGroup.getId());
 
         String layout = itemsGroup.getLayout();
         int layoutInt = 0;
@@ -399,7 +400,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             }
         } else {
             // add only item that the user can view
-            logger.debug("Item: " + item.getType());
+            logger.debug("Item: " + item.getId());
             Visibility visibility = item.getVisibility();
 
             // add only visible items
@@ -451,7 +452,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         } else {
             gwtToolbarItem.setTitle(item.getTitle());
         }
-        gwtToolbarItem.setType(item.getType());
+        gwtToolbarItem.setType(item.getId());
         gwtToolbarItem.setDisplayTitle(item.isDisplayTitle());
         gwtToolbarItem.setDescription(getResources(paramBean, item.getDescriptionKey()));
         gwtToolbarItem.setMediumIconStyle(item.getMediumIconStyle());
@@ -469,6 +470,8 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             pMap.put(gwtProperty.getName(), gwtProperty);
         }
         gwtToolbarItem.setProperties(pMap);
+        gwtToolbarItem.setActionItem(item.getActionItem());
+
         return gwtToolbarItem;
     }
 

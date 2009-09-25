@@ -1,6 +1,6 @@
 package org.jahia.services.toolbar.resolver.impl;
 
-import org.jahia.ajax.gwt.client.widget.toolbar.ActionItemFactory;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -62,7 +62,7 @@ public abstract class DefaultItemsResolver implements ItemsResolver {
             // create the toolitem
             Item item = new Item();
             item.setTitle(title);
-            item.setType(ActionItemFactory.REDIRECT_WINDOW);
+            item.setActionItem(new RedirectWindowActionItem());
             item.setDisplayTitle(true);
 
             // add url property

@@ -35,12 +35,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
 import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionInfo;
 import org.jahia.ajax.gwt.client.service.subscription.SubscriptionServiceAsync;
 import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionStatus;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -62,19 +64,19 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class SubscriptionsActionItem extends BaseActionItem {
 
-    private Button cancel;
+    private transient Button cancel;
 
-    private LayoutContainer eventsContainer;
+    private transient LayoutContainer eventsContainer;
 
-    private GWTJahiaPageContext pageContext;
+    private transient GWTJahiaPageContext pageContext;
 
-    private FormPanel panel;
+    private transient FormPanel panel;
 
-    private Button save;
+    private transient Button save;
 
-    private SubscriptionServiceAsync service = SubscriptionService.App.getInstance();
+    private transient SubscriptionServiceAsync service;
 
-    private Window window;
+    private transient Window window;
 
     private static String getMessage(String key, String defaultMessage) {
         return Messages.getNotEmptyResource("subscriptions.toolbar.page." + key, defaultMessage);
@@ -84,10 +86,14 @@ public class SubscriptionsActionItem extends BaseActionItem {
      * Initializes an instance of this class.
      */
     public SubscriptionsActionItem() {
-        super();
-        pageContext = this.getJahiaGWTPageContext();
     }
 
+    @Override
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
+        super.init(gwtToolbarItem, linker);    //To change body of overridden methods use File | Settings | File Templates.
+        service = SubscriptionService.App.getInstance();
+        pageContext = this.getJahiaGWTPageContext();
+    }
 
     @Override
     public void onSelection() {

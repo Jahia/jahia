@@ -35,13 +35,14 @@ import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
  * User: rfelden
  * Date: 7 janv. 2009 - 15:24:18
  */
-public class SeparatorActionItem implements ActionItemItf {
+public class SeparatorActionItem implements ActionItem {
 
     public void setEnabled(boolean enabled) {}
 
@@ -61,7 +62,6 @@ public class SeparatorActionItem implements ActionItemItf {
         return null;
     }
 
-    public void setGwtToolbarItem(GWTJahiaToolbarItem gwtToolbarItem) {
-
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
     }
 }

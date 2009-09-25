@@ -37,7 +37,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
@@ -58,15 +58,15 @@ public class ContentListContextMenu extends Menu {
         super() ;
 
         // add all items found in the defined menus
-        for (int i=0; i<config.getGroupedItems().size(); i++) {
-            ContentActionItemGroup group = config.getGroupedItems().get(i) ;
-            if (i > 0) {
-                add(new SeparatorMenuItem()) ;
-            }
-            for (ActionItemItf item: group.getItems()) {
-                add(item.getContextMenuItem()) ;
-            }
-        }
+//        for (int i=0; i<config.getGroupedItems().size(); i++) {
+//            ContentActionItemGroup group = config.getGroupedItems().get(i) ;
+//            if (i > 0) {
+//                add(new SeparatorMenuItem()) ;
+//            }
+//            for (ActionItem item: group.getItems()) {
+//                add(item.getContextMenuItem()) ;
+//            }
+//        }
 
         addListener(Events.BeforeShow, new Listener<MenuEvent>() {
             public void handleEvent(MenuEvent baseEvent) {
@@ -126,13 +126,13 @@ public class ContentListContextMenu extends Menu {
                     }
                     isImage = topTableSelection.get(0).getNodeTypes().contains("jmix:image") ;
                 }
-                for (ContentActionItemGroup group: config.getGroupedItems()) {
-                    for (ActionItemItf item: group.getItems()) {
-                        if (item instanceof ManagerSelectionHandler) {
-                            ((ManagerSelectionHandler)item).enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
-                        }
-                    }
-                }
+//                for (ContentActionItemGroup group: config.getGroupedItems()) {
+//                    for (ActionItem item: group.getItems()) {
+//                        if (item instanceof ManagerSelectionHandler) {
+//                            ((ManagerSelectionHandler)item).enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
+//                        }
+//                    }
+//                }
             }
         });
     }

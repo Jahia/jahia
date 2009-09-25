@@ -32,6 +32,7 @@
 package org.jahia.services.toolbar.bean;
 
 import org.springframework.beans.factory.BeanNameAware;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,7 +45,6 @@ import java.util.List;
  */
 public class Item implements Serializable, BeanNameAware {
     private String id;
-    private String type;
     private String mediumIconStyle;
     private String minIconStyle;
     private String title;
@@ -54,6 +54,7 @@ public class Item implements Serializable, BeanNameAware {
     private Visibility visibility;
     private Selected selected;
     private List<Property> properties = new ArrayList();
+    private ActionItem actionItem;
 
     public String getId() {
         return id;
@@ -61,14 +62,6 @@ public class Item implements Serializable, BeanNameAware {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getMediumIconStyle() {
@@ -148,8 +141,14 @@ public class Item implements Serializable, BeanNameAware {
     }
 
     public void setBeanName(String name) {
-        if (type == null) {
-            setType(name);
-        }
+        this.id = name;
+    }
+
+    public ActionItem getActionItem() {
+        return actionItem;
+    }
+
+    public void setActionItem(ActionItem actionItem) {
+        this.actionItem = actionItem;
     }
 }

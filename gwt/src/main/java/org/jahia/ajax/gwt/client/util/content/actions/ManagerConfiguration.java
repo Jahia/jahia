@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.util.content.actions;
 
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItemItf;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 
 import java.io.Serializable;
 import java.util.List;
@@ -42,9 +42,6 @@ import java.util.ArrayList;
  * Date: 7 janv. 2009 - 11:24:10
  */
 public class ManagerConfiguration implements Serializable {
-
-    private List<ActionItemItf> items;
-    private List<ContentActionItemGroup> groupedItems;
 
     private boolean enableTextMenu;
 
@@ -74,19 +71,9 @@ public class ManagerConfiguration implements Serializable {
 	private boolean allowCollections = true;
 
     public ManagerConfiguration() {
-        items = new ArrayList<ActionItemItf>();
-        groupedItems = new ArrayList<ContentActionItemGroup>();
         tableColumns = new ArrayList<String>();
         accordionPanels = new ArrayList<String>();
         tabs = new ArrayList<String>();
-    }
-
-    public void addItem(ActionItemItf item) {
-        items.add(item);
-    }
-
-    public void addGroup(ContentActionItemGroup group) {
-        groupedItems.add(group);
     }
 
     public void addColumn(String col) {
@@ -115,14 +102,6 @@ public class ManagerConfiguration implements Serializable {
 
     public void setHideLeftPanel(boolean hide) {
         this.hideLeftPanel = hide;
-    }
-
-    public List<ActionItemItf> getItems() {
-        return items;
-    }
-
-    public List<ContentActionItemGroup> getGroupedItems() {
-        return groupedItems;
     }
 
     public List<String> getTableColumns() {

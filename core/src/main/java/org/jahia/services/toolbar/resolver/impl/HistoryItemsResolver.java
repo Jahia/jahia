@@ -1,19 +1,12 @@
 package org.jahia.services.toolbar.resolver.impl;
 
-import org.jahia.services.toolbar.resolver.ItemsResolver;
-import org.jahia.services.toolbar.bean.Item;
-import org.jahia.services.pages.JahiaPage;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.history.HistoryBean;
 import org.jahia.operations.valves.HistoryValve;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.widget.toolbar.ActionItemFactory;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.exceptions.JahiaException;
+import org.jahia.services.toolbar.bean.Item;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

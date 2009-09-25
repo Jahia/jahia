@@ -36,12 +36,22 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.EditActions;
+import org.jahia.ajax.gwt.client.widget.edit.Module;
+import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
+import org.jahia.ajax.gwt.client.widget.toolbar.handler.ModuleSelectionHandler;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+
+import java.io.Serializable;
 
 /**
  * User: rfelden
  * Date: 7 janv. 2009 - 15:22:50
  */
-public interface ActionItemItf {
+public interface ActionItem extends Serializable {
 
     public void setEnabled(boolean enabled) ;
 
@@ -53,6 +63,6 @@ public interface ActionItemItf {
 
     public GWTJahiaToolbarItem getGwtToolbarItem();
 
-    public void setGwtToolbarItem(GWTJahiaToolbarItem gwtToolbarItem) ;
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker);
 
 }

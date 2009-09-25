@@ -411,7 +411,6 @@
                 <ref bean="org.jahia.toolbar.item.integrity"/>
                 <ref bean="org.jahia.toolbar.item.inlineediting"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.item.ToolbarsTitle"/>
             </list>
         </property>
     </bean>
@@ -444,22 +443,6 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.AdvancedPreview"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- items that are visible only during the compare mode context-->
-    <bean id="org.jahia.toolbar.itemsgroup.CompareMode" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="button-label"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-                <property name="mode" value="compare"/>
-            </bean>
-        </property>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.item.AdvancedCompare"/>
             </list>
         </property>
     </bean>
@@ -563,9 +546,9 @@
         <property name="titleKey" value="toolbar.itemgroups.bookmarks"/>
         <property name="items">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.ItemsGroup" >
+                <bean class="org.jahia.services.toolbar.bean.ItemsGroup">
                     <property name="itemsResolver">
-                        <bean class="org.jahia.services.toolbar.resolver.impl.BookmarksItemsResolver" />
+                        <bean class="org.jahia.services.toolbar.resolver.impl.BookmarksItemsResolver"/>
                     </property>
                 </bean>
             </list>
@@ -577,9 +560,9 @@
         <property name="layout" value="button-label"/>
         <property name="items">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.ItemsGroup" >
+                <bean class="org.jahia.services.toolbar.bean.ItemsGroup">
                     <property name="itemsResolver">
-                        <bean class="org.jahia.services.toolbar.resolver.impl.HistoryItemsResolver" />
+                        <bean class="org.jahia.services.toolbar.resolver.impl.HistoryItemsResolver"/>
                     </property>
                 </bean>
             </list>
@@ -597,9 +580,9 @@
                 <ref bean="org.jahia.toolbar.item.bookmarkCurrentPage"/>
                 <ref bean="org.jahia.toolbar.item.deleteBookmarkCurrentPage"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <bean class="org.jahia.services.toolbar.bean.ItemsGroup" >
+                <bean class="org.jahia.services.toolbar.bean.ItemsGroup">
                     <property name="itemsResolver">
-                        <bean class="org.jahia.services.toolbar.resolver.impl.BookmarksItemsResolver" />
+                        <bean class="org.jahia.services.toolbar.resolver.impl.BookmarksItemsResolver"/>
                     </property>
                 </bean>
             </list>
@@ -614,9 +597,9 @@
         <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-sites-max"/>
         <property name="items">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.ItemsGroup" >
+                <bean class="org.jahia.services.toolbar.bean.ItemsGroup">
                     <property name="itemsResolver">
-                        <bean class="org.jahia.services.toolbar.resolver.impl.SitesItemsResolver" />
+                        <bean class="org.jahia.services.toolbar.resolver.impl.SitesItemsResolver"/>
                     </property>
                 </bean>
             </list>
@@ -734,7 +717,7 @@
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.createCategory"/>
+                <ref bean="org.jahia.toolbar.item.newCategory"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.export"/>
                 <ref bean="org.jahia.toolbar.item.import"/>
@@ -748,12 +731,12 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.createFolder"/>
-                <ref bean="org.jahia.toolbar.item.createContentList"/>
+                <ref bean="org.jahia.toolbar.item.newContentList"/>
                 <ref bean="org.jahia.toolbar.item.createContent"/>
                 <ref bean="org.jahia.toolbar.item.createPage"/>
-                <ref bean="org.jahia.toolbar.item.createMashup"/>
-                <ref bean="org.jahia.toolbar.item.createRssMashup"/>
-                <ref bean="org.jahia.toolbar.item.createGoogleGadgetMashup"/>
+                <ref bean="newMashup"/>
+                <ref bean="org.jahia.toolbar.item.newRss"/>
+                <ref bean="org.jahia.toolbar.item.newGadget"/>
                 <ref bean="org.jahia.toolbar.item.upload"/>
                 <ref bean="org.jahia.toolbar.item.download"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
@@ -842,9 +825,9 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.createFolder"/>
-                <ref bean="org.jahia.toolbar.item.createMashup"/>
-                <ref bean="org.jahia.toolbar.item.createRssMashup"/>
-                <ref bean="org.jahia.toolbar.item.createGoogleGadgetMashup"/>
+                <ref bean="newMashup"/>
+                <ref bean="org.jahia.toolbar.item.newRss"/>
+                <ref bean="org.jahia.toolbar.item.newGadget"/>
             </list>
         </property>
     </bean>
@@ -868,7 +851,7 @@
         <property name="layout" value="button"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.createCategory"/>
+                <ref bean="org.jahia.toolbar.item.newCategory"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.export"/>
                 <ref bean="org.jahia.toolbar.item.import"/>
@@ -881,12 +864,12 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.createFolder"/>
-                <ref bean="org.jahia.toolbar.item.createContentList"/>
+                <ref bean="org.jahia.toolbar.item.newContentList"/>
                 <ref bean="org.jahia.toolbar.item.createContent"/>
                 <ref bean="org.jahia.toolbar.item.createPage"/>
-                <ref bean="org.jahia.toolbar.item.createMashup"/>
-                <ref bean="org.jahia.toolbar.item.createRssMashup"/>
-                <ref bean="org.jahia.toolbar.item.createGoogleGadgetMashup"/>
+                <ref bean="newMashup"/>
+                <ref bean="org.jahia.toolbar.item.newRss"/>
+                <ref bean="org.jahia.toolbar.item.newGadget"/>
                 <ref bean="org.jahia.toolbar.item.upload"/>
                 <ref bean="org.jahia.toolbar.item.download"/>
                 <ref bean="org.jahia.toolbar.item.webfolder"/>
@@ -951,9 +934,9 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.createFolder"/>
-                <ref bean="org.jahia.toolbar.item.createMashup"/>
-                <ref bean="org.jahia.toolbar.item.createRssMashup"/>
-                <ref bean="org.jahia.toolbar.item.createGoogleGadgetMashup"/>
+                <ref bean="newMashup"/>
+                <ref bean="org.jahia.toolbar.item.newRss"/>
+                <ref bean="org.jahia.toolbar.item.newGadget"/>
             </list>
         </property>
     </bean>
@@ -988,18 +971,20 @@
 
     <!-- base item: open window, redirect, display info, ajax action, separator-->
     <bean id="org.jahia.toolbar.item.OpenWindow" class="org.jahia.services.toolbar.bean.Item">
-        <property name="type" value="org.jahia.toolbar.item.OpenWindow"/>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+        </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
                     <property name="value" value="http://www.jahia.org"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="width"/>
                     <property name="value" value="1020"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="height"/>
                     <property name="value" value="730"/>
                 </bean>
@@ -1008,16 +993,19 @@
     </bean>
 
     <bean id="org.jahia.toolbar.item.OpenEngineWindow" class="org.jahia.services.toolbar.bean.Item">
-        <property name="type" value="org.jahia.toolbar.item.OpenEngineWindow"/>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenEngineWindowActionItem"/>
+        </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="windowName"/>
                     <property name="value" value="enginePopupWindow"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="parameters"/>
-                    <property name="value" value="menubar=no,location=no,resizable=yes,scrollbars=yes,status=yes,width=1020,height=730"/>
+                    <property name="value"
+                              value="menubar=no,location=no,resizable=yes,scrollbars=yes,status=yes,width=1020,height=730"/>
                 </bean>
             </list>
         </property>
@@ -1025,10 +1013,12 @@
 
     <!-- Redirect item-->
     <bean id="org.jahia.toolbar.item.RedirectWindow" class="org.jahia.services.toolbar.bean.Item">
-        <property name="type" value="org.jahia.toolbar.item.RedirectWindow"/>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+        </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
                     <property name="value" value="http://www.jahia.org"/>
                 </bean>
@@ -1038,18 +1028,20 @@
 
     <!-- base item: open window, redirect, display info, ajax action, separator-->
     <bean id="org.jahia.toolbar.item.OpenHTMLWindow" class="org.jahia.services.toolbar.bean.Item">
-        <property name="type" value="org.jahia.toolbar.item.OpenHTMLWindow"/>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenHTMLWindowActionItem"/>
+        </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="html"/>
                     <property name="value" value="simple test"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="width"/>
                     <property name="value" value="1020"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="height"/>
                     <property name="value" value="730"/>
                 </bean>
@@ -1060,24 +1052,28 @@
 
     <!-- Ajax Action item-->
     <bean id="org.jahia.toolbar.item.AjaxAction" class="org.jahia.services.toolbar.bean.Item">
-        <property name="type" value="org.jahia.toolbar.item.AjaxAction"/>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.AjaxActionActionItem"/>
+        </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="classAction"/>
-                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.SimpleAjaxActionImpl"/>
+                    <property name="value"
+                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.SimpleAjaxActionImpl"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="action"/>
                     <property name="value" value="userInfo"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="onSuccess"/>
                     <property name="value" value="info"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="onFailureMessage"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.ResourceBundlePropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.ResourceBundlePropertyResolver"/>
                     <property name="inputProvider" value="toolbar.ajaxaction.failure"/>
                 </bean>
             </list>
@@ -1086,10 +1082,12 @@
 
     <!-- InfoPanel item-->
     <bean id="org.jahia.toolbar.item.InfoPanel" class="org.jahia.services.toolbar.bean.Item">
-        <property name="type" value="org.jahia.toolbar.item.InfoPanel"/>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.InfoActionItem"/>
+        </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="info"/>
                     <property name="value" value="Jahia"/>
                 </bean>
@@ -1098,16 +1096,17 @@
     </bean>
 
     <!-- Separator item-->
-    <bean id="org.jahia.toolbar.item.Separator" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.Separator" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SeparatorActionItem"/>
+        </property>
+    </bean>
 
     <!-- fill item-->
-    <bean id="org.jahia.toolbar.item.Fill" class="org.jahia.services.toolbar.bean.Item"/>
-
-    <bean id="org.jahia.toolbar.item.Toolbars" class="org.jahia.services.toolbar.bean.Item"/>
-
-    <bean id="org.jahia.toolbar.item.ToolbarsTitle" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.Toolbars">
-        <property name="titleKey" value="toolbar.view.toolbars"/>
+    <bean id="org.jahia.toolbar.item.Fill" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.FillActionItem"/>
+        </property>
     </bean>
 
     <!-- License information -->
@@ -1122,9 +1121,10 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="info"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.InfoPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.InfoPropertyResolver"/>
                     <property name="inputProvider" value="license_30"/>
                 </bean>
             </list>
@@ -1145,9 +1145,10 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="info"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.InfoPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.InfoPropertyResolver"/>
                     <property name="inputProvider" value="user"/>
                 </bean>
             </list>
@@ -1163,15 +1164,16 @@
         <property name="descriptionKey" value="operationMode.live"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="needAuthentication" value="true" />
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver" />
-                <property name="inputResolver" value="live" />
+                <property name="needAuthentication" value="true"/>
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver"/>
+                <property name="inputResolver" value="live"/>
             </bean>
         </property>
 
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="js.url"/>
                     <property name="value" value="liveUrl"/>
                 </bean>
@@ -1179,7 +1181,8 @@
         </property>
         <property name="selected">
             <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
                 <property name="inputResolver" value="live"/>
             </bean>
         </property>
@@ -1194,14 +1197,15 @@
         <property name="descriptionKey" value="operationMode.compare"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver" />
-                <property name="inputResolver" value="compare" />
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver"/>
+                <property name="inputResolver" value="compare"/>
             </bean>
         </property>
 
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="js.url"/>
                     <property name="value" value="compareUrl"/>
                 </bean>
@@ -1209,22 +1213,9 @@
         </property>
         <property name="selected">
             <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
                 <property name="inputResolver" value="compare"/>
-            </bean>
-        </property>
-    </bean>
-
-    <!-- Advanced Compare -->
-    <bean id="org.jahia.toolbar.item.AdvancedCompare" class="org.jahia.services.toolbar.bean.Item">
-        <property name="titleKey" value="button.advancedcompare"/>
-        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-compare-min"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-compare-normal"/>
-        <property name="descriptionKey" value="operationMode.compare"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver" />
-                <property name="inputResolver" value="compare" />
             </bean>
         </property>
     </bean>
@@ -1238,13 +1229,14 @@
         <property name="descriptionKey" value="operationMode.preview"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver" />
-                <property name="inputResolver" value="preview" />
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver"/>
+                <property name="inputResolver" value="preview"/>
             </bean>
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="js.url"/>
                     <property name="value" value="previewUrl"/>
                 </bean>
@@ -1252,7 +1244,8 @@
         </property>
         <property name="selected">
             <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
                 <property name="inputResolver" value="preview"/>
             </bean>
         </property>
@@ -1266,8 +1259,9 @@
         <property name="descriptionKey" value="operationMode.preview"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver" />
-                <property name="inputResolver" value="preview" />
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver"/>
+                <property name="inputResolver" value="preview"/>
             </bean>
         </property>
     </bean>
@@ -1281,13 +1275,14 @@
         <property name="descriptionKey" value="operationMode.edit"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver" />
-                <property name="inputResolver" value="edit" />
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver"/>
+                <property name="inputResolver" value="edit"/>
             </bean>
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="js.url"/>
                     <property name="value" value="editUrl"/>
                 </bean>
@@ -1295,7 +1290,8 @@
         </property>
         <property name="selected">
             <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
                 <property name="inputResolver" value="edit"/>
             </bean>
         </property>
@@ -1315,9 +1311,10 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="mysettings"/>
                 </bean>
             </list>
@@ -1338,9 +1335,10 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="admin"/>
                 </bean>
             </list>
@@ -1361,9 +1359,10 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="gwtfilemanager"/>
                 </bean>
             </list>
@@ -1384,9 +1383,10 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="contentmanager"/>
                 </bean>
             </list>
@@ -1408,9 +1408,10 @@
 
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="gwtmashupmanager"/>
                 </bean>
             </list>
@@ -1431,9 +1432,10 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="gwtcategorymanager"/>
                 </bean>
             </list>
@@ -1454,9 +1456,10 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="gwtsitemanager"/>
                 </bean>
             </list>
@@ -1477,78 +1480,19 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="gwtworkflowmanager"/>
                 </bean>
             </list>
         </property>
     </bean>
 
-    <!-- Publish Page -->
-    <bean id="org.jahia.toolbar.item.PublishPage" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.AjaxAction">
-        <property name="titleKey" value="button.publishpage"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="mode" value="edit"/>
-            </bean>
-        </property>
-        <property name="descriptionKey" value="button.publishpage.description"/>
-        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-publishpage-min"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-publishpage-normal"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
-                    <property name="name" value="addComment"/>
-                    <property name="value" value="true"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
-                    <property name="name" value="onSuccess"/>
-                    <property name="value" value="notification"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
-                    <property name="name" value="classAction"/>
-                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.QuickValidationActionImpl"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Principal aliasing -->
-    <!--item type="org.jahia.toolbar.item.PrincipalAliasing" parent="org.jahia.toolbar.item.AjaxAction">
-        <property name="titleKey" value="button.principalAliasing"/>
-        <property name="descriptionKey" value="button.principalAliasing.description"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-                <property name="mode" value="edit,compare,preview"/>
-            </bean>
-        </property>
-        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-principalAliasing-min"/>
-<property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-principalAliasing-normal"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
-                    <property name="name" value="onSuccess"/>
-                    <property name="value" value="redirect"/>
-                </bean>
-            </list>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
-                    <property name="name" value="classAction"/>
-                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.PrincipalAliasingAjaxActionImpl"/>
-                </bean>
-            </list>
-        </property>
-    </item-->
-
-
     <!-- P-display -->
-    <bean id="org.jahia.toolbar.item.Pdisplay" class="org.jahia.services.toolbar.bean.Item" parent="org.jahia.toolbar.item.OpenWindow">
+    <bean id="org.jahia.toolbar.item.Pdisplay" class="org.jahia.services.toolbar.bean.Item"
+          parent="org.jahia.toolbar.item.OpenWindow">
         <property name="titleKey" value="button.monitor"/>
         <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-monitor-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-monitor-normal"/>
@@ -1560,9 +1504,10 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="monitor"/>
                 </bean>
             </list>
@@ -1583,9 +1528,10 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="logout"/>
                 </bean>
             </list>
@@ -1605,9 +1551,10 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="login"/>
                 </bean>
             </list>
@@ -1627,16 +1574,18 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="cache_on"/>
                 </bean>
             </list>
         </property>
         <property name="selected">
             <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.CacheModeSelectedResolver"/>
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.CacheModeSelectedResolver"/>
                 <property name="inputResolver" value="cache_on"/>
             </bean>
         </property>
@@ -1655,16 +1604,18 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="cache_debug"/>
                 </bean>
             </list>
         </property>
         <property name="selected">
             <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.CacheModeSelectedResolver"/>
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.CacheModeSelectedResolver"/>
                 <property name="inputResolver" value="cache_debug"/>
             </bean>
         </property>
@@ -1683,11 +1634,12 @@
         <property name="titleKey" value="button.flushAll"/>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="classAction"/>
-                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.FlushAjaxActionImpl"/>
+                    <property name="value"
+                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.FlushAjaxActionImpl"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="action"/>
                     <property name="value" value="flushAllCaches"/>
                 </bean>
@@ -1708,11 +1660,12 @@
         <property name="titleKey" value="button.flushSite"/>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="classAction"/>
-                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.FlushAjaxActionImpl"/>
+                    <property name="value"
+                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.FlushAjaxActionImpl"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="action"/>
                     <property name="value" value="flushSite"/>
                 </bean>
@@ -1733,11 +1686,12 @@
         <property name="titleKey" value="button.flushPage"/>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="classAction"/>
-                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.FlushAjaxActionImpl"/>
+                    <property name="value"
+                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.FlushAjaxActionImpl"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="action"/>
                     <property name="value" value="flushPage"/>
                 </bean>
@@ -1763,25 +1717,27 @@
         </property>
         <property name="selected">
             <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
                 <property name="inputResolver" value="acldiff.activated"/>
             </bean>
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="toggle"/>
                     <property name="value" value="true"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="onSuccess"/>
                     <property name="value" value="refresh"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="classAction"/>
-                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
+                    <property name="value"
+                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="prefName"/>
                     <property name="value" value="acldiff.activated"/>
                 </bean>
@@ -1804,25 +1760,27 @@
         </property>
         <property name="selected">
             <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
                 <property name="inputResolver" value="timebasepublishing.activated"/>
             </bean>
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="toggle"/>
                     <property name="value" value="true"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="onSuccess"/>
                     <property name="value" value="refresh"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="classAction"/>
-                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
+                    <property name="value"
+                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="prefName"/>
                     <property name="value" value="timebasepublishing.activated"/>
                 </bean>
@@ -1845,29 +1803,31 @@
         </property>
         <property name="selected">
             <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
                 <property name="inputResolver" value="inlineediting.activated"/>
             </bean>
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="toggle"/>
                     <property name="value" value="true"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="flushPageCache"/>
                     <property name="value" value="true"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="onSuccess"/>
                     <property name="value" value="refresh"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="classAction"/>
-                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
+                    <property name="value"
+                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="prefName"/>
                     <property name="value" value="inlineediting.activated"/>
                 </bean>
@@ -1883,30 +1843,33 @@
         <property name="descriptionKey" value="button.integrity.description"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.IntegrityVisibilityResolver"/>
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.IntegrityVisibilityResolver"/>
             </bean>
         </property>
         <property name="selected">
             <bean class="org.jahia.services.toolbar.bean.Selected">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"/>
                 <property name="inputResolver" value="integrity.activated"/>
             </bean>
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="toggle"/>
                     <property name="value" value="true"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="onSuccess"/>
                     <property name="value" value="refresh"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="classAction"/>
-                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
+                    <property name="value"
+                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.UpdateVariableAjaxActionImpl"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="prefName"/>
                     <property name="value" value="integrity.activated"/>
                 </bean>
@@ -1919,6 +1882,9 @@
 
     <!-- Notification -->
     <bean id="org.jahia.toolbar.item.Notification" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NotificationActionItem"/>
+        </property>
         <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-notification-ok"/>
         <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-notification-ok"/>
     </bean>
@@ -1929,7 +1895,7 @@
           parent="org.jahia.toolbar.item.AjaxAction">
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="action"/>
                     <property name="value" value="licenseInfo"/>
                 </bean>
@@ -1945,7 +1911,7 @@
         <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-sitestat-normal"/>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="addComment"/>
                     <property name="value" value="siteStats"/>
                 </bean>
@@ -1960,7 +1926,7 @@
         <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-sitestat-normal"/>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="addComment"/>
                     <property name="value" value="pageStats"/>
                 </bean>
@@ -1968,8 +1934,9 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.SimpleVisibilityResolver" />
-                <property name="inputResolver" value="pageStats" />
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.SimpleVisibilityResolver"/>
+                <property name="inputResolver" value="pageStats"/>
             </bean>
         </property>
     </bean>
@@ -1980,8 +1947,9 @@
           parent="org.jahia.toolbar.item.AjaxAction">
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.BookmarkActionVisibilityResolver" />
-                <property name="inputResolver" value="bookmark.current.page" />
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.BookmarkActionVisibilityResolver"/>
+                <property name="inputResolver" value="bookmark.current.page"/>
             </bean>
         </property>
         <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-bookmarkadd-min"/>
@@ -1989,15 +1957,16 @@
         <property name="titleKey" value="button.bookmarkCurrentPage"/>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="onSuccess"/>
                     <property name="value" value="refresh"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="classAction"/>
-                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.BookmarkAjaxActionImpl"/>
+                    <property name="value"
+                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.BookmarkAjaxActionImpl"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="action"/>
                     <property name="value" value="bookmark.current.page"/>
                 </bean>
@@ -2010,23 +1979,25 @@
         <property name="titleKey" value="button.deleteBookmarkCurrentPage"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.BookmarkActionVisibilityResolver" />
-                <property name="inputResolver" value="delete.bookmark.current.page" />
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.BookmarkActionVisibilityResolver"/>
+                <property name="inputResolver" value="delete.bookmark.current.page"/>
             </bean>
         </property>
         <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-bookmarkdelete-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-bookmarkdelete-normal"/>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="onSuccess"/>
                     <property name="value" value="refresh"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="classAction"/>
-                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.BookmarkAjaxActionImpl"/>
+                    <property name="value"
+                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.BookmarkAjaxActionImpl"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="action"/>
                     <property name="value" value="bookmark.delete.current.page"/>
                 </bean>
@@ -2036,13 +2007,16 @@
 
     <!-- subscriptions -->
     <bean id="org.jahia.toolbar.item.Subscriptions" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SubscriptionsActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.subscriptions.button.page.title"/>
         <property name="descriptionKey" value="toolbar.subscriptions.button.page.description"/>
         <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-subscriptions-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-subscriptions-normal"/>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="events"/>
                     <property name="value" value="contentPublished,commentAdded"/>
                 </bean>
@@ -2057,23 +2031,26 @@
         <property name="descriptionKey" value="toolbar.subscriptions.button.newsletter.description"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver" value="org.jahia.services.toolbar.resolver.impl.SendAsNewsletterVisibilityResolver" />
+                <property name="classResolver"
+                          value="org.jahia.services.toolbar.resolver.impl.SendAsNewsletterVisibilityResolver"/>
             </bean>
         </property>
         <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-subscriptions-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-subscriptions-normal"/>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="classAction"/>
-                    <property name="value" value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.SendAsNewsletterActionImpl"/>
+                    <property name="value"
+                              value="org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.SendAsNewsletterActionImpl"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="confirmation"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.ResourceBundlePropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.ResourceBundlePropertyResolver"/>
                     <property name="inputProvider" value="toolbar.subscriptions.button.newsletter.confirmation"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="onSuccess"/>
                     <property name="value" value="info"/>
                 </bean>
@@ -2086,12 +2063,13 @@
         <property name="descriptionKey" value="toolbar.subscriptions.button.newsletterTest.description"/>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="prompt"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.ResourceBundlePropertyResolver"/>
+                    <property name="classProvider"
+                              value="org.jahia.services.toolbar.resolver.impl.ResourceBundlePropertyResolver"/>
                     <property name="inputProvider" value="toolbar.subscriptions.button.newsletterTest.description"/>
                 </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
+                <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="action"/>
                     <property name="value" value="test"/>
                 </bean>
@@ -2101,6 +2079,9 @@
 
     <!-- new edit mode buttons: create -->
     <bean id="org.jahia.toolbar.item.createPage" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CreatePageActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.edit.button.newpage"/>
         <property name="minIconStyle" value="fm-newpage"/>
         <property name="mediumIconStyle" value="fm-newpage"/>
@@ -2110,6 +2091,9 @@
 
     <!-- new edit mode buttons: publish -->
     <bean id="org.jahia.toolbar.item.publish" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.edit.button.publish"/>
         <property name="minIconStyle" value="fm-newcontent"/>
         <property name="mediumIconStyle" value="fm-newcontent"/>
@@ -2118,6 +2102,9 @@
 
     <!-- new edit mode buttons: unpublish -->
     <bean id="org.jahia.toolbar.item.unpublish" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.edit.button.unpublish"/>
         <property name="minIconStyle" value="fm-newcontent"/>
         <property name="mediumIconStyle" value="fm-newcontent"/>
@@ -2126,6 +2113,9 @@
 
     <!-- new edit mode buttons: unpublish -->
     <bean id="org.jahia.toolbar.item.viewPublishStatus" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewPublishStatusActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.edit.button.status"/>
         <property name="minIconStyle" value="fm-newcontent"/>
         <property name="mediumIconStyle" value="fm-newcontent"/>
@@ -2134,6 +2124,9 @@
 
     <!-- new edit mode buttons: lock -->
     <bean id="org.jahia.toolbar.item.lock" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.LockActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.edit.button.lock"/>
         <property name="minIconStyle" value="fm-lock"/>
         <property name="mediumIconStyle" value="fm-lock"/>
@@ -2142,6 +2135,9 @@
 
     <!-- new edit mode buttons: unlock -->
     <bean id="org.jahia.toolbar.item.unlock" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnlockActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.edit.button.unlock"/>
         <property name="minIconStyle" value="fm-unlock"/>
         <property name="mediumIconStyle" value="fm-unlock"/>
@@ -2150,6 +2146,9 @@
 
     <!-- new edit mode buttons: edit -->
     <bean id="org.jahia.toolbar.item.edit" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.EditContentActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.edit.button.edit"/>
         <property name="minIconStyle" value="fm-edit"/>
         <property name="mediumIconStyle" value="fm-edit"/>
@@ -2158,6 +2157,9 @@
 
     <!-- new edit mode buttons: delete -->
     <bean id="org.jahia.toolbar.item.delete" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.edit.button.remove"/>
         <property name="minIconStyle" value="fm-remove"/>
         <property name="mediumIconStyle" value="fm-remove"/>
@@ -2166,64 +2168,150 @@
 
     <!-- new content action buttons  -->
     <bean id="org.jahia.toolbar.item.copy" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CopyActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.copy"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.createCategory" class="org.jahia.services.toolbar.bean.Item"/>
-    <bean id="org.jahia.toolbar.item.createContentList" class="org.jahia.services.toolbar.bean.Item"/>
-    <bean id="org.jahia.toolbar.item.createContent" class="org.jahia.services.toolbar.bean.Item"/>
+
+    <bean id="org.jahia.toolbar.item.newCategory" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewCategoryActionItem"/>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.item.newContentList" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentListActionItem"/>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.item.createContent" class="org.jahia.services.toolbar.bean.Item">
+
+    </bean>
+
     <bean id="org.jahia.toolbar.item.createFolder" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewFolderActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.createFolder"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.createGoogleGadgetMashup"
-          class="org.jahia.services.toolbar.bean.Item"/>
-    <bean id="org.jahia.toolbar.item.createMashup" class="org.jahia.services.toolbar.bean.Item"/>
-    <bean id="org.jahia.toolbar.item.createRssMashup" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.newGadget" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewGadgetActionItem"/>
+        </property>
+    </bean>
+
+    <bean id="newMashup" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewMashupActionItem"/>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.toolbar.item.newRss" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRssActionItem"/>
+        </property>
+
+    </bean>
     <bean id="org.jahia.toolbar.item.crop" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CropActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.crop"/>
     </bean>
     <bean id="org.jahia.toolbar.item.cut" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CutActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.cut"/>
     </bean>
     <bean id="org.jahia.toolbar.item.download" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DownloadActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.download"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.export" class="org.jahia.services.toolbar.bean.Item"/>
-    <bean id="org.jahia.toolbar.item.import" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.export" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExportActionItem"/>
+        </property>
 
+    </bean>
+    <bean id="org.jahia.toolbar.item.import" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ImportActionItem"/>
+        </property>
+    </bean>
     <bean id="org.jahia.toolbar.item.mount" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.MountActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.mount"/>
     </bean>
     <bean id="org.jahia.toolbar.item.paste" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PasteActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.paste"/>
     </bean>
     <bean id="org.jahia.toolbar.item.pasteReference" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PasteReferenceActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.pasteReference"/>
     </bean>
     <bean id="org.jahia.toolbar.item.preview" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PreviewActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.preview"/>
     </bean>
     <bean id="org.jahia.toolbar.item.refresh" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RefreshActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.refresh"/>
     </bean>
     <bean id="org.jahia.toolbar.item.rename" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RenameActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.rename"/>
     </bean>
     <bean id="org.jahia.toolbar.item.resize" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ResizeActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.resize"/>
     </bean>
     <bean id="org.jahia.toolbar.item.rotate" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RotateActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.rotate"/>
     </bean>
     <bean id="org.jahia.toolbar.item.unmount" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnmountActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.unmount"/>
     </bean>
     <bean id="org.jahia.toolbar.item.upload" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UploadActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.upload"/>
     </bean>
     <bean id="org.jahia.toolbar.item.unzip" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnzipActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.unzip"/>
     </bean>
     <bean id="org.jahia.toolbar.item.webfolder" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WebfolderActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.webfolder"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
@@ -2234,6 +2322,9 @@
         </property>
     </bean>
     <bean id="org.jahia.toolbar.item.zip" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ZipActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.zip"/>
     </bean>
     <!-- end of new content action buttons -->

@@ -60,7 +60,7 @@ import java.math.BigDecimal;
  * To change this template use File | Settings | File Templates.
  */
 public class JCRNodeDecorator implements JCRNodeWrapper {
-    private JCRNodeWrapper node;
+    protected JCRNodeWrapper node;
 
     public JCRNodeDecorator(JCRNodeWrapper node) {
         this.node = node;

@@ -81,51 +81,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     protected Exception exception = null;
     private static final String J_PRIVILEGES = "j:privileges";
 
-    protected JCRNodeWrapperImpl(String path, JCRSessionWrapper session, JCRStoreProvider provider) {
-        super(session, provider);
-        localPath = path;
-        if (localPath != null) {
-            if (localPath.endsWith("/")) {
-                localPath = localPath.substring(0, localPath.length()-1);
-            }
-            if (!localPath.startsWith("/")) {
-                localPath = "/" + localPath;
-            }
-        }
-        final Monitor mon;
-        if (monitorLogger.isDebugEnabled()) {
-            mon = MonitorFactory.start("org.jahia.services.content.JCRNodeWrapper.init");
-        } else {
-            mon = null;
-        }
-        try {
-            if (path != null) {
-                if (path.startsWith("/")) {
-                    String versionNumber = null;
-                    String realPath = path;
-                    if(path.contains("?v=")) {
-                        String[] strings = path.split("\\?v=");
-                        realPath = strings[0];
-                        versionNumber = strings[1];
-                    }
-                    objectNode = (Node) session.getProviderSession(provider).getItem(provider.encodeInternalName(realPath));
-                    if(versionNumber!=null) {
-                        objectNode = getFrozenVersion(versionNumber);
-                    }
-                } else {
-                    objectNode = session.getProviderSession(provider).getNodeByUUID(path);
-                    this.localPath = objectNode.getPath();
-                }
-                setItem(objectNode);
-            }
-        } catch (PathNotFoundException e) {
-            exception = e;
-        } catch (Exception e) {
-            exception = e;
-        }
-        if (mon != null) mon.stop();
-    }
-
     protected JCRNodeWrapperImpl(Node objectNode, JCRSessionWrapper session, JCRStoreProvider provider) {
         super(session, provider);
         this.objectNode = objectNode;
@@ -407,83 +362,100 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return map;
     }
 
+    /**
+     * @deprecated
+     * @return
+     */
     public List<JCRNodeWrapper> getChildren() {
         List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
         try {
-            if (provider.getService() != null) {
-                Map<String, JCRStoreProvider> mountPoints = provider.getSessionFactory().getMountPoints();
-                for (Map.Entry<String,JCRStoreProvider> key : mountPoints.entrySet()) {
-                    if (!key.getKey().equals("/")) {
-                        String mpp = key.getKey().substring(0, key.getKey().lastIndexOf('/'));
-                        if (mpp.equals("")) mpp="/";
-                        if (mpp.equals(getPath())) {
-                            JCRStoreProvider storeProvider = key.getValue();
-                            String root = storeProvider.getRelativeRoot();
-                            list.add(storeProvider.getNodeWrapper(session.getProviderSession(storeProvider).getNode(root.length() == 0 ? "/" : root), session));
-                        }
-                    }
-                }
-            }
-            if (exception != null) {
-                return list;
-            }
-            NodeIterator ni = objectNode.getNodes();
-
-            while (ni.hasNext()) {
-                Node node = ni.nextNode();
-                if (session.getLocale() == null || !node.getName().equals("j:translation")) {
-                    JCRNodeWrapper child = provider.getNodeWrapper(node, session);
-                    list.add (child);
-                }
+            NodeIterator nodes = getNodes();
+            while (nodes.hasNext()) {
+                JCRNodeWrapper node = (JCRNodeWrapper) nodes.next();
+                list.add(node);
             }
         } catch (RepositoryException e) {
             logger.error("Repository error",e);
         }
-
         return list;
     }
 
     public List<JCRNodeWrapper> getEditableChildren() {
         List list = getChildren();
-        list.add(new JCRNodeWrapperImpl(getPath()+"/*", session, provider));
+        list.add(new JCRPlaceholderNode(this));
         return list;
     }
 
+    /**
+     * @deprecated
+     * @return
+     */
     public List<JCRNodeWrapper> getChildren(String name) {
         List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
         try {
-            if (provider.getService() != null) {
-                Map<String, JCRStoreProvider> mountPoints = provider.getSessionFactory().getMountPoints();
-
-                if (mountPoints.containsKey(getPath()+"/"+name)) {
-                    JCRStoreProvider storeProvider = mountPoints.get(getPath() + "/" + name);
-                    list.add(storeProvider.getNodeWrapper(session.getProviderSession(storeProvider).getNode(storeProvider.getRelativeRoot()), session));
-                }
-            }
-            if (exception != null) {
-                return list;
-            }
-            NodeIterator ni = objectNode.getNodes(name);
-
-            while (ni.hasNext()) {
-                Node node = ni.nextNode();
-                JCRNodeWrapper child = provider.getNodeWrapper(node, session);
-                list.add (child);
+            NodeIterator nodes = getNodes(name);
+            while (nodes.hasNext()) {
+                JCRNodeWrapper node = (JCRNodeWrapper) nodes.next();
+                list.add(node);    
             }
         } catch (RepositoryException e) {
             logger.error("Repository error",e);
         }
-
         return list;
     }
 
     public NodeIterator getNodes() throws RepositoryException {
-        List<JCRNodeWrapper> list = getChildren();
+        List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
+        if (provider.getService() != null) {
+            Map<String, JCRStoreProvider> mountPoints = provider.getSessionFactory().getMountPoints();
+            for (Map.Entry<String, JCRStoreProvider> entry : mountPoints.entrySet()) {
+                if (!entry.getKey().equals("/")) {
+                    String mpp = entry.getKey().substring(0, entry.getKey().lastIndexOf('/'));
+                    if (mpp.equals("")) mpp="/";
+                    if (mpp.equals(getPath())) {
+                        JCRStoreProvider storeProvider = entry.getValue();
+                        String root = storeProvider.getRelativeRoot();
+                        list.add(storeProvider.getNodeWrapper(session.getProviderSession(storeProvider).getNode(root.length() == 0 ? "/" : root), session));
+                    }
+                }
+            }
+        }
+        if (exception != null) {
+            return new NodeIteratorImpl(list.iterator(), list.size());
+        }
+        NodeIterator ni = objectNode.getNodes();
+
+        while (ni.hasNext()) {
+            Node node = ni.nextNode();
+            if (session.getLocale() == null || !node.getName().equals("j:translation")) {
+                JCRNodeWrapper child = provider.getNodeWrapper(node, session);
+                list.add (child);
+            }
+        }
         return new NodeIteratorImpl(list.iterator(), list.size());
     }
 
-    public NodeIterator getNodes(String s) throws RepositoryException {
-        List<JCRNodeWrapper> list = getChildren(s);
+    public NodeIterator getNodes(String name) throws RepositoryException {
+        List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
+        if (provider.getService() != null) {
+            Map<String, JCRStoreProvider> mountPoints = provider.getSessionFactory().getMountPoints();
+
+            if (mountPoints.containsKey(getPath()+"/"+name)) {
+                JCRStoreProvider storeProvider = mountPoints.get(getPath() + "/" + name);
+                list.add(storeProvider.getNodeWrapper(session.getProviderSession(storeProvider).getNode(storeProvider.getRelativeRoot()), session));
+            }
+        }
+        if (exception != null) {
+            return new NodeIteratorImpl(list.iterator(), list.size());
+        }
+        NodeIterator ni = objectNode.getNodes(name);
+
+        while (ni.hasNext()) {
+            Node node = ni.nextNode();
+            JCRNodeWrapper child = provider.getNodeWrapper(node, session);
+            list.add (child);
+        }
+
         return new NodeIteratorImpl(list.iterator(), list.size());
     }
 

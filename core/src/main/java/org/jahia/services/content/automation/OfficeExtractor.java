@@ -109,7 +109,7 @@ public class OfficeExtractor implements Extractor {
                         logger.info("Well known property : " + wellKnownPID.substring(4).toLowerCase() + " = "+ o);
                     } else if (sec.getProperty(0) != null) {
                         Map<Object, Object> dict = (Map<Object, Object>)sec.getProperty(0);
-                        String s = (String) dict.get(new Long(property.getID()));
+                        String s = (String) dict.get(property.getID());
                         if (o instanceof String) {
                             try {
                                 // fix poi string decoding

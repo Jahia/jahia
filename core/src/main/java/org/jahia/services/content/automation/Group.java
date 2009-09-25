@@ -31,14 +31,12 @@
  */
 package org.jahia.services.content.automation;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 
 /**

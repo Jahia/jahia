@@ -136,6 +136,42 @@ public class Templates implements ValueInitializer {
             return displayName;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            Template template = (Template) o;
+
+            if (displayName != null ? !displayName.equals(template.displayName) : template.displayName != null) {
+                return false;
+            }
+            if (key != null ? !key.equals(template.key) : template.key != null) {
+                return false;
+            }
+            if (ownerPackage != null ? !ownerPackage.equals(template.ownerPackage) : template.ownerPackage != null) {
+                return false;
+            }
+            if (path != null ? !path.equals(template.path) : template.path != null) {
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = path != null ? path.hashCode() : 0;
+            result = 31 * result + (key != null ? key.hashCode() : 0);
+            result = 31 * result + (ownerPackage != null ? ownerPackage.hashCode() : 0);
+            result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
+            return result;
+        }
+
         public int compareTo(Template template) {
             if (ownerPackage == null) {
                 if (template.ownerPackage != null ) {

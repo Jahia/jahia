@@ -49,8 +49,6 @@ import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.*;
 import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.query.qom.QueryObjectModelFactory;
-import javax.jcr.query.qom.Selector;
-import javax.jcr.query.qom.Source;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionManager;
@@ -336,12 +334,6 @@ public class JCRWorkspaceWrapper implements Workspace {
             return new QueryExecute(){
                 public QueryResult execute(QueryObjectModel queryObjectModel) throws RepositoryException {
                     List<JCRWorkspaceWrapper.QueryResultWrapper> results = new ArrayList<JCRWorkspaceWrapper.QueryResultWrapper>();
-                    String nodeType = "";
-                    Source source = queryObjectModel.getSource();
-                    if (source instanceof Selector) {
-                        nodeType = ((Selector)source).getNodeTypeName();
-                    } 
-
                     for (JCRStoreProvider jcrStoreProvider : service.getProviders().values()) {
                         QueryManager qm = jcrStoreProvider.getQueryManager(session);
                         if (qm != null

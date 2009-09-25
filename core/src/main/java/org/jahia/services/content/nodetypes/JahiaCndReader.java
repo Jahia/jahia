@@ -402,20 +402,20 @@ public class JahiaCndReader {
                 nextToken();
                 doChildNodeDefinition(listNodeDef, ntd);
                 ExtendedNodeType[] ctnTypes = listNodeDef.getRequiredPrimaryTypes();
-                String ctnListTypeName = ctnTypes[0].getNameObject().getPrefix()+":";
+                StringBuffer ctnListTypeName = new StringBuffer(ctnTypes[0].getNameObject().getPrefix()+":");
                 for (ExtendedNodeType ctnType : ctnTypes) {
-                    ctnListTypeName += ctnType.getNameObject().getLocalName();
+                    ctnListTypeName.append(ctnType.getNameObject().getLocalName());
                 }
                 if (listNodeDef.isMandatory()) {
-                    ctnListTypeName += "Mandatory";
+                    ctnListTypeName.append("Mandatory");
                 }
-                ctnListTypeName += "Single";
-                listNodeDef.setRequiredPrimaryTypes(new String[] {ctnListTypeName});
+                ctnListTypeName.append("Single");
+                listNodeDef.setRequiredPrimaryTypes(new String[] {ctnListTypeName.toString()});
                 try {
-                    registry.getNodeType(ctnListTypeName);
+                    registry.getNodeType(ctnListTypeName.toString());
                 } catch (NoSuchNodeTypeException e) {
                     ExtendedNodeType listType = new ExtendedNodeType(registry, systemId);
-                    listType.setName(parseName(ctnListTypeName));
+                    listType.setName(parseName(ctnListTypeName.toString()));
                     listType.setDeclaredSupertypes(new String[] {Constants.JAHIANT_CONTENTLIST});
                     listType.setHasOrderableChildNodes(true);
                     ExtendedNodeDefinition def = new ExtendedNodeDefinition(registry);

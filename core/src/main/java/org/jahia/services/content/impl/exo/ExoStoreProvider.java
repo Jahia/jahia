@@ -58,7 +58,7 @@ public class ExoStoreProvider extends JCRStoreProvider {
         try {
             String path = org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/exo/jahia-nodetypes.xml";
             Method m = tm.getClass().getMethod("registerNodeTypes", new Class[]{InputStream.class, Integer.TYPE});
-            m.invoke(tm, new Object[] {new FileInputStream(path), new Integer(ExtendedNodeTypeManager.IGNORE_IF_EXISTS)});
+            m.invoke(tm, new Object[] {new FileInputStream(path), ExtendedNodeTypeManager.IGNORE_IF_EXISTS});
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

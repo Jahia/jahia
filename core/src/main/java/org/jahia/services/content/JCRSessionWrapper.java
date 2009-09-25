@@ -176,13 +176,14 @@ public class JCRSessionWrapper implements Session {
             }
         }
         Map<String, JCRStoreProvider> mountPoints = sessionFactory.getMountPoints();
-        for (String mp : mountPoints.keySet()) {
-            if (mp.equals("/") || path.equals(mp) || path.startsWith(mp + "/")) {
+        for (Map.Entry<String,JCRStoreProvider> mp : mountPoints.entrySet()) {
+            String key = mp.getKey();
+            if (key.equals("/") || path.equals(key) || path.startsWith(key + "/")) {
                 String localPath = path;
-                if (!mp.equals("/")) {
-                    localPath = path.substring(mp.length());
+                if (!key.equals("/")) {
+                    localPath = path.substring(key.length());
                 }
-                JCRStoreProvider provider = mountPoints.get(mp);
+                JCRStoreProvider provider = mp.getValue();
                 if (localPath.equals("")) {
                     localPath = "/";
                 }

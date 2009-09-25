@@ -361,7 +361,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                     ExtendedPropertyDefinition propertyDefinition = def.getPropertyDefinition();
                     String[] vcs = propertyDefinition.getValueConstraints();
                     List<String> constraints = Arrays.asList(vcs);
-                    if (propertyDefinition != null && !propertyDefinition.isMultiple()) {
+                    if (!propertyDefinition.isMultiple()) {
                         if (value.startsWith("<jahia-resource")) {
                             value = ResourceBundleMarker.parseMarkerValue(value).getResourceKey();
                         }
@@ -440,7 +440,6 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             }
             final RetentionRule retentionRule = jahiaObjectDelegate.getRule();
             if(retentionRule instanceof RangeRetentionRule) {
-                RangeRetentionRule rule = (RangeRetentionRule) retentionRule;
                 if(RetentionRule.RULE_START_AND_END_DATE.equals(retentionRule.getRuleType())) {
                     initMixin(NodeTypeRegistry.getInstance().getNodeType("jmix:simpleTimebasedPublished"));
                 } else if (RetentionRule.RULE_XDAYINWEEK.equals(retentionRule.getRuleType())) {

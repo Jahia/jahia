@@ -115,7 +115,6 @@ public class JahiaContainerNodeImpl extends JahiaContentNodeImpl {
     protected void initNodes() throws RepositoryException {
         if (nodes == null ) {
             super.initNodes();
-            ProcessingContext processingContext = getProcessingContext();
             final List<Integer> containerListIDs = ServicesRegistry.getInstance().getJahiaContainersService().getSubContainerListIDs(contentContainer.getID(), getEntryLoadRequest());
             try {
                 for (final Integer curContainerListID : containerListIDs) {

@@ -158,10 +158,19 @@ public class TableView extends TopRightComponent {
             }
         };
         store.setStoreSorter(new FileStoreSorter());
-
-        m_table = new Grid<GWTJahiaNode>(store, getHeaders());
+        List<ColumnConfig> columns = getHeaders();
+        CheckBoxSelectionModel<GWTJahiaNode> checkboxSelectionModel = null;
+        if (configuration.isUseCheckboxForSelection()) {
+        	checkboxSelectionModel = new CheckBoxSelectionModel<GWTJahiaNode>();
+            columns.add(0, checkboxSelectionModel.getColumn());
+        }
+        m_table = new Grid<GWTJahiaNode>(store, new ColumnModel(columns));
         m_table.setBorders(true);
         m_table.setAutoExpandColumn(configuration.getTableColumns().isEmpty() || configuration.getTableColumns().contains("path") ? "path" : "name");
+        if (checkboxSelectionModel != null) {
+        	m_table.setSelectionModel(checkboxSelectionModel);
+        	m_table.addPlugin(checkboxSelectionModel);
+        }
         m_table.getSelectionModel().setSelectionMode(Style.SelectionMode.MULTI);
         m_table.addListener(Events.RowClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent event) {
@@ -245,7 +254,7 @@ public class TableView extends TopRightComponent {
         return m_component;
     }
 
-    private ColumnModel getHeaders() {
+    private List<ColumnConfig> getHeaders() {
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
         List<String> columnNames = new ArrayList<String>(configuration.getTableColumns());
         if (columnNames.isEmpty()) {
@@ -351,7 +360,7 @@ public class TableView extends TopRightComponent {
             }
         }
 
-        return new ColumnModel(headerList);
+        return headerList;
     }
 
 }

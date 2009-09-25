@@ -67,6 +67,7 @@ public class ManagerConfiguration implements Serializable {
     private boolean displayLock = true;
     private boolean displayDate = true;
     private boolean displayProvider = false;
+    private boolean useCheckboxForSelection = true;
     
     private String toolbarGroup; 
     
@@ -250,6 +251,14 @@ public class ManagerConfiguration implements Serializable {
 
 	public void setToolbarGroup(String toolbarGroup) {
     	this.toolbarGroup = toolbarGroup;
+    }
+
+	public boolean isUseCheckboxForSelection() {
+    	return useCheckboxForSelection;
+    }
+
+	public void setUseCheckboxForSelection(boolean useCheckboxForSelection) {
+    	this.useCheckboxForSelection = useCheckboxForSelection;
     }
 
 }

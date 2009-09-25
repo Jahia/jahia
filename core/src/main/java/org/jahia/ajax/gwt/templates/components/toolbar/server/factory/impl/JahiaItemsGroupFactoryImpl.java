@@ -31,12 +31,12 @@
  */
 package org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl;
 
+import org.jahia.ajax.gwt.client.data.GWTJahiaLabel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResultItem;
-import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionItemFactory;
 import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
@@ -48,10 +48,9 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.operations.valves.HistoryValve;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.ContentPage;
+import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
@@ -60,7 +59,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.toolbar.resolver.impl.URLPropertyResolver;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.JCRJahiaContentNode;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import java.util.*;
 
@@ -488,13 +487,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
      * @return
      */
     private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
-        try {
-            JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(uuid, jahiaUser);
-            return (ContentPage) nodeWrapper.getContentObject();
-        } catch (Exception e) {
-            logger.error(e, e);
             return null;
-        }
     }
 
 }

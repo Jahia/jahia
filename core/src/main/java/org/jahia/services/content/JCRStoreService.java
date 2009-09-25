@@ -48,11 +48,8 @@ import org.jahia.services.webdav.UsageEntry;
 import org.springframework.web.context.ServletContextAware;
 import org.xml.sax.ContentHandler;
 
-import javax.jcr.*;
-import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
 import java.util.*;
 
@@ -285,53 +282,6 @@ public class JCRStoreService extends JahiaService implements ServletContextAware
             logger.error(e);
         }
         return w;
-    }
-
-    public JCRNodeWrapper getNodeByUUID(String uuid, JahiaUser user) throws ItemNotFoundException, RepositoryException {
-        return sessionFactory.getThreadSession(user).getNodeByUUID(uuid);
-    }
-
-    public JCRNodeWrapper getNodeByUUID(String providerKey, String uuid, JahiaUser user) throws ItemNotFoundException, RepositoryException {
-        return sessionFactory.getThreadSession(user).getNodeByUUID(providerKey, uuid);
-    }
-
-    public QueryManager getQueryManager(JahiaUser user) {
-        try {
-            return sessionFactory.getThreadSession(user).getWorkspace().getQueryManager();
-        } catch (RepositoryException e) {
-            logger.error(e);
-        }
-        return null;
-    }
-
-    public QueryManager getQueryManager(JahiaUser user, ProcessingContext context) {
-        try {
-            return sessionFactory.getThreadSession(user).getWorkspace().getQueryManager(context);
-        } catch (RepositoryException e) {
-            logger.error(e);
-        }
-        return null;
-    }
-
-    public QueryManager getQueryManager(JahiaUser user, ProcessingContext context, Properties properties) {
-        try {
-            return sessionFactory.getThreadSession(user).getWorkspace().getQueryManager(context, properties);
-        } catch (RepositoryException e) {
-            logger.error(e);
-        }
-        return null;
-    }
-
-    /**
-     * @param queryObjectModel
-     * @param user
-     * @return
-     * @throws InvalidQueryException
-     * @throws RepositoryException
-     */
-    public QueryResult execute(QueryObjectModel queryObjectModel, JahiaUser user) throws InvalidQueryException,
-            RepositoryException {
-        return sessionFactory.getThreadSession(user).getWorkspace().execute(queryObjectModel);
     }
 
     /**

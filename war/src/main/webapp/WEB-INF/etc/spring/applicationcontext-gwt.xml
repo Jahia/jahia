@@ -53,7 +53,9 @@
     <bean name="layoutServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaLayoutService"/>
     </bean>
-    <bean name="gwtJahiaLayoutService" class="org.jahia.ajax.gwt.templates.components.layoutmanager.server.LayoutmanagerServiceImpl" scope="prototype"/>
+    <bean name="gwtJahiaLayoutService" class="org.jahia.ajax.gwt.templates.components.layoutmanager.server.LayoutmanagerServiceImpl" scope="prototype">
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
+    </bean>
 
     <bean name="contentManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaContentManagenentService"/>

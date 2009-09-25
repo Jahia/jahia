@@ -406,7 +406,7 @@
     <bean id="QueryService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.query.QueryService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="jcrStoreService" ref="JCRStoreService" />
+                <property name="sessionFactory" ref="jcrSessionFactory" />
             </bean>        
         </property>
     </bean>

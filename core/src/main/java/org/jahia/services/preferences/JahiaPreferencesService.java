@@ -83,7 +83,7 @@ public class JahiaPreferencesService extends JahiaService {
             }
             provider.setType(providerType);
             provider.setNodeType(providerTypes.get(providerType));
-            provider.setJCRStoreService(jcrStoreService);
+            provider.setJCRSessionFactory(jcrStoreService.getSessionFactory());
             providers.put(providerType, provider);
         }
     }

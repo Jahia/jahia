@@ -31,13 +31,6 @@
  */
  package org.jahia.services.search.compass;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Fieldable;
@@ -49,11 +42,13 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRFileContent;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentFileField;
 import org.jahia.services.search.JahiaSearchConstant;
 import org.jahia.services.search.NumberPadding;
+
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -186,8 +181,8 @@ public class LuceneResourceForHighLighting extends LuceneResource {
             }
             String providerKey = jcrName.substring(0,jcrName.indexOf(':'));
             String uuid = jcrName.substring(jcrName.indexOf(':') + 1);
-            JCRNodeWrapper file = JCRStoreService.getInstance().getNodeByUUID(
-                    providerKey, uuid, jParams.getUser());
+            JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNodeByUUID(
+                    providerKey, uuid);
 
             if (file.isValid()) {
                 JCRFileContent fileContent = file.getFileContent();

@@ -21,7 +21,7 @@ public class JCRPublicationService extends JahiaService {
     private JCRSessionFactory sessionFactory;
     private static JCRPublicationService instance;
 
-    public JCRPublicationService() {
+    private JCRPublicationService() {
     }
 
     public JCRSessionFactory getSessionFactory() {

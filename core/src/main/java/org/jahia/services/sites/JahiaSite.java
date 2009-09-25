@@ -60,6 +60,7 @@ import org.jahia.services.pages.JahiaPageService;
 import static org.jahia.services.sites.SitesSettings.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.RepositoryException;
@@ -1114,7 +1115,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      */
     public String getJCRPath(ProcessingContext context) throws JahiaException {
         try {
-            return ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID("jahia", getUUID(), context.getUser()).getPath();
+            return JCRSessionFactory.getInstance().getThreadSession(context.getUser()).getNodeByUUID("jahia", getUUID()).getPath();
         } catch (RepositoryException e) {
             throw new JahiaException("","",0,0,e);
         }

@@ -39,6 +39,8 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.captcha.CaptchaService;
@@ -104,14 +106,16 @@ public class FormValve implements Valve {
                     
                     if (type.equals("createNode")) {
                         // fire event
-                        Node parent = JCRStoreService.getInstance().getNodeByUUID((String) action.getParams().get("target"), jahiaUser);
+                        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(jahiaUser);
+                        Node parent = session.getNodeByUUID((String) action.getParams().get("target"));
                         Node child = parent.addNode("node" + System.currentTimeMillis(), (String) action.getParams().get("nodeType"));
                         setProperties(child, jParams, token);
-                        parent.save();
+                        session.save();
                     } else if (type.equals("updateNode")) {
-                        Node node = JCRStoreService.getInstance().getNodeByUUID((String) action.getParams().get("target"), jahiaUser);
+                        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(jahiaUser);
+                        Node node = session.getNodeByUUID((String) action.getParams().get("target"));
                         setProperties(node, jParams, token);
-                        node.save();
+                        session.save();
                     } else if (type.equals("sendMail")) {
 
                     }

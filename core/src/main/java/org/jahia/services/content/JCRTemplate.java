@@ -9,7 +9,7 @@ public class JCRTemplate {
     private JCRSessionFactory sessionFactory;
     private static JCRTemplate instance;
 
-    public JCRTemplate() {
+    private JCRTemplate() {
     }
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {

@@ -31,20 +31,9 @@
  */
  package org.jahia.services.search.valves;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.containers.JahiaContainerDefinition;
-import org.jahia.data.fields.FieldTypes;
-import org.jahia.data.fields.JahiaBigTextField;
-import org.jahia.data.fields.JahiaField;
-import org.jahia.data.fields.JahiaFieldDefinition;
-import org.jahia.data.fields.LoadFlags;
+import org.jahia.data.fields.*;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.JahiaFieldXRefManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
@@ -56,16 +45,14 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRFileContent;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.automation.ExtractionService;
 import org.jahia.services.fields.ContentField;
-import org.jahia.services.search.DocumentField;
-import org.jahia.services.search.IndexableDocument;
-import org.jahia.services.search.JahiaReferenceIndexableDocument;
-import org.jahia.services.search.JahiaSearchConstant;
-import org.jahia.services.search.SearchIndexationPipeline;
+import org.jahia.services.search.*;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.LanguageCodeConverters;
+
+import java.util.*;
 
 /**
  * <p>
@@ -348,8 +335,7 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
             ProcessingContext context = (ProcessingContext) contextMap.get(SearchIndexationPipeline.PROCESSING_CONTEXT);
             String providerKey = jcrName.substring(0,jcrName.indexOf(':'));
             String uuid = jcrName.substring(jcrName.indexOf(':') + 1);
-            JCRNodeWrapper file = JCRStoreService.getInstance().getNodeByUUID(
-                    providerKey, uuid, null);
+            JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(null).getNodeByUUID(providerKey, uuid);
 
             if (file != null && file.isValid() && !file.isCollection()) {
                 JCRFileContent fileContent = file.getFileContent();

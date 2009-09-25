@@ -31,24 +31,22 @@
  */
 package org.jahia.services.applications.pluto;
 
-import org.apache.pluto.driver.services.portal.PageConfig;
-import org.apache.pluto.driver.services.impl.resource.RenderConfigServiceImpl;
 import org.apache.pluto.driver.PortalDriverServlet;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPortletNode;
+import org.apache.pluto.driver.services.impl.resource.RenderConfigServiceImpl;
+import org.apache.pluto.driver.services.portal.PageConfig;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPortletNode;
+import org.jahia.services.content.JCRSessionFactory;
 
-
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.QueryManager;
-import javax.jcr.RepositoryException;
 import javax.jcr.NodeIterator;
-import java.util.List;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,16 +56,9 @@ import java.util.ArrayList;
  */
 public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaRenderConfigServiceImpl.class);
-    private static JCRStoreService jcrStoreService;
+    private JCRSessionFactory sessionFactory;
     public final static String PAGE_CONFIG_ATTR = "org.jahia.services.applications.pluto.pageconfig";
     public final String DEFAULT_PAGE_NAME = "Mashup manager";
-
-    public static JCRStoreService getJcrStoreService() {
-        if (jcrStoreService == null) {
-            jcrStoreService = ServicesRegistry.getInstance().getJCRStoreService();
-        }
-        return jcrStoreService;
-    }
 
     @Override
     public void addPage(PageConfig pageConfig) {
@@ -143,11 +134,13 @@ public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
      * @return a Query
      * @throws RepositoryException in case of error
      */
-    private static Query createAllPortletsQuery() throws RepositoryException {
+    private Query createAllPortletsQuery() throws RepositoryException {
         String s = "select * from [jnt:portlet]";
-        QueryManager queryManager = getJcrStoreService().getQueryManager(Jahia.getThreadParamBean().getUser());
+        QueryManager queryManager = sessionFactory.getThreadSession(Jahia.getThreadParamBean().getUser()).getWorkspace().getQueryManager();
         return queryManager.createQuery(s, Query.JCR_SQL2);
     }
 
-
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 }

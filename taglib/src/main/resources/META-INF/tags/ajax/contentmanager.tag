@@ -5,6 +5,7 @@
 <%@ tag import="javax.jcr.RepositoryException" %>
 <%@ tag import="java.util.ArrayList" %>
 <%@ tag import="java.util.Iterator" %>
+<%@ tag import="org.jahia.services.content.JCRSessionFactory" %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
@@ -75,7 +76,7 @@
 <script type="text/javascript"> var crop = 0;     </script>
 <%
     final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
-    final JCRStoreService service = ServicesRegistry.getInstance().getJCRStoreService();
+    final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
 
 %>
 
@@ -95,7 +96,7 @@ while (selectedNodeIter.hasNext()) {
    final String uuid = (String) selectedNodeIter.next();
    JCRNodeWrapper jcrNodeWrapper = null ;
    try {
-        jcrNodeWrapper = service.getNodeByUUID(uuid, jParams.getUser());
+        jcrNodeWrapper = sessionFactory.getThreadSession(jParams.getUser()).getNodeByUUID(uuid);
    } catch (RepositoryException e) {
         jcrNodeWrapper = null;
    }

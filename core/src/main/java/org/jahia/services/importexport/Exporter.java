@@ -43,13 +43,8 @@ import org.jahia.services.applications.ApplicationsManagerService;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.fields.ContentApplicationField;
-import org.jahia.services.fields.ContentBigTextField;
-import org.jahia.services.fields.ContentField;
-import org.jahia.services.fields.ContentFieldTypes;
-import org.jahia.services.fields.ContentFileField;
+import org.jahia.services.fields.*;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.ContentObjectEntryState;
@@ -158,9 +153,9 @@ public abstract class Exporter {
             EntryPointInstance epi = applicationManagerService.getEntryPointInstance(epInstanceID);
             if (epi != null) {
                 try {
-                    return JCRStoreService.getInstance().getNodeByUUID(epi.getID(), jParams.getUser()).getPath();
+                    return JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNodeByUUID(epi.getID()).getPath();
                 } catch (RepositoryException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e);
                 }
             }
             return null;

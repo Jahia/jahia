@@ -31,17 +31,17 @@
  */
 package org.jahia.query.qom;
 
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.params.ProcessingContext;
+import org.apache.log4j.Logger;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUser;
 
-import javax.jcr.query.qom.*;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.InvalidQueryException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import java.util.List;
+import javax.jcr.query.InvalidQueryException;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.qom.*;
 import java.util.ArrayList;
-import java.util.Properties;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,7 +51,7 @@ import java.util.Properties;
  * To change this template use File | Settings | File Templates.
  */
 public class QOMBuilder implements QueryObjectModelFactory {
-
+    private static transient Logger logger = Logger.getLogger(QOMBuilder.class);
     private QueryManager queryManager;
     private QueryObjectModelFactory qomFactory;
     private Constraint c;
@@ -60,13 +60,15 @@ public class QOMBuilder implements QueryObjectModelFactory {
     private List<Column> columns;
 
     /**
-     *
-     * @param context
-     * @param props
+     * @param user the user
      */
-    public QOMBuilder(ProcessingContext context, Properties props) {
-        queryManager = JCRStoreService.getInstance().getQueryManager(context.getUser(),context,props);
-        qomFactory = ((QueryManagerImpl)queryManager).getQOMFactory();
+    public QOMBuilder(JahiaUser user) {
+        try {
+            queryManager = JCRSessionFactory.getInstance().getThreadSession(user).getWorkspace().getQueryManager();
+        } catch (RepositoryException e) {
+            logger.error(e);
+        }
+        qomFactory = queryManager.getQOMFactory();
         orderings = new ArrayList<Ordering>();
         columns = new ArrayList<Column>();
     }

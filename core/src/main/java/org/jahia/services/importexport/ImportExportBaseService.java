@@ -74,8 +74,9 @@ import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.mail.GroovyMimeMessagePreparator;
 import org.jahia.services.mail.MailService;
@@ -107,7 +108,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
-import javax.transaction.Status;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -1967,8 +1967,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private void resolveCrossReferences(Map<String,String> uuidMapping, Map<String,String> references, JahiaUser user) {
+        // TODO rewrite that for session issues too many sessions open
         try {
-            JCRNodeWrapper refRoot = JCRStoreService.getInstance().getSessionFactory().getThreadSession(user).getNode("/content/referencesKeeper");
+            JCRNodeWrapper refRoot = JCRSessionFactory.getInstance().getThreadSession(user).getNode("/content/referencesKeeper");
             NodeIterator ni = refRoot.getNodes();
             while (ni.hasNext()) {
                 Node refNode = ni.nextNode();
@@ -1976,7 +1977,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 if (uuidMapping.containsKey(uuid)) {
                     String pName = refNode.getProperty("j:propertyName").getString();
                     String refuuid = refNode.getProperty("j:node").getString();
-                    Node n = JCRStoreService.getInstance().getSessionFactory().getThreadSession(user).getNodeByUUID(refuuid);
+                    Node n = JCRSessionFactory.getInstance().getThreadSession(user).getNodeByUUID(refuuid);
                     n.setProperty(pName,uuidMapping.get(uuid));
                     n.save();
                     refNode.remove();
@@ -1986,7 +1987,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             for (String uuid : references.keySet()) {
                 if (uuidMapping.containsKey(uuid)) {
                     String path = references.get(uuid);
-                    Node n = JCRStoreService.getInstance().getNodeByUUID(path.substring(0,path.lastIndexOf("/")), user);
+                    Node n = JCRSessionFactory.getInstance().getThreadSession(user).getNodeByUUID(path.substring(0,path.lastIndexOf("/")));
                     String pName = path.substring(path.lastIndexOf("/")+1);
 
                     try {

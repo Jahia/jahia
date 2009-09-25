@@ -31,11 +31,11 @@
  */
 package org.jahia.taglibs.query;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.ArrayList;
+import org.apache.log4j.Logger;
+import org.jahia.data.JahiaData;
+import org.jahia.query.qom.QOMBuilder;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
@@ -43,12 +43,11 @@ import javax.jcr.query.qom.*;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-
-import org.apache.log4j.Logger;
-import org.jahia.data.JahiaData;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.query.qom.QOMBuilder;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * This is the base tag for declaring Query object Model specified by the JSR-283.
@@ -140,7 +139,7 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
     public QueryObjectModelFactory getQueryFactory() {
         if (queryFactory == null){
             try {
-                qomBuilder = new QOMBuilder(jData.getProcessingContext(),properties);
+                qomBuilder = new QOMBuilder(jData.getProcessingContext().getUser());
                 queryFactory = qomBuilder.getQomFactory();
             } catch ( Exception t ){
                 logger.debug(t);

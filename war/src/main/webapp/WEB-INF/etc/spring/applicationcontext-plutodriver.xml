@@ -113,6 +113,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
     <bean id="RenderConfigService"
           class="org.jahia.services.applications.pluto.JahiaRenderConfigServiceImpl"
           scope="singleton">
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
 
     <bean id="SupportedModesService"

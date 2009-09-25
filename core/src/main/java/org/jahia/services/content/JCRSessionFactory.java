@@ -29,7 +29,7 @@ public class JCRSessionFactory implements Repository {
     private SortedMap<String, JCRStoreProvider> dynamicMountPoints = new TreeMap<String, JCRStoreProvider>();
     private static JCRSessionFactory instance;
 
-    public JCRSessionFactory() {
+    private JCRSessionFactory() {
         Comparator<String> invertedStringComparator = new Comparator<String>() {
             public int compare(String s1, String s2) {
                 return s2.compareTo(s1);

@@ -61,9 +61,8 @@ import java.util.*;
  * Time: 17:24:54
  */
 public class LayoutmanagerServiceImpl extends JahiaRemoteService implements LayoutmanagerService {
-    private static transient final ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
     private static transient final Logger logger = Logger.getLogger(LayoutmanagerServiceImpl.class);
-    private JCRStoreService jcrStoreService = ServicesRegistry.getInstance().getJCRStoreService();
+    private JCRSessionFactory sessionFactory;
     private static final String LAYOUTMANAGER_NODE_PATH = "/content/layoutmanager";
 
 
@@ -73,9 +72,9 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     public String saveLayoutItem(GWTJahiaLayoutItem gwtJahiaLayoutItem) throws GWTJahiaServiceException {
         try {
             // key
-            JCRReferenceNode layoutItemNode = (JCRReferenceNode) jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getUuid(), getRemoteJahiaUser());
+            JCRReferenceNode layoutItemNode = (JCRReferenceNode) sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(gwtJahiaLayoutItem.getUuid());
 
-            JCRNodeWrapper referencedNode = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getNode(), getRemoteJahiaUser());
+            JCRNodeWrapper referencedNode = sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(gwtJahiaLayoutItem.getNode());
             if (referencedNode != null) {
                 layoutItemNode.setProperty("j:columnIndex",gwtJahiaLayoutItem.getColumn());
                 layoutItemNode.setProperty("j:rowIndex",gwtJahiaLayoutItem.getRow());
@@ -103,11 +102,11 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     private void updateLayoutNode(List<GWTJahiaLayoutItem> gwtJahiaLayoutItems) throws RepositoryException {
         for (GWTJahiaLayoutItem gwtJahiaLayoutItem : gwtJahiaLayoutItems) {
 
-            JCRNodeWrapper referencedNode = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getNode(), getRemoteJahiaUser());
+            JCRNodeWrapper referencedNode = sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(gwtJahiaLayoutItem.getNode());
             if (referencedNode != null) {
                 // retrieve layout item node
                 if (gwtJahiaLayoutItem.getUuid() != null) {
-                    JCRReferenceNode layoutItemNode = (JCRReferenceNode) jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getUuid(), getRemoteJahiaUser());
+                    JCRReferenceNode layoutItemNode = (JCRReferenceNode) sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(gwtJahiaLayoutItem.getUuid());
                     layoutItemNode.setProperty("j:columnIndex",gwtJahiaLayoutItem.getColumn());
                     layoutItemNode.setProperty("j:rowIndex",gwtJahiaLayoutItem.getRow());
 //                    jcrLayoutItemNode.setStatus(gwtJahiaLayoutItem.getStatus());
@@ -225,8 +224,8 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     public void addLayoutItem(String containerUUID, GWTJahiaLayoutItem gwtJahiaLayoutItem) throws GWTJahiaServiceException {
         try {
 
-            JCRNodeWrapper node = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getNode(), getRemoteJahiaUser());
-            JCRNodeWrapper container = jcrStoreService.getNodeByUUID(containerUUID, getRemoteJahiaUser());
+            JCRNodeWrapper node = sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(gwtJahiaLayoutItem.getNode());
+            JCRNodeWrapper container = sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(containerUUID);
 
             addLayoutItem(container, node, gwtJahiaLayoutItem.getColumn(), gwtJahiaLayoutItem.getRow(), gwtJahiaLayoutItem.getStatus());
         } catch (Exception e) {
@@ -287,7 +286,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     public void removeLayoutItem(GWTJahiaLayoutItem layoutItem) throws GWTJahiaServiceException {
         //get layout manager prefererences
         try {
-            Node layoutItemNode = jcrStoreService.getNodeByUUID(layoutItem.getUuid(), getRemoteJahiaUser());
+            Node layoutItemNode = sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(layoutItem.getUuid());
             if (layoutItemNode != null) {
                 Node containerNode = layoutItemNode.getParent();
                 layoutItemNode.remove();
@@ -417,7 +416,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
 
         try {
 
-            JCRNodeWrapper containerNode = jcrStoreService.getNodeByUUID(containerUUID, getRemoteJahiaUser());
+            JCRNodeWrapper containerNode = sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(containerUUID);
 
 //            JahiaPreference<JCRLayoutNode> layoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesQueryHelper.getLayoutmanagerSQL(getContainerUUID.getPid()));
 //
@@ -590,7 +589,11 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
         }
     }
 
-//    /**
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    //    /**
 //     * @return the layout manager preferences
 //     */
 //    private JahiaPreferencesProvider<JCRLayoutNode> getLayoutManagerJahiaPreferencesProvider() {
@@ -661,14 +664,4 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
 //        }
 //        return null;
 //    }
-
-    /**
-     * Get the JCR store service
-     *
-     * @return
-     */
-    private JCRStoreService getJCRStoreService() {
-        return ServicesRegistry.getInstance().getJCRStoreService();
-    }
-
 }

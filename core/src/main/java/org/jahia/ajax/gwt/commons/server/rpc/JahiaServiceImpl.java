@@ -62,6 +62,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRJahiaContentNode;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockService;
 import org.jahia.services.pages.ContentPage;
@@ -276,7 +277,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
             jParams.setAttribute("fieldId", windowID);
             String portletOutput = servicesRegistry.getApplicationsDispatchService().getAppOutput(fieldId, entryPointIDStr, jParams);
             try {
-                JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(entryPointIDStr, jParams.getUser());
+                JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNodeByUUID(entryPointIDStr);
                 String nodeTypeName = node.getPrimaryNodeTypeName();
                 /** todo cleanup the hardcoded value here */
                 if ("jnt:htmlPortlet".equals(nodeTypeName)) {
@@ -648,7 +649,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
 
     private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
         try {
-            JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(uuid, jahiaUser);
+            JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) JCRSessionFactory.getInstance().getThreadSession(jahiaUser).getNodeByUUID(uuid);
             return (ContentPage) nodeWrapper.getContentObject();
         } catch (Exception e) {
             logger.error(e, e);

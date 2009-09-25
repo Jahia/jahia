@@ -31,29 +31,29 @@
  */
 package org.jahia.services.preferences.impl;
 
-import org.jahia.services.preferences.JahiaPreferencesProvider;
+import org.apache.jackrabbit.util.ISO9075;
+import org.jahia.params.ProcessingContext;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.preferences.JahiaPreference;
+import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreferencesQueryHelper;
-import org.jahia.services.preferences.exception.JahiaPreferencesNotValidException;
 import org.jahia.services.preferences.exception.JahiaPreferenceNotDefinedAttributeException;
 import org.jahia.services.preferences.exception.JahiaPreferenceNotDefinedPropertyException;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.preferences.exception.JahiaPreferencesNotValidException;
 import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.params.ProcessingContext;
-import org.apache.jackrabbit.util.ISO9075;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.jcr.NodeIterator;
-import javax.jcr.query.QueryManager;
+import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import java.security.Principal;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -71,7 +71,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
     // bean values
     private String type;
     private String nodeType;
-    private JCRStoreService jcrStoreService;
+    private JCRSessionFactory sessionFactory;
 
     public String getNodeType() {
         return nodeType;
@@ -89,12 +89,12 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
         return type;
     }
 
-    public JCRStoreService getJCRStoreService() {
-        return jcrStoreService;
+    public JCRSessionFactory getJCRStoreService() {
+        return sessionFactory;
     }
 
-    public void setJCRStoreService(JCRStoreService jcrStoreService) {
-        this.jcrStoreService = jcrStoreService;
+    public void setJCRSessionFactory(JCRSessionFactory jcrStoreService) {
+        this.sessionFactory = jcrStoreService;
     }
 
     /**
@@ -330,7 +330,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
     private JCRNodeWrapper getPreferencesNode(Principal principal) {
         String nodePath = "/" + getPreferencesNodePath(principal);
         try {
-            return getJCRStoreService().getSessionFactory().getThreadSession((JahiaUser) principal).getNode(nodePath);
+            return sessionFactory.getThreadSession((JahiaUser) principal).getNode(nodePath);
         } catch (Exception e) {
             logger.error("Node path = [" + nodePath + "]");
             logger.error(e, e);
@@ -381,7 +381,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
             return null;
         }
         try {
-            QueryManager queryManager = getJCRStoreService().getQueryManager((JahiaUser) p);
+            QueryManager queryManager = sessionFactory.getThreadSession((JahiaUser) p).getWorkspace().getQueryManager();
             if (queryManager != null) {
                 Query q = queryManager.createQuery(sqlRequest, Query.JCR_SQL2);
                 // execute query

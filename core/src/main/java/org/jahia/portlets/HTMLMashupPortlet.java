@@ -31,19 +31,19 @@
  */
 package org.jahia.portlets;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import org.apache.log4j.Logger;
+import org.jahia.data.applications.EntryPointInstance;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-
-import org.apache.log4j.Logger;
-import org.jahia.data.applications.EntryPointInstance;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.usermanager.JahiaUser;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * User: toto
@@ -60,7 +60,7 @@ public class HTMLMashupPortlet extends JahiaPortlet {
         if (epi != null ) {
             try {
                 JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(renderRequest.getRemoteUser());
-                Node node = ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(epi.getID(), user);
+                Node node = JCRSessionFactory.getInstance().getThreadSession(user).getNodeByUUID(epi.getID());
                 String html = node.hasProperty("html") ? node.getProperty("html").getString() : "Please, provide your HTML content for this mashup";
                 PrintWriter pw = renderResponse.getWriter();
                 pw.print(html);

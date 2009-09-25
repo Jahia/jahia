@@ -32,8 +32,6 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
 import org.jahia.query.qom.QueryExecute;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaUser;
@@ -155,15 +153,7 @@ public class JCRWorkspaceWrapper implements Workspace {
     }
 
     public QueryManager getQueryManager() {
-        return new QueryManagerImpl(Jahia.getThreadParamBean());
-    }
-
-    public QueryManager getQueryManager(ProcessingContext context) {
-        return new QueryManagerImpl(context);
-    }
-
-    public QueryManager getQueryManager(ProcessingContext context, Properties properties) {
-        return new QueryManagerImpl(context, properties);
+        return new QueryManagerImpl();
     }
 
     public NamespaceRegistry getNamespaceRegistry() throws RepositoryException {
@@ -339,15 +329,7 @@ public class JCRWorkspaceWrapper implements Workspace {
     class QueryManagerImpl extends org.jahia.query.qom.QueryManagerImpl {
 
         QueryManagerImpl() {
-            super(Jahia.getThreadParamBean());
-        }
-
-        QueryManagerImpl(ProcessingContext context) {
-            super(context);
-        }
-
-        QueryManagerImpl(ProcessingContext context, Properties properties) {
-            super(context,properties);
+            super();
         }
 
         public QueryExecute getQueryExecute() {

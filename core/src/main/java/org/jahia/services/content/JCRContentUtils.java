@@ -31,28 +31,15 @@
  */
 package org.jahia.services.content;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.ItemDefinition;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.PropertyDefinition;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.data.containers.JahiaContainerDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
@@ -62,7 +49,18 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.bin.Jahia;
+
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.ItemDefinition;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.PropertyDefinition;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Utility class for accessing and manipulation JCR properties.
@@ -371,7 +369,7 @@ public final class JCRContentUtils {
 
     public static boolean hasPermission(JahiaUser user, String role, String nodeUUID) {
         try {
-            JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(nodeUUID, user);
+            JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(user).getNodeByUUID(nodeUUID);
             Map<String, List<String[]>> aclEntriesMap = node.getAclEntries();
 
             Set<String> principalSet = aclEntriesMap.keySet();

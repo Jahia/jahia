@@ -31,9 +31,9 @@
  */
 package org.jahia.content;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.data.fields.JahiaField;
@@ -48,6 +48,8 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentFieldTools;
 import org.jahia.services.fields.ContentPageField;
@@ -62,10 +64,8 @@ import org.jahia.services.version.*;
 import org.jahia.services.workflow.ExternalWorkflow;
 import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.Node;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.*;
@@ -2144,16 +2144,12 @@ public abstract class ContentObject extends JahiaObject {
      * @throws JahiaException
      */
     public String getJCRPath(ProcessingContext context) throws JahiaException {
-        try {
-            return ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID("jahia",getUUID(), context.getUser()).getPath();
-        } catch (RepositoryException e) {
-            throw new JahiaException("","",0,0,e);
-        }
+            return getJCRNode(context).getPath();
     }
 
     public JCRNodeWrapper getJCRNode(ProcessingContext context) throws JahiaException {
         try {
-            return ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID("jahia",getUUID(), context.getUser());
+            return JCRSessionFactory.getInstance().getThreadSession(context.getUser()).getNodeByUUID("jahia",getUUID());
         } catch (RepositoryException e) {
             throw new JahiaException("","",0,0,e);
         }

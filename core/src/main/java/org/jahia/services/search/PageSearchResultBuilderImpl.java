@@ -31,14 +31,6 @@
  */
  package org.jahia.services.search;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.log4j.Logger;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
@@ -53,7 +45,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.fields.ContentBigTextField;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentFileField;
@@ -62,6 +54,8 @@ import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.search.lucene.JahiaHitCollector;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
+
+import java.util.*;
 
 /**
  * Default implementation to build JahiaSearchResult from a collection of ParsedObject
@@ -254,8 +248,7 @@ public class PageSearchResultBuilderImpl extends
                                 }
                                 String providerKey = jcrName.substring(0,jcrName.indexOf(':'));
                                 String uuid = jcrName.substring(jcrName.indexOf(':') + 1);
-                                JCRNodeWrapper file = JCRStoreService.getInstance().getNodeByUUID(
-                                        providerKey, uuid, currentUser);
+                                JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(currentUser).getNodeByUUID(providerKey, uuid);
                                 info.setObject(file);
 
                                 if (mimeType == null) {

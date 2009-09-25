@@ -32,6 +32,7 @@
 package org.jahia.query;
 
 import org.apache.jackrabbit.value.ValueFactoryImpl;
+import org.apache.log4j.Logger;
 import org.jahia.data.beans.ContainerListBean;
 import org.jahia.data.beans.PageBean;
 import org.jahia.data.beans.SiteBean;
@@ -42,7 +43,6 @@ import org.jahia.query.qom.QueryExecute;
 import org.jahia.services.JahiaService;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
 import org.jahia.services.content.impl.jahia.JahiaSiteNodeImpl;
 import org.jahia.services.pages.ContentPage;
@@ -61,12 +61,12 @@ import java.util.Properties;
  * To change this template use File | Settings | File Templates.
  */
 public class QueryService extends JahiaService {
-
+    private static transient Logger logger = Logger.getLogger(QueryService.class);
     private static QueryService singletonInstance = null;
 
     private ValueFactory valueFactory = ValueFactoryImpl.getInstance();
     
-    private transient JCRStoreService jcrStoreService;
+    private transient JCRSessionFactory sessionFactory;
 
     protected QueryService() {
     }
@@ -98,8 +98,8 @@ public class QueryService extends JahiaService {
     public void stop() {
     }
     
-    public void setJcrStoreService(JCRStoreService jcrStoreService) {
-        this.jcrStoreService = jcrStoreService;
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
     /**
@@ -113,7 +113,13 @@ public class QueryService extends JahiaService {
      */
     public QueryObjectModelFactory getQueryObjectModelFactory(QueryExecute queryExecute, ProcessingContext context, Properties properties)
             throws JahiaException {
-        return jcrStoreService.getQueryManager(context.getUser()).getQOMFactory();
+        try {
+            return sessionFactory.getThreadSession(context.getUser()).getWorkspace().getQueryManager().getQOMFactory();
+        } catch (RepositoryException e) {
+            logger.error(e);
+            throw new JahiaException("Error while creating QOMFactory","Error while creating QOMFactory",
+                                     JahiaException.REGISTRY_ERROR,JahiaException.ERROR_SEVERITY,e);
+        }
     }
 
     /**
@@ -250,5 +256,5 @@ public class QueryService extends JahiaService {
 //    public void setNameFactory(NameFactory nameFactory) {
 //        this.nameFactory = nameFactory;
 //    }
-    
+
 }

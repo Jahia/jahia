@@ -374,7 +374,7 @@ public class ContentTest extends TestCase {
             nodes.add(testFile.getIdentifier());
 
             // Do the query
-            QueryManager qm = JCRStoreService.getInstance().getQueryManager(ctx.getUser());
+            QueryManager qm = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser()).getWorkspace().getQueryManager();
             Query query = qm.createQuery("select * from [jnt:file] as f where contains(f.[jcr:content], '456bcd')",
                                          Query.JCR_SQL2);
             QueryResult queryResult = query.execute();

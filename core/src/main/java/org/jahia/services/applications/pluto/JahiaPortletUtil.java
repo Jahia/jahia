@@ -31,15 +31,15 @@
  */
 package org.jahia.services.applications.pluto;
 
-import org.jahia.params.ProcessingContext;
-import org.jahia.params.ParamBean;
-import org.jahia.data.applications.EntryPointInstance;
-import org.jahia.registries.ServicesRegistry;
 import org.apache.pluto.container.PortletWindow;
+import org.jahia.data.applications.EntryPointInstance;
+import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
+import org.jahia.services.content.JCRSessionFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.jcr.*;
 import javax.jcr.nodetype.PropertyDefinition;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -134,7 +134,7 @@ public class JahiaPortletUtil {
     public static void copyNodeProperties(EntryPointInstance entryPointInstance, ParamBean jParams, PortletWindow window, HttpServletRequest portalRequest) {
         // porlet properties
         try {
-            Node node = ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(entryPointInstance.getID(), jParams.getUser());
+            Node node = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNodeByUUID(entryPointInstance.getID());
             if (node != null) {
                 PropertyIterator propertyIterator = node.getProperties();
                 if (propertyIterator != null) {

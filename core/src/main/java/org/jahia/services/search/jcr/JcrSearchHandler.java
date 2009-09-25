@@ -31,32 +31,22 @@
  */
 package org.jahia.services.search.jcr;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-
-import javax.jcr.Value;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
-
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.Sort;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.search.SearchHandlerImpl;
-import org.jahia.services.search.SearchHitImpl;
-import org.jahia.services.search.SearchIndexer;
-import org.jahia.services.search.SearchManager;
-import org.jahia.services.search.SearchResult;
-import org.jahia.services.search.SearchResultImpl;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.search.*;
 import org.jahia.services.search.lucene.JahiaAbstractHitCollector;
+
+import javax.jcr.Value;
+import javax.jcr.query.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Implementation of the search handler for the JCR.
@@ -118,7 +108,7 @@ public class JcrSearchHandler extends SearchHandlerImpl {
                 return;
             }
 
-            QueryManager qm = JCRStoreService.getInstance().getQueryManager(jParams.getUser());
+            QueryManager qm = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getWorkspace().getQueryManager();
             Query query = qm.createQuery(queryStatement, Query.XPATH);
 
             QueryResult queryResult = query.execute();

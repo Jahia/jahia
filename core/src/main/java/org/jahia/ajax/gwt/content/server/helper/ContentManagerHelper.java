@@ -600,14 +600,14 @@ public class ContentManagerHelper {
 
     private static Query createQuery(String searchString, ProcessingContext context) throws RepositoryException {
         String s = "select * from [jmix:hierarchyNode] as h where contains(h.[j:nodename]," + JCRContentUtils.stringToJCRSearchExp(searchString) + ")";
-        return jcr.getQueryManager(context.getUser()).createQuery(s, Query.JCR_SQL2);
+        return sessionFactory.getThreadSession(context.getUser()).getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
     }
 
     public static List<GWTJahiaNode> getSavedSearch(ProcessingContext context) {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         try {
             String s = "select * from [nt:query]";
-            Query q = jcr.getQueryManager(context.getUser()).createQuery(s, Query.JCR_SQL2);
+            Query q = sessionFactory.getThreadSession(context.getUser()).getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
             return executeQuery(q, new String[UPLOAD], new String[UPLOAD], new String[UPLOAD], context);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -619,7 +619,7 @@ public class ContentManagerHelper {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         try {
             String s = "select * from [jnt:mountPoint]";
-            Query q = jcr.getQueryManager(context.getUser()).createQuery(s, Query.JCR_SQL2);
+            Query q = sessionFactory.getThreadSession(context.getUser()).getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
             return executeQuery(q, new String[UPLOAD], new String[UPLOAD], new String[UPLOAD], context);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

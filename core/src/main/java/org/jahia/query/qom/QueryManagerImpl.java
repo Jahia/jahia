@@ -31,15 +31,11 @@
  */
 package org.jahia.query.qom;
 
-import org.jahia.params.ProcessingContext;
-import org.jahia.query.QueryService;
-
-import javax.jcr.query.Query;
-import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.qom.QueryObjectModelFactory;
-import javax.jcr.RepositoryException;
 import javax.jcr.Node;
-import java.util.Properties;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.InvalidQueryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.qom.QueryObjectModelFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,18 +48,6 @@ public abstract class QueryManagerImpl implements javax.jcr.query.QueryManager {
 
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(QueryManagerImpl.class);
-
-    private ProcessingContext context;
-    private Properties properties;
-
-    public QueryManagerImpl(ProcessingContext context) {
-        this.context = context;
-    }
-
-    public QueryManagerImpl(ProcessingContext context, Properties properties) {
-        this.context = context;
-        this.properties = properties;
-    }
 
     public abstract QueryObjectModelFactory getQOMFactory(String path);
 

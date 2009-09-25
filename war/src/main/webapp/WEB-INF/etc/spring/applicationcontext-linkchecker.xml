@@ -57,7 +57,7 @@
         </property>
     </bean>
 
-    <bean name="linkCheckerServiceMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
             <value>
                 /**/linkchecker.gwt=linkCheckerGwtController

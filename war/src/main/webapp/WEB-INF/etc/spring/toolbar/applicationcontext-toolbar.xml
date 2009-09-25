@@ -21,40 +21,50 @@
         </property>
     </bean>
 
+    <bean id="content-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.manager.content.menu"/>
+                <ref bean="org.jahia.toolbar.manager.content.shortcuts"/>
+            </list>
+        </property>
+    </bean>
 
-            <!--<toolbar name="content-manager" ref-type="org.jahia.toolbar.manager.content.menu"/>-->
-            <!--<toolbar name="content-manager" ref-type="org.jahia.toolbar.manager.content.shortcuts"/>-->
+    <bean id="document-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.manager.documents.menu"/>
+                <ref bean="org.jahia.toolbar.manager.documents.shortcuts"/>
+            </list>
+        </property>
+    </bean>
 
-            <!--<toolbar name="document-manager" ref-type="org.jahia.toolbar.manager.documents.menu"/>-->
-            <!--<toolbar name="document-manager" ref-type="org.jahia.toolbar.manager.documents.shortcuts"/>-->
+    <bean id="mashup-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.manager.mashups.menu"/>
+                <ref bean="org.jahia.toolbar.manager.mashups.shortcuts"/>
+            </list>
+        </property>
+    </bean>
 
-            <!--<toolbar name="mashup-manager" ref-type="org.jahia.toolbar.manager.mashups.menu"/>-->
-            <!--<toolbar name="mashup-manager" ref-type="org.jahia.toolbar.manager.mashups.shortcuts"/>-->
+    <bean id="portlet-definition-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.manager.portletDefinitions.shortcuts"/>
+            </list>
+        </property>
+    </bean>
 
-            <!--<toolbar name="portlet-definition-manager" ref-type="org.jahia.toolbar.manager.portletDefinitions.shortcuts"/>-->
+    <bean id="site-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.manager.sites.menu"/>
+                <ref bean="org.jahia.toolbar.manager.sites.shortcuts"/>
+            </list>
+        </property>
+    </bean>
 
-            <!--<toolbar name="site-manager" ref-type="org.jahia.toolbar.manager.sites.menu"/>-->
-            <!--<toolbar name="site-manager" ref-type="org.jahia.toolbar.manager.sites.shortcuts"/>-->
-
-            <!--<toolbar name="workflow" ref-type="org.jahia.toolbar.workflow" state="top" draggable="true" displayed="false"
-                     mandatory="false" display-title="true"/>
-
-            <toolbar name="bookmarks" ref-type="org.jahia.toolbar.bookmarks" state="top" draggable="true" displayed="false"
-                     mandatory="false" display-title="true"/>
-
-            <toolbar name="breadcrumb" ref-type="org.jahia.toolbar.breadcrumb" state="top" draggable="true"
-                     displayed="false" mandatory="false" display-title="true"/>
-
-            <toolbar name="caches" ref-type="org.jahia.toolbar.caches" state="top" draggable="true" displayed="false"
-                     mandatory="false" display-title="true"/>
-
-            <toolbar name="statistics" ref-type="org.jahia.toolbar.statistics" state="top" draggable="true"
-                     displayed="false"
-                     mandatory="false" display-title="true"/>
-
-            <toolbar name="subscriptions" ref-type="org.jahia.toolbar.subscriptions" state="top" draggable="true"
-                     displayed="false"
-                     mandatory="false" display-title="true"/>-->
 
     <!-- switching mode -->
     <bean id="org.jahia.toolbar.editmode" class="org.jahia.services.toolbar.bean.Toolbar">

@@ -196,7 +196,7 @@ public class Service {
                 jobDataMap.put(BackgroundJob.JOB_TYPE, ProductionJob.PRODUCTION_TYPE);
 //                jobDataMap.put(ProductionJob.JOB_TITLE, fr);
 
-                jobDataMap.put(ImportJob.PUBLISH_ALL_AT_END, new Boolean(uri.indexOf("AndPublish")>-1));
+                jobDataMap.put(ImportJob.PUBLISH_ALL_AT_END, Boolean.valueOf(uri.indexOf("AndPublish") > -1));
                 schedulerServ.scheduleJobNow(jobDetail);
             } catch (Exception e) {
                 logger.error("Error during import of file " + uri,e);
@@ -458,14 +458,13 @@ public class Service {
         ContentObject obj = ((JahiaContentNodeImpl) node.getNode())
                 .getContentObject();
 
-        Map m = obj.getACL().getACL().getRecursedGroupEntries();
-        for (Object key : m.keySet()) {
-            JahiaAclEntry e = (JahiaAclEntry) m.get(key);
+        Map<String, JahiaAclEntry> m = obj.getACL().getACL().getRecursedGroupEntries();
+        for (Map.Entry<String,JahiaAclEntry> key : m.entrySet()) {
+            JahiaAclEntry e = key.getValue();
             if (e.getPermission(JahiaBaseACL.ADMIN_RIGHTS) == JahiaAclEntry.ACL_YES) {
-                if (!key.equals("administrators:0")) {
+                if (!key.getKey().equals("administrators:0")) {
                     s.add(ServicesRegistry.getInstance()
-                            .getJahiaGroupManagerService().lookupGroup(
-                                    (String) key));
+                            .getJahiaGroupManagerService().lookupGroup( key.getKey()));
                 }
             }
         }

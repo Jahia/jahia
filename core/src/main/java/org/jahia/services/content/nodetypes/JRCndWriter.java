@@ -35,7 +35,6 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.version.OnParentVersionAction;
 import java.io.IOException;
@@ -107,8 +106,8 @@ public class JRCndWriter {
     }
 
     private void writeNamespaces(Map<String,String> namespaces) throws IOException {
-        for (String k : namespaces.keySet()) {
-            out.write("< "+k + " = '"+namespaces.get(k)+"' >\n");
+        for (Map.Entry<String,String> k : namespaces.entrySet()) {
+            out.write("< "+k + " = '"+k.getValue()+"' >\n");
         }
     }
 

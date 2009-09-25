@@ -162,11 +162,10 @@ public class JCRSessionWrapper implements Session {
 
     public Item getItem(String path) throws PathNotFoundException, RepositoryException {
         Map<String, JCRStoreProvider> dynamicMountPoints = sessionFactory.getDynamicMountPoints();
-        for (String mp : dynamicMountPoints.keySet()) {
+        for (Map.Entry<String,JCRStoreProvider> mp : dynamicMountPoints.entrySet()) {
             if (path.startsWith(mp + "/")) {
-                String localPath = path.substring(mp.length());
-                JCRStoreProvider provider = dynamicMountPoints.get(mp);
-//                Item item = getProviderSession(provider).getItem(localPath);
+                String localPath = path.substring(mp.getKey().length());
+                JCRStoreProvider provider = mp.getValue();
                 Item item = getProviderSession(provider).getItem(
                         provider.getRelativeRoot() + provider.encodeInternalName(localPath));
                 if (item.isNode()) {

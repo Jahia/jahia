@@ -61,7 +61,7 @@ public class CacheListener extends DefaultEventListener {
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(CacheListener.class);
 
-    public static Cache<String, ?> cache;
+    private Cache<String, ?> cache;
 
     public CacheListener() {
         try {

@@ -139,9 +139,9 @@ public class JCRMountPointNode extends JCRNodeDecorator {
             provider.setKey(key);
             provider.setMountPoint(mountPoint);
             provider.setDynamicallyMounted(true);
-            for (String k : params.keySet()) {
-                PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(providerClass, k);
-                pd.getWriteMethod().invoke(provider, params.get(k));
+            for (Map.Entry<String,Object> k : params.entrySet()) {
+                PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(providerClass, k.getKey());
+                pd.getWriteMethod().invoke(provider, k.getValue());
             }
             provider.start();
             return provider;

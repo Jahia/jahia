@@ -32,13 +32,12 @@
 package org.jahia.services.content.nodetypes;
 
 import org.apache.log4j.Logger;
-import org.apache.jackrabbit.spi.commons.nodetype.compact.*;
 import org.jahia.api.Constants;
 
 import javax.jcr.PropertyType;
 import javax.jcr.Value;
-import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.version.OnParentVersionAction;
 import java.io.IOException;
 import java.io.Reader;
@@ -345,15 +344,15 @@ public class JahiaCndReader {
                 nextToken();
                 doChildNodeDefinition(listNodeDef, ntd);
                 ExtendedNodeType[] ctnTypes = listNodeDef.getRequiredPrimaryTypes();
-                String ctnListTypeName = ntd.getNameObject().getPrefix()+":";
+                StringBuffer ctnListTypeName = new StringBuffer(ntd.getNameObject().getPrefix()+":");
                 for (ExtendedNodeType ctnType : ctnTypes) {
-                    ctnListTypeName += ctnType.getNameObject().getLocalName();                    
+                    ctnListTypeName.append(ctnType.getNameObject().getLocalName());
                 }
                 String aliasName = ctnListTypeName + "List";
                 if (listNodeDef.isMandatory()) {
-                    ctnListTypeName += "Mandatory";
+                    ctnListTypeName.append("Mandatory");
                 }
-                ctnListTypeName += "List";
+                ctnListTypeName.append("List");
                 String append = "";
                 if (listNodeDef.getSelectorOptions().get("availableTypes")!=null) {
                     append+= listNodeDef.getSelectorOptions().get("availableTypes").replace(':','_');
@@ -362,9 +361,9 @@ public class JahiaCndReader {
                     append+= listNodeDef.getSelectorOptions().get("addMixin").replace(':','_');
                 }
                 if (append.length()>0) {
-                    ctnListTypeName += Integer.toHexString(append.hashCode());
+                    ctnListTypeName.append(Integer.toHexString(append.hashCode()));
                 }
-                listNodeDef.setRequiredPrimaryTypes(new String[] {ctnListTypeName});
+                listNodeDef.setRequiredPrimaryTypes(new String[] {ctnListTypeName.toString()});
 //
 //                if (listNodeDef.getSelectorOptions().get("availableTypes")!=null) {
 //                    ExtendedNodeType typeSelectorType = new ExtendedNodeType(registry, systemId);
@@ -374,10 +373,10 @@ public class JahiaCndReader {
 //
 
                 try {
-                    registry.getNodeType(ctnListTypeName);
+                    registry.getNodeType(ctnListTypeName.toString());
                 } catch (NoSuchNodeTypeException e) {
                     ExtendedNodeType listType = new ExtendedNodeType(registry, systemId);
-                    listType.setName(parseName(ctnListTypeName));
+                    listType.setName(parseName(ctnListTypeName.toString()));
                     listType.setAlias(aliasName);
                     listType.setDeclaredSupertypes(new String[] {Constants.JAHIANT_CONTENTLIST});
                     listType.setHasOrderableChildNodes(true);

@@ -72,13 +72,14 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
         super(session, node, def, locale, value);
         this.field = field;
         this.parent = node.getContentObject();
-        this.locale = this.locale;
+        this.locale = locale;
     }
 
     public JahiaFieldPropertyImpl(SessionImpl session, JahiaContentNodeImpl node, ExtendedPropertyDefinition def, Value[] values, ContentField field, Locale locale) {
         super(session, node, def, locale, values);
         this.field = field;
         this.parent = node.getContentObject();
+        this.locale = locale;
     }
 
 

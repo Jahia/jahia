@@ -412,12 +412,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             if (provider.getService() != null) {
                 Map<String, JCRStoreProvider> mountPoints = provider.getSessionFactory().getMountPoints();
-                for (String key : mountPoints.keySet()) {
-                    if (!key.equals("/")) {
-                        String mpp = key.substring(0, key.lastIndexOf('/'));
+                for (Map.Entry<String,JCRStoreProvider> key : mountPoints.entrySet()) {
+                    if (!key.getKey().equals("/")) {
+                        String mpp = key.getKey().substring(0, key.getKey().lastIndexOf('/'));
                         if (mpp.equals("")) mpp="/";
                         if (mpp.equals(getPath())) {
-                            JCRStoreProvider storeProvider = mountPoints.get(key);
+                            JCRStoreProvider storeProvider = key.getValue();
                             String root = storeProvider.getRelativeRoot();
                             list.add(storeProvider.getNodeWrapper(session.getProviderSession(storeProvider).getNode(root.length() == 0 ? "/" : root), session));
                         }

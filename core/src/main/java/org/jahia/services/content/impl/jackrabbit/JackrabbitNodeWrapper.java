@@ -124,12 +124,12 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
             Map<String, List<String[]>> inheritedPerms = new HashMap<String, List<String[]>>();
 
             recurseonACPs(permissions, inheritedPerms, objectNode);
-            for (String s : inheritedPerms.keySet()) {
-                if (permissions.containsKey(s)) {
-                    List<String[]> l = permissions.get(s);
-                    l.addAll(inheritedPerms.get(s));
+            for (Map.Entry<String,List<String[]>> s : inheritedPerms.entrySet()) {
+                if (permissions.containsKey(s.getKey())) {
+                    List<String[]> l = permissions.get(s.getKey());
+                    l.addAll(s.getValue());
                 } else {
-                    permissions.put(s, inheritedPerms.get(s));
+                    permissions.put(s.getKey(), s.getValue());
                 }
             }
             return permissions;
@@ -276,7 +276,7 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
                 current = inherited;
             }
         } catch (ItemNotFoundException e) {
-            return;
+            logger.debug(e);
         }
     }
 

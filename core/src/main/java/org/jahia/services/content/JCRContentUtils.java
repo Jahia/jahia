@@ -372,14 +372,14 @@ public final class JCRContentUtils {
             JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(user).getNodeByUUID(nodeUUID);
             Map<String, List<String[]>> aclEntriesMap = node.getAclEntries();
 
-            Set<String> principalSet = aclEntriesMap.keySet();
-            for (String currentPrincipal : principalSet) {
-                boolean isUser = currentPrincipal.indexOf("u:") == 0;
-                String principalName = currentPrincipal.substring(2);
+            Set<Map.Entry<String,List<String[]>>> principalSet = aclEntriesMap.entrySet();
+            for (Map.Entry<String,List<String[]>> currentPrincipal : principalSet) {
+                boolean isUser = currentPrincipal.getKey().indexOf("u:") == 0;
+                String principalName = currentPrincipal.getKey().substring(2);
 
                 // test if the principal is the user or if the user belongs to the principal (group)
                 if ((isUser && principalName.equalsIgnoreCase(user.getUsername())) || user.isMemberOfGroup(Jahia.getThreadParamBean().getSiteID(), principalName)) {
-                    List<String[]> principalPermValues = aclEntriesMap.get(currentPrincipal);
+                    List<String[]> principalPermValues = currentPrincipal.getValue();
                     for (String[] currentPrincipalPerm : principalPermValues) {
                         String currentPrincipalPermValue = currentPrincipalPerm[1];
                         String currentPrincipalPermName = currentPrincipalPerm[2];

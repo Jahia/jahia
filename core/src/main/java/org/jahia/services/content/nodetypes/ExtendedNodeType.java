@@ -183,7 +183,7 @@ public class ExtendedNodeType implements NodeType {
                 primaryFound = true;
             }
         }
-        if (!primaryFound && !Constants.NT_BASE.equals(name) && !isMixin) {
+        if (!primaryFound && !Constants.NT_BASE.equals(name.toString()) && !isMixin) {
             try {
                 l.add(registry.getNodeType(Constants.NT_BASE));
             } catch (NoSuchNodeTypeException e) {
@@ -514,11 +514,11 @@ public class ExtendedNodeType implements NodeType {
 
     void setNodeDefinition(String name, ExtendedNodeDefinition p) {
         if (name.equals("*")) {
-            String s = "";
+            StringBuffer s = new StringBuffer("");
             for (String s1 : p.getRequiredPrimaryTypeNames()) {
-                s += (s1 + " ");
+                s.append(s1).append(" ");
             }
-            unstructuredNodes.put(s.trim(), p);
+            unstructuredNodes.put(s.toString().trim(), p);
         } else {
             nodes.put(name, p);
         }

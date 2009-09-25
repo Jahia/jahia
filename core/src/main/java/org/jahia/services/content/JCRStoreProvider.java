@@ -374,12 +374,15 @@ public class JCRStoreProvider {
     protected void initContent() throws RepositoryException, IOException {
         if ("/".equals(mountPoint)) {
             Session session = getSystemSession();
+            FileInputStream stream = null;
             try {
                 Node rootNode = session.getRootNode();
                 if (!rootNode.hasNode(Constants.CONTENT)) {
                     initializeAcl(session);
 
-                    session.importXML("/", new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/root.xml"),ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
+                    stream = new FileInputStream(
+                            org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/root.xml");
+                    session.importXML("/", stream,ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
                     Node userNode = (Node) session.getItem("/"+Constants.CONTENT+"/users");
                     NodeIterator nodeIterator = userNode.getNodes();
                     while (nodeIterator.hasNext()) {
@@ -392,6 +395,9 @@ public class JCRStoreProvider {
                 session.save();
             } finally {
                 session.logout();
+                if(stream!=null) {
+                    stream.close();
+                }
             }
         }
     }

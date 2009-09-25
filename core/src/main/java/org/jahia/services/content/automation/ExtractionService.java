@@ -342,11 +342,9 @@ public class ExtractionService {
                     if (triggerExtraction[0]) {
                         JahiaUser member = jParams.getUser();
 
-                        if (jParams == null) {
-                            jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(),
-                                                            System.currentTimeMillis(), null, member, null);
-                            jParams.setCurrentLocale(Locale.getDefault());
-                        }
+                        jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(),
+                                                        System.currentTimeMillis(), null, member, null);
+                        jParams.setCurrentLocale(Locale.getDefault());
 
                         JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for " + file.getName(),
                                                                            TextExtractorJob.class, jParams);

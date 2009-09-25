@@ -39,11 +39,11 @@
 
 package org.jahia.data.templates;
 
-import java.io.File;
-import java.util.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * Holds Informations about a templates package
@@ -722,5 +722,28 @@ public class JahiaTemplatesPackage {
 
     public String getSitemapPageName() {
         return sitemapPageName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        JahiaTemplatesPackage that = (JahiaTemplatesPackage) o;
+
+        if (m_Name != null ? !m_Name.equals(that.m_Name) : that.m_Name != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return m_Name != null ? m_Name.hashCode() : 0;
     }
 }

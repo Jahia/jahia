@@ -75,8 +75,6 @@ public class ExtendedNodeType implements NodeType {
     private List<ExtendedNodeType> declaredSubtypes = new ArrayList<ExtendedNodeType>();
     private String validator;
     private boolean queryable = true;
-    private String localName;
-    private String prefix;
 
     public ExtendedNodeType(NodeTypeRegistry registry, String systemId) {
         this.registry = registry;
@@ -613,13 +611,11 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public String getLocalName() {
-        localName = this.name.getLocalName();
-        return localName;
+         return this.name.getLocalName();
     }
 
     public String getPrefix() {
-        prefix = this.name.getPrefix();
-        return prefix;
+        return this.name.getPrefix();
     }
 
     class Definition implements NodeTypeDefinition {

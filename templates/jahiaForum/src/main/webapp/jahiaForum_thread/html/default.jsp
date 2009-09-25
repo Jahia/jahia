@@ -27,9 +27,7 @@
                 </div>
             </c:if>
         </c:forEach>
-        <c:if test="${renderContext.user.name != 'guest'}">
         <template:module node="${currentNode}" template="newPostForm"/>
-        </c:if>
         <div class="forum-actions">
             <div class="forum-pagination">
                 ${fn:length(currentNode.children)} posts

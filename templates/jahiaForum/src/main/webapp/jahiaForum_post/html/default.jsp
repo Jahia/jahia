@@ -51,17 +51,16 @@
          sql="select [jcr:uuid] from [jahiaForum:post] as p  where p.[jcr:createdBy] = '${createdBy.string}'"/>
 <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
 <dl class="forum-postprofile">
-    <jcr:node var="userNode" path="/content/users/${createdBy.string}"/>
-    <c:if test="${not empty userNode}">
-        <jcr:nodeProperty node="${userNode}" name="jcr:lastModified" var="userCreated"/>
-        <dt>
-            <template:module node="${userNode}" template="mini"/>
-        </dt>
-        <br/>
-        <dd><strong>Posts:</strong> ${numberOfPosts}</dd>
-        <dd><strong>Joined:</strong> <fmt:formatDate value="${userCreated.time}" type="both" dateStyle="full"/>
-        </dd>
-    </c:if>
+    <dt>
+        <jcr:node var="userNode" path="/content/users/${createdBy.string}"/>
+        <template:module node="${userNode}" template="mini"/>
+    </dt>
+    <br/>
+    <dd><strong>Posts:</strong> ${numberOfPosts}</dd>
+    <dd><strong>Joined:</strong> <jcr:nodeProperty node="${userNode}" name="jcr:lastModified"
+                                                   var="userCreated"/><fmt:formatDate value="${userCreated.time}"
+                                                                                      type="both" dateStyle="full"/>
+    </dd>
 </dl>
 <div class="back2top"><a title="Top" class="top" href="#wrap">Top</a></div>
 <div class="clear"></div>

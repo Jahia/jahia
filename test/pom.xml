@@ -30,6 +30,16 @@
             <version>2.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.nutch</groupId>
+            <artifactId>nutch</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.mahout.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+            <version>0.19.1</version>
+        </dependency>        
         <!--<dependency>
             <groupId>jasperreports</groupId>
             <artifactId>jasperreports</artifactId>

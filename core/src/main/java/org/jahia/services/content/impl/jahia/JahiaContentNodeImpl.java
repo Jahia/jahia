@@ -311,23 +311,27 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             }
             case FieldTypes.FILE: {
                 try {
-                    if (value.startsWith("/")) {
-                        try {
-                            JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getThreadSession(getSession().getJahiaUser()).getNode(value);
-                            Value v = new ValueImpl(file.getUUID(), PropertyType.REFERENCE);
-                            fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
-                        } catch (PathNotFoundException e) {
+                    if (value != null) {
+                        if (value.startsWith("/")) {
+                            try {
+                                JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getThreadSession(getSession().getJahiaUser()).getNode(value);
+                                Value v = new ValueImpl(file.getUUID(), PropertyType.REFERENCE);
+                                fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
+                            } catch (PathNotFoundException e) {
 
-                        }
-                    } else {
-                        try {
-                            String providerKey = StringUtils.substringBefore(value,":");
-                            String uuid  = StringUtils.substringAfter(value,":");
-                            JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getThreadSession(getSession().getJahiaUser()).getNodeByUUID(providerKey, uuid);
-                            Value v = new ValueImpl(file.getUUID(), PropertyType.REFERENCE);
-                            fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
-                        } catch (ItemNotFoundException e) {
+                            }
+                        } else {
+                            try {
+                                String providerKey = StringUtils.substringBefore(value,":");
+                                String uuid  = StringUtils.substringAfter(value,":");
+                                if (!uuid.equals("/")) {
+                                    JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getThreadSession(getSession().getJahiaUser()).getNodeByUUID(providerKey, uuid);
+                                    Value v = new ValueImpl(file.getUUID(), PropertyType.REFERENCE);
+                                    fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
+                                }
+                            } catch (ItemNotFoundException e) {
 
+                            }
                         }
                     }
                 } catch (RepositoryException e) {

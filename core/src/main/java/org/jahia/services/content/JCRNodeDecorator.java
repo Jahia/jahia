@@ -37,6 +37,8 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -72,10 +74,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public JahiaUser getUser() {
         return node.getUser();
-    }
-
-    public boolean isValid() {
-        return node.isValid();
     }
 
     public Map<String, List<String[]>> getAclEntries() {
@@ -242,7 +240,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         node.setProperty(namespace, name, value);
     }
 
-    public List<Item> getAncestors() throws RepositoryException {
+    public List<JCRItemWrapper> getAncestors() throws RepositoryException {
         return node.getAncestors();
     }
 
@@ -268,10 +266,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public boolean copyFile(JCRNodeWrapper dest, String name) throws RepositoryException {
         return node.copyFile(dest, name);
-    }
-
-    public int deleteFile() {
-        return node.deleteFile();
     }
 
     public boolean lockAsSystemAndStoreToken() {
@@ -350,71 +344,71 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         node.orderBefore(s, s1);
     }
 
-    public Property setProperty(String s, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, value);
     }
 
-    public Property setProperty(String s, Value value, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, Value value, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, value, i);
     }
 
-    public Property setProperty(String s, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, values);
     }
 
-    public Property setProperty(String s, Value[] values, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, Value[] values, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, values, i);
     }
 
-    public Property setProperty(String s, String[] strings) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, String[] strings) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, strings);
     }
 
-    public Property setProperty(String s, String[] strings, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, String[] strings, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, strings, i);
     }
 
-    public Property setProperty(String s, String s1) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, String s1) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, s1);
     }
 
-    public Property setProperty(String s, String s1, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, String s1, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, s1, i);
     }
 
-    public Property setProperty(String s, InputStream inputStream) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, InputStream inputStream) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, inputStream);
     }
 
-    public Property setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(name, value);
     }
 
-    public Property setProperty(String s, boolean b) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, boolean b) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, b);
     }
 
-    public Property setProperty(String s, double v) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, double v) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, v);
     }
 
-    public Property setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(name, value);
     }
 
-    public Property setProperty(String s, long l) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, long l) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, l);
     }
 
-    public Property setProperty(String s, Calendar calendar) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, Calendar calendar) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return node.setProperty(s, calendar);
     }
 
-    public Property setProperty(String s, Node node) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String s, Node node) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         return this.node.setProperty(s, node);
     }
 
-    public Node getNode(String s) throws PathNotFoundException, RepositoryException {
+    public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {
         return node.getNode(s);
     }
 
@@ -430,7 +424,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getNodes(nameGlobs);
     }
 
-    public Property getProperty(String s) throws PathNotFoundException, RepositoryException {
+    public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
         return node.getProperty(s);
     }
 
@@ -446,7 +440,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getProperties(strings);
     }
 
-    public Item getPrimaryItem() throws ItemNotFoundException, RepositoryException {
+    public JCRItemWrapper getPrimaryItem() throws ItemNotFoundException, RepositoryException {
         return node.getPrimaryItem();
     }
 
@@ -494,11 +488,11 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.hasProperties();
     }
 
-    public NodeType getPrimaryNodeType() throws RepositoryException {
+    public ExtendedNodeType getPrimaryNodeType() throws RepositoryException {
         return node.getPrimaryNodeType();
     }
 
-    public NodeType[] getMixinNodeTypes() throws RepositoryException {
+    public ExtendedNodeType[] getMixinNodeTypes() throws RepositoryException {
         return node.getMixinNodeTypes();
     }
 
@@ -522,7 +516,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.canAddMixin(s);
     }
 
-    public NodeDefinition getDefinition() throws RepositoryException {
+    public ExtendedNodeDefinition getDefinition() throws RepositoryException {
         return node.getDefinition();
     }
 
@@ -634,11 +628,11 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getName();
     }
 
-    public Item getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+    public JCRItemWrapper getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         return node.getAncestor(i);
     }
 
-    public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+    public JCRNodeWrapper getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         return node.getParent();
     }
 
@@ -646,7 +640,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getDepth();
     }
 
-    public Session getSession() throws RepositoryException {
+    public JCRSessionWrapper getSession() throws RepositoryException {
         return node.getSession();
     }
 

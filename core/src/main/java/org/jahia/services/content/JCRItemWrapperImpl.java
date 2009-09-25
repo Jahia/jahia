@@ -77,14 +77,14 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
         return item.getName();
     }
 
-    public Item getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+    public JCRItemWrapper getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         if (i >= provider.getDepth()) {
             return provider.getNodeWrapper((Node) item.getAncestor(i-provider.getDepth()), getSession());
         }
         return session.getItem(StringUtils.substringBeforeLast(provider.getMountPoint(),"/")).getAncestor(i);
     }
 
-    public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+    public JCRNodeWrapper getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         throw new UnsupportedOperationException();
 
 //        JCRNodeWrapper parent = provider.getFileNodeWrapper(provider.decodeInternalName(getParent().getPath()), user, session);

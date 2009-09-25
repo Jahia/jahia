@@ -109,7 +109,7 @@ public class FileFieldRuleCondition implements RuleCondition {
         }
         JCRNodeWrapper file = JCRStoreService.getInstance()
                 .getFileNode(fField.getRealName (), null);
-        if (file.isValid () && !file.isCollection ()) {
+        if (!file.isCollection ()) {
             String contentType = fField.getType ();
             if (contentType != null && !file.getPath().equals("#")) {
             JCRFileContent fileContent = file.getFileContent();

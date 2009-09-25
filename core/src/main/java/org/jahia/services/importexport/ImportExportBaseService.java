@@ -1067,7 +1067,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     return;
                 }
 
-                logger.debug("Add file to " + parentDir.getPath() + " (valid=" + parentDir.isValid() + ")");
+                logger.debug("Add file to " + parentDir.getPath());
                 try {
                     JCRNodeWrapper res = parentDir.uploadFile(name, inputStream, type);
                     logger.debug("File added -> " + res);

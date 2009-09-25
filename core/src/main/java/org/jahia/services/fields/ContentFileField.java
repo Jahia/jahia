@@ -49,23 +49,23 @@ import java.util.Set;
 
 public class ContentFileField extends ContentField {
     private static final long serialVersionUID = 701288568949223178L;
-    
-        private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (ContentFileField.class);
 
-    protected ContentFileField (Integer ID,
-                                Integer jahiaID,
-                                Integer pageID,
-                                Integer ctnid,
-                                Integer fieldDefID,
-                                Integer fieldType,
-                                Integer connectType,
-                                Integer aclID,
-                                List<ContentObjectEntryState> activeAndStagingEntryStates,
-                                Map<ContentObjectEntryState, String> activeAndStagedDBValues) throws JahiaException {
-        super (ID.intValue (), jahiaID.intValue (), pageID.intValue (),
-                ctnid.intValue (), fieldDefID.intValue (), fieldType.intValue (),
-                connectType.intValue (), aclID.intValue (), activeAndStagingEntryStates,
+    private static org.apache.log4j.Logger logger =
+            org.apache.log4j.Logger.getLogger(ContentFileField.class);
+
+    protected ContentFileField(Integer ID,
+                               Integer jahiaID,
+                               Integer pageID,
+                               Integer ctnid,
+                               Integer fieldDefID,
+                               Integer fieldType,
+                               Integer connectType,
+                               Integer aclID,
+                               List<ContentObjectEntryState> activeAndStagingEntryStates,
+                               Map<ContentObjectEntryState, String> activeAndStagedDBValues) throws JahiaException {
+        super(ID.intValue(), jahiaID.intValue(), pageID.intValue(),
+                ctnid.intValue(), fieldDefID.intValue(), fieldType.intValue(),
+                connectType.intValue(), aclID.intValue(), activeAndStagingEntryStates,
                 activeAndStagedDBValues);
     }
 
@@ -77,22 +77,22 @@ public class ContentFileField extends ContentField {
      * method getValue of ContentField, which does the entryState resolving
      * This method should call getDBValue to get the DBValue
      */
-    public String getValue (ProcessingContext jParams,
-                               ContentObjectEntryState entryState)
+    public String getValue(ProcessingContext jParams,
+                           ContentObjectEntryState entryState)
             throws JahiaException {
-        return getDBValue (entryState);
+        return getDBValue(entryState);
     }
 
     //--------------------------------------------------------------------------
     /**
      * This method should call preSet.
      */
-    public void setFile (JahiaFileField fField, EntrySaveRequest saveRequest)
+    public void setFile(JahiaFileField fField, EntrySaveRequest saveRequest)
             throws JahiaException {
         if (fField == null) {
             return;
         }
-        preSet (fField.getStorageName (), saveRequest);
+        preSet(fField.getStorageName(), saveRequest);
         postSet(saveRequest);
     }
 
@@ -105,10 +105,10 @@ public class ContentFileField extends ContentField {
      *
      * @param jParams the jParam containing the loadVersion and locales
      */
-    public String getValueForSearch (ProcessingContext jParams,
-                                     ContentObjectEntryState entryState)
+    public String getValueForSearch(ProcessingContext jParams,
+                                    ContentObjectEntryState entryState)
             throws JahiaException {
-        return getDBValue (entryState);
+        return getDBValue(entryState);
     }
 
     //--------------------------------------------------------------------------
@@ -122,37 +122,34 @@ public class ContentFileField extends ContentField {
      * @param toEntryState   the entry state that will be written to the database
      * @param jParams        ProcessingContext object used to get information about the user
      *                       doing the request, the current locale, etc...
-     *
      * @return null if the entry state change wasn't an activation, otherwise it
      *         returns an object that contains the status of the activation (whether
      *         successfull, partial or failed, as well as messages describing the
      *         warnings during the activation process)
      */
-    public ActivationTestResults changeEntryState (ContentObjectEntryState fromEntryState,
-                                                   ContentObjectEntryState toEntryState,
-                                                   ProcessingContext jParams,
-                                                   StateModificationContext stateModifContext)
+    public ActivationTestResults changeEntryState(ContentObjectEntryState fromEntryState,
+                                                  ContentObjectEntryState toEntryState,
+                                                  ProcessingContext jParams,
+                                                  StateModificationContext stateModifContext)
             throws JahiaException {
         JahiaFieldXRefManager fieldLinkManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldXRefManager.class.getName());
 
-        JCRNodeWrapper file = JCRStoreService.getInstance ().getFileNode(
-                this.getValue (fromEntryState), jParams.getUser());
+        JCRNodeWrapper file = JCRStoreService.getInstance().getFileNode(
+                this.getValue(fromEntryState), jParams.getUser());
 
-        if (file.isValid ()) {
-            int usageCount = fieldLinkManager.countUsages("file:"+file.getPath(), EntryLoadRequest.ACTIVE_WORKFLOW_STATE);
-            boolean wasLocked = fromEntryState.getWorkflowState () == EntryLoadRequest.ACTIVE_WORKFLOW_STATE || fromEntryState.getWorkflowState () == EntryLoadRequest.WAITING_WORKFLOW_STATE;
-            boolean wasUnlocked = fromEntryState.getWorkflowState () != EntryLoadRequest.ACTIVE_WORKFLOW_STATE && fromEntryState.getWorkflowState () != EntryLoadRequest.WAITING_WORKFLOW_STATE;
-            boolean shouldBeLocked = toEntryState.getWorkflowState () == EntryLoadRequest.ACTIVE_WORKFLOW_STATE || toEntryState.getWorkflowState () == EntryLoadRequest.WAITING_WORKFLOW_STATE;
-            boolean shouldBeUnlocked = toEntryState.getWorkflowState () != EntryLoadRequest.ACTIVE_WORKFLOW_STATE && toEntryState.getWorkflowState () != EntryLoadRequest.WAITING_WORKFLOW_STATE;
-            if (wasLocked && shouldBeUnlocked) {
-                if (usageCount <= 1) {
-                    file.forceUnlock();
-                }
-            } else if (wasUnlocked && shouldBeLocked && getSite(jParams).isFileLockOnPublicationEnabled()) {
-                if (usageCount == 0) {
-                    file.forceUnlock();
-                    file.lockAsSystemAndStoreToken();
-                }
+        int usageCount = fieldLinkManager.countUsages("file:" + file.getPath(), EntryLoadRequest.ACTIVE_WORKFLOW_STATE);
+        boolean wasLocked = fromEntryState.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE || fromEntryState.getWorkflowState() == EntryLoadRequest.WAITING_WORKFLOW_STATE;
+        boolean wasUnlocked = fromEntryState.getWorkflowState() != EntryLoadRequest.ACTIVE_WORKFLOW_STATE && fromEntryState.getWorkflowState() != EntryLoadRequest.WAITING_WORKFLOW_STATE;
+        boolean shouldBeLocked = toEntryState.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE || toEntryState.getWorkflowState() == EntryLoadRequest.WAITING_WORKFLOW_STATE;
+        boolean shouldBeUnlocked = toEntryState.getWorkflowState() != EntryLoadRequest.ACTIVE_WORKFLOW_STATE && toEntryState.getWorkflowState() != EntryLoadRequest.WAITING_WORKFLOW_STATE;
+        if (wasLocked && shouldBeUnlocked) {
+            if (usageCount <= 1) {
+                file.forceUnlock();
+            }
+        } else if (wasUnlocked && shouldBeLocked && getSite(jParams).isFileLockOnPublicationEnabled()) {
+            if (usageCount == 0) {
+                file.forceUnlock();
+                file.lockAsSystemAndStoreToken();
             }
         }
 
@@ -164,17 +161,17 @@ public class ContentFileField extends ContentField {
         }
 
 
-        return new ActivationTestResults ();
+        return new ActivationTestResults();
     }
 
     //--------------------------------------------------------------------------
-    protected ActivationTestResults isContentValidForActivation (
+    protected ActivationTestResults isContentValidForActivation(
             Set<String> languageCodes,
             ProcessingContext jParams,
             StateModificationContext stateModifContext)
             throws JahiaException {
         /** @todo to be implemented */
-        return new ActivationTestResults ();
+        return new ActivationTestResults();
     }
 
     //--------------------------------------------------------------------------
@@ -186,11 +183,11 @@ public class ContentFileField extends ContentField {
      * @param fromEntryState the entry state that is currently was in the database
      * @param toEntryState   the entry state that will be written to the database
      */
-    public void copyEntry (EntryStateable fromEntryState,
-                           EntryStateable toEntryState)
+    public void copyEntry(EntryStateable fromEntryState,
+                          EntryStateable toEntryState)
             throws JahiaException {
 
-        super.copyEntry (fromEntryState, toEntryState);
+        super.copyEntry(fromEntryState, toEntryState);
     }
 
     //--------------------------------------------------------------------------
@@ -203,10 +200,10 @@ public class ContentFileField extends ContentField {
      *
      * @param deleteEntryState the entry state to delete
      */
-    public void deleteEntry (EntryStateable deleteEntryState)
+    public void deleteEntry(EntryStateable deleteEntryState)
             throws JahiaException {
         /** @todo to be implemented */
-        super.deleteEntry (deleteEntryState);
+        super.deleteEntry(deleteEntryState);
     }
 
     //--------------------------------------------------------------------------
@@ -214,11 +211,11 @@ public class ContentFileField extends ContentField {
      * Is this kind of field shared (i.e. not one version for each language,
      * but one version for every language)
      */
-    public boolean isShared () {
+    public boolean isShared() {
         return false;
     }
 
-    protected void purgeContent ()
+    protected void purgeContent()
             throws JahiaException {
         /** @todo FIXME : to be implemented. */
     }
@@ -226,7 +223,7 @@ public class ContentFileField extends ContentField {
     private JahiaSite getSite(ProcessingContext ctx) throws JahiaException {
         return getSiteID() == ctx.getSiteID() ? ctx.getSite()
                 : ServicesRegistry.getInstance().getJahiaSitesService()
-                        .getSite(getSiteID());
+                .getSite(getSiteID());
     }
 
 }

@@ -29,12 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.services.importexport;
-
-import java.util.StringTokenizer;
-
-import javax.jcr.RepositoryException;
-import javax.transaction.Status;
+package org.jahia.services.importexport;
 
 import org.apache.log4j.Logger;
 import org.jahia.params.ProcessingContext;
@@ -46,6 +41,9 @@ import org.jahia.services.webdav.JahiaWebdavBaseService;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.jcr.RepositoryException;
+import java.util.StringTokenizer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -67,64 +65,62 @@ public class FilesAclImportHandler extends DefaultHandler {
         if ("file".equals(localName) && ImportExportBaseService.JAHIA_URI.equals(uri)) {
             String path = attributes.getValue(ImportExportBaseService.JAHIA_URI, "path");
             String acl = attributes.getValue(ImportExportBaseService.JAHIA_URI, "fileacl");
-            JCRNodeWrapper f = JahiaWebdavBaseService.getInstance ().getDAVFileAccess (path, jParams.getUser());
-            if (f.isValid()) {
-                    if (acl != null && acl.length() > 0) {
-                        StringTokenizer st = new StringTokenizer(acl, "|");
-                        while (st.hasMoreElements()) {
-                            String s = st.nextToken();
-                            int beginIndex = s.lastIndexOf(":");
+            JCRNodeWrapper f = JahiaWebdavBaseService.getInstance().getDAVFileAccess(path, jParams.getUser());
+            if (acl != null && acl.length() > 0) {
+                StringTokenizer st = new StringTokenizer(acl, "|");
+                while (st.hasMoreElements()) {
+                    String s = st.nextToken();
+                    int beginIndex = s.lastIndexOf(":");
 
-                            String principal = s.substring(0, beginIndex);
-                            String userName = principal.substring(2);
-                            String value = null;
+                    String principal = s.substring(0, beginIndex);
+                    String userName = principal.substring(2);
+                    String value = null;
 
-                                if (principal.charAt(0) == 'u') {
-                                    JahiaUser user = ServicesRegistry
-                                            .getInstance()
-                                            .getJahiaSiteUserManagerService()
-                                            .getMember(jParams.getSiteID(),
-                                                    userName);
-                                    if (user != null) {
-                                        value = "/users/" + user.getUsername();
-                                    }
-                                } else {
-                                    JahiaGroup group = ServicesRegistry
-                                            .getInstance()
-                                            .getJahiaGroupManagerService()
-                                            .lookupGroup(jParams.getSiteID(),
-                                                    userName);
-                                    if (group != null) {
-                                        value = "+/groups/"
-                                                + group.getGroupname()
-                                                + "/members";
-                                    }
-                                }
-
-                            if (value != null) {
-                                f.changePermissions(value, s
-                                        .substring(beginIndex + 1));
-                            }
+                    if (principal.charAt(0) == 'u') {
+                        JahiaUser user = ServicesRegistry
+                                .getInstance()
+                                .getJahiaSiteUserManagerService()
+                                .getMember(jParams.getSiteID(),
+                                        userName);
+                        if (user != null) {
+                            value = "/users/" + user.getUsername();
+                        }
+                    } else {
+                        JahiaGroup group = ServicesRegistry
+                                .getInstance()
+                                .getJahiaGroupManagerService()
+                                .lookupGroup(jParams.getSiteID(),
+                                        userName);
+                        if (group != null) {
+                            value = "+/groups/"
+                                    + group.getGroupname()
+                                    + "/members";
                         }
                     }
-                    for (int i = 0; i < attributes.getLength(); i++) {
-                        String attUri = attributes.getURI(i);
-                        String attName = attributes.getLocalName(i);
-                        if (!ImportExportBaseService.JAHIA_URI.equals(attUri)
-                                || (!"path".equals(attName) && !"fileacl".equals(attName) && !"lastModification".equals(attName))) {
-                            String attValue = attributes.getValue(i);
-                            try {
-                                f.setProperty(attUri, attName, attValue);
-                            } catch (RepositoryException e) {
-                                e.printStackTrace();
-                            }
-                        }
+
+                    if (value != null) {
+                        f.changePermissions(value, s
+                                .substring(beginIndex + 1));
                     }
+                }
+            }
+            for (int i = 0; i < attributes.getLength(); i++) {
+                String attUri = attributes.getURI(i);
+                String attName = attributes.getLocalName(i);
+                if (!ImportExportBaseService.JAHIA_URI.equals(attUri)
+                        || (!"path".equals(attName) && !"fileacl".equals(attName) && !"lastModification".equals(attName))) {
+                    String attValue = attributes.getValue(i);
                     try {
-                        f.save();
+                        f.setProperty(attUri, attName, attValue);
                     } catch (RepositoryException e) {
-                        logger.error("error",e);                        
+                        e.printStackTrace();
                     }
+                }
+            }
+            try {
+                f.save();
+            } catch (RepositoryException e) {
+                logger.error("error", e);
             }
         }
     }

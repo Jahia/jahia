@@ -43,6 +43,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.PathNotFoundException;
 
 import java.util.List;
 import java.util.Iterator;
@@ -216,8 +217,9 @@ public class JCRZipTools {
 
     private static JCRNodeWrapper ensureDir(String path, JahiaUser user)  throws RepositoryException{
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService() ;
-        JCRNodeWrapper dir = jcr.getFileNode(path, user);
-        if (!dir.isValid()) {
+        try {
+            return jcr.getSessionFactory().getThreadSession(user).getNode(path);
+        } catch (PathNotFoundException e) {
             int endIndex = path.lastIndexOf('/');
             if (endIndex == -1) {
                 return null;
@@ -226,10 +228,8 @@ public class JCRZipTools {
             if (parentDir == null) {
                 return null;
             }
-            parentDir.createCollection(path.substring(path.lastIndexOf('/') + 1));
-            dir = jcr.getFileNode(path, user);
+            return parentDir.createCollection(path.substring(path.lastIndexOf('/') + 1));
         }
-        return dir;
     }
 
 }

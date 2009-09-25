@@ -44,6 +44,6 @@ import javax.jcr.RepositoryException;
  * @author : $Author$
  * Last Modified : $Date$
  */
-public interface JCRPropertyWrapper extends Property {
+public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
     CategoryBean getCategory() throws ValueFormatException, RepositoryException;
 }

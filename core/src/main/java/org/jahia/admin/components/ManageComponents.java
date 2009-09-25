@@ -31,35 +31,34 @@
  */
 package org.jahia.admin.components;
 
-import java.io.IOException;
-import java.io.File;
-import java.io.InputStream;
-import java.io.FileInputStream;
-import java.util.Iterator;
-import java.util.Set;
+import org.apache.commons.io.FileUtils;
+import org.jahia.admin.AbstractAdministrationModule;
+import org.jahia.bin.Jahia;
+import org.jahia.bin.JahiaAdministration;
+import org.jahia.data.JahiaData;
+import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.security.license.License;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
+import org.jahia.tools.files.FileUpload;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.jcr.RepositoryException;
-
-import org.jahia.bin.Jahia;
-import org.jahia.bin.JahiaAdministration;
-import org.jahia.data.JahiaData;
-import org.jahia.params.ProcessingContext;
-import org.jahia.params.ParamBean;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.security.license.License;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.admin.AbstractAdministrationModule;
-import org.jahia.tools.files.FileUpload;
-import org.jahia.settings.SettingsBean;
-import org.apache.commons.io.FileUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Set;
 
 
 /**
@@ -336,11 +335,7 @@ public class ManageComponents extends AbstractAdministrationModule {
             logger.error("exception ", e);
             return null;
         }
-        if (result.isValid()) {
-            return result.getUrl();
-        } else {
-            return null;
-        }
+        return result.getUrl();
     }
 
     /**

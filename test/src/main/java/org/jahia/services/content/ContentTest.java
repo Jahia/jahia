@@ -98,7 +98,6 @@ public class ContentTest extends TestCase {
             session.save();
             nodes.add(testCollection.getUUID());
 
-            assertTrue(providerRoot + " : Created folder is not valid", testCollection.isValid());
             assertTrue(providerRoot + " : Created folder is not a collection", testCollection.isCollection());
 
 //            long creationDate = testCollection.getCreationDateAsDate().getTime();
@@ -109,7 +108,6 @@ public class ContentTest extends TestCase {
 
             testCollection = session.getNode(providerRoot + "/" + name);
 
-            assertTrue(providerRoot + " : Folder cannot be reloaded", testCollection.isValid());
         } finally {
             session.logout();
         }
@@ -137,8 +135,6 @@ public class ContentTest extends TestCase {
             session.save();
             nodes.add(testFile.getUUID());
 
-            assertTrue(providerRoot + " : Created file is not valid", testFile.isValid());
-
             assertEquals(providerRoot + " : Size is not the same", value.length(),
                          testFile.getFileContent().getContentLength());
             assertEquals(providerRoot + " : Mime type is not the same", mimeType,
@@ -153,8 +149,6 @@ public class ContentTest extends TestCase {
                        lastModifiedDate < (System.currentTimeMillis() + 600000) && lastModifiedDate > (System.currentTimeMillis() - 600000));
 
             testFile = session.getNode(providerRoot + "/" + name);
-
-            assertTrue(providerRoot + " : File cannot be reloaded", testFile.isValid());
 
             is = testFile.getFileContent().downloadFile();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

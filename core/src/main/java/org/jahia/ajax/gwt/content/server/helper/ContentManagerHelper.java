@@ -913,23 +913,8 @@ public class ContentManagerHelper {
                 missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - ACCESS DENIED").toString());
             } else if (!getRecursedLocksAndFileUsages(nodeToDelete, missedPaths, user.getUsername())) {
                 try {
-                    int status = nodeToDelete.deleteFile();
-                    switch (status) {
-                        case JCRNodeWrapper.OK:
-                            nodeToDelete.saveSession();
-                            break;
-                        case JCRNodeWrapper.INVALID_FILE:
-                            missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - INVALID FILE").toString());
-                            break;
-                        case JCRNodeWrapper.ACCESS_DENIED:
-                            missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - ACCESS DENIED").toString());
-                            break;
-                        case JCRNodeWrapper.UNSUPPORTED_ERROR:
-                            missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - UNSUPPORTED").toString());
-                            break;
-                        default:
-                            missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - UNKNOWN ERROR").toString());
-                    }
+                    nodeToDelete.remove();
+                    nodeToDelete.saveSession();
                 } catch (AccessDeniedException e) {
                     missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - ACCESS DENIED").toString());
                 } catch (ReferentialIntegrityException e) {
@@ -1399,7 +1384,7 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(new StringBuilder(parentNode.getPath()).append(" - ACCESS DENIED").toString());
         }
         JCRNodeWrapper childNode = null;
-        if (parentNode.isValid() && !parentNode.isFile() && parentNode.isWriteable()) {
+        if (!parentNode.isFile() && parentNode.isWriteable()) {
             try {
                 childNode = parentNode.addNode(name, nodeType);
                 setProperties(childNode, props);
@@ -1408,7 +1393,7 @@ public class ContentManagerHelper {
                 throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
             }
         }
-        if (childNode == null || !childNode.isValid()) {
+        if (childNode == null) {
             throw new GWTJahiaServiceException("Node creation failed");
         }
         return childNode;
@@ -1416,9 +1401,8 @@ public class ContentManagerHelper {
 
     public static GWTJahiaNode unsecureCreateNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, ProcessingContext context) throws GWTJahiaServiceException {
         try {
-            if (sessionFactory.getThreadSession(context.getUser()).getNode(parentPath + "/" + name).isValid()) {
-                throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
-            }
+            sessionFactory.getThreadSession(context.getUser()).getNode(parentPath + "/" + name);
+            throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
         } catch (PathNotFoundException e) {
             if(!e.getMessage().contains(name)) {
                 logger.error(e.toString(), e);
@@ -1447,7 +1431,7 @@ public class ContentManagerHelper {
 
     private static JCRNodeWrapper unsecureAddNode(JCRNodeWrapper parentNode, String name, String nodeType, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
         JCRNodeWrapper childNode = null;
-        if (parentNode.isValid() && !parentNode.isFile()) {
+        if (!parentNode.isFile()) {
             try {
                 childNode = parentNode.addNode(name, nodeType);
                 setProperties(childNode, props);
@@ -1456,7 +1440,7 @@ public class ContentManagerHelper {
                 throw new GWTJahiaServiceException("Node creation failed");
             }
         }
-        if (childNode == null || !childNode.isValid()) {
+        if (childNode == null) {
             throw new GWTJahiaServiceException("Node creation failed");
         }
         return childNode;
@@ -1661,8 +1645,10 @@ public class ContentManagerHelper {
                         if (!JCRZipTools.unzipFile(nodeToUnzip, parent, user)) {
                             missedPaths.add(nodeToUnzip.getName());
                         } else if (removeArchive) {
-                            if (nodeToUnzip.deleteFile() != JCRNodeWrapper.OK) {
-                                logger.error("Issue when trying to delete original archive " + nodeToUnzip.getPath());
+                            try {
+                                nodeToUnzip.remove();
+                            } catch (RepositoryException e) {
+                                logger.error("Issue when trying to delete original archive " + nodeToUnzip.getPath(),e);
                             }
                         }
                     } catch (RepositoryException e) {
@@ -1707,7 +1693,7 @@ public class ContentManagerHelper {
                 }
 
                 JCRMountPointNode childNode = null;
-                if (mounts.isValid() && !mounts.isFile()) {
+                if (!mounts.isFile()) {
                     try {
                         childNode = (JCRMountPointNode) mounts.addNode(name, "jnt:vfsMountPoint");
                         childNode.setProperty("j:root", root);
@@ -1728,7 +1714,7 @@ public class ContentManagerHelper {
                         throw new GWTJahiaServiceException("A system error happened");
                     }
                 }
-                if (childNode == null || !childNode.isValid()) {
+                if (childNode == null) {
                     throw new GWTJahiaServiceException("A system error happened");
                 }
             } catch (RepositoryException e) {

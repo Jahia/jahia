@@ -113,7 +113,7 @@ public abstract class Exporter {
                     if (files != null) {
                         try {
                             JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNode(value);
-                            if (file.isValid() && !files.contains(file)) {
+                            if (!files.contains(file)) {
                                 files.add(file);
                                 value = file.getPath();
                             } else {
@@ -198,7 +198,7 @@ public abstract class Exporter {
 
             try {
                 JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNode(value);
-                if (file.isValid() && !files.contains(file)) {
+                if (!files.contains(file)) {
                     logger.debug("Found file for "+object.getObjectKey() + " : " +file.getPath());
                     files.add(file);
                 }
@@ -212,7 +212,7 @@ public abstract class Exporter {
             for (Iterator<JCRNodeWrapper> iterator = f.iterator(); iterator.hasNext();) {
                 JCRNodeWrapper file = iterator.next();
 
-                if (file.isValid() && !files.contains(file)) {
+                if (!files.contains(file)) {
                     logger.debug("Found file for "+object.getObjectKey() + " : " +file.getPath());
                     files.add(file);
                 }
@@ -252,9 +252,7 @@ public abstract class Exporter {
             b.replace(from,to,fname);
             try {
                 JCRNodeWrapper f = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNode(URLDecoder.decode(fname,"UTF-8"));
-                if (f.isValid()) {
-                    files.add(f);
-                }
+                files.add(f);
             } catch (Exception e) {
                 logger.warn("Invalid link to file "+l);
             }

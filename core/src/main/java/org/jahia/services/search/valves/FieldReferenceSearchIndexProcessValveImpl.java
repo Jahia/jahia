@@ -337,7 +337,7 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
             String uuid = jcrName.substring(jcrName.indexOf(':') + 1);
             JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(null).getNodeByUUID(providerKey, uuid);
 
-            if (file != null && file.isValid() && !file.isCollection()) {
+            if (file != null && !file.isCollection()) {
                 JCRFileContent fileContent = file.getFileContent();
                 doc.addFieldValue(JahiaSearchConstant.FILE_REALNAME, jcrName);
                 doc

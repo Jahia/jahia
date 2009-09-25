@@ -196,9 +196,8 @@ public class ImportJob extends BackgroundJob {
         }
         if (jobDataMap.get(DELETE_FILE) != null) {
             if (result.getStatus() == TreeOperationResult.COMPLETED_OPERATION_STATUS) {
-                Node parent = f.getParent();
-                f.deleteFile();
-                parent.save();
+                f.remove();
+                session.save();
             }
         }
         jobDataMap.put(ACTIONS, actions);

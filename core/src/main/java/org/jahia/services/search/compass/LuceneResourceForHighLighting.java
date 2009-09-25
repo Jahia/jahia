@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.services.search.compass;
+package org.jahia.services.search.compass;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -71,41 +71,41 @@ public class LuceneResourceForHighLighting extends LuceneResource {
     }
 
     public LuceneResourceForHighLighting(Document document, int docNum,
-            LuceneSearchEngineFactory searchEngineFactory) {
-        super(document,docNum,searchEngineFactory);
+                                         LuceneSearchEngineFactory searchEngineFactory) {
+        super(document, docNum, searchEngineFactory);
     }
 
     public String getValue(String name) {
         String value = this.fields.get(name);
-        if ( value != null ){
+        if (value != null) {
             return value;
         }
         StringBuffer result = new StringBuffer();
         String[] values = this.getValues(name);
-        if ( values == null ){
+        if (values == null) {
             List<Fieldable> fields = null;
-            if ( JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD.equals(name) ){
+            if (JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD.equals(name)) {
                 fields = this.getContentFields();
-            } else if ( JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD.equals(name) ){
+            } else if (JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD.equals(name)) {
                 fields = this.getAllFields();
             } else {
                 return super.getValue(name);
             }
-            for ( Fieldable f : fields ){
-                if ( ServicesRegistry.getInstance().getJahiaSearchService()
-                        .getFieldsToExcludeFromHighlighting().contains(f.name()) ){
+            for (Fieldable f : fields) {
+                if (ServicesRegistry.getInstance().getJahiaSearchService()
+                        .getFieldsToExcludeFromHighlighting().contains(f.name())) {
                     continue;
                 }
                 value = f.stringValue();
                 value = NumberPadding.unpad(value);
-                if ( !"".equals(value.trim())){
+                if (!"".equals(value.trim())) {
                     result.append(value);
                     result.append("                                        ...");
                 }
             }
             value = result.toString();
         } else {
-            for ( int i=0; i<values.length; i++ ){
+            for (int i = 0; i < values.length; i++) {
                 value = values[i];
                 value = NumberPadding.unpad(value);
                 result.append(value);
@@ -114,14 +114,14 @@ public class LuceneResourceForHighLighting extends LuceneResource {
             value = result.toString();
         }
         value = stripTags(value);
-        if ( value == null ){
+        if (value == null) {
             value = "";
         }
-        this.fields.put(name,value);
+        this.fields.put(name, value);
         return value;
     }
 
-    private List<Fieldable> getContentFields(){
+    private List<Fieldable> getContentFields() {
         List<Fieldable> filteredFields = new ArrayList<Fieldable>();
         Set<String> contentFields = ServicesRegistry.getInstance().getJahiaSearchService().getFieldsGrouping().get(
                 JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD);
@@ -139,22 +139,22 @@ public class LuceneResourceForHighLighting extends LuceneResource {
         return filteredFields;
     }
 
-    private List<Fieldable> getAllFields(){
+    private List<Fieldable> getAllFields() {
         List<Fieldable> filteredFields = new ArrayList<Fieldable>();
         Set<String> allFields = ServicesRegistry.getInstance().getJahiaSearchService().getFieldsGrouping().get(
                 JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD);
         Iterator<?> fields = this.getDocument().getFields().iterator();
-        while ( fields.hasNext() ){
-            Fieldable f = (Fieldable)fields.next();
+        while (fields.hasNext()) {
+            Fieldable f = (Fieldable) fields.next();
             if (f.name().startsWith(JahiaSearchConstant.CONTAINER_FIELD_PREFIX)
                     || f.name().startsWith(JahiaSearchConstant.METADATA_PREFIX)
-                    || f.name().equals(JahiaSearchConstant.TITLE)){
+                    || f.name().equals(JahiaSearchConstant.TITLE)) {
                 if (allFields.contains(f.name())) {
                     filteredFields.add(f);
                 }
             }
         }
-        addFileField(filteredFields,this.getDocument());
+        addFileField(filteredFields, this.getDocument());
         return filteredFields;
     }
 
@@ -179,23 +179,21 @@ public class LuceneResourceForHighLighting extends LuceneResource {
                         .getEntryLoadRequest());
                 jcrName = jahiaField.getValue();
             }
-            String providerKey = jcrName.substring(0,jcrName.indexOf(':'));
+            String providerKey = jcrName.substring(0, jcrName.indexOf(':'));
             String uuid = jcrName.substring(jcrName.indexOf(':') + 1);
             JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNodeByUUID(
                     providerKey, uuid);
 
-            if (file.isValid()) {
-                JCRFileContent fileContent = file.getFileContent();
-                String contentType = fileContent.getContentType();
-                if (contentType != null && !file.getPath().equals("#")) {
+            JCRFileContent fileContent = file.getFileContent();
+            String contentType = fileContent.getContentType();
+            if (contentType != null && !file.getPath().equals("#")) {
 
-                    String data = fileContent.getExtractedText();
-                    if (data != null && !"".equals(data)) {
-                        Field f = new Field(
-                                JahiaSearchConstant.FILE_CONTENT_FULLTEXT_SEARCH_FIELD,
-                                data, Field.Store.YES, Field.Index.TOKENIZED);
-                        filteredFields.add(f);
-                    }
+                String data = fileContent.getExtractedText();
+                if (data != null && !"".equals(data)) {
+                    Field f = new Field(
+                            JahiaSearchConstant.FILE_CONTENT_FULLTEXT_SEARCH_FIELD,
+                            data, Field.Store.YES, Field.Index.TOKENIZED);
+                    filteredFields.add(f);
                 }
             }
 
@@ -204,29 +202,29 @@ public class LuceneResourceForHighLighting extends LuceneResource {
         }
     }
 
-    private String stripTags( String message ) {
+    private String stripTags(String message) {
         int startPosition = message.indexOf("<");
-        if ( startPosition == -1 ){
+        if (startPosition == -1) {
             return message;
         }
         int pos = 0;
         int endPosition = 0;
         StringBuffer returnMessage = new StringBuffer(message.length());
-        while( startPosition != -1 ) {
-            returnMessage.append(message.substring(pos,startPosition));
-            pos = startPosition+1;
-            endPosition = message.indexOf(">",pos);
-            if ( endPosition != -1 ){
-                pos = endPosition+1;
-                startPosition = message.indexOf("<",pos);
+        while (startPosition != -1) {
+            returnMessage.append(message.substring(pos, startPosition));
+            pos = startPosition + 1;
+            endPosition = message.indexOf(">", pos);
+            if (endPosition != -1) {
+                pos = endPosition + 1;
+                startPosition = message.indexOf("<", pos);
             } else {
                 return returnMessage.append(message.substring(pos)).toString();
             }
         }
         return returnMessage.append(message.substring(pos)).toString();
     }
-    
+
     public String getAlias() {
         return "jahiaHighlighter";
-    }        
+    }
 }

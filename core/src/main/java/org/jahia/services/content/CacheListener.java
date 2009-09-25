@@ -59,7 +59,7 @@ import java.util.Set;
  */
 public class CacheListener extends DefaultEventListener {
     private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(CacheListener.class);
+            org.apache.log4j.Logger.getLogger(CacheListener.class);
 
     private Cache<String, ?> cache;
 
@@ -93,21 +93,21 @@ public class CacheListener extends DefaultEventListener {
                 }
 
                 String path = event.getPath();
-                String parentPath = path.substring(0,path.lastIndexOf('/'));
-                String name = path.substring(path.lastIndexOf('/')+1);
-                String parentName = parentPath.substring(parentPath.lastIndexOf('/')+1);
+                String parentPath = path.substring(0, path.lastIndexOf('/'));
+                String name = path.substring(path.lastIndexOf('/') + 1);
+                String parentName = parentPath.substring(parentPath.lastIndexOf('/') + 1);
                 if ((event.getType() == Event.NODE_ADDED || event.getType() == Event.NODE_REMOVED) && name.equals("j:acl")) {
                     nodes.add(parentPath);
                 }
                 if ((event.getType() == Event.PROPERTY_ADDED || event.getType() == Event.PROPERTY_CHANGED) && parentName.equals("j:acl")) {
-                    parentPath = parentPath.substring(0,parentPath.lastIndexOf('/'));
+                    parentPath = parentPath.substring(0, parentPath.lastIndexOf('/'));
                     nodes.add(parentPath);
                 }
                 if (event.getType() == Event.PROPERTY_CHANGED && name.equals("j:fullpath")) {
                     // invalidate container HTML cache when the file is moved/renamed 
                     nodes.add(parentPath);
                 }
-                if ((event.getType() == Event.NODE_REMOVED) && name.indexOf(':')==-1) {
+                if ((event.getType() == Event.NODE_REMOVED) && name.indexOf(':') == -1) {
                     nodes.add(path);
                 }
             } catch (RepositoryException e) {
@@ -138,50 +138,48 @@ public class CacheListener extends DefaultEventListener {
     }
 
     private void flushNodeRefs(JCRNodeWrapper n) throws RepositoryException, JahiaException {
-        if (n.isValid()) {
-            if (n.isFile()) {
-                for (UsageEntry usageEntry : n.findUsages(false)) {
-                    int id = usageEntry.getId();
-                    ContentField field = ContentField.getField(id);
-                    if (field != null) {
-                        ContentContainerKey key = new ContentContainerKey(field.getContainerID());
-                        ContentContainerListKey listkey = (ContentContainerListKey) key.getParent(null);
-                        ContainerHTMLCache<?, ?> containerHTMLCache = ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
-                        if (usageEntry.getWorkflow() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
-                            containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.NORMAL, usageEntry.getLang());
-                            containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
-                            if (listkey != null) {
-                                containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.NORMAL, usageEntry.getLang());
-                                containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
-                            }
-                            if (!field.hasStagingEntries()) {
-                                containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.EDIT, usageEntry.getLang());
-                                containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
-                                if (listkey != null) {
-                                    containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.EDIT, usageEntry.getLang());
-                                    containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
-                                }
-                            }
-                        } else if (usageEntry.getWorkflow() == EntryLoadRequest.STAGING_WORKFLOW_STATE ||
-                                usageEntry.getWorkflow() == EntryLoadRequest.WAITING_WORKFLOW_STATE) {
+        if (n.isFile()) {
+            for (UsageEntry usageEntry : n.findUsages(false)) {
+                int id = usageEntry.getId();
+                ContentField field = ContentField.getField(id);
+                if (field != null) {
+                    ContentContainerKey key = new ContentContainerKey(field.getContainerID());
+                    ContentContainerListKey listkey = (ContentContainerListKey) key.getParent(null);
+                    ContainerHTMLCache<?, ?> containerHTMLCache = ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
+                    if (usageEntry.getWorkflow() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
+                        containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.NORMAL, usageEntry.getLang());
+                        containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
+                        if (listkey != null) {
+                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.NORMAL, usageEntry.getLang());
+                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
+                        }
+                        if (!field.hasStagingEntries()) {
                             containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.EDIT, usageEntry.getLang());
                             containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
-                            containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
                             if (listkey != null) {
                                 containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.EDIT, usageEntry.getLang());
                                 containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
-                                containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
                             }
                         }
-                    } else {
-                        logger.warn("No content field with the ID " + id + " can be found.");
+                    } else if (usageEntry.getWorkflow() == EntryLoadRequest.STAGING_WORKFLOW_STATE ||
+                            usageEntry.getWorkflow() == EntryLoadRequest.WAITING_WORKFLOW_STATE) {
+                        containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.EDIT, usageEntry.getLang());
+                        containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
+                        containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
+                        if (listkey != null) {
+                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.EDIT, usageEntry.getLang());
+                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
+                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
+                        }
                     }
+                } else {
+                    logger.warn("No content field with the ID " + id + " can be found.");
                 }
-            } else {
-                List<JCRNodeWrapper> children = n.getChildren();
-                for (JCRNodeWrapper child : children) {
-                    flushNodeRefs(child);
-                }
+            }
+        } else {
+            List<JCRNodeWrapper> children = n.getChildren();
+            for (JCRNodeWrapper child : children) {
+                flushNodeRefs(child);
             }
         }
     }

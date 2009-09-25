@@ -543,11 +543,19 @@ public class JCRStoreProvider {
         }
     }
 
+    public JCRItemWrapper getItemWrapper(Item item, JCRSessionWrapper session) throws RepositoryException {
+        if (item.isNode()) {
+            return getNodeWrapper((Node) item, session);
+        } else {
+            return getPropertyWrapper((Property) item, session);
+        }
+    }
+
     public JCRNodeWrapper getNodeWrapper(Node objectNode, JCRSessionWrapper session) {
         return service.decorate(new JCRNodeWrapperImpl(objectNode, session, this));
     }
 
-    public JCRPropertyWrapperImpl getPropertyWrapper(Property prop, JCRSessionWrapper session) throws RepositoryException {
+    public JCRPropertyWrapper getPropertyWrapper(Property prop, JCRSessionWrapper session) throws RepositoryException {
         PropertyDefinition def = prop.getDefinition();
         ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(def.getDeclaringNodeType().getName()).getDeclaredPropertyDefinitionsAsMap().get(def.getName());
         return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getNode(), session, this), prop, session, this, epd);

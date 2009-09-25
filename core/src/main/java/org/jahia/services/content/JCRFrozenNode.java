@@ -34,11 +34,10 @@ package org.jahia.services.content;
 
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.data.files.JahiaFileField;
-import org.jahia.data.files.JahiaFile;
 import org.jahia.bin.Jahia;
+import org.jahia.data.files.JahiaFile;
+import org.jahia.data.files.JahiaFileField;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.urls.URI;
 
 import javax.jcr.RepositoryException;
 import java.util.Properties;
@@ -53,6 +52,7 @@ import java.util.Properties;
 public class JCRFrozenNode extends JCRNodeDecorator {
     private transient static Logger logger = Logger.getLogger(JCRFrozenNode.class);
     protected Exception exception = null;
+
     public JCRFrozenNode(JCRNodeWrapper node) {
         super(node);
     }
@@ -62,7 +62,7 @@ public class JCRFrozenNode extends JCRNodeDecorator {
         String frozenPrimaryType = getPropertyAsString("jcr:frozenPrimaryType");
         if (frozenPrimaryType.equals(Constants.JAHIANT_FILE)) {
             try {
-                return getProvider().getHttpPath() + this.getPropertyAsString("j:fullpath") + "?v="+getParent().getName();
+                return getProvider().getHttpPath() + this.getPropertyAsString("j:fullpath") + "?v=" + getParent().getName();
             } catch (RepositoryException e) {
                 logger.error(e);
             }
@@ -74,66 +74,47 @@ public class JCRFrozenNode extends JCRNodeDecorator {
     @Override
     public JahiaFileField getJahiaFileField() {
         JahiaFileField fField;
-        if (isValid()) {
-            String uri;
-            uri = this.getPropertyAsString("j:fullpath");
-            String owner = "root:0";
+        String uri;
+        uri = this.getPropertyAsString("j:fullpath");
+        String owner = "root:0";
 
-            String contentType = "application/binary";
-            int lastDot = uri.lastIndexOf(".");
-            if (lastDot > -1) {
-                String mimeType = Jahia.getStaticServletConfig().getServletContext().getMimeType(uri.substring(uri.lastIndexOf("/")+1).toLowerCase());
-                if (mimeType != null) {
-                    contentType = mimeType;
-                }
+        String contentType = "application/binary";
+        int lastDot = uri.lastIndexOf(".");
+        if (lastDot > -1) {
+            String mimeType = Jahia.getStaticServletConfig().getServletContext().getMimeType(uri.substring(uri.lastIndexOf("/") + 1).toLowerCase());
+            if (mimeType != null) {
+                contentType = mimeType;
             }
+        }
 
-            JahiaFile file = null;
-            try {
-                file = new JahiaFile(-1, // filemanager id
-                        -1, // folder id
-                        owner,
-                        uri+ "?v="+getParent().getName(), // realname
-                        getStorageName(), // storage name
-                        System.currentTimeMillis(), // modif date
-                        getFileContent().getContentLength(), // size
-                        contentType, // type
-                        getName (), // title
-                        "", // descr
-                        String.valueOf (ServicesRegistry.getInstance ()
-                                .getJahiaVersionService ().getCurrentVersionID ()), // version
-                        JahiaFile.STATE_ACTIVE);
-            } catch (RepositoryException e) {
-                e.printStackTrace();
-            }
-            fField = new JahiaFileField(file, new Properties());
-            fField.setID (0);
-            fField.setDownloadUrl (getUrl());
-            fField.setThumbnailUrl(getThumbnailUrl("thumbnail"));
-            try {
-                if (hasProperty("j:width") && hasProperty("j:height")) {
-                    fField.setOrientation(getProperty("j:width").getLong() >= getProperty("j:height").getLong() ? "landscape" : "portrait");
-                }
-            } catch (RepositoryException e) {
-                logger.debug("Can't get orientation",e);
-            }
-        } else {
-            JahiaFile file = new JahiaFile (-1, // filemanager id
+        JahiaFile file = null;
+        try {
+            file = new JahiaFile(-1, // filemanager id
                     -1, // folder id
-                    "", // upload user
-                    "", // realname
-                    "", // storage name
-                    0, // modif date
-                    0, // size
-                    (exception == null) ? "" : exception.getClass ().getName (), // type
-                    "", // title
+                    owner,
+                    uri + "?v=" + getParent().getName(), // realname
+                    getStorageName(), // storage name
+                    System.currentTimeMillis(), // modif date
+                    getFileContent().getContentLength(), // size
+                    contentType, // type
+                    getName(), // title
                     "", // descr
-                    String.valueOf (ServicesRegistry.getInstance ()
-                            .getJahiaVersionService ().getCurrentVersionID ()), // version
+                    String.valueOf(ServicesRegistry.getInstance()
+                            .getJahiaVersionService().getCurrentVersionID()), // version
                     JahiaFile.STATE_ACTIVE);
-            fField = new JahiaFileField (file, new Properties ());
-            fField.setID (-1);
-            fField.setDownloadUrl ("#");
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+        fField = new JahiaFileField(file, new Properties());
+        fField.setID(0);
+        fField.setDownloadUrl(getUrl());
+        fField.setThumbnailUrl(getThumbnailUrl("thumbnail"));
+        try {
+            if (hasProperty("j:width") && hasProperty("j:height")) {
+                fField.setOrientation(getProperty("j:width").getLong() >= getProperty("j:height").getLong() ? "landscape" : "portrait");
+            }
+        } catch (RepositoryException e) {
+            logger.debug("Can't get orientation", e);
         }
         return fField;
     }

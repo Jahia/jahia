@@ -160,7 +160,7 @@ public class JCRSessionWrapper implements Session {
         return provider.getNodeWrapper(n, this);
     }
 
-    public Item getItem(String path) throws PathNotFoundException, RepositoryException {
+    public JCRItemWrapper getItem(String path) throws PathNotFoundException, RepositoryException {
         Map<String, JCRStoreProvider> dynamicMountPoints = sessionFactory.getDynamicMountPoints();
         for (Map.Entry<String,JCRStoreProvider> mp : dynamicMountPoints.entrySet()) {
             if (path.startsWith(mp + "/")) {

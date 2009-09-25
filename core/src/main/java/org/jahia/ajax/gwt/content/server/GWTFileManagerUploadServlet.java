@@ -236,7 +236,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             logger.error("exception ",e) ;
             return UNKNOWN_ERROR;
         }
-        return result.isValid() ? OK : UNKNOWN_ERROR ;
+        return OK;
     }
 
     private static Map<String, Item> asyncItems = new HashMap<String, Item>();

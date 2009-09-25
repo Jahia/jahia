@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.services.search.valves;
+package org.jahia.services.search.valves;
 
 import org.jahia.bin.Jahia;
 import org.jahia.data.containers.JahiaContainer;
@@ -60,13 +60,14 @@ import java.util.*;
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2004</p>
  * <p>Company: Jahia Ltd</p>
+ *
  * @author not attributable
  * @version 1.0
  */
 public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPipeline, Valve {
 
     private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (ContainerSearchIndexProcessValveImpl.class);
+            org.apache.log4j.Logger.getLogger(ContainerSearchIndexProcessValveImpl.class);
 
     public ContainerSearchIndexProcessValveImpl() {
     }
@@ -82,48 +83,48 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
         Map<String, Object> contextMap = (Map<String, Object>) context;
         Object srcObject = contextMap.get(SOURCE_OBJECT);
-        if ( srcObject == null || !(srcObject instanceof JahiaContainer) ){
+        if (srcObject == null || !(srcObject instanceof JahiaContainer)) {
             valveContext.invokeNext(context);
             return;
         }
-        List<IndexableDocument> docs = (List<IndexableDocument>)contextMap.get(INDEXABLE_DOCUMENTS);
-        if ( docs == null ) {
-            IndexableDocument doc = createDocument(contextMap,(JahiaContainer)srcObject);
-            String[] allValues = fillDocumentWithFields(contextMap,(JahiaContainer)srcObject,doc);
-            if ( allValues != null ){
-                doc.addFieldValues(JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD,allValues);
-                doc.addFieldValues(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD,allValues);
+        List<IndexableDocument> docs = (List<IndexableDocument>) contextMap.get(INDEXABLE_DOCUMENTS);
+        if (docs == null) {
+            IndexableDocument doc = createDocument(contextMap, (JahiaContainer) srcObject);
+            String[] allValues = fillDocumentWithFields(contextMap, (JahiaContainer) srcObject, doc);
+            if (allValues != null) {
+                doc.addFieldValues(JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD, allValues);
+                doc.addFieldValues(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD, allValues);
             }
-            allValues = fillDocumentWithMetadatas(contextMap,(JahiaContainer)srcObject,doc);
-            if ( allValues != null ){
-                doc.addFieldValues(JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD,allValues);
-                doc.addFieldValues(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD,allValues);
+            allValues = fillDocumentWithMetadatas(contextMap, (JahiaContainer) srcObject, doc);
+            if (allValues != null) {
+                doc.addFieldValues(JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD, allValues);
+                doc.addFieldValues(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD, allValues);
             }
-            JahiaContainer container = (JahiaContainer)srcObject;
+            JahiaContainer container = (JahiaContainer) srcObject;
             try {
                 String pagePath = SearchIndexProcessValveUtils
-                    .buildContentPagePath(ContentContainer.getContainer(container.getID()),container.getWorkflowState());
-                if ( pagePath != null ){
-                    doc.setFieldValue(JahiaSearchConstant.METADATA_PAGE_PATH,pagePath);
+                        .buildContentPagePath(ContentContainer.getContainer(container.getID()), container.getWorkflowState());
+                if (pagePath != null) {
+                    doc.setFieldValue(JahiaSearchConstant.METADATA_PAGE_PATH, pagePath);
                 }
-            } catch ( Exception t ){
-                logger.warn("Error building page path for container " + container.getID(),t);
+            } catch (Exception t) {
+                logger.warn("Error building page path for container " + container.getID(), t);
             }
 
             try {
                 ContentContainer contentContainer = ContentContainer.getContainer(container.getID());
-                if ( contentContainer.getPickedObject() != null ){
-                    doc.setFieldValue(JahiaSearchConstant.CONTENT_PICKING,Boolean.TRUE.toString());
+                if (contentContainer.getPickedObject() != null) {
+                    doc.setFieldValue(JahiaSearchConstant.CONTENT_PICKING, Boolean.TRUE.toString());
                 } else {
-                    doc.setFieldValue(JahiaSearchConstant.CONTENT_PICKING,Boolean.FALSE.toString());
+                    doc.setFieldValue(JahiaSearchConstant.CONTENT_PICKING, Boolean.FALSE.toString());
                 }
-            } catch ( Exception t ){
-                logger.warn("Error indexing content picking status " + container.getID(),t);
+            } catch (Exception t) {
+                logger.warn("Error indexing content picking status " + container.getID(), t);
             }
             docs = new ArrayList<IndexableDocument>();
             docs.add(doc);
         }
-        contextMap.put(INDEXABLE_DOCUMENTS,docs);
+        contextMap.put(INDEXABLE_DOCUMENTS, docs);
         valveContext.invokeNext(context);
     }
 
@@ -135,7 +136,7 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
      * @return
      */
     protected IndexableDocument createDocument(Map<String, Object> contextMap,
-                                               JahiaContainer container){
+                                               JahiaContainer container) {
         JahiaContainerIndexableDocument doc =
                 new JahiaContainerIndexableDocument(container);
         return doc;
@@ -151,9 +152,9 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
      */
     protected String[] fillDocumentWithFields(Map<String, Object> contextMap,
                                               JahiaContainer container,
-                                              IndexableDocument doc){
+                                              IndexableDocument doc) {
 
-        ProcessingContext context = (ProcessingContext)contextMap.get(PROCESSING_CONTEXT);
+        ProcessingContext context = (ProcessingContext) contextMap.get(PROCESSING_CONTEXT);
         List<String> valuesList = new ArrayList<String>();
         Iterator<JahiaField> fields = container.getFields();
         String prefix = "";
@@ -163,20 +164,20 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                 prefix = jahiaContainerDefinition.getName();
             }
         } catch (JahiaException e) {
-            logger.error("can't get definition",e);
+            logger.error("can't get definition", e);
         }
-        while ( fields.hasNext() ){
+        while (fields.hasNext()) {
             JahiaField field = fields.next();
             try {
                 JahiaFieldDefinition jahiaFieldDefinition = field.getDefinition();
-                if ( !jahiaFieldDefinition.isIndexableField() ){
+                if (!jahiaFieldDefinition.isIndexableField()) {
                     continue;
                 }
-                String type = jahiaFieldDefinition.getItemDefinition().getDeclaringNodeType().getName().replace(':','_');
+                String type = jahiaFieldDefinition.getItemDefinition().getDeclaringNodeType().getName().replace(':', '_');
                 ContentField contentField = ContentField.getField(field.getID());
                 boolean isMarkedForDelete = contentField.isMarkedForDelete(field.getLanguageCode());
-                if ( isMarkedForDelete &&
-                        field.getWorkflowState() > EntryLoadRequest.ACTIVE_WORKFLOW_STATE ){
+                if (isMarkedForDelete &&
+                        field.getWorkflowState() > EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
                     // ignore marked for delete field
                     continue;
                 }
@@ -186,42 +187,42 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                 name = type + name.substring(prefix.length());
                 doc.setFieldValues(JahiaSearchConstant.CONTAINER_FIELD_PREFIX + name, values);
 
-                for (String aliasName : jahiaFieldDefinition.getAliasNames()){
+                for (String aliasName : jahiaFieldDefinition.getAliasNames()) {
                     doc.setFieldValues(JahiaSearchConstant.CONTAINER_FIELD_ALIAS_PREFIX
-                        + aliasName.toLowerCase(), values);
+                            + aliasName.toLowerCase(), values);
                 }
-                
+
                 ExtendedPropertyDefinition propDef = jahiaFieldDefinition.getPropertyDefinition();
                 if (propDef != null && propDef.isQueryOrderable() && values.length > 0) {
                     doc.setFieldValues(JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX + name, values);
                     doc.getField(
                             JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX
                                     + name).setType(DocumentField.KEYWORD);
-                }                
+                }
                 if (propDef != null && propDef.isFacetable()) {
                     if (values.length > 0 && !(values.length == 1 && values[0].length() == 0)) {
                         doc.setFieldValues(
-                            JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
-                            + name, field.getValuesForSearch(container
-                                .getLanguageCode(), context, false));
+                                JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
+                                        + name, field.getValuesForSearch(container
+                                        .getLanguageCode(), context, false));
                         doc.getField(
-                            JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
-                                + name).setType(DocumentField.KEYWORD);
+                                JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
+                                        + name).setType(DocumentField.KEYWORD);
                     } else {
                         doc.setFieldValues(
-                            JahiaSearchConstant.CONTAINER_EMPTY_FIELD_FACET_PREFIX
-                                + name, new String[] { "no" });
+                                JahiaSearchConstant.CONTAINER_EMPTY_FIELD_FACET_PREFIX
+                                        + name, new String[]{"no"});
                         DocumentField docField = doc.getField(
-                            JahiaSearchConstant.CONTAINER_EMPTY_FIELD_FACET_PREFIX
-                                + name);
+                                JahiaSearchConstant.CONTAINER_EMPTY_FIELD_FACET_PREFIX
+                                        + name);
                         docField.setType(DocumentField.KEYWORD);
                         docField.setUnstored(true);
                     }
                 }
-                if ( field instanceof JahiaFileFieldWrapper ){
+                if (field instanceof JahiaFileFieldWrapper) {
                     doc.addFieldValues(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE, values);
-                    JahiaFileField fField = (JahiaFileField)field.getObject();
-                    if ( fField == null ){
+                    JahiaFileField fField = (JahiaFileField) field.getObject();
+                    if (fField == null) {
                         return new String[]{};
                     }
 //                    JahiaUser root = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdminUser(0);
@@ -229,10 +230,10 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                     JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(root).getNode(
                             fField.getRealName());
 
-                    if (file.isValid () && !file.isCollection ()) {
+                    if (!file.isCollection()) {
                         doc.getChildIndexableDocuments().add(new Integer(field.getID()));
                     }
-                } else if ( field instanceof JahiaBigTextField ){
+                } else if (field instanceof JahiaBigTextField) {
                     JahiaFieldXRefManager fieldXRefManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldXRefManager.class.getName());
                     List<String> fieldReferences = fieldXRefManager.getFieldReferences(field.getID(), field.getLanguageCode(), field.getWorkflowState());
                     for (String reference : fieldReferences) {
@@ -244,7 +245,7 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                     }
                     if (propDef == null
                             || !Boolean.FALSE.equals(propDef
-                                    .isFullTextSearchable())) {
+                            .isFullTextSearchable())) {
                         valuesList.addAll(Arrays.asList(values));
                     }
                 } else if ((field.getType() != FieldTypes.DATE
@@ -252,14 +253,14 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                         && field.getType() != FieldTypes.FLOAT
                         && field.getType() != FieldTypes.INTEGER
                         && field.getType() != FieldTypes.COLOR && field
-                        .getType() != FieldTypes.APPLICATION && 
-                            (propDef == null || !Boolean.FALSE.equals(propDef.isFullTextSearchable())))
+                        .getType() != FieldTypes.APPLICATION &&
+                        (propDef == null || !Boolean.FALSE.equals(propDef.isFullTextSearchable())))
                         || (propDef != null && Boolean.TRUE.equals(propDef
-                                .isFullTextSearchable()))) {
+                        .isFullTextSearchable()))) {
                     valuesList.addAll(Arrays.asList(values));
                 }
-            } catch ( Exception t){
-                logger.warn("Exception occured when getting field' values for indexation",t);
+            } catch (Exception t) {
+                logger.warn("Exception occured when getting field' values for indexation", t);
             }
         }
         String[] result = new String[valuesList.size()];
@@ -274,22 +275,22 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
      * @param container
      * @param doc
      */
-    protected String[] fillDocumentWithMetadatas(   Map<String, Object> contextMap,
-                                                    JahiaContainer container,
-                                                    IndexableDocument doc){
+    protected String[] fillDocumentWithMetadatas(Map<String, Object> contextMap,
+                                                 JahiaContainer container,
+                                                 IndexableDocument doc) {
 
-        ProcessingContext context = (ProcessingContext)contextMap
+        ProcessingContext context = (ProcessingContext) contextMap
                 .get(SearchIndexationPipeline.PROCESSING_CONTEXT);
 
         String[] values = null;
         try {
             ContentContainer contentContainer = ContentContainer.getContainer(container.getID());
             values = SearchIndexProcessValveUtils.loadContentMetadatas(contextMap,
-                        contentContainer,
-                        LanguageCodeConverters.languageCodeToLocale(container.getLanguageCode()),
-                        container.getWorkflowState(),doc,context);
-        } catch ( Exception t){
-            logger.warn("Exception occured when getting container' metadatas for indexation",t);
+                    contentContainer,
+                    LanguageCodeConverters.languageCodeToLocale(container.getLanguageCode()),
+                    container.getWorkflowState(), doc, context);
+        } catch (Exception t) {
+            logger.warn("Exception occured when getting container' metadatas for indexation", t);
         }
         return values;
     }

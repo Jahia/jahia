@@ -223,9 +223,9 @@ public class JahiaBigTextField extends JahiaField implements
 
                 if (versions.length > 1 && versions[1].contains("v=")) {
                     String versionId = versions[1].split("=")[1];
-                    if (node.isValid() && node.isVersioned()) {
+                    if (node.isVersioned()) {
                         JCRNodeWrapper versionNodeWrapper = node.getFrozenVersion(versionId);
-                        if (versionNodeWrapper != null && versionNodeWrapper.isValid()) {
+                        if (versionNodeWrapper != null) {
                             file = versionNodeWrapper;
                         }
                     }
@@ -233,7 +233,7 @@ public class JahiaBigTextField extends JahiaField implements
             } catch (RepositoryException e) {
                 logger.error(e);
             }
-            if (file != null && file.isValid()) {
+            if (file != null) {
                 String target;
                 try {
                     target = JahiaFieldXRefManager.FILE + file.getProvider().getKey() + ":" + file.getUUID();
@@ -740,16 +740,13 @@ public class JahiaBigTextField extends JahiaField implements
                         boolean versionExists = false;
                         if(versions.length>1 && versions[1].contains("v=")) {
                             String versionId = versions[1].split("=")[1];
-                            if (node.isValid() && node.isVersioned()) {
+                            if (node.isVersioned()) {
                                 JCRNodeWrapper versionNodeWrapper = node.getFrozenVersion(versionId);
-                                if(versionNodeWrapper!=null && versionNodeWrapper.isValid()){
+                                if(versionNodeWrapper!=null){
                                     hrefValue = versionNodeWrapper.getUrl().replaceAll(":","___");
                                     versionExists = true;
                                 }
                             }
-                        }
-                        if (!node.isValid()) {
-                            logger.warn("Unable to retrieve a node for the path: " + path);
                         }
                         if(!versionExists) {
                             hrefValue = node.getUrl();            

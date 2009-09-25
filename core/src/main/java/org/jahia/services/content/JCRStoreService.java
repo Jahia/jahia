@@ -294,14 +294,8 @@ public class JCRStoreService extends JahiaService implements ServletContextAware
      */
     public JCRNodeWrapper checkExistence(String path, JahiaUser user) throws RepositoryException {
         try {
-            JCRNodeWrapper node = sessionFactory.getThreadSession(user).getNode(path);
-            if (node != null && node.isValid()) {
-                return node;
-            }
-        } catch (RepositoryException e) {
-            if (!(e instanceof PathNotFoundException)) {
-                throw e;
-            }
+            return sessionFactory.getThreadSession(user).getNode(path);
+        } catch (PathNotFoundException e) {
         }
         return null;
     }

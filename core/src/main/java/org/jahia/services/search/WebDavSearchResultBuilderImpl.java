@@ -78,7 +78,7 @@ public class WebDavSearchResultBuilderImpl extends
         for (ParsedObject obj : parsedObjects) {
             String uri = obj.getValue("uri");
             JCRNodeWrapper node = sessionFactory.getThreadSession(user).getNode(uri);
-            if (node != null && node.isValid()) {
+            if (node != null) {
                 JahiaSearchHit hit = new JahiaSearchHit(obj);
                 hit.setType(JahiaSearchHitInterface.WEBDAVFILE_TYPE);
                 hit.setId(uri);

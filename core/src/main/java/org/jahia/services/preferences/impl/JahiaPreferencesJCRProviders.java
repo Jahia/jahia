@@ -315,7 +315,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
     public void deleteAllPreferencesByPrincipal(Principal principal) {
         try {
             JCRNodeWrapper preferencesNode = getPreferencesNode(principal);
-            if (preferencesNode != null && preferencesNode.isValid()) {
+            if (preferencesNode != null) {
                 Node ppNode = getPreferencesNode(principal).getNode(getType());
                 if (ppNode != null) {
                     ppNode.remove();

@@ -340,7 +340,7 @@ public class FieldSearchIndexProcessValveImpl implements
 
             JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(context.getUser()).getNode(jcrPath);
 
-            if (file != null && file.isValid() && !file.isCollection()) {
+            if (file != null && !file.isCollection()) {
                 JCRFileContent fileContent = file.getFileContent();
                 doc.addFieldValue(JahiaSearchConstant.FILE_REALNAME, jcrPath);
                 doc.addFieldValue(JahiaSearchConstant.FILE_NAME, file.getName());

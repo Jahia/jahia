@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.services.importexport;
+package org.jahia.services.importexport;
 
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
@@ -38,6 +38,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -45,12 +46,11 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.StateModificationContext;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 
-import java.util.*;
 import java.io.InputStream;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -109,7 +109,7 @@ public class ActivationContentPickerJob extends BackgroundJob {
             JahiaSite destSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(picker.getSiteID());
             setUser(picker, destSite, jParams, oldUser);
 
-            Map<String,String> pathMapping = new HashMap<String,String>();
+            Map<String, String> pathMapping = new HashMap<String, String>();
             checkFilesInChildren(pickedObject, jParams, ie, destSite, langs, pathMapping);
 
             for (Iterator<String> iterator2 = langs.iterator(); iterator2.hasNext();) {
@@ -119,7 +119,7 @@ public class ActivationContentPickerJob extends BackgroundJob {
                 getFroms(froms, lang, picker, jParams);
 
                 long now = System.currentTimeMillis() / 1000;
-                EntryLoadRequest toLoadRequest = new EntryLoadRequest(EntryLoadRequest.VERSIONED_WORKFLOW_STATE, new Long(now).intValue(),  jParams.getLocales());
+                EntryLoadRequest toLoadRequest = new EntryLoadRequest(EntryLoadRequest.VERSIONED_WORKFLOW_STATE, new Long(now).intValue(), jParams.getLocales());
                 toLoadRequest.setWithDeleted(true);
 //                                    System.out.println("----------> "+froms);
 //                                    System.out.println("----------> "+toLoadRequest);
@@ -133,13 +133,13 @@ public class ActivationContentPickerJob extends BackgroundJob {
                 params.put(ImportExportService.TO, toLoadRequest);
                 params.put(ImportExportService.VIEW_PICKERS, Boolean.FALSE);
 //                ie.export(pickedObject, lang, dw, files, jParams, params);
-                ImportHandler handler = new ImportHandler(picker,jParams, lang, destSite, actions, result);
+                ImportHandler handler = new ImportHandler(picker, jParams, lang, destSite, actions, result);
                 handler.setCopyUuid(true);
                 handler.setPathMapping(pathMapping);
                 ie.export(pickedObject, lang, handler, files, jParams, params);
             }
         } catch (Exception t) {
-            logger.error("Error when content picking content",t);
+            logger.error("Error when content picking content", t);
         } finally {
             jParams.setTheUser(oldUser);
         }
@@ -147,7 +147,7 @@ public class ActivationContentPickerJob extends BackgroundJob {
         jobDataMap.put(RESULT, result);
     }
 
-    private void checkFilesInChildren(ContentObject source, ProcessingContext context, ImportExportService ie, JahiaSite destSite, Set<String> langs,Map<String,String> pathMapping) throws JahiaException {
+    private void checkFilesInChildren(ContentObject source, ProcessingContext context, ImportExportService ie, JahiaSite destSite, Set<String> langs, Map<String, String> pathMapping) throws JahiaException {
         Set<JCRNodeWrapper> f = new HashSet<JCRNodeWrapper>();
         for (Iterator<String> iterator = langs.iterator(); iterator.hasNext();) {
             String lang = iterator.next();
@@ -155,19 +155,16 @@ public class ActivationContentPickerJob extends BackgroundJob {
         }
         for (Iterator<JCRNodeWrapper> iterator = f.iterator(); iterator.hasNext();) {
             JCRNodeWrapper fileNode = (JCRNodeWrapper) iterator.next();
-            if (fileNode.isValid()) {
-                InputStream inputStream = fileNode.getFileContent().downloadFile();
-                String type = fileNode.getFileContent().getContentType();
-                ie.ensureFile(fileNode.getPath(), inputStream, type, context, destSite,pathMapping);
-            }
+            InputStream inputStream = fileNode.getFileContent().downloadFile();
+            String type = fileNode.getFileContent().getContentType();
+            ie.ensureFile(fileNode.getPath(), inputStream, type, context, destSite, pathMapping);
         }
-        List<? extends ContentObject> childs = source.getChilds(null,context.getEntryLoadRequest());
+        List<? extends ContentObject> childs = source.getChilds(null, context.getEntryLoadRequest());
         for (Iterator<? extends ContentObject> iterator1 = childs.iterator(); iterator1.hasNext();) {
             ContentObject child = (ContentObject) iterator1.next();
-            checkFilesInChildren(child, context, ie, destSite, langs,pathMapping);
+            checkFilesInChildren(child, context, ie, destSite, langs, pathMapping);
         }
     }
-
 
 
     private void setUser(ContentObject picker, JahiaSite site, ProcessingContext jParams, JahiaUser oldUser) throws JahiaException {
@@ -187,7 +184,7 @@ public class ActivationContentPickerJob extends BackgroundJob {
     }
 
 
-    private void getFroms (Map<String, EntryLoadRequest> m, String lang, ContentObject o, ProcessingContext jParams) throws JahiaException {
+    private void getFroms(Map<String, EntryLoadRequest> m, String lang, ContentObject o, ProcessingContext jParams) throws JahiaException {
         List<? extends ContentObject> l = o.getChilds(null, EntryLoadRequest.STAGED);
         for (Iterator<? extends ContentObject> iterator = l.iterator(); iterator.hasNext();) {
             ContentObject child = (ContentObject) iterator.next();
@@ -205,7 +202,7 @@ public class ActivationContentPickerJob extends BackgroundJob {
             if (last != null) {
                 m.put(o.getProperty("originalUuid"), new EntryLoadRequest(EntryLoadRequest.VERSIONED_WORKFLOW_STATE, Integer.parseInt(last), jParams.getLocales()));
             } else {
-                m.put(o.getProperty("originalUuid"), new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, jParams.getLocales()));            
+                m.put(o.getProperty("originalUuid"), new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, jParams.getLocales()));
             }
         }
     }

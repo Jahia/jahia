@@ -55,7 +55,7 @@ public class Toolbar implements Serializable, BeanNameAware {
     private boolean mandatory = false;
     private boolean displayed  = true;
     private boolean displayTitle = false;
-    private List<ItemsGroup> itemsGroups = new ArrayList<ItemsGroup>();
+    private List<Item> items = new ArrayList<Item>();
     private Visibility visibility;
 
     public static List<Toolbar> getAlls() {
@@ -147,16 +147,16 @@ public class Toolbar implements Serializable, BeanNameAware {
     }
 
 
-    public List<ItemsGroup> getItemsGroups() {
-        return itemsGroups;
+    public List<Item> getItems() {
+        return items;
     }
 
-    public void setItemsGroups(List<ItemsGroup> itemsGroups) {
-        this.itemsGroups = itemsGroups;
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 
     public void addItemsGroup(ItemsGroup itemsGroup) {
-        this.itemsGroups.add(itemsGroup);
+        this.items.add(itemsGroup);
     }
 
     public Visibility getVisibility() {

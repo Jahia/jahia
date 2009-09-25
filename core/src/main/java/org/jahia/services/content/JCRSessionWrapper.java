@@ -558,4 +558,31 @@ public class JCRSessionWrapper implements Session {
     public RetentionManager getRetentionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
+
+    public Map<String, String> getStoredPasswordsProviders() {
+        Map<String, String> results = new HashMap<String,String>();
+        results.put(null, user.getUsername());
+        for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
+            if ("storedPasswords".equals(provider.getAuthenticationType())) {
+                results.put (provider.getKey(), user.getProperty("storedUsername_"+provider.getKey()));
+            }
+        }
+        return results;
+    }
+
+    public void storePasswordForProvider(String providerKey, String username, String password) {
+        if (username == null) {
+            user.removeProperty("storedUsername_"+providerKey);
+        } else {
+            user.setProperty("storedUsername_"+providerKey, username);
+        }
+        if (password == null) {
+            user.removeProperty("storedPassword_"+providerKey);
+        } else {
+            user.setProperty("storedPassword_"+providerKey, password);
+        }
+    }
+
+
+
 }

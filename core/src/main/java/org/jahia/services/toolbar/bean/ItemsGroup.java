@@ -32,6 +32,7 @@
 package org.jahia.services.toolbar.bean;
 
 import org.springframework.beans.factory.BeanNameAware;
+import org.jahia.services.toolbar.resolver.ItemsResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,67 +43,18 @@ import java.io.Serializable;
  * Date: 7 avr. 2008
  * Time: 09:05:11
  */
-public class ItemsGroup implements Serializable, BeanNameAware {
-    private String id;
-    private String type;
-    private String titleKey;
-    private Visibility visibility;
-    private String mediumIconStyle;
-    private String minIconStyle;
+public class ItemsGroup extends Item implements Serializable, BeanNameAware {
     private String layout;
     private boolean separator;
-    private List items = new ArrayList();
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getTitleKey() {
-        return titleKey;
-    }
-
-    public void setTitleKey(String titleKey) {
-        this.titleKey = titleKey;
-    }
-
-    public Visibility getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(Visibility visibility) {
-        this.visibility = visibility;
-    }
-
-    public String getMediumIconStyle() {
-        return mediumIconStyle;
-    }
-
-    public void setMediumIconStyle(String mediumIconStyle) {
-        this.mediumIconStyle = mediumIconStyle;
-    }
-
-    public String getMinIconStyle() {
-        return minIconStyle;
-    }
-
-    public void setMinIconStyle(String minIconStyle) {
-        this.minIconStyle = minIconStyle;
-    }
+    private List<Item> items = new ArrayList<Item>();
+    private ItemsResolver itemsResolver;
 
     public String getLayout() {
         return layout;
+    }
+
+    public void setLayout(String layout) {
+        this.layout = layout;
     }
 
     public boolean isSeparator() {
@@ -113,28 +65,26 @@ public class ItemsGroup implements Serializable, BeanNameAware {
         this.separator = separator;
     }
 
-    public void setLayout(String layout) {
-        this.layout = layout;
+    public ItemsResolver getItemsResolver() {
+        return itemsResolver;
     }
 
-    public List getItems() {
+    public void setItemsResolver(ItemsResolver itemsResolver) {
+        this.itemsResolver = itemsResolver;
+    }
+
+    public List<Item> getItems() {
         return items;
     }
 
-    public void setItems(List items) {
+    public void setItems(List<Item> items) {
         this.items = items;
     }
 
-    public void addItem(Item item) {
-        items.add(item);
+    public List<Item> getRealItems(org.jahia.data.JahiaData jData) {
+        if (itemsResolver != null) {
+            return itemsResolver.getItems(jData);
+        }
+        return items;
     }
-
-    public void addItemsProvider(ItemsProvider itemsProvider) {
-        items.add(itemsProvider);
-    }
-
-    public void setBeanName(String name) {
-        setType(name);
-    }
-
 }

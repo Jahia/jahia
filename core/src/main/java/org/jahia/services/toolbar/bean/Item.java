@@ -43,9 +43,11 @@ import java.util.List;
  * Time: 09:05:20
  */
 public class Item implements Serializable, BeanNameAware {
+    private String id;
     private String type;
     private String mediumIconStyle;
     private String minIconStyle;
+    private String title;
     private String titleKey;
     private boolean displayTitle = true;
     private String descriptionKey;
@@ -53,6 +55,13 @@ public class Item implements Serializable, BeanNameAware {
     private Selected selected;
     private List<Property> properties = new ArrayList();
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getType() {
         return type;
@@ -76,6 +85,14 @@ public class Item implements Serializable, BeanNameAware {
 
     public void setMinIconStyle(String minIconStyle) {
         this.minIconStyle = minIconStyle;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getTitleKey() {
@@ -126,7 +143,7 @@ public class Item implements Serializable, BeanNameAware {
         return properties;
     }
 
-    public void addPropertyList(Property  property) {
+    public void addProperty(Property property) {
         this.properties.add(property);
     }
 

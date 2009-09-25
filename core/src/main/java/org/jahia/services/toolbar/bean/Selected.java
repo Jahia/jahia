@@ -46,15 +46,15 @@ public class Selected implements Serializable {
     private static final transient Logger logger = Logger
             .getLogger(Selected.class);
     
-    private String value;
+    private boolean value;
     private String classResolver;
     private String inputResolver;
 
-    public String getValue() {
+    public boolean getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(boolean value) {
         this.value = value;
     }
 
@@ -75,9 +75,7 @@ public class Selected implements Serializable {
     }
 
     public boolean getRealValue(org.jahia.data.JahiaData jData) {
-        if (value != null) {
-            return Boolean.parseBoolean(value);
-        } else {
+        if (inputResolver != null) {
             try {
                 SelectedResolver resolver = (SelectedResolver) Class.forName(classResolver).newInstance();
                 return resolver.isSelected(jData,inputResolver);
@@ -85,6 +83,8 @@ public class Selected implements Serializable {
                 logger.error(e.getMessage(), e);
                 return true;
             }
+        } else {
+            return value;
         }
     }
 }

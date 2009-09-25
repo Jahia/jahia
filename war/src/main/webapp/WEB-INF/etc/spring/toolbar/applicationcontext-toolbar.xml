@@ -68,53 +68,24 @@
 
     <!-- switching mode -->
     <bean id="org.jahia.toolbar.editmode" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="itemsGroups">
+        <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.itemsgroup.newedit.Switchingmode"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.newedit.PageProperties"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.newedit.LanguageSwitcher"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.newedit.EditAction"/>
-                <!--<ref bean="org.jahia.toolbar.itemsgroup.ContentAction"/>-->
-                <ref bean="org.jahia.toolbar.itemsgroup.newedit.Tools"/>
-                <!--<ref bean="org.jahia.toolbar.itemsgroup.newedit.Workflow"/>-->
-                <ref bean="org.jahia.toolbar.itemsgroup.newedit.Cache"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.newedit.Preview"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.newedit.User"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.newedit.Admin"/>
-            </list>
-        </property>
-    </bean>
-    <!-- switching mode -->
-    <bean id="org.jahia.toolbar.switchingmode" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="titleKey" value="toolbar.switchingmode"/>
-        <property name="itemsGroups">
-            <list>
-                <ref bean="org.jahia.toolbar.itemsgroup.SwitchingMode.tab"/>
-
-                <ref bean="org.jahia.toolbar.itemsgroup.User"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.sites"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.View"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.Tools"/>
-
-                <ref bean="org.jahia.toolbar.itemsgroup.License"/>
-                <!-- push to right-->
-                <ref bean="org.jahia.toolbar.itemsgroup.Fill"/>
-
-                <!-- items groups that depends on the selected mode-->
-                <ref bean="org.jahia.toolbar.itemsgroup.Notification"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.Page"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.Switchingmode"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.PreviewMode"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.CompareMode"/>
-                <!--<ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>-->
-
+                <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
+                <!--<ref bean="org.jahia.toolbar.itemsgroup.ContentAction"/>-->
+                <ref bean="org.jahia.toolbar.itemsgroup.Tools"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.Cache"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.Preview"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.User"/>
+                <ref bean="org.jahia.toolbar.item.Admin"/>
             </list>
         </property>
     </bean>
 
     <!-- Category Manager -->
     <bean id="org.jahia.toolbar.manager.categories.menu" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.CategoryManager.menu.file"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
@@ -124,7 +95,7 @@
         </property>
     </bean>
     <bean id="org.jahia.toolbar.manager.categories.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.CategoryManager.shortcuts.file.new"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
@@ -137,7 +108,7 @@
 
     <!-- Content Manager -->
     <bean id="org.jahia.toolbar.manager.content.menu" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.file"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
@@ -149,7 +120,7 @@
         </property>
     </bean>
     <bean id="org.jahia.toolbar.manager.content.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.new"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
@@ -162,7 +133,7 @@
 
     <!-- Document Manager -->
     <bean id="org.jahia.toolbar.manager.documents.menu" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.DocumentManager.menu.file"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
@@ -174,7 +145,7 @@
         </property>
     </bean>
     <bean id="org.jahia.toolbar.manager.documents.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.file.new"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
@@ -187,7 +158,7 @@
 
     <!-- Mashup Manager -->
     <bean id="org.jahia.toolbar.manager.mashups.menu" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.MashupManager.menu.file"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
@@ -197,7 +168,7 @@
         </property>
     </bean>
     <bean id="org.jahia.toolbar.manager.mashups.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.MashupManager.shortcuts.file.new"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
@@ -210,7 +181,7 @@
 
     <!-- Portlet Definition Manager -->
     <bean id="org.jahia.toolbar.manager.portletDefinitions.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.PortletDefinitionManager.shortcuts.new"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.PortletDefinitionManager.shortcuts.modify"/>
@@ -222,7 +193,7 @@
 
     <!-- Site Manager -->
     <bean id="org.jahia.toolbar.manager.sites.menu" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.SiteManager.menu.file"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
@@ -232,7 +203,7 @@
         </property>
     </bean>
     <bean id="org.jahia.toolbar.manager.sites.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.SiteManager.shortcuts.file.new"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
@@ -243,20 +214,10 @@
     </bean>
     <!-- end of the Site Manager -->
 
-    <!-- workflow -->
-    <bean id="org.jahia.toolbar.workflow" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="titleKey" value="toolbar.workflow"/>
-        <property name="itemsGroups">
-            <list>
-                <ref bean="org.jahia.toolbar.itemsgroup.QuickWorkflow"/>
-            </list>
-        </property>
-    </bean>
-
     <!-- user -->
     <bean id="org.jahia.toolbar.user" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="titleKey" value="toolbar.user"/>
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.bookmarks"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.history"/>
@@ -267,7 +228,7 @@
     <!-- bookmarks -->
     <bean id="org.jahia.toolbar.bookmarks" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="titleKey" value="toolbar.bookmarks"/>
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.bookmarks"/>
             </list>
@@ -277,7 +238,7 @@
     <!-- breadcrumb -->
     <bean id="org.jahia.toolbar.breadcrumb" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="titleKey" value="toolbar.breadcrumb"/>
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.history"/>
             </list>
@@ -287,7 +248,7 @@
     <!-- caches -->
     <bean id="org.jahia.toolbar.caches" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="titleKey" value="toolbar.caches"/>
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.Flush"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.Cache"/>
@@ -304,7 +265,7 @@
                 <property name="inputResolver" value="statistics"/>
             </bean>
         </property>
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.Statistics"/>
             </list>
@@ -314,7 +275,7 @@
     <!-- subscriptions -->
     <bean id="org.jahia.toolbar.subscriptions" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="titleKey" value="toolbar.subscriptions.toolbar.title"/>
-        <property name="itemsGroups">
+        <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.Subscriptions"/>
             </list>
@@ -358,7 +319,6 @@
                 <ref bean="org.jahia.toolbar.item.User"/>
                 <ref bean="org.jahia.toolbar.item.Logout"/>
                 <ref bean="org.jahia.toolbar.item.MySettings"/>
-                <ref bean="org.jahia.toolbar.item.Admin"/>
             </list>
         </property>
     </bean>
@@ -416,17 +376,6 @@
     <bean id="org.jahia.toolbar.itemsgroup.SwitchingMode.checkbox" class="org.jahia.services.toolbar.bean.ItemsGroup"
           parent="org.jahia.toolbar.itemsgroup.SwitchingMode">
         <property name="layout" value="menu-checkbox"/>
-    </bean>
-
-    <!-- page itemsGroup-->
-    <bean id="org.jahia.toolbar.itemsgroup.Page" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="button-label"/>
-        <property name="titleKey" value="toolbar.itemgroups.page"/>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.item.PageProperties"/>
-            </list>
-        </property>
     </bean>
 
     <bean id="org.jahia.toolbar.itemsgroup.View" class="org.jahia.services.toolbar.bean.ItemsGroup">
@@ -564,25 +513,6 @@
         </property>
     </bean>
 
-    <!-- Quick Workflow -->
-    <bean id="org.jahia.toolbar.itemsgroup.QuickWorkflow" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="button-label"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="mode" value="edit,preview,compare"/>
-            </bean>
-        </property>
-        <property name="titleKey" value="toolbar.itemgroups.quickworkflow"/>
-        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-action-min"/>
-        <property name="items">
-            <list>
-                <!--<items-provider-->
-                        <!--class="org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl.JahiaItemsGroupFactoryImpl"-->
-                        <!--input="quick.workflow"/>-->
-            </list>
-        </property>
-    </bean>
-
     <!-- Caches-->
     <bean id="org.jahia.toolbar.itemsgroup.Cache" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="menu-radio"/>
@@ -610,9 +540,11 @@
         <property name="titleKey" value="toolbar.itemgroups.bookmarks"/>
         <property name="items">
             <list>
-                <!--<items-provider-->
-                        <!--class="org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl.JahiaItemsGroupFactoryImpl"-->
-                        <!--input="bookmarks"/>-->
+                <bean class="org.jahia.services.toolbar.bean.ItemsGroup" >
+                    <property name="itemsResolver">
+                        <bean class="org.jahia.services.toolbar.resolver.impl.BookmarksItemsResolver" />
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -622,9 +554,11 @@
         <property name="layout" value="button-label"/>
         <property name="items">
             <list>
-                <!--<items-provider-->
-                        <!--class="org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl.JahiaItemsGroupFactoryImpl"-->
-                        <!--input="history"/>-->
+                <bean class="org.jahia.services.toolbar.bean.ItemsGroup" >
+                    <property name="itemsResolver">
+                        <bean class="org.jahia.services.toolbar.resolver.impl.HistoryItemsResolver" />
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -640,10 +574,11 @@
                 <ref bean="org.jahia.toolbar.item.bookmarkCurrentPage"/>
                 <ref bean="org.jahia.toolbar.item.deleteBookmarkCurrentPage"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <!--<items-provider-->
-                        <!--class="org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl.JahiaItemsGroupFactoryImpl"-->
-                        <!--input="bookmarks"/>-->
-
+                <bean class="org.jahia.services.toolbar.bean.ItemsGroup" >
+                    <property name="itemsResolver">
+                        <bean class="org.jahia.services.toolbar.resolver.impl.BookmarksItemsResolver" />
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -656,9 +591,11 @@
         <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-sites-max"/>
         <property name="items">
             <list>
-                <!--<items-provider-->
-                        <!--class="org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl.JahiaItemsGroupFactoryImpl"-->
-                        <!--input="sites"/>-->
+                <bean class="org.jahia.services.toolbar.bean.ItemsGroup" >
+                    <property name="itemsResolver">
+                        <bean class="org.jahia.services.toolbar.resolver.impl.SitesItemsResolver" />
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -686,7 +623,7 @@
         <property name="layout" value="button-label"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.LanguageSwitcher"/>
+                <bean id="org.jahia.toolbar.item.LanguageSwitcher" class="org.jahia.services.toolbar.bean.Item"/>
             </list>
         </property>
     </bean>
@@ -704,7 +641,7 @@
     </bean>
 
     <!-- new edit mode-->
-    <bean id="org.jahia.toolbar.itemsgroup.newedit.Switchingmode" class="org.jahia.services.toolbar.bean.ItemsGroup">
+    <bean id="org.jahia.toolbar.itemsgroup.Switchingmode" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="button-label"/>
         <property name="items">
             <list>
@@ -714,41 +651,19 @@
         </property>
     </bean>
 
-    <bean id="org.jahia.toolbar.itemsgroup.newedit.PageProperties" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="titleKey" value="button.pageSettings"/>
-        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-pageproperties-min"/>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.item.PageProperties"/>
-                <ref bean="org.jahia.toolbar.item.PageStat"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.toolbar.itemsgroup.newedit.LanguageSwitcher" class="org.jahia.services.toolbar.bean.ItemsGroup">
+    <bean id="org.jahia.toolbar.itemsgroup.EditAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="button-label"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.LanguageSwitcher"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.toolbar.itemsgroup.newedit.EditAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="button-label"/>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.item.EditAction.createPage"/>
-                <ref bean="org.jahia.toolbar.item.EditAction.publish"/>
-                <ref bean="org.jahia.toolbar.item.EditAction.unpublish"/>
-                <ref bean="org.jahia.toolbar.item.EditAction.viewPublishStatus"/>
-                <ref bean="org.jahia.toolbar.item.EditAction.lock"/>
-                <ref bean="org.jahia.toolbar.item.EditAction.unlock"/>
-                <ref bean="org.jahia.toolbar.item.EditAction.edit"/>
-                <ref bean="org.jahia.toolbar.item.EditAction.delete"/>
+                <ref bean="org.jahia.toolbar.item.createPage"/>
+                <ref bean="org.jahia.toolbar.item.publish"/>
+                <ref bean="org.jahia.toolbar.item.unpublish"/>
+                <ref bean="org.jahia.toolbar.item.viewPublishStatus"/>
+                <ref bean="org.jahia.toolbar.item.lock"/>
+                <ref bean="org.jahia.toolbar.item.unlock"/>
+                <ref bean="org.jahia.toolbar.item.edit"/>
+                <ref bean="org.jahia.toolbar.item.delete"/>
                 <ref bean="org.jahia.toolbar.item.ClipBoard"/>
-                <ref bean="org.jahia.toolbar.item.EditAction.status"/>
             </list>
         </property>
     </bean>
@@ -757,69 +672,13 @@
         <property name="layout" value="button-label"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.delete"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.copy"/>
+                <ref bean="org.jahia.toolbar.item.delete"/>
+                <ref bean="org.jahia.toolbar.item.copy"/>
             </list>
         </property>
     </bean>
 
-    <bean id="org.jahia.toolbar.itemsgroup.newedit.Tools" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-            </bean>
-        </property>
-        <property name="titleKey" value="toolbar.itemgroups.tools"/>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.item.FileManager"/>
-                <ref bean="org.jahia.toolbar.item.MashupManager"/>
-                <ref bean="org.jahia.toolbar.item.ContentManager"/>
-                <ref bean="org.jahia.toolbar.item.CategoryManager"/>
-                <ref bean="org.jahia.toolbar.item.SiteManager"/>
-                <ref bean="org.jahia.toolbar.item.GWTWorkflow"/>
-                <ref bean="org.jahia.toolbar.item.Pdisplay"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.toolbar.itemsgroup.newedit.Workflow" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="mode" value="edit,preview,compare"/>
-            </bean>
-        </property>
-        <property name="titleKey" value="toolbar.itemgroups.quickworkflow"/>
-        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-action-min"/>
-        <property name="items">
-            <list>
-                <!--<items-provider-->
-                        <!--class="org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl.JahiaItemsGroupFactoryImpl"-->
-                        <!--input="quick.workflow"/>-->
-            </list>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.toolbar.itemsgroup.newedit.Cache" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="menu-radio"/>
-        <property name="titleKey" value="toolbar.itemgroups.cache"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-            </bean>
-        </property>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.item.FlushSite"/>
-                <ref bean="org.jahia.toolbar.item.FlushPage"/>
-                <ref bean="org.jahia.toolbar.item.FlushAllCaches"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.toolbar.itemsgroup.newedit.Preview" class="org.jahia.services.toolbar.bean.ItemsGroup">
+    <bean id="org.jahia.toolbar.itemsgroup.Preview" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="button-label"/>
         <property name="items">
             <list>
@@ -828,24 +687,7 @@
         </property>
     </bean>
 
-    <bean id="org.jahia.toolbar.itemsgroup.newedit.User" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="titleKey" value="toolbar.itemgroups.user"/>
-        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-user-min"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-            </bean>
-        </property>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.item.Logout"/>
-                <ref bean="org.jahia.toolbar.item.MySettings"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.toolbar.itemsgroup.newedit.Admin" class="org.jahia.services.toolbar.bean.ItemsGroup">
+    <bean id="org.jahia.toolbar.itemsgroup.Admin" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="menu"/>
         <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-admin-min"/>
         <property name="titleKey" value="button.administration"/>
@@ -869,10 +711,10 @@
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createCategory"/>
+                <ref bean="org.jahia.toolbar.item.createCategory"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.export"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.import"/>
+                <ref bean="org.jahia.toolbar.item.export"/>
+                <ref bean="org.jahia.toolbar.item.import"/>
             </list>
         </property>
     </bean>
@@ -882,21 +724,21 @@
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createFolder"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createContentList"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createContent"/>
-                <ref bean="org.jahia.toolbar.item.EditAction.createPage"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createMashup"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.upload"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.download"/>
+                <ref bean="org.jahia.toolbar.item.createFolder"/>
+                <ref bean="org.jahia.toolbar.item.createContentList"/>
+                <ref bean="org.jahia.toolbar.item.createContent"/>
+                <ref bean="org.jahia.toolbar.item.createPage"/>
+                <ref bean="org.jahia.toolbar.item.createMashup"/>
+                <ref bean="org.jahia.toolbar.item.createRssMashup"/>
+                <ref bean="org.jahia.toolbar.item.createGoogleGadgetMashup"/>
+                <ref bean="org.jahia.toolbar.item.upload"/>
+                <ref bean="org.jahia.toolbar.item.download"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.lock"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.unlock"/>
+                <ref bean="org.jahia.toolbar.item.lock"/>
+                <ref bean="org.jahia.toolbar.item.unlock"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.zip"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.unzip"/>
+                <ref bean="org.jahia.toolbar.item.zip"/>
+                <ref bean="org.jahia.toolbar.item.unzip"/>
             </list>
         </property>
     </bean>
@@ -906,24 +748,25 @@
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.editMenu.label"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.rename"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.delete"/>
+                <ref bean="org.jahia.toolbar.item.rename"/>
+                <ref bean="org.jahia.toolbar.item.delete"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.copy"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.cut"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.paste"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.pasteReference"/>
+                <ref bean="org.jahia.toolbar.item.copy"/>
+                <ref bean="org.jahia.toolbar.item.cut"/>
+                <ref bean="org.jahia.toolbar.item.paste"/>
+                <ref bean="org.jahia.toolbar.item.pasteReference"/>
             </list>
         </property>
     </bean>
+
     <bean id="org.jahia.toolbar.itemsgroup.ContentManager.menu.remote"
           class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="menu"/>
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.remoteMenu.label"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.mount"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.unmount"/>
+                <ref bean="org.jahia.toolbar.item.mount"/>
+                <ref bean="org.jahia.toolbar.item.unmount"/>
             </list>
         </property>
     </bean>
@@ -933,9 +776,9 @@
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.imageMenu.label"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.crop"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.resize"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.rotate"/>
+                <ref bean="org.jahia.toolbar.item.crop"/>
+                <ref bean="org.jahia.toolbar.item.resize"/>
+                <ref bean="org.jahia.toolbar.item.rotate"/>
             </list>
         </property>
     </bean>
@@ -944,7 +787,7 @@
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.refresh"/>
+                <ref bean="org.jahia.toolbar.item.refresh"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
             </list>
         </property>
@@ -956,16 +799,16 @@
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createFolder"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.upload"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.download"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.preview"/>
+                <ref bean="org.jahia.toolbar.item.createFolder"/>
+                <ref bean="org.jahia.toolbar.item.upload"/>
+                <ref bean="org.jahia.toolbar.item.download"/>
+                <ref bean="org.jahia.toolbar.item.preview"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.lock"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.unlock"/>
+                <ref bean="org.jahia.toolbar.item.lock"/>
+                <ref bean="org.jahia.toolbar.item.unlock"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.zip"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.unzip"/>
+                <ref bean="org.jahia.toolbar.item.zip"/>
+                <ref bean="org.jahia.toolbar.item.unzip"/>
             </list>
         </property>
     </bean>
@@ -975,10 +818,10 @@
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createFolder"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createMashup"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
+                <ref bean="org.jahia.toolbar.item.createFolder"/>
+                <ref bean="org.jahia.toolbar.item.createMashup"/>
+                <ref bean="org.jahia.toolbar.item.createRssMashup"/>
+                <ref bean="org.jahia.toolbar.item.createGoogleGadgetMashup"/>
             </list>
         </property>
     </bean>
@@ -988,10 +831,10 @@
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.EditAction.createPage"/>
+                <ref bean="org.jahia.toolbar.item.createPage"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.lock"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.unlock"/>
+                <ref bean="org.jahia.toolbar.item.lock"/>
+                <ref bean="org.jahia.toolbar.item.unlock"/>
             </list>
         </property>
     </bean>
@@ -1002,10 +845,10 @@
         <property name="layout" value="button"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createCategory"/>
+                <ref bean="org.jahia.toolbar.item.createCategory"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.export"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.import"/>
+                <ref bean="org.jahia.toolbar.item.export"/>
+                <ref bean="org.jahia.toolbar.item.import"/>
             </list>
         </property>
     </bean>
@@ -1014,16 +857,16 @@
         <property name="layout" value="button"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createFolder"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createContentList"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createContent"/>
-                <ref bean="org.jahia.toolbar.item.EditAction.createPage"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createMashup"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.upload"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.download"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.webfolder"/>
+                <ref bean="org.jahia.toolbar.item.createFolder"/>
+                <ref bean="org.jahia.toolbar.item.createContentList"/>
+                <ref bean="org.jahia.toolbar.item.createContent"/>
+                <ref bean="org.jahia.toolbar.item.createPage"/>
+                <ref bean="org.jahia.toolbar.item.createMashup"/>
+                <ref bean="org.jahia.toolbar.item.createRssMashup"/>
+                <ref bean="org.jahia.toolbar.item.createGoogleGadgetMashup"/>
+                <ref bean="org.jahia.toolbar.item.upload"/>
+                <ref bean="org.jahia.toolbar.item.download"/>
+                <ref bean="org.jahia.toolbar.item.webfolder"/>
             </list>
         </property>
     </bean>
@@ -1032,8 +875,8 @@
         <property name="layout" value="button"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.rename"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.delete"/>
+                <ref bean="org.jahia.toolbar.item.rename"/>
+                <ref bean="org.jahia.toolbar.item.delete"/>
             </list>
         </property>
     </bean>
@@ -1042,10 +885,10 @@
         <property name="layout" value="button"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.copy"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.cut"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.paste"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.pasteReference"/>
+                <ref bean="org.jahia.toolbar.item.copy"/>
+                <ref bean="org.jahia.toolbar.item.cut"/>
+                <ref bean="org.jahia.toolbar.item.paste"/>
+                <ref bean="org.jahia.toolbar.item.pasteReference"/>
             </list>
         </property>
     </bean>
@@ -1054,7 +897,7 @@
         <property name="layout" value="button"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.refresh"/>
+                <ref bean="org.jahia.toolbar.item.refresh"/>
             </list>
         </property>
     </bean>
@@ -1071,11 +914,11 @@
         </property>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createFolder"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.upload"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.download"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.preview"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.webfolder"/>
+                <ref bean="org.jahia.toolbar.item.createFolder"/>
+                <ref bean="org.jahia.toolbar.item.upload"/>
+                <ref bean="org.jahia.toolbar.item.download"/>
+                <ref bean="org.jahia.toolbar.item.preview"/>
+                <ref bean="org.jahia.toolbar.item.webfolder"/>
             </list>
         </property>
     </bean>
@@ -1084,10 +927,10 @@
         <property name="layout" value="button"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createFolder"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createMashup"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createRssMashup"/>
-                <ref bean="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"/>
+                <ref bean="org.jahia.toolbar.item.createFolder"/>
+                <ref bean="org.jahia.toolbar.item.createMashup"/>
+                <ref bean="org.jahia.toolbar.item.createRssMashup"/>
+                <ref bean="org.jahia.toolbar.item.createGoogleGadgetMashup"/>
             </list>
         </property>
     </bean>
@@ -1096,7 +939,7 @@
         <property name="layout" value="button"/>
         <property name="items">
             <list>
-                <!--<ref bean="org.jahia.toolbar.item.ContentAction.createPortletDefinition"/>-->
+                <!--<ref bean="org.jahia.toolbar.item.createPortletDefinition"/>-->
             </list>
         </property>
     </bean>
@@ -1105,7 +948,7 @@
         <property name="layout" value="button"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.ContentAction.delete"/>
+                <ref bean="org.jahia.toolbar.item.delete"/>
             </list>
         </property>
     </bean>
@@ -1114,7 +957,7 @@
         <property name="layout" value="button"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.EditAction.createPage"/>
+                <ref bean="org.jahia.toolbar.item.createPage"/>
             </list>
         </property>
     </bean>
@@ -1680,31 +1523,6 @@
         </property>
     </item-->
 
-    <!-- Page properties -->
-    <bean id="org.jahia.toolbar.item.PageProperties" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.OpenEngineWindow">
-        <property name="titleKey" value="button.pageSettings"/>
-        <property name="minIconStyle" value="gwt-toolbar-ItemsGroup-icons-pageproperties-min"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-ItemsGroup-icons-pageproperties-normal"/>
-        <property name="descriptionKey" value="button.pageSettings"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="mode" value="edit,preview,compare"/>
-                <property name="pageACL" value="write"/>
-            </bean>
-        </property>
-
-
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property" >
-                    <property name="name" value="url"/>
-                    <property name="classProvider" value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
-                    <property name="inputProvider" value="pageproperties"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
 
     <!-- P-display -->
     <bean id="org.jahia.toolbar.item.Pdisplay" class="org.jahia.services.toolbar.bean.Item" parent="org.jahia.toolbar.item.OpenWindow">
@@ -2193,9 +2011,6 @@
         </property>
     </bean>
 
-    <!-- language switcher -->
-    <bean id="org.jahia.toolbar.item.LanguageSwitcher" class="org.jahia.services.toolbar.bean.Item"/>
-
     <!-- subscriptions -->
     <bean id="org.jahia.toolbar.item.Subscriptions" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.subscriptions.button.page.title"/>
@@ -2262,7 +2077,7 @@
     </bean>
 
     <!-- new edit mode buttons: create -->
-    <bean id="org.jahia.toolbar.item.EditAction.createPage" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.createPage" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.edit.button.newpage"/>
         <property name="minIconStyle" value="fm-newpage"/>
         <property name="mediumIconStyle" value="fm-newpage"/>
@@ -2271,7 +2086,7 @@
 
 
     <!-- new edit mode buttons: publish -->
-    <bean id="org.jahia.toolbar.item.EditAction.publish" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.publish" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.edit.button.publish"/>
         <property name="minIconStyle" value="fm-newcontent"/>
         <property name="mediumIconStyle" value="fm-newcontent"/>
@@ -2279,7 +2094,7 @@
     </bean>
 
     <!-- new edit mode buttons: unpublish -->
-    <bean id="org.jahia.toolbar.item.EditAction.unpublish" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.unpublish" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.edit.button.unpublish"/>
         <property name="minIconStyle" value="fm-newcontent"/>
         <property name="mediumIconStyle" value="fm-newcontent"/>
@@ -2287,7 +2102,7 @@
     </bean>
 
     <!-- new edit mode buttons: unpublish -->
-    <bean id="org.jahia.toolbar.item.EditAction.viewPublishStatus" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.viewPublishStatus" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.edit.button.status"/>
         <property name="minIconStyle" value="fm-newcontent"/>
         <property name="mediumIconStyle" value="fm-newcontent"/>
@@ -2295,7 +2110,7 @@
     </bean>
 
     <!-- new edit mode buttons: lock -->
-    <bean id="org.jahia.toolbar.item.EditAction.lock" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.lock" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.edit.button.lock"/>
         <property name="minIconStyle" value="fm-lock"/>
         <property name="mediumIconStyle" value="fm-lock"/>
@@ -2303,7 +2118,7 @@
     </bean>
 
     <!-- new edit mode buttons: unlock -->
-    <bean id="org.jahia.toolbar.item.EditAction.unlock" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.unlock" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.edit.button.unlock"/>
         <property name="minIconStyle" value="fm-unlock"/>
         <property name="mediumIconStyle" value="fm-unlock"/>
@@ -2311,7 +2126,7 @@
     </bean>
 
     <!-- new edit mode buttons: edit -->
-    <bean id="org.jahia.toolbar.item.EditAction.edit" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.edit" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.edit.button.edit"/>
         <property name="minIconStyle" value="fm-edit"/>
         <property name="mediumIconStyle" value="fm-edit"/>
@@ -2319,89 +2134,73 @@
     </bean>
 
     <!-- new edit mode buttons: delete -->
-    <bean id="org.jahia.toolbar.item.EditAction.delete" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.delete" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.edit.button.remove"/>
         <property name="minIconStyle" value="fm-remove"/>
         <property name="mediumIconStyle" value="fm-remove"/>
         <property name="descriptionKey" value="delete"/>
     </bean>
 
-    <!-- new edit mode buttons: status -->
-    <bean id="org.jahia.toolbar.item.EditAction.status" class="org.jahia.services.toolbar.bean.Item">
-        <property name="titleKey" value="toolbar.edit.button.status"/>
-        <property name="descriptionKey" value="status"/>
-    </bean>
-
     <!-- new content action buttons  -->
-    <bean id="org.jahia.toolbar.item.ContentAction.copy" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.copy" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.copy"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.createCategory" class="org.jahia.services.toolbar.bean.Item"/>
-    <bean id="org.jahia.toolbar.item.ContentAction.createContentList" class="org.jahia.services.toolbar.bean.Item"/>
-    <bean id="org.jahia.toolbar.item.ContentAction.createContent" class="org.jahia.services.toolbar.bean.Item"/>
-    <bean id="org.jahia.toolbar.item.ContentAction.createFolder" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.createCategory" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.createContentList" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.createContent" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.createFolder" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.createFolder"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.createGoogleGadgetMashup"
+    <bean id="org.jahia.toolbar.item.createGoogleGadgetMashup"
           class="org.jahia.services.toolbar.bean.Item"/>
-    <bean id="org.jahia.toolbar.item.ContentAction.createMashup" class="org.jahia.services.toolbar.bean.Item"/>
-    <bean id="org.jahia.toolbar.item.ContentAction.createRssMashup" class="org.jahia.services.toolbar.bean.Item"/>
-    <bean id="org.jahia.toolbar.item.ContentAction.crop" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.createMashup" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.createRssMashup" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.crop" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.crop"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.cut" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.cut" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.cut"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.delete" class="org.jahia.services.toolbar.bean.Item">
-        <property name="titleKey" value="toolbar.edit.button.contentAction.delete"/>
-        <property name="descriptionKey" value="toolbar.manager.button.delete"/>
-    </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.download" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.download" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.download"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.export" class="org.jahia.services.toolbar.bean.Item"/>
-    <bean id="org.jahia.toolbar.item.ContentAction.import" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.export" class="org.jahia.services.toolbar.bean.Item"/>
+    <bean id="org.jahia.toolbar.item.import" class="org.jahia.services.toolbar.bean.Item"/>
 
-    <bean id="org.jahia.toolbar.item.ContentAction.lock" class="org.jahia.services.toolbar.bean.Item">
-        <property name="titleKey" value="toolbar.manager.button.lock"/>
-    </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.mount" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.mount" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.mount"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.paste" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.paste" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.paste"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.pasteReference" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.pasteReference" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.pasteReference"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.preview" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.preview" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.preview"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.refresh" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.refresh" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.refresh"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.rename" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.rename" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.rename"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.resize" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.resize" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.resize"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.rotate" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.rotate" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.rotate"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.unlock" class="org.jahia.services.toolbar.bean.Item">
-        <property name="titleKey" value="toolbar.manager.button.unlock"/>
-    </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.unmount" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.unmount" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.unmount"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.upload" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.upload" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.upload"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.unzip" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.unzip" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.unzip"/>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.webfolder" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.webfolder" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.webfolder"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
@@ -2411,7 +2210,7 @@
             </bean>
         </property>
     </bean>
-    <bean id="org.jahia.toolbar.item.ContentAction.zip" class="org.jahia.services.toolbar.bean.Item">
+    <bean id="org.jahia.toolbar.item.zip" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="toolbar.manager.button.zip"/>
     </bean>
     <!-- end of new content action buttons -->

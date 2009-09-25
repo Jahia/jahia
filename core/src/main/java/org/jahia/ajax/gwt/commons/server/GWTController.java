@@ -78,7 +78,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
         long startTime = System.currentTimeMillis();
         doPost(request, response);
         if (logger.isDebugEnabled()) {
-            logger.info("Handled request to GWT service '" + remoteServiceName
+            logger.debug("Handled request to GWT service '" + remoteServiceName
                     + "' in " + (System.currentTimeMillis() - startTime)
                     + " ms");
         }

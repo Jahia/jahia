@@ -21,6 +21,14 @@
         </property>
     </bean>
 
+    <bean id="category-picker" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.manager.categories.shortcuts"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="content-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
         <property name="toolbars">
             <list>
@@ -39,10 +47,25 @@
         </property>
     </bean>
 
+    <bean id="file-picker" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.manager.documents.shortcuts"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="mashup-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
         <property name="toolbars">
             <list>
-                <ref bean="org.jahia.toolbar.manager.mashups.menu"/>
+                <ref bean="org.jahia.toolbar.manager.mashups.shortcuts"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="mashup-picker" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
                 <ref bean="org.jahia.toolbar.manager.mashups.shortcuts"/>
             </list>
         </property>

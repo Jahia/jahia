@@ -38,10 +38,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRNodeDecorator;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRValueWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
@@ -306,7 +303,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
 	                            JCRNodeWrapper w = new JCRNodeDecorator(node) {
 	                                @Override
-	                                public Property getProperty(String s) throws PathNotFoundException, RepositoryException {
+	                                public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
 	                                    JCRPropertyWrapper p = (JCRPropertyWrapper) super.getProperty(s);
 	                                    return new EditablePropertyWrapper(p);
 	                                }
@@ -543,11 +540,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             return p.getName();
         }
 
-        public Item getAncestor(int depth) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+        public JCRItemWrapper getAncestor(int depth) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
             return p.getAncestor(depth);
         }
 
-        public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+        public JCRNodeWrapper getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
             return p.getParent();
         }
 
@@ -555,7 +552,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             return p.getDepth();
         }
 
-        public Session getSession() throws RepositoryException {
+        public JCRSessionWrapper getSession() throws RepositoryException {
             return p.getSession();
         }
 
@@ -589,6 +586,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
             p.remove();
+        }
+
+        public void saveSession() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
+            p.saveSession();
         }
 
         class EditableValueWrapper implements JCRValueWrapper {

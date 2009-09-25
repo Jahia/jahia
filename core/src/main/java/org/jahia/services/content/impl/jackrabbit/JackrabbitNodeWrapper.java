@@ -62,9 +62,6 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
 
     @Override
     public boolean hasPermission(String perm) {
-        if (exception != null) {
-            return false;
-        }
         String ws = null;
         int permissions = 0;
         try {
@@ -162,9 +159,6 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
     }
 
     public boolean getAclInheritanceBreak() {
-        if (exception != null) {
-            return false;
-        }
         try {
             return getAclInheritanceBreak(objectNode);
         } catch (RepositoryException e) {
@@ -174,9 +168,6 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
     }
 
     public boolean changePermissions(String user, String perm) {
-        if (exception != null) {
-            return false;
-        }
         try {
             changePermissions(objectNode, user, perm);
         } catch (RepositoryException e) {
@@ -188,9 +179,6 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
     }
 
     public boolean changePermissions(String user, Map<String, String> perm) {
-        if (exception != null) {
-            return false;
-        }
         try {
             changePermissions(objectNode, user, perm);
         } catch (RepositoryException e) {
@@ -202,9 +190,6 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
     }
 
     public boolean setAclInheritanceBreak(boolean inheritance) {
-        if (exception != null) {
-            return false;
-        }
         try {
             setAclInheritanceBreak(objectNode, inheritance);
         } catch (RepositoryException e) {
@@ -216,9 +201,6 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
     }
 
     public boolean revokePermissions(String user) {
-        if (exception != null) {
-            return false;
-        }
         try {
             revokePermission(objectNode, user);
         } catch (RepositoryException e) {

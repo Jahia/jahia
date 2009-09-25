@@ -17,7 +17,7 @@ public class JCRPlaceholderNode extends JCRNodeDecorator {
     }
 
     @Override
-    public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+    public JCRNodeWrapper getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         return node;
     }
 
@@ -27,7 +27,7 @@ public class JCRPlaceholderNode extends JCRNodeDecorator {
     }
 
     @Override
-    public Node getNode(String s) throws RepositoryException {
+    public JCRNodeWrapper getNode(String s) throws RepositoryException {
         throw new PathNotFoundException();
     }
 

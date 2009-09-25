@@ -77,7 +77,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         return new ArrayList<JCRNodeWrapper>();
     }
 
-    public Node getNode(String s) throws PathNotFoundException, RepositoryException {
+    public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {
         return getRootNode().getNode(s);
     }
 

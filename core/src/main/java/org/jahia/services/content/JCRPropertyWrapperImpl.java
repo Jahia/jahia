@@ -31,21 +31,17 @@
  */
 package org.jahia.services.content;
 
-import org.jahia.api.Constants;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.data.beans.CategoryBean;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 import javax.jcr.*;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.PropertyDefinition;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
 import java.io.InputStream;
-import java.util.Calendar;
 import java.math.BigDecimal;
+import java.util.Calendar;
 
 /**
  * Created by IntelliJ IDEA.
@@ -214,11 +210,11 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         return name;
     }
 
-    public Item getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-        return property.getAncestor(i);
+    public JCRItemWrapper getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+        return provider.getItemWrapper(property.getAncestor(i),session);
     }
 
-    public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+    public JCRNodeWrapper getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         return node;
     }
 

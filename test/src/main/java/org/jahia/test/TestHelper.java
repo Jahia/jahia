@@ -50,7 +50,6 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
-import java.util.Iterator;
 import java.util.List;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -65,8 +64,14 @@ import java.security.NoSuchAlgorithmException;
 public class TestHelper {
 
     static Logger logger = LoggerFactory.getLogger(TestHelper.class);
+    public static final String TCK_TEMPLATES = "Jahia TCK templates (Jahia Test Compatibility Kit)";
+    public static final String ACME_TEMPLATES = "Web templates";
 
     public static JahiaSite createSite(String name) throws Exception {
+        return createSite(name, "localhost", TCK_TEMPLATES, null);
+    }
+    
+    public static JahiaSite createSite(String name, String serverName, String templateSet, File importFile) throws Exception {
 
         ProcessingContext ctx = Jahia.getThreadParamBean();
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
@@ -77,9 +82,10 @@ public class TestHelper {
         if (site != null) {
             service.removeSite(site);
         }
-
-        site = service.addSite(admin, name, "localhost", name, name, null,
-                ctx.getLocale(), "Jahia TCK templates (Jahia Test Compatibility Kit)", "noImport", null, null, false, false, ctx);
+    
+        site = service.addSite(admin, name, serverName, name, name, null, ctx.getLocale(), templateSet,
+                importFile == null ? "noImport" : "fileImport", importFile, null, false, false, ctx);
+    
         ctx.setSite(site);
 
         return site;
@@ -104,7 +110,7 @@ public class TestHelper {
      */
     private static void createDBTables() throws Exception {
         File object;
-        List sqlStatements;
+        List<String> sqlStatements;
         String line;
         final DatabaseScripts scripts = new DatabaseScripts();
         logger.info("Creating database tables...");

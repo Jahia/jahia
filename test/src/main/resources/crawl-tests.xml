@@ -42,5 +42,11 @@
   </description>                                                                                                                                             
 </property>
 
+<property>
+  <name>http.timeout</name>
+  <value>100000</value>
+  <description>The default network timeout, in milliseconds.</description>
+</property>
+
 </configuration>
 

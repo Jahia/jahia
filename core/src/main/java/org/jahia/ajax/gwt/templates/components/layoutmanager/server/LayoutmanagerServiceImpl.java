@@ -39,7 +39,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.layoutmanager.LayoutmanagerService;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutManagerConfig;
-import org.jahia.ajax.gwt.content.server.helper.ContentManagerHelper;
+import org.jahia.ajax.gwt.content.server.helper.NavigationHelper;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
@@ -554,7 +554,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
                     logger.error(e, e);
                 }
             }
-            return new GWTJahiaLayoutItem(jcrLayoutItemNode.getUUID(), ContentManagerHelper.getGWTJahiaNode(referencedNode,true), viewModeUrl, editModeUrl, helpModeUrl, column, row, status, currentPortletMode);
+            return new GWTJahiaLayoutItem(jcrLayoutItemNode.getUUID(), NavigationHelper.getGWTJahiaNode(referencedNode,true), viewModeUrl, editModeUrl, helpModeUrl, column, row, status, currentPortletMode);
         } else {
             return null;
         }

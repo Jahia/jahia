@@ -41,6 +41,7 @@ import org.jahia.params.ProcessingContext;
 
 import javax.servlet.jsp.JspException;
 import javax.jcr.RepositoryException;
+import javax.jcr.PathNotFoundException;
 import java.io.IOException;
 
 /**
@@ -72,23 +73,21 @@ public class JCRNodeLinkTag extends AbstractJahiaTag {
         if (ctx != null) {
             JahiaUser user = ctx.getUser();
             try {
-                node = JCRStoreService.getInstance().checkExistence(path, user);
-                if (node != null) {
-                    if (node.isFile()) {
-                        StringBuilder link = new StringBuilder("<a href=\"");
-                        if (absolute) {
-                            link.append(node.getAbsoluteUrl((ParamBean) ctx));
-                        } else {
-                            link.append(node.getUrl());
-                        }
-                        link.append("\">");
-                        pageContext.getOut().print(link.toString());
+                node = JCRStoreService.getInstance().getSessionFactory().getThreadSession(user).getNode(path);
+                if (node.isFile()) {
+                    StringBuilder link = new StringBuilder("<a href=\"");
+                    if (absolute) {
+                        link.append(node.getAbsoluteUrl((ParamBean) ctx));
                     } else {
-                        logger.warn("The path '" + path + "' is not a file");
+                        link.append(node.getUrl());
                     }
+                    link.append("\">");
+                    pageContext.getOut().print(link.toString());
                 } else {
-                    logger.error("The path '" + path + "' does not exist");
+                    logger.warn("The path '" + path + "' is not a file");
                 }
+            } catch (PathNotFoundException e) {
+                logger.error("The path '" + path + "' does not exist");
             } catch (RepositoryException e) {
                 logger.error("Could not retrieve JCR node using path '" + path + "'", e);
             } catch (IOException e) {

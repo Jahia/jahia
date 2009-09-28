@@ -34,11 +34,13 @@ package org.jahia.ajax.gwt.definitions.server;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaPropertyDefinition;
-import org.jahia.ajax.gwt.content.server.helper.Utils;
+import org.jahia.ajax.gwt.content.server.helper.NavigationHelper;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.*;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.FileUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -48,11 +50,13 @@ import org.jahia.operations.valves.ThemeValve;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.apache.log4j.Logger;
 import org.apache.commons.collections.FastHashMap;
+import org.apache.jackrabbit.value.*;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.Value;
 import javax.jcr.RepositoryException;
+import javax.jcr.PropertyType;
 import java.util.*;
 import java.io.File;
 
@@ -167,7 +171,7 @@ public class ContentDefinitionHelper {
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
                     for (Value value : epd.getDefaultValues()) {
                         try {
-                            gwtValues.add(Utils.convertValue(value,epd.getRequiredType()));
+                            gwtValues.add(convertValue(value,epd.getRequiredType()));
                         } catch (RepositoryException e) {
                             e.printStackTrace();
                         }
@@ -350,5 +354,100 @@ public class ContentDefinitionHelper {
         }
 
         return nodetypeIcons;
+    }
+
+    public static GWTJahiaNodePropertyValue convertValue(Value val, int requiredType) throws RepositoryException {
+        String theValue;
+        int type;
+
+        switch (requiredType) {
+            case PropertyType.BINARY:
+                type = GWTJahiaNodePropertyType.BINARY;
+                theValue = val.getString();
+                break;
+            case PropertyType.BOOLEAN:
+                type = GWTJahiaNodePropertyType.BOOLEAN;
+                theValue = String.valueOf(val.getBoolean());
+                break;
+            case PropertyType.DATE:
+                type = GWTJahiaNodePropertyType.DATE;
+                theValue = String.valueOf(val.getDate().getTimeInMillis());
+                break;
+            case PropertyType.DOUBLE:
+                type = GWTJahiaNodePropertyType.DOUBLE;
+                theValue = String.valueOf(val.getDouble());
+                break;
+            case PropertyType.LONG:
+                type = GWTJahiaNodePropertyType.LONG;
+                theValue = String.valueOf(val.getLong());
+                break;
+            case PropertyType.NAME:
+                type = GWTJahiaNodePropertyType.NAME;
+                theValue = val.getString();
+                break;
+            case PropertyType.PATH:
+                type = GWTJahiaNodePropertyType.PATH;
+                theValue = val.getString();
+                break;
+            case ExtendedPropertyType.WEAKREFERENCE:
+            case PropertyType.REFERENCE:
+                return new GWTJahiaNodePropertyValue(NavigationHelper.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper) val).getNode(), false));
+            case PropertyType.STRING:
+                type = GWTJahiaNodePropertyType.STRING;
+                theValue = val.getString();
+                break;
+            case PropertyType.UNDEFINED:
+                type = GWTJahiaNodePropertyType.UNDEFINED;
+                theValue = val.getString();
+                break;
+            default:
+                type = GWTJahiaNodePropertyType.UNDEFINED;
+                theValue = val.getString();
+        }
+
+        return new GWTJahiaNodePropertyValue(theValue, type);
+    }
+
+    public static Value convertValue(GWTJahiaNodePropertyValue val) throws RepositoryException {
+        Value value;
+
+        switch (val.getType()) {
+            case GWTJahiaNodePropertyType.BINARY:
+                value = new BinaryValue(val.getBinary());
+                break;
+            case GWTJahiaNodePropertyType.BOOLEAN:
+                value = new BooleanValue(val.getBoolean());
+                break;
+            case GWTJahiaNodePropertyType.DATE:
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(val.getDate());
+                value = new DateValue(cal);
+                break;
+            case GWTJahiaNodePropertyType.DOUBLE:
+                value = new DoubleValue(val.getDouble());
+                break;
+            case GWTJahiaNodePropertyType.LONG:
+                value = new LongValue(val.getLong());
+                break;
+            case GWTJahiaNodePropertyType.NAME:
+                value = NameValue.valueOf(val.getString());
+                break;
+            case GWTJahiaNodePropertyType.PATH:
+                value = PathValue.valueOf(val.getString());
+                break;
+            case GWTJahiaNodePropertyType.REFERENCE:
+                value = ReferenceValue.valueOf(val.getString());
+                break;
+            case GWTJahiaNodePropertyType.STRING:
+                value = new StringValue(val.getString());
+                break;
+            case GWTJahiaNodePropertyType.UNDEFINED:
+                value = new StringValue(val.getString());
+                break;
+            default:
+                value = new StringValue(val.getString());
+        }
+
+        return value;
     }
 }

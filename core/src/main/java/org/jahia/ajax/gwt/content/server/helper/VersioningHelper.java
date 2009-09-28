@@ -34,7 +34,10 @@ package org.jahia.ajax.gwt.content.server.helper;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -54,9 +57,9 @@ import java.util.List;
  * Time: 7:03:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JCRVersioningHelper {
-    private static JCRSessionFactory jcr = JCRSessionFactory.getInstance();
-    private static Logger logger = Logger.getLogger(JCRVersioningHelper.class);
+public class VersioningHelper {
+    private static JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
+    private static Logger logger = Logger.getLogger(VersioningHelper.class);
 
     /**
      * Activate versionning
@@ -67,7 +70,7 @@ public class JCRVersioningHelper {
     public static void activateVersioning(List<String> pathes, ProcessingContext jParams) {
         for (String path : pathes) {
             try {
-                JCRSessionWrapper s = jcr.getThreadSession(jParams.getUser());
+                JCRSessionWrapper s = sessionFactory.getThreadSession(jParams.getUser());
                 JCRNodeWrapper node = s.getNode(path);
                 if (!node.isVersioned()) {
                     node.versionFile();
@@ -96,7 +99,7 @@ public class JCRVersioningHelper {
                     Version v = vi.nextVersion();
                     if (!v.getName().equals("jcr:rootVersion")) {
                         JCRNodeWrapper orig = ((JCRVersionHistory) v.getContainingHistory()).getNode();
-                        GWTJahiaNode n = ContentManagerHelper.getGWTJahiaNode(orig, false);
+                        GWTJahiaNode n = NavigationHelper.getGWTJahiaNode(orig, false);
                         n.setUrl(orig.getUrl() + "?v=" + v.getName());
                         GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(), v.getName(), v.getCreated().getTime());
                         jahiaNodeVersion.setNode(n);
@@ -105,10 +108,65 @@ public class JCRVersioningHelper {
                 }
             }
         } catch (RepositoryException e) {
-            logger.error(e,e);
+            logger.error(e, e);
         }
         return versions;
     }
 
 
+    /**
+     * Activate versioning if nested and add a new version
+     *
+     * @param node
+     * @param tmpName
+     * @param ctx
+     * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
+     *
+     */
+    public static void addNewVersionFile(JCRNodeWrapper node, String tmpName, ProcessingContext ctx) throws GWTJahiaServiceException {
+        try {
+            if (node != null) {
+                if (!node.isVersioned()) {
+                    node.versionFile();
+                    node.save();
+                }
+                node.checkout();
+                node.getFileContent().uploadFile(GWTFileManagerUploadServlet.getItem(tmpName).file, GWTFileManagerUploadServlet.getItem(tmpName).contentType);
+                node.save();
+                node.checkpoint();
+
+                logger.debug("Number of version: " + node.getVersions().size());
+
+            } else {
+                logger.error("Could not add version to a null file.");
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * Restore node version
+     *
+     * @param nodeUuid
+     * @param versionUuid
+     * @param ctx
+     */
+    public static void restoreNode(String nodeUuid, String versionUuid, ProcessingContext ctx) {
+        try {
+            JCRNodeWrapper node = (JCRNodeWrapper) sessionFactory.getThreadSession(ctx.getUser()).getNodeByUUID(nodeUuid);
+            Version version = (Version) sessionFactory.getThreadSession(ctx.getUser()).getNodeByUUID(versionUuid);
+            node.checkout();
+            node.restore(version, true);
+            node.checkpoint();
+
+            // fluch caches: To do: flush only the nested cache
+            ServicesRegistry.getInstance().getCacheService().flushAllCaches();
+
+
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 }

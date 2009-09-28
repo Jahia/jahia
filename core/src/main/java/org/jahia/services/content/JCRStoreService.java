@@ -179,48 +179,6 @@ public class JCRStoreService extends JahiaService implements ServletContextAware
         return r;
     }
 
-    public static String removeDiacritics(String name) {
-        if (name == null) return null;
-        StringBuffer sb = new StringBuffer(name.length());
-        for (int i = 0; i < name.length(); i++) {
-            char c = name.charAt(i);
-            if (c >= '\u0080') {
-                if (c >= '\u00C0' && c < '\u00C6') sb.append('A');
-                else if (c == '\u00C6') sb.append("AE");
-                else if (c == '\u00C7') sb.append('C');
-                else if (c >= '\u00C8' && c < '\u00CC') sb.append('E');
-                else if (c >= '\u00CC' && c < '\u00D0') sb.append('I');
-                else if (c == '\u00D0') sb.append('D');
-                else if (c == '\u00D1') sb.append('N');
-                else if (c >= '\u00D2' && c < '\u00D7') sb.append('O');
-                else if (c == '\u00D7') sb.append('x');
-                else if (c == '\u00D8') sb.append('O');
-                else if (c >= '\u00D9' && c < '\u00DD') sb.append('U');
-                else if (c == '\u00DD') sb.append('Y');
-                else if (c == '\u00DF') sb.append("SS");
-                else if (c >= '\u00E0' && c < '\u00E6') sb.append('a');
-                else if (c == '\u00E6') sb.append("ae");
-                else if (c == '\u00E7') sb.append('c');
-                else if (c >= '\u00E8' && c < '\u00EC') sb.append('e');
-                else if (c >= '\u00EC' && c < '\u00F0') sb.append('i');
-                else if (c == '\u00F0') sb.append('d');
-                else if (c == '\u00F1') sb.append('n');
-                else if (c >= '\u00F2' && c < '\u00FF') sb.append('o');
-                else if (c == '\u00F7') sb.append('/');
-                else if (c == '\u00F8') sb.append('o');
-                else if (c >= '\u00F9' && c < '\u00FF') sb.append('u');
-                else if (c == '\u00FD') sb.append('y');
-                else if (c == '\u00FF') sb.append("y");
-                else if (c == '\u0152') sb.append("OE");
-                else if (c == '\u0153') sb.append("oe");
-                else sb.append('_');
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
     public JCRNodeWrapper decorate(JCRNodeWrapper w) {
         try {
             for (String type : decorators.keySet()) {
@@ -239,63 +197,11 @@ public class JCRStoreService extends JahiaService implements ServletContextAware
         return w;
     }
 
-    /**
-     * Check existence of a given path in the repository.
-     *
-     * @param path the path to check
-     * @param user the current user
-     * @return the node if it exists, null otherwise
-     * @throws javax.jcr.RepositoryException an exception occured while retrieving the node
-     */
-    public JCRNodeWrapper checkExistence(String path, JahiaUser user) throws RepositoryException {
-        try {
-            return sessionFactory.getThreadSession(user).getNode(path);
-        } catch (PathNotFoundException e) {
-        }
-        return null;
-    }
-    
-    /**
+     /**
      * @deprecated Use getThreadSession().getNode()
      */
     public JCRNodeWrapper getFileNode(String path, JahiaUser user) {
         throw new UnsupportedOperationException("getFileNode: "+path);
 //        // Todo Suppress this method
-//        if (path != null) {
-//            if (path.startsWith("/")) {
-//                for (Iterator<String> iterator = sessionFactory.getDynamicMountPoints().keySet().iterator(); iterator.hasNext();) {
-//                    String mp = iterator.next();
-//                    if (path.startsWith(mp + "/")) {
-//                        String localPath = path.substring(mp.length());
-//                        JCRStoreProvider provider = sessionFactory.getDynamicMountPoints().get(mp);
-//                        return provider.getNodeWrapper(provider.getRelativeRoot() + localPath, user);
-//                    }
-//                }
-//                for (Iterator<String> iterator = sessionFactory.getMountPoints().keySet().iterator(); iterator.hasNext();) {
-//                    String mp = iterator.next();
-//                    if (mp.equals("/") || path.equals(mp) || path.startsWith(mp + "/")) {
-//                        String localPath = path;
-//                        if (!mp.equals("/")) {
-//                            localPath = path.substring(mp.length());
-//                        }
-//                        JCRStoreProvider provider = sessionFactory.getMountPoints().get(mp);
-//                        if (localPath.equals("")) {
-//                            localPath = "/";
-//                        }
-//                        return provider.getNodeWrapper(provider.getRelativeRoot() + localPath, user);
-//                    }
-//                }
-//                return null;
-//            } else if (path.length() > 0 && path.contains(":")) {
-//                int index = path.indexOf(":");
-//                String key = path.substring(0, index);
-//                String localPath = path.substring(index + 1);
-//                JCRStoreProvider provider = sessionFactory.getProviders().get(key);
-//                if (provider != null) {
-//                    return provider.getNodeWrapper(provider.getRelativeRoot() + localPath, user);
-//                }
-//            }
-//        }
-//        return new JCRNodeWrapperImpl("?", null, null);
     }
 }

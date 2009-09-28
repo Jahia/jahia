@@ -271,6 +271,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	                }
 
                     Resource resource = new Resource(node, templateType, template, forcedTemplate);
+
+                    //Todo: extend to other things than css
+
                     try {
                         ExtendedNodeType nt = (ExtendedNodeType) resource.getNode().getPrimaryNodeType();
                         final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(

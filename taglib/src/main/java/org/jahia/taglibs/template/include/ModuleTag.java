@@ -276,7 +276,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
                                 nt.getSystemId());
                         if (aPackage != null) {
-                            String path = aPackage.getFilePath();
+                            String path = pageContext.getServletContext().getRealPath(aPackage.getRootFolderPath());
                             File f = new File(path + "/css");
                             if (f.exists()) {
                                 File[] files = f.listFiles();

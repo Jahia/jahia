@@ -58,6 +58,7 @@ import org.jahia.exceptions.JahiaException;
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
 import javax.jcr.lock.LockException;
+import javax.jcr.lock.LockManager;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
@@ -453,35 +454,31 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
-    public Map<String, String> getPropertiesAsString() {
+    public Map<String, String> getPropertiesAsString() throws RepositoryException {
         Map<String, String> res = new HashMap<String, String>();
 
-        try {
-            PropertyIterator pi = getProperties();
-            if (pi != null) {
-                while (pi.hasNext()) {
-                    Property p = pi.nextProperty();
-                    if (p.getType() == PropertyType.BINARY) {
-                        continue;
-                    }
-                    if (!p.getDefinition().isMultiple()) {
-                        res.put(p.getName(), p.getString());
-                    } else {
-                        Value[] vs = p.getValues();
-                        StringBuffer b = new StringBuffer();
-                        for (int i = 0; i < vs.length; i++) {
-                            Value v = vs[i];
-                            b.append(v.getString());
-                            if (i + 1 < vs.length) {
-                                b.append(" ");
-                            }
+        PropertyIterator pi = getProperties();
+        if (pi != null) {
+            while (pi.hasNext()) {
+                Property p = pi.nextProperty();
+                if (p.getType() == PropertyType.BINARY) {
+                    continue;
+                }
+                if (!p.getDefinition().isMultiple()) {
+                    res.put(p.getName(), p.getString());
+                } else {
+                    Value[] vs = p.getValues();
+                    StringBuffer b = new StringBuffer();
+                    for (int i = 0; i < vs.length; i++) {
+                        Value v = vs[i];
+                        b.append(v.getString());
+                        if (i + 1 < vs.length) {
+                            b.append(" ");
                         }
-                        res.put(p.getName(), b.toString());
                     }
+                    res.put(p.getName(), b.toString());
                 }
             }
-        } catch (RepositoryException e) {
-            logger.error("Repository error", e);
         }
         return res;
     }
@@ -504,12 +501,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return NodeTypeRegistry.getInstance().getNodeType(objectNode.getPrimaryNodeType().getName());
     }
 
-    public String getPrimaryNodeTypeName() {
-        try {
-            return objectNode.getPrimaryNodeType().getName();
-        } catch (RepositoryException e) {
-            return null;
-        }
+    public String getPrimaryNodeTypeName() throws RepositoryException {
+        return objectNode.getPrimaryNodeType().getName();
     }
 
     public ExtendedNodeType[] getMixinNodeTypes() throws RepositoryException {
@@ -546,17 +539,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return null;
     }
 
-    public List<String> getNodeTypes() {
+    public List<String> getNodeTypes() throws RepositoryException {
         List<String> results = new ArrayList<String>();
-        try {
-            results.add(objectNode.getPrimaryNodeType().getName());
-            NodeType[] mixin = objectNode.getMixinNodeTypes();
-            for (int i = 0; i < mixin.length; i++) {
-                NodeType mixinType = mixin[i];
-                results.add(mixinType.getName());
-            }
-        } catch (RepositoryException e) {
-
+        results.add(objectNode.getPrimaryNodeType().getName());
+        NodeType[] mixin = objectNode.getMixinNodeTypes();
+        for (int i = 0; i < mixin.length; i++) {
+            NodeType mixinType = mixin[i];
+            results.add(mixinType.getName());
         }
         return results;
     }

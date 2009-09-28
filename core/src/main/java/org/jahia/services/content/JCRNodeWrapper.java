@@ -2567,57 +2567,160 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     Map<String, Map<String, String>> getActualAclEntries();
 
+    /**
+     * Return the list of permission applicable to this node. Permissions are organized by group, result is a map
+     * where the key is the group, and value the list of associated permissions.
+     *
+     * @return
+     */
     Map<String, List<String>> getAvailablePermissions();
 
+    /**
+     * Return whether the node is writeable by the current user or not
+     * @return
+     */
     boolean isWriteable();
 
+    /**
+     * Checks if the current user has a permission or not
+     * @param perm The permission to check
+     * @return If the permission is allowed
+     */
     boolean hasPermission(String perm);
 
+    /**
+     * Change the permissions of a user on the node.
+     * @param user The user to update
+     * @param perms
+     * @return
+     */
     boolean changePermissions (String user, String perms);
 
+    /**
+     * Change the permissions of a user on the node.
+     * @param user The user to update
+     * @param perm A map with the name of the permission, and "GRANT" or "DENY" as a value
+     * @return
+     */
     boolean changePermissions (String user, Map<String,String> perm);
 
+    /**
+     * Revoke all permissions for the specified user
+     * @param user
+     * @return
+     */
     boolean revokePermissions (String user);
 
+    /**
+     * Revoke all permissions for all users
+     * @return
+     */
     boolean revokeAllPermissions ();
 
+    /**
+     * Check if acl inheritance is broken or not
+     * @return
+     */
     boolean getAclInheritanceBreak();
 
+    /**
+     * Set acl break inheritance - if true, no acls will be inherited from parent nodes.
+     * @param inheritance
+     * @return
+     */
     boolean setAclInheritanceBreak(boolean inheritance);
 
+    /**
+     * Create a sub folder
+     * @param name Name of the folder to create
+     * @return
+     * @throws RepositoryException
+     */
     JCRNodeWrapper createCollection (String name) throws RepositoryException;
 
+    /**
+     * Upload a new file under this node
+     * @param name
+     * @param is
+     * @param contentType
+     * @return
+     * @throws RepositoryException
+     */
     JCRNodeWrapper uploadFile(String name, final InputStream is, final String contentType) throws RepositoryException;
 
+    /**
+     * Get the "JahiaFileField" object to be used with legacy jahia file fields.
+     * @return
+     * @deprecated
+     */
     JahiaFileField getJahiaFileField ();
 
+    /**
+     * Get the value to store in jahia_fields_data when used as a jahia file field
+     * @return
+     * @deprecated
+     */
     String getStorageName();
 
+    /**
+     * Get the absolute file content url
+     *
+     * @param jParams
+     * @return
+     */
     String getAbsoluteUrl(ParamBean jParams);
 
+    /**
+     * Get the file content url
+     *
+     * @return
+     */
     String getUrl();
 
+    /**
+     * Get the absolute webdav url
+     *
+     * @return
+     */
     String getAbsoluteWebdavUrl(ParamBean jParams);
 
+    /**
+     * Get the webdav url
+     *
+     * @return
+     */
     String getWebdavUrl();
 
+    /**
+     * Get the list of all available thumbnails. Each result is a subnode the node, of type jnt:extraResource
+     * @return
+     */
     List<String> getThumbnails();
 
+    /**
+     * Get the file content url for a specific thumbnail
+     * @param name The thumbnail name
+     * @return
+     */
     String getThumbnailUrl(String name);
 
     Map<String,String> getThumbnailUrls();
 
+    /**
+     *
+     * @deprecated Use getNodes()
+     */
     List<JCRNodeWrapper> getChildren();
 
     List<JCRNodeWrapper> getEditableChildren();
 
     boolean isVisible();
 
-    Map<String, String> getPropertiesAsString();
+    Map<String, String> getPropertiesAsString() throws RepositoryException;
 
-    String getPrimaryNodeTypeName();
+    String getPrimaryNodeTypeName() throws RepositoryException;
 
-    List<String> getNodeTypes();
+    List<String> getNodeTypes() throws RepositoryException;
 
     boolean isCollection();
 

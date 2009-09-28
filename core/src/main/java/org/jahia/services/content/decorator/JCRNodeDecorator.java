@@ -175,15 +175,15 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.isVisible();
     }
 
-    public Map<String, String> getPropertiesAsString() {
+    public Map<String, String> getPropertiesAsString() throws RepositoryException {
         return node.getPropertiesAsString();
     }
 
-    public String getPrimaryNodeTypeName() {
+    public String getPrimaryNodeTypeName() throws RepositoryException {
         return node.getPrimaryNodeTypeName();
     }
 
-    public List<String> getNodeTypes() {
+    public List<String> getNodeTypes() throws RepositoryException {
         return node.getNodeTypes();
     }
 

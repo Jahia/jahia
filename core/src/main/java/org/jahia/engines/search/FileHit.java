@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -142,7 +143,11 @@ public class FileHit extends AbstractHit {
 
             private Map<String, String> getProperties() {
                 if (null == properties) {
-                    properties = node.getPropertiesAsString();
+                    try {
+                        properties = node.getPropertiesAsString();
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot get properties ",e);
+                    }
                 }
                 return properties;
             }

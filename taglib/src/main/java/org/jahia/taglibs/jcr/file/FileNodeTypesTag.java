@@ -38,6 +38,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -98,15 +99,15 @@ public class FileNodeTypesTag extends AbstractJahiaTag {
         List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
 
         if (file != null) {
-            for (String s : file.getNodeTypes()) {
-                try {
+            try {
+                for (String s : file.getNodeTypes()) {
                     ExtendedNodeType o = NodeTypeRegistry.getInstance().getNodeType(s);
                     if (baseType == null || o.isNodeType(baseType)) {
                         types.add(o);
                     }
-                } catch (NoSuchNodeTypeException e) {
-                    e.printStackTrace();
                 }
+            } catch (RepositoryException e) {
+                e.printStackTrace();
             }
         }
 

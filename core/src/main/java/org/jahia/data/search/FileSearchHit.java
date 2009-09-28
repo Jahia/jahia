@@ -42,12 +42,16 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.data.beans.LookupBaseBean;
 import org.jahia.services.content.JCRNodeWrapper;
 
+import javax.jcr.RepositoryException;
+
 /**
  * File search result item, used as a view object in JSP templates.
  * 
  * @author Sergiy Shyrkov
  */
 public class FileSearchHit {
+    private static org.apache.log4j.Logger logger =
+            org.apache.log4j.Logger.getLogger(FileSearchHit.class);
 
     private static final Map<String, String> ICONS_TYPES;
 
@@ -130,7 +134,11 @@ public class FileSearchHit {
 
             private Map getProperties() {
                 if (null == properties) {
-                    properties = node.getPropertiesAsString();
+                    try {
+                        properties = node.getPropertiesAsString();
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot get properties ",e);
+                    }
                 }
                 return properties;
             }

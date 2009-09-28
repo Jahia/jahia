@@ -456,19 +456,20 @@ public class NavigationHelper {
     }
 
     public static GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper f, boolean versioned) {
-        List<String> list = f.getNodeTypes();
         List<String> inherited = new ArrayList<String>();
-        for (String s : list) {
-            try {
+        List<String> list = null;
+        try {
+            list = f.getNodeTypes();
+            for (String s : list) {
                 ExtendedNodeType[] inh = NodeTypeRegistry.getInstance().getNodeType(s).getSupertypes();
                 for (ExtendedNodeType extendedNodeType : inh) {
                     if (!inherited.contains(extendedNodeType.getName())) {
                         inherited.add(extendedNodeType.getName());
                     }
                 }
-            } catch (NoSuchNodeTypeException e) {
-                logger.debug("NoSuchNodeTypeException", e);
             }
+        } catch (RepositoryException e) {
+            logger.debug("Error when getting nodetypes", e);
         }
         GWTJahiaNode n;
 
@@ -504,7 +505,7 @@ public class NavigationHelper {
         }
 
         if (f.isFile() || f.isPortlet()) {
-            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), f.getNodeTypes(), inherited, aclContext, f.getProvider().getKey(), f.getFileContent().getContentLength(), f.isWriteable(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
+            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, aclContext, f.getProvider().getKey(), f.getFileContent().getContentLength(), f.isWriteable(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
         } else {
             n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, aclContext, f.getProvider().getKey(), f.isWriteable(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
 

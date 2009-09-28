@@ -5,10 +5,12 @@ import org.jahia.jaas.JahiaLoginModule;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.*;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.*;
+import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -16,7 +18,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.*;
 
-public class JCRSessionFactory implements Repository {
+public class JCRSessionFactory implements Repository, ServletContextAware {
     private static transient org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(
             JCRSessionFactory.class);
     protected ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> userSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
@@ -28,8 +30,14 @@ public class JCRSessionFactory implements Repository {
     private SortedMap<String, JCRStoreProvider> mountPoints = new TreeMap<String, JCRStoreProvider>();
     private SortedMap<String, JCRStoreProvider> dynamicMountPoints = new TreeMap<String, JCRStoreProvider>();
     private static JCRSessionFactory instance;
+    private String servletContextAttributeName;
+    private ServletContext servletContext;
+
 
     private JCRSessionFactory() {
+    }
+
+    public void start() {
         Comparator<String> invertedStringComparator = new Comparator<String>() {
             public int compare(String s1, String s2) {
                 return s2.compareTo(s1);
@@ -46,6 +54,19 @@ public class JCRSessionFactory implements Repository {
         } catch (AlreadyBoundException e) {
             logger.error(e.getMessage(), e);
         }
+
+        if ((servletContextAttributeName != null) &&
+                (servletContext != null)) {
+            servletContext.setAttribute(servletContextAttributeName, this);
+        }
+    }
+
+    public void setServletContextAttributeName(String servletContextAttributeName) {
+        this.servletContextAttributeName = servletContextAttributeName;
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 
     public void setDescriptors(Map<String, String> descriptors) {

@@ -31,38 +31,27 @@
  */
 package org.jahia.services.content;
 
-import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.manager.JahiaFieldXRefManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.hibernate.model.JahiaFieldXRef;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.fields.ContentField;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.webdav.UsageEntry;
-import org.springframework.web.context.ServletContextAware;
 import org.xml.sax.ContentHandler;
 
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import javax.servlet.ServletContext;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: toto
  * Date: 15 nov. 2007 - 15:18:34
  */
-public class JCRStoreService extends JahiaService implements ServletContextAware {
+public class JCRStoreService extends JahiaService  {
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(JCRStoreService.class);
-
-    private String servletContextAttributeName;
-    private ServletContext servletContext;
 
     private Map<String, String> decorators = new HashMap<String, String>();
 
@@ -79,10 +68,6 @@ public class JCRStoreService extends JahiaService implements ServletContextAware
         return instance;
     }
 
-    public void setServletContextAttributeName(String servletContextAttributeName) {
-        this.servletContextAttributeName = servletContextAttributeName;
-    }
-
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -91,20 +76,11 @@ public class JCRStoreService extends JahiaService implements ServletContextAware
         return sessionFactory;
     }
 
-    public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
-    }
-
     public void start() throws JahiaInitializationException {
         try {
             NodeTypeRegistry.getInstance();
         } catch (Exception e) {
             logger.error("Repository init error", e);
-        }
-
-        if ((servletContextAttributeName != null) &&
-                (servletContext != null)) {
-            servletContext.setAttribute(servletContextAttributeName, this);
         }
     }
 

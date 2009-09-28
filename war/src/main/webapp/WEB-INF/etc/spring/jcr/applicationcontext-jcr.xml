@@ -85,7 +85,7 @@
         <property name="mountPoint" value="/content/jahia"/>
     </bean>
 
-    <bean id="jcrSessionFactory" class="org.jahia.services.content.JCRSessionFactory" factory-method="getInstance" lazy-init="true">
+    <bean id="jcrSessionFactory" class="org.jahia.services.content.JCRSessionFactory" factory-method="getInstance" lazy-init="true" init-method="start">
         <property name="userService" ref="JahiaUserManagerService"/>
         <property name="descriptors">
             <map>
@@ -107,6 +107,7 @@
                 <entry key="query.xpath.doc.order" value="false"/>
             </map>
         </property>
+        <property name="servletContextAttributeName" value="uch"/>
     </bean>
 
     <bean id="jcrTemplate" class="org.jahia.services.content.JCRTemplate" factory-method="getInstance">
@@ -140,7 +141,6 @@
                        value="org.jahia.services.applications.pluto.JahiaPortletPreference"/>
             </map>
         </property>
-        <property name="servletContextAttributeName" value="jcrStoreService"/>
     </bean>
 
     <bean id="jcrPublicationService" class="org.jahia.services.content.JCRPublicationService" factory-method="getInstance">

@@ -472,7 +472,7 @@
         <init-param>
             <description>Repository Name that is used to retrieve it via a servlet context attribute</description>
             <param-name>repository.context.attribute.name</param-name>
-            <param-value>jcrStoreService</param-value>
+            <param-value>uch</param-value>
         </init-param>
 
         <!--

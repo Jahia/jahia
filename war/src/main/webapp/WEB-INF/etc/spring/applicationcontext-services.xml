@@ -509,7 +509,7 @@
 
     </bean>
 
-    <bean id="extraction" class="org.jahia.services.content.automation.ExtractionService" factory-method="getInstance">
+    <bean id="extraction" class="org.jahia.services.content.rules.ExtractionService" factory-method="getInstance">
         <property name="textFilterClasses">
             <value>org.apache.jackrabbit.extractor.MsWordTextExtractor,
                    org.apache.jackrabbit.extractor.MsExcelTextExtractor,
@@ -525,15 +525,15 @@
         <property name="extractors">
             <map>
                 <entry key="application/msword">
-                    <bean class="org.jahia.services.content.automation.OfficeExtractor"/>
+                    <bean class="org.jahia.services.content.rules.OfficeExtractor"/>
                 </entry>
 
                 <entry key="image/jpeg">
-                    <bean class="org.jahia.services.content.automation.ExifExtractor"/>
+                    <bean class="org.jahia.services.content.rules.ExifExtractor"/>
                 </entry>
 
                 <entry key="application/pdf">
-                    <bean class="org.jahia.services.content.automation.PdfExtractor"/>
+                    <bean class="org.jahia.services.content.rules.PdfExtractor"/>
                 </entry>
             </map>
         </property>

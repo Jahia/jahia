@@ -40,7 +40,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheFactory;
-import org.jahia.services.content.JCRFileContent;
+import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;

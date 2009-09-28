@@ -3,7 +3,7 @@
 package testtemplates
 
 #list any import classes here.
-import org.jahia.services.content.automation.*
+import org.jahia.services.content.rules.*
 import org.jahia.services.content.JCRStoreProvider
 import javax.jcr.observation.Event
 import org.apache.log4j.Logger

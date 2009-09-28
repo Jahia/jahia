@@ -36,7 +36,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.gui.HTMLToolBox;
 import org.jahia.gui.GuiBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.content.JCRPortletNode;
+import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.Node;

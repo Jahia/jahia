@@ -32,9 +32,9 @@
 package org.jahia.services.preferences.layoutmanager;
 
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRLayoutNode;
-import org.jahia.services.content.JCRLayoutItemNode;
-import org.jahia.services.content.JCRNodeDecorator;
+import org.jahia.services.content.decorator.JCRLayoutNode;
+import org.jahia.services.content.decorator.JCRNodeDecorator;
+import org.jahia.services.content.decorator.JCRLayoutItemNode;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.PathNotFoundException;

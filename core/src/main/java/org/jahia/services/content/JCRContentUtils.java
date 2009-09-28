@@ -47,6 +47,8 @@ import org.jahia.services.content.impl.jahia.JahiaRootNodeImpl;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.decorator.JCRNodeDecorator;
+import org.jahia.services.content.decorator.JCRJahiaContentNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 

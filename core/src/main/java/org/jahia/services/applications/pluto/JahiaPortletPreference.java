@@ -32,7 +32,7 @@
 package org.jahia.services.applications.pluto;
 
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRNodeDecorator;
+import org.jahia.services.content.decorator.JCRNodeDecorator;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;

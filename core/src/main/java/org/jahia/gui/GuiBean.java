@@ -42,11 +42,8 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.jcr.RepositoryException;
 
 import org.apache.log4j.Logger;
-import org.apache.regexp.RE;
-import org.apache.regexp.RESyntaxException;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.data.applications.ApplicationBean;
@@ -59,7 +56,6 @@ import org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ProcessingContext;
-import org.jahia.params.ParamBean;
 import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLResource;
@@ -76,11 +72,8 @@ import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.JCRPortletNode;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.utils.JahiaTools;
-import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.api.Constants;
 
 /**

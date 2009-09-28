@@ -32,26 +32,12 @@
 package org.jahia.data.applications;
 
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPortletNode;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.api.user.JahiaUserService;
-import org.jahia.bin.Jahia;
 import org.apache.log4j.Logger;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Node;
 import javax.portlet.PortletMode;
 import java.io.Serializable;
 import java.util.Locale;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.security.AccessControlException;
 
 /**
  * <p>Title: EntryPointInstance for a web application</p>

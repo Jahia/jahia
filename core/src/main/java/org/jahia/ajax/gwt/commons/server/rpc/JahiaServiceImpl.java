@@ -61,7 +61,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRJahiaContentNode;
+import org.jahia.services.content.decorator.JCRJahiaContentNode;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockService;

@@ -34,7 +34,7 @@
                         <bean class="org.jahia.services.content.FieldReferenceListener">
                             <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
                         </bean>
-                        <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
+                        <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
                             <property name="ruleFiles" value="/repository/rules/repository-rules.drl" />
                             <property name="serverId" value="${cluster.node.serverId}"/>
                         </bean>
@@ -45,7 +45,7 @@
                 </entry>
                 <entry key="live">
                     <list>
-                        <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
+                        <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
                             <property name="ruleFiles" value="/repository/rules/repository-live-rules.drl" />
                             <property name="serverId" value="${cluster.node.serverId}"/>
                         </bean>
@@ -66,7 +66,7 @@
             <map>
                 <entry key="default">
                     <list>
-                        <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
+                        <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
                             <property name="ruleFiles" value="/repository/rules/jahia-rules.drl" />
                             <property name="serverId" value="${cluster.node.serverId}" />
                         </bean>
@@ -74,7 +74,7 @@
                 </entry>
                 <entry key="live">
                     <list>
-                        <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
+                        <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
                             <property name="ruleFiles" value="/repository/rules/jahialive-rules.drl" />
                             <property name="serverId" value="${cluster.node.serverId}" />
                         </bean>
@@ -115,21 +115,20 @@
 
     <bean id="JCRStoreService" class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate"
           factory-method="getInstance" lazy-init="true">
-        <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="decorators">
             <map>
-                <entry key="nt:file" value="org.jahia.services.content.JCRFileNode"/>
-                <entry key="nt:folder" value="org.jahia.services.content.JCRFileNode"/>
-                <entry key="jnt:portlet" value="org.jahia.services.content.JCRPortletNode"/>
-                <entry key="nt:query" value="org.jahia.services.content.JCRQueryNode"/>
-                <entry key="jnt:mountPoint" value="org.jahia.services.content.JCRMountPointNode"/>
-                <entry key="jnt:jahiacontent" value="org.jahia.services.content.JCRJahiaContentNode"/>
-                <entry key="jnt:layout" value="org.jahia.services.content.JCRLayoutNode"/>
-                <entry key="nt:version" value="org.jahia.services.content.JCRVersion"/>
-                <entry key="nt:versionHistory" value="org.jahia.services.content.JCRVersionHistory"/>
-                <entry key="nt:frozenNode" value="org.jahia.services.content.JCRFrozenNode"/>
-                <entry key="jnt:nodeReference" value="org.jahia.services.content.JCRReferenceNode"/>
+                <entry key="nt:file" value="org.jahia.services.content.decorator.JCRFileNode"/>
+                <entry key="nt:folder" value="org.jahia.services.content.decorator.JCRFileNode"/>
+                <entry key="jnt:portlet" value="org.jahia.services.content.decorator.JCRPortletNode"/>
+                <entry key="nt:query" value="org.jahia.services.content.decorator.JCRQueryNode"/>
+                <entry key="jnt:mountPoint" value="org.jahia.services.content.decorator.JCRMountPointNode"/>
+                <entry key="jnt:jahiacontent" value="org.jahia.services.content.decorator.JCRJahiaContentNode"/>
+                <entry key="jnt:layout" value="org.jahia.services.content.decorator.JCRLayoutNode"/>
+                <entry key="nt:version" value="org.jahia.services.content.decorator.JCRVersion"/>
+                <entry key="nt:versionHistory" value="org.jahia.services.content.decorator.JCRVersionHistory"/>
+                <entry key="nt:frozenNode" value="org.jahia.services.content.decorator.JCRFrozenNode"/>
+                <entry key="jnt:nodeReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
                 <entry key="jnt:simplePreference"
                        value="org.jahia.services.preferences.generic.GenericJahiaPreference"/>
                 <entry key="jnt:pagePreference" value="org.jahia.services.preferences.page.PageJahiaPreference"/>

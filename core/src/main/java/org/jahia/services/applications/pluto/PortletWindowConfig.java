@@ -32,7 +32,7 @@
 package org.jahia.services.applications.pluto;
 
 import org.jahia.data.applications.EntryPointInstance;
-import org.jahia.services.content.JCRPortletNode;
+import org.jahia.services.content.decorator.JCRPortletNode;
 
 import javax.jcr.RepositoryException;
 

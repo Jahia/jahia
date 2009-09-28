@@ -1,5 +1,5 @@
 #created on: 20 dec. 2007
-package org.jahia.services.content.automation
+package org.jahia.services.content.rules
 
 #list any import classes here.
 import org.jahia.services.content.JCRStoreProvider

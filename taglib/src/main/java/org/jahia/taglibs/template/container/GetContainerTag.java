@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
 import org.jahia.data.beans.ContainerBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.content.JCRJahiaContentNode;
+import org.jahia.services.content.decorator.JCRJahiaContentNode;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.taglibs.ValueJahiaTag;

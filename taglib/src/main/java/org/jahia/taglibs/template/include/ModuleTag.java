@@ -39,6 +39,7 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;

@@ -34,7 +34,7 @@ package org.jahia.services.content.textextraction;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreProvider;
-import org.jahia.services.content.automation.ExtractionService;
+import org.jahia.services.content.rules.ExtractionService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.quartz.JobExecutionContext;
 

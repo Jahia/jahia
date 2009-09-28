@@ -37,7 +37,7 @@ import org.apache.pluto.driver.services.portal.PageConfig;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPortletNode;
+import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.JCRSessionFactory;
 
 import javax.jcr.NodeIterator;

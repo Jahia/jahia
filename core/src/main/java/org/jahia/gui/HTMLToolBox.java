@@ -82,7 +82,7 @@ import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.PageInfoInterface;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.JCRPortletNode;
+import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.settings.SettingsBean;
 import org.jahia.hibernate.manager.JahiaObjectDelegate;
 import org.jahia.hibernate.manager.JahiaObjectManager;

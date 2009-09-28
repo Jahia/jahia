@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.DefaultEventListener;
-import org.jahia.services.content.automation.ExtractionService;
+import org.jahia.services.content.rules.ExtractionService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.usermanager.JahiaUser;

@@ -3,7 +3,7 @@
 package webtemplates
 
 #list any import classes here.
-import org.jahia.services.content.automation.*
+import org.jahia.services.content.rules.*
 import org.jahia.content.*
 import org.jahia.data.search.*
 import org.jahia.params.*

@@ -40,7 +40,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRFileContent;
+import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.fields.ContentField;

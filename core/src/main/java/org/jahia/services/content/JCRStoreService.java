@@ -61,8 +61,6 @@ public class JCRStoreService extends JahiaService implements ServletContextAware
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(JCRStoreService.class);
 
-
-    private JahiaFieldXRefManager fieldXRefManager = null;
     private String servletContextAttributeName;
     private ServletContext servletContext;
 
@@ -79,10 +77,6 @@ public class JCRStoreService extends JahiaService implements ServletContextAware
             instance = new JCRStoreService();
         }
         return instance;
-    }
-
-    public void setFieldXRefManager(JahiaFieldXRefManager fieldXRefManager) {
-        this.fieldXRefManager = fieldXRefManager;
     }
 
     public void setServletContextAttributeName(String servletContextAttributeName) {
@@ -183,45 +177,6 @@ public class JCRStoreService extends JahiaService implements ServletContextAware
             }
         }
         return r;
-    }
-
-    public List<UsageEntry> findUsages(String sourceUri, boolean onlyLockedUsages) {
-        return findUsages(sourceUri, Jahia.getThreadParamBean(), onlyLockedUsages);
-    }
-
-    public List<UsageEntry> findUsages(String sourceUri, ProcessingContext jParams,
-                                       boolean onlyLockedUsages) {
-        return findUsages(sourceUri, Jahia.getThreadParamBean(), onlyLockedUsages, null);
-    }
-
-    public List<UsageEntry> findUsages(String sourceUri, ProcessingContext jParams,
-                                       boolean onlyLockedUsages, String versionName) {
-        List<UsageEntry> res = new ArrayList<UsageEntry>();
-        if (fieldXRefManager == null) {
-            fieldXRefManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldXRefManager.class.getName());
-        }
-
-        Collection<JahiaFieldXRef> c = fieldXRefManager.getReferencesForTarget(JahiaFieldXRefManager.FILE + sourceUri);
-
-        for (Iterator<JahiaFieldXRef> iterator = c.iterator(); iterator.hasNext();) {
-            JahiaFieldXRef jahiaFieldXRef = iterator.next();
-            try {
-                if (!onlyLockedUsages || jahiaFieldXRef.getComp_id().getWorkflow() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
-                    int version = 0;
-                    if (jahiaFieldXRef.getComp_id().getWorkflow() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
-                        version = ContentField.getField(jahiaFieldXRef.getComp_id().getFieldId()).getActiveVersionID();
-                    }
-                    UsageEntry entry = new UsageEntry(jahiaFieldXRef.getComp_id().getFieldId(), version, jahiaFieldXRef.getComp_id().getWorkflow(), jahiaFieldXRef.getComp_id().getLanguage(), jahiaFieldXRef.getComp_id().getTarget().substring(JahiaFieldXRefManager.FILE.length()), jParams);
-                    if (versionName != null) {
-                        entry.setVersionName(versionName);
-                    }
-                    res.add(entry);
-                }
-            } catch (JahiaException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-        return res;
     }
 
     public static String removeDiacritics(String name) {

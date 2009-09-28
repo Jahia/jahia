@@ -480,7 +480,7 @@
             <version>1.5.6</version>
         </dependency>
         <!--
-            todo : migrate org.jahia.services.content.automation.ExifExtractor to 2.4.0 when final
+            todo : migrate org.jahia.services.content.rulesExtractor to 2.4.0 when final
             http://www.drewnoakes.com/code/exif/releases/
         -->
         <dependency>

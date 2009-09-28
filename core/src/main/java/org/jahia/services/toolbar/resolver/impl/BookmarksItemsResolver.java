@@ -1,6 +1,5 @@
 package org.jahia.services.toolbar.resolver.impl;
 
-import org.jahia.services.toolbar.resolver.ItemsResolver;
 import org.jahia.services.toolbar.bean.Item;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreference;
@@ -8,9 +7,8 @@ import org.jahia.services.preferences.exception.JahiaPreferenceProviderException
 import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.JCRJahiaContentNode;
+import org.jahia.services.content.decorator.JCRJahiaContentNode;
 import org.jahia.data.JahiaData;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.registries.ServicesRegistry;
 
 import java.util.List;

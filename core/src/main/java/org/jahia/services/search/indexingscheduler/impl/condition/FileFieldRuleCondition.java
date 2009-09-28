@@ -36,7 +36,7 @@ import java.util.List;
 
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.services.content.JCRFileContent;
+import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.search.indexingscheduler.FileFieldRuleEvaluationContext;

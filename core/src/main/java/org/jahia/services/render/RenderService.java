@@ -3,7 +3,7 @@ package org.jahia.services.render;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRJahiaContentNode;
+import org.jahia.services.content.decorator.JCRJahiaContentNode;
 import org.jahia.services.JahiaService;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.data.beans.ContainerBean;

@@ -40,14 +40,13 @@ import org.jahia.services.webdav.UsageEntry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
+import org.jahia.services.content.decorator.JCRFileContent;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.lock.Lock;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.Version;
 import javax.jcr.version.ActivityViolationException;
@@ -2689,6 +2688,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     List<UsageEntry> findUsages(boolean onlyLocked);
 
     List<UsageEntry> findUsages(ProcessingContext context, boolean onlyLocked);
+
+    List<UsageEntry> findUsages(ProcessingContext context, boolean onlyLocked, String versionName);
 
     ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName) throws ConstraintViolationException, RepositoryException ;
 

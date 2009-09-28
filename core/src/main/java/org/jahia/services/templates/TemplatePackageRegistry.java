@@ -33,7 +33,7 @@ package org.jahia.services.templates;
 
 import static org.jahia.services.templates.TemplateDeploymentDescriptorHelper.TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.automation.RulesListener;
+import org.jahia.services.content.rules.RulesListener;
 
 import java.io.File;
 import java.util.*;

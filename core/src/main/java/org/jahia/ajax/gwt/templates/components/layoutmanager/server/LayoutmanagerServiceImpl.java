@@ -43,6 +43,8 @@ import org.jahia.ajax.gwt.content.server.helper.ContentManagerHelper;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRPortletNode;
+import org.jahia.services.content.decorator.JCRReferenceNode;
 import org.jahia.services.applications.ApplicationsManagerService;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.data.applications.EntryPointInstance;

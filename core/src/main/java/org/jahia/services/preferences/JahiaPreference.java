@@ -32,9 +32,7 @@
 package org.jahia.services.preferences;
 
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRNodeDecorator;
 
-import javax.jcr.RepositoryException;
 import java.security.Principal;
 
 

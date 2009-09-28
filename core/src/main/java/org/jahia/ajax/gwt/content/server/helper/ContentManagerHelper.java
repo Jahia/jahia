@@ -68,6 +68,8 @@ import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.captcha.CaptchaService;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRMountPointNode;
+import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;

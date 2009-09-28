@@ -38,7 +38,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRVersionHistory;
+import org.jahia.services.content.decorator.JCRVersionHistory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;

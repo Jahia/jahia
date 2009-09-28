@@ -169,9 +169,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 renderContext = new RenderContext((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), jData.getProcessingContext().getUser());
                 renderContext.setSite(jData.getProcessingContext().getSite());
             }
-            if(templateWrapper != null) {
-                renderContext.setTemplateWrapper(templateWrapper);
-            }
+//            if(templateWrapper != null) {
+//                renderContext.setTemplateWrapper(templateWrapper);
+//            }
             // add custom parameters
             Map<String, Object> oldParams = new HashMap<String, Object>(renderContext.getModuleParams());
             renderContext.getModuleParams().clear();

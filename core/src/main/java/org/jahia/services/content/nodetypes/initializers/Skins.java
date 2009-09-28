@@ -35,11 +35,13 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.*;
+import org.jahia.services.render.Template;
+import org.jahia.services.render.RenderService;
 
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.util.*;
 import java.io.File;
 
@@ -53,28 +55,22 @@ import java.io.File;
 public class Skins implements ValueInitializer {
 
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
-        if (jParams == null) {
-            return new Value[0];
-        }
-        String tplPkgName = jParams.getSite().getTemplatePackageName();
-        JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(tplPkgName);
-        SortedSet skins = new TreeSet();
-        for (Iterator iterator = pkg.getLookupPath().iterator(); iterator.hasNext();) {
-            String rootFolderPath = (String) iterator.next();
-            File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(rootFolderPath+"/skins"));
-            if (f.exists()) {
-                File[] files = f.listFiles();
-                for (File file : files) {
-                    if (file.isDirectory()) skins.add(file.getName());
-                }
+        ExtendedNodeType nt = null;//(ExtendedNodeType) context.get("currentDefinition");
+        if (nt == null) {
+            try {
+                nt = NodeTypeRegistry.getInstance().getNodeType("nt:base");
+            } catch (NoSuchNodeTypeException e) {
+                return new Value[0];
             }
         }
+        SortedSet<Template> templates = RenderService.getInstance().getTemplatesSet(nt);
+
         List<Value> vs = new ArrayList<Value>();
-        for (Iterator iterator = skins.iterator(); iterator.hasNext();) {
-            String skin = (String) iterator.next();
-            vs.add(new ValueImpl(skin, PropertyType.STRING, false));
+        for (Template template : templates) {
+            if (template.getKey().startsWith("skin.")) {
+                vs.add(new ValueImpl(template.getKey().substring(5), PropertyType.STRING, false));
+            }
         }
         return vs.toArray(new Value[vs.size()]);
-
     }
 }

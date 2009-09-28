@@ -160,7 +160,7 @@ public class PreviewPanel extends ContentPanel {
      */
     private void updatePreview(String template) {
         if (node != null) {
-            JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, editLinker.getLocale(), template, "previewwrapper", false, new AsyncCallback<String>() {
+            JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, editLinker.getLocale(), template, "wrapper.previewwrapper", false, new AsyncCallback<String>() {
                 public void onSuccess(String result) {
                     HTML html = new HTML(result);
                     setHTML(html);

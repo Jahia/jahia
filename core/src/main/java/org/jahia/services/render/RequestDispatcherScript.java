@@ -103,7 +103,7 @@ public class RequestDispatcherScript implements Script {
     }
 
     private String getTemplatePath(Resource resource) throws RepositoryException {
-        ExtendedNodeType nt = (ExtendedNodeType) resource.getNode().getPrimaryNodeType();
+        ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
 
         String templatePath;
 

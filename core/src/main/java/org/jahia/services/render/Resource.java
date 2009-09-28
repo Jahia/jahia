@@ -51,7 +51,7 @@ public class Resource {
     private String templateType;
     private String template;
     private String forcedTemplate;
-
+    private Stack<String> wrappers;
     private List<JCRNodeWrapper> dependencies;
 
     private List<Resource> includedResources;
@@ -74,6 +74,7 @@ public class Resource {
 
         includedResources = new ArrayList<Resource>();
         missingResources = new ArrayList<String>();
+        wrappers = new Stack<String>();
     }
 
     public JCRNodeWrapper getNode() {
@@ -144,6 +145,18 @@ public class Resource {
 
     public List<Resource> getIncludedResources() {
         return includedResources;
+    }
+
+    public boolean hasWrapper() {
+        return !wrappers.isEmpty();
+    }
+
+    public String popWrapper() {
+        return wrappers.pop();
+    }
+
+    public String pushWrapper(String wrapper) {
+        return wrappers.push(wrapper);
     }
 
     @Override

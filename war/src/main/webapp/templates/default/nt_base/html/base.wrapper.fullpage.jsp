@@ -40,7 +40,7 @@
 	</template:templateHead>
     <template:templateBody>
     	<div id="render">
-        <template:module node="${currentNode}" forcedTemplate="${currentResource.resolvedTemplate}" />
+        ${wrappedContent}
         </div>
     </template:templateBody>
 </template:template>

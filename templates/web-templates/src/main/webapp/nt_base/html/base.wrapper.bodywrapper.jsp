@@ -95,7 +95,7 @@
                 <template:module node="${rootPage}" forcedTemplate="nav.navBar" editable="false"/>
             </div>
 
-            <template:module node="${currentNode}" forcedTemplate="${currentResource.resolvedTemplate}" editable="false"/>
+            ${wrappedContent}
 
             <div id="footer">
                 <c:if test="${ !empty param.footerNav}">

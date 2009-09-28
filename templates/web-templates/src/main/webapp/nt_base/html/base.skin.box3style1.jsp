@@ -31,9 +31,14 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ page language="java" contentType="text/html;charset=UTF-8" %>
-
 <%@ include file="../../common/declarations.jspf" %>
-<div id="bodywrapper">
-    ${wrappedContent}
+
+<div class="box3-container box3-style1">
+    <div class="box3-topright"></div>
+    <div class="box3-topleft"></div>
+    <div class="box3-text">
+        ${wrappedContent}
+    </div>
+    <div class="box3-bottomright"></div>
+    <div class="box3-bottomleft"></div>
 </div>

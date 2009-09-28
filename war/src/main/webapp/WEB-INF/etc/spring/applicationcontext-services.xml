@@ -504,6 +504,11 @@
         <property name="target">
             <bean class="org.jahia.services.render.RenderService" parent="jahiaServiceTemplate" factory-method="getInstance">
                 <property name="storeService" ref="JCRStoreService" />
+                <property name="scriptResolvers">
+                    <list>
+                        <bean class="org.jahia.services.render.RequestDispatcherScriptResolver"/>
+                    </list>
+                </property>
             </bean>
         </property>
 

@@ -3,23 +3,19 @@ package org.jahia.ajax.gwt.content.server.helper;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.initializers.Templates;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.Template;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.SortedSet;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -57,7 +53,8 @@ public class TemplateHelper {
             renderContext.setSite(ctx.getSite());
             renderContext.setEditMode(editMode);
             renderContext.setMainResource(r);
-            renderContext.setTemplateWrapper(templateWrapper);
+            r.pushWrapper(templateWrapper);
+//            renderContext.setTemplateWrapper(templateWrapper);
             res = RenderService.getInstance().render(r, renderContext);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -78,8 +75,8 @@ public class TemplateHelper {
                 def = node.getProperty("j:defaultTemplate").getString();
             }
 
-            SortedSet<Templates.Template> set = getTemplatesSet(node);
-            for (Templates.Template s : set) {
+            SortedSet<Template> set = getTemplatesSet(node);
+            for (Template s : set) {
                 String tpl;
                 if (s.getOwnerPackage() == null) {
                     tpl = "Default";
@@ -99,21 +96,28 @@ public class TemplateHelper {
         return templatesPath;
     }
 
-    public static SortedSet<Templates.Template> getTemplatesSet(JCRNodeWrapper node) throws RepositoryException {
+    public static SortedSet<Template> getTemplatesSet(JCRNodeWrapper node) throws RepositoryException {
         ExtendedNodeType nt = node.getPrimaryNodeType();
-        SortedSet<Templates.Template> set;
+        SortedSet<Template> set;
+        SortedSet<Template> result = new TreeSet<Template>();
         if (node.getPrimaryNodeTypeName().equals("jnt:nodeReference")) {
 
             set = getTemplatesSet((JCRNodeWrapper) node.getProperty("j:node").getNode());
         } else if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
-            set = Templates.getTemplatesSet(nt);
+            set = RenderService.getInstance().getTemplatesSet(nt);
             List<JCRNodeWrapper> l = node.getChildren();
             for (JCRNodeWrapper c : l) {
                 set.addAll(getTemplatesSet(c));
             }
         } else {
-            set = Templates.getTemplatesSet(nt);
+            set = RenderService.getInstance().getTemplatesSet(nt);
         }
-        return set;
+        for (Template template : set) {
+            if (!template.getKey().startsWith("wrapper") && !template.getKey().startsWith("skin")) {
+                result.add(template);
+            }
+        }
+
+        return result;
     }
 }

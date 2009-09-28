@@ -85,8 +85,8 @@
 // Navigation
 //---------------------------------------------------------
 
-[jmix:navigation] mixin
- - j:navigationType (string)
+//[jmix:navigation] mixin
+// - j:navigationType (string)
 
 //---------------------------------------------------------
 // Locks
@@ -335,7 +335,7 @@
 // Pages, content lists
 //---------------------------------------------------------
 
-[jnt:page] > nt:base, mix:referenceable, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:navigation, jmix:contentmetadata
+[jnt:page] > nt:base, mix:referenceable, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:contentmetadata
  + * (nt:base) version
 
 [jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, mix:created, jmix:renderable, jmix:contentmetadata, jmix:containerContent

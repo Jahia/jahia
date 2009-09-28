@@ -35,7 +35,6 @@
 
 <%@ include file="../../common/declarations.jspf" %>
 <c:set var="useGWT" value="${!empty param.useGWT}"/>
-<template:module node="${currentNode}" forcedTemplate="${currentResource.resolvedTemplate}" var="content" templateWrapper="bodywrapper"/>
 <template:template gwtForGuest="${useGWT}">
     <template:templateHead>
         <!-- All headers and declarations global meta and css-->
@@ -55,6 +54,6 @@
         </c:forEach>
     </template:templateHead>
     <template:templateBody gwtScript="${param.gwtScript}">
-        ${content}
+        ${wrappedContent}
     </template:templateBody>
 </template:template>

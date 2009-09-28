@@ -37,6 +37,8 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.render.Template;
+import org.jahia.services.render.RenderService;
 import org.jahia.settings.SettingsBean;
 
 import javax.jcr.Value;
@@ -58,137 +60,14 @@ public class Templates implements ValueInitializer {
         if (nt == null) {
             return new Value[0];
         }
-        SortedSet<Template> templates = getTemplatesSet(nt);
+        SortedSet<Template> templates = RenderService.getInstance().getTemplatesSet(nt);
 
         List<Value> vs = new ArrayList<Value>();
         for (Template template : templates) {
-            vs.add(new ValueImpl(template.getKey(), PropertyType.STRING, false));
+            if (!template.getKey().startsWith("wrapper.") && !template.getKey().startsWith("skin.")) {
+                vs.add(new ValueImpl(template.getKey(), PropertyType.STRING, false));
+            }
         }
         return vs.toArray(new Value[vs.size()]);
     }
-
-
-    // todo: move these methods elsewhere
-    public static SortedSet<Template> getTemplatesSet(ExtendedNodeType nt) {
-        Map<String,Template> templates = new HashMap<String,Template>();
-
-        List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(nt.getSupertypes()));
-        nodeTypeList.add(nt);
-
-        String templateType = "html";
-
-        Collections.reverse(nodeTypeList);
-
-        for (ExtendedNodeType type : nodeTypeList) {
-            List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(type.getName().replace(":","_"));
-            for (JahiaTemplatesPackage aPackage : packages) {
-                getTemplatesSet(type, templates, templateType, aPackage.getRootFolder(), aPackage);
-            }
-            getTemplatesSet(type, templates, templateType, "default", null);
-        }
-        return new TreeSet<Template>(templates.values());
-    }
-
-    private static void getTemplatesSet(ExtendedNodeType nt, Map<String,Template> templates, String templateType, String currentTemplatePath, JahiaTemplatesPackage tplPackage) {
-        String path = currentTemplatePath + "/" + nt.getAlias().replace(':','_') + "/" + templateType;
-
-        File f = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath()+ "/"+ path);
-        if (f.exists()) {
-            File[] files = f.listFiles();
-            for (File file : files) {
-                if (!file.isDirectory()) {
-                    String filename = file.getName();
-                    String key = filename.substring(0, filename.lastIndexOf("."));
-                    if (!templates.containsKey(key)) {
-                        templates.put(key, new Template(path+"/"+file.getName(), key, tplPackage, filename));
-                    }
-                }
-            }
-        }
-    }
-
-    public static class Template implements Comparable<Template> {
-        private String path;
-        private String key;
-        private JahiaTemplatesPackage ownerPackage;
-        private String displayName;
-
-        private Template(String path, String key, JahiaTemplatesPackage ownerPackage, String displayName) {
-            this.path = path;
-            this.key = key;
-            this.ownerPackage = ownerPackage;
-            this.displayName = displayName;
-        }
-
-        public String getPath() {
-            return path;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public JahiaTemplatesPackage getOwnerPackage() {
-            return ownerPackage;
-        }
-
-        public String getDisplayName() {
-            return displayName;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            Template template = (Template) o;
-
-            if (displayName != null ? !displayName.equals(template.displayName) : template.displayName != null) {
-                return false;
-            }
-            if (key != null ? !key.equals(template.key) : template.key != null) {
-                return false;
-            }
-            if (ownerPackage != null ? !ownerPackage.equals(template.ownerPackage) : template.ownerPackage != null) {
-                return false;
-            }
-            if (path != null ? !path.equals(template.path) : template.path != null) {
-                return false;
-            }
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = path != null ? path.hashCode() : 0;
-            result = 31 * result + (key != null ? key.hashCode() : 0);
-            result = 31 * result + (ownerPackage != null ? ownerPackage.hashCode() : 0);
-            result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
-            return result;
-        }
-
-        public int compareTo(Template template) {
-            if (ownerPackage == null) {
-                if (template.ownerPackage != null ) {
-                    return 1;
-                } else {
-                    return key.compareTo(template.key);
-                }
-            } else {
-                if (template.ownerPackage == null ) {
-                    return -1;
-                } else if (!ownerPackage.equals(template.ownerPackage)) {
-                    return ownerPackage.getName().compareTo(template.ownerPackage.getName());
-                } else {
-                    return key.compareTo(template.key);
-                }
-            }
-        }
-    }
-
 }

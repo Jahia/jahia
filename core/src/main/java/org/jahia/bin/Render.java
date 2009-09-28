@@ -379,7 +379,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             if ("live".equals(workspace) && renderContext.isEditMode()) {
                 throw new AccessDeniedException();
             }
-            renderContext.setTemplateWrapper("fullpage");
+
 
             try {
                 if (workspace.equals("default")) {
@@ -402,7 +402,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 Resource resource = resolveResource(workspace, locale, path, renderContext.getUser(), paramBean);
                 renderContext.setMainResource(resource);
                 renderContext.setSite(paramBean.getSite());
-                
+
+                resource.pushWrapper("wrapper.fullpage");
+                resource.pushWrapper("wrapper.bodywrapper");
+
                 long lastModified = getLastModified(resource, renderContext);
 
                 if (lastModified == -1) {

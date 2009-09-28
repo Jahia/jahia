@@ -3,21 +3,27 @@ package org.jahia.services.render;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.decorator.JCRJahiaContentNode;
 import org.jahia.services.JahiaService;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.data.beans.ContainerBean;
 import org.jahia.data.JahiaData;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.operations.valves.EngineValve;
 import org.jahia.params.ParamBean;
 import org.jahia.content.ContentObject;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.settings.SettingsBean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
+import java.io.File;
+import java.util.*;
 
 /**
  * Service to render node
@@ -40,12 +46,18 @@ public class RenderService extends JahiaService {
 
     private JCRStoreService storeService;
 
+    private Collection<ScriptResolver> scriptResolvers;
+
     public JCRStoreService getStoreService() {
         return storeService;
     }
 
     public void setStoreService(JCRStoreService storeService) {
         this.storeService = storeService;
+    }
+
+    public void setScriptResolvers(Collection<ScriptResolver> scriptResolvers) {
+        this.scriptResolvers = scriptResolvers;
     }
 
     public void start() throws JahiaInitializationException {
@@ -68,19 +80,7 @@ public class RenderService extends JahiaService {
     public String render(Resource resource, RenderContext context) throws RepositoryException, IOException {
         final HttpServletRequest request = context.getRequest();
 
-        Script script = null;
-        if (context.getTemplateWrapper() != null) {
-            Resource wrappedResource = new Resource(resource.getNode(), resource.getTemplateType(), null, "wrapper."+context.getTemplateWrapper());
-            context.setTemplateWrapper(null);
-            try {
-                script = resolveScript(wrappedResource, context);
-            } catch (IOException e) {
-                logger.error("Cannot get wrapper "+context.getTemplateWrapper());
-            }
-        }
-        if (script == null) {
-            script = resolveScript(resource, context);
-        }
+        Script script = resolveScript(resource, context);
 
         request.setAttribute("renderContext", context);
 
@@ -96,10 +96,31 @@ public class RenderService extends JahiaService {
         URLGenerator oldUrl = (URLGenerator) request.getAttribute("url");
         request.setAttribute("url",new URLGenerator(context, resource, storeService));
 
+        if (resource.getNode().hasProperty("skin")) {
+            String skin = resource.getNode().getPropertyAsString("skin");
+            resource.pushWrapper("skin." + skin);
+        }
+
         String output;
         try {
             setJahiaAttributes(request, resource.getNode(), (ParamBean) Jahia.getThreadParamBean());
             output = script.execute();
+
+            while (resource.hasWrapper()) {
+                String wrapper = resource.popWrapper();
+                try {
+                    Resource wrappedResource = new Resource(resource.getNode(), resource.getTemplateType(), null, wrapper);
+                    if (hasTemplate(resource.getNode().getPrimaryNodeType(), wrapper)) {
+                        script = resolveScript(wrappedResource, context);
+                        request.setAttribute("wrappedContent", output);
+                        output = script.execute();
+                    } else {
+                        logger.warn("Cannot get wrapper "+wrapper);
+                    }
+                } catch (IOException e) {
+                    logger.error("Cannot execute wrapper "+wrapper,e);
+                }
+            }
         } finally {
             request.setAttribute("currentNode",old);
             request.setAttribute("currentResource",oldResource);
@@ -126,7 +147,13 @@ public class RenderService extends JahiaService {
      * @throws IOException
      */
     private Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, IOException {
-        return new RequestDispatcherScript(resource, context);
+        for (ScriptResolver scriptResolver : scriptResolvers) {
+            Script s = scriptResolver.resolveScript(resource,  context);
+            if (s != null) {
+                return s;
+            }
+        }
+        return null;
     }
 
     /**
@@ -158,4 +185,23 @@ public class RenderService extends JahiaService {
             logger.error(e.getMessage(), e);
         }
     }
+
+    private boolean hasTemplate(ExtendedNodeType nt, String key) {
+        for (ScriptResolver scriptResolver : scriptResolvers) {
+            if (scriptResolver.hasTemplate(nt,key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public SortedSet<Template> getTemplatesSet(ExtendedNodeType nt) {
+        SortedSet<Template> set = new TreeSet<Template>();
+        for (ScriptResolver scriptResolver : scriptResolvers) {
+            set.addAll(scriptResolver.getTemplatesSet(nt));
+        }
+        return set;
+    }
+
+
 }

@@ -31,9 +31,17 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ page language="java" contentType="text/html;charset=UTF-8" %>
-
 <%@ include file="../../common/declarations.jspf" %>
-<div id="bodywrapper">
-    ${wrappedContent}
-</div>
+
+<div class="box2 box2-style1">
+    <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
+<c:if test="${not empty title}">
+    <div class="box2-topright"></div><div class="box2-topleft"></div>
+    <h3 class="box2-header"><span>${title.string}</span></h3>
+</c:if>
+  <div class="box2-text">
+      ${wrappedContent}
+  </div>
+    <div class="box2-bottomright"></div>
+    <div class="box2-bottomleft"></div>
+<div class="clear"> </div></div>

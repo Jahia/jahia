@@ -55,13 +55,14 @@ import java.io.File;
 public class Skins implements ValueInitializer {
 
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params, Map context) {
-        ExtendedNodeType nt = null;//(ExtendedNodeType) context.get("currentDefinition");
+        ExtendedNodeType nt = (ExtendedNodeType) context.get("currentDefinition");
         if (nt == null) {
-            try {
-                nt = NodeTypeRegistry.getInstance().getNodeType("nt:base");
-            } catch (NoSuchNodeTypeException e) {
-                return new Value[0];
-            }
+            return new Value[0];
+        }
+        try {
+            nt = NodeTypeRegistry.getInstance().getNodeType("nt:base");
+        } catch (NoSuchNodeTypeException e) {
+            return new Value[0];
         }
         SortedSet<Template> templates = RenderService.getInstance().getTemplatesSet(nt);
 

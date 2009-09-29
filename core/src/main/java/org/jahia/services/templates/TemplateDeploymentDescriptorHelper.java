@@ -39,22 +39,19 @@ import static org.jahia.services.templates.JahiaTemplatesPackageHandler.SCHEMA_L
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.digester.Digester;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplateDef;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaTemplateServiceException;
 import org.jahia.services.importexport.DataWriter;
-import org.jahia.utils.xml.XMLParser;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -73,7 +70,7 @@ final class TemplateDeploymentDescriptorHelper {
 
     public static final String TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME = "templates.xml";
 
-    public static JahiaTemplatesPackage parse(String docPath, ClassLoader cl)
+    public static JahiaTemplatesPackage parse(Reader templateDescriptorReader)
             throws JahiaException {
         Digester digester = new Digester();
         digester.setValidating(true);
@@ -106,17 +103,13 @@ final class TemplateDeploymentDescriptorHelper {
             }
         });
 
-        digester.setClassLoader(cl);
+        digester.setClassLoader(Thread.currentThread().getContextClassLoader());
 
         digester.addObjectCreate("template-set", JahiaTemplatesPackage.class);
         digester.addBeanPropertySetter("template-set/package-name", "name");
         digester.addBeanPropertySetter("template-set/extends", "extends");
         digester
                 .addBeanPropertySetter("template-set/root-folder", "rootFolder");
-//        digester.addBeanPropertySetter("template-set/classes-file",
-//                "classesFile");
-//        digester.addBeanPropertySetter("template-set/classes-root",
-//                "classesRoot");
         digester.addBeanPropertySetter("template-set/initial-import",
                 "initialImport");
 
@@ -179,144 +172,18 @@ final class TemplateDeploymentDescriptorHelper {
 
         JahiaTemplatesPackage templatesPackage = null;
         try {
-            templatesPackage = (JahiaTemplatesPackage) digester.parse("file:"
-                    + docPath);
+            templatesPackage = (JahiaTemplatesPackage) digester.parse(templateDescriptorReader);
         } catch (Exception e) {
+        	String content = "n/a";
+            try {
+	            content = IOUtils.toString(templateDescriptorReader);
+            } catch (IOException readerException) {
+            	logger.error(readerException.getMessage(), readerException);
+            }
             throw new JahiaTemplateServiceException(
-                    "Error parsing template deployment descriptor rom file: "
-                            + docPath, e);
+                    "Error parsing template deployment descriptor content for:\n"
+                            + content, e);
         }
-        return templatesPackage;
-    }
-
-    public static JahiaTemplatesPackage parseLegacyFormat(Document m_XMLDocument)
-            throws JahiaException {
-        Element docElNode = (Element) m_XMLDocument.getDocumentElement();
-        JahiaTemplatesPackage templatesPackage = new JahiaTemplatesPackage();
-
-        if (!docElNode.getNodeName().equalsIgnoreCase("tpml")) {
-
-            throw new JahiaException("Invalid XML format",
-                    "tpml tag is not present as starting tag in file",
-                    JahiaException.ERROR_SEVERITY, JahiaException.SERVICE_ERROR);
-        }
-
-        // get the package name
-        templatesPackage.setName(XMLParser.getParameterValue(docElNode,
-                "package-name"));
-
-        // get the root folder
-        templatesPackage.setRootFolder(XMLParser.getParameterValue(docElNode,
-                "root-folder"));
-
-        // get the class file entry
-        templatesPackage.setClassesFile(XMLParser.getParameterValue(docElNode,
-                "classes-file"));
-
-        // get the class file entry
-        templatesPackage.setClassesRoot(XMLParser.getParameterValue(docElNode,
-                "classes-root"));
-
-        // get the class file entry
-        templatesPackage.setInitialImport(XMLParser.getParameterValue(
-                docElNode, "initial-import"));
-
-        // get the provider info
-        templatesPackage.setProvider(XMLParser.getParameterValue(docElNode,
-                "provider"));
-
-        // get the definitions files
-        templatesPackage.setDefinitionsFile(XMLParser.getParameterValue(
-                docElNode, "definitions-file"));
-
-        // get the rules files
-        templatesPackage.setRulesFile(XMLParser.getParameterValue(
-                docElNode, "rules-file"));
-
-        // get the thumbnail image file name
-        templatesPackage.setThumbnail(XMLParser.getParameterValue(docElNode,
-                "thumbnail"));
-
-        // build the templates list
-        List<Node> nodesList = XMLParser.getChildNodes(docElNode, "template");
-
-        int size = nodesList.size();
-        if (size > 0) {
-
-            Node nodeItem = null;
-            String templateName = "";
-            String templateFile = "";
-            String templateDisplayName = "";
-            String pageType = "";
-            for (int i = 0; i < size; i++) {
-                nodeItem = (Node) nodesList.get(i);
-
-                templateName = XMLParser.getParameterValue(nodeItem, "name");
-
-                templateFile = XMLParser
-                        .getParameterValue(nodeItem, "filename");
-
-                pageType = XMLParser.getParameterValue(nodeItem, "page-type");
-
-                templateDisplayName = XMLParser.getParameterValue(nodeItem,
-                        "display-name");
-                if (templateDisplayName.length() <= 0) {
-                    templateDisplayName = templateName;
-                }
-                
-                String description = XMLParser.getParameterValue(nodeItem,
-                        "description");
-
-                boolean visible = true;
-
-                String val = XMLParser.getAttributeValue(nodeItem, "visible");
-                if (val != null) {
-                    visible = (Integer.parseInt(val) == 1);
-                }
-
-                boolean isHomePage = false;
-                val = XMLParser.getAttributeValue(nodeItem, "homepage");
-                if (val != null) {
-                    isHomePage = (Integer.parseInt(val) == 1);
-                }
-
-                boolean isDefault = false;
-                val = XMLParser.getAttributeValue(nodeItem, "default");
-                if (val != null) {
-                    isDefault = (Integer.parseInt(val) == 1);
-                }
-
-                if ((templateName != null) && (templateName.length() > 0)
-                        && (templateFile != null)
-                        && (templateFile.length() > 0)
-                        && (templateDisplayName != null)
-                        && (templateDisplayName.length() > 0)) {
-
-                    templatesPackage.addTemplateDef(new JahiaTemplateDef(
-                            templateName, templateFile, null,
-                            templateDisplayName, pageType, description, visible, isHomePage,
-                            isDefault));
-
-                    if (isHomePage) {
-                        templatesPackage.setHomePageName(templateName);
-                    }
-                    if (isDefault) {
-                        templatesPackage.setDefaultPageName(templateName);
-                    }
-                }
-            }
-            if (templatesPackage.getHomePageName() == null) {
-                templatesPackage
-                        .setHomePageName(((JahiaTemplateDef) templatesPackage
-                                .getTemplates().get(0)).getName());
-            }
-            if (templatesPackage.getDefaultPageName() == null) {
-                templatesPackage
-                        .setDefaultPageName(((JahiaTemplateDef) templatesPackage
-                                .getTemplates().get(0)).getName());
-            }
-        }
-
         return templatesPackage;
     }
 

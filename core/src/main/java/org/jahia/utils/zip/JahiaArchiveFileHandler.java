@@ -502,4 +502,7 @@ public class JahiaArchiveFileHandler {
         outs.close();
     }
 
+    public String getPath() {
+    	return m_JarFile.getName();
+    }
 } // End Class JahiaArchiveFileHandler

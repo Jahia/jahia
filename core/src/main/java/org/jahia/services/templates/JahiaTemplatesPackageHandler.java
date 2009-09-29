@@ -42,9 +42,15 @@ package org.jahia.services.templates;
 import static org.jahia.services.templates.TemplateDeploymentDescriptorHelper.TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.compass.core.util.reader.StringReader;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaArchiveFileException;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaTemplateServiceException;
 import org.jahia.utils.zip.JahiaArchiveFileHandler;
@@ -67,26 +73,21 @@ public class JahiaTemplatesPackageHandler {
     
     static final String SCHEMA_LOCATION = NS_URI_JAHIA + " "
             + TEMPLATES_DESCRIPTOR_20_URI;
+    
+    /**
+     * The file representing template set archive or folder
+     */
+    private File file;
 
     /**
-     * The full path to the Template Jar File *
+     * The Jar File Handler of the Template Jar File
      */
-    protected String m_FilePath;
-
+    private JahiaArchiveFileHandler archive;
+    
     /**
-     * The Jar File Handler of the Template Jar File *
+     * The JahiaTemplatesPackage Object created with data from the templates.xml file
      */
-    protected JahiaArchiveFileHandler m_ArchFile;
-
-    /**
-     * The JahiaTemplatesPackage Object created with data from the templates.xml file *
-     */
-    protected JahiaTemplatesPackage m_Package;
-
-    /**
-     * The Jar File Handler of the classes_file.jar provided within the templates package *
-     */
-    protected JahiaArchiveFileHandler m_JarClassesFile;
+    private JahiaTemplatesPackage templatePackage;
 
     /**
      * Checks, if the specified directory contains a templates deployment
@@ -106,102 +107,116 @@ public class JahiaTemplatesPackageHandler {
     /**
      * Constructor is initialized with the template File
      */
-    public JahiaTemplatesPackageHandler(String filePath)
-            throws JahiaException {
-
-        this(new File(filePath));
-    }
-    
-    /**
-     * Constructor is initialized with the template File
-     */
     public JahiaTemplatesPackageHandler(File file)
             throws JahiaException {
 
-        m_FilePath = file.getPath();
-
-        boolean isFile = true;
-
-        if (file.isFile() && file.canWrite()) {
-
+        this.file = file;
+        
+    	if (file.isFile() && file.canWrite()) {
             try {
-
-                m_ArchFile = new JahiaArchiveFileHandler(m_FilePath);
-
+                archive = new JahiaArchiveFileHandler(file.getPath());
             } catch (IOException e) {
                 throw new JahiaTemplateServiceException(
                         "Failed creating an Archive File Handler for file: "
                                 + file, e);
             }
-
-        } else {
-            isFile = false;
         }
 
         try {
-            buildTemplatesPackage(isFile);
+            buildTemplatesPackage();
         } catch (JahiaException je) {
-
-            if (m_ArchFile != null) {
-                m_ArchFile.closeArchiveFile();
-            }
-
             throw new JahiaTemplateServiceException(
                     "Error building the TemplatesPackageHandler for file: "
                             + file, je);
+        } finally {
+            if (archive != null) {
+                archive.closeArchiveFile();
+            }
         }
 
     }
 
     /**
      * Extract data from the templates.xml file and build the JahiaTemplatesPackage object
-     *
-     * @param isFile , are we handling a file or instead a directory ?
      */
-    protected void buildTemplatesPackage(boolean isFile)
+    private void buildTemplatesPackage()
             throws JahiaException {
 
     	// extract data from the templates.xml file
         try {
-            if (isFile) {
-                File tmpFile = m_ArchFile.extractFile(TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME);
-                m_Package = new Templates_Xml(tmpFile.getAbsolutePath()).getTemplatesPackage();
-                tmpFile.deleteOnExit();
-                tmpFile.delete();
-            } else {
-                m_Package = new Templates_Xml(m_FilePath + File.separator
-						+ TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME).getTemplatesPackage();
-            }
+			Reader contentReader = file.isFile() ? new StringReader(archive
+			        .entryExists(TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME) ? archive
+			        .extractContent(TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME) : archive.extractContent("WEB-INF/"
+			        + TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME)) : new FileReader(new File(file.getPath(),
+			        TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME));
+        	// extract data from the templates.xml file
+            templatePackage = TemplateDeploymentDescriptorHelper.parse(contentReader);
         } catch (IOException ioe) {
             throw new JahiaTemplateServiceException("Failed extracting templates.xml file data", ioe);
+        } catch (JahiaArchiveFileException ex) {
+        	if (ex.getErrorCode() != JahiaException.ENTRY_NOT_FOUND) {
+        		throw ex;
+        	}
         }
-
-        m_Package.setFilePath(m_FilePath);
+        postProcess();
     }
 
-    /**
+    private void postProcess() {
+        if (templatePackage == null) {
+        	templatePackage = new JahiaTemplatesPackage();
+        }
+        
+        templatePackage.setFilePath(file.getPath());
+        
+        if (StringUtils.isEmpty(templatePackage.getName())) {
+        	templatePackage.setName(FilenameUtils.getBaseName(file.isFile() ? archive.getPath() : file.getPath()));
+        }
+        if (StringUtils.isEmpty(templatePackage.getRootFolder())) {
+        	templatePackage.setRootFolder((FilenameUtils.getBaseName(file.isFile() ? archive.getPath() : file.getPath()).replace('-', '_')).toLowerCase());
+        }
+        if (file.isFile()) {
+	        if (templatePackage.getDefinitionsFiles().isEmpty()) {
+	        	// check if there is a definitions file
+	        	if (archive.entryExists("definitions.cnd")) {
+	        		templatePackage.setDefinitionsFile("definitions.cnd");
+	        	}
+	        	// check if there is a definitions grouping file
+	        	if (archive.entryExists("definitions.grp")) {
+	        		templatePackage.setDefinitionsFile("definitions.grp");
+	        	}
+	        }
+	        if (templatePackage.getRulesFiles().isEmpty()) {
+	        	// check if there is a rules file
+	        	if (archive.entryExists("rules.dsl")) {
+	        		templatePackage.setRulesFile("rules.dsl");
+	        	}
+	        }
+	        if (templatePackage.getResourceBundleName() == null) {
+	        	// check if there is a resource bundle file in the resources folder
+	        	String rbName = templatePackage.getName().replace(' ', '_');
+	        	if (archive.entryExists("resources/" + rbName + ".properties")) {
+	        		templatePackage.setResourceBundleName("resources." + rbName);
+	        	} else {
+	        		rbName = templatePackage.getName().replace(" ", "");
+	            	if (archive.entryExists("resources/" + rbName + ".properties")) {
+	            		templatePackage.setResourceBundleName("resources." + rbName);
+	            	}        		
+	        	}
+	        }
+        }
+    }
+
+	/**
      * Returns the Generated JahiaTemplatesPackage Object
      *
      * @return (JahiaTemplatesPackage) the package object
      */
     public JahiaTemplatesPackage getPackage() {
-
-        return m_Package;
+        return templatePackage;
     }
 
     /**
-     * Unzip the contents of the jar file in it's current folder
-     */
-    public void unzip()
-            throws JahiaException {
-
-        // Unzip the file
-        m_ArchFile.unzip();
-
-    }
-
-    /**
-     * Unzip the contents of the jar file in a gived folder
+     * Unzip the contents of the jar file in a given folder
      *
      * @param (String) path , the path where to extract file
      */
@@ -209,55 +224,15 @@ public class JahiaTemplatesPackageHandler {
             throws JahiaException {
 
         // Unzip the file
-        m_ArchFile.unzip(path);
+        archive.unzip(path);
     }
 
-    /**
-     * Unzip the classes file in a gived folder
-     *
-     * @param (String) path , the path where to extract file
-     */
-    public void unzipClassesFile(String path)
-            throws JahiaException {
-
-        // Unzip the file
-        //m_JarClassesFile.extractEntry(CLASSES_FILE_ENTRY, path);
-        if (m_JarClassesFile != null) {
-            m_JarClassesFile.unzip(path);
-        }
-    }
-
-    /**
-     * Unzip an entry in a gived folder
-     *
-     * @param (String) entryName , the name of the entry
-     * @param (String) path , the path where to extract file
-     */
-    public void extractEntry(String entryName,
-                             String path)
-            throws JahiaException {
-
-        // Unzip the entry
-        m_ArchFile.extractEntry(entryName, path);
-    }
-
-    /**
-     * Close the Jar file
-     */
-    public void closeArchiveFile() {
-
-        m_ArchFile.closeArchiveFile();
-        if (m_ArchFile != null) {
-            m_ArchFile.closeArchiveFile();
-        }
-    }
-
-    public static JahiaTemplatesPackageHandler getPackageHandler(File file) throws JahiaException {
-        if (file.getName().endsWith(".jar")) {
-            return new JahiaTemplatesPackageHandler(file);
-        } else if (file.getName().endsWith(".war")) {
-            return new JahiaTemplatesWarPackageHandler(file);
-        }
-        return null;
-    }
+	/**
+	 * Returns the file descriptor, representing this template package.
+	 * 
+	 * @return the file descriptor, representing this template package
+	 */
+	public File getFile() {
+		return file;
+	}
 }

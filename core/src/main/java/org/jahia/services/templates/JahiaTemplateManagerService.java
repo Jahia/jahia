@@ -32,15 +32,10 @@
 package org.jahia.services.templates;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
 import java.net.MalformedURLException;
-import java.util.List;
 import java.util.Collections;
-import java.util.ArrayList;
-import java.util.zip.ZipFile;
+import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -51,12 +46,12 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.cache.Cache;
+import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.JahiaPageTemplateBaseService;
 import org.jahia.services.pages.JahiaPageTemplateService;
-import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.utils.zip.JahiaArchiveFileHandler;
+import org.jahia.services.templates.TemplatePackageDeployer.WatchdogCallback;
 
 /**
  * Template and template set deployment and management service.
@@ -65,10 +60,8 @@ import org.jahia.utils.zip.JahiaArchiveFileHandler;
  */
 public class JahiaTemplateManagerService extends JahiaService {
 
-    private static Logger logger = Logger
+	private static Logger logger = Logger
             .getLogger(JahiaTemplateManagerService.class);
-
-    public static final String MULTIPLE_PACKAGE_HANDLER = "multiple-package-handler.info";
 
     private TemplatePackageDeployer templatePackageDeployer;
 
@@ -113,111 +106,6 @@ public class JahiaTemplateManagerService extends JahiaService {
         pageDefinitionHelper.setDefaultTemplate(site, templatePackage);
 
         return templatePackage;
-    }
-
-    private boolean containsMultipleTemplatePackages(File templateJar) {
-        boolean multiplePackages = false;
-        try {
-            ZipFile zipHandler = new ZipFile(templateJar);
-            // do we have templates.xml inside?
-            multiplePackages = zipHandler.getEntry(MULTIPLE_PACKAGE_HANDLER) != null;
-        } catch (Exception ex) {
-            // ignore
-        }
-        return multiplePackages;
-    }
-
-    /**
-     * Deploys multiple template sets from the specified JAR file that is
-     * located in the templates folder.
-     *
-     * @param templateJar the file of the template package JAR file
-     * @return the name of the deployed package
-     * @throws JahiaException in case of an error
-     */
-    private String deployMultipleTemplatePackagesForSite(JahiaSite site,
-                                                         File templateJar) throws JahiaException {
-
-        String packageName = null;
-
-        // check first, if we deal with multiple template packages
-        try {
-            JahiaArchiveFileHandler zipHandler = new JahiaArchiveFileHandler(
-                    templateJar.getPath());
-            // retrieve package info
-            String[] multiplePackageInfo = StringUtils.split(zipHandler
-                    .extractContent(MULTIPLE_PACKAGE_HANDLER), ",");
-
-            String parentPackageName = null;
-            JahiaTemplatesPackage deployedPackage = null;
-            // iterate over template set JARs
-            for (String pkgJar : multiplePackageInfo) {
-                if (zipHandler.getEntry(pkgJar) != null) {
-                    File templatesFile = zipHandler.extractFile(pkgJar);
-                    // deploy it
-                    String deployedPackageName = templatePackageDeployer
-                            .deployTemplatePackage(templatesFile, true, site
-                                    .getSiteKey());
-                    try {
-                        templatesFile.delete();
-                    } catch (Exception e) {
-                        // ignore
-                    }
-                    deployedPackage = templatePackageRegistry
-                            .lookup(deployedPackageName);
-                    // check if the parent package name was changed during
-                    // deployment
-                    if (parentPackageName != null
-                            && !deployedPackage.getExtends().equals(
-                            parentPackageName)) {
-                        // set proper parent package name
-                        deployedPackage.setExtends(parentPackageName);
-                        // and update deployment descriptor
-                        TemplateDeploymentDescriptorHelper.serialize(
-                                deployedPackage, new File(settingsBean
-                                .getJahiaTemplatesDiskPath(),
-                                deployedPackage.getRootFolder()));
-                    }
-                    parentPackageName = deployedPackageName;
-                } else {
-                    throw new JahiaTemplateServiceException(
-                            "Required JAR file '"
-                                    + pkgJar
-                                    + "' is not found in the templates.jar archive.");
-                }
-            }
-
-            if (deployedPackage != null) {
-                packageName = deployedPackage.getName();
-                templatePackageRegistry.resolveInheritance(deployedPackage);
-            }
-        } catch (IOException e) {
-            throw new JahiaTemplateServiceException(
-                    "Unable to deploy multiple package set from", e);
-        }
-
-        return packageName;
-    }
-
-    /**
-     * Deploys the template set (or multiple template sets) from the specified
-     * JAR file that is located in the templates folder.
-     *
-     * @param templateJar the file of the template package JAR file
-     * @throws JahiaException in case of an error
-     */
-    public void deployTemplatePackageForSite(JahiaSite site, File templateJar)
-            throws JahiaException {
-        String pkgName = null;
-
-        // check first, if we deal with multiple template packages
-        if (containsMultipleTemplatePackages(templateJar)) {
-            pkgName = deployMultipleTemplatePackagesForSite(site, templateJar);
-        } else {
-            pkgName = templatePackageDeployer.deployTemplatePackage(
-                    templateJar, true, site.getSiteKey());
-        }
-        associateTemplatePackageWithSite(pkgName, site);
     }
 
     /**
@@ -512,12 +400,6 @@ public class JahiaTemplateManagerService extends JahiaService {
         return path;
     }
 
-    public void serializeTemplateDeploymentDescriptor(
-            JahiaTemplatesPackage pkg, Writer writer)
-            throws JahiaTemplateServiceException {
-        TemplateDeploymentDescriptorHelper.serialize(pkg, writer);
-    }
-
     public void setTemplatePackageDeployer(TemplatePackageDeployer deployer) {
         templatePackageDeployer = deployer;
     }
@@ -529,11 +411,11 @@ public class JahiaTemplateManagerService extends JahiaService {
     public void start() throws JahiaInitializationException {
         logger.info("Starting JahiaTemplateManagerService ...");
 
-        // scan the directory for templates
-        templatePackageDeployer.scanDeployedTemplatePackages();
-
         // deploy shared templates if not deployed yet
-        templatePackageDeployer.scanSharedTemplatePackages();
+        templatePackageDeployer.deploySharedTemplatePackages();
+
+        // scan the directory for templates
+        templatePackageDeployer.registerTemplatePackages();
 
         // build the hierarchy, resolving inheritance
         templatePackageRegistry.buildHierarchy();
@@ -550,8 +432,19 @@ public class JahiaTemplateManagerService extends JahiaService {
             logger.error("Error updating all page definitions", ex);
         }
 
-        // start template deployment descriptor watcher
-        templatePackageRegistry.startWatchdog();
+        // start template package watcher
+		templatePackageDeployer.startWatchdog(new WatchdogCallback() {
+			public void onChange(File file) {
+				logger.info("Changes detected in the template packages folder. Restarting JahiaTemplateManagerService");
+				try {
+					stop();
+					start();
+				} catch (Exception ex) {
+					logger.error("Unable to restart JahiaTemplateManagerService."
+					        + " Skipping template deployment descriptor change", ex);
+				}
+			}
+		});
 
         logger.info("JahiaTemplateManagerService started successfully."
                 + " Total number of found template packages: "
@@ -561,8 +454,8 @@ public class JahiaTemplateManagerService extends JahiaService {
     public void stop() throws JahiaException {
         logger.info("Stopping JahiaTemplateManagerService ...");
 
-        // stop template deployment descriptor watcher
-        templatePackageRegistry.stopWatchdog();
+        // stop template package watcher
+        templatePackageDeployer.stopWatchdog();
 
         templatePackageRegistry.reset();
         Cache<?, ?> templateCache = ServicesRegistry.getInstance().getCacheService()
@@ -583,5 +476,4 @@ public class JahiaTemplateManagerService extends JahiaService {
         return getTemplatePackage(ctx.getSite().getTemplatePackageName())
                 .getResourceBundleName();
     } 
-    
 }

@@ -32,388 +32,350 @@
 package org.jahia.services.templates;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import org.apache.commons.io.IOCase;
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaTemplateServiceException;
-import org.jahia.services.deamons.filewatcher.FileListSync;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.JahiaTools;
 import org.jahia.utils.zip.JahiaArchiveFileHandler;
-import org.jahia.engines.calendar.CalendarHandler;
 
 /**
  * Template package deployer service.
- *
+ * 
  * @author Sergiy Shyrkov
  */
 class TemplatePackageDeployer {
 
-    private static Logger logger = Logger
-            .getLogger(TemplatePackageDeployer.class);
+	public interface WatchdogCallback {
+		void onChange(File file);
+	}
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
-            CalendarHandler.DEFAULT_DATE_FORMAT);
+	static class FolderWatcher extends TimerTask {
+		private Map<String, Long> timestamps = new HashMap<String, Long>();
+		private File monitoredFolder;
+		private WatchdogCallback callback;
 
-    /**
-     * Meta-Inf folder *
-     */
-    private static final String META_INF_FOLDER = "Meta-Inf";
+		FolderWatcher(File folderToWatch, WatchdogCallback callback) {
+			super();
+			this.monitoredFolder = folderToWatch;
+			this.callback = callback;
+			initTimestamps();
+		}
 
-    /**
-     * The templates classes Root Path *
-     */
-    private static final String TEMPLATES_CLASSES_ROOT_FOLDER = "jahiatemplates";
+		private void initTimestamps() {
+			String[] existingFiles = getPackageFiles(monitoredFolder);
+			for (String pkgFileName : existingFiles) {
+				timestamps.put(pkgFileName, new File(monitoredFolder, pkgFileName).lastModified());
+			}
+		}
 
-    private SettingsBean settingsBean;
+		@Override
+		public void run() {
+			boolean changesDetected = false;
+			File changedFile = null;
 
-    private TemplatePackageRegistry templatePackageRegistry;
-    
-    private FileListSync fileListSync;
+			String[] existingFiles = getPackageFiles(monitoredFolder);
+			for (String pkgFileName : existingFiles) {
+				File pkgFile = new File(monitoredFolder, pkgFileName);
+				if (timestamps.containsKey(pkgFileName)) {
+					if (timestamps.get(pkgFileName) < pkgFile.lastModified()) {
+						changesDetected = true;
+						changedFile = pkgFile;
+						timestamps.put(pkgFileName, pkgFile.lastModified());
+					}
+				} else {
+					changesDetected = true;
+					changedFile = pkgFile;
+					timestamps.put(pkgFileName, pkgFile.lastModified());
+				}
+			}
+			if (changesDetected) {
+				callback.onChange(changedFile);
+			}
+		}
 
-    /**
-     * Deploys a template package.
-     *
-     * @param packageHandler the template package handler object
-     * @throws JahiaTemplateServiceException
-     */
-    private void deployPackage(JahiaTemplatesPackageHandler packageHandler)
-            throws JahiaTemplateServiceException {
+	}
 
-        JahiaTemplatesPackage tmplPack = packageHandler.getPackage();
+	private static Logger logger = Logger.getLogger(TemplatePackageDeployer.class);
 
-        logger.info("Start deploying new template package '"
-                + tmplPack.getName() + "'");
+	/**
+	 * The templates classes Root Path *
+	 */
+	private static final String TEMPLATES_CLASSES_ROOT_FOLDER = "jahiatemplates";
 
-        if (templatesFolderAlreadyExists(tmplPack.getRootFolder())) {
-            throw new JahiaTemplateServiceException(
-                    "Unable to deploy template package '" + tmplPack.getName()
-                            + "'. Folder '" + tmplPack.getRootFolder()
-                            + "' already exists");
-        }
+	private TemplatePackageRegistry templatePackageRegistry;
 
-        File tmplRootFolder = new File(
-                settingsBean.getJahiaTemplatesDiskPath(), tmplPack
-                        .getRootFolder());
+	private SettingsBean settingsBean;
 
-        tmplRootFolder.mkdirs();
-        try {
+	private Timer watchdog;
 
-            packageHandler.unzip(tmplRootFolder.getAbsolutePath());
+	/**
+	 * Deploys a template package.
+	 * 
+	 * @param packageHandler
+	 *            the template package handler object
+	 * @throws JahiaTemplateServiceException
+	 */
+	private void deployPackage(JahiaTemplatesPackageHandler packageHandler) throws JahiaTemplateServiceException {
 
-            // Remove the Meta-Inf folder first
-            removeMetaInfFolder(tmplRootFolder.getAbsolutePath());
+		JahiaTemplatesPackage tmplPack = packageHandler.getPackage();
 
-            // extract the classes file
-            if (tmplPack.hasClasses()) {
-                File tmpFile = new File(tmplRootFolder, tmplPack
-                        .getClassesFile());
-                if (tmpFile.exists() && tmpFile.isFile()) {
-                    JahiaArchiveFileHandler arch = new JahiaArchiveFileHandler(
-                            tmpFile.getAbsolutePath());
-                    if (tmplPack.getClassesRoot() == null) {
-                        arch.unzip(settingsBean.getClassDiskPath()
-                                + File.separator
-                                + TEMPLATES_CLASSES_ROOT_FOLDER);
-                    } else {
-                        arch.unzip(settingsBean.getClassDiskPath()
-                                + File.separator + tmplPack.getClassesRoot());
-                    }
-                }
-            }
-            if (tmplPack.isWar()) {
+		logger.info("Start deploying new template package '" + tmplPack.getName() + "'");
+
+		File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), tmplPack.getRootFolder());
+
+		if (tmplRootFolder.exists()) {
+			throw new JahiaTemplateServiceException("Unable to deploy template package '" + tmplPack.getName()
+			        + "'. Folder '" + tmplPack.getRootFolder() + "' already exists");
+		}
+
+		tmplRootFolder.mkdirs();
+		try {
+
+			packageHandler.unzip(tmplRootFolder.getAbsolutePath());
+
+			// extract the classes file
+			if (tmplPack.hasClasses()) {
+				File tmpFile = new File(tmplRootFolder, tmplPack.getClassesFile());
+				if (tmpFile.exists() && tmpFile.isFile()) {
+					JahiaArchiveFileHandler arch = new JahiaArchiveFileHandler(tmpFile.getAbsolutePath());
+					if (tmplPack.getClassesRoot() == null) {
+						arch.unzip(settingsBean.getClassDiskPath() + File.separator + TEMPLATES_CLASSES_ROOT_FOLDER);
+					} else {
+						arch.unzip(settingsBean.getClassDiskPath() + File.separator + tmplPack.getClassesRoot());
+					}
+				}
+			}
+			if (tmplPack.isWar()) {
 				File classesFolder = new File(tmplRootFolder, "WEB-INF/classes");
 				if (classesFolder.exists()) {
 					FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()));
 				}
-                FileUtils.deleteDirectory(new File(tmplRootFolder, "WEB-INF"));
-            }
-        } catch (JahiaException je) {
-            logger.error(je);
-            throw new JahiaTemplateServiceException(je.getMessage(), je);
+				FileUtils.deleteDirectory(new File(tmplRootFolder, "WEB-INF"));
+			}
+		} catch (JahiaException je) {
+			logger.error(je);
+			throw new JahiaTemplateServiceException(je.getMessage(), je);
 
-        } catch (IOException ioe) {
-            logger.error(ioe);
-            throw new JahiaTemplateServiceException(
-                    "Failed creating JahiaArchiveFileHandler on classes file",
-                    ioe);
-        }
+		} catch (IOException ioe) {
+			logger.error(ioe);
+			throw new JahiaTemplateServiceException("Failed creating JahiaArchiveFileHandler on classes file", ioe);
+		}
 
-        // overwrite template deployment descriptor
-        TemplateDeploymentDescriptorHelper.serialize(
-                tmplPack, tmplRootFolder);
-        fileListSync.trigger();
+		// overwrite template deployment descriptor
+		TemplateDeploymentDescriptorHelper.serialize(tmplPack, tmplRootFolder);
 
-        logger.info("Package '" + tmplPack.getName()
-                + "' successfully deployed");
-    }
+		logger.info("Package '" + tmplPack.getName() + "' successfully deployed");
+	}
 
-    /**
-     * Deploys the template set from the specified JAR file that is located in
-     * the shared templates folder. Returns the name of the deployed package.
-     *
-     * @param templateJar     the file of the template package JAR file
-     * @param renameIfExists  rename he template package set and the root folder, in case of
-     *                        conflicts
-     * @param suggestedPrefix suggested prefix in case of renaming
-     * @return the name of the deployed package
-     * @throws JahiaException
-     */
-    public String deployTemplatePackage(File templateJar,
-                                        boolean renameIfExists, String suggestedPrefix)
-            throws JahiaException {
-        JahiaTemplatesPackage pkg = null;
-        try {
-            JahiaTemplatesPackageHandler packageHandler = JahiaTemplatesPackageHandler.getPackageHandler(templateJar);
-            pkg = packageHandler.getPackage();
-            if (pkg != null) {
-                if (isValidPackage(pkg)) {
-                    deployTemplatePackage(packageHandler, renameIfExists, suggestedPrefix);
-                }
-            } else {
-                throw new JahiaTemplateServiceException(
-                        "Unable to read template package from the file: "
-                                + templateJar.getAbsolutePath());
-            }
-        } catch (IllegalArgumentException ex) {
-            throw new JahiaTemplateServiceException(
-                    "Unable to read the templates deployment descriptor from "
-                            + templateJar.getPath(), ex);
-        }
+	private void deployTemplatePackage(JahiaTemplatesPackageHandler packageHandler)
+	        throws JahiaTemplateServiceException {
+		JahiaTemplatesPackage pkg = packageHandler.getPackage();
+		logger.info("Template package '" + pkg.getName() + "' found in file " + packageHandler.getFile());
+		File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), pkg.getRootFolder());
+		if (tmplRootFolder.exists()) {
+			if (FileUtils.isFileNewer(packageHandler.getFile(), tmplRootFolder)) {
+				logger.debug("Older version of the template package '" + pkg.getName()
+				        + "' already deployed. Deleting it.");
+				try {
+					FileUtils.deleteDirectory(tmplRootFolder);
+				} catch (IOException e) {
+					logger.error("Unable to delete the template set directory " + tmplRootFolder
+					        + ". Skipping deployment.", e);
+				}
+			} else {
+				logger.info("Template package '" + pkg.getName() + "' already deployed. Skipping.");
+			}
+		}
+		if (!tmplRootFolder.exists()) {
+			deployPackage(packageHandler);
+		}
+	}
 
-        return pkg != null ? pkg.getName() : null;
-    }
+	private boolean isValidPackage(JahiaTemplatesPackage pkg) {
+		if (StringUtils.isEmpty(pkg.getName())) {
+			logger.warn("Template package name '" + pkg.getName() + "' is not valid. Setting it to 'templates'.");
+			pkg.setName("templates");
+		}
+		if (StringUtils.isEmpty(pkg.getRootFolder())) {
+			String folderName = pkg.getName().replace(' ', '_').toLowerCase();
+			logger.warn("Template package root folder '" + pkg.getRootFolder() + "' is not valid. Setting it to '"
+			        + folderName + "'.");
+			pkg.setRootFolder(folderName);
+		}
+		return true;
+	}
 
-    private void deployTemplatePackage(JahiaTemplatesPackageHandler packageHandler, boolean renameIfExists, String suggestedPrefix) throws JahiaTemplateServiceException {
-        JahiaTemplatesPackage pkg = packageHandler.getPackage();
-        logger.debug("Template package found: " + pkg.getName());
-        if (!templatePackageRegistry.contains(pkg.getName())
-                && !templatesFolderAlreadyExists(pkg.getRootFolder())) {
-            deployPackage(packageHandler);
-            templatePackageRegistry.register(pkg);
-        } else {
-            if (renameIfExists) {
-                String pkgName = pkg.getName();
-                String rootFolder = pkg.getRootFolder();
-                if (StringUtils.isNotEmpty(suggestedPrefix)) {
-                    pkgName = suggestedPrefix + "_" + pkg.getName();
-                    rootFolder = suggestedPrefix + "_"
-                            + pkg.getRootFolder();
-                }
+	public void registerTemplatePackages() {
+		File templatesRoot = new File(settingsBean.getJahiaTemplatesDiskPath());
+		logger.info("Scanning templates directory (" + templatesRoot + ") for deployed packages...");
+		if (templatesRoot.isDirectory()) {
+			String[] dirs = templatesRoot.list(DirectoryFileFilter.DIRECTORY);
 
-                if (templatePackageRegistry.contains(pkgName)
-                        || templatesFolderAlreadyExists(rootFolder)) {
-                    String postfix = DATE_FORMAT.format(new Date());
-                    String pkgNameBase = pkgName + "_" + postfix;
-                    String rootFolderBase = rootFolder + "_" + postfix;
-                    pkgName = pkgNameBase;
-                    rootFolder = rootFolderBase;
-                    int postfixCounter = 0;
-                    while (templatePackageRegistry.contains(pkgName)
-                            || templatesFolderAlreadyExists(rootFolder)) {
-                        ++postfixCounter;
-                        pkgName = pkgNameBase + "_" + postfixCounter;
-                        rootFolder = rootFolderBase + "_"
-                                + postfixCounter;
-                    }
-                }
+			List<JahiaTemplatesPackageHandler> remaining = new ArrayList<JahiaTemplatesPackageHandler>();
 
-                // change package name and folder
-                pkg.setName(pkgName);
-                pkg.setRootFolder(rootFolder);
+			for (int i = 0; i < dirs.length; i++) {
+				File templateDir = new File(settingsBean.getJahiaTemplatesDiskPath(), dirs[i]);
 
-                // deploy and register
-                deployPackage(packageHandler);
-                templatePackageRegistry.register(pkg);
-            } else {
-                logger.debug("Template package '" + pkg.getName()
-                        + "' already exists. Skipping.");
-            }
-        }
-    }
+				logger.debug("Checking directory: " + dirs[i]);
+				if (JahiaTemplatesPackageHandler.isValidTemplatesDirectory(templateDir.getAbsolutePath())) {
+					try {
+						logger.debug("Reading the templates set under " + dirs[i]);
+						JahiaTemplatesPackageHandler packageHandler = new JahiaTemplatesPackageHandler(templateDir);
+						JahiaTemplatesPackage pkg = packageHandler.getPackage();
+						if (pkg != null) {
+							logger.debug("Template package found: " + pkg.getName());
+							if (isValidPackage(pkg)) {
+								remaining.add(packageHandler);
+							}
+						} else {
+							logger.warn("Unable to read template package from the directory " + templateDir);
+						}
+					} catch (JahiaException ex) {
+						logger.warn("Unable to read the templates deployment descriptor under " + templateDir, ex);
+					}
+				}
+			}
 
-    private boolean isValidPackage(JahiaTemplatesPackage pkg) {
-        if (StringUtils.isEmpty(pkg.getName())) {
-            logger.warn("Template package name '" + pkg.getName()
-                    + "' is not valid. Setting it to 'templates'.");
-            pkg.setName("templates");
-        }
-        if (StringUtils.isEmpty(pkg.getRootFolder())) {
-            String folderName = pkg.getName().replace(' ', '_').toLowerCase();
-            logger.warn("Template package root folder '" + pkg.getRootFolder()
-                    + "' is not valid. Setting it to '" + folderName + "'.");
-            pkg.setRootFolder(folderName);
-        }
-        return true;
-    }
+			ListOrderedMap toDeploy = getOrderedPackages(remaining);
+			for (Iterator<?> iterator = toDeploy.values().iterator(); iterator.hasNext();) {
+				JahiaTemplatesPackageHandler handler = (JahiaTemplatesPackageHandler) iterator.next();
+				templatePackageRegistry.register(handler.getPackage());
+			}
+		}
+		logger.info("...finished scanning templates directory. Found "
+		        + templatePackageRegistry.getAvailablePackagesCount() + " template packages.");
+	}
 
-    /**
-     * Search and remove the META-INF folder
-     *
-     * @param parentPath the path, where to search for META-INF folder
-     * @return (boolean) true if successful
-     */
-    private void removeMetaInfFolder(String parentPath) {
-        if (parentPath == null) {
-            return;
-        }
+	/**
+	 * Goes through the template set archives in the in the shared templates
+	 * folder to check if there are any new or updated files, which needs to be
+	 * deployed to the templates folder. Does not register template set package
+	 * itself.
+	 */
+	public void deploySharedTemplatePackages() {
+		File sharedTemplates = new File(settingsBean.getJahiaSharedTemplatesDiskPath());
 
-        File f = new File(parentPath);
-        File[] files = f.listFiles((FileFilter) new NameFileFilter(
-                META_INF_FOLDER, IOCase.INSENSITIVE));
-        for (int i = 0; i < files.length; i++) {
-            try {
-                JahiaTools.deleteFile(files[i], false);
-            } catch (Exception ex) {
-                logger.error("Unable to delete META-INF directory "
-                        + files[i].getAbsolutePath(), ex);
-            }
-        }
-    }
+		logger.info("Scanning shared templates directory (" + sharedTemplates
+		        + ") for new or updated template set packages ...");
 
-    public void scanDeployedTemplatePackages() {
-        logger.info("Scanning templates directory...");
-        File templatesRoot = new File(settingsBean.getJahiaTemplatesDiskPath());
-        if (templatesRoot.isDirectory()) {
-            String[] dirs = templatesRoot.list(DirectoryFileFilter.DIRECTORY);
+		String[] jarFiles = getPackageFiles(sharedTemplates);
 
-            List<JahiaTemplatesPackageHandler> remaining = new ArrayList<JahiaTemplatesPackageHandler>();
+		// iterate over found JAR/WAR files and deploy them
+		List<JahiaTemplatesPackageHandler> remaining = new ArrayList<JahiaTemplatesPackageHandler>();
 
-            for (int i = 0; i < dirs.length; i++) {
-                File templateDir = new File(settingsBean.getJahiaTemplatesDiskPath(), dirs[i]);
+		for (int i = 0; i < jarFiles.length; i++) {
+			File templateJar = new File(sharedTemplates, jarFiles[i]);
+			try {
+				JahiaTemplatesPackageHandler packageHandler = new JahiaTemplatesPackageHandler(templateJar);
+				JahiaTemplatesPackage pkg = packageHandler.getPackage();
+				if (pkg != null) {
+					if (isValidPackage(pkg)) {
+						remaining.add(packageHandler);
+					}
+				} else {
+					logger
+					        .error("Unable to read the templates package from the file: "
+					                + templateJar.getAbsolutePath());
+				}
+			} catch (IllegalArgumentException ex) {
+				logger.error("Unable to read the templates deployment descriptor from " + templateJar.getPath(), ex);
+			} catch (JahiaException ex) {
+				logger.error("Unable to read the templates deployment descriptor from " + templateJar.getPath(), ex);
+			}
+		}
 
-                logger.debug("Checking directory: " + dirs[i]);
-                if (JahiaTemplatesPackageHandler.isValidTemplatesDirectory(templateDir.getAbsolutePath())) {
-                    try {
-                        logger.debug("Reading the templates set under "
-                                + dirs[i]);
-                        JahiaTemplatesPackageHandler packageHandler = new JahiaTemplatesPackageHandler(templateDir.getAbsolutePath());
-                        JahiaTemplatesPackage pkg = packageHandler.getPackage();
-                        if (pkg != null) {
-                            logger.debug("Template package found: " + pkg.getName());
-                            if (isValidPackage(pkg)) {
-                                remaining.add(packageHandler);
-                            }
-                        } else {
-                            logger.warn("Unable to read template package from the directory " + templateDir);
-                        }
-                    } catch (JahiaException ex) {
-                        logger.warn("Unable to read the templates deployment descriptor under " + templateDir, ex);
-                    }
-                }
-            }
+		ListOrderedMap toDeploy = getOrderedPackages(remaining);
+		for (Iterator<?> iterator = toDeploy.values().iterator(); iterator.hasNext();) {
+			JahiaTemplatesPackageHandler handler = (JahiaTemplatesPackageHandler) iterator.next();
+			try {
+				deployTemplatePackage(handler);
+			} catch (JahiaException e) {
+				logger.error("Error deploying package from JAR file '" + handler.getPackage().getName()
+				        + "'. Skipping it.", e);
+			}
+		}
 
-            ListOrderedMap toDeploy = getOrderedPackages(remaining);
-            for (Iterator iterator = toDeploy.values().iterator(); iterator.hasNext();) {
-                JahiaTemplatesPackageHandler handler = (JahiaTemplatesPackageHandler) iterator.next();
-                templatePackageRegistry.register(handler.getPackage());
-            }
-        }
-        logger.info("...finished scanning templates directory. Found "
-                + templatePackageRegistry.getAvailablePackagesCount()
-                + " template packages.");
-    }
+		logger.info("...finished scanning shared templates directory.");
+	}
 
-    public void scanSharedTemplatePackages() {
-        logger.info("Scanning shared templates directory...");
+	private ListOrderedMap getOrderedPackages(List<JahiaTemplatesPackageHandler> remaining) {
+		ListOrderedMap toDeploy = new ListOrderedMap();
+		while (!remaining.isEmpty()) {
+			List<JahiaTemplatesPackageHandler> newRemaining = new ArrayList<JahiaTemplatesPackageHandler>();
+			for (JahiaTemplatesPackageHandler handler : remaining) {
+				JahiaTemplatesPackage pack = handler.getPackage();
+				if (pack.getExtends() == null || toDeploy.containsKey(pack.getExtends())) {
+					toDeploy.put(pack.getName(), handler);
+				} else {
+					newRemaining.add(handler);
+				}
+			}
+			if (newRemaining.equals(remaining)) {
+				logger.error("Cannot deploy packages " + newRemaining + ", unresolved dependencies");
+				break;
+			} else {
+				remaining = newRemaining;
+			}
+		}
+		return toDeploy;
+	}
 
-        File sharedTemplates = new File(settingsBean
-                .getJahiaSharedTemplatesDiskPath());
-        // create shared templates folder if it does not exist
-        if (!sharedTemplates.exists()) {
-            sharedTemplates.mkdirs();
-        }
+	private static String[] getPackageFiles(File sharedTemplatesFolder) {
+		String[] packageFiles = ArrayUtils.EMPTY_STRING_ARRAY;
 
-        if (sharedTemplates.exists() && sharedTemplates.isDirectory()) {
-            String[] jarFiles = sharedTemplates.list(new SuffixFileFilter(new String[]{".jar", ".war"}));
-            // iterate over found JAR files and deploy them
-            List<JahiaTemplatesPackageHandler> remaining = new ArrayList<JahiaTemplatesPackageHandler>();
+		if (!sharedTemplatesFolder.exists()) {
+			sharedTemplatesFolder.mkdirs();
+		}
 
-            for (int i = 0; i < jarFiles.length; i++) {
-                File templateJar = new File(settingsBean.getJahiaSharedTemplatesDiskPath(), jarFiles[i]);
-                try {
-                    JahiaTemplatesPackageHandler packageHandler = JahiaTemplatesPackageHandler.getPackageHandler(templateJar);
-                    JahiaTemplatesPackage pkg = packageHandler.getPackage();
-                    if (pkg != null) {
-                        if (isValidPackage(pkg)) {
-                            remaining.add(packageHandler);
-                        }
-                    } else {
-                        logger.error("Unable to read the templates package from the file: " + templateJar.getAbsolutePath());
-                    }
-                } catch (IllegalArgumentException ex) {
-                    logger.error("Unable to read the templates deployment descriptor from " + templateJar.getPath(), ex);
-                } catch (JahiaException ex) {
-                    logger.error("Unable to read the templates deployment descriptor from " + templateJar.getPath(), ex);
-                }
-            }
+		if (sharedTemplatesFolder.exists() && sharedTemplatesFolder.isDirectory()) {
+			packageFiles = sharedTemplatesFolder.list(new SuffixFileFilter(new String[] { ".jar", ".war" }));
+		}
+		return packageFiles;
+	}
 
-            ListOrderedMap toDeploy =  getOrderedPackages(remaining);
-            for (Iterator iterator = toDeploy.values().iterator(); iterator.hasNext();) {
-                JahiaTemplatesPackageHandler handler = (JahiaTemplatesPackageHandler) iterator.next();
-                try {
-                    deployTemplatePackage(handler, false, null);
-                } catch (JahiaException e) {
-                    logger.error("Error deploying package from JAR file '"
-                            + handler.getPackage().getName() + "'. Skipping it.", e);
-                }
-            }
-        }
+	public void setSettingsBean(SettingsBean settingsBean) {
+		this.settingsBean = settingsBean;
+	}
 
-        logger.info("...finished scanning shared templates directory.");
-    }
+	public void setTemplatePackageRegistry(TemplatePackageRegistry tmplPackageRegistry) {
+		templatePackageRegistry = tmplPackageRegistry;
+	}
 
-    private ListOrderedMap getOrderedPackages(List<JahiaTemplatesPackageHandler> remaining) {
-        ListOrderedMap toDeploy = new ListOrderedMap();
-        while (!remaining.isEmpty()) {
-            List<JahiaTemplatesPackageHandler> newRemaining = new ArrayList<JahiaTemplatesPackageHandler>();
-            for (Iterator iterator = remaining.iterator(); iterator.hasNext();) {
-                JahiaTemplatesPackageHandler handler = (JahiaTemplatesPackageHandler) iterator.next();
-                JahiaTemplatesPackage pack = handler.getPackage();
-                if (pack.getExtends() == null || toDeploy.containsKey(pack.getExtends())) {
-                    toDeploy.put(pack.getName(), handler);
-                } else {
-                    newRemaining.add(handler);
-                }
-            }
-            if (newRemaining.equals(remaining)) {
-                logger.error("Cannot deploy packages " + newRemaining + ", unresolved dependencies");
-                break;
-            } else {
-                remaining = newRemaining;
-            }
-        }
-        return toDeploy;
-    }
+	public void startWatchdog(WatchdogCallback callback) {
+		long interval = settingsBean.isDevelopmentMode() ? 5000 : settingsBean.getTemplatesObserverInterval();
+		if (interval <= 0) {
+			return;
+		}
 
-    public void setSettingsBean(SettingsBean settingsBean) {
-        this.settingsBean = settingsBean;
-    }
+		logger.info("Starting template packages watchdog with interval " + interval + " ms. Monitoring the folder "
+		        + settingsBean.getJahiaSharedTemplatesDiskPath());
 
-    public void setTemplatePackageRegistry(
-            TemplatePackageRegistry tmplPackageRegistry) {
-        templatePackageRegistry = tmplPackageRegistry;
-    }
+		stopWatchdog();
+		watchdog = new Timer(true);
+		watchdog.schedule(new FolderWatcher(new File(settingsBean.getJahiaSharedTemplatesDiskPath()), callback),
+		        interval, interval);
+	}
 
-    private boolean templatesFolderAlreadyExists(String rootFolderName) {
-        return new File(settingsBean.getJahiaTemplatesDiskPath(),
-                rootFolderName).exists();
-    }
-
-    public void setFileListSync(FileListSync fileListSync) {
-        this.fileListSync = fileListSync;
-    }
+	public void stopWatchdog() {
+		if (watchdog != null) {
+			watchdog.cancel();
+		}
+	}
 
 }

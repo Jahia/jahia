@@ -31,7 +31,6 @@
  */
 package org.jahia.services.templates;
 
-import static org.jahia.services.templates.TemplateDeploymentDescriptorHelper.TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.RulesListener;
 
@@ -42,7 +41,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplateDef;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
 
 /**
@@ -51,70 +49,6 @@ import org.jahia.settings.SettingsBean;
  * @author Sergiy Shyrkov
  */
 class TemplatePackageRegistry {
-
-    private abstract class TemplateDescriptorWatcher extends TimerTask {
-        private Map<File, Long> timeStamps = new HashMap<File, Long>();
-
-        private File getPackageRootFolder(JahiaTemplatesPackage pkg) {
-            return new File(settingsBean.getJahiaTemplatesDiskPath(),
-                    pkg.getRootFolder());
-        }
-
-        public abstract void onChange(String packageName, File file);
-
-        @Override
-        public void run() {
-            boolean changesDetected = false;
-            String changedPackageName = null;
-            File changedFile = null;
-            
-            for (JahiaTemplatesPackage pkg : getAvailablePackages()) {
-                File rootFolder = getPackageRootFolder(pkg);
-                List<File> files = new LinkedList<File>();
-                files.add(new File(rootFolder, TEMPLATES_DEPLOYMENT_DESCRIPTOR_NAME));
-                if (!pkg.getDefinitionsFiles().isEmpty()) {
-                    for (String name : pkg.getDefinitionsFiles()) {
-                        files.add(new File(rootFolder, name));
-                    }
-                }
-                if (!pkg.getRulesFiles().isEmpty()) {
-                    for (String name : pkg.getRulesFiles()) {
-                        files.add(new File(rootFolder, name));
-                    }
-                }
-
-                for (File file : files) {
-                    if (file.isFile() && file.canRead()) {
-                        if (timeStamps.containsKey(file)) {
-                            if (file.lastModified() != timeStamps
-                                    .get(file)) {
-                                timeStamps.put(file,
-                                        file.lastModified());
-                                changesDetected = true;
-                                changedPackageName = pkg.getName();
-                                changedFile = file;
-                            }
-                        } else {
-                            timeStamps.put(file, file
-                                    .lastModified());
-                        }
-                    } else {
-                        logger.warn("Template descriptor for template package '"
-                                + pkg.getName()
-                                + "' is not found or can not be read under: "
-                                + file);
-                        changesDetected = true;
-                        changedPackageName = pkg.getName();
-                        changedFile = file;
-                    }
-                }
-            }
-            if (changesDetected) {
-                onChange(changedPackageName, changedFile);
-            }
-        }
-
-    }
 
     private static Logger logger = Logger
             .getLogger(TemplatePackageRegistry.class);
@@ -126,9 +60,6 @@ class TemplatePackageRegistry {
     private SettingsBean settingsBean;
 
     private List<JahiaTemplatesPackage> templatePackages;
-
-
-    private Timer watcherScheduler;
 
     /**
      * Builds a template package hierarchy, resolving inheritance.
@@ -258,7 +189,6 @@ class TemplatePackageRegistry {
         File[] files = rootFolder.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
-                File[] subFiles = file.listFiles();
                 String key = file.getName();
                 if (!packagesPerModule.containsKey(key)) {
                     packagesPerModule.put(key, new ArrayList<JahiaTemplatesPackage>());
@@ -383,58 +313,10 @@ class TemplatePackageRegistry {
         this.settingsBean = settingsBean;
     }
 
-    public void startWatchdog() {
-        long interval = settingsBean.isDevelopmentMode() ? 5000 : settingsBean.getTemplatesObserverInterval();
-        if (interval <= 0) {
-            return;
-        }
-
-        logger
-                .info("Starting template deployment descriptor watchdog with interval "
-                        + interval + " ms");
-        TimerTask watchdog = new TemplateDescriptorWatcher() {
-
-            @Override
-            public void onChange(String packageName, File file) {
-                logger.info("Changes detected in the template package '"
-                        + packageName + "'. File '" + file.getPath()
-                        + "' changed. Restarting JahiaTemplateManagerService");
-                JahiaTemplateManagerService service = ServicesRegistry
-                        .getInstance().getJahiaTemplateManagerService();
-                try {
-                    service.stop();
-                    service.start();
-                } catch (Exception ex) {
-                    logger
-                            .error(
-                                    "Unable to restart JahiaTemplateManagerService."
-                                            + " Skipping template deployment descriptor change",
-                                    ex);
-                }
-            }
-        };
-
-        stopWatchdog();
-        watcherScheduler = new Timer(true);
-        watcherScheduler.schedule(watchdog, interval, interval);
-    }
-
-    public void stopWatchdog() {
-        if (watcherScheduler != null) {
-            watcherScheduler.cancel();
-        }
-    }
-
     /**
      * Performs a set of validation tests for deployed template packages.
      */
     public void validate() {
-        for (JahiaTemplatesPackage pkg : getAvailablePackages()) {
-            if (pkg.getTemplates().size() == 0) {
-                logger.warn("The template package '" + pkg.getName() + "' does not contain any template and will be skipped.");
-                unregister(pkg);
-            }
-        }
         if (getAvailablePackagesCount() == 0) {
             logger.warn("No available template packages found."
                     + " That will prevent creation of a virtual site.");

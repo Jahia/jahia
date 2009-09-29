@@ -53,7 +53,6 @@ import org.jahia.services.fields.ContentFileField;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
-import org.jahia.services.webdav.JahiaWebdavBaseService;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.sharing.FieldSharingManager;
 import org.apache.commons.lang.StringUtils;
@@ -142,9 +141,9 @@ public class JahiaFileFieldWrapper extends JahiaField implements JahiaAllowApply
         String uuid  = StringUtils.substringAfter(val,":");
         try {
             if (jParams != null) {
-                fField = JCRStoreService.getInstance().getSessionFactory().getThreadSession(jParams.getUser()).getNodeByUUID(providerKey, uuid).getJahiaFileField();
+                fField = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNodeByUUID(providerKey, uuid).getJahiaFileField();
             } else {
-                fField = JCRStoreService.getInstance().getSessionFactory().getThreadSession(null).getNodeByUUID(providerKey, uuid).getJahiaFileField();
+                fField = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNodeByUUID(providerKey, uuid).getJahiaFileField();
             }
             this.setObject(fField);
         } catch (RepositoryException e) {

@@ -113,7 +113,7 @@ public class FilesServlet extends HttpServlet {
 
         JCRNodeWrapper n;
         try {
-            n = JCRSessionFactory.getInstance().getThreadSession(jahiaUser).getNode(p);
+            n = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(p);
         } catch (RepositoryException e) {
             logger.error("Error accesing path : "+p+" for user "+jahiaUser,e);
             res.sendError(HttpServletResponse.SC_NOT_FOUND,e.getLocalizedMessage());

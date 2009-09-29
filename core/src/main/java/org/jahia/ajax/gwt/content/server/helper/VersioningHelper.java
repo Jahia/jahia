@@ -70,7 +70,7 @@ public class VersioningHelper {
     public static void activateVersioning(List<String> pathes, ProcessingContext jParams) {
         for (String path : pathes) {
             try {
-                JCRSessionWrapper s = sessionFactory.getThreadSession(jParams.getUser());
+                JCRSessionWrapper s = sessionFactory.getCurrentUserSession();
                 JCRNodeWrapper node = s.getNode(path);
                 if (!node.isVersioned()) {
                     node.versionFile();
@@ -155,8 +155,8 @@ public class VersioningHelper {
      */
     public static void restoreNode(String nodeUuid, String versionUuid, ProcessingContext ctx) {
         try {
-            JCRNodeWrapper node = (JCRNodeWrapper) sessionFactory.getThreadSession(ctx.getUser()).getNodeByUUID(nodeUuid);
-            Version version = (Version) sessionFactory.getThreadSession(ctx.getUser()).getNodeByUUID(versionUuid);
+            JCRNodeWrapper node = (JCRNodeWrapper) sessionFactory.getCurrentUserSession().getNodeByUUID(nodeUuid);
+            Version version = (Version) sessionFactory.getCurrentUserSession().getNodeByUUID(versionUuid);
             node.checkout();
             node.restore(version, true);
             node.checkpoint();

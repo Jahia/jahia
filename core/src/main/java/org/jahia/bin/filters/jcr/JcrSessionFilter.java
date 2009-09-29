@@ -33,8 +33,11 @@ package org.jahia.bin.filters.jcr;
 
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.params.ProcessingContext;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -46,15 +49,32 @@ import java.io.IOException;
  */
 public class JcrSessionFilter implements Filter {
 
+    private static ThreadLocal<JahiaUser> currentUser = new ThreadLocal<JahiaUser>();
+
     public void init(FilterConfig filterConfig) throws ServletException {
 
     }
 
+    public static JahiaUser getCurrentUser() {
+        return currentUser.get();
+    }
+
+    public static void setCurrentUser(JahiaUser user) {
+        currentUser.set(user);
+    }
+
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try {
+            if (Jahia.isInitiated()) {
+                HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+                if (httpServletRequest.getSession(false) != null) {
+                    currentUser.set((JahiaUser) httpServletRequest.getSession().getAttribute(ProcessingContext.SESSION_USER));
+                }
+            }
             filterChain.doFilter (servletRequest, servletResponse );
         } finally {
             if (Jahia.isInitiated()) {
+                currentUser.set(null);
                 JCRSessionFactory.getInstance().closeAllSessions();
             }
         }

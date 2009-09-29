@@ -112,7 +112,7 @@ public abstract class Exporter {
                 case ContentFieldTypes.FILE:
                     if (files != null) {
                         try {
-                            JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNode(value);
+                            JCRNodeWrapper file = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(value);
                             if (!files.contains(file)) {
                                 files.add(file);
                                 value = file.getPath();
@@ -153,7 +153,7 @@ public abstract class Exporter {
             EntryPointInstance epi = applicationManagerService.getEntryPointInstance(epInstanceID);
             if (epi != null) {
                 try {
-                    return JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNodeByUUID(epi.getID()).getPath();
+                    return JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(epi.getID()).getPath();
                 } catch (RepositoryException e) {
                     logger.error(e);
                 }
@@ -197,7 +197,7 @@ public abstract class Exporter {
             String value = contentField.getValue(jParams, entryState);
 
             try {
-                JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNode(value);
+                JCRNodeWrapper file = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(value);
                 if (!files.contains(file)) {
                     logger.debug("Found file for "+object.getObjectKey() + " : " +file.getPath());
                     files.add(file);
@@ -251,7 +251,7 @@ public abstract class Exporter {
             }
             b.replace(from,to,fname);
             try {
-                JCRNodeWrapper f = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNode(URLDecoder.decode(fname,"UTF-8"));
+                JCRNodeWrapper f = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(URLDecoder.decode(fname,"UTF-8"));
                 files.add(f);
             } catch (Exception e) {
                 logger.warn("Invalid link to file "+l);

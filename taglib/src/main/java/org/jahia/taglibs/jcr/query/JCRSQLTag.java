@@ -40,7 +40,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.QueryResultAdapter;
 import org.jahia.services.render.Resource;
 import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.RepositoryException;
@@ -109,7 +108,7 @@ public class JCRSQLTag extends AbstractJahiaTag {
                     workspace = currentResource.getWorkspace();
                     locale = currentResource.getLocale();
                 }
-                JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession((JahiaUser) p, workspace, locale);
+                JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
                 QueryManager queryManager = session.getWorkspace().getQueryManager();
 
                 if (queryManager != null) {

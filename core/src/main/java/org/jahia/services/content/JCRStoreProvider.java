@@ -704,7 +704,7 @@ public class JCRStoreProvider {
             site = ISO9075.encode(encodeInternalName(site));
             sql = "select user from [jnt:user] as user right outer join [jnt:virtualsite] as site on isdescendantnode(user,site) where user.[j:nodename]= '"+username+ "' and site:[j:nodename] = '"+site+"'";
         }
-        List<JCRNodeWrapper> results = queryFolders(sessionFactory.getThreadSession(user), sql);
+        List<JCRNodeWrapper> results = queryFolders(sessionFactory.getCurrentUserSession(), sql);
         if (site != null) {
             results.addAll(getUserFolders(null, user));
         }
@@ -720,7 +720,7 @@ public class JCRStoreProvider {
             sql = "select imp.* from jnt:importDropBox as imp right outer join [jnt:user] as user on ischildnode(imp,user) right outer join [jnt:virtualsite] as site on isdescendantnode(imp,site) where user.[j:nodename]= '"+username+ "' and site.[j:nodename] = '"+site+"'";
         }
 
-        List<JCRNodeWrapper> results = queryFolders(sessionFactory.getThreadSession(user), sql);
+        List<JCRNodeWrapper> results = queryFolders(sessionFactory.getCurrentUserSession(), sql);
         if (site != null) {
             results.addAll(getImportDropBoxes(null, user));
         }
@@ -731,7 +731,7 @@ public class JCRStoreProvider {
         site = ISO9075.encode(encodeInternalName(site));
         String xp = "select * from [jnt:virtualsite] as site where site.[j:nodename] = '"+site+"'";
 
-        return queryFolders(sessionFactory.getThreadSession(user), xp);
+        return queryFolders(sessionFactory.getCurrentUserSession(), xp);
     }
 
     private List<JCRNodeWrapper> queryFolders(JCRSessionWrapper session, String sql) throws RepositoryException {
@@ -784,7 +784,7 @@ public class JCRStoreProvider {
 
     public void exportDocumentView(String path, ContentHandler ch, JahiaUser user, boolean noRecurse) {
         try {
-            getThreadSession(user).exportDocumentView(path, ch, true, noRecurse);
+            getCurrentUserSession().exportDocumentView(path, ch, true, noRecurse);
         } catch (SAXException e) {
             logger.error(e.getMessage(), e);
         } catch (RepositoryException e) {
@@ -836,7 +836,7 @@ public class JCRStoreProvider {
     public ValueFactory getValueFactory(JahiaUser user) {
         ValueFactory valueFactory = null;
         try {
-            Session session = getThreadSession(user);
+            Session session = getCurrentUserSession();
             valueFactory = session.getValueFactory();
         } catch (RepositoryException e) {
             logger.error("Repository error", e);
@@ -852,12 +852,12 @@ public class JCRStoreProvider {
         return JCRContentUtils.decodeInternalName(name);
     }
 
-    public Session getThreadSession(JahiaUser user) throws RepositoryException {
-        return sessionFactory.getThreadSession(user).getProviderSession(this);
+    public Session getCurrentUserSession() throws RepositoryException {
+        return sessionFactory.getCurrentUserSession().getProviderSession(this);
     }
 
-    public Session getThreadSession(JahiaUser user, String workspace) throws RepositoryException {
-        return sessionFactory.getThreadSession(user, workspace).getProviderSession(this);
+    public Session getCurrentUserSession(String workspace) throws RepositoryException {
+        return sessionFactory.getCurrentUserSession(workspace).getProviderSession(this);
     }
 
     public Session getSystemSession() throws RepositoryException {

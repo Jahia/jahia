@@ -1115,7 +1115,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      */
     public String getJCRPath(ProcessingContext context) throws JahiaException {
         try {
-            return JCRSessionFactory.getInstance().getThreadSession(context.getUser()).getNodeByUUID("jahia", getUUID()).getPath();
+            return JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID("jahia", getUUID()).getPath();
         } catch (RepositoryException e) {
             throw new JahiaException("","",0,0,e);
         }

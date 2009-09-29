@@ -74,9 +74,9 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     public String saveLayoutItem(GWTJahiaLayoutItem gwtJahiaLayoutItem) throws GWTJahiaServiceException {
         try {
             // key
-            JCRReferenceNode layoutItemNode = (JCRReferenceNode) sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(gwtJahiaLayoutItem.getUuid());
+            JCRReferenceNode layoutItemNode = (JCRReferenceNode) sessionFactory.getCurrentUserSession().getNodeByUUID(gwtJahiaLayoutItem.getUuid());
 
-            JCRNodeWrapper referencedNode = sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(gwtJahiaLayoutItem.getNode());
+            JCRNodeWrapper referencedNode = sessionFactory.getCurrentUserSession().getNodeByUUID(gwtJahiaLayoutItem.getNode());
             if (referencedNode != null) {
                 layoutItemNode.setProperty("j:columnIndex",gwtJahiaLayoutItem.getColumn());
                 layoutItemNode.setProperty("j:rowIndex",gwtJahiaLayoutItem.getRow());
@@ -104,11 +104,11 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     private void updateLayoutNode(List<GWTJahiaLayoutItem> gwtJahiaLayoutItems) throws RepositoryException {
         for (GWTJahiaLayoutItem gwtJahiaLayoutItem : gwtJahiaLayoutItems) {
 
-            JCRNodeWrapper referencedNode = sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(gwtJahiaLayoutItem.getNode());
+            JCRNodeWrapper referencedNode = sessionFactory.getCurrentUserSession().getNodeByUUID(gwtJahiaLayoutItem.getNode());
             if (referencedNode != null) {
                 // retrieve layout item node
                 if (gwtJahiaLayoutItem.getUuid() != null) {
-                    JCRReferenceNode layoutItemNode = (JCRReferenceNode) sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(gwtJahiaLayoutItem.getUuid());
+                    JCRReferenceNode layoutItemNode = (JCRReferenceNode) sessionFactory.getCurrentUserSession().getNodeByUUID(gwtJahiaLayoutItem.getUuid());
                     layoutItemNode.setProperty("j:columnIndex",gwtJahiaLayoutItem.getColumn());
                     layoutItemNode.setProperty("j:rowIndex",gwtJahiaLayoutItem.getRow());
 //                    jcrLayoutItemNode.setStatus(gwtJahiaLayoutItem.getStatus());
@@ -226,8 +226,8 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     public void addLayoutItem(String containerUUID, GWTJahiaLayoutItem gwtJahiaLayoutItem) throws GWTJahiaServiceException {
         try {
 
-            JCRNodeWrapper node = sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(gwtJahiaLayoutItem.getNode());
-            JCRNodeWrapper container = sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(containerUUID);
+            JCRNodeWrapper node = sessionFactory.getCurrentUserSession().getNodeByUUID(gwtJahiaLayoutItem.getNode());
+            JCRNodeWrapper container = sessionFactory.getCurrentUserSession().getNodeByUUID(containerUUID);
 
             addLayoutItem(container, node, gwtJahiaLayoutItem.getColumn(), gwtJahiaLayoutItem.getRow(), gwtJahiaLayoutItem.getStatus());
         } catch (Exception e) {
@@ -288,7 +288,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
     public void removeLayoutItem(GWTJahiaLayoutItem layoutItem) throws GWTJahiaServiceException {
         //get layout manager prefererences
         try {
-            Node layoutItemNode = sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(layoutItem.getUuid());
+            Node layoutItemNode = sessionFactory.getCurrentUserSession().getNodeByUUID(layoutItem.getUuid());
             if (layoutItemNode != null) {
                 Node containerNode = layoutItemNode.getParent();
                 layoutItemNode.remove();
@@ -418,7 +418,7 @@ public class LayoutmanagerServiceImpl extends JahiaRemoteService implements Layo
 
         try {
 
-            JCRNodeWrapper containerNode = sessionFactory.getThreadSession(getRemoteJahiaUser()).getNodeByUUID(containerUUID);
+            JCRNodeWrapper containerNode = sessionFactory.getCurrentUserSession().getNodeByUUID(containerUUID);
 
 //            JahiaPreference<JCRLayoutNode> layoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesQueryHelper.getLayoutmanagerSQL(getContainerUUID.getPid()));
 //

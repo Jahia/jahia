@@ -219,7 +219,7 @@ public class JahiaBigTextField extends JahiaField implements
             JCRNodeWrapper file = null;
             try {
                 String[] versions = path.split("\\?");
-                final JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNode(versions[0]);
+                final JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(versions[0]);
 
                 if (versions.length > 1 && versions[1].contains("v=")) {
                     String versionId = versions[1].split("=")[1];
@@ -736,7 +736,7 @@ public class JahiaBigTextField extends JahiaField implements
                     String path = URLDecoder.decode(hrefValue.substring((URL_MARKER + JahiaFieldXRefManager.FILE).length()), "UTF-8");
                     try {
                         String[] versions = path.split("\\?");
-                        final JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(processingContext.getUser()).getNode(versions[0]);
+                        final JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(versions[0]);
                         boolean versionExists = false;
                         if(versions.length>1 && versions[1].contains("v=")) {
                             String versionId = versions[1].split("=")[1];

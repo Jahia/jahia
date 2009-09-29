@@ -79,10 +79,8 @@ public class PublicationTest extends TestCase {
         try {
             JCRPublicationService jcrService = ServicesRegistry.getInstance()
                     .getJCRPublicationService();
-            JCRSessionWrapper session = jcrService.getSessionFactory().getThreadSession(ctx
-                    .getUser());
-            JCRSessionWrapper liveSession = jcrService.getSessionFactory().getThreadSession(ctx
-                    .getUser(), Constants.LIVE_WORKSPACE);
+            JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
+            JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
 
             Set<String> languages = null;
             JCRNodeWrapper stageRootNode = session
@@ -155,7 +153,7 @@ public class PublicationTest extends TestCase {
     public void testPublishUnpublishPageWithContent() throws Exception {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
                 .getJCRStoreService();
-        JCRSessionWrapper session = jcrService.getSessionFactory().getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
         try {
             InputStream importStream = getClass().getClassLoader()
                     .getResourceAsStream("imports/importJCR.xml");
@@ -258,9 +256,8 @@ public class PublicationTest extends TestCase {
             boolean publishParent) throws RepositoryException {
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
                 .getJCRPublicationService();
-        JCRSessionWrapper session = jcrService.getSessionFactory().getThreadSession(ctx.getUser());
-        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getThreadSession(ctx
-                .getUser(), Constants.LIVE_WORKSPACE);
+        JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
+        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
         Map<String, Long> publishedDateForObjects = new HashMap<String, Long>();
         addNodeAndDependands(pageNodeToPublish, languages,
                 publishedDateForObjects);
@@ -333,7 +330,7 @@ public class PublicationTest extends TestCase {
             throws RepositoryException {
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
                 .getJCRPublicationService();
-        JCRSessionWrapper session = jcrService.getSessionFactory().getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
         Map<String, Long> publishedDateForObjects = new HashMap<String, Long>();
         addNodeAndDependands(pageNodeToPublish, languages,
                 publishedDateForObjects);
@@ -341,8 +338,7 @@ public class PublicationTest extends TestCase {
         jcrService.unpublish(pageNodeToPublish.getPath(), languages, session
                 .getUser());
 
-        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getThreadSession(ctx
-                .getUser(), Constants.LIVE_WORKSPACE);
+        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
 
         for (Map.Entry<String, Long> publishedDateForObject : publishedDateForObjects
                 .entrySet()) {

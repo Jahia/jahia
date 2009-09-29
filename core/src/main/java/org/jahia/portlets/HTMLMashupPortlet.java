@@ -60,7 +60,7 @@ public class HTMLMashupPortlet extends JahiaPortlet {
         if (epi != null ) {
             try {
                 JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(renderRequest.getRemoteUser());
-                Node node = JCRSessionFactory.getInstance().getThreadSession(user).getNodeByUUID(epi.getID());
+                Node node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(epi.getID());
                 String html = node.hasProperty("html") ? node.getProperty("html").getString() : "Please, provide your HTML content for this mashup";
                 PrintWriter pw = renderResponse.getWriter();
                 pw.print(html);

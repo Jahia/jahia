@@ -213,7 +213,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
 
         JCRNodeWrapper locationFolder;
         try {
-            locationFolder = JCRSessionFactory.getInstance().getThreadSession(user).getNode(location);
+            locationFolder = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(location);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             return BAD_LOCATION;

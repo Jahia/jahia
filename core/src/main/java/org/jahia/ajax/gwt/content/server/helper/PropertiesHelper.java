@@ -43,7 +43,7 @@ public class PropertiesHelper {
     public static Map<String, GWTJahiaNodeProperty> getProperties(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
         JCRNodeWrapper objectNode;
         try {
-            objectNode = sessionFactory.getThreadSession(jParams.getUser(), null, jParams.getLocale()).getNode(path);
+            objectNode = sessionFactory.getCurrentUserSession(null, jParams.getLocale()).getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -117,7 +117,7 @@ public class PropertiesHelper {
         for (GWTJahiaNode aNode : nodes) {
             JCRNodeWrapper objectNode;
             try {
-                objectNode = sessionFactory.getThreadSession(user, workspace, locale).getNode(aNode.getPath());
+                objectNode = sessionFactory.getCurrentUserSession(workspace, locale).getNode(aNode.getPath());
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(aNode.getDisplayName()).append(" could not be accessed :\n").append(e.toString()).toString());

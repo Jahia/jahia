@@ -255,7 +255,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace) throws GWTJahiaServiceException {
         try {
-            JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(getUser()).getNode(path);
+            JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
             if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
@@ -286,7 +286,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void resizeImage(String path, String target, int width, int height, boolean forceReplace) throws GWTJahiaServiceException {
         try {
-            JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(getUser()).getNode(path);
+            JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
             if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
@@ -316,7 +316,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void rotateImage(String path, String target, boolean clockwise, boolean forceReplace) throws GWTJahiaServiceException {
         try {
-            JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(getUser()).getNode(path);
+            JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
             if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
@@ -361,7 +361,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaNodeVersion> getVersions(String path) throws GWTJahiaServiceException {
         try {
-            return VersioningHelper.getVersions(JCRSessionFactory.getInstance().getThreadSession(getUser()).getNode(path), retrieveParamBean());
+            return VersioningHelper.getVersions(JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path), retrieveParamBean());
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -500,7 +500,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void saveNodeTemplate(String path, String template) throws GWTJahiaServiceException {
         try {
-            JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(getUser()).getNode(path);
+            JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
             if ("--unset--".equals(template)) {
                 if (node.hasProperty("j:defaultTemplate")) {
                     node.getProperty("j:defaultTemplate").remove();

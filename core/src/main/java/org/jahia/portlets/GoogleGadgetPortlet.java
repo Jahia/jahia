@@ -65,7 +65,7 @@ public class GoogleGadgetPortlet extends JahiaPortlet {
         if (epi != null ) {
             try {
                 JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(renderRequest.getRemoteUser());
-                Node node = JCRSessionFactory.getInstance().getThreadSession(user).getNodeByUUID(epi.getID());
+                Node node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(epi.getID());
                 String htmlCode = node.getProperty("code").getString();
 
                 String scriptURL = null;

@@ -553,7 +553,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                     JCRNodeWrapper source = page.getContentPage().getJCRNode(jParams);
                     Node parent = source.getParent();
                     if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
-                        Node dest = sessionFactory.getThreadSession(jParams.getUser()).getNode("/content/sites/"+parent.getName());
+                        Node dest = sessionFactory.getCurrentUserSession().getNode("/content/sites/"+parent.getName());
                         source.copyFile(dest.getPath());
                         dest.save();
                     }

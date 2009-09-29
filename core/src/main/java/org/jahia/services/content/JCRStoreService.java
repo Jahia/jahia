@@ -174,7 +174,7 @@ public class JCRStoreService extends JahiaService  {
     }
 
      /**
-     * @deprecated Use getThreadSession().getNode()
+     * @deprecated Use getCurrentUserSession().getNode()
      */
     public JCRNodeWrapper getFileNode(String path, JahiaUser user) {
         throw new UnsupportedOperationException("getFileNode: "+path);

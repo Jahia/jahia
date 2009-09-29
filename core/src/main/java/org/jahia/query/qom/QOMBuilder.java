@@ -64,7 +64,7 @@ public class QOMBuilder implements QueryObjectModelFactory {
      */
     public QOMBuilder(JahiaUser user) {
         try {
-            queryManager = JCRSessionFactory.getInstance().getThreadSession(user).getWorkspace().getQueryManager();
+            queryManager = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
         } catch (RepositoryException e) {
             logger.error(e);
         }

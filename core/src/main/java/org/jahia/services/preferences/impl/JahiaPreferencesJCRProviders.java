@@ -330,7 +330,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
     private JCRNodeWrapper getPreferencesNode(Principal principal) {
         String nodePath = "/" + getPreferencesNodePath(principal);
         try {
-            return sessionFactory.getThreadSession((JahiaUser) principal).getNode(nodePath);
+            return sessionFactory.getCurrentUserSession().getNode(nodePath);
         } catch (Exception e) {
             logger.error("Node path = [" + nodePath + "]");
             logger.error(e, e);
@@ -381,7 +381,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
             return null;
         }
         try {
-            QueryManager queryManager = sessionFactory.getThreadSession((JahiaUser) p).getWorkspace().getQueryManager();
+            QueryManager queryManager = sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager();
             if (queryManager != null) {
                 Query q = queryManager.createQuery(sqlRequest, Query.JCR_SQL2);
                 // execute query

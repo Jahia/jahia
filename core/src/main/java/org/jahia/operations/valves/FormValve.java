@@ -106,13 +106,13 @@ public class FormValve implements Valve {
                     
                     if (type.equals("createNode")) {
                         // fire event
-                        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(jahiaUser);
+                        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
                         Node parent = session.getNodeByUUID((String) action.getParams().get("target"));
                         Node child = parent.addNode("node" + System.currentTimeMillis(), (String) action.getParams().get("nodeType"));
                         setProperties(child, jParams, token);
                         session.save();
                     } else if (type.equals("updateNode")) {
-                        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(jahiaUser);
+                        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
                         Node node = session.getNodeByUUID((String) action.getParams().get("target"));
                         setProperties(node, jParams, token);
                         session.save();

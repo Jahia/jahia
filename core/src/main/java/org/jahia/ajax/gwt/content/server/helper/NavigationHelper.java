@@ -34,7 +34,6 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import java.io.IOException;
 import java.util.*;
@@ -133,7 +132,7 @@ public class NavigationHelper {
         JahiaUser user = context.getUser();
         JCRNodeWrapper node = null;
         try {
-            node = sessionFactory.getThreadSession(user, workspace, locale).getNode(folder != null ? folder.getPath() : "/");
+            node = sessionFactory.getCurrentUserSession(workspace, locale).getNode(folder != null ? folder.getPath() : "/");
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
         }
@@ -291,7 +290,7 @@ public class NavigationHelper {
             }
         } else if (key.equals(JCRClientUtils.USERS_REPOSITORY)) {
             try {
-                NodeIterator ni = sessionFactory.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode("/content/users").getNodes();
+                NodeIterator ni = sessionFactory.getCurrentUserSession(workspace, jParams.getLocale()).getNode("/content/users").getNodes();
                 while (ni.hasNext()) {
                     Node node = (Node) ni.next();
                     GWTJahiaNode jahiaNode = getGWTJahiaNode((JCRNodeWrapper) node.getNode("files"), true);
@@ -429,7 +428,7 @@ public class NavigationHelper {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         try {
             String s = "select * from [jnt:mountPoint]";
-            Query q = sessionFactory.getThreadSession(context.getUser()).getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
+            Query q = sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
             return SearchHelper.executeQuery(q, new String[0], new String[0], new String[0], context);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -439,7 +438,7 @@ public class NavigationHelper {
 
     public static GWTJahiaNode getNode(String path, String workspace, ProcessingContext jParams) throws GWTJahiaServiceException {
         try {
-            return getGWTJahiaNode(sessionFactory.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode(path), true);
+            return getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, jParams.getLocale()).getNode(path), true);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -448,7 +447,7 @@ public class NavigationHelper {
 
     public static GWTJahiaNode getParentNode(String path, String workspace, ProcessingContext jParams) throws GWTJahiaServiceException {
         try {
-            return getGWTJahiaNode((JCRNodeWrapper) sessionFactory.getThreadSession(jParams.getUser(), workspace, jParams.getLocale()).getNode(path).getParent(), true);
+            return getGWTJahiaNode((JCRNodeWrapper) sessionFactory.getCurrentUserSession(workspace, jParams.getLocale()).getNode(path).getParent(), true);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -664,7 +663,7 @@ public class NavigationHelper {
     public static String getDownloadPath(String path, JahiaUser user) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
-            node = sessionFactory.getThreadSession(user).getNode(path);
+            node = sessionFactory.getCurrentUserSession().getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(e.toString());
@@ -678,7 +677,7 @@ public class NavigationHelper {
     public static String getAbsolutePath(String path, ParamBean jParams) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
-            node = sessionFactory.getThreadSession(jParams.getUser()).getNode(path);
+            node = sessionFactory.getCurrentUserSession().getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -692,7 +691,7 @@ public class NavigationHelper {
     public static List<GWTJahiaNodeUsage> getUsages(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
-            node = sessionFactory.getThreadSession(jParams.getUser()).getNode(path);
+            node = sessionFactory.getCurrentUserSession().getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());

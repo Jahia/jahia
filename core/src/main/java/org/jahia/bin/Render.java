@@ -48,7 +48,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.mvc.Controller;
 
 import javax.jcr.*;
@@ -153,7 +152,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     protected void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(renderContext.getUser(), workspace, locale);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
         Node node = session.getNode(path);
         Set<Map.Entry> set = req.getParameterMap().entrySet();
         for (Map.Entry entry : set) {
@@ -168,7 +167,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(renderContext.getUser(), workspace, locale);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
         String[] subPaths = path.split("/");
         String lastPath = subPaths[subPaths.length - 1];
         StringBuffer realPath = new StringBuffer();
@@ -225,7 +224,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, String path, String workspace, Locale locale) throws RepositoryException, IOException {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(renderContext.getUser(), workspace, locale);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
         Node node = session.getNode(path);
         Node parent = node.getParent();
         node.remove();
@@ -278,7 +277,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (logger.isDebugEnabled()) {
         	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         }
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(user, workspace, locale);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
         JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getSystemSession(null, workspace);
 
         JCRNodeWrapper node = null;

@@ -73,7 +73,7 @@ public class JCRNodeLinkTag extends AbstractJahiaTag {
         if (ctx != null) {
             JahiaUser user = ctx.getUser();
             try {
-                node = JCRStoreService.getInstance().getSessionFactory().getThreadSession(user).getNode(path);
+                node = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(path);
                 if (node.isFile()) {
                     StringBuilder link = new StringBuilder("<a href=\"");
                     if (absolute) {

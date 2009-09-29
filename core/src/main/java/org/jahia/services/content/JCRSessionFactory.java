@@ -5,6 +5,7 @@ import org.jahia.jaas.JahiaLoginModule;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.*;
@@ -78,15 +79,15 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
 
-    public JCRSessionWrapper getThreadSession(JahiaUser user) throws RepositoryException {
-        return getThreadSession(user, null);
+    public JCRSessionWrapper getCurrentUserSession() throws RepositoryException {
+        return getCurrentUserSession(null);
     }
 
-    public JCRSessionWrapper getThreadSession(JahiaUser user, String workspace) throws RepositoryException {
-        return getThreadSession(user, workspace, null);
+    public JCRSessionWrapper getCurrentUserSession(String workspace) throws RepositoryException {
+        return getCurrentUserSession(workspace, null);
     }
 
-    public JCRSessionWrapper getThreadSession(JahiaUser user, String workspace, Locale locale)
+    public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale)
             throws RepositoryException {
         // thread user session might be inited/closed in an http filter, instead of keeping it
         Map<String, Map<String, JCRSessionWrapper>> smap = userSession.get();
@@ -95,6 +96,13 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         }
         userSession.set(smap);
         String username;
+
+        if (JcrSessionFilter.getCurrentUser() == null) {
+            logger.error("null thread parambean");
+            throw new RepositoryException("Null thread parambean");
+        }
+
+        JahiaUser user = JcrSessionFilter.getCurrentUser();
 
         if (JahiaUserManagerService.isGuest(user)) {
             username = JahiaLoginModule.GUEST;

@@ -108,7 +108,7 @@ public class JcrSearchHandler extends SearchHandlerImpl {
                 return;
             }
 
-            QueryManager qm = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getWorkspace().getQueryManager();
+            QueryManager qm = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
             Query query = qm.createQuery(queryStatement, Query.XPATH);
 
             QueryResult queryResult = query.execute();

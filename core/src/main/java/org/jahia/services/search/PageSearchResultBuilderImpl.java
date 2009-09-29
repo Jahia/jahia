@@ -248,7 +248,7 @@ public class PageSearchResultBuilderImpl extends
                                 }
                                 String providerKey = jcrName.substring(0,jcrName.indexOf(':'));
                                 String uuid = jcrName.substring(jcrName.indexOf(':') + 1);
-                                JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(currentUser).getNodeByUUID(providerKey, uuid);
+                                JCRNodeWrapper file = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(providerKey, uuid);
                                 info.setObject(file);
 
                                 if (mimeType == null) {

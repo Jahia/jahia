@@ -181,7 +181,7 @@ public class LuceneResourceForHighLighting extends LuceneResource {
             }
             String providerKey = jcrName.substring(0, jcrName.indexOf(':'));
             String uuid = jcrName.substring(jcrName.indexOf(':') + 1);
-            JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNodeByUUID(
+            JCRNodeWrapper file = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(
                     providerKey, uuid);
 
             JCRFileContent fileContent = file.getFileContent();

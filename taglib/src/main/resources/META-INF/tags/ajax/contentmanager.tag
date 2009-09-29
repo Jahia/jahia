@@ -96,7 +96,7 @@ while (selectedNodeIter.hasNext()) {
    final String uuid = (String) selectedNodeIter.next();
    JCRNodeWrapper jcrNodeWrapper = null ;
    try {
-        jcrNodeWrapper = sessionFactory.getThreadSession(jParams.getUser()).getNodeByUUID(uuid);
+        jcrNodeWrapper = sessionFactory.getCurrentUserSession().getNodeByUUID(uuid);
    } catch (RepositoryException e) {
         jcrNodeWrapper = null;
    }

@@ -114,7 +114,7 @@ public class QueryService extends JahiaService {
     public QueryObjectModelFactory getQueryObjectModelFactory(QueryExecute queryExecute, ProcessingContext context, Properties properties)
             throws JahiaException {
         try {
-            return sessionFactory.getThreadSession(context.getUser()).getWorkspace().getQueryManager().getQOMFactory();
+            return sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager().getQOMFactory();
         } catch (RepositoryException e) {
             logger.error(e);
             throw new JahiaException("Error while creating QOMFactory","Error while creating QOMFactory",
@@ -180,7 +180,7 @@ public class QueryService extends JahiaService {
         if ("/".equals(pathString)){
             return pathString;
         }
-        Node n = JCRSessionFactory.getInstance().getThreadSession(context.getUser()).getNode(pathString).getRealNode();
+        Node n = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(pathString).getRealNode();
         if (n instanceof JahiaContentNodeImpl) {
             Object result = ((JahiaContentNodeImpl)n).getContentObject();
             if (result instanceof ContentPage){

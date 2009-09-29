@@ -85,7 +85,7 @@ public class SearchHelper {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         try {
             String s = "select * from [nt:query]";
-            Query q = sessionFactory.getThreadSession(context.getUser()).getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
+            Query q = sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
             return executeQuery(q, new String[0], new String[0], new String[0], context);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -95,7 +95,7 @@ public class SearchHelper {
 
     static Query createQuery(String searchString, ProcessingContext context) throws RepositoryException {
         String s = "select * from [jmix:hierarchyNode] as h where contains(h.[j:nodename]," + JCRContentUtils.stringToJCRSearchExp(searchString) + ")";
-        return sessionFactory.getThreadSession(context.getUser()).getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
+        return sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
     }
 
     public static GWTJahiaNode saveSearch(String searchString, String name, ProcessingContext context) throws GWTJahiaServiceException {
@@ -117,7 +117,7 @@ public class SearchHelper {
                 queryStore = user.createCollection("savedSearch");
                 createdSearchFolder = true;
             } else {
-                queryStore = sessionFactory.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(user.getPath() + "/savedSearch");
+                queryStore = sessionFactory.getCurrentUserSession(workspace, context.getLocale()).getNode(user.getPath() + "/savedSearch");
             }
             String path = queryStore.getPath() + "/" + name;
             if (ContentManagerHelper.checkExistence(path, context.getUser())) {
@@ -129,7 +129,7 @@ public class SearchHelper {
             } else {
                 queryStore.save();
             }
-            return NavigationHelper.getGWTJahiaNode(sessionFactory.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(path), true);
+            return NavigationHelper.getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, context.getLocale()).getNode(path), true);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not store query");
@@ -146,13 +146,13 @@ public class SearchHelper {
                 throw new GWTJahiaServiceException("Could not store query with null name");
             }
 
-            JCRNodeWrapper parent = sessionFactory.getThreadSession(context.getUser(), workspace).getNode(path);
+            JCRNodeWrapper parent = sessionFactory.getCurrentUserSession(workspace).getNode(path);
             name = ContentManagerHelper.findAvailableName(parent, name, context.getUser());
             Query q = createQuery(searchString, context);
             q.storeAsNode(path + "/" + name);
             parent.saveSession();
 
-            return NavigationHelper.getGWTJahiaNode(sessionFactory.getThreadSession(context.getUser(), workspace, context.getLocale()).getNode(path + "/" + name), true);
+            return NavigationHelper.getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, context.getLocale()).getNode(path + "/" + name), true);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not store query");

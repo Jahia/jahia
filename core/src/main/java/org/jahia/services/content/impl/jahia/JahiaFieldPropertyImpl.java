@@ -150,7 +150,7 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
     private void updateField(String v, JahiaField field) throws RepositoryException {
         int fieldType = field.getType();
         if (fieldType == FieldTypes.FILE) {
-            JCRNodeWrapper object = (JCRNodeWrapper) JCRSessionFactory.getInstance().getThreadSession(getProcessingContext().getUser()).getNodeByUUID(v);
+            JCRNodeWrapper object = (JCRNodeWrapper) JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(v);
             JahiaFileField fField = object.getJahiaFileField();
             field.setValue(v);
             field.setObject(fField);

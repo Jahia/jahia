@@ -87,7 +87,7 @@ public class ContentTest extends TestCase {
      */
     public void testCreateFolder() throws Exception {
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -120,7 +120,7 @@ public class ContentTest extends TestCase {
      */
     public void testUpload() throws Exception {
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -167,7 +167,7 @@ public class ContentTest extends TestCase {
      */
     public void testSetStringProperty() throws Exception {
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -223,7 +223,7 @@ public class ContentTest extends TestCase {
      */
     public void testRename() throws Exception {
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -264,7 +264,7 @@ public class ContentTest extends TestCase {
      * @throws RepositoryException
      */
     public void testMove() throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -303,7 +303,7 @@ public class ContentTest extends TestCase {
      * Test lock / unlock operations
      */
     public void testLock() throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -352,7 +352,7 @@ public class ContentTest extends TestCase {
      */
     public void testSearch() throws Exception {
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -368,7 +368,7 @@ public class ContentTest extends TestCase {
             nodes.add(testFile.getIdentifier());
 
             // Do the query
-            QueryManager qm = JCRSessionFactory.getInstance().getThreadSession(ctx.getUser()).getWorkspace().getQueryManager();
+            QueryManager qm = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
             Query query = qm.createQuery("select * from [jnt:file] as f where contains(f.[jcr:content], '456bcd')",
                                          Query.JCR_SQL2);
             QueryResult queryResult = query.execute();

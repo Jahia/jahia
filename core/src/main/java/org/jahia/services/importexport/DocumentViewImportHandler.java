@@ -91,7 +91,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
         this.jParams = jParams;
         JCRNodeWrapper node = null;
         try {
-            session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getThreadSession(jParams.getUser());
+            session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
             node = (JCRNodeWrapper) session.getRootNode();
         } catch (RepositoryException e) {
             e.printStackTrace();

@@ -28,7 +28,7 @@ public class JCRTemplate {
         JCRSessionWrapper session = null;
         try {
             session = (useSystemSession ? sessionFactory.getSystemSession(user != null ? user.getName() : null,
-                    workspace) : sessionFactory.getThreadSession(user, workspace, locale));
+                    workspace) : sessionFactory.getCurrentUserSession(workspace, locale));
             return callback.doInJCR(session);
         } finally {
             if (session != null && useSystemSession) {

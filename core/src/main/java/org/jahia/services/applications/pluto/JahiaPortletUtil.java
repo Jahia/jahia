@@ -134,7 +134,7 @@ public class JahiaPortletUtil {
     public static void copyNodeProperties(EntryPointInstance entryPointInstance, ParamBean jParams, PortletWindow window, HttpServletRequest portalRequest) {
         // porlet properties
         try {
-            Node node = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNodeByUUID(entryPointInstance.getID());
+            Node node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(entryPointInstance.getID());
             if (node != null) {
                 PropertyIterator propertyIterator = node.getProperties();
                 if (propertyIterator != null) {

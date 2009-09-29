@@ -314,7 +314,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                     if (value != null) {
                         if (value.startsWith("/")) {
                             try {
-                                JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getThreadSession(getSession().getJahiaUser()).getNode(value);
+                                JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(value);
                                 Value v = new ValueImpl(file.getUUID(), PropertyType.REFERENCE);
                                 fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
                             } catch (PathNotFoundException e) {
@@ -325,7 +325,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                                 String providerKey = StringUtils.substringBefore(value,":");
                                 String uuid  = StringUtils.substringAfter(value,":");
                                 if (!uuid.equals("/")) {
-                                    JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getThreadSession(getSession().getJahiaUser()).getNodeByUUID(providerKey, uuid);
+                                    JCRNodeWrapper file = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNodeByUUID(providerKey, uuid);
                                     Value v = new ValueImpl(file.getUUID(), PropertyType.REFERENCE);
                                     fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
                                 }
@@ -341,7 +341,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             }
             case FieldTypes.APPLICATION: {
                 try {
-                    JCRNodeWrapper portlet = JCRSessionFactory.getInstance().getThreadSession(getSession().getJahiaUser()).getNodeByUUID(contentField.getJahiaField(elr).getRawValue());
+                    JCRNodeWrapper portlet = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(contentField.getJahiaField(elr).getRawValue());
                     if (portlet != null) {
                         Value v = new ValueImpl(portlet.getUUID(), PropertyType.REFERENCE);
                         fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));

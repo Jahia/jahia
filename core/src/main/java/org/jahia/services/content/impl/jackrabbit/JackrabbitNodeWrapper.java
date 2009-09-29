@@ -89,7 +89,7 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
                 Path path = jrSession.getQPath(localPath).getNormalizedPath();
                 return jrSession.getAccessManager().isGranted(path, permissions);
             } else {
-                SessionImpl jrSession = (SessionImpl) provider.getThreadSession(getUser(), "live");
+                SessionImpl jrSession = (SessionImpl) provider.getCurrentUserSession("live");
                 Node current = this;
                 while (true) {
                     try {

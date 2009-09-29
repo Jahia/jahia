@@ -74,11 +74,9 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.webdav.JahiaWebdavBaseService;
 import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.services.workflow.WorkflowInfo;
 import org.jahia.services.workflow.WorkflowService;
@@ -1443,7 +1441,7 @@ public class ImportHandler extends DefaultHandler {
                 }
             }
             try {
-                JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getThreadSession(jParams.getUser());
+                JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
                 JCRNodeWrapper object = session.getNode(value);
 
                 JahiaFileField fField = object.getJahiaFileField();
@@ -1462,7 +1460,7 @@ public class ImportHandler extends DefaultHandler {
                 }
             }
             try {
-                JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getThreadSession(jParams.getUser());
+                JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
                 JCRNodeWrapper object = session.getNode(value);
 
                 field.setValue(object.getUUID());

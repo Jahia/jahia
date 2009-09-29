@@ -315,7 +315,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         // export shared files -->
         Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>();
         try {
-            JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getThreadSession(processingContext.getUser());
+            JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
             files.add(session.getNode("/content"));
         } catch (RepositoryException e) {
             e.printStackTrace();
@@ -580,7 +580,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                         String encodedName = ISO9075.encode(name);
                         String currentpath = stack.peek() + "/" + name;
-                        String pt = JCRStoreService.getInstance().getSessionFactory().getThreadSession(file.getUser()).getNode(currentpath).getPrimaryNodeTypeName();
+                        String pt = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(currentpath).getPrimaryNodeTypeName();
                         AttributesImpl atts = new AttributesImpl();
                         atts.addAttribute(Constants.JCR_NS, "primaryType", "jcr:primaryType", CDATA, pt);
                         ch.startElement("", encodedName, encodedName, atts);
@@ -1009,12 +1009,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private JCRNodeWrapper ensureDir(String name, ProcessingContext jParams, JahiaSite site, Map<String, String> pathMapping) throws RepositoryException {
         JCRNodeWrapper dir = null;
         try {
-            dir = JCRStoreService.getInstance().getSessionFactory().getThreadSession(jParams.getUser()).getNode(name);
+            dir = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(name);
 
             String current = name;
 
             while (current.lastIndexOf('/') > 0) {
-                JCRNodeWrapper currentNode = JCRStoreService.getInstance().getSessionFactory().getThreadSession(jParams.getUser()).getNode(current);
+                JCRNodeWrapper currentNode = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(current);
 
                 if (Constants.JAHIANT_VIRTUALSITE.equals(currentNode.getPrimaryNodeTypeName())) {
                     if (currentNode.getName().equals(site.getSiteKey())) {
@@ -1051,7 +1051,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 } catch (RepositoryException e) {
                     logger.error("RepositoryException", e);
                 }
-                dir = JCRStoreService.getInstance().getSessionFactory().getThreadSession(jParams.getUser()).getNode(name);
+                dir = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(name);
                 logger.debug("Folder created " + name);
             }
         }
@@ -1971,7 +1971,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private void resolveCrossReferences(Map<String,String> uuidMapping, Map<String,String> references, JahiaUser user) {
         // TODO rewrite that for session issues too many sessions open
         try {
-            JCRNodeWrapper refRoot = JCRSessionFactory.getInstance().getThreadSession(user).getNode("/content/referencesKeeper");
+            JCRNodeWrapper refRoot = JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/content/referencesKeeper");
             NodeIterator ni = refRoot.getNodes();
             while (ni.hasNext()) {
                 Node refNode = ni.nextNode();
@@ -1979,7 +1979,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 if (uuidMapping.containsKey(uuid)) {
                     String pName = refNode.getProperty("j:propertyName").getString();
                     String refuuid = refNode.getProperty("j:node").getString();
-                    Node n = JCRSessionFactory.getInstance().getThreadSession(user).getNodeByUUID(refuuid);
+                    Node n = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(refuuid);
                     n.setProperty(pName,uuidMapping.get(uuid));
                     n.save();
                     refNode.remove();
@@ -1989,7 +1989,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             for (String uuid : references.keySet()) {
                 if (uuidMapping.containsKey(uuid)) {
                     String path = references.get(uuid);
-                    Node n = JCRSessionFactory.getInstance().getThreadSession(user).getNodeByUUID(path.substring(0,path.lastIndexOf("/")));
+                    Node n = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(path.substring(0,path.lastIndexOf("/")));
                     String pName = path.substring(path.lastIndexOf("/")+1);
 
                     try {

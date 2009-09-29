@@ -88,7 +88,7 @@ public class GetContainerTag extends ValueJahiaTag implements ContainerSupport {
                 ctn = ContentContainer.getContainer(containerID);
             } else if (path != null) {
                 try {
-                    JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNode(getPath());
+                    JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(getPath());
                     if (nodeWrapper instanceof JCRJahiaContentNode) {
                         JCRJahiaContentNode jahiaContentNode = (JCRJahiaContentNode) nodeWrapper;
                         ctn = (ContentContainer) jahiaContentNode.getContentObject();

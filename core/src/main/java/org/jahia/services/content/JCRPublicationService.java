@@ -137,12 +137,12 @@ public class JCRPublicationService extends JahiaService {
                          JahiaUser user, boolean publishParent, boolean system, Set<String> pathes) throws RepositoryException {
         pathes.add(path);
 
-        JCRSessionWrapper sourceSession = getSessionFactory().getThreadSession(user, sourceWorkspace);
+        JCRSessionWrapper sourceSession = getSessionFactory().getCurrentUserSession(sourceWorkspace);
         JCRNodeWrapper sourceNode = sourceSession.getNode(path);
 
         String parentPath = sourceNode.getParent().getPath();
-        JCRSessionWrapper destinationSession = getSessionFactory().getThreadSession(user,
-                                                                                                    destinationWorkspace);
+        JCRSessionWrapper destinationSession = getSessionFactory().getCurrentUserSession(
+                destinationWorkspace);
         try {
             destinationSession.getNode(parentPath);
         } catch (PathNotFoundException e) {
@@ -209,11 +209,11 @@ public class JCRPublicationService extends JahiaService {
      * @throws javax.jcr.RepositoryException
      */
     public void unpublish(String path, Set<String> languages, JahiaUser user) throws RepositoryException {
-        JCRSessionWrapper session = getSessionFactory().getThreadSession(user);
+        JCRSessionWrapper session = getSessionFactory().getCurrentUserSession();
         JCRNodeWrapper w = session.getNode(path);
 
         String parentPath = w.getParent().getPath();
-        JCRSessionWrapper liveSession = getSessionFactory().getThreadSession(user, Constants.LIVE_WORKSPACE);
+        JCRSessionWrapper liveSession = getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
         final JCRNodeWrapper parentNode = liveSession.getNode(parentPath);
         final JCRNodeWrapper node = liveSession.getNode(path);
         node.remove();
@@ -235,8 +235,8 @@ public class JCRPublicationService extends JahiaService {
             throws RepositoryException {
         pathes.add(path);
 
-        JCRSessionWrapper session = getSessionFactory().getThreadSession(user);
-        JCRSessionWrapper liveSession = getSessionFactory().getThreadSession(user, Constants.LIVE_WORKSPACE);
+        JCRSessionWrapper session = getSessionFactory().getCurrentUserSession();
+        JCRSessionWrapper liveSession = getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
         PublicationInfo info = new PublicationInfo();
 
         JCRNodeWrapper publishedNode = null;

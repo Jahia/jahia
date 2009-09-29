@@ -2149,7 +2149,7 @@ public abstract class ContentObject extends JahiaObject {
 
     public JCRNodeWrapper getJCRNode(ProcessingContext context) throws JahiaException {
         try {
-            return JCRSessionFactory.getInstance().getThreadSession(context.getUser()).getNodeByUUID("jahia",getUUID());
+            return JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID("jahia",getUUID());
         } catch (RepositoryException e) {
             throw new JahiaException("","",0,0,e);
         }

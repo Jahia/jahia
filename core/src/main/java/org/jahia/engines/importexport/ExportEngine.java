@@ -231,7 +231,7 @@ public class ExportEngine implements JahiaEngine {
                 return;
             } else if ("jcr".equals(processingContext.getParameter("exportformat"))) {
                 resp.setContentType("text/xml");
-                JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser());
+                JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
                 Node node = session.getNode(processingContext.getParameter("path"));
                 session.exportDocumentView(node.getPath(), outputStream, true, false);
                 outputStream.close();

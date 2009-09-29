@@ -136,7 +136,7 @@ public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
      */
     private Query createAllPortletsQuery() throws RepositoryException {
         String s = "select * from [jnt:portlet]";
-        QueryManager queryManager = sessionFactory.getThreadSession(Jahia.getThreadParamBean().getUser()).getWorkspace().getQueryManager();
+        QueryManager queryManager = sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager();
         return queryManager.createQuery(s, Query.JCR_SQL2);
     }
 

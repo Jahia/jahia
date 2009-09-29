@@ -7,7 +7,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.initializers.Templates;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
@@ -45,7 +44,7 @@ public class TemplateHelper {
             if (locale == null) {
                 locale = ctx.getLocale();
             }
-            JCRSessionWrapper session = sessionFactory.getThreadSession(ctx.getUser(), workspace, locale);
+            JCRSessionWrapper session = sessionFactory.getCurrentUserSession(workspace, locale);
             JCRNodeWrapper node = session.getNode(path);
             Resource r = new Resource(node, "html", null, template);
             ctx.getRequest().setAttribute("mode", "edit");
@@ -68,7 +67,7 @@ public class TemplateHelper {
     public static List<String[]> getTemplatesSet(String path, ProcessingContext ctx) throws GWTJahiaServiceException {
         List<String[]> templatesPath = new ArrayList<String[]>();
         try {
-            JCRNodeWrapper node = sessionFactory.getThreadSession(ctx.getUser()).getNode(path);
+            JCRNodeWrapper node = sessionFactory.getCurrentUserSession().getNode(path);
             String def = null;
             if (node.hasProperty("j:defaultTemplate")) {
                 templatesPath.add(new String[]{"--unset--", "--unset--"});

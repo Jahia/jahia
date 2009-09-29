@@ -101,7 +101,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
             jParams.setAttribute("fieldId", windowID);
             String portletOutput = servicesRegistry.getApplicationsDispatchService().getAppOutput(fieldId, entryPointIDStr, jParams);
             try {
-                JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(jParams.getUser()).getNodeByUUID(entryPointIDStr);
+                JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(entryPointIDStr);
                 String nodeTypeName = node.getPrimaryNodeTypeName();
                 /** todo cleanup the hardcoded value here */
                 if ("jnt:htmlPortlet".equals(nodeTypeName)) {

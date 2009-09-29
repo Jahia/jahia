@@ -69,6 +69,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.log4j.Logger;
 import org.jahia.bin.errors.ErrorHandler;
+import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;

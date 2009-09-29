@@ -218,7 +218,7 @@ public class ZipHelper {
     private static JCRNodeWrapper ensureDir(String path, JahiaUser user) throws RepositoryException {
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
         try {
-            return jcr.getSessionFactory().getThreadSession(user).getNode(path);
+            return jcr.getSessionFactory().getCurrentUserSession().getNode(path);
         } catch (PathNotFoundException e) {
             int endIndex = path.lastIndexOf('/');
             if (endIndex == -1) {
@@ -241,7 +241,7 @@ public class ZipHelper {
         for (String path : paths) {
             JCRNodeWrapper nodeToZip;
             try {
-                nodeToZip = sessionFactory.getThreadSession(user).getNode(path);
+                nodeToZip = sessionFactory.getCurrentUserSession().getNode(path);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(e.toString()).toString());
@@ -264,7 +264,7 @@ public class ZipHelper {
             }
             JCRNodeWrapper parent;
             try {
-                parent = sessionFactory.getThreadSession(user).getNode(parentPath);
+                parent = sessionFactory.getCurrentUserSession().getNode(parentPath);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -298,7 +298,7 @@ public class ZipHelper {
         for (String path : paths) {
             JCRNodeWrapper nodeToUnzip;
             try {
-                nodeToUnzip = sessionFactory.getThreadSession(user).getNode(path);
+                nodeToUnzip = sessionFactory.getCurrentUserSession().getNode(path);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(e.toString()).toString());
@@ -321,7 +321,7 @@ public class ZipHelper {
             }
             JCRNodeWrapper parent;
             try {
-                parent = sessionFactory.getThreadSession(user).getNode(parentPath);
+                parent = sessionFactory.getCurrentUserSession().getNode(parentPath);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());

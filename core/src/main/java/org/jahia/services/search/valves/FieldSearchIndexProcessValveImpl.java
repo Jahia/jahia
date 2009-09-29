@@ -341,7 +341,7 @@ public class FieldSearchIndexProcessValveImpl implements
                 public String[] doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     String strVal = null;
                     String[] values = new String[] { "" };
-                    JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(context.getUser()).getNode(jcrPath);
+                    JCRNodeWrapper file = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(jcrPath);
 
                     if (file != null && !file.isCollection()) {
                         JCRFileContent fileContent = file.getFileContent();

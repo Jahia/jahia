@@ -83,7 +83,7 @@ public class BookmarksItemsResolver   extends DefaultItemsResolver {
       */
      private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
          try {
-             JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getThreadSession(jahiaUser).getNodeByUUID(uuid);
+             JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession().getNodeByUUID(uuid);
              return (ContentPage) nodeWrapper.getContentObject();
          } catch (Exception e) {
              logger.error(e, e);

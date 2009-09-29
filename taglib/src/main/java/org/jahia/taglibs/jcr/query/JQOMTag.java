@@ -40,7 +40,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.QueryResultAdapter;
 import org.jahia.services.render.Resource;
 import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.taglibs.query.QueryDefinitionTag;
 
 import javax.jcr.RepositoryException;
@@ -129,7 +128,7 @@ public class JQOMTag extends QueryDefinitionTag {
                     workspace = currentResource.getWorkspace();
                     locale = currentResource.getLocale();
                 }                
-                JCRSessionWrapper session = JCRSessionFactory.getInstance().getThreadSession((JahiaUser) p, workspace, locale);
+                JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
                 queryResult = session.getWorkspace().execute(queryModel);                
                 // execute query
                 if (logger.isDebugEnabled()) {

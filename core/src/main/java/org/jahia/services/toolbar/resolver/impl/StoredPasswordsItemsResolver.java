@@ -1,9 +1,7 @@
 package org.jahia.services.toolbar.resolver.impl;
 
-import org.jahia.services.toolbar.bean.ItemsGroup;
 import org.jahia.services.toolbar.bean.Item;
 import org.jahia.services.toolbar.resolver.ItemsResolver;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.data.JahiaData;
 
@@ -21,7 +19,7 @@ import java.util.Map;
 public class StoredPasswordsItemsResolver implements ItemsResolver {
     public List<Item> getItems(JahiaData jData) {
         try {
-            Map<String,String> pass = JCRSessionFactory.getInstance().getThreadSession(jData.getProcessingContext().getUser()).getStoredPasswordsProviders();
+            Map<String,String> pass = JCRSessionFactory.getInstance().getCurrentUserSession().getStoredPasswordsProviders();
         } catch (RepositoryException e) {
             e.printStackTrace();
         }

@@ -115,6 +115,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaInterface;
+import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.content.ContentPageKey;
 import org.jahia.engines.importexport.ExportEngine;
 import org.jahia.engines.login.Login_Engine;
@@ -3320,7 +3321,7 @@ public class ProcessingContext {
         if (getTheUser() == null) {
             setUserGuest();
         }
-
+        JcrSessionFilter.setCurrentUser(theUser);
         try {
             AdvPreviewSettings.setThreadLocalAdvPreviewSettings(getSessionState());
         } catch ( Throwable t ){

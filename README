@@ -18,8 +18,8 @@
 ------------------------------------------------------------------------------
 
  Requirements :
- - JDK 1.5 or later (1.6 is not yet supported for compilation)
- - Maven 2
+ - JDK 1.5 or later 
+ - Maven 2.1 (won't work with Apple Mac OS X default Maven 2.0.9 for example !)
  - Subversion client (for Windows at http://www.collab.net/downloads/subversion/
    for Mac OS X from http://www.finkproject.org/ or Xcode tools, under
    Linux install a subversion client from your package repository). Basically,

@@ -53,6 +53,26 @@
     </dependencies>
     <profiles>
         <profile>
+            <id>excludeBeforeJDK16</id>
+            <activation>
+                <jdk>[1.5,1.6)</jdk>
+            </activation>
+            <build>
+              <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <excludes>
+                            <exclude>**/*CrawlingPageVisitorTest*.java</exclude>
+                            <exclude>**/*CrawlDBTestUtil*.java</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+              </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>testJahia</id>
             <build>
                 <resources>

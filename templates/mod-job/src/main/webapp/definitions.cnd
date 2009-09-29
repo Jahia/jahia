@@ -1,0 +1,17 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:job] > jnt:container, mix:title
+	smallText       reference
+	smallText       businessUnit facetable
+	sharedSmallText contract (choicelist) facetable  < contract1, contract2, contract3, contract4
+	smallText       town
+	smallText       country (choicelist) facetable  < country()
+	smallText       educationLevel analyzer='keyword' 
+	bigText         skills
+	containerList   applications (jnt:jobApplication)
+	
+[jnt:jobApplication] > jnt:container
+	sharedSmallText firstname
+	sharedSmallText lastname primary 
+	sharedSmallText email
+	bigText         text

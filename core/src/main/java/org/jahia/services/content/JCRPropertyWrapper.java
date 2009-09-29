@@ -45,5 +45,11 @@ import javax.jcr.RepositoryException;
  * Last Modified : $Date$
  */
 public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
+    /**
+     * @deprecated use getNode instead
+     * @return
+     * @throws ValueFormatException
+     * @throws RepositoryException
+     */
     CategoryBean getCategory() throws ValueFormatException, RepositoryException;
 }

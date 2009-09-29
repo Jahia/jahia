@@ -53,7 +53,7 @@ import java.util.List;
  */
 public class ContentToolbar extends TopBar {
 
-    private LayoutContainer m_component;
+    private ActionToolbarLayoutContainer m_component;
 
     private ManagerConfiguration configuration;
 
@@ -144,15 +144,8 @@ public class ContentToolbar extends TopBar {
             isImage = topTableSelection.get(0).getNodeTypes().contains("jmix:image");
         }
 
-//        for (ContentActionItemGroup group : configuration.getGroupedItems()) {
-//            for (ActionItem item : group.getItems()) {
-//                if (item instanceof ManagerSelectionHandler) {
-//                    ((ManagerSelectionHandler) item).enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
-//                }
-//            }
-//        }
 
-        //m_component.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
+        m_component.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
 
     }
 

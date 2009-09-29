@@ -1,0 +1,14 @@
+<jArt = 'http://www.jahia.org/jahia/jahia_article/nt/1.0'>
+
+[jArt:paragraph] > jnt:mainContentContainer, jmix:structuredContent
+bigText         insertText
+sharedSmallText insertType (choicelist[resourceBundle]) = quote indexed=no < quote, exergue
+sharedSmallText insertPosition (choicelist[resourceBundle]) = left indexed=no < left, right
+integer         insertWidth = "150" indexed=no
+
+[jArt:article] > jnt:container, jmix:structuredContent
+smallText       title
+bigText         intro
++ * (jArt:paragraph)
+
+

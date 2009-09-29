@@ -41,7 +41,7 @@
         <version>6.5-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.templates</groupId>
-    <artifactId>jahiaArticle</artifactId>
+    <artifactId>mod-article</artifactId>
     <name>Jahia Article</name>
     <version>6.5-SNAPSHOT</version>
     <packaging>war</packaging>

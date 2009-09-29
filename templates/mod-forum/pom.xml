@@ -42,7 +42,7 @@
     <version>6.5-SNAPSHOT</version>
   </parent>
   <groupId>org.jahia.templates</groupId>
-  <artifactId>jahiaForum</artifactId>
+  <artifactId>mod-forum</artifactId>
   <name>Jahia Forum</name>
   <version>6.5-SNAPSHOT</version>
   <packaging>war</packaging>

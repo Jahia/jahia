@@ -56,7 +56,7 @@ Metadata :
                         <li>
                             <c:choose>
                             <c:when test="${property.type == jcrPropertyTypes.REFERENCE || property.type == jcrPropertyTypes.WEAKREFERENCE}">
-                                ${val.node.name}
+                                <template:module node="${val.node}"/>
                             </c:when>
                             <c:otherwise>
                                 ${val.string}

@@ -86,6 +86,9 @@ public class DefaultValueListener extends DefaultEventListener {
                 events.add(event);
             }
 
+            if (username != null && username.equals("system")) {
+                username = null;
+            }
             Session s = provider.getSystemSession(username,workspace);
 
             Iterator<Event> it = events.iterator();

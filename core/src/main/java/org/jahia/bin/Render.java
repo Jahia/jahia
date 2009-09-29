@@ -402,8 +402,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 renderContext.setMainResource(resource);
                 renderContext.setSite(paramBean.getSite());
 
-                resource.pushWrapper("wrapper.fullpage");
-                resource.pushWrapper("wrapper.bodywrapper");
+                if (!"true".equals(req.getParameter("ajaxcall"))) {
+                    resource.pushWrapper("wrapper.fullpage");
+                    resource.pushWrapper("wrapper.bodywrapper");
+                }
 
                 long lastModified = getLastModified(resource, renderContext);
 

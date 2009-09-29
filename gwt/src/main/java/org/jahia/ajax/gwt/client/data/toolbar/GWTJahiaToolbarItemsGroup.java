@@ -76,8 +76,6 @@ public class GWTJahiaToolbarItemsGroup implements Serializable {
     }
 
     public int getLayout() {
-        Log.debug("setGwtToolbarItems lyout");
-        
         return layout;
     }
 

@@ -74,7 +74,7 @@
                                 <bean class="org.jahia.services.search.savedsearch.JahiaSavedSearchViewSettings$ViewField">
                                     <property name="name" value="folder" />
                                     <property name="selected" value="true" />
-                                    <property name="resourceKey" value="org.jahia.engines.filemanager.Filemanager_Engine.openIEfolder.label" />
+                                    <property name="resourceKey" value="toolbar.manager.button.openIEFolder" />
                                 </bean>
                             </list>
                         </property>

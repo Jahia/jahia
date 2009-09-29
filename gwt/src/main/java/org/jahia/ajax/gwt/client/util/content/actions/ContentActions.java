@@ -402,7 +402,7 @@ public class ContentActions {
      * @param linker
      */
     public static void createFolder(final Linker linker) {
-        GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
+        GWTJahiaNode parent = linker.getMainNode();
         if (parent == null) {
             final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {

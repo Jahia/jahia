@@ -376,7 +376,6 @@
             <list>
                 <ref bean="org.jahia.toolbar.item.Live"/>
                 <ref bean="org.jahia.toolbar.item.Preview"/>
-                <!--<ref bean="org.jahia.toolbar.item.AdvancedPreview" display-title="false"/>-->
                 <ref bean="org.jahia.toolbar.item.Compare"/>
                 <!--<ref bean="org.jahia.toolbar.item.AdvancedCompare" display-title="false"/>-->
                 <ref bean="org.jahia.toolbar.item.Edit"/>
@@ -440,11 +439,6 @@
                 <property name="mode" value="preview"/>
             </bean>
         </property>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.item.AdvancedPreview"/>
-            </list>
-        </property>
     </bean>
 
     <!-- tools-->
@@ -463,7 +457,6 @@
                 <ref bean="org.jahia.toolbar.item.ContentManager"/>
                 <ref bean="org.jahia.toolbar.item.CategoryManager"/>
                 <ref bean="org.jahia.toolbar.item.SiteManager"/>
-                <ref bean="org.jahia.toolbar.item.GWTWorkflow"/>
                 <ref bean="org.jahia.toolbar.item.Pdisplay"/>
             </list>
         </property>
@@ -483,22 +476,6 @@
                 <ref bean="org.jahia.toolbar.item.FlushSite"/>
                 <ref bean="org.jahia.toolbar.item.FlushPage"/>
                 <ref bean="org.jahia.toolbar.item.FlushAllCaches"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Workflow -->
-    <bean id="org.jahia.toolbar.itemsgroup.Workflow" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="button-label"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="mode" value="edit,preview,compare"/>
-            </bean>
-        </property>
-        <property name="titleKey" value="toolbar.itemgroups.workflow"/>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.item.GWTWorkflow"/>
             </list>
         </property>
     </bean>
@@ -1246,21 +1223,6 @@
             <bean class="org.jahia.services.toolbar.bean.Selected">
                 <property name="classResolver"
                           value="org.jahia.services.toolbar.resolver.impl.OperationModeSelectedResolver"/>
-                <property name="inputResolver" value="preview"/>
-            </bean>
-        </property>
-    </bean>
-
-    <!-- Advanced Preview-->
-    <bean id="org.jahia.toolbar.item.AdvancedPreview" class="org.jahia.services.toolbar.bean.Item">
-        <property name="titleKey" value="button.advancedpreview"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-preview-min"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-preview-normal"/>
-        <property name="descriptionKey" value="operationMode.preview"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver"
-                          value="org.jahia.services.toolbar.resolver.impl.OperationModeVisibilityResolver"/>
                 <property name="inputResolver" value="preview"/>
             </bean>
         </property>

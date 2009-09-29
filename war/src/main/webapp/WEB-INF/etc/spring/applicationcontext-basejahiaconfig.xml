@@ -73,7 +73,6 @@
         <constructor-arg>
             <list>
                 <value>WEB-INF/var/scripts/groovy/</value>
-                <value>templates/</value>
             </list>
         </constructor-arg>
     </bean>

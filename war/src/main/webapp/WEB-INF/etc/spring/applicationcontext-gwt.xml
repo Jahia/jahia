@@ -20,7 +20,6 @@
                 /**/subscription.gwt=subscriptionServiceController
                 /**/toolbar.gwt=toolbarServiceController
                 /**/userManager.gwt=userManagerServiceController
-                /**/versioning.gwt=versioningServiceController
                 /**/workflow.gwt=workflowServiceController
             </value>
         </property>
@@ -121,11 +120,6 @@
         <property name="userManagerService" ref="JahiaUserManagerService"/>
         <property name="sitesService" ref="JahiaSitesService"/>
     </bean>
-
-    <bean name="versioningServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
-        <property name="remoteServiceName" value="gwtVersioningService"/>
-    </bean>
-    <bean name="gwtVersioningService" class="org.jahia.ajax.gwt.engines.versioning.server.RPCVersioningServiceImpl" scope="prototype"/>
 
     <bean name="workflowServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtWorkflowService"/>

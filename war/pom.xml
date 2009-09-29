@@ -83,18 +83,12 @@
                                 <module>org.jahia.ajax.gwt.module.admin.Admin</module>
                                 <module>org.jahia.ajax.gwt.module.contentmanager.ContentManager</module>
                                 <module>org.jahia.ajax.gwt.module.contentpicker.ContentPicker</module>
-                                <module>org.jahia.ajax.gwt.module.definition.ContentDefinition</module>
                                 <module>org.jahia.ajax.gwt.module.engines.Engines</module>
                                 <module>org.jahia.ajax.gwt.module.jobreport.JobReport</module>
-                                <module>org.jahia.ajax.gwt.module.pagepicker.PagePicker</module>
                                 <module>org.jahia.ajax.gwt.module.pdisplay.ProcessDisplay</module>
                                 <module>org.jahia.ajax.gwt.module.resources.Resources</module>
                                 <module>org.jahia.ajax.gwt.module.usergroup.UserGroupSelect</module>
-                                <module>org.jahia.ajax.gwt.module.versioning.VersionComparison</module>
-                                <module>org.jahia.ajax.gwt.module.workflow.WorkflowManager</module>
-
                                 <module>org.jahia.ajax.gwt.module.linkchecker.LinkChecker</module>
-
                                 <module>org.jahia.ajax.gwt.module.edit.Edit</module>
 
                             </modules>

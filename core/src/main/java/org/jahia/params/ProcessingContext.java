@@ -3321,7 +3321,6 @@ public class ProcessingContext {
         if (getTheUser() == null) {
             setUserGuest();
         }
-        JcrSessionFilter.setCurrentUser(theUser);
         try {
             AdvPreviewSettings.setThreadLocalAdvPreviewSettings(getSessionState());
         } catch ( Throwable t ){
@@ -3338,6 +3337,7 @@ public class ProcessingContext {
      * @param aUser JahiaUser
      */
     public void setTheUser(final JahiaUser aUser) {
+        JcrSessionFilter.setCurrentUser(aUser);
         this.theUser = aUser;
     }
 

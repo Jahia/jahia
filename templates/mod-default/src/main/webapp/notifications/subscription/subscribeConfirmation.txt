@@ -1,0 +1,25 @@
+
+
+${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},
+
+<% if (watchedContentLink != null) { %>
+${i18n.get("notifications.subscriptionConfirmation.notifiedOfChangesInContent", "you have been subscribed to be notified of changes in the following content:")} ${watchedContentLink.absoluteUrl}
+<% } else { %>
+${i18n.get("notifications.subscriptionConfirmation.notifiedOfChanges", "you have been subscribed to be notified of changes in the portal content.")}
+<% } %>
+
+${i18n.get("notifications.subscriptionConfirmation.confirm.text", "Please confirm your subscription by clicking the link below:")}
+${confirmationLink.absoluteUrl}
+
+${i18n.get("notifications.subscriptionConfirmation.cancel.text", "If you do not want to receive update notifications on this content, please follow the link:")}
+${cancellationLink.absoluteUrl}
+
+${i18n.get("notifications.common.farewell", "Sincerely Yours")}
+${i18n.get("notifications.common.farewell.signature", "Portal Team")}
+
+---
+${i18n.get("notifications.common.unsubscribe", "To unsubscribe from notifications for this content, please use the")}
+${unsubscribeLink.absoluteUrl}
+
+${i18n.get("notifications.common.updateProfile", "To update your profile or to stop receiving customized e-mail, please click")}
+${subscriptionManagementLink.absoluteUrl}

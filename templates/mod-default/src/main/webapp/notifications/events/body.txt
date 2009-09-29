@@ -1,0 +1,13 @@
+${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},
+<% msg = 'an event {0} occurred on the following page:' %>
+${i18n.getFormatted("notifications.events.default.eventOccurred", msg, eventType)} ${targetPage.absoluteUrl}
+
+${i18n.get("notifications.common.farewell", "Sincerely Yours")}
+${i18n.get("notifications.common.farewell.signature", "Portal Team")}
+
+---
+<% if (unsubscribeLink != null) { %>${i18n.get("notifications.common.unsubscribe", "To unsubscribe from notifications for this content, please use the")}
+${unsubscribeLink.absoluteUrl}
+<% } %>
+${i18n.get("notifications.common.updateProfile", "To update your profile or to stop receiving customized e-mail, please click")}
+${subscriptionManagementLink.absoluteUrl}

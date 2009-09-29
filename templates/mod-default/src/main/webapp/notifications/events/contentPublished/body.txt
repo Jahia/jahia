@@ -1,0 +1,25 @@
+
+
+${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},
+
+${i18n.get("notifications.events.contentPublished.contentChanged", "the content, you were subscribed to, has changed.")}
+<% if (!targetPages.isEmpty() || watchedContentLink != null) { %>
+
+${i18n.get("notifications.events.contentPublished.updatedPages", "Updated pages:")}
+<% if (!targetPages.isEmpty()) { 
+targetPages.each() {%>
+    ${it.absoluteUrl}
+<%}} else { %>
+    ${watchedContentLink.absoluteUrl}
+<% } %>
+<% } %>
+
+${i18n.get("notifications.common.farewell", "Sincerely Yours")}
+${i18n.get("notifications.common.farewell.signature", "Portal Team")}
+
+---
+${i18n.get("notifications.common.unsubscribe", "To unsubscribe from notifications for this content, please use the")}
+${unsubscribeLink.absoluteUrl}
+
+${i18n.get("notifications.common.updateProfile", "To update your profile or to stop receiving customized e-mail, please click")}
+${subscriptionManagementLink.absoluteUrl}

@@ -1,0 +1,28 @@
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>${i18n.get("notifications.unsubscribeConfirmation.subject", "[Jahia] Your confirmation is needed")}</title>
+</head>
+<body>
+<h2>${i18n.get("notifications.unsubscribeConfirmation.subject", "[Jahia] Your confirmation is needed")}</h2>
+<p>${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},</p>
+<p>
+<% if (watchedContentLink != null) { %>
+${i18n.get("notifications.unsubscribeConfirmation.notifiedOfChangesInContent", "you have been requested to stop notifications of changes in the following content:")} <a href="${watchedContentLink.absoluteUrl}">${i18n.get("notifications.unsubscribeConfirmation.watchedContentLink", "Watched content")}</a>.
+<% } else { %>
+${i18n.get("notifications.unsubscribeConfirmation.notifiedOfChanges", "you have been requested to stop notifications of changes in the portal content.")}
+<% } %>
+</p>
+
+<p>${i18n.get("notifications.unsubscribeConfirmation.confirm.text", "Please confirm your request by clicking the following link:")}<br>
+<a href="${confirmationLink.absoluteUrl}">${i18n.get("notifications.unsubscribeConfirmation.confirm.link", "Confirm unsubscribe request")}</a></p>
+
+<p>${i18n.get("notifications.common.farewell", "Sincerely Yours")}<br>${i18n.get("notifications.common.farewell.signature", "Portal Team")}</p>
+
+<hr>
+<p>${i18n.get("notifications.common.updateProfile", "To update your profile or to stop receiving customized e-mail, please click")} <a href="${subscriptionManagementLink.absoluteUrl}">${i18n.get("notifications.common.updateProfileLink", "here")}</a></p>
+
+</body>
+</html>

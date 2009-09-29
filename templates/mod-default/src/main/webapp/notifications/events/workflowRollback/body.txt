@@ -1,0 +1,18 @@
+${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},
+
+<% if (jobUser.getUser().equals(subscriber.getUser())) { %>${i18n.get("notifications.workflow.job.triggeredBy.sameUser", "the workflow job, triggered by you")}<% } else { %>${i18n.get("notifications.workflow.job.triggeredBy.otherUser", "the workflow job, triggered by")} ${jobUser.fullName}<% } %>${i18n.get("notifications.workflow.job.executionFinished", ", has finished its execution.")}
+
+${i18n.get("notifications.workflow.status.rollbacked", "The content has not been approved for publishing and has been refused. Please make appropriate modifications.")}
+
+<% if (jobComment != null) { %>
+${i18n.get("notifications.workflow.comment", "Comment")}:
+${jobComment}
+<% } %>
+${i18n.get("notifications.workflow.details.link", "Please check the details by clicking on the link:")} ${jobReportLink.absoluteUrl}
+
+${i18n.get("notifications.common.farewell", "Sincerely Yours")}
+${i18n.get("notifications.common.farewell.signature", "Portal Team")}
+
+---
+${i18n.get("notifications.common.updateProfile", "To update your profile or to stop receiving customized e-mail, please click")}
+${subscriptionManagementLink.absoluteUrl}

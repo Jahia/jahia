@@ -1,0 +1,18 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>${i18n.get("notifications.events.default.subject", "Notification alert")}</title>
+</head>
+<body>
+<h2>${i18n.get("notifications.events.default.subject", "Notification alert")}</h2>
+<p>${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},</p>
+<% msg = 'an event {0} occurred on the following page:' %>
+<p>${i18n.getFormatted("notifications.events.default.eventOccurred", msg, eventType)} <a href="${targetPage.absoluteUrl}">${targetPage.title}</a></p>
+
+<p>${i18n.get("notifications.common.farewell", "Sincerely Yours")}<br>${i18n.get("notifications.common.farewell.signature", "Portal Team")}</p>
+
+<hr>
+<p><% if (unsubscribeLink != null) { %>${i18n.get("notifications.events.common.unsubscribe", "To unsubscribe from notifications for this content, please use the")} <a href="${unsubscribeLink.absoluteUrl}">${i18n.get("notifications.common.unsubscribeLink", "unsubscribe service")}</a><br><% } %>
+${i18n.get("notifications.common.updateProfile", "To update your profile or to stop receiving customized e-mail, please click")} <a href="${subscriptionManagementLink.absoluteUrl}">${i18n.get("notifications.common.updateProfileLink", "here")}</a></p>
+</body>
+</html>

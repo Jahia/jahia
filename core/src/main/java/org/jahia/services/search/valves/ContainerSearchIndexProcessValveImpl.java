@@ -44,8 +44,7 @@ import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.search.*;
@@ -53,6 +52,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.LanguageCodeConverters;
 
+import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**
@@ -152,7 +152,7 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
      */
     protected String[] fillDocumentWithFields(Map<String, Object> contextMap,
                                               JahiaContainer container,
-                                              IndexableDocument doc) {
+                                              final IndexableDocument doc) {
 
         ProcessingContext context = (ProcessingContext) contextMap.get(PROCESSING_CONTEXT);
         List<String> valuesList = new ArrayList<String>();
@@ -167,7 +167,7 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
             logger.error("can't get definition", e);
         }
         while (fields.hasNext()) {
-            JahiaField field = fields.next();
+            final JahiaField field = fields.next();
             try {
                 JahiaFieldDefinition jahiaFieldDefinition = field.getDefinition();
                 if (!jahiaFieldDefinition.isIndexableField()) {
@@ -221,18 +221,20 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                 }
                 if (field instanceof JahiaFileFieldWrapper) {
                     doc.addFieldValues(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE, values);
-                    JahiaFileField fField = (JahiaFileField) field.getObject();
+                    final JahiaFileField fField = (JahiaFileField) field.getObject();
                     if (fField == null) {
                         return new String[]{};
                     }
-//                    JahiaUser root = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdminUser(0);
-                    JahiaUser root = Jahia.getThreadParamBean().getUser();
-                    JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(root).getNode(
-                            fField.getRealName());
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            JCRNodeWrapper file = session.getNode(fField.getRealName());
 
-                    if (!file.isCollection()) {
-                        doc.getChildIndexableDocuments().add(new Integer(field.getID()));
-                    }
+                            if (!file.isCollection()) {
+                                doc.getChildIndexableDocuments().add(new Integer(field.getID()));
+                            }
+                            return null;
+                        }
+                    });
                 } else if (field instanceof JahiaBigTextField) {
                     JahiaFieldXRefManager fieldXRefManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldXRefManager.class.getName());
                     List<String> fieldReferences = fieldXRefManager.getFieldReferences(field.getID(), field.getLanguageCode(), field.getWorkflowState());

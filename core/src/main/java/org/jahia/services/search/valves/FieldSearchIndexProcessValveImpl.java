@@ -44,14 +44,14 @@ import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.decorator.JCRFileContent;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.*;
 import org.jahia.services.content.rules.ExtractionService;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.search.*;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.LanguageCodeConverters;
 
+import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**
@@ -325,58 +325,67 @@ public class FieldSearchIndexProcessValveImpl implements
     }
 
     protected String[] fillDocumentWithFileField(
-            Map<String, Object> contextMap, String jcrPath,
-            IndexableDocument doc) {
+            Map<String, Object> contextMap, final String jcrPath,
+            final IndexableDocument doc) {
 
         Boolean applyFileFieldIndexationRule = (Boolean) contextMap
                 .get(APPLY_FILE_FIELD_INDEXATION_RULE);
         if (applyFileFieldIndexationRule == null) {
             applyFileFieldIndexationRule = Boolean.FALSE;
         }
-        String[] values = new String[] { "" };
         try {
-            String strVal = null;
-            ProcessingContext context = (ProcessingContext) contextMap.get(SearchIndexationPipeline.PROCESSING_CONTEXT);
 
-            JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(context.getUser()).getNode(jcrPath);
+            final ProcessingContext context = (ProcessingContext) contextMap.get(SearchIndexationPipeline.PROCESSING_CONTEXT);
 
-            if (file != null && !file.isCollection()) {
-                JCRFileContent fileContent = file.getFileContent();
-                doc.addFieldValue(JahiaSearchConstant.FILE_REALNAME, jcrPath);
-                doc.addFieldValue(JahiaSearchConstant.FILE_NAME, file.getName());
-                doc.addFieldValue(JahiaSearchConstant.FILE_SIZE, String
-                        .valueOf(fileContent.getContentLength()));
-                String contentType = fileContent.getContentType();
-                doc.setFieldValue(JahiaSearchConstant.FILE_CONTENT_TYPE,
-                        contentType);
-                doc.setFieldValue(JahiaSearchConstant.FILE_CREATOR,
-                        file.getCreationUser());
-                doc.setFieldValue(JahiaSearchConstant.FILE_LAST_CONTRIBUTOR,
-                        file.getModificationUser());
-                doc.setFieldValue(JahiaSearchConstant.FILE_LAST_MODIFICATION_DATE,
-                        String.valueOf(file.getLastModifiedAsDate()));
-                
-                if (contentType != null && !file.getPath().equals("#")) {
-                    strVal = ExtractionService.getInstance().getExtractedText(file, context);
+            String[] values = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String[]>() {
+                public String[] doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    String strVal = null;
+                    String[] values = new String[] { "" };
+                    JCRNodeWrapper file = JCRSessionFactory.getInstance().getThreadSession(context.getUser()).getNode(jcrPath);
 
-                    doc.addFieldValue(
-                            JahiaSearchConstant.FILE_CONTENT_FULLTEXT_SEARCH_FIELD,
-                            strVal);
-                    doc.addFieldValue(
-                            JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE,
-                            strVal);
+                    if (file != null && !file.isCollection()) {
+                        JCRFileContent fileContent = file.getFileContent();
+                        doc.addFieldValue(JahiaSearchConstant.FILE_REALNAME, jcrPath);
+                        doc.addFieldValue(JahiaSearchConstant.FILE_NAME, file.getName());
+                        doc.addFieldValue(JahiaSearchConstant.FILE_SIZE, String
+                                .valueOf(fileContent.getContentLength()));
+                        String contentType = fileContent.getContentType();
+                        doc.setFieldValue(JahiaSearchConstant.FILE_CONTENT_TYPE,
+                                contentType);
+                        doc.setFieldValue(JahiaSearchConstant.FILE_CREATOR,
+                                file.getCreationUser());
+                        doc.setFieldValue(JahiaSearchConstant.FILE_LAST_CONTRIBUTOR,
+                                file.getModificationUser());
+                        doc.setFieldValue(JahiaSearchConstant.FILE_LAST_MODIFICATION_DATE,
+                                String.valueOf(file.getLastModifiedAsDate()));
+
+                        if (contentType != null && !file.getPath().equals("#")) {
+                            strVal = ExtractionService.getInstance().getExtractedText(file, context);
+
+                            doc.addFieldValue(
+                                    JahiaSearchConstant.FILE_CONTENT_FULLTEXT_SEARCH_FIELD,
+                                    strVal);
+                            doc.addFieldValue(
+                                    JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE,
+                                    strVal);
+                        }
+                        doc.addFieldValues(
+                                JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE,
+                                new String[] { file.getName() });
+                    }
+
+                    if (strVal != null) {
+                        values = new String[] { strVal };
+                    }
+                    return values;
                 }
-                doc.addFieldValues(
-                        JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE,
-                        new String[] { file.getName() });
-            }
+            });
 
-            if (strVal != null) {
-                values = new String[] { strVal };
-            }
+            return values;
+
         } catch (Exception t) {
             logger.warn("Error parsing the file's content", t);
         }
-        return values;
+        return new String[] { "" };
     }
 }

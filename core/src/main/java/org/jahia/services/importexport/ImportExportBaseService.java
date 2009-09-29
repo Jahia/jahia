@@ -73,10 +73,7 @@ import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.*;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.mail.GroovyMimeMessagePreparator;
 import org.jahia.services.mail.MailService;
@@ -200,19 +197,24 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         public void update(Observable observable, Object args) {
             synchronized (args) {
-                List<File> files = (List<File>) args;
+                final List<File> files = (List<File>) args;
                 if (!files.isEmpty()) {
                     try {
-                        JCRNodeWrapper dest = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getThreadSession(JahiaAdminUser.getAdminUser(0)).getNode("/content/imports");
-                        for (Iterator<File> iterator = files.iterator(); iterator.hasNext();) {
-                            try {
-                                File file = (File) iterator.next();
-                                dest.uploadFile(file.getName(), new FileInputStream(file), Jahia.getStaticServletConfig().getServletContext().getMimeType(file.getName()));
-                            } catch (Exception t) {
-                                logger.error("file observer error : ", t);
+                        JCRTemplate .getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                JCRNodeWrapper dest = session.getNode("/content/imports");
+                                for (Iterator<File> iterator = files.iterator(); iterator.hasNext();) {
+                                    try {
+                                        File file = (File) iterator.next();
+                                        dest.uploadFile(file.getName(), new FileInputStream(file), Jahia.getStaticServletConfig().getServletContext().getMimeType(file.getName()));
+                                    } catch (Exception t) {
+                                        logger.error("file observer error : ", t);
+                                    }
+                                }
+                                session.save();
+                                return null;
                             }
-                        }
-                        dest.save();
+                        });
                     } catch (RepositoryException e) {
                         logger.error("error", e);
                     }

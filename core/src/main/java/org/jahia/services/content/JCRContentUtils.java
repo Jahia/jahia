@@ -369,32 +369,36 @@ public final class JCRContentUtils {
         return mimeTypes;
     }
 
-    public static boolean hasPermission(JahiaUser user, String role, String nodeUUID) {
+    public static boolean hasPermission(final JahiaUser user, final String role, final String nodeUUID) {
         try {
-            JCRNodeWrapper node = JCRSessionFactory.getInstance().getThreadSession(user).getNodeByUUID(nodeUUID);
-            Map<String, List<String[]>> aclEntriesMap = node.getAclEntries();
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRNodeWrapper node = session.getNodeByUUID(nodeUUID);
+                    Map<String, List<String[]>> aclEntriesMap = node.getAclEntries();
 
-            Set<Map.Entry<String,List<String[]>>> principalSet = aclEntriesMap.entrySet();
-            for (Map.Entry<String,List<String[]>> currentPrincipal : principalSet) {
-                boolean isUser = currentPrincipal.getKey().indexOf("u:") == 0;
-                String principalName = currentPrincipal.getKey().substring(2);
+                    Set<Map.Entry<String,List<String[]>>> principalSet = aclEntriesMap.entrySet();
+                    for (Map.Entry<String,List<String[]>> currentPrincipal : principalSet) {
+                        boolean isUser = currentPrincipal.getKey().indexOf("u:") == 0;
+                        String principalName = currentPrincipal.getKey().substring(2);
 
-                // test if the principal is the user or if the user belongs to the principal (group)
-                if ((isUser && principalName.equalsIgnoreCase(user.getUsername())) || user.isMemberOfGroup(Jahia.getThreadParamBean().getSiteID(), principalName)) {
-                    List<String[]> principalPermValues = currentPrincipal.getValue();
-                    for (String[] currentPrincipalPerm : principalPermValues) {
-                        String currentPrincipalPermValue = currentPrincipalPerm[1];
-                        String currentPrincipalPermName = currentPrincipalPerm[2];
-                        if (currentPrincipalPermName != null && currentPrincipalPermName.equalsIgnoreCase(role)) {
-                            if (currentPrincipalPermValue != null && currentPrincipalPermValue.equalsIgnoreCase("GRANT")) {
-                                return true;
+                        // test if the principal is the user or if the user belongs to the principal (group)
+                        if ((isUser && principalName.equalsIgnoreCase(user.getUsername())) || user.isMemberOfGroup(Jahia.getThreadParamBean().getSiteID(), principalName)) {
+                            List<String[]> principalPermValues = currentPrincipal.getValue();
+                            for (String[] currentPrincipalPerm : principalPermValues) {
+                                String currentPrincipalPermValue = currentPrincipalPerm[1];
+                                String currentPrincipalPermName = currentPrincipalPerm[2];
+                                if (currentPrincipalPermName != null && currentPrincipalPermName.equalsIgnoreCase(role)) {
+                                    if (currentPrincipalPermValue != null && currentPrincipalPermValue.equalsIgnoreCase("GRANT")) {
+                                        return true;
+                                    }
+                                }
                             }
                         }
-                    }
-                }
 
-            }
-            return false;
+                    }
+                    return false;
+                }
+            });
         } catch (Exception e) {
             logger.error(e,e);
             return false;

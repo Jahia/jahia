@@ -81,6 +81,13 @@ public class ItemsGroup extends Item implements Serializable, BeanNameAware {
         this.items = items;
     }
 
+    public void addItem(Item item){
+        if(items == null){
+          items = new ArrayList<Item>();
+        }
+        items.add(item);
+    }
+
     public List<Item> getRealItems(org.jahia.data.JahiaData jData) {
         if (itemsResolver != null) {
             return itemsResolver.getItems(jData);

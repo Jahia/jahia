@@ -257,32 +257,34 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         List<GWTJahiaToolbarItemsGroup> gwtToolbarItemsGroupList = new ArrayList<GWTJahiaToolbarItemsGroup>();
         int index = 0;
         for (Item item : toolbar.getItems()) {
+            ItemsGroup itemsGroup = null;
             if (item instanceof ItemsGroup) {
-                ItemsGroup itemsGroup = (ItemsGroup) item;
-                // add only itemsgroup that the user can view
-                Visibility visibility = itemsGroup.getVisibility();
-                if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
-                    GWTJahiaToolbarItemsGroup gwtItemsGroup = createGWTItemsGroup(pageContext, gwtToolbar.getName(), index, itemsGroup);
+                itemsGroup = (ItemsGroup) item;
+            } else {
+                // create a single item group
+                itemsGroup = new ItemsGroup();
+                itemsGroup.addItem(item);
+                itemsGroup.setLayout("button-label");
+                itemsGroup.setVisibility(item.getVisibility());
+            }
 
-                    // add itemsGroup only if not empty
-                    if (gwtItemsGroup != null && gwtItemsGroup.getGwtToolbarItems() != null && !gwtItemsGroup.getGwtToolbarItems().isEmpty()) {
-                        gwtToolbarItemsGroupList.add(gwtItemsGroup);
-                        // other itemsgroup will be lazy loaded
-                        if (!gwtToolbar.getState().isDisplay()) {
-                            break;
-                        }
+            // add only itemsgroup that the user can view
+            Visibility visibility = itemsGroup.getVisibility();
+            if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
+                GWTJahiaToolbarItemsGroup gwtItemsGroup = createGWTItemsGroup(pageContext, gwtToolbar.getName(), index, itemsGroup);
+
+                // add itemsGroup only if not empty
+                if (gwtItemsGroup != null && gwtItemsGroup.getGwtToolbarItems() != null && !gwtItemsGroup.getGwtToolbarItems().isEmpty()) {
+                    gwtToolbarItemsGroupList.add(gwtItemsGroup);
+                    // other itemsgroup will be lazy loaded
+                    if (!gwtToolbar.getState().isDisplay()) {
+                        break;
                     }
-                } else {
-                    logger.debug("toolbar[" + gwtToolbar.getName() + "] - itemsGroup [" + itemsGroup.getId() + "," + itemsGroup.getTitleKey() + "]  not visible");
                 }
             } else {
-                GWTJahiaToolbarItemsGroup gwtItemsGroup = new GWTJahiaToolbarItemsGroup();
-                gwtItemsGroup.setId(gwtToolbar.getName() + "_" + index);
-                List<GWTJahiaToolbarItem> items = new ArrayList<GWTJahiaToolbarItem>();
-                addItem(pageContext, jData, items, item);
-                gwtItemsGroup.setGwtToolbarItems(items);                
-                gwtToolbarItemsGroupList.add(gwtItemsGroup);
+                logger.debug("toolbar[" + gwtToolbar.getName() + "] - itemsGroup [" + itemsGroup.getId() + "," + itemsGroup.getTitleKey() + "]  not visible");
             }
+
             index++;
         }
         gwtToolbar.setGwtToolbarItemsGroups(gwtToolbarItemsGroupList);
@@ -357,7 +359,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         gwtToolbarItemsGroup.setType(itemsGroup.getId());
 
         String layout = itemsGroup.getLayout();
-        int layoutInt = 0;
+        int layoutInt = ToolbarConstants.ITEMSGROUP_BUTTON_LABEL;
         if (layout.equalsIgnoreCase("button")) {
             layoutInt = ToolbarConstants.ITEMSGROUP_BUTTON;
         } else if (layout.equalsIgnoreCase("label")) {

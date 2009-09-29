@@ -96,7 +96,6 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.Switchingmode"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
-                <!--<ref bean="org.jahia.toolbar.itemsgroup.ContentAction"/>-->
                 <ref bean="org.jahia.toolbar.itemsgroup.Tools"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.Cache"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.Preview"/>

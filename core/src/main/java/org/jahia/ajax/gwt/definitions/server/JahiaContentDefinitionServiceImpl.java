@@ -32,7 +32,7 @@
 package org.jahia.ajax.gwt.definitions.server;
 
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
-import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
+import org.jahia.ajax.gwt.helper.ContentDefinitionHelper;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -45,16 +45,22 @@ import java.util.*;
  * Time: 6:26:11 PM
  */
 public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implements JahiaContentDefinitionService {
+    private ContentDefinitionHelper contentDefinition;
+
+    public void setContentDefinition(ContentDefinitionHelper contentDefinition) {
+        this.contentDefinition = contentDefinition;
+    }
+
     public GWTJahiaNodeType getNodeType(String name) {
-        return ContentDefinitionHelper.getNodeType(name, retrieveParamBean());
+        return contentDefinition.getNodeType(name, retrieveParamBean());
     }
 
     public Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> getNodeTypes() {
-        return ContentDefinitionHelper.getNodeTypes(retrieveParamBean());
+        return contentDefinition.getNodeTypes(retrieveParamBean());
     }
 
     public List<GWTJahiaNodeType> getNodeTypes(List<String> names) {
-        return ContentDefinitionHelper.getNodeTypes(names, retrieveParamBean());
+        return contentDefinition.getNodeTypes(names, retrieveParamBean());
     }
 
     /**
@@ -69,6 +75,6 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
      *         sub-types of the specified base type
      */
     public List<GWTJahiaNodeType> getNodeSubtypes(String baseType, GWTJahiaNode parentNode) {
-        return ContentDefinitionHelper.getNodeSubtypes(baseType, parentNode, retrieveParamBean());
+        return contentDefinition.getNodeSubtypes(baseType, parentNode, retrieveParamBean());
     }
 }

@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.content.server.helper;
+package org.jahia.ajax.gwt.helper;
 
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.params.ParamBean;
@@ -24,8 +24,18 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class TemplateHelper {
-    private static JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
     private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(TemplateHelper.class);
+
+    private JCRSessionFactory sessionFactory;
+    private RenderService renderService;
+
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public void setRenderService(RenderService renderService) {
+        this.renderService = renderService;
+    }
 
     /**
      * Get rendered content
@@ -38,7 +48,7 @@ public class TemplateHelper {
      * @param editMode
      * @param ctx             @return   @throws GWTJahiaServiceException
      */
-    public static String getRenderedContent(String path, String workspace, Locale locale, String template, String templateWrapper, boolean editMode, ParamBean ctx) throws GWTJahiaServiceException {
+    public String getRenderedContent(String path, String workspace, Locale locale, String template, String templateWrapper, boolean editMode, ParamBean ctx) throws GWTJahiaServiceException {
         String res = null;
         try {
             if (locale == null) {
@@ -54,7 +64,7 @@ public class TemplateHelper {
             renderContext.setMainResource(r);
             r.pushWrapper(templateWrapper);
 //            renderContext.setTemplateWrapper(templateWrapper);
-            res = RenderService.getInstance().render(r, renderContext);
+            res = renderService.render(r, renderContext);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {
@@ -64,7 +74,7 @@ public class TemplateHelper {
 
     }
 
-    public static List<String[]> getTemplatesSet(String path, ProcessingContext ctx) throws GWTJahiaServiceException {
+    public List<String[]> getTemplatesSet(String path, ProcessingContext ctx) throws GWTJahiaServiceException {
         List<String[]> templatesPath = new ArrayList<String[]>();
         try {
             JCRNodeWrapper node = sessionFactory.getCurrentUserSession().getNode(path);
@@ -95,7 +105,7 @@ public class TemplateHelper {
         return templatesPath;
     }
 
-    public static SortedSet<Template> getTemplatesSet(JCRNodeWrapper node) throws RepositoryException {
+    public SortedSet<Template> getTemplatesSet(JCRNodeWrapper node) throws RepositoryException {
         ExtendedNodeType nt = node.getPrimaryNodeType();
         SortedSet<Template> set;
         SortedSet<Template> result = new TreeSet<Template>();
@@ -103,13 +113,13 @@ public class TemplateHelper {
 
             set = getTemplatesSet((JCRNodeWrapper) node.getProperty("j:node").getNode());
         } else if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
-            set = RenderService.getInstance().getTemplatesSet(nt);
+            set = renderService.getTemplatesSet(nt);
             List<JCRNodeWrapper> l = node.getChildren();
             for (JCRNodeWrapper c : l) {
                 set.addAll(getTemplatesSet(c));
             }
         } else {
-            set = RenderService.getInstance().getTemplatesSet(nt);
+            set = renderService.getTemplatesSet(nt);
         }
         for (Template template : set) {
             if (!template.getKey().startsWith("wrapper") && !template.getKey().startsWith("skin")) {

@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.content.server.helper;
+package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.StringValue;
@@ -9,7 +9,6 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
-import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
@@ -20,7 +19,6 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.SelectorType;
-import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeDefinition;
@@ -35,12 +33,20 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class PropertiesHelper {
-    private static JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
-
     private static Logger logger = Logger.getLogger(PropertiesHelper.class);
 
+    private JCRSessionFactory sessionFactory;
+    private ContentDefinitionHelper contentDefinition;
 
-    public static Map<String, GWTJahiaNodeProperty> getProperties(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public void setContentDefinition(ContentDefinitionHelper contentDefinition) {
+        this.contentDefinition = contentDefinition;
+    }
+
+    public Map<String, GWTJahiaNodeProperty> getProperties(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
         JCRNodeWrapper objectNode;
         try {
             objectNode = sessionFactory.getCurrentUserSession(null, jParams.getLocale()).getNode(path);
@@ -72,7 +78,7 @@ public class PropertiesHelper {
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>(values.length);
 
                     for (Value val : values) {
-                        gwtValues.add(ContentDefinitionHelper.convertValue(val, def.getRequiredType()));
+                        gwtValues.add(contentDefinition.convertValue(val, def.getRequiredType()));
                     }
                     nodeProp.setValues(gwtValues);
                     props.put(nodeProp.getName(), nodeProp);
@@ -109,7 +115,7 @@ public class PropertiesHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          sthg bad happened
      */
-    public static void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, ProcessingContext context) throws GWTJahiaServiceException {
+    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, ProcessingContext context) throws GWTJahiaServiceException {
         Locale locale = context.getCurrentLocale();
         String workspace = "default";
 
@@ -131,7 +137,7 @@ public class PropertiesHelper {
         }
     }
 
-    public static void setProperties(Node objectNode, List<GWTJahiaNodeProperty> newProps) {
+    public void setProperties(Node objectNode, List<GWTJahiaNodeProperty> newProps) {
         for (GWTJahiaNodeProperty prop : newProps) {
             try {
                 if (prop != null && !prop.getName().equals("*")) {
@@ -143,7 +149,7 @@ public class PropertiesHelper {
                     if (prop.isMultiple()) {
                         List<Value> values = new ArrayList<Value>();
                         for (GWTJahiaNodePropertyValue val : prop.getValues()) {
-                            values.add(ContentDefinitionHelper.convertValue(val));
+                            values.add(contentDefinition.convertValue(val));
                         }
                         Value[] finalValues = new Value[values.size()];
                         values.toArray(finalValues);
@@ -179,7 +185,7 @@ public class PropertiesHelper {
                                 }
                             } else {
                                 if (propValue != null && propValue.getString() != null) {
-                                    Value value = ContentDefinitionHelper.convertValue(propValue);
+                                    Value value = contentDefinition.convertValue(propValue);
                                     objectNode.setProperty(prop.getName(), value);
                                 } else {
                                     if (objectNode.hasProperty(prop.getName())) {
@@ -215,7 +221,7 @@ public class PropertiesHelper {
         }
     }
 
-    public static List<Value> getCategoryPathValues(String value) {
+    public List<Value> getCategoryPathValues(String value) {
         if (value == null || value.length() == 0) {
             return Collections.EMPTY_LIST;
         }

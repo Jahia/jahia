@@ -29,30 +29,24 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.aclmanagement.server;
+package org.jahia.ajax.gwt.helper;
 
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.acl.JahiaACLEntry;
-import org.jahia.services.acl.ParentACLFinder;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.model.JahiaAcl;
+import org.jahia.hibernate.model.JahiaAclEntry;
+import org.jahia.params.ProcessingContext;
 import org.jahia.services.acl.ACLResourceInterface;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.acl.JahiaACLEntry;
+import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.acl.ParentACLFinder;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.pages.JahiaPageContentRights;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.containers.ContentContainerList;
-import org.jahia.hibernate.model.JahiaAclEntry;
-import org.jahia.hibernate.model.JahiaAcl;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.exceptions.JahiaException;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.params.ProcessingContext;
-import org.jahia.content.ContentObject;
-import org.jahia.bin.Jahia;
-import org.apache.log4j.Logger;
 
 import java.util.*;
 
@@ -61,18 +55,28 @@ import java.util.*;
  * Date: Nov 26, 2008 - 7:40:56 PM
  */
 public class ACLHelper {
-
     private final static Logger logger = Logger.getLogger(ACLHelper.class);
 
-    public static GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, ProcessingContext jParams) {
+    private JahiaGroupManagerService jahiaGroupManagerService;
+    private JahiaUserManagerService jahiaUserManagerService;
+
+    public void setJahiaGroupManagerService(JahiaGroupManagerService jahiaGroupManagerService) {
+        this.jahiaGroupManagerService = jahiaGroupManagerService;
+    }
+
+    public void setJahiaUserManagerService(JahiaUserManagerService jahiaUserManagerService) {
+        this.jahiaUserManagerService = jahiaUserManagerService;
+    }
+
+    public GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, ProcessingContext jParams) {
         return getGWTJahiaNodeACL(baseACL, false, jParams);
     }
 
-    public static GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, boolean newAcl, ProcessingContext jParams) {
+    public GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, boolean newAcl, ProcessingContext jParams) {
         return getGWTJahiaNodeACL(baseACL, null,null, newAcl, jParams);
     }
 
-    public static GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, ACLResourceInterface resource, ParentACLFinder finder, boolean newAcl, ProcessingContext jParams) {
+    public GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, ACLResourceInterface resource, ParentACLFinder finder, boolean newAcl, ProcessingContext jParams) {
         GWTJahiaNodeACL gwtacl = new GWTJahiaNodeACL();
         List<GWTJahiaNodeACE> aces = new ArrayList<GWTJahiaNodeACE>();
 
@@ -124,7 +128,7 @@ public class ACLHelper {
         usersKeys.addAll(localUsers.keySet());
 
         for (String group : groupsKeys) {
-            JahiaGroup jahiaGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(group);
+            JahiaGroup jahiaGroup = jahiaGroupManagerService.lookupGroup(group);
             String name = jahiaGroup.getGroupname();
             if (name.equals(JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME)) {
                 continue;
@@ -138,7 +142,7 @@ public class ACLHelper {
         }
 
         for (String user : usersKeys) {
-            JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(user);
+            JahiaUser jahiaUser = jahiaUserManagerService.lookupUserByKey(user);
             GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
             ace.setPrincipalType('u');
             ace.setPrincipal(jahiaUser.getUsername());
@@ -152,21 +156,21 @@ public class ACLHelper {
         return gwtacl;
     }
 
-    private static void setGwtAce(GWTJahiaNodeACE ace, JahiaAclEntry e, JahiaAclEntry inherited) {
+    private void setGwtAce(GWTJahiaNodeACE ace, JahiaAclEntry e, JahiaAclEntry inherited) {
         ace.setInherited(e == null);
         ace.setPermissions(getPermissions(e));
         ace.setInheritedPermissions(getPermissions(inherited));
-        if (inherited != null) {
-            ContentObject contentObject = getInheritedFrom(inherited);
-            if (contentObject != null) {
-                String name = contentObject.getDisplayName(Jahia.getThreadParamBean());
-                ace.setInheritedFrom(name);
-            }
-        }
+//        if (inherited != null) {
+//            ContentObject contentObject = getInheritedFrom(inherited);
+//            if (contentObject != null) {
+//                String name = contentObject.getDisplayName(Jahia.getThreadParamBean());
+//                ace.setInheritedFrom(name);
+//            }
+//        }
     }
 
-    public static GWTJahiaNodeACE createUsersGroupACE(List<String> permissions, boolean grand,ProcessingContext jParams) {
-        JahiaGroup usersGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(jParams.getSiteID(), JahiaGroupManagerService.USERS_GROUPNAME);
+    public GWTJahiaNodeACE createUsersGroupACE(List<String> permissions, boolean grand,ProcessingContext jParams) {
+        JahiaGroup usersGroup = jahiaGroupManagerService.lookupGroup(jParams.getSiteID(), JahiaGroupManagerService.USERS_GROUPNAME);
         GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
         ace.setPrincipalType('g');
         ace.setPrincipal(usersGroup.getGroupname());
@@ -185,38 +189,38 @@ public class ACLHelper {
         return ace;
     }
 
-    private static ContentObject getInheritedFrom(JahiaAclEntry inherited) {
-        try {
-            ContentObject inheritedObject;
-            Set<Integer> acls = Collections.singleton(inherited.getComp_id().getId().getId());
-            List<JahiaPageContentRights> pageContentRightsList = ServicesRegistry.getInstance().getJahiaPageService().getPageIDsWithAclIDs(acls);
-            for (JahiaPageContentRights jahiaPageContentRights : pageContentRightsList) {
-                inheritedObject = ContentPage.getPage(jahiaPageContentRights.getPageID());
-                if (inheritedObject != null && !inheritedObject.isAclSameAsParent()) {
-                    return inheritedObject;
-                }
-            }
-            List<Integer> containerIds = ServicesRegistry.getInstance().getJahiaContainersService().getContainerListIDsHavingAcls(acls);
-            for (Integer integer : containerIds) {
-                inheritedObject = ContentContainer.getContainer(integer);
-                if (inheritedObject != null && !inheritedObject.isAclSameAsParent()) {
-                    return inheritedObject;
-                }
-            }
-            List<Integer> containerListIds = ServicesRegistry.getInstance().getJahiaContainersService().getContainerIDsHavingAcls(acls);
-            for (Integer integer : containerListIds) {
-                inheritedObject = ContentContainerList.getContainerList(integer);
-                if (inheritedObject != null && !inheritedObject.isAclSameAsParent()) {
-                    return inheritedObject;
-                }
-            }
-        } catch (JahiaException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return null;
-    }
+//    private ContentObject getInheritedFrom(JahiaAclEntry inherited) {
+//        try {
+//            ContentObject inheritedObject;
+//            Set<Integer> acls = Collections.singleton(inherited.getComp_id().getId().getId());
+//            List<JahiaPageContentRights> pageContentRightsList = ServicesRegistry.getInstance().getJahiaPageService().getPageIDsWithAclIDs(acls);
+//            for (JahiaPageContentRights jahiaPageContentRights : pageContentRightsList) {
+//                inheritedObject = ContentPage.getPage(jahiaPageContentRights.getPageID());
+//                if (inheritedObject != null && !inheritedObject.isAclSameAsParent()) {
+//                    return inheritedObject;
+//                }
+//            }
+//            List<Integer> containerIds = ServicesRegistry.getInstance().getJahiaContainersService().getContainerListIDsHavingAcls(acls);
+//            for (Integer integer : containerIds) {
+//                inheritedObject = ContentContainer.getContainer(integer);
+//                if (inheritedObject != null && !inheritedObject.isAclSameAsParent()) {
+//                    return inheritedObject;
+//                }
+//            }
+//            List<Integer> containerListIds = ServicesRegistry.getInstance().getJahiaContainersService().getContainerIDsHavingAcls(acls);
+//            for (Integer integer : containerListIds) {
+//                inheritedObject = ContentContainerList.getContainerList(integer);
+//                if (inheritedObject != null && !inheritedObject.isAclSameAsParent()) {
+//                    return inheritedObject;
+//                }
+//            }
+//        } catch (JahiaException e) {
+//            logger.error(e.getMessage(), e);
+//        }
+//        return null;
+//    }
 
-    private static Map<String, String> getPermissions(JahiaAclEntry e) {
+    private Map<String, String> getPermissions(JahiaAclEntry e) {
         Map<String, String> perms = new HashMap<String, String>();
         if (e != null) {
             if (e.getPermission(JahiaBaseACL.READ_RIGHTS) == JahiaAclEntry.ACL_YES) perms.put("read", "GRANT");
@@ -229,7 +233,7 @@ public class ACLHelper {
         return perms;
     }
 
-    public static JahiaBaseACL saveACL(GWTJahiaNodeACL acl, JahiaBaseACL baseACL, boolean newAcl) throws JahiaException {
+    public JahiaBaseACL saveACL(GWTJahiaNodeACL acl, JahiaBaseACL baseACL, boolean newAcl) throws JahiaException {
         if (newAcl) {
             JahiaBaseACL jAcl = new JahiaBaseACL();
             jAcl.create(baseACL.getID());
@@ -243,13 +247,13 @@ public class ACLHelper {
             if (!ace.isInherited()) {
                 switch (ace.getPrincipalType()) {
                     case 'u': {
-                        JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(ace.getPrincipalKey());
+                        JahiaUser user = jahiaUserManagerService.lookupUserByKey(ace.getPrincipalKey());
                         JahiaAclEntry permissions = createAclEntry(ace);
                         baseACL.setUserEntry(user, permissions);
                         break;
                     }
                     case 'g': {
-                        JahiaGroup group = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(ace.getPrincipalKey());
+                        JahiaGroup group = jahiaGroupManagerService.lookupGroup(ace.getPrincipalKey());
                         JahiaAclEntry permissions = createAclEntry(ace);
                         baseACL.setGroupEntry(group, permissions);
                         break;
@@ -261,7 +265,7 @@ public class ACLHelper {
         return baseACL;
     }
 
-    private static JahiaAclEntry createAclEntry(GWTJahiaNodeACE ace) {
+    private JahiaAclEntry createAclEntry(GWTJahiaNodeACE ace) {
         JahiaAclEntry permissions = new JahiaAclEntry();
         permissions.setPermission(JahiaBaseACL.READ_RIGHTS, "GRANT".equals(ace.getPermissions().get("read")) ? JahiaACLEntry.ACL_YES : JahiaACLEntry.ACL_NO);
         permissions.setPermission(JahiaBaseACL.WRITE_RIGHTS, "GRANT".equals(ace.getPermissions().get("write")) ? JahiaACLEntry.ACL_YES : JahiaACLEntry.ACL_NO);

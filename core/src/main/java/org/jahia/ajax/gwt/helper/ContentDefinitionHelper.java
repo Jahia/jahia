@@ -29,36 +29,30 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.definitions.server;
+package org.jahia.ajax.gwt.helper;
 
+import org.apache.jackrabbit.value.*;
+import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaPropertyDefinition;
-import org.jahia.ajax.gwt.content.server.helper.NavigationHelper;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.bin.Jahia;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.operations.valves.ThemeValve;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.content.nodetypes.*;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRValueWrapper;
+import org.jahia.services.content.nodetypes.*;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.FileUtils;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.bin.Jahia;
-import org.jahia.operations.valves.ThemeValve;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.apache.log4j.Logger;
-import org.apache.commons.collections.FastHashMap;
-import org.apache.jackrabbit.value.*;
 
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.Value;
-import javax.jcr.RepositoryException;
-import javax.jcr.PropertyType;
-import java.util.*;
 import java.io.File;
+import java.util.*;
 
 /**
  * Helper class for accessing node types and definitions. 
@@ -67,22 +61,26 @@ import java.io.File;
  * Date: Sep 12, 2008 - 11:48:20 AM
  */
 public class ContentDefinitionHelper {
-
     private static final Logger logger = Logger.getLogger(ContentDefinitionHelper.class) ;
+
+    private NavigationHelper navigation;
+
+    public void setNavigation(NavigationHelper navigation) {
+        this.navigation = navigation;
+    }
 
     private static final List<String> excludedItems = Arrays.asList("j:locktoken", "jcr:lockOwner", "jcr:lockIsDeep",
             "j:nodename", "j:fullpath", "j:applyAcl", "jcr:uuid", "j:fieldsinuse");
     
     private static final List<String> excludedTypes = Arrays.asList("nt:base", "jnt:workflow", "jnt:extraResource");
     
-    private static final Comparator<GWTJahiaNodeType> gwtJahiaNodeTypeNameComparator = new Comparator<GWTJahiaNodeType>() {
+    private final Comparator<GWTJahiaNodeType> gwtJahiaNodeTypeNameComparator = new Comparator<GWTJahiaNodeType>() {
         public int compare(GWTJahiaNodeType o1, GWTJahiaNodeType o2) {
             return o1.getName().compareTo(o2.getName());
         }
     };
-    public static Map<String,String> nodetypeIcons;
 
-    public static GWTJahiaNodeType getNodeType(String name, ProcessingContext context) {
+    public GWTJahiaNodeType getNodeType(String name, ProcessingContext context) {
         ExtendedNodeType nodeType = null;
         try {
             nodeType = NodeTypeRegistry.getInstance().getNodeType(name);
@@ -93,7 +91,7 @@ public class ContentDefinitionHelper {
         return gwt;
     }
 
-    private static GWTJahiaNodeType getGWTJahiaNodeType(ProcessingContext context, ExtendedNodeType nodeType) {
+    private GWTJahiaNodeType getGWTJahiaNodeType(ProcessingContext context, ExtendedNodeType nodeType) {
         GWTJahiaNodeType gwt = new GWTJahiaNodeType();
         gwt.setName(nodeType.getName());
         Locale loc = context.getLocale() ;
@@ -211,18 +209,18 @@ public class ContentDefinitionHelper {
             supertypesNames.add(type.getName());
         }
         gwt.setSuperTypes(supertypesNames);
-        String icon = getNodetypeIcons().get(nodeType.getName());
+        String icon = navigation.getNodetypeIcons().get(nodeType.getName());
         if (icon != null) {
             gwt.setIcon("icon-"+icon);
         } else {
-            gwt.setIcon("icon-"+getNodetypeIcons().get("default"));
+            gwt.setIcon("icon-"+navigation.getNodetypeIcons().get("default"));
         }
 
 
         return gwt;
     }
 
-    public static List<GWTJahiaNodeType> getNodeTypes(List<String> names, ProcessingContext context) {
+    public List<GWTJahiaNodeType> getNodeTypes(List<String> names, ProcessingContext context) {
         try {
             List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>();
             for (String name : names) {
@@ -235,7 +233,7 @@ public class ContentDefinitionHelper {
         return null;
     }
 
-    public static Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> getNodeTypes(ProcessingContext ctx) {
+    public Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> getNodeTypes(ProcessingContext ctx) {
         Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> map = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
         try {
             ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType("jmix:content");
@@ -272,7 +270,7 @@ public class ContentDefinitionHelper {
      *         created in the specified parent node (if the baseType parameter
      *         is null)
      */
-    public static List<GWTJahiaNodeType> getNodeSubtypes(String baseType,
+    public List<GWTJahiaNodeType> getNodeSubtypes(String baseType,
             GWTJahiaNode parentNode, ProcessingContext ctx) {
 
         List<GWTJahiaNodeType> gwtNodeTypes = new ArrayList<GWTJahiaNodeType>();
@@ -337,26 +335,7 @@ public class ContentDefinitionHelper {
         return gwtNodeTypes;
     }
 
-    public static Map<String, String> getNodetypeIcons() {
-        if (nodetypeIcons == null) {
-            synchronized (FileUtils.class) {
-                if (nodetypeIcons == null) {
-                    SpringContextSingleton ctxHolder = SpringContextSingleton
-                            .getInstance();
-                    if (ctxHolder.isInitialized()) {
-                        Map<String, String> icons = (Map) ctxHolder.getContext().getBean("nodetypeIcons");
-                        FastHashMap mappings = new FastHashMap(icons);
-                        mappings.setFast(true);
-                        nodetypeIcons = mappings;
-                    }
-                }
-            }
-        }
-
-        return nodetypeIcons;
-    }
-
-    public static GWTJahiaNodePropertyValue convertValue(Value val, int requiredType) throws RepositoryException {
+    public GWTJahiaNodePropertyValue convertValue(Value val, int requiredType) throws RepositoryException {
         String theValue;
         int type;
 
@@ -391,7 +370,7 @@ public class ContentDefinitionHelper {
                 break;
             case ExtendedPropertyType.WEAKREFERENCE:
             case PropertyType.REFERENCE:
-                return new GWTJahiaNodePropertyValue(NavigationHelper.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper) val).getNode(), false));
+                return new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper) val).getNode(), false));
             case PropertyType.STRING:
                 type = GWTJahiaNodePropertyType.STRING;
                 theValue = val.getString();
@@ -408,7 +387,7 @@ public class ContentDefinitionHelper {
         return new GWTJahiaNodePropertyValue(theValue, type);
     }
 
-    public static Value convertValue(GWTJahiaNodePropertyValue val) throws RepositoryException {
+    public Value convertValue(GWTJahiaNodePropertyValue val) throws RepositoryException {
         Value value;
 
         switch (val.getType()) {

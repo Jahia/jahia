@@ -40,7 +40,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.content.server.helper.ZipHelper;
+import org.jahia.ajax.gwt.helper.ZipHelper;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -71,6 +71,12 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
     public static final int UNKNOWN_ERROR = 9;
 
     private static Logger logger = Logger.getLogger(GWTFileManagerUploadServlet.class) ;
+
+    private ZipHelper zip;
+
+    public void setZip(ZipHelper zip) {
+        this.zip = zip;
+    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.debug("Entered GWT upload servlet") ;
@@ -168,11 +174,11 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
 
             // direct blocking unzip
             if (unzip && pathsToUnzip.size() > 0) {
-                try {
-                    ZipHelper.unzip(pathsToUnzip, true, user);
-                } catch (GWTJahiaServiceException e) {
-                    logger.error("Auto-unzipping failed", e);
-                }
+//                try {
+//                    zip.unzip(pathsToUnzip, true);
+//                } catch (GWTJahiaServiceException e) {
+//                    logger.error("Auto-unzipping failed", e);
+//                }
             }
             
         } else {

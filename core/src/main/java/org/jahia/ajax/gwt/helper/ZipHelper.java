@@ -29,18 +29,15 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.content.server.helper;
+package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.bin.Jahia;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.importexport.NoCloseZipInputStream;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.zip.ZipEntry;
 import org.jahia.utils.zip.ZipOutputStream;
 
@@ -59,8 +56,13 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class ZipHelper {
-    private static JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
     private static Logger logger = Logger.getLogger(ZipHelper.class);
+
+    private JCRSessionFactory sessionFactory;
+
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     /**
      * @param parentDirectory the directory to create the archive into
@@ -69,7 +71,7 @@ public class ZipHelper {
      * @return null if everything went fine, a list of untreated files otherwise
      * @throws RepositoryException
      */
-    public static List<String> zipFiles(final JCRNodeWrapper parentDirectory, final String zipname, final List<JCRNodeWrapper> files) {
+    public List<String> zipFiles(final JCRNodeWrapper parentDirectory, final String zipname, final List<JCRNodeWrapper> files) {
         List<String> missedPaths = null;
         try {
             final File tmp = File.createTempFile("jahiazip", null);
@@ -118,7 +120,7 @@ public class ZipHelper {
         return missedPaths;
     }
 
-    private static void zipFileEntry(final JCRNodeWrapper file, final ZipOutputStream zout, final byte[] buffer, String rootDir) throws IOException {
+    private void zipFileEntry(final JCRNodeWrapper file, final ZipOutputStream zout, final byte[] buffer, String rootDir) throws IOException {
         ZipEntry anEntry;
         String relativePath = file.getPath().replace(rootDir, "");
         if (file.isCollection()) {
@@ -146,12 +148,12 @@ public class ZipHelper {
         }
     }
 
-    public static boolean unzipFile(final JCRNodeWrapper zipfile, final JCRNodeWrapper destination, final JahiaUser user) throws RepositoryException {
+    public boolean unzipFile(final JCRNodeWrapper zipfile, final JCRNodeWrapper destination) throws RepositoryException {
         InputStream in = zipfile.getFileContent().downloadFile();
-        return doUnzipContent(in, destination.getPath(), user);
+        return doUnzipContent(in, destination.getPath());
     }
 
-    private static boolean doUnzipContent(final InputStream in, final String dest, final JahiaUser user) throws RepositoryException {
+    private boolean doUnzipContent(final InputStream in, final String dest) throws RepositoryException {
         List<String> errorFiles = new ArrayList<String>();
         boolean result = false;
         NoCloseZipInputStream zis = null;
@@ -175,7 +177,7 @@ public class ZipHelper {
                         parentName += "/" + filename.substring(0, endIndex);
                         filename = filename.substring(endIndex + 1);
                     }
-                    JCRNodeWrapper target = ensureDir(parentName, user);
+                    JCRNodeWrapper target = ensureDir(parentName);
 
                     if (zipentry.isDirectory()) {
                         target.createCollection(filename);
@@ -215,16 +217,15 @@ public class ZipHelper {
         return result;
     }
 
-    private static JCRNodeWrapper ensureDir(String path, JahiaUser user) throws RepositoryException {
-        JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
+    private JCRNodeWrapper ensureDir(String path) throws RepositoryException {
         try {
-            return jcr.getSessionFactory().getCurrentUserSession().getNode(path);
+            return sessionFactory.getCurrentUserSession().getNode(path);
         } catch (PathNotFoundException e) {
             int endIndex = path.lastIndexOf('/');
             if (endIndex == -1) {
                 return null;
             }
-            JCRNodeWrapper parentDir = ensureDir(path.substring(0, endIndex), user);
+            JCRNodeWrapper parentDir = ensureDir(path.substring(0, endIndex));
             if (parentDir == null) {
                 return null;
             }
@@ -232,7 +233,7 @@ public class ZipHelper {
         }
     }
 
-    public static void zip(List<String> paths, String archiveName, JahiaUser user) throws GWTJahiaServiceException {
+    public void zip(List<String> paths, String archiveName) throws GWTJahiaServiceException {
         if (!archiveName.endsWith(".zip") && !archiveName.endsWith(".ZIP")) {
             archiveName = new StringBuilder(archiveName).append(".zip").toString();
         }
@@ -292,7 +293,7 @@ public class ZipHelper {
         }
     }
 
-    public static void unzip(List<String> paths, boolean removeArchive, JahiaUser user) throws GWTJahiaServiceException {
+    public void unzip(List<String> paths, boolean removeArchive) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         List<JCRNodeWrapper> nodesToUnzip = new ArrayList<JCRNodeWrapper>();
         for (String path : paths) {
@@ -329,7 +330,7 @@ public class ZipHelper {
             if (parent.isWriteable()) {
                 for (JCRNodeWrapper nodeToUnzip : nodesToUnzip) {
                     try {
-                        if (!unzipFile(nodeToUnzip, parent, user)) {
+                        if (!unzipFile(nodeToUnzip, parent)) {
                             missedPaths.add(nodeToUnzip.getName());
                         } else if (removeArchive) {
                             try {

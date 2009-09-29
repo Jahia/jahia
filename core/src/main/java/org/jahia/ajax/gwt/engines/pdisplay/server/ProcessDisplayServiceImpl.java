@@ -53,6 +53,7 @@ import org.jahia.services.search.JahiaSiteIndexingJob;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.content.textextraction.TextExtractorJob;
+import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.params.ParamBean;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -80,6 +81,11 @@ public class ProcessDisplayServiceImpl extends JahiaRemoteService implements Pro
     private static final String PREF_ONLY_CURRENT_USER = "onlyCurrentUser";
     private static final String SESSION_LAST_JOB_COMPLETE_TIME = "org.jahia.ajax.gwt.engines.pdisplay.server.executing.job.name";
 
+    private JahiaPreferencesService preferencesService;
+
+    public void setPreferencesService(JahiaPreferencesService preferencesService) {
+        this.preferencesService = preferencesService;
+    }
 
     public GWTJahiaProcessJobStat getGWTProcessJobStat(int mode) {
         GWTJahiaProcessJobStat gwtProcessJobStat = new GWTJahiaProcessJobStat();
@@ -164,7 +170,8 @@ public class ProcessDisplayServiceImpl extends JahiaRemoteService implements Pro
         final GWTJahiaProcessJobPreference gwtJahiaProcessJobPreferences;
         try {
             // max jobs
-            String value = getGenericPreferenceValue(PREF_MAX_JOBS);
+            ParamBean jParams = retrieveParamBean();
+            String value = preferencesService.getGenericPreferenceValue(PREF_MAX_JOBS, jParams);
             int maxJobs = 100;
             if (value != null && value.length() > 0) {
                 try {
@@ -176,7 +183,7 @@ public class ProcessDisplayServiceImpl extends JahiaRemoteService implements Pro
 
             // type of job to ignore
             List<String> jobTypesToIgnore = new ArrayList<String>();
-            value = getGenericPreferenceValue(PREF_JOB_TYPES_TO_IGNORE);
+            value = preferencesService.getGenericPreferenceValue(PREF_JOB_TYPES_TO_IGNORE, jParams);
             if (value != null) {
                 StringTokenizer tokenizer = new StringTokenizer(value, "_");
                 while (tokenizer.hasMoreTokens()) {
@@ -186,7 +193,7 @@ public class ProcessDisplayServiceImpl extends JahiaRemoteService implements Pro
 
             // jobs status tomignore
             List<String> jobStatusToIgnore = new ArrayList<String>();
-            value = getGenericPreferenceValue(PREF_JOB_STATUS_TO_IGNORE);
+            value = preferencesService.getGenericPreferenceValue(PREF_JOB_STATUS_TO_IGNORE, jParams);
             if (value != null) {
                 StringTokenizer tokenizer = new StringTokenizer(value, "_");
                 while (tokenizer.hasMoreTokens()) {
@@ -195,7 +202,7 @@ public class ProcessDisplayServiceImpl extends JahiaRemoteService implements Pro
             }
 
             // only current user flag
-            value = getGenericPreferenceValue(PREF_ONLY_CURRENT_USER);
+            value = preferencesService.getGenericPreferenceValue(PREF_ONLY_CURRENT_USER, jParams);
             boolean onlyCurrentUser = false;
             if (value != null) {
                 onlyCurrentUser = Boolean.parseBoolean(value);
@@ -203,7 +210,7 @@ public class ProcessDisplayServiceImpl extends JahiaRemoteService implements Pro
 
 
             int jobsPerPage = 50;
-            value = getGenericPreferenceValue(PREF_JOBS_PER_PAGE);
+            value = preferencesService.getGenericPreferenceValue(PREF_JOBS_PER_PAGE, jParams);
             if (value != null && value.length() > 0) {
                 try {
                     jobsPerPage = Integer.parseInt(value);
@@ -213,7 +220,7 @@ public class ProcessDisplayServiceImpl extends JahiaRemoteService implements Pro
             }
 
             boolean autoRefresh = false;
-            value = getGenericPreferenceValue(PREF_MONITORING_AUTOREFRESH);
+            value = preferencesService.getGenericPreferenceValue(PREF_MONITORING_AUTOREFRESH, jParams);
             if (value != null && value.length() > 0) {
                 try {
                     autoRefresh = Boolean.parseBoolean(value);
@@ -223,7 +230,7 @@ public class ProcessDisplayServiceImpl extends JahiaRemoteService implements Pro
             }
 
             boolean refreshAtEndOfAnyPageWorkflow = false;
-            value = getGenericPreferenceValue(PREF_PAGE_REFRESH);
+            value = preferencesService.getGenericPreferenceValue(PREF_PAGE_REFRESH, jParams);
             if (value != null && value.length() > 0) {
                 try {
                     refreshAtEndOfAnyPageWorkflow = Boolean.parseBoolean(value);
@@ -254,6 +261,7 @@ public class ProcessDisplayServiceImpl extends JahiaRemoteService implements Pro
      */
     public void savePreferences(GWTJahiaProcessJobPreference gwtJahiaProcessJobPreferences) {
         int dataType = gwtJahiaProcessJobPreferences.getDataType();
+        ParamBean jParams = retrieveParamBean();
         if (dataType == GWTJahiaProcessJobPreference.PREF_FILTER) {
             List<String> jobsTypeToIgnore = gwtJahiaProcessJobPreferences.getJobsTypeToIgnore();
             List<String> jobsStatusToIgnore = gwtJahiaProcessJobPreferences.getJobsStatusToIgnore();
@@ -261,25 +269,25 @@ public class ProcessDisplayServiceImpl extends JahiaRemoteService implements Pro
             logger.debug(jobsTypeToIgnore + "," + jobsStatusToIgnore + "," + onlyCurrentUser);
 
             // jobs type To Ignore
-            setGenericPreferenceValue(PREF_JOB_TYPES_TO_IGNORE, getListAsString(jobsTypeToIgnore));
+            preferencesService.setGenericPreferenceValue(PREF_JOB_TYPES_TO_IGNORE, getListAsString(jobsTypeToIgnore), jParams);
 
             // jobs type To Ignore
-            setGenericPreferenceValue(PREF_JOB_STATUS_TO_IGNORE, getListAsString(jobsStatusToIgnore));
+            preferencesService.setGenericPreferenceValue(PREF_JOB_STATUS_TO_IGNORE, getListAsString(jobsStatusToIgnore), jParams);
 
             // only current user
-            setGenericPreferenceValue(PREF_ONLY_CURRENT_USER, String.valueOf(onlyCurrentUser));
+            preferencesService.setGenericPreferenceValue(PREF_ONLY_CURRENT_USER, String.valueOf(onlyCurrentUser), jParams);
         } else if (dataType == GWTJahiaProcessJobPreference.PREF_GENERAL) {
             int maxJobs = gwtJahiaProcessJobPreferences.getMaxJobs();
-            setGenericPreferenceValue(PREF_MAX_JOBS, String.valueOf(maxJobs));
+            preferencesService.setGenericPreferenceValue(PREF_MAX_JOBS, String.valueOf(maxJobs), jParams);
 
             int jobsPerPage = gwtJahiaProcessJobPreferences.getJobsPerPage();
-            setGenericPreferenceValue(PREF_JOBS_PER_PAGE, String.valueOf(jobsPerPage));
+            preferencesService.setGenericPreferenceValue(PREF_JOBS_PER_PAGE, String.valueOf(jobsPerPage), jParams);
 
             boolean autoRefresh = gwtJahiaProcessJobPreferences.isAutoRefresh();
-            setGenericPreferenceValue(PREF_MONITORING_AUTOREFRESH, String.valueOf(autoRefresh));
+            preferencesService.setGenericPreferenceValue(PREF_MONITORING_AUTOREFRESH, String.valueOf(autoRefresh), jParams);
 
             boolean refreshAtEndOfAnyPageWorkflow = gwtJahiaProcessJobPreferences.isRefreshAtEndOfAnyPageWorkflow();
-            setGenericPreferenceValue(PREF_PAGE_REFRESH, String.valueOf(refreshAtEndOfAnyPageWorkflow));
+            preferencesService.setGenericPreferenceValue(PREF_PAGE_REFRESH, String.valueOf(refreshAtEndOfAnyPageWorkflow), jParams);
         } else {
             logger.error("Pdisplay pref: Data type unknown");
         }

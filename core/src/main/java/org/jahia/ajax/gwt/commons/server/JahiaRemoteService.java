@@ -53,8 +53,6 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -74,8 +72,6 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
     private static final String ORG_JAHIA_DATA_JAHIA_DATA = "org.jahia.data.JahiaData";
     private static final String ORG_JAHIA_PARAMS_PARAM_BEAN = "org.jahia.params.ParamBean";
     
-    private JahiaPreferencesService preferencesService = ServicesRegistry
-            .getInstance().getJahiaPreferencesService();
     private HttpServletRequest request;
     private HttpServletResponse response;
     private ServletContext servletContext;
@@ -136,40 +132,11 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
         return urlParams;
     }
 
-    /**
-     * Delete preference
-     *
-     * @param name
-     */
-    protected void deleteGenericPreferenceValue(String name) {
-        preferencesService.deleteGenericPreferenceValue(name, retrieveParamBean());
-    }
-
-    /**
-     * Delete preference
-     *
-     * @param name
-     */
-    protected void deletePagePreferenceValue(String name) {
-        preferencesService.deletePagePreferenceValue(name, retrieveParamBean());
-    }
-
     protected Locale getEngineLocale() {
         Locale engineLocale = (Locale) getThreadLocalRequest().getSession().getAttribute(ParamBean.SESSION_LOCALE_ENGINE);
         Locale locale = (Locale) getThreadLocalRequest().getSession().getAttribute(ParamBean.SESSION_LOCALE);
         if (engineLocale != null && !engineLocale.equals(locale)) locale = engineLocale;
         return locale;
-    }
-
-    /**
-     * Get generic jahia preference value as string
-     *
-     * @return
-     * @throws org.jahia.services.preferences.exception.JahiaPreferenceProviderException
-     *
-     */
-    protected String getGenericPreferenceValue(String name) {
-        return preferencesService.getGenericPreferenceValue(name, retrieveParamBean());
     }
 
     /**
@@ -278,17 +245,6 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
      */
     protected String getLocaleTemplateRessource(String label) {
         return getTemplateRessource(label, getLocale());
-    }
-
-    /**
-     * Get generic jahia preference value as string
-     *
-     * @return
-     * @throws org.jahia.services.preferences.exception.JahiaPreferenceProviderException
-     *
-     */
-    protected String getPagePreferenceValue(String name) {
-        return preferencesService.getPagePreferenceValue(name, retrieveParamBean());
     }
 
     /**
@@ -503,26 +459,6 @@ public class JahiaRemoteService implements RemoteService, ServletContextAware, R
         }
         return jParams;
 
-    }
-
-    /**
-     * Set generic preference value
-     *
-     * @param name
-     * @param value
-     */
-    protected void setGenericPreferenceValue(String name, String value) {
-        preferencesService.setGenericPreferenceValue(name, value, retrieveParamBean());
-    }
-
-    /**
-     * Set generic preference value
-     *
-     * @param name
-     * @param value
-     */
-    protected void setPagePreferenceValue(String name, String value) {
-        preferencesService.setPagePreferenceValue(name, value, retrieveParamBean());
     }
 
     public void setRequest(HttpServletRequest request) {

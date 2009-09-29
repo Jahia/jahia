@@ -36,6 +36,7 @@ import org.jahia.ajax.gwt.commons.server.rpc.JahiaContentLegacyServiceImpl;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.acl.ACLService;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.helper.ACLHelper;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.exceptions.JahiaException;
@@ -56,6 +57,12 @@ public class ACLServiceImpl extends JahiaRemoteService implements ACLService {
 
     private static final Logger logger = Logger.getLogger(JahiaContentLegacyServiceImpl.class);
 
+    private ACLHelper acl;
+
+    public void setAcl(ACLHelper acl) {
+        this.acl = acl;
+    }
+
     public GWTJahiaNodeACL getACL(int aclid)  throws GWTJahiaServiceException {
         return getACL(aclid, false, null);
     }
@@ -67,7 +74,7 @@ public class ACLServiceImpl extends JahiaRemoteService implements ACLService {
 
     public GWTJahiaNodeACL getACL(int aclid, boolean newAcl, String sessionIdentifier)  throws GWTJahiaServiceException {
         try {
-            return ACLHelper.getGWTJahiaNodeACL(new JahiaBaseACL(aclid), newAcl, retrieveParamBean());
+            return acl.getGWTJahiaNodeACL(new JahiaBaseACL(aclid), newAcl, retrieveParamBean());
         } catch (JahiaException e) {
             logger.error("unable to get acl",e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -78,7 +85,7 @@ public class ACLServiceImpl extends JahiaRemoteService implements ACLService {
     public void setACL(int aclid, boolean newAcl, String sessionIdentifier, GWTJahiaNodeACL acl) {
         try {
             JahiaBaseACL baseACL = new JahiaBaseACL(aclid);
-            baseACL = ACLHelper.saveACL(acl, baseACL, newAcl);
+            baseACL = this.acl.saveACL(acl, baseACL, newAcl);
             final ParamBean bean = retrieveParamBean();
             Map engineMap = (Map) bean.getSession().getAttribute("jahia_session_engineMap");
             if (newAcl) {

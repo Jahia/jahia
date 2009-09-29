@@ -57,9 +57,21 @@ import java.util.*;
  */
 public class UserManagerServiceImpl extends SessionManagerServiceImpl implements UserManagerService {
 
-    private JahiaUserManagerService userMgrServ = ServicesRegistry.getInstance().getJahiaUserManagerService();
-    private JahiaGroupManagerService groupMgrServ = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-    private JahiaSitesService sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
+    private JahiaUserManagerService userManagerService;
+    private JahiaGroupManagerService groupManagerService;
+    private JahiaSitesService sitesService;
+
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
+    }
+
+    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
+        this.groupManagerService = groupManagerService;
+    }
+
+    public void setSitesService(JahiaSitesService sitesService) {
+        this.sitesService = sitesService;
+    }
 
     public PagingLoadResult<GWTJahiaUser> searchUsers(String match, int offset, int limit, List<Integer> siteIds) {
         try {
@@ -75,7 +87,7 @@ public class UserManagerServiceImpl extends SessionManagerServiceImpl implements
             }
             List<GWTJahiaUser> result = new ArrayList<GWTJahiaUser>();
             for (Integer siteId : sites) {
-                users = userMgrServ.searchUsers(siteId, criterias);
+                users = userManagerService.searchUsers(siteId, criterias);
                 if (users != null) {
                     Iterator iterator = users.iterator();
                     JahiaUser user;
@@ -121,7 +133,7 @@ public class UserManagerServiceImpl extends SessionManagerServiceImpl implements
             List<GWTJahiaGroup> result = new ArrayList<GWTJahiaGroup>();
 
             for (Integer siteId : sites) {
-                Set groups = groupMgrServ.searchGroups(siteId, criterias);
+                Set groups = groupManagerService.searchGroups(siteId, criterias);
                 if (groups != null) {
                     Iterator iterator = groups.iterator();
                     JahiaGroup group;

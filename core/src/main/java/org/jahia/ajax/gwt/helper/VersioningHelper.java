@@ -29,25 +29,19 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.content.server.helper;
+package org.jahia.ajax.gwt.helper;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.decorator.JCRVersionHistory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
-import javax.jcr.version.VersionHistory;
-import javax.jcr.version.VersionIterator;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,16 +52,25 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class VersioningHelper {
-    private static JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
     private static Logger logger = Logger.getLogger(VersioningHelper.class);
+
+    private JCRSessionFactory sessionFactory;
+    private CacheService cacheService;
+
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
 
     /**
      * Activate versionning
      *
      * @param pathes
-     * @param jParams
      */
-    public static void activateVersioning(List<String> pathes, ProcessingContext jParams) {
+    public void activateVersioning(List<String> pathes) {
         for (String path : pathes) {
             try {
                 JCRSessionWrapper s = sessionFactory.getCurrentUserSession();
@@ -82,36 +85,6 @@ public class VersioningHelper {
         }
     }
 
-    /**
-     * Get list of version as gwt bean list
-     *
-     * @param node
-     * @param jParams
-     * @return
-     */
-    public static List<GWTJahiaNodeVersion> getVersions(JCRNodeWrapper node, ProcessingContext jParams) {
-        List<GWTJahiaNodeVersion> versions = new ArrayList<GWTJahiaNodeVersion>();
-        try {
-            if (node.isVersioned()) {
-                VersionHistory vh = node.getVersionHistory();
-                VersionIterator vi = vh.getAllVersions();
-                while (vi.hasNext()) {
-                    Version v = vi.nextVersion();
-                    if (!v.getName().equals("jcr:rootVersion")) {
-                        JCRNodeWrapper orig = ((JCRVersionHistory) v.getContainingHistory()).getNode();
-                        GWTJahiaNode n = NavigationHelper.getGWTJahiaNode(orig, false);
-                        n.setUrl(orig.getUrl() + "?v=" + v.getName());
-                        GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(), v.getName(), v.getCreated().getTime());
-                        jahiaNodeVersion.setNode(n);
-                        versions.add(jahiaNodeVersion);
-                    }
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error(e, e);
-        }
-        return versions;
-    }
 
 
     /**
@@ -122,7 +95,7 @@ public class VersioningHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *
      */
-    public static void addNewVersionFile(JCRNodeWrapper node, String tmpName) throws GWTJahiaServiceException {
+    public void addNewVersionFile(JCRNodeWrapper node, String tmpName) throws GWTJahiaServiceException {
         try {
             if (node != null) {
                 if (!node.isVersioned()) {
@@ -152,7 +125,7 @@ public class VersioningHelper {
      * @param versionUuid
      * @param ctx
      */
-    public static void restoreNode(String nodeUuid, String versionUuid, ProcessingContext ctx) {
+    public void restoreNode(String nodeUuid, String versionUuid, ProcessingContext ctx) {
         try {
             JCRNodeWrapper node = (JCRNodeWrapper) sessionFactory.getCurrentUserSession().getNodeByUUID(nodeUuid);
             Version version = (Version) sessionFactory.getCurrentUserSession().getNodeByUUID(versionUuid);
@@ -160,8 +133,8 @@ public class VersioningHelper {
             node.restore(version, true);
             node.checkpoint();
 
-            // fluch caches: To do: flush only the nested cache
-            ServicesRegistry.getInstance().getCacheService().flushAllCaches();
+            // fluch caches: Todo: flush only the nested cache
+            cacheService.flushAllCaches();
 
 
         } catch (RepositoryException e) {

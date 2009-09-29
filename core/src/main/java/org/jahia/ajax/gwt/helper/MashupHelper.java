@@ -1,7 +1,6 @@
-package org.jahia.ajax.gwt.content.server.helper;
+package org.jahia.ajax.gwt.helper;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -19,7 +18,7 @@ import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.PortletEntryPointDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.applications.ApplicationsManagerService;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -38,24 +37,48 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class MashupHelper {
-    private static JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
-
     private static Logger logger = Logger.getLogger(MashupHelper.class);
 
+    private JCRSessionFactory sessionFactory;
+    private ApplicationsManagerService applicationsManager;
 
-    public static List<GWTJahiaPortletDefinition> searchPortlets(String match, ProcessingContext jParams) {
+    private NavigationHelper navigation;
+    private ACLHelper acl;
+    private ContentManagerHelper contentManager;
+
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public void setApplicationsManager(ApplicationsManagerService applicationsManager) {
+        this.applicationsManager = applicationsManager;
+    }
+
+    public void setNavigation(NavigationHelper navigation) {
+        this.navigation = navigation;
+    }
+
+    public void setAcl(ACLHelper acl) {
+        this.acl = acl;
+    }
+
+    public void setContentManager(ContentManagerHelper contentManager) {
+        this.contentManager = contentManager;
+    }
+
+    public List<GWTJahiaPortletDefinition> searchPortlets(String match, ProcessingContext jParams) {
         List<GWTJahiaPortletDefinition> results = new ArrayList<GWTJahiaPortletDefinition>();
         try {
             List<ApplicationBean> appList = new LinkedList<ApplicationBean>();
             if (match != null) {
-                ApplicationBean app = ServicesRegistry.getInstance().getApplicationsManagerService().getApplication(match);
+                ApplicationBean app = applicationsManager.getApplication(match);
                 if (app != null) {
                     appList.add(app);
                 } else {
                     logger.warn("Application not found for the UUID '" + match + "'");
                 }
             } else {
-                appList.addAll(ServicesRegistry.getInstance().getApplicationsManagerService().getApplications());
+                appList.addAll(applicationsManager.getApplications());
             }
             for (ApplicationBean appBean : appList) {
                 if (JCRContentUtils.hasPermission(jParams.getUser(), Constants.JCR_READ_RIGHTS, appBean.getID())) {
@@ -80,7 +103,7 @@ public class MashupHelper {
      * @throws org.jahia.exceptions.JahiaException
      *          sthg bad happened
      */
-    public static GWTJahiaPortletDefinition createGWTJahiaPortletDefinition(ProcessingContext jParams, ApplicationBean appBean, EntryPointDefinition entryPointDefinition) throws JahiaException {
+    public GWTJahiaPortletDefinition createGWTJahiaPortletDefinition(ProcessingContext jParams, ApplicationBean appBean, EntryPointDefinition entryPointDefinition) throws JahiaException {
         String portletType = null;
         int expTime = 0;
         String cacheScope = null;
@@ -107,19 +130,19 @@ public class MashupHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          sthg bad happened
      */
-    public static GWTJahiaNode createPortletInstance(String parentPath, GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance) throws GWTJahiaServiceException {
+    public GWTJahiaNode createPortletInstance(String parentPath, GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance) throws GWTJahiaServiceException {
         try {
             String name = gwtJahiaNewPortletInstance.getInstanceName();
 
             if (name == null) {
                 name = gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName().replaceAll("/", "___") + Math.round(Math.random() * 1000000l);
             }
-            ContentManagerHelper.checkName(name);
-            if (ContentManagerHelper.checkExistence(parentPath + "/" + name)) {
+            contentManager.checkName(name);
+            if (contentManager.checkExistence(parentPath + "/" + name)) {
                 throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
             }
             JCRNodeWrapper parentNode = sessionFactory.getCurrentUserSession().getNode(parentPath);
-            JCRPortletNode node = (JCRPortletNode) ContentManagerHelper.addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), gwtJahiaNewPortletInstance.getProperties());
+            JCRPortletNode node = (JCRPortletNode) contentManager.addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), gwtJahiaNewPortletInstance.getProperties());
 
             node.setApplication(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getApplicationId(), gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName());
             node.revokeAllPermissions();
@@ -151,7 +174,7 @@ public class MashupHelper {
                 logger.error(e.getMessage(), e);
                 throw new GWTJahiaServiceException("A system error happened");
             }
-            return NavigationHelper.getGWTJahiaNode(node, true);
+            return navigation.getGWTJahiaNode(node, true);
         } catch (RepositoryException e) {
             logger.error(e, e);
             throw new GWTJahiaServiceException("error");
@@ -171,7 +194,7 @@ public class MashupHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *
      */
-    public static GWTJahiaNode createPortletInstance(String parentPath, String instanceName, String appName, String entryPointName, List<GWTJahiaNodeProperty> gwtJahiaNodeProperties, ProcessingContext context) throws GWTJahiaServiceException {
+    public GWTJahiaNode createPortletInstance(String parentPath, String instanceName, String appName, String entryPointName, List<GWTJahiaNodeProperty> gwtJahiaNodeProperties, ProcessingContext context) throws GWTJahiaServiceException {
         try {
             // get RSS GWTJahiaPortletDefinition
             GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, entryPointName, context);
@@ -199,7 +222,7 @@ public class MashupHelper {
             }
             if (acl != null && acl.getAvailablePermissions() != null) {
                 List<String> modesPermissions = acl.getAvailablePermissions().get(JCRClientUtils.MODES_ACL);
-                modeAces.add(ACLHelper.createUsersGroupACE(modesPermissions, true, context));
+                modeAces.add(this.acl.createUsersGroupACE(modesPermissions, true, context));
             }
             modes.setAce(modeAces);
             gwtJahiaNewPortletInstance.setModes(modes);
@@ -215,7 +238,7 @@ public class MashupHelper {
             }
             if (acl != null && acl.getAvailablePermissions() != null) {
                 List<String> rolesPermissions = acl.getAvailablePermissions().get(JCRClientUtils.ROLES_ACL);
-                roleAces.add(ACLHelper.createUsersGroupACE(rolesPermissions, true, context));
+                roleAces.add(this.acl.createUsersGroupACE(rolesPermissions, true, context));
             }
             roles.setAce(roleAces);
             gwtJahiaNewPortletInstance.setRoles(roles);
@@ -242,7 +265,7 @@ public class MashupHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *
      */
-    public static GWTJahiaNode createRSSPortletInstance(String parentPath, String name, String url, ProcessingContext context) throws GWTJahiaServiceException {
+    public GWTJahiaNode createRSSPortletInstance(String parentPath, String name, String url, ProcessingContext context) throws GWTJahiaServiceException {
         GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
         String prefix = Jahia.getContextPath();
         if (prefix.equals("/")) {
@@ -279,7 +302,7 @@ public class MashupHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *
      */
-    public static GWTJahiaNode createGoogleGadgetPortletInstance(String parentPath, String name, String script, ProcessingContext context) throws GWTJahiaServiceException {
+    public GWTJahiaNode createGoogleGadgetPortletInstance(String parentPath, String name, String script, ProcessingContext context) throws GWTJahiaServiceException {
         GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
         String prefix = Jahia.getContextPath();
         if (prefix.equals("/")) {
@@ -312,11 +335,11 @@ public class MashupHelper {
      * @param context
      * @return
      */
-    public static GWTJahiaPortletDefinition createJahiaGWTPortletDefinitionByName(String appName, String entryPointName, ProcessingContext context) {
+    public GWTJahiaPortletDefinition createJahiaGWTPortletDefinitionByName(String appName, String entryPointName, ProcessingContext context) {
         if (appName != null && entryPointName != null) {
             try {
                 // TO DO: replace this part of the method by a more perfoming one
-                List<ApplicationBean> appList = ServicesRegistry.getInstance().getApplicationsManagerService().getApplications();
+                List<ApplicationBean> appList = applicationsManager.getApplications();
                 for (ApplicationBean anAppList : appList) {
                     if (JCRContentUtils.hasPermission(context.getUser(), Constants.JCR_READ_RIGHTS, anAppList.getID())) {
                         List<EntryPointDefinition> l = anAppList.getEntryPointDefinitions();

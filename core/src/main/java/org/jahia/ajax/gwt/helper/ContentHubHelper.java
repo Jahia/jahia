@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.content.server.helper;
+package org.jahia.ajax.gwt.helper;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -22,10 +22,15 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class ContentHubHelper {
-    private static JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
     private static Logger logger = Logger.getLogger(ContentHubHelper.class);
 
-    public static void mount(String name, String root, JahiaUser user) throws GWTJahiaServiceException {
+    private JCRSessionFactory sessionFactory;
+
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public void mount(String name, String root, JahiaUser user) throws GWTJahiaServiceException {
         if (user.isAdminMember(0)) {
             JCRSessionWrapper session = null;
             try {
@@ -33,7 +38,7 @@ public class ContentHubHelper {
                 JCRNodeWrapper parent = session.getNode("/content");
                 JCRNodeWrapper mounts;
                 try {
-                    mounts = (JCRNodeWrapper) parent.getNode("mounts");
+                    mounts = parent.getNode("mounts");
                 } catch (PathNotFoundException nfe) {
                     try {
                         mounts = parent.addNode("mounts", "jnt:systemFolder");
@@ -81,7 +86,7 @@ public class ContentHubHelper {
         }
     }
 
-    public static Map<String, String> getStoredPasswordsProviders(JahiaUser user) {
+    public Map<String, String> getStoredPasswordsProviders(JahiaUser user) {
         Map<String, String> results = new HashMap<String, String>();
         results.put(null, user.getUsername());
         for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
@@ -92,7 +97,7 @@ public class ContentHubHelper {
         return results;
     }
 
-    public static void storePasswordForProvider(JahiaUser user, String providerKey, String username, String password) {
+    public void storePasswordForProvider(JahiaUser user, String providerKey, String username, String password) {
         if (username == null) {
             user.removeProperty("storedUsername_" + providerKey);
         } else {

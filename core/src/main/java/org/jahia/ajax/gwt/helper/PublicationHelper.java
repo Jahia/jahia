@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.content.server.helper;
+package org.jahia.ajax.gwt.helper;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -22,10 +22,18 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class PublicationHelper {
-    private static JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
-
     private static Logger logger = Logger.getLogger(PublicationHelper.class);
-    public static JCRPublicationService publicationService = JCRPublicationService.getInstance();
+
+    private JCRSessionFactory sessionFactory;
+    private JCRPublicationService publicationService ;
+
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public void setPublicationService(JCRPublicationService publicationService) {
+        this.publicationService = publicationService;
+    }
 
     /**
      * Get the publication status information for a particular path.
@@ -36,7 +44,7 @@ public class PublicationHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */
-    public static GWTJahiaPublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences, JahiaUser user) throws GWTJahiaServiceException {
+    public GWTJahiaPublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences, JahiaUser user) throws GWTJahiaServiceException {
         try {
             PublicationInfo pubInfo = publicationService.getPublicationInfo(path, user, languages, includesReferences);
             return convert(path, pubInfo);
@@ -47,7 +55,7 @@ public class PublicationHelper {
 
     }
 
-    public static GWTJahiaPublicationInfo convert(String path, PublicationInfo pubInfo) {
+    public GWTJahiaPublicationInfo convert(String path, PublicationInfo pubInfo) {
         List<GWTJahiaPublicationInfo> list = new ArrayList<GWTJahiaPublicationInfo>();
 
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(path, pubInfo.getStatus(), pubInfo.isCanPublish());
@@ -71,7 +79,7 @@ public class PublicationHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */
-    public static void publish(String path, Set<String> languages, JahiaUser user, boolean publishParent) throws GWTJahiaServiceException {
+    public void publish(String path, Set<String> languages, JahiaUser user, boolean publishParent) throws GWTJahiaServiceException {
         try {
             publicationService.publish(path, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, user, publishParent, false);
         } catch (RepositoryException e) {
@@ -92,7 +100,7 @@ public class PublicationHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */
-    public static void publish(List<String> paths, Set<String> languages, JahiaUser user, boolean publishParent) throws GWTJahiaServiceException {
+    public void publish(List<String> paths, Set<String> languages, JahiaUser user, boolean publishParent) throws GWTJahiaServiceException {
         // TODO implement me!
     }
 
@@ -106,7 +114,7 @@ public class PublicationHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */
-    public static void unpublish(String path, Set<String> languages, JahiaUser user) throws GWTJahiaServiceException {
+    public void unpublish(String path, Set<String> languages, JahiaUser user) throws GWTJahiaServiceException {
         try {
             publicationService.unpublish(path, languages, user);
         } catch (RepositoryException e) {

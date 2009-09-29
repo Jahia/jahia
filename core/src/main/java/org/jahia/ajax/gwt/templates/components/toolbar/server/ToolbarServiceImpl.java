@@ -54,6 +54,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreferencesQueryHelper;
 import org.jahia.services.preferences.JahiaPreference;
+import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.preferences.toolbar.ToolbarJahiaPreference;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
@@ -89,6 +90,12 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
 
     private static final ServicesRegistry SERVICES_REGISTRY = ServicesRegistry.getInstance();
     private static transient SchedulerService SCHEDULER_SERVICE;
+
+    private JahiaPreferencesService preferencesService;
+
+    public void setPreferencesService(JahiaPreferencesService preferencesService) {
+        this.preferencesService = preferencesService;
+    }
 
     /**
      * Get gwt toolbar for the current user
@@ -677,7 +684,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             gwtProcessJobInfo.setJobFinished(gwtProcessJobInfo.getLastViewTime() < lastExecutedJob);
 
             boolean pageRefresh = false;
-            String value = getGenericPreferenceValue(ProcessDisplayServiceImpl.PREF_PAGE_REFRESH);
+            String value = preferencesService.getGenericPreferenceValue(ProcessDisplayServiceImpl.PREF_PAGE_REFRESH, retrieveParamBean());
             if (value != null && value.length() > 0) {
                 try {
                     pageRefresh = Boolean.parseBoolean(value);

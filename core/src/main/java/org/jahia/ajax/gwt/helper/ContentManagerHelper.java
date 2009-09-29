@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.content.server.helper;
+package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -40,23 +40,19 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
-import org.jahia.data.containers.JahiaContainer;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.JahiaACLException;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.captcha.CaptchaService;
 import org.jahia.services.categories.Category;
+import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.XMLFormatDetectionHandler;
-import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -67,6 +63,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.*;
 
+import com.octo.captcha.service.image.ImageCaptchaService;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -74,13 +72,56 @@ import java.util.*;
  * @version 20 juin 2008 - 12:49:42
  */
 public class ContentManagerHelper {
-
-    private static JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
-    private static JCRSessionFactory sessionFactory = jcr.getSessionFactory();
     private static Logger logger = Logger.getLogger(ContentManagerHelper.class);
 
+    private JCRStoreService jcrService;
+    private JCRSessionFactory sessionFactory;
+    private CategoryService categoryService;
+    private JahiaSitesService sitesService;
+    private ImportExportBaseService importExport;
+    private ImageCaptchaService captchaService;
 
-    public static void setLock(List<String> paths, boolean locked, JahiaUser user) throws GWTJahiaServiceException {
+    private NavigationHelper navigation;
+    private PropertiesHelper properties;
+    private VersioningHelper versioning;
+
+    public void setJcrService(JCRStoreService jcrService) {
+        this.jcrService = jcrService;
+    }
+
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public void setCategoryService(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
+
+    public void setSitesService(JahiaSitesService sitesService) {
+        this.sitesService = sitesService;
+    }
+
+    public void setImportExport(ImportExportBaseService importExport) {
+        this.importExport = importExport;
+    }
+
+    public void setCaptchaService(ImageCaptchaService captchaService) {
+        this.captchaService = captchaService;
+    }
+
+    public void setNavigation(NavigationHelper navigation) {
+        this.navigation = navigation;
+    }
+
+    public void setProperties(PropertiesHelper properties) {
+        this.properties = properties;
+    }
+
+    public void setVersioning(VersioningHelper versioning) {
+        this.versioning = versioning;
+    }
+
+    public void setLock(List<String> paths, boolean locked, JahiaUser user) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         for (String path : paths) {
             JCRNodeWrapper node;
@@ -130,7 +171,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public static boolean checkExistence(String path) throws GWTJahiaServiceException {
+    public boolean checkExistence(String path) throws GWTJahiaServiceException {
         try {
             sessionFactory.getCurrentUserSession().getNode(path);
             return false;
@@ -142,11 +183,11 @@ public class ContentManagerHelper {
         }
     }
 
-    public static void createFolder(String parentPath, String name, ProcessingContext context) throws GWTJahiaServiceException {
+    public void createFolder(String parentPath, String name, ProcessingContext context) throws GWTJahiaServiceException {
         createNode(parentPath, name, "jnt:folder", new ArrayList<GWTJahiaNodeProperty>(), context);
     }
 
-    private static boolean getRecursedLocksAndFileUsages(JCRNodeWrapper nodeToDelete, List<String> lockedNodes, String username) {
+    private boolean getRecursedLocksAndFileUsages(JCRNodeWrapper nodeToDelete, List<String> lockedNodes, String username) {
         if (nodeToDelete.isCollection()) {
             for (JCRNodeWrapper child : nodeToDelete.getChildren()) {
                 getRecursedLocksAndFileUsages(child, lockedNodes, username);
@@ -170,7 +211,7 @@ public class ContentManagerHelper {
         return !lockedNodes.isEmpty();
     }
 
-    public static void deletePaths(List<String> paths, JahiaUser user) throws GWTJahiaServiceException {
+    public void deletePaths(List<String> paths, JahiaUser user) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         for (String path : paths) {
             JCRNodeWrapper nodeToDelete;
@@ -209,7 +250,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public static void copy(List<GWTJahiaNode> paths, JahiaUser user) throws GWTJahiaServiceException {
+    public void copy(List<GWTJahiaNode> paths, JahiaUser user) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         for (GWTJahiaNode aNode : paths) {
             JCRNodeWrapper node;
@@ -233,7 +274,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public static void cut(List<GWTJahiaNode> paths, JahiaUser user) throws GWTJahiaServiceException {
+    public void cut(List<GWTJahiaNode> paths, JahiaUser user) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         for (GWTJahiaNode aNode : paths) {
             JCRNodeWrapper node;
@@ -259,7 +300,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public static void paste(final List<GWTJahiaNode> pathsToCopy, final String destinationPath, boolean cut, JahiaUser user) throws GWTJahiaServiceException {
+    public void paste(final List<GWTJahiaNode> pathsToCopy, final String destinationPath, boolean cut, JahiaUser user) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         for (GWTJahiaNode aNode : pathsToCopy) {
             try {
@@ -316,7 +357,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public static String findAvailableName(JCRNodeWrapper dest, String name) {
+    public String findAvailableName(JCRNodeWrapper dest, String name) {
         int i = 1;
 
         String basename = name;
@@ -345,16 +386,16 @@ public class ContentManagerHelper {
         return name;
     }
 
-    public static void pasteReference(GWTJahiaNode aNode, String destinationPath, String name, JahiaUser user) throws GWTJahiaServiceException {
+    public void pasteReference(GWTJahiaNode aNode, String destinationPath, String name, JahiaUser user) throws GWTJahiaServiceException {
         pasteReferenceOnTopOf(aNode, destinationPath, name, false);
     }
 
 
-    public static void pasteReferences(final List<GWTJahiaNode> pathsToCopy, String destinationPath, JahiaUser user) throws GWTJahiaServiceException {
+    public void pasteReferences(final List<GWTJahiaNode> pathsToCopy, String destinationPath, JahiaUser user) throws GWTJahiaServiceException {
         pasteReferencesOnTopOf(pathsToCopy, destinationPath, false);
     }
 
-    private static void doPasteReference(JCRNodeWrapper dest, JCRNodeWrapper node, String name) throws RepositoryException, JahiaException {
+    private void doPasteReference(JCRNodeWrapper dest, JCRNodeWrapper node, String name) throws RepositoryException, JahiaException {
         /*Property p = */
         if (dest.getPrimaryNodeTypeName().equals("jnt:members")) {
             if (node.getPrimaryNodeTypeName().equals("jnt:user")) {
@@ -364,7 +405,7 @@ public class ContentManagerHelper {
                 Node node1 = node.getParent().getParent();
                 int id = 0;
                 if (node1 != null && node1.getPrimaryNodeType().getName().equals(Constants.JAHIANT_VIRTUALSITE)) {
-                    id = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(node1.getName()).getID();
+                    id = sitesService.getSiteByKey(node1.getName()).getID();
                 }
                 Node member = dest.addNode(name + "___" + id, Constants.JAHIANT_MEMBER);
                 member.setProperty("j:member", node.getUUID());
@@ -378,7 +419,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public static void rename(String path, String newName, JahiaUser user) throws GWTJahiaServiceException {
+    public void rename(String path, String newName, JahiaUser user) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
             node = sessionFactory.getCurrentUserSession().getNode(path);
@@ -405,7 +446,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public static GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, ProcessingContext context) throws GWTJahiaServiceException {
+    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, ProcessingContext context) throws GWTJahiaServiceException {
         JCRNodeWrapper parentNode;
         try {
             parentNode = sessionFactory.getCurrentUserSession(null, context.getLocale()).getNode(parentPath);
@@ -430,10 +471,10 @@ public class ContentManagerHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
         }
-        return NavigationHelper.getGWTJahiaNode(childNode, true);
+        return navigation.getGWTJahiaNode(childNode, true);
     }
 
-    public static JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
+    public JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
         if (!parentNode.hasPermission(JCRNodeWrapper.WRITE)) {
             throw new GWTJahiaServiceException(new StringBuilder(parentNode.getPath()).append(" - ACCESS DENIED").toString());
         }
@@ -441,7 +482,7 @@ public class ContentManagerHelper {
         if (!parentNode.isFile() && parentNode.isWriteable()) {
             try {
                 childNode = parentNode.addNode(name, nodeType);
-                PropertiesHelper.setProperties(childNode, props);
+                properties.setProperties(childNode, props);
             } catch (Exception e) {
                 logger.error("Exception", e);
                 throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
@@ -453,7 +494,7 @@ public class ContentManagerHelper {
         return childNode;
     }
 
-    public static GWTJahiaNode unsecureCreateNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
+    public GWTJahiaNode unsecureCreateNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
         try {
             sessionFactory.getCurrentUserSession().getNode(parentPath + "/" + name);
             throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
@@ -480,15 +521,15 @@ public class ContentManagerHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Node creation failed");
         }
-        return NavigationHelper.getGWTJahiaNode(childNode, true);
+        return navigation.getGWTJahiaNode(childNode, true);
     }
 
-    private static JCRNodeWrapper unsecureAddNode(JCRNodeWrapper parentNode, String name, String nodeType, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
+    private JCRNodeWrapper unsecureAddNode(JCRNodeWrapper parentNode, String name, String nodeType, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
         JCRNodeWrapper childNode = null;
         if (!parentNode.isFile()) {
             try {
                 childNode = parentNode.addNode(name, nodeType);
-                PropertiesHelper.setProperties(childNode, props);
+                properties.setProperties(childNode, props);
             } catch (Exception e) {
                 logger.error("Exception", e);
                 throw new GWTJahiaServiceException("Node creation failed");
@@ -500,7 +541,7 @@ public class ContentManagerHelper {
         return childNode;
     }
 
-    public static GWTJahiaNodeACL getACL(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
+    public GWTJahiaNodeACL getACL(String path, ProcessingContext jParams) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
             node = sessionFactory.getCurrentUserSession().getNode(path);
@@ -556,7 +597,7 @@ public class ContentManagerHelper {
         return acl;
     }
 
-    public static void setACL(String path, GWTJahiaNodeACL acl) throws GWTJahiaServiceException {
+    public void setACL(String path, GWTJahiaNodeACL acl) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
             node = sessionFactory.getCurrentUserSession().getNode(path);
@@ -589,7 +630,7 @@ public class ContentManagerHelper {
      * @param newName
      * @throws GWTJahiaServiceException
      */
-    public static void uploadedFile(String location, String tmpName, int operation, String newName) throws GWTJahiaServiceException {
+    public void uploadedFile(String location, String tmpName, int operation, String newName) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper parent = sessionFactory.getCurrentUserSession().getNode(location);
             switch (operation) {
@@ -598,7 +639,7 @@ public class ContentManagerHelper {
                     if (node == null) {
                         throw new GWTJahiaServiceException("Could'nt add a new version, file " + location + "/" + newName + "not found ");
                     }
-                    VersioningHelper.addNewVersionFile(node, tmpName);
+                    versioning.addNewVersionFile(node, tmpName);
                     break;
                 case 1:
                     newName = findAvailableName(parent, newName);
@@ -625,12 +666,12 @@ public class ContentManagerHelper {
      * @param captcha
      * @return
      */
-    public static boolean checkCaptcha(ParamBean context, String captcha) {
+    public boolean checkCaptcha(ParamBean context, String captcha) {
         final String captchaId = context.getSessionState().getId();
         if (logger.isDebugEnabled()) logger.debug("j_captcha_response: " + captcha);
         boolean isResponseCorrect = false;
         try {
-            isResponseCorrect = CaptchaService.getInstance().validateResponseForID(captchaId, captcha);
+            isResponseCorrect = this.captchaService.validateResponseForID(captchaId, captcha);
             if (logger.isDebugEnabled()) logger.debug("CAPTCHA - isResponseCorrect: " + isResponseCorrect);
         } catch (final Exception e) {
             //should not happen, may be thrown if the id is not valid
@@ -645,7 +686,7 @@ public class ContentManagerHelper {
      * @param name
      * @throws GWTJahiaServiceException
      */
-    public static void checkName(String name) throws GWTJahiaServiceException {
+    public void checkName(String name) throws GWTJahiaServiceException {
         if (name.indexOf("*") > 0 ||
                 name.indexOf("/") > 0 ||
                 name.indexOf(":") > 0 ||
@@ -655,131 +696,131 @@ public class ContentManagerHelper {
     }
 
 
-    /**
-     * Check if a node in a given container has at least all the ACLs of the container.
-     *
-     * @param paramBean the ParamBean
-     * @param path      the node path
-     * @return true if accessibility is ok, false otherwise
-     */
-    public static boolean isFileAccessibleForCurrentContainer(ParamBean paramBean, String path) {
-        try {
-            // first let's check the JCR node ACLs
-            JCRNodeWrapper node = sessionFactory.getCurrentUserSession().getNode(path);
-            Map<String, Map<String, String>> m = node.getActualAclEntries();
-            List<String> jcrReadGroups = new ArrayList<String>();
-            List<String> jcrReadUsers = new ArrayList<String>();
-            logger.debug("JCR :");
-            for (String key : m.keySet()) {
-                // keys are g:groupName or u:userName
-                String[] userKey = key.split(":");
-                if (userKey.length == 2) {
-                    String username = userKey[1];
-                    logger.debug("  " + key);
-                    Map<String, String> perms = m.get(key);
-                    boolean canRead = false;
-                    for (Map.Entry<String, String> perm : perms.entrySet()) {
-                        logger.debug("    " + perm.getKey() + " - " + perm.getValue());
-                        if (perm.getKey().equals("jcr:read")) {
-                            if (perm.getValue().equalsIgnoreCase("GRANT")) {
-                                canRead = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (canRead) {
-                        if (username.equals("guest")) { // if guest has acess, nothing left to check
-                            return true;
-                        }
-                        if ("g".equals(userKey[0])) {
-                            jcrReadGroups.add(username);
-                        } else {
-                            jcrReadUsers.add(username);
-                        }
-                    }
-                }
-            }
+//    /**
+//     * Check if a node in a given container has at least all the ACLs of the container.
+//     *
+//     * @param paramBean the ParamBean
+//     * @param path      the node path
+//     * @return true if accessibility is ok, false otherwise
+//     */
+//    public boolean isFileAccessibleForCurrentContainer(ParamBean paramBean, String path) {
+//        try {
+//            // first let's check the JCR node ACLs
+//            JCRNodeWrapper node = sessionFactory.getCurrentUserSession().getNode(path);
+//            Map<String, Map<String, String>> m = node.getActualAclEntries();
+//            List<String> jcrReadGroups = new ArrayList<String>();
+//            List<String> jcrReadUsers = new ArrayList<String>();
+//            logger.debug("JCR :");
+//            for (String key : m.keySet()) {
+//                // keys are g:groupName or u:userName
+//                String[] userKey = key.split(":");
+//                if (userKey.length == 2) {
+//                    String username = userKey[1];
+//                    logger.debug("  " + key);
+//                    Map<String, String> perms = m.get(key);
+//                    boolean canRead = false;
+//                    for (Map.Entry<String, String> perm : perms.entrySet()) {
+//                        logger.debug("    " + perm.getKey() + " - " + perm.getValue());
+//                        if (perm.getKey().equals("jcr:read")) {
+//                            if (perm.getValue().equalsIgnoreCase("GRANT")) {
+//                                canRead = true;
+//                                break;
+//                            }
+//                        }
+//                    }
+//                    if (canRead) {
+//                        if (username.equals("guest")) { // if guest has acess, nothing left to check
+//                            return true;
+//                        }
+//                        if ("g".equals(userKey[0])) {
+//                            jcrReadGroups.add(username);
+//                        } else {
+//                            jcrReadUsers.add(username);
+//                        }
+//                    }
+//                }
+//            }
+//
+//            // now let's retrieve the ACLs for the current container (from the engineMap)
+//            Map engineMap = (Map) paramBean.getSession().getAttribute(ProcessingContext.SESSION_JAHIA_ENGINEMAP);
+//            if (engineMap != null) {
+//                JahiaContainer theContainer = (JahiaContainer) engineMap.get("theContainer");
+//                JahiaBaseACL acl = theContainer.getACL();
+//                final Set<String> readGroups = new HashSet<String>();
+//                final Set<String> readUsers = new HashSet<String>();
+//                final List<String> groups = acl.getGroupnameList(null);
+//                final List<String> users = acl.getUsernameList(null);
+//                logger.debug("Container :");
+//                logger.debug("  Groups :");
+//                for (String group : groups) {
+//                    logger.debug("    analyzing " + group);
+//                    JahiaGroup g = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(group);
+//                    if (g != null && (acl.getPermission(g, JahiaBaseACL.READ_RIGHTS) || acl.getPermission(g, JahiaBaseACL.WRITE_RIGHTS) || acl.getPermission(g, JahiaBaseACL.ADMIN_RIGHTS))) {
+//                        String theGroupName;
+//                        if (group.indexOf(":") > -1) {
+//                            theGroupName = group.split(":")[0];
+//                        } else if (group.indexOf("}") > -1) {
+//                            theGroupName = group.substring(group.indexOf("}") + 1);
+//                        } else {
+//                            theGroupName = group;
+//                        }
+//                        readGroups.add(theGroupName);
+//                        logger.debug("      " + theGroupName + " is supposed to read");
+//                    } else {
+//                        logger.debug("      " + group + " is not supposed to read");
+//                    }
+//                }
+//                logger.debug("  Users :");
+//                for (String user : users) {
+//                    logger.debug("    analyzing " + user);
+//                    JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
+//                    if (u != null && (acl.getPermission(u, JahiaBaseACL.READ_RIGHTS) || acl.getPermission(u, JahiaBaseACL.WRITE_RIGHTS) || acl.getPermission(u, JahiaBaseACL.ADMIN_RIGHTS))) {
+//                        String theUserName;
+//                        if (user.indexOf(":") > -1) {
+//                            theUserName = user.split(":")[0];
+//                        } else if (user.indexOf("}") > -1) {
+//                            theUserName = user.substring(user.indexOf("}") + 1);
+//                        } else {
+//                            theUserName = user;
+//                        }
+//                        readUsers.add(theUserName);
+//                        logger.debug("      " + theUserName + " is supposed to read");
+//                    } else {
+//                        logger.debug("      " + user + " is not supposed to read");
+//                    }
+//                }
+//
+//                // then let's check if people that have read rights on the container also have them on the jcr node
+//                Set<String> nonReadGroups = new HashSet<String>();
+//                Set<String> nonReadUsers = new HashSet<String>();
+//                for (String group : readGroups) {
+//                    if (!jcrReadGroups.contains(group)) {
+//                        nonReadGroups.add(group);
+//                    }
+//                }
+//                for (String user : readUsers) {
+//                    if (jcrReadUsers.contains(user)) {
+//                        nonReadUsers.add(user);
+//                    }
+//                }
+//
+//                // if both sets are empty, all clear
+//                return nonReadGroups.size() == 0 && nonReadUsers.size() == 0;
+//            }
+//        } catch (JahiaSessionExpirationException e) {
+//            logger.error(e.toString(), e);
+//        } catch (PathNotFoundException e) {
+//            logger.error(e.toString(), e);
+//        } catch (RepositoryException e) {
+//            logger.error(e.toString(), e);
+//        } catch (JahiaACLException e) {
+//            logger.error(e.toString(), e);
+//        }
+//        return Boolean.FALSE;
+//    }
 
-            // now let's retrieve the ACLs for the current container (from the engineMap)
-            Map engineMap = (Map) paramBean.getSession().getAttribute(ProcessingContext.SESSION_JAHIA_ENGINEMAP);
-            if (engineMap != null) {
-                JahiaContainer theContainer = (JahiaContainer) engineMap.get("theContainer");
-                JahiaBaseACL acl = theContainer.getACL();
-                final Set<String> readGroups = new HashSet<String>();
-                final Set<String> readUsers = new HashSet<String>();
-                final List<String> groups = acl.getGroupnameList(null);
-                final List<String> users = acl.getUsernameList(null);
-                logger.debug("Container :");
-                logger.debug("  Groups :");
-                for (String group : groups) {
-                    logger.debug("    analyzing " + group);
-                    JahiaGroup g = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(group);
-                    if (g != null && (acl.getPermission(g, JahiaBaseACL.READ_RIGHTS) || acl.getPermission(g, JahiaBaseACL.WRITE_RIGHTS) || acl.getPermission(g, JahiaBaseACL.ADMIN_RIGHTS))) {
-                        String theGroupName;
-                        if (group.indexOf(":") > -1) {
-                            theGroupName = group.split(":")[0];
-                        } else if (group.indexOf("}") > -1) {
-                            theGroupName = group.substring(group.indexOf("}") + 1);
-                        } else {
-                            theGroupName = group;
-                        }
-                        readGroups.add(theGroupName);
-                        logger.debug("      " + theGroupName + " is supposed to read");
-                    } else {
-                        logger.debug("      " + group + " is not supposed to read");
-                    }
-                }
-                logger.debug("  Users :");
-                for (String user : users) {
-                    logger.debug("    analyzing " + user);
-                    JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
-                    if (u != null && (acl.getPermission(u, JahiaBaseACL.READ_RIGHTS) || acl.getPermission(u, JahiaBaseACL.WRITE_RIGHTS) || acl.getPermission(u, JahiaBaseACL.ADMIN_RIGHTS))) {
-                        String theUserName;
-                        if (user.indexOf(":") > -1) {
-                            theUserName = user.split(":")[0];
-                        } else if (user.indexOf("}") > -1) {
-                            theUserName = user.substring(user.indexOf("}") + 1);
-                        } else {
-                            theUserName = user;
-                        }
-                        readUsers.add(theUserName);
-                        logger.debug("      " + theUserName + " is supposed to read");
-                    } else {
-                        logger.debug("      " + user + " is not supposed to read");
-                    }
-                }
 
-                // then let's check if people that have read rights on the container also have them on the jcr node
-                Set<String> nonReadGroups = new HashSet<String>();
-                Set<String> nonReadUsers = new HashSet<String>();
-                for (String group : readGroups) {
-                    if (!jcrReadGroups.contains(group)) {
-                        nonReadGroups.add(group);
-                    }
-                }
-                for (String user : readUsers) {
-                    if (jcrReadUsers.contains(user)) {
-                        nonReadUsers.add(user);
-                    }
-                }
-
-                // if both sets are empty, all clear
-                return nonReadGroups.size() == 0 && nonReadUsers.size() == 0;
-            }
-        } catch (JahiaSessionExpirationException e) {
-            logger.error(e.toString(), e);
-        } catch (PathNotFoundException e) {
-            logger.error(e.toString(), e);
-        } catch (RepositoryException e) {
-            logger.error(e.toString(), e);
-        } catch (JahiaACLException e) {
-            logger.error(e.toString(), e);
-        }
-        return Boolean.FALSE;
-    }
-
-
-    public static void importContent(ProcessingContext jParams, String parentPath, String fileKey) throws GWTJahiaServiceException {
+    public void importContent(ProcessingContext jParams, String parentPath, String fileKey) throws GWTJahiaServiceException {
         GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
         try {
             if ("application/zip".equals(item.contentType)) {
@@ -790,7 +831,7 @@ public class ContentManagerHelper {
                 IOUtils.copy(item.file, fileOutputStream);
                 fileOutputStream.close();
                 FileInputStream inputStream = new FileInputStream(tempFile);
-                int format = ImportExportBaseService.getInstance().detectXmlFormat(inputStream);
+                int format = importExport.detectXmlFormat(inputStream);
                 inputStream.close();
 
                 try {
@@ -804,12 +845,12 @@ public class ContentManagerHelper {
                         }
 
                         case XMLFormatDetectionHandler.USERS: {
-                            ImportExportBaseService.getInstance().importUsers(tempFile);
+                            importExport.importUsers(tempFile);
                             break;
                         }
                         case XMLFormatDetectionHandler.CATEGORIES: {
-                            Category cat = ServicesRegistry.getInstance().getCategoryService().getCategoryByPath(parentPath);
-                            ImportExportBaseService.getInstance().importCategories(jParams, cat, new FileInputStream(tempFile));
+                            Category cat = categoryService.getCategoryByPath(parentPath);
+                            importExport.importCategories(jParams, cat, new FileInputStream(tempFile));
                             break;
                         }
                     }
@@ -823,12 +864,12 @@ public class ContentManagerHelper {
         }
     }
 
-    public static void move(String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
+    public void move(String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
         session.getWorkspace().move(sourcePath, targetPath);
     }
 
-    public static void moveOnTopOf(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
+    public void moveOnTopOf(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
         final JCRNodeWrapper srcNode = session.getNode(sourcePath);
         final JCRNodeWrapper targetNode = session.getNode(targetPath);
@@ -844,7 +885,7 @@ public class ContentManagerHelper {
         session.save();
     }
 
-    public static void moveAtEnd(String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
+    public void moveAtEnd(String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
         final JCRNodeWrapper srcNode = session.getNode(sourcePath);
         final JCRNodeWrapper targetNode = session.getNode(targetPath);
@@ -859,7 +900,7 @@ public class ContentManagerHelper {
         session.save();
     }
 
-    public static void pasteReferenceOnTopOf(GWTJahiaNode aNode, String destinationPath, String name, boolean moveOnTop) throws GWTJahiaServiceException {
+    public void pasteReferenceOnTopOf(GWTJahiaNode aNode, String destinationPath, String name, boolean moveOnTop) throws GWTJahiaServiceException {
         try {
             final JCRNodeWrapper targetParent;
             JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
@@ -886,7 +927,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public static void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath, boolean moveOnTop) throws GWTJahiaServiceException {
+    public void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath, boolean moveOnTop) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
 
         final JCRNodeWrapper targetParent;
@@ -905,7 +946,7 @@ public class ContentManagerHelper {
 
         try {
             for (GWTJahiaNode aNode : pathsToCopy) {
-                JCRNodeWrapper node = jcr.getSessionFactory().getCurrentUserSession().getNode(aNode.getPath());
+                JCRNodeWrapper node = jcrService.getSessionFactory().getCurrentUserSession().getNode(aNode.getPath());
                 String name = node.getName();
                 if (node.hasPermission(JCRNodeWrapper.READ)) {
                     if (targetParent.isCollection()) {

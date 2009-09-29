@@ -29,7 +29,9 @@
     <bean name="aclServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtACLService"/>
     </bean>
-    <bean name="gwtACLService" class="org.jahia.ajax.gwt.aclmanagement.server.ACLServiceImpl" scope="prototype"/>
+    <bean name="gwtACLService" class="org.jahia.ajax.gwt.aclmanagement.server.ACLServiceImpl" scope="prototype">
+        <property name="acl" ref="ACLHelper"/>
+    </bean>
 
     <bean name="actionMenuServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtActionMenuService"/>
@@ -48,19 +50,37 @@
     <bean name="contentDefinitionServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaContentDefinitionService"/>
     </bean>
-    <bean name="gwtJahiaContentDefinitionService" class="org.jahia.ajax.gwt.definitions.server.JahiaContentDefinitionServiceImpl" scope="prototype"/>
+    <bean name="gwtJahiaContentDefinitionService" class="org.jahia.ajax.gwt.definitions.server.JahiaContentDefinitionServiceImpl" scope="prototype">
+        <property name="contentDefinition" ref="ContentDefinitionHelper"/>
+    </bean>
 
     <bean name="layoutServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaLayoutService"/>
     </bean>
     <bean name="gwtJahiaLayoutService" class="org.jahia.ajax.gwt.templates.components.layoutmanager.server.LayoutmanagerServiceImpl" scope="prototype">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
+        <property name="navigation" ref="NavigationHelper"/>
     </bean>
 
     <bean name="contentManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaContentManagenentService"/>
     </bean>
-    <bean name="gwtJahiaContentManagenentService" class="org.jahia.ajax.gwt.content.server.JahiaContentManagementServiceImpl" scope="prototype"/>
+    <bean name="gwtJahiaContentManagenentService" class="org.jahia.ajax.gwt.content.server.JahiaContentManagementServiceImpl" scope="prototype">
+    <property name="acl" ref="ACLHelper"/>
+        <property name="preferencesService" ref="JahiaPreferencesService"/>
+        <property name="contentDefinition" ref="ContentDefinitionHelper"/>
+        <property name="contentHub" ref="ContentHubHelper"/>
+        <property name="contentManager" ref="ContentManagerHelper"/>
+        <property name="mashup" ref="MashupHelper"/>
+        <property name="versioning" ref="VersioningHelper"/>
+        <property name="navigation" ref="NavigationHelper"/>
+        <property name="properties" ref="PropertiesHelper"/>
+        <property name="publication" ref="PublicationHelper"/>
+        <property name="search" ref="SearchHelper"/>
+        <property name="template" ref="TemplateHelper"/>
+        <property name="zip" ref="ZipHelper"/>
+
+    </bean>
 
     <bean name="openSearchServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtOpenSearchService"/>
@@ -70,12 +90,16 @@
     <bean name="pdisplayServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtProcessDisplayService"/>
     </bean>
-    <bean name="gwtProcessDisplayService" class="org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl" scope="prototype"/>
+    <bean name="gwtProcessDisplayService" class="org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl" scope="prototype">
+        <property name="preferencesService" ref="JahiaPreferencesService"/>
+    </bean>
     
     <bean name="toolbarServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtToolbarService"/>
     </bean>
-    <bean name="gwtToolbarService" class="org.jahia.ajax.gwt.templates.components.toolbar.server.ToolbarServiceImpl" scope="prototype"/>
+    <bean name="gwtToolbarService" class="org.jahia.ajax.gwt.templates.components.toolbar.server.ToolbarServiceImpl" scope="prototype">
+        <property name="preferencesService" ref="JahiaPreferencesService"/>
+    </bean>
     
     <bean name="sessionManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtSessionManagerService"/>
@@ -92,7 +116,11 @@
     <bean name="userManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtUserManagerService"/>
     </bean>
-    <bean name="gwtUserManagerService" class="org.jahia.ajax.gwt.commons.server.rpc.UserManagerServiceImpl" scope="prototype"/>
+    <bean name="gwtUserManagerService" class="org.jahia.ajax.gwt.commons.server.rpc.UserManagerServiceImpl" scope="prototype">
+        <property name="groupManagerService" ref="JahiaGroupManagerService"/>
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="sitesService" ref="JahiaSitesService"/>
+    </bean>
 
     <bean name="versioningServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtVersioningService"/>
@@ -103,4 +131,89 @@
         <property name="remoteServiceName" value="gwtWorkflowService"/>
     </bean>
     <bean name="gwtWorkflowService" class="org.jahia.ajax.gwt.engines.workflow.server.WorkflowServiceImpl" scope="prototype"/>
+
+
+    <bean name="ACLHelper" class="org.jahia.ajax.gwt.helper.ACLHelper" >
+        <property name="jahiaUserManagerService" ref="JahiaUserManagerService" />
+        <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService" />
+    </bean>
+
+    <bean name="ContentDefinitionHelper" class="org.jahia.ajax.gwt.helper.ContentDefinitionHelper" >
+        <property name="navigation" ref="NavigationHelper" />
+    </bean>
+
+    <bean name="ContentHubHelper" class="org.jahia.ajax.gwt.helper.ContentHubHelper" >
+        <property name="sessionFactory" ref="jcrSessionFactory" />
+    </bean>
+
+    <bean name="ContentManagerHelper" class="org.jahia.ajax.gwt.helper.ContentManagerHelper" >
+        <property name="navigation"  ref="NavigationHelper"/>
+        <property name="sessionFactory"  ref="jcrSessionFactory"/>
+        <property name="captchaService"  ref="captchaService"/>
+        <property name="categoryService"  ref="CategoryService"/>
+        <property name="importExport"  ref="ImportExportService"/>
+        <property name="jcrService"  ref="JCRStoreService"/>
+        <property name="versioning"  ref="VersioningHelper"/>
+        <property name="sitesService"  ref="JahiaSitesService"/>
+    </bean>
+
+    <bean name="MashupHelper" class="org.jahia.ajax.gwt.helper.MashupHelper" >
+        <property name="navigation"  ref="NavigationHelper"/>
+        <property name="sessionFactory"  ref="jcrSessionFactory"/>
+        <property name="acl" ref="ACLHelper"/>
+        <property name="contentManager" ref="ContentManagerHelper"/>
+        <property name="applicationsManager" ref="ApplicationsManagerService"/>
+
+    </bean>
+
+    <bean name="NavigationHelper" class="org.jahia.ajax.gwt.helper.NavigationHelper" >
+        <property name="sessionFactory"  ref="jcrSessionFactory"/>
+        <property name="jcrService"  ref="JCRStoreService"/>
+        <property name="renderService" ref="RenderService"/>
+        <property name="publication" ref="PublicationHelper"/>
+        <property name="nodetypeIcons">
+            <map>
+                <entry key="unknown" value="file"/>
+                <entry key="jmix:queryContent" value="query"/>
+                <entry key="jmix:interactiveContent" value="interactive"/>
+                <entry key="jmix:structuredContent" value="structured"/>
+                <entry key="jmix:containerContent" value="contentlist"/>
+                <entry key="jnt:page" value="page"/>
+                <entry key="jnt:user" value="user"/>
+                <entry key="jnt:group" value="user-group"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="PropertiesHelper" class="org.jahia.ajax.gwt.helper.PropertiesHelper" >
+        <property name="sessionFactory"  ref="jcrSessionFactory"/>
+        <property name="contentDefinition" ref="ContentDefinitionHelper"/>
+    </bean>
+
+    <bean name="PublicationHelper" class="org.jahia.ajax.gwt.helper.PublicationHelper" >
+        <property name="sessionFactory"  ref="jcrSessionFactory"/>
+        <property name="publicationService" ref="jcrPublicationService"/>
+    </bean>
+
+    <bean name="SearchHelper" class="org.jahia.ajax.gwt.helper.SearchHelper" >
+        <property name="navigation"  ref="NavigationHelper"/>
+        <property name="sessionFactory"  ref="jcrSessionFactory"/>
+        <property name="contentManager" ref="ContentManagerHelper"/>
+        <property name="jcrService"  ref="JCRStoreService"/>
+    </bean>
+
+    <bean name="TemplateHelper" class="org.jahia.ajax.gwt.helper.TemplateHelper" >
+        <property name="sessionFactory"  ref="jcrSessionFactory"/>
+        <property name="renderService" ref="RenderService"/>
+    </bean>
+
+    <bean name="VersioningHelper" class="org.jahia.ajax.gwt.helper.VersioningHelper" >
+        <property name="sessionFactory"  ref="jcrSessionFactory"/>
+        <property name="cacheService" ref="JahiaCacheService"/>
+    </bean>
+
+    <bean name="ZipHelper" class="org.jahia.ajax.gwt.helper.ZipHelper" >
+        <property name="sessionFactory"  ref="jcrSessionFactory"/>
+    </bean>
+
 </beans>

@@ -119,11 +119,10 @@ public class VersioningHelper {
      *
      * @param node
      * @param tmpName
-     * @param ctx
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *
      */
-    public static void addNewVersionFile(JCRNodeWrapper node, String tmpName, ProcessingContext ctx) throws GWTJahiaServiceException {
+    public static void addNewVersionFile(JCRNodeWrapper node, String tmpName) throws GWTJahiaServiceException {
         try {
             if (node != null) {
                 if (!node.isVersioned()) {

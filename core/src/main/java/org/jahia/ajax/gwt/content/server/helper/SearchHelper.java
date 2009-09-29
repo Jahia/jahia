@@ -120,7 +120,7 @@ public class SearchHelper {
                 queryStore = sessionFactory.getCurrentUserSession(workspace, context.getLocale()).getNode(user.getPath() + "/savedSearch");
             }
             String path = queryStore.getPath() + "/" + name;
-            if (ContentManagerHelper.checkExistence(path, context.getUser())) {
+            if (ContentManagerHelper.checkExistence(path)) {
                 throw new ExistingFileException("The node " + path + " alreadey exists.");
             }
             q.storeAsNode(path);
@@ -147,7 +147,7 @@ public class SearchHelper {
             }
 
             JCRNodeWrapper parent = sessionFactory.getCurrentUserSession(workspace).getNode(path);
-            name = ContentManagerHelper.findAvailableName(parent, name, context.getUser());
+            name = ContentManagerHelper.findAvailableName(parent, name);
             Query q = createQuery(searchString, context);
             q.storeAsNode(path + "/" + name);
             parent.saveSession();

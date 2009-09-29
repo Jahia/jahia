@@ -143,7 +143,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void checkExistence(String path) throws GWTJahiaServiceException {
-        if (ContentManagerHelper.checkExistence(path, getUser())) {
+        if (ContentManagerHelper.checkExistence(path)) {
             throw new ExistingFileException(path);
         }
     }
@@ -205,7 +205,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         if (captcha != null) {
-            return ContentManagerHelper.unsecureCreateNode(parentPath, name, nodeType, props, context);
+            return ContentManagerHelper.unsecureCreateNode(parentPath, name, nodeType, props);
         } else {
             return ContentManagerHelper.createNode(parentPath, name, nodeType, props, context);
         }
@@ -220,7 +220,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void setACL(String path, GWTJahiaNodeACL acl) throws GWTJahiaServiceException {
-        ContentManagerHelper.setACL(path, acl, retrieveParamBean());
+        ContentManagerHelper.setACL(path, acl);
     }
 
     public List<GWTJahiaNodeUsage> getUsages(String path) throws GWTJahiaServiceException {
@@ -256,7 +256,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
-            if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
+            if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target)) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
 
@@ -287,7 +287,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void resizeImage(String path, String target, int width, int height, boolean forceReplace) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
-            if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
+            if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target)) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
 
@@ -317,7 +317,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void rotateImage(String path, String target, boolean clockwise, boolean forceReplace) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
-            if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
+            if (ContentManagerHelper.checkExistence(node.getPath().replace(node.getName(), target)) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
 
@@ -368,7 +368,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz) throws GWTJahiaServiceException {
-        return MashupHelper.createPortletInstance(path, wiz, retrieveParamBean());
+        return MashupHelper.createPortletInstance(path, wiz);
     }
 
     public GWTJahiaNode createRSSPortletInstance(String path,String name,String url) throws GWTJahiaServiceException {
@@ -390,7 +390,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void uploadedFile(String location, String tmpName, int operation, String newName)  throws GWTJahiaServiceException {
-        ContentManagerHelper.uploadedFile(location, tmpName, operation, newName, retrieveParamBean());
+        ContentManagerHelper.uploadedFile(location, tmpName, operation, newName);
     }
 
     public String getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, boolean editMode) throws GWTJahiaServiceException {
@@ -419,7 +419,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void move(String sourcePath, String targetPath) throws GWTJahiaServiceException {
         try {
-            ContentManagerHelper.move(getUser(),sourcePath,targetPath);
+            ContentManagerHelper.move(sourcePath,targetPath);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -435,7 +435,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void moveAtEnd(String sourcePath, String targetPath) throws GWTJahiaServiceException {
         try {
-            ContentManagerHelper.moveAtEnd(getUser(),sourcePath,targetPath);
+            ContentManagerHelper.moveAtEnd(sourcePath,targetPath);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -463,11 +463,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 
     public void pasteReferenceOnTopOf(GWTJahiaNode path, String destinationPath, String name) throws GWTJahiaServiceException {
-        ContentManagerHelper.pasteReferenceOnTopOf(path, destinationPath, name, getUser(),true);
+        ContentManagerHelper.pasteReferenceOnTopOf(path, destinationPath, name, true);
     }
 
     public void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath) throws GWTJahiaServiceException {
-        ContentManagerHelper.pasteReferencesOnTopOf(pathsToCopy, destinationPath, getUser(),true);
+        ContentManagerHelper.pasteReferencesOnTopOf(pathsToCopy, destinationPath, true);
     }
 
     public void createNodeAndMoveBefore(String path, String name, String nodeType, List<GWTJahiaNodeProperty> properties, String captcha) throws GWTJahiaServiceException {

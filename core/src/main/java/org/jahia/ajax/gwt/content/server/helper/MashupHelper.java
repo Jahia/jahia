@@ -103,12 +103,11 @@ public class MashupHelper {
      *
      * @param parentPath                 where to create the node
      * @param gwtJahiaNewPortletInstance the portlet instance
-     * @param context                    the processing context
      * @return a node
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          sthg bad happened
      */
-    public static GWTJahiaNode createPortletInstance(String parentPath, GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance, ProcessingContext context) throws GWTJahiaServiceException {
+    public static GWTJahiaNode createPortletInstance(String parentPath, GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance) throws GWTJahiaServiceException {
         try {
             String name = gwtJahiaNewPortletInstance.getInstanceName();
 
@@ -116,7 +115,7 @@ public class MashupHelper {
                 name = gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName().replaceAll("/", "___") + Math.round(Math.random() * 1000000l);
             }
             ContentManagerHelper.checkName(name);
-            if (ContentManagerHelper.checkExistence(parentPath + "/" + name, context.getUser())) {
+            if (ContentManagerHelper.checkExistence(parentPath + "/" + name)) {
                 throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
             }
             JCRNodeWrapper parentNode = sessionFactory.getCurrentUserSession().getNode(parentPath);
@@ -223,7 +222,7 @@ public class MashupHelper {
 
             // set name
             gwtJahiaNewPortletInstance.setInstanceName(instanceName);
-            return createPortletInstance(parentPath, gwtJahiaNewPortletInstance, context);
+            return createPortletInstance(parentPath, gwtJahiaNewPortletInstance);
         } catch (GWTJahiaServiceException e) {
             throw e;
         } catch (Exception e) {

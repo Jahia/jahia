@@ -130,7 +130,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public static boolean checkExistence(String path, JahiaUser user) throws GWTJahiaServiceException {
+    public static boolean checkExistence(String path) throws GWTJahiaServiceException {
         try {
             sessionFactory.getCurrentUserSession().getNode(path);
             return false;
@@ -271,7 +271,7 @@ public class ContentManagerHelper {
                     JCRNodeWrapper dest = session.getNode(destinationPath);
                     if (dest.isCollection()) {
                         String destPath = dest.getPath();
-                        name = findAvailableName(dest, name, user);
+                        name = findAvailableName(dest, name);
                         if (dest.isWriteable()) {
                             if (cut) {
                                 try {
@@ -316,7 +316,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public static String findAvailableName(JCRNodeWrapper dest, String name, JahiaUser user) {
+    public static String findAvailableName(JCRNodeWrapper dest, String name) {
         int i = 1;
 
         String basename = name;
@@ -346,12 +346,12 @@ public class ContentManagerHelper {
     }
 
     public static void pasteReference(GWTJahiaNode aNode, String destinationPath, String name, JahiaUser user) throws GWTJahiaServiceException {
-        pasteReferenceOnTopOf(aNode, destinationPath, name, user, false);
+        pasteReferenceOnTopOf(aNode, destinationPath, name, false);
     }
 
 
     public static void pasteReferences(final List<GWTJahiaNode> pathsToCopy, String destinationPath, JahiaUser user) throws GWTJahiaServiceException {
-        pasteReferencesOnTopOf(pathsToCopy, destinationPath, user, false);
+        pasteReferencesOnTopOf(pathsToCopy, destinationPath, false);
     }
 
     private static void doPasteReference(JCRNodeWrapper dest, JCRNodeWrapper node, String name) throws RepositoryException, JahiaException {
@@ -414,12 +414,12 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
         }
         if (name == null) {
-            name = findAvailableName(parentNode, nodeType.replaceAll(":", "_"), context.getUser());
+            name = findAvailableName(parentNode, nodeType.replaceAll(":", "_"));
         } else {
-            name = findAvailableName(parentNode, name, context.getUser());
+            name = findAvailableName(parentNode, name);
         }
         checkName(name);
-        if (checkExistence(parentPath + "/" + name, context.getUser())) {
+        if (checkExistence(parentPath + "/" + name)) {
             throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
         }
 
@@ -453,7 +453,7 @@ public class ContentManagerHelper {
         return childNode;
     }
 
-    public static GWTJahiaNode unsecureCreateNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, ProcessingContext context) throws GWTJahiaServiceException {
+    public static GWTJahiaNode unsecureCreateNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
         try {
             sessionFactory.getCurrentUserSession().getNode(parentPath + "/" + name);
             throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
@@ -556,7 +556,7 @@ public class ContentManagerHelper {
         return acl;
     }
 
-    public static void setACL(String path, GWTJahiaNodeACL acl, ProcessingContext jParams) throws GWTJahiaServiceException {
+    public static void setACL(String path, GWTJahiaNodeACL acl) throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
             node = sessionFactory.getCurrentUserSession().getNode(path);
@@ -587,10 +587,9 @@ public class ContentManagerHelper {
      * @param tmpName
      * @param operation
      * @param newName
-     * @param ctx
      * @throws GWTJahiaServiceException
      */
-    public static void uploadedFile(String location, String tmpName, int operation, String newName, ProcessingContext ctx) throws GWTJahiaServiceException {
+    public static void uploadedFile(String location, String tmpName, int operation, String newName) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper parent = sessionFactory.getCurrentUserSession().getNode(location);
             switch (operation) {
@@ -599,10 +598,10 @@ public class ContentManagerHelper {
                     if (node == null) {
                         throw new GWTJahiaServiceException("Could'nt add a new version, file " + location + "/" + newName + "not found ");
                     }
-                    VersioningHelper.addNewVersionFile(node, tmpName, ctx);
+                    VersioningHelper.addNewVersionFile(node, tmpName);
                     break;
                 case 1:
-                    newName = findAvailableName(parent, newName, ctx.getUser());
+                    newName = findAvailableName(parent, newName);
                 case 0:
                     if (parent.hasNode(newName)) {
                         throw new GWTJahiaServiceException("file exists");
@@ -824,7 +823,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public static void move(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
+    public static void move(String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
         session.getWorkspace().move(sourcePath, targetPath);
     }
@@ -837,7 +836,7 @@ public class ContentManagerHelper {
         if (srcNode.getParent().getPath().equals(targetParent.getPath())) {
             targetParent.orderBefore(srcNode.getName(), targetNode.getName());
         } else {
-            String newname = findAvailableName(targetParent, srcNode.getName(), user);
+            String newname = findAvailableName(targetParent, srcNode.getName());
             session.getWorkspace().move(sourcePath, targetParent.getPath() + "/" + newname);
             targetParent.orderBefore(newname, targetNode.getName());
         }
@@ -845,14 +844,14 @@ public class ContentManagerHelper {
         session.save();
     }
 
-    public static void moveAtEnd(JahiaUser user, String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
+    public static void moveAtEnd(String sourcePath, String targetPath) throws RepositoryException, InvalidItemStateException, ItemExistsException {
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
         final JCRNodeWrapper srcNode = session.getNode(sourcePath);
         final JCRNodeWrapper targetNode = session.getNode(targetPath);
         if (srcNode.getParent().getPath().equals(targetNode.getPath())) {
             targetNode.orderBefore(srcNode.getName(), null);
         } else {
-            String newname = findAvailableName(targetNode, srcNode.getName(), user);
+            String newname = findAvailableName(targetNode, srcNode.getName());
             session.getWorkspace().move(sourcePath, targetNode.getPath() + "/" + newname);
             targetNode.orderBefore(newname, null);
         }
@@ -860,7 +859,7 @@ public class ContentManagerHelper {
         session.save();
     }
 
-    public static void pasteReferenceOnTopOf(GWTJahiaNode aNode, String destinationPath, String name, JahiaUser user, boolean moveOnTop) throws GWTJahiaServiceException {
+    public static void pasteReferenceOnTopOf(GWTJahiaNode aNode, String destinationPath, String name, boolean moveOnTop) throws GWTJahiaServiceException {
         try {
             final JCRNodeWrapper targetParent;
             JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
@@ -871,7 +870,7 @@ public class ContentManagerHelper {
             if (targetParent.isCollection() && targetParent.isWriteable()) {
                 JCRNodeWrapper node = session.getNode(aNode.getPath());
                 if (node.hasPermission(JCRNodeWrapper.READ)) {
-                    name = findAvailableName(targetParent, name, user);
+                    name = findAvailableName(targetParent, name);
                     doPasteReference(targetParent, node, name);
                     if (moveOnTop)
                         targetParent.orderBefore(name, targetNode.getName());
@@ -887,7 +886,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public static void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath, JahiaUser user, boolean moveOnTop) throws GWTJahiaServiceException {
+    public static void pasteReferencesOnTopOf(List<GWTJahiaNode> pathsToCopy, String destinationPath, boolean moveOnTop) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
 
         final JCRNodeWrapper targetParent;
@@ -911,7 +910,7 @@ public class ContentManagerHelper {
                 if (node.hasPermission(JCRNodeWrapper.READ)) {
                     if (targetParent.isCollection()) {
                         try {
-                            name = findAvailableName(targetParent, name, user);
+                            name = findAvailableName(targetParent, name);
                             if (targetParent.isWriteable()) {
                                 doPasteReference(targetParent, node, name);
                                 if (moveOnTop)
@@ -928,7 +927,7 @@ public class ContentManagerHelper {
                         }
                     }
                 } else {
-                    missedPaths.add(new StringBuilder("Source file ").append(name).append(" could not be read by ").append(user.getUsername()).append(" - ACCESS DENIED").toString());
+                    missedPaths.add(new StringBuilder("Source file ").append(name).append(" could not be read ").append(" - ACCESS DENIED").toString());
                 }
             }
             targetParent.save();

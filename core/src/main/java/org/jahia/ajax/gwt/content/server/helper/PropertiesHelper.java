@@ -112,7 +112,6 @@ public class PropertiesHelper {
     public static void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, ProcessingContext context) throws GWTJahiaServiceException {
         Locale locale = context.getCurrentLocale();
         String workspace = "default";
-        JahiaUser user = context.getUser();
 
         for (GWTJahiaNode aNode : nodes) {
             JCRNodeWrapper objectNode;

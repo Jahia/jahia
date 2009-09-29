@@ -35,8 +35,8 @@ public class SitesItemsResolver extends DefaultItemsResolver {
                         Item item = createRedirectItem(jahiaData, site.getTitle(), site.getHomePage());
                         // add to itemsgroup
                         if (item != null) {
-                            String minIconStyle = "gwt-toolbar-ItemsGroup-icons-site-min";
-                            String maxIconStyle = "gwt-toolbar-ItemsGroup-icons-site-min";
+                            String minIconStyle = "gwt-toolbar-icon-site-min";
+                            String maxIconStyle = "gwt-toolbar-icon-site-min";
                             item.setMediumIconStyle(maxIconStyle);
                             item.setMinIconStyle(minIconStyle);
                             if (jahiaData.getProcessingContext().getSiteID() == site.getID()) {

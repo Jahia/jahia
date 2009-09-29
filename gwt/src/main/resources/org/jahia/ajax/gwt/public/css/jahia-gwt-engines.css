@@ -1,289 +1,289 @@
 /*Filemanager*/
-.fm-resize {
+.gwt-toolbar-icon-resize {
     background-image: url( ../images/resize.png ) !important;
 }
 
-.fm-crop {
+.gwt-toolbar-icon-crop {
     background-image: url( ../images/crop.png ) !important;
 }
 
-.fm-rotate {
+.gwt-toolbar-icon-rotate {
     background-image: url( ../images/rotate.png ) !important;
 }
 
-.fm-tableview {
+.gwt-toolbar-icon-tableview {
     background-image: url( ../images/table.png ) !important;
 }
 
-.fm-treetableview {
+.gwt-toolbar-icon-treetableview {
     background-image: url( ../images/treetable.png ) !important;
 }
 
-.fm-iconview {
+.gwt-toolbar-icon-iconview {
     background-image: url( ../images/icons.png ) !important;
 }
 
-.fm-iconview-detailed{
+.gwt-toolbar-icon-iconview-detailed{
      background-image: url( ../images/treetable.png ) !important;   
 }
 
-.fm-templateview {
+.gwt-toolbar-icon-templateview {
      background-image: url( ../images/template.png ) !important;   
 }
 
-.fm-addFile {
+.gwt-toolbar-icon-addFile {
     background-image: url( ../images/add-file.png ) !important;
 }
 
-.fm-newfolder {
+.gwt-toolbar-icon-newfolder {
     background-image: url( ../images/newfolder.png ) !important;
 }
 
-.fm-newcontent {
+.gwt-toolbar-icon-newcontent {
     background-image: url( ../images/add-file.png ) !important;
 }
 
-.fm-newmashup {
+.gwt-toolbar-icon-newmashup {
     background-image: url( ../images/application_add.png ) !important;
 }
 
-.fm-newcategory {
+.gwt-toolbar-icon-newcategory {
     background-image: url( ../images/add-file.png ) !important;
 }
 
-.fm-newrssmashup {
+.gwt-toolbar-icon-newrssmashup {
     background-image: url( ../images/rss.gif ) !important;
 }
 
-.fm-newgooglegadgetmashup {
+.gwt-toolbar-icon-newgooglegadgetmashup {
     background-image: url( ../images/google_gadget.png ) !important;
 }
 
-.fm-remove {
+.gwt-toolbar-icon-remove {
     background-image: url( ../images/remove.png ) !important;
 }
 
-.fm-refresh {
+.gwt-toolbar-icon-refresh {
     background-image: url( ../images/refresh.png ) !important;
 }
 
-.fm-copy {
+.gwt-toolbar-icon-copy {
     background-image: url( ../images/copy.png ) !important;
 }
 
-.fm-cut {
+.gwt-toolbar-icon-cut {
     background-image: url( ../images/cut.png ) !important;
 }
 
-.fm-paste {
+.gwt-toolbar-icon-paste {
     background-image: url( ../images/paste.png ) !important;
 }
 
-.fm-pasteref {
+.gwt-toolbar-icon-pasteref {
     background-image: url( ../images/pasteref.png ) !important;
 }
 
-.fm-download {
+.gwt-toolbar-icon-download {
     background-image: url( ../images/download.png ) !important;
 }
 
-.fm-preview {
+.gwt-toolbar-icon-preview {
     background-image: url( ../images/preview.png ) !important;
 }
 
-.fm-webfolder {
+.gwt-toolbar-icon-webfolder {
     background-image: url( ../images/webfolder.png ) !important;
 }
 
-.fm-upload {
+.gwt-toolbar-icon-upload {
     background-image: url( ../images/upload.png ) !important;
 }
 
-.fm-mount {
+.gwt-toolbar-icon-mount {
     background-image: url( ../images/mount.png ) !important;
 }
 
-.fm-unmount {
+.gwt-toolbar-icon-unmount {
     background-image: url( ../images/unmount.png ) !important;
 }
 
-.fm-rename {
+.gwt-toolbar-icon-rename {
     background-image: url( ../images/rename.png ) !important;
 }
 
-.fm-zip {
+.gwt-toolbar-icon-zip {
     background-image: url( ../images/zip.png ) !important;
 }
 
-.fm-unzip {
+.gwt-toolbar-icon-unzip {
     background-image: url( ../images/unzip.png ) !important;
 }
 
-.fm-lock {
+.gwt-toolbar-icon-lock {
     background-image: url( ../images/lock.png ) !important;
 }
 
-.fm-unlock {
+.gwt-toolbar-icon-unlock {
     background-image: url( ../images/unlock.png ) !important;
 }
 
-.fm-import {
+.gwt-toolbar-icon-import {
     background-image: url( ../images/import.png ) !important;
 }
 
-.fm-export {
+.gwt-toolbar-icon-export {
     background-image: url( ../images/export.png ) !important;
 }
 
-.fm-resize-bw {
+.gwt-toolbar-icon-resize-bw {
     background-image: url( ../images/disabled/resize.png ) !important;
 }
 
-.fm-crop-bw {
+.gwt-toolbar-icon-crop-bw {
     background-image: url( ../images/disabled/crop.png ) !important;
 }
 
-.fm-rotate-bw {
+.gwt-toolbar-icon-rotate-bw {
     background-image: url( ../images/disabled/rotate.png ) !important;
 }
 
-.fm-newfolder-bw {
+.gwt-toolbar-icon-newfolder-bw {
     background-image: url( ../images/disabled/newfolder.png ) !important;
 }
 
-.fm-newcontent-bw {
+.gwt-toolbar-icon-newcontent-bw {
     background-image: url( ../images/disabled/add-file.png ) !important;
 }
 
-.fm-newmashup-bw {
+.gwt-toolbar-icon-newmashup-bw {
     background-image: url( ../images/disabled/application_add.png ) !important;
 }
 
-.fm-newrssmashup-bw {
+.gwt-toolbar-icon-newrssmashup-bw {
     background-image: url( ../images/disabled/rss.gif ) !important;
 }
 
-.fm-newgooglegadgetmashup-bw {
+.gwt-toolbar-icon-newgooglegadgetmashup-bw {
     background-image: url( ../images/disabled/google_gadget.png ) !important;
 }
 
-.fm-remove-bw {
+.gwt-toolbar-icon-remove-bw {
     background-image: url( ../images/disabled/remove.png ) !important;
 }
 
-.fm-refresh-bw {
+.gwt-toolbar-icon-refresh-bw {
     background-image: url( ../images/disabled/refresh.png ) !important;
 }
 
-.fm-copy-bw {
+.gwt-toolbar-icon-copy-bw {
     background-image: url( ../images/disabled/copy.png ) !important;
 }
 
-.fm-cut-bw {
+.gwt-toolbar-icon-cut-bw {
     background-image: url( ../images/disabled/cut.png ) !important;
 }
 
-.fm-paste-bw {
+.gwt-toolbar-icon-paste-bw {
     background-image: url( ../images/disabled/paste.png ) !important;
 }
 
-.fm-pasteref-bw {
+.gwt-toolbar-icon-pasteref-bw {
     background-image: url( ../images/disabled/pasteref.png ) !important;
 }
 
-.fm-download-bw {
+.gwt-toolbar-icon-download-bw {
     background-image: url( ../images/disabled/download.png ) !important;
 }
 
-.fm-preview-bw {
+.gwt-toolbar-icon-preview-bw {
     background-image: url( ../images/disabled/preview.png ) !important;
 }
 
-.fm-webfolder-bw {
+.gwt-toolbar-icon-webfolder-bw {
     background-image: url( ../images/disabled/webfolder.png ) !important;
 }
 
-.fm-upload-bw {
+.gwt-toolbar-icon-upload-bw {
     background-image: url( ../images/disabled/upload.png ) !important;
 }
 
-.fm-mount-bw {
+.gwt-toolbar-icon-mount-bw {
     background-image: url( ../images/disabled/mount.png ) !important;
 }
 
-.fm-unmount-bw {
+.gwt-toolbar-icon-unmount-bw {
     background-image: url( ../images/disabled/unmount.png ) !important;
 }
 
-.fm-rename-bw {
+.gwt-toolbar-icon-rename-bw {
     background-image: url( ../images/disabled/rename.png ) !important;
 }
 
-.fm-zip-bw {
+.gwt-toolbar-icon-zip-bw {
     background-image: url( ../images/disabled/zip.png ) !important;
 }
 
-.fm-unzip-bw {
+.gwt-toolbar-icon-unzip-bw {
     background-image: url( ../images/disabled/unzip.png ) !important;
 }
 
-.fm-lock-bw {
+.gwt-toolbar-icon-lock-bw {
     background-image: url( ../images/disabled/lock.png ) !important;
 }
 
-.fm-unlock-bw {
+.gwt-toolbar-icon-unlock-bw {
     background-image: url( ../images/disabled/unlock.png ) !important;
 }
 
-.fm-import-bw {
+.gwt-toolbar-icon-import-bw {
     background-image: url( ../images/disabled/import.png ) !important;
 }
 
-.fm-export-bw {
+.gwt-toolbar-icon-export-bw {
     background-image: url( ../images/disabled/export.png ) !important;
 }
 
-.fm-myRepository {
+.gwt-toolbar-icon-myRepository {
     background-image: url( ../images/home.png ) !important;
 }
 
-.fm-usersRepository {
+.gwt-toolbar-icon-usersRepository {
     background-image: url( ../images/users.png ) !important;
 }
 
-.fm-myMashupRepository {
+.gwt-toolbar-icon-myMashupRepository {
     background-image: url( ../images/home.png ) !important;
 }
 
-.fm-savedSearch {
+.gwt-toolbar-icon-savedSearch {
     background-image: url( ../images/search.png ) !important;
 }
 
-.fm-myExternalRepository {
+.gwt-toolbar-icon-myExternalRepository {
     background-image: url( ../images/ext-repository.png ) !important;
 }
 
-.fm-sharedRepository {
+.gwt-toolbar-icon-sharedRepository {
     background-image: url( ../images/shared-repository.png ) !important;
 }
 
-.fm-sharedMashupRepository {
+.gwt-toolbar-icon-sharedMashupRepository {
     background-image: url( ../images/shared-repository.png ) !important;
 }
 
-.fm-websiteRepository {
+.gwt-toolbar-icon-websiteRepository {
     background-image: url( ../images/site-repository.png ) !important;
 }
 
-.fm-websiteMashupRepository {
+.gwt-toolbar-icon-websiteMashupRepository {
     background-image: url( ../images/site-repository.png ) !important;
 }
 
-.fm-mashupRepository {
+.gwt-toolbar-icon-mashupRepository {
     background-image: url( ../images/portlet-repository.png ) !important;
 }
 
-.fm-globalRepository {
+.gwt-toolbar-icon-globalRepository {
     background-image: url( ../images/repository.png ) !important;
 }
 
@@ -291,19 +291,19 @@ fm-globalMashupRepository {
     background-image: url( ../images/repository.png ) !important;
 }
 
-.fm-previewPane {
+.gwt-toolbar-icon-previewPane {
     padding: 10px;
 }
 
-.fm-property-adder {
+.gwt-toolbar-icon-property-adder {
     padding: 10px;
 }
 
-.fm-bottom-margin {
+.gwt-toolbar-icon-bottom-margin {
     margin-bottom: 5px ;
 }
 
-.fm-label {
+.gwt-toolbar-icon-label {
     font-size: 12px;
 }
 
@@ -376,23 +376,23 @@ fm-globalMashupRepository {
 }
 
 /*filemanagement*/
-.fm-infoPane {
+.gwt-toolbar-icon-infoPane {
     padding: 10px;
 }
 
-.fm-previewPane {
+.gwt-toolbar-icon-previewPane {
     padding: 10px;
 }
 
-.fm-property-adder {
+.gwt-toolbar-icon-property-adder {
     padding: 10px;
 }
 
-.fm-selection-background {
+.gwt-toolbar-icon-selection-background {
     background-color: #C7E6EB;
 }
 
-.fm-vertical-align-bottom {
+.gwt-toolbar-icon-vertical-align-bottom {
     vertical-align: bottom;
 }
 

@@ -43,8 +43,8 @@ public class HistoryItemsResolver extends DefaultItemsResolver {
                 try {
                     Item item = createRedirectItem(jahiaData, null, pid);
                     if (item != null) {
-                        String minIconStyle = "gwt-toolbar-ItemsGroup-icons-page-min";
-                        String maxIconStyle = "gwt-toolbar-ItemsGroup-icons-page-normal";
+                        String minIconStyle = "gwt-toolbar-icon-page-min";
+                        String maxIconStyle = "gwt-toolbar-icon-page-normal";
                         item.setMediumIconStyle(maxIconStyle);
                         item.setMinIconStyle(minIconStyle);
                         // add to itemsgroup

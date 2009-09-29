@@ -101,7 +101,7 @@ public class NotificationActionItem extends BaseActionItem {
                 ToolbarService.App.getInstance().updateGWTJahiaStateInfo(getJahiaGWTPageContext(), gwtJahiaStateInfo, new AsyncCallback<GWTJahiaStateInfo>() {
                     public void onFailure(Throwable throwable) {
                         Log.error("Unable to update pdisplay info timer", throwable);
-                        toolbarItem.setIconStyle("gwt-toolbar-ItemsGroup-icons-notification-error");
+                        toolbarItem.setIconStyle("gwt-toolbar-icon-notification-error");
                         attempts++;
                         if (attempts > 5) {
                             cancel();

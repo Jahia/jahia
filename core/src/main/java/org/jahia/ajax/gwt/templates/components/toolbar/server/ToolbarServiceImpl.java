@@ -463,7 +463,11 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         }
         gwtToolbarItem.setType(item.getId());
         gwtToolbarItem.setDisplayTitle(item.isDisplayTitle());
-        gwtToolbarItem.setDescription(getResources(paramBean, item.getDescriptionKey()));
+        if(item.getDescriptionKey() != null){
+            gwtToolbarItem.setDescription(getResources(paramBean, item.getDescriptionKey()));
+        }else{
+            gwtToolbarItem.setDescription(gwtToolbarItem.getTitle());
+        }
         gwtToolbarItem.setMediumIconStyle(item.getMediumIconStyle());
         gwtToolbarItem.setMinIconStyle(item.getMinIconStyle());
         if (item.getSelected() != null) {
@@ -497,7 +501,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                 gwtJahiaStateInfo = new GWTJahiaStateInfo();
                 gwtJahiaStateInfo.setLastViewTime(System.currentTimeMillis());
                 if (gwtJahiaStateInfo.isNeedRefresh()) {
-                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-ItemsGroup-icons-notification-refresh");
+                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-notification-refresh");
                 }
             } else {
                 if (gwtJahiaStateInfo.isNeedRefresh()) {
@@ -513,13 +517,13 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                 GWTJahiaProcessJobInfo gwtProcessJobInfo = updateGWTProcessJobInfo(gwtJahiaStateInfo.getGwtProcessJobInfo(), pageContext.getPid());
                 gwtJahiaStateInfo.setGwtProcessJobInfo(gwtProcessJobInfo);
                 if (gwtProcessJobInfo.isJobExecuting()) {
-                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-ItemsGroup-icons-wait-min");
+                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-wait-min");
                     gwtJahiaStateInfo.setText("Job is running (" + gwtProcessJobInfo.getNumberWaitingJobs() + ") waiting");
                 } else if (gwtProcessJobInfo.getNumberWaitingJobs() > 0) {
-                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-ItemsGroup-icons-notification-information");
+                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-notification-information");
                     gwtJahiaStateInfo.setText(gwtProcessJobInfo.getNumberWaitingJobs() + " waiting jobs");
                 } else {
-                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-ItemsGroup-icons-notification-ok");
+                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-notification-ok");
                 }
 
                 // pdisplay need refresh need refresh
@@ -535,7 +539,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                     // do we need to refresh ?
                     if (gwtJahiaStateInfo.isNeedRefresh() || gwtProcessJobInfo.isCurrentPageValidated()) {
                         gwtJahiaStateInfo.setNeedRefresh(true);
-                        gwtJahiaStateInfo.setIconStyle("gwt-toolbar-ItemsGroup-icons-notification-refresh");
+                        gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-notification-refresh");
                         gwtJahiaStateInfo.setText(getLocaleJahiaAdminResource("button.monitoring.reloadPage"));
                         gwtJahiaStateInfo.setRefreshMessage(getLocaleJahiaAdminResource("button.monitoring.reloadPage"));
                     }

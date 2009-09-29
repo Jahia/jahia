@@ -42,8 +42,8 @@ public class BookmarksItemsResolver   extends DefaultItemsResolver {
 
                     Item item = createRedirectItem(jahiaData, null, pid);
                     if (item != null) {
-                        String minIconStyle = "gwt-toolbar-ItemsGroup-icons-bookmark-min";
-                        String maxIconStyle = "gwt-toolbar-ItemsGroup-icons-bookmark-min";
+                        String minIconStyle = "gwt-toolbar-icon-bookmark-min";
+                        String maxIconStyle = "gwt-toolbar-icon-bookmark-min";
                         item.setMediumIconStyle(maxIconStyle);
                         item.setMinIconStyle(minIconStyle);
                         // add to itemsgroup

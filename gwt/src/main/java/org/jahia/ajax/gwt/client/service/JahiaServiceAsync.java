@@ -48,41 +48,7 @@ import java.util.List;
  */
 public interface JahiaServiceAsync {
 
-    void drawAdministrationLauncher(GWTJahiaPageContext page, AsyncCallback async);
-
-    void drawLogoutUrl(GWTJahiaPageContext page, AsyncCallback async);
-
-    void drawLoginUrl(GWTJahiaPageContext page, AsyncCallback async);
-
-    void drawPagePropertiesUrl(GWTJahiaPageContext page, AsyncCallback async);
-
-    void workflowLauncher(GWTJahiaPageContext page, AsyncCallback async);
-
-    void drawNormalModeLink(GWTJahiaPageContext page, AsyncCallback async);
-
-    void drawEditModeLink(GWTJahiaPageContext page, AsyncCallback async);
-
-    void drawPreviewModeLink(GWTJahiaPageContext page, AsyncCallback async);
-
-    void drawAddContainerUrl(GWTJahiaPageContext page, int parentConatinerId, String containerListName, AsyncCallback async);
-
-    void saveUserProperties(GWTJahiaPageContext page, List<GWTJahiaPageUserProperty> properties, AsyncCallback async);
-
-    void saveJahiaPreference(GWTJahiaPreference jahiaPreference,AsyncCallback async);
-
-    void getJahiaPreference(String name,AsyncCallback async);
-
     void drawPortletInstanceOutput(GWTJahiaPageContext page, String windowID, String entryPointIDStr, String pathInfo, String queryString, AsyncCallback<GWTJahiaPortletOutputBean> async);
-
-    void deleteBookmark(GWTJahiaPageContext page, GWTJahiaBookmark gwtJahiaBookmark, AsyncCallback async);
-
-    /**
-     * Get list of all bookmarks for current user.
-     *
-     * @param page
-     * @return
-     */
-    void getBookmarks(GWTJahiaPageContext page, AsyncCallback<List<GWTJahiaBookmark>> async);
 
     void releaseLocks(String lockType, AsyncCallback async) ;
 

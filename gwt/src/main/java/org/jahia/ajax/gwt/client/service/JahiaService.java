@@ -69,35 +69,7 @@ public interface JahiaService extends RemoteService {
         }
     }
 
-    public String drawAdministrationLauncher(GWTJahiaPageContext page);
-
-    public String drawLogoutUrl(GWTJahiaPageContext page);
-
-    public String drawLoginUrl(GWTJahiaPageContext page);
-
-    public String drawPagePropertiesUrl(GWTJahiaPageContext page);
-
-    public String workflowLauncher(GWTJahiaPageContext page);
-
-    public String drawNormalModeLink(GWTJahiaPageContext page);
-
-    public String drawEditModeLink(GWTJahiaPageContext page);
-
-    public String drawPreviewModeLink(GWTJahiaPageContext page);
-
-    public String drawAddContainerUrl(GWTJahiaPageContext page, int parentConatinerId, String containerListName);
-
-    public void saveUserProperties(GWTJahiaPageContext page, List<GWTJahiaPageUserProperty> properties);
-
-    public void saveJahiaPreference(GWTJahiaPreference jahiaPreference);
-
-    public GWTJahiaPreference getJahiaPreference(String name);
-
     public GWTJahiaPortletOutputBean drawPortletInstanceOutput(GWTJahiaPageContext page, String windowID, String entryPointIDStr, String pathInfo, String queryString);
-
-    public void deleteBookmark(GWTJahiaPageContext page, GWTJahiaBookmark gwtJahiaBookmark);
-
-    public List<GWTJahiaBookmark> getBookmarks(GWTJahiaPageContext page);
 
     public void releaseLocks(String lockType) throws GWTJahiaServiceException ;
     

@@ -32,53 +32,41 @@
 package org.jahia.ajax.gwt.commons.server.rpc;
 
 import net.htmlparser.jericho.*;
-import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.jahia.ajax.engines.LockHelper;
-import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.*;
+import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
-import org.jahia.content.ContentPageKey;
 import org.jahia.data.JahiaData;
-import org.jahia.data.beans.history.HistoryBean;
+import org.jahia.data.beans.JahiaBean;
+import org.jahia.data.beans.PageBean;
 import org.jahia.data.beans.RequestBean;
 import org.jahia.data.beans.SiteBean;
-import org.jahia.data.beans.PageBean;
-import org.jahia.data.beans.JahiaBean;
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.LoadFlags;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.operations.valves.HistoryValve;
+import org.jahia.gui.GuiBean;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.decorator.JCRJahiaContentNode;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockService;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.services.pagesusers.JahiaPageUserPropService;
-import org.jahia.services.preferences.JahiaPreference;
-import org.jahia.services.preferences.JahiaPreferencesProvider;
-import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
-import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.JahiaSaveVersion;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.gui.GuiBean;
 
 import javax.jcr.RepositoryException;
 import java.net.MalformedURLException;
@@ -94,171 +82,7 @@ import java.util.*;
  */
 public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService {
     private static final ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
-    private static JahiaPreferencesProvider<BookmarksJahiaPreference> bookmarksPreferencesProvider;
     private static final Logger logger = Logger.getLogger(JahiaContentLegacyServiceImpl.class);
-
-    public String drawAddContainerUrl(GWTJahiaPageContext page, int parentConatainerId, String containerListName) {
-        try {
-            logger.debug("call drawAddContainerUrl: pcid[" + parentConatainerId + "]" + "clName[" + containerListName + "]");
-            // retrieve container ParamBean and JahiaData
-            ProcessingContext jParams = retrieveParamBean(page);
-            JahiaData jData = retrieveJahiaData(page);
-
-            JahiaContainer container = getJahiaContainersService().loadContainer(parentConatainerId, LoadFlags.NOTHING, jParams);
-            JahiaContainerList ctl = container.getContainerList(containerListName);
-            if (ctl != null) {
-                String href = jData.gui().drawAddContainerUrl(ctl);
-                logger.debug("Add container url: " + href);
-                return href;
-            } else {
-                logger.error("Container list with name " + containerListName + " is not defined");
-            }
-        } catch (Exception e) {
-            logger.error(e, e);  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        return null;
-    }
-
-    public String drawAdministrationLauncher(GWTJahiaPageContext page) {
-        // retrieve container list
-        JahiaData jData = retrieveJahiaData(page);
-        try {
-            String href = jData.gui().drawAdministrationLauncher();
-            logger.debug("Admin laucher: " + href);
-            return href;
-        } catch (Exception e) {
-            logger.error(e, e);
-        }
-        return null;
-    }
-
-    public String drawNormalModeLink(GWTJahiaPageContext page) {
-        // retrieve container list
-        JahiaData jData = retrieveJahiaData(page);
-        try {
-            String href = jData.gui().drawNormalModeLink();
-            logger.debug("Normal laucher: " + href);
-            return href;
-        } catch (Exception e) {
-            logger.error(e, e);
-        }
-        return null;
-    }
-
-    public String drawEditModeLink(GWTJahiaPageContext page) {
-        // retrieve container list
-        JahiaData jData = retrieveJahiaData(page);
-        try {
-            String href = jData.gui().drawEditModeLink();
-            logger.debug("Edit laucher: " + href);
-            return href;
-        } catch (Exception e) {
-            logger.error(e, e);
-        }
-        return null;
-    }
-
-    public String drawPreviewModeLink(GWTJahiaPageContext page) {
-        // retrieve container list
-        JahiaData jData = retrieveJahiaData(page);
-        try {
-            String href = jData.gui().drawPreviewModeLink();
-            return href;
-        } catch (Exception e) {
-            logger.error(e, e);
-        }
-        return null;
-    }
-
-    public String drawLogoutUrl(GWTJahiaPageContext page) {
-        JahiaData jData = retrieveJahiaData(page);
-        try {
-            String href = jData.gui().drawLogoutUrl();
-            return href;
-        } catch (Exception e) {
-            logger.error(e, e);
-        }
-        return null;
-    }
-
-    public String drawLoginUrl(GWTJahiaPageContext page) {
-        JahiaData jData = retrieveJahiaData(page);
-        try {
-            String href = jData.gui().drawLoginUrl();
-            return href;
-        } catch (Exception e) {
-            logger.error(e, e);
-        }
-        return null;
-    }
-
-    public String drawPagePropertiesUrl(GWTJahiaPageContext page) {
-        JahiaData jData = retrieveJahiaData(page);
-        try {
-            String href = jData.gui().drawPagePropertiesUrl();
-            logger.debug("drawPagePropertiesUrl: " + href);
-            return href;
-        } catch (Exception e) {
-            logger.error(e, e);
-        }
-        return null;
-    }
-
-
-    public String workflowLauncher(GWTJahiaPageContext page) {
-        JahiaData jData = retrieveJahiaData(page);
-        String output = null;
-        try {
-            final StringBuffer buff = new StringBuffer();
-            buff.append(ContentPageKey.PAGE_TYPE).append("_").append(page.getPid());
-            output = jData.gui().drawWorkflowUrl(buff.toString());
-            logger.debug(output);
-        } catch (Exception e) {
-            logger.error(e, e);
-        }
-        return output;
-    }
-
-
-    public void saveUserProperties(GWTJahiaPageContext page, List<GWTJahiaPageUserProperty> properties) {
-        logger.debug("begin save user properties");
-        if (properties != null) {
-            JahiaPageUserPropService pageUserProperties = getJahiaPageUserPropService();
-            int pageId = page.getPid();
-            String principalKey = getRemoteJahiaUser().getUserKey();
-            for (GWTJahiaPageUserProperty prop : properties) {
-                // by default: pageId = currentPageId
-                if (prop.getPageId() == -1) {
-                    prop.setPageId(pageId);
-                }
-                //by default: userId = currentUser
-                if (prop.getPrincipalKey() == null) {
-                    prop.setPrincipalKey(principalKey);
-                    prop.setPrincipalType("user");
-                }
-                pageUserProperties.savePageUserProperty(prop.getPageId(), prop.getPrincipalKey(), prop.getPrincipalType(), prop.getPropType(), prop.getName(), prop.getValue());
-            }
-        }
-
-    }
-
-    public void saveJahiaPreference(GWTJahiaPreference jahiaPreference) {
-        setGenericPreferenceValue(jahiaPreference.getName(), jahiaPreference.getValue());
-    }
-
-    public GWTJahiaPreference getJahiaPreference(String name) {
-        String value = getGenericPreferenceValue(name);
-        return new GWTJahiaPreference(name, value);
-    }
-
-    private JahiaPageUserPropService getJahiaPageUserPropService() {
-        return servicesRegistry.getJahiaPageUserPropService();
-    }
-
-    private JahiaContainersService getJahiaContainersService() {
-        return servicesRegistry.getJahiaContainersService();
-    }
 
     public GWTJahiaPortletOutputBean drawPortletInstanceOutput(GWTJahiaPageContext page, String windowID, String entryPointIDStr, String pathInfo, String queryString) {
         GWTJahiaPortletOutputBean result = new GWTJahiaPortletOutputBean();
@@ -311,103 +135,6 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
         return result;
     }
 
-    private static OutputDocument emptyTagContents(Iterable<StartTag> segments, Source source) {
-        OutputDocument outputDocument = new OutputDocument(source);
-        for (StartTag segment : segments) {
-            outputDocument.replace(segment.getElement().getContent(), "");
-        }
-        return outputDocument;
-    }
-
-
-    public void deleteBookmark(GWTJahiaPageContext page, GWTJahiaBookmark gwtJahiaBookmark) {
-        if (gwtJahiaBookmark == null) {
-            logger.error("bookmark object is null.");
-            return;
-        }
-        // get bookmarks provider
-        JahiaPreferencesProvider<BookmarksJahiaPreference> jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
-
-        // create a jahiaPreferenceKey
-        JahiaPreference<BookmarksJahiaPreference> jahiaPreferenceKey = jahiaPreferencesProvider.createJahiaPreferenceNode(retrieveParamBean(page));
-
-        // set preference
-        jahiaPreferencesProvider.deleteJahiaPreference(jahiaPreferenceKey);
-    }
-
-    /**
-     * Get list of all bookmarks for current user.
-     *
-     * @param page
-     * @return
-     */
-    public List<GWTJahiaBookmark> getBookmarks(GWTJahiaPageContext page) {
-        List<GWTJahiaBookmark> gwtBookmarks = new ArrayList<GWTJahiaBookmark>();
-
-        // get bookmarks provider
-        JahiaPreferencesProvider<BookmarksJahiaPreference> jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
-        List<JahiaPreference<BookmarksJahiaPreference>> jahiaPreferencesMap = jahiaPreferencesProvider.getJahiaAllPreferences(getRemoteJahiaUser());
-        if (jahiaPreferencesMap != null) {
-            for (JahiaPreference<BookmarksJahiaPreference> jahiaPreference : jahiaPreferencesMap) {
-                // current bookmark
-                BookmarksJahiaPreference bPref = jahiaPreference.getNode();
-
-                // pid
-                try {
-                    String pageUUID = bPref.getPageUUID();
-                    ContentPage contentPage = getContentPage(pageUUID, getRemoteJahiaUser());
-                    String url = contentPage.getURL(retrieveParamBean());
-                    String title = contentPage.getTitle(retrieveParamBean());
-                    int pid = contentPage.getPageID();
-
-                    // create gwt bean
-                    GWTJahiaBookmark gwtJahiaBookmark = new GWTJahiaBookmark();
-                    gwtJahiaBookmark.setPid(pid);
-                    gwtJahiaBookmark.setTitle(title);
-                    gwtJahiaBookmark.setUrl(url);
-                    gwtBookmarks.add(gwtJahiaBookmark);
-
-                } catch (Exception e) {
-                    logger.error(e, e);
-                }
-
-
-            }
-        }
-        return gwtBookmarks;
-    }
-
-    public String[] getValues(JahiaData jData, String input) {
-        List<HistoryBean> historyBeanList = (List<HistoryBean>) jData.getProcessingContext().getSessionState().getAttribute(HistoryValve.ORG_JAHIA_TOOLBAR_HISTORY);
-        if (historyBeanList != null) {
-            String[] values = new String[historyBeanList.size()];
-            for (int i = 0; i < historyBeanList.size(); i++) {
-                HistoryBean historyBean = historyBeanList.get(i);
-                values[i] = historyBean.getUrl();
-            }
-            return values;
-        }
-        return null;
-    }
-
-
-    /**
-     * Get Bookmark jahia preference provider
-     *
-     * @return
-     */
-    private JahiaPreferencesProvider<BookmarksJahiaPreference> getBookmarksJahiaPreferencesProvider() {
-        try {
-            if (bookmarksPreferencesProvider == null) {
-                bookmarksPreferencesProvider = ServicesRegistry.getInstance().getJahiaPreferencesService().getPreferencesProviderByClass(BookmarksJahiaPreference.class);
-            }
-            return bookmarksPreferencesProvider;
-        } catch (JahiaPreferenceProviderException e) {
-            logger.error(e, e);
-        }
-        return null;
-    }
-
     /**
      * Release the locks of the given type for the current user.
      *
@@ -446,7 +173,6 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
         return null;
     }
 
-
     /**
      * Retrieve all active languages for the current site.
      *
@@ -474,19 +200,6 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
             availableLanguages.put(stringLocaleEntry.getKey(), localeBean);
         }
         return new GWTJahiaLanguageSwitcherBean(availableLanguages, new HashMap<String,String>());
-    }
-
-    private String getCleanHTMLText(String text, String notTrunkedText, int maxChar) {
-        if (text == null || "".equals(text.trim())) {
-            return text;
-        }
-        if (JahiaTools.unClosedTag(text)) {
-            text = JahiaTools.removeTags(notTrunkedText);
-        }
-        if (text.length() > maxChar) {
-            text = text.substring(0, maxChar) + "...";
-        }
-        return text;
     }
 
     public GWTJahiaInlineEditingResultBean inlineUpdateField(Integer containerID, Integer fieldID, String updatedContent) {
@@ -629,7 +342,6 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
         return returnedSites;
     }
 
-
     public Boolean releaseLock(String lockType) {
         if (lockType == null || lockType.length() == 0) {
             return false;
@@ -645,16 +357,6 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
         }
 
         return result;
-    }
-
-    private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
-        try {
-            JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) JCRSessionFactory.getInstance().getThreadSession(jahiaUser).getNodeByUUID(uuid);
-            return (ContentPage) nodeWrapper.getContentObject();
-        } catch (Exception e) {
-            logger.error(e, e);
-            return null;
-        }
     }
 
 }

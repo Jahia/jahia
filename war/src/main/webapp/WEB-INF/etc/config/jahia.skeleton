@@ -213,7 +213,7 @@ templates.boxes.onError                             	= full
 ######################################################################
 ### Filemanager  #####################################################
 ######################################################################
-# Configuration of the file manager that uses Slide as a back-end.
+# Configuration of the file manager that uses JCR as a back-end.
 jahiaFileUploadMaxSize                                  =  104857600
 
 ######################################################################

@@ -48,9 +48,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.ByteArrayOutputStream;
-import java.util.List;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 import java.net.MalformedURLException;
 
 /**
@@ -108,35 +106,21 @@ public class RequestDispatcherScript implements Script {
         String templatePath;
 
         for (String template : resource.getTemplates()) {
-            List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(nt.getName().replace(":","_"));            
-            for (JahiaTemplatesPackage aPackage : packages) {
-                String currentTemplatePath = aPackage.getRootFolderPath();
-                templatePath = getTemplatePath(resource.getTemplateType(), template, nt, currentTemplatePath);
-                if (templatePath != null) {
-                    return templatePath;
-                }
-            }
-            templatePath = getTemplatePath(resource.getTemplateType(), template, nt, "/templates/default");
-            if (templatePath != null) {
-                return templatePath;
-            }
-
-            List<ExtendedNodeType> nodeTypeList = Arrays.asList(nt.getSupertypes());
+            List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(nt.getSupertypes()));
+            nodeTypeList.add(nt);
             Collections.reverse(nodeTypeList);
             for (ExtendedNodeType st : nodeTypeList) {
-                packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(st.getName().replace(":","_"));
-                for (JahiaTemplatesPackage aPackage : packages) {
+                List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(st.getName().replace(":","_"));
+                SortedSet<JahiaTemplatesPackage> sortedPackages = new TreeSet<JahiaTemplatesPackage>(new PackageComparator());
+                sortedPackages.addAll(packages);
+
+                for (JahiaTemplatesPackage aPackage : sortedPackages) {
                     String currentTemplatePath = aPackage.getRootFolderPath();
                     templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath);
                     if (templatePath != null) {
                         return templatePath;
                     }
                 }
-                templatePath = getTemplatePath(resource.getTemplateType(), template, st, "/templates/default");
-                if (templatePath != null) {
-                    return templatePath;
-                }
-                
             }
         }
 
@@ -193,5 +177,13 @@ public class RequestDispatcherScript implements Script {
             return s;
         }
 
+    }
+
+    class PackageComparator implements Comparator<JahiaTemplatesPackage> {
+        public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
+            if (o1.getRootFolder().endsWith("default")) return 99;
+            if (o2.getRootFolder().endsWith("default")) return -99;
+            return o1.getName().compareTo(o2.getName());
+        }
     }
 }

@@ -38,11 +38,5 @@
     <package-name>Jahia Article</package-name>
     <root-folder>jahia_article</root-folder>
     <provider>jahia.org</provider>
-    <thumbnail>images/preview.gif</thumbnail>
-    <resource-bundle>resources.JahiaArticle</resource-bundle>
-    <definitions-file>definitions.cnd</definitions-file>
-    <templates default="simple" homepage="Home">
-        <template name="Home" display-name="template.name.home" filename="tpl.home.jsp" page-type="web_templates:home"/>
-    </templates>    
 </template-set>
 

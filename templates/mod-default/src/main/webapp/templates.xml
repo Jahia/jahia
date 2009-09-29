@@ -35,14 +35,8 @@
 -->
 
 <template-set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.jahia.org/jahia/templates" xsi:schemaLocation="http://www.jahia.org/jahia/templates http://www.jahia.org/shemas/templates_2_0.xsd">
-    <package-name>Jahia Forum</package-name>
-    <root-folder>forum</root-folder>
+    <package-name>Default Jahia Templates</package-name>
+    <root-folder>default</root-folder>
     <provider>jahia.org</provider>
-    <thumbnail>images/preview.gif</thumbnail>
-    <resource-bundle>resources.JahiaForum</resource-bundle>
-    <definitions-file>definitions.cnd</definitions-file>
-    <templates default="simple" homepage="Home">
-        <template name="Home" display-name="template.name.home" filename="tpl.home.jsp" page-type="web_templates:home"/>
-    </templates>    
 </template-set>
 

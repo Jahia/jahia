@@ -330,7 +330,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                                     fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
                                 }
                             } catch (ItemNotFoundException e) {
-
+                            } catch (UnsupportedRepositoryOperationException e) {
                             }
                         }
                     }

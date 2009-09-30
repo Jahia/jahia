@@ -45,22 +45,16 @@ import org.jahia.ajax.gwt.client.data.toolbar.analytics.GWTJahiaAnalyticsParamet
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaProcessJobInfo;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.preferences.JahiaPreferencesProvider;
-import org.jahia.services.preferences.JahiaPreferencesQueryHelper;
-import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.preferences.JahiaPreferencesService;
-import org.jahia.services.preferences.toolbar.ToolbarJahiaPreference;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.scheduler.ProcessAction;
 import org.jahia.services.toolbar.bean.*;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.AbstractActivationJob;
 import org.jahia.services.importexport.ActivationContentPickerJob;
 import org.jahia.services.importexport.CopyJob;
@@ -85,7 +79,6 @@ import java.util.*;
  */
 public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarService {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ToolbarServiceImpl.class);
-    private static JahiaPreferencesProvider toolbarPreferencesProvider;
     private static Map<String, Class<?>> CLASS_CACHE = new HashMap<String, Class<?>>();
 
     private static final ServicesRegistry SERVICES_REGISTRY = ServicesRegistry.getInstance();
@@ -124,6 +117,13 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         }
     }
 
+    /**
+     * create gwt toolabr set
+     *
+     * @param toolbarSet
+     * @param pageContext
+     * @return
+     */
     private GWTJahiaToolbarSet createGWTToolbarSet(ToolbarSet toolbarSet, GWTJahiaPageContext pageContext) {
         if (toolbarSet.getToolbars() == null || toolbarSet.getToolbars().isEmpty()) {
             logger.debug("toolbar set list is empty");
@@ -202,25 +202,14 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         return actionResult;
     }
 
+
     /**
-     * @return the toobar preferences provider
+     * Create gwt toolbar
+     *
+     * @param pageContext
+     * @param toolbar
+     * @return
      */
-    private JahiaPreferencesProvider getToolbarJahiaPreferencesProvider() {
-        try {
-            if (toolbarPreferencesProvider == null) {
-                toolbarPreferencesProvider = SERVICES_REGISTRY.getJahiaPreferencesService().getPreferencesProviderByType(ToolbarJahiaPreference.PROVIDER_TYPE);
-            }
-            if (toolbarPreferencesProvider == null) {
-                logger.error("Toolbar preference profider not found.");
-            }
-            return toolbarPreferencesProvider;
-        } catch (Exception e) {
-            logger.error(e, e);
-        }
-        return null;
-    }
-
-
     private GWTJahiaToolbar createGWTToolbar(GWTJahiaPageContext pageContext, Toolbar toolbar) {
         // don't add the tool bar if  has no items group
         if (toolbar.getItems() == null || toolbar.getItems().isEmpty()) {
@@ -237,28 +226,8 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         gwtToolbar.setName(toolbar.getName());
         gwtToolbar.setTitle(getResources(paramBean, toolbar.getTitleKey()));
         gwtToolbar.setType(toolbar.getType());
-        gwtToolbar.setDraggable(toolbar.isDraggable());
-        gwtToolbar.setMandatory(toolbar.isMandatory());
         gwtToolbar.setDisplayTitle(toolbar.isDisplayTitle());
-        //create and set state
-        GWTJahiaState defaultGWTState = new GWTJahiaState();
-        String state = toolbar.getState();
-        if (state != null) {
-            if (state.equalsIgnoreCase("top")) {
-                defaultGWTState.setValue(ToolbarConstants.TOOLBAR_TOP);
-            } else if (state.equalsIgnoreCase("box")) {
-                defaultGWTState.setValue(ToolbarConstants.TOOLBAR_HORIZONTAL_BOX);
-            } else if (state.equalsIgnoreCase("right")) {
-                defaultGWTState.setValue(ToolbarConstants.TOOLBAR_RIGHT);
-            } else {
-                defaultGWTState.setValue(ToolbarConstants.TOOLBAR_TOP);
-            }
-
-            // by defautl load toolbar if mandatory value is 'true' or displayed value
-            defaultGWTState.setDisplay(toolbar.isMandatory() || toolbar.isDisplayed());
-        }
-
-        gwtToolbar.setState(createJahiaToolbarState(gwtToolbar, defaultGWTState));
+        gwtToolbar.setContextMenu(toolbar.isContextMenu());
 
         // load items-group
         List<GWTJahiaToolbarItemsGroup> gwtToolbarItemsGroupList = new ArrayList<GWTJahiaToolbarItemsGroup>();
@@ -283,10 +252,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                 // add itemsGroup only if not empty
                 if (gwtItemsGroup != null && gwtItemsGroup.getGwtToolbarItems() != null && !gwtItemsGroup.getGwtToolbarItems().isEmpty()) {
                     gwtToolbarItemsGroupList.add(gwtItemsGroup);
-                    // other itemsgroup will be lazy loaded
-                    if (!gwtToolbar.getState().isDisplay()) {
-                        break;
-                    }
+
                 }
             } else {
                 logger.debug("toolbar[" + gwtToolbar.getName() + "] - itemsGroup [" + itemsGroup.getId() + "," + itemsGroup.getTitleKey() + "]  not visible");
@@ -299,43 +265,16 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         return gwtToolbar;
     }
 
-    private GWTJahiaState createJahiaToolbarState(GWTJahiaToolbar gwtToolbar, GWTJahiaState defaultState) {
-        try {
-            JahiaPreference preference = getToolbarPreference(gwtToolbar.getName(), gwtToolbar.getType());
-            if (preference == null) {
-                return defaultState;
-            }
-            logger.debug("Preference found for toolbar: " + gwtToolbar.getName());
-            ToolbarJahiaPreference node = (ToolbarJahiaPreference) preference.getNode();
-            GWTJahiaState state = new GWTJahiaState();
-            state.setValue(node.getState());
-            state.setIndex(node.getToolbarIndex());
-            state.setPagePositionX(node.getPositionX());
-            state.setPagePositionY(node.getPositionY());
-            state.setDisplay(gwtToolbar.isMandatory() || node.isDisplay());
-            return state;
-
-        } catch (Exception e) {
-            logger.debug(e, e);
-            return defaultState;
-        }
-
-
-    }
 
     /**
-     * Get toolbar pref
+     * Create gwt items group
      *
-     * @param name
-     * @param type
+     * @param page
+     * @param toolbarName
+     * @param index
+     * @param itemsGroup
      * @return
      */
-    private JahiaPreference getToolbarPreference(String name, String type) {
-        JahiaUser remoteJahiaUser = getRemoteJahiaUser();
-        return getToolbarJahiaPreferencesProvider().getJahiaPreference(remoteJahiaUser, JahiaPreferencesQueryHelper.getToolbarSQL(name, type));
-    }
-
-
     private GWTJahiaToolbarItemsGroup createGWTItemsGroup(GWTJahiaPageContext page, String toolbarName, int index, ItemsGroup itemsGroup) {
         JahiaData jData = retrieveJahiaData(page);
         ParamBean paramBean = retrieveParamBean(page);
@@ -364,31 +303,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup = new GWTJahiaToolbarItemsGroup();
         gwtToolbarItemsGroup.setId(toolbarName + "_" + index);
         gwtToolbarItemsGroup.setType(itemsGroup.getId());
-
-        String layout = itemsGroup.getLayout();
-        int layoutInt = ToolbarConstants.ITEMSGROUP_BUTTON_LABEL;
-        if (layout.equalsIgnoreCase("button")) {
-            layoutInt = ToolbarConstants.ITEMSGROUP_BUTTON;
-        } else if (layout.equalsIgnoreCase("label")) {
-            layoutInt = ToolbarConstants.ITEMSGROUP_LABEL;
-        } else if (layout.equalsIgnoreCase("button-label")) {
-            layoutInt = ToolbarConstants.ITEMSGROUP_BUTTON_LABEL;
-        } else if (layout.equalsIgnoreCase("menu")) {
-            layoutInt = ToolbarConstants.ITEMSGROUP_MENU;
-        } else if (layout.equalsIgnoreCase("menu-radio")) {
-            layoutInt = ToolbarConstants.ITEMSGROUP_MENU_RADIO;
-        } else if (layout.equalsIgnoreCase("menu-checkbox")) {
-            layoutInt = ToolbarConstants.ITEMSGROUP_MENU_CHECKBOX;
-        } else if (layout.equalsIgnoreCase("select")) {
-            layoutInt = ToolbarConstants.ITEMSGROUP_SELECT;
-        } else if (layout.equalsIgnoreCase("box")) {
-            layoutInt = ToolbarConstants.ITEMSGROUP_BOX;
-        } else if (layout.equalsIgnoreCase("tab")) {
-            layoutInt = ToolbarConstants.ITEMSGROUP_TABS;
-        } else {
-            logger.debug("Warning: layout " + itemsGroup.getLayout() + " unknown.");
-        }
-        gwtToolbarItemsGroup.setLayout(layoutInt);
+        gwtToolbarItemsGroup.setLayout(getLayoutAsInt(itemsGroup.getLayout()));
 
         gwtToolbarItemsGroup.setNeedSeparator(itemsGroup.isSeparator());
         gwtToolbarItemsGroup.setMediumIconStyle(itemsGroup.getMediumIconStyle());
@@ -402,6 +317,43 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         return gwtToolbarItemsGroup;
     }
 
+
+    /**
+     * Get layout as int
+     *
+     * @param layout
+     * @return
+     */
+    private int getLayoutAsInt(String layout) {
+        int layoutInt = -1;
+        if (layout != null) {
+            if (layout.equalsIgnoreCase("button")) {
+                layoutInt = ToolbarConstants.LAYOUT_BUTTON;
+            } else if (layout.equalsIgnoreCase("label")) {
+                layoutInt = ToolbarConstants.LAYOUT_ONLY_LABEL;
+            } else if (layout.equalsIgnoreCase("button-label")) {
+                layoutInt = ToolbarConstants.LAYOUT_BUTTON_LABEL;
+            } else if (layout.equalsIgnoreCase("menu")) {
+                layoutInt = ToolbarConstants.LAYOUT_ITEMSGROUP_MENU;
+            } else if (layout.equalsIgnoreCase("menu-radio")) {
+                layoutInt = ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_RADIO;
+            } else if (layout.equalsIgnoreCase("menu-checkbox")) {
+                layoutInt = ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_CHECKBOX;
+            } else {
+                logger.debug("Warning: layout " + layout + " unknown.");
+            }
+        }
+        return layoutInt;
+    }
+
+    /**
+     * Add item
+     *
+     * @param page
+     * @param jData
+     * @param gwtToolbarItemsList
+     * @param item
+     */
     private void addItem(GWTJahiaPageContext page, JahiaData jData, List<GWTJahiaToolbarItem> gwtToolbarItemsList, Item item) {
         if (item instanceof ItemsGroup) {
             for (Item subItem : ((ItemsGroup) item).getRealItems(jData)) {
@@ -424,6 +376,12 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         }
     }
 
+    /**
+     * Create object from the given className
+     *
+     * @param className
+     * @return
+     */
     private Object getClassInstance(String className) {
         Class<?> clazz = CLASS_CACHE.get(className);
         if (null == clazz) {
@@ -450,6 +408,13 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         return classInstance;
     }
 
+    /**
+     * Create gwt item
+     *
+     * @param page
+     * @param item
+     * @return
+     */
     private GWTJahiaToolbarItem createGWTItem(GWTJahiaPageContext page, Item item) {
         JahiaData jData = retrieveJahiaData(page);
         ParamBean paramBean = retrieveParamBean(page);
@@ -463,9 +428,9 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         }
         gwtToolbarItem.setType(item.getId());
         gwtToolbarItem.setDisplayTitle(item.isDisplayTitle());
-        if(item.getDescriptionKey() != null){
+        if (item.getDescriptionKey() != null) {
             gwtToolbarItem.setDescription(getResources(paramBean, item.getDescriptionKey()));
-        }else{
+        } else {
             gwtToolbarItem.setDescription(gwtToolbarItem.getTitle());
         }
         gwtToolbarItem.setMediumIconStyle(item.getMediumIconStyle());
@@ -482,6 +447,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             gwtProperty.setValue(currentProperty.getRealValue(jData));
             pMap.put(gwtProperty.getName(), gwtProperty);
         }
+        gwtToolbarItem.setLayout(getLayoutAsInt(item.getLayout()));
         gwtToolbarItem.setProperties(pMap);
         gwtToolbarItem.setActionItem(item.getActionItem());
 

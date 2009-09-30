@@ -37,28 +37,14 @@ package org.jahia.ajax.gwt.client.util;
  * Time: 14:28:08
  */
 public abstract class ToolbarConstants {
-    public static final int AREA_TOP = 0;
-    public static final int AREA_RIGHT = 1;
-
-    // Toolbar state
-    public static final int TOOLBAR_TOP = 0;
-    public static final int TOOLBAR_RIGHT = 1;
-    public static final int TOOLBAR_HORIZONTAL_BOX = 2;
-    public static final int TOOLBAR_VERTICAL_BOX = 3;
-    public static final int TOOLBAR_RIGHT_CLOSE = 11;
-
-    public static final int TOOLBAR_RIGHT_BOX_SIZE = 250;
 
     // items group layout
-    public static final int ITEMSGROUP_BUTTON = 0;
-    public static final int ITEMSGROUP_LABEL = 1;
-    public static final int ITEMSGROUP_BUTTON_LABEL = 2;
-    public static final int ITEMSGROUP_MENU = 3;
-    public static final int ITEMSGROUP_MENU_RADIO = 4;
-    public static final int ITEMSGROUP_MENU_CHECKBOX = 5;
-    public static final int ITEMSGROUP_SELECT = 6;
-    public static final int ITEMSGROUP_BOX = 7;
-    public static final int ITEMSGROUP_TABS = 8;
+    public static final int LAYOUT_BUTTON = 0;
+    public static final int LAYOUT_ONLY_LABEL = 1;
+    public static final int LAYOUT_BUTTON_LABEL = 2;
+    public static final int LAYOUT_ITEMSGROUP_MENU = 3;
+    public static final int LAYOUT_ITEMSGROUP_MENU_RADIO = 4;
+    public static final int LAYOUT_ITEMSGROUP_MENU_CHECKBOX = 5;
 
     // special type
     public static final String ITEMSGROUP_FILL = "org.jahia.toolbar.itemsgroup.Fill";

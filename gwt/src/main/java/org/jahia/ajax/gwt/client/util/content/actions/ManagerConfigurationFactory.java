@@ -38,6 +38,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
  * User: rfelden
  * Date: 7 janv. 2009 - 14:04:14
  */
+// ToDO: [ManagerConfiguration-Spring] Springify the ManagerConfiguration and remove the ManagerConfigurationFactory
 public class ManagerConfigurationFactory {
 
     public static final String MANAGER_CONFIG = "conf";

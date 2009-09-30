@@ -33,8 +33,6 @@ package org.jahia.ajax.gwt.client.data.toolbar;
 import java.util.List;
 import java.io.Serializable;
 
-import org.jahia.ajax.gwt.client.util.ToolbarConstants;
-
 /**
  * User: jahia
  * Date: 4 mars 2008
@@ -45,11 +43,8 @@ public class GWTJahiaToolbar implements Serializable {
     private String name;
     private String title;
     private String type;
-    private boolean allowTabs;
-    private boolean draggable;
-    private boolean mandatory;
     private boolean displayTitle;
-    private GWTJahiaState state = new GWTJahiaState();
+    private boolean contextMenu;
     private List<GWTJahiaToolbarItemsGroup> gwtToolbarItemsGroups;
 
     public int getIndex() {
@@ -76,44 +71,12 @@ public class GWTJahiaToolbar implements Serializable {
         this.type = type;
     }
 
-    public boolean isAllowTabs() {
-        return allowTabs;
-    }
-
-    public void setAllowTabs(boolean allowTabs) {
-        this.allowTabs = allowTabs;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public boolean isDraggable() {
-        return draggable;
-    }
-
-    public void setDraggable(boolean draggable) {
-        this.draggable = draggable;
-    }
-
-    public GWTJahiaState getState() {
-        return state;
-    }
-
-    public boolean isMandatory() {
-        return mandatory;
-    }
-
-    public void setMandatory(boolean mandatory) {
-        this.mandatory = mandatory;
-    }
-
-    public void setState(GWTJahiaState state) {
-        this.state = state;
     }
 
     public boolean isDisplayTitle() {
@@ -132,20 +95,11 @@ public class GWTJahiaToolbar implements Serializable {
         this.gwtToolbarItemsGroups = gwtToolbarItemsGroups;
     }
 
-    public boolean isFloatHorizontalState() {
-        return getState().getValue() == ToolbarConstants.TOOLBAR_HORIZONTAL_BOX;
+    public boolean isContextMenu() {
+        return contextMenu;
     }
 
-    public boolean isFloatVerticalState() {
-        return getState().getValue() == ToolbarConstants.TOOLBAR_VERTICAL_BOX;
+    public void setContextMenu(boolean contextMenu) {
+        this.contextMenu = contextMenu;
     }
-
-    public boolean isRight() {
-        return getState().getValue() == ToolbarConstants.TOOLBAR_RIGHT;
-    }
-
-    public boolean isTop() {
-        return getState().getValue() == ToolbarConstants.TOOLBAR_TOP;
-    }
-
 }

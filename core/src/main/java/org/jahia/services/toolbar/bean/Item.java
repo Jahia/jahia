@@ -53,6 +53,7 @@ public class Item implements Serializable, BeanNameAware {
     private String descriptionKey;
     private Visibility visibility;
     private Selected selected;
+    private String layout;
     private List<Property> properties = new ArrayList();
     private ActionItem actionItem;
 
@@ -150,5 +151,13 @@ public class Item implements Serializable, BeanNameAware {
 
     public void setActionItem(ActionItem actionItem) {
         this.actionItem = actionItem;
+    }
+
+    public String getLayout() {
+        return layout;
+    }
+
+    public void setLayout(String layout) {
+        this.layout = layout;
     }
 }

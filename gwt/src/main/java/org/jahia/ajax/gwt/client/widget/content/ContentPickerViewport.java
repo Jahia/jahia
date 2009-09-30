@@ -44,7 +44,6 @@ import java.util.List;
  * File and folder picker control.
  * @author rfelden
  * Date: 27 ao�t 2008
- * Time: 17:55:07
  */
 public class ContentPickerViewport extends TriPanelBrowserViewport {
 

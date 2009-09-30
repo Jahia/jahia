@@ -54,6 +54,7 @@ public class GWTJahiaToolbarItem implements Serializable {
     private String description;
     private boolean disabled;
     private boolean selected;
+    private int layout = -1;
     private Map<String, GWTJahiaProperty> properties = new HashMap<String, GWTJahiaProperty>();
 
     private ActionItem actionItem;
@@ -161,6 +162,14 @@ public class GWTJahiaToolbarItem implements Serializable {
         if (gwtProperty != null) {
             properties.put(gwtProperty.getName(), gwtProperty);
         }
+    }
+
+    public int getLayout() {
+        return layout;
+    }
+
+    public void setLayout(int layout) {
+        this.layout = layout;
     }
 
     public ActionItem getActionItem() {

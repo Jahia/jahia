@@ -93,12 +93,12 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
      */
     public void addActionToolbar(GWTJahiaToolbar gwtToolbar) {
         ActionToolbar actionToolbar = new ActionToolbar(gwtToolbar, linker);
-        if (gwtToolbar.getState().isDisplay()) {
-            actionToolbar.createToolBar();
-            add(actionToolbar);
-        } else {
-            actionToolbar.setVisible(false);
-        }
+        actionToolbar.createToolBar();
+
+        // add to widget
+        add(actionToolbar);
+
+        // add to toolbars list
         actionToolbars.add(actionToolbar);
 
     }

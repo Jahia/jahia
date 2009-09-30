@@ -47,6 +47,7 @@ import java.util.Map;
  * Time: 15:57:22
  */
 public interface ToolbarServiceAsync {
+
     public void getGWTToolbars(String toolbarGroup, GWTJahiaPageContext pageContext, AsyncCallback<GWTJahiaToolbarSet> async);
 
     public void execute(GWTJahiaPageContext pageContext, Map<String, GWTJahiaProperty> gwtPropertiesMap, AsyncCallback<GWTJahiaAjaxActionResult> async);

@@ -31,8 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.util.content.actions;
 
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
@@ -41,6 +39,7 @@ import java.util.ArrayList;
  * User: rfelden
  * Date: 7 janv. 2009 - 11:24:10
  */
+
 public class ManagerConfiguration implements Serializable {
 
     private boolean enableTextMenu;
@@ -66,7 +65,7 @@ public class ManagerConfiguration implements Serializable {
     private boolean displayProvider = false;
     private boolean useCheckboxForSelection = true;
     
-    private String toolbarGroup; 
+    private String toolbarGroup;
     
 	private boolean allowCollections = true;
 

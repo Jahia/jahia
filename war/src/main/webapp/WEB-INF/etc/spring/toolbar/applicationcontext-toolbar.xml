@@ -116,6 +116,7 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             </list>
         </property>
+        <property name="contextMenu" value="true"/>
     </bean>
     <bean id="org.jahia.toolbar.manager.categories.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="items">
@@ -141,6 +142,7 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             </list>
         </property>
+        <property name="contextMenu" value="true"/>
     </bean>
     <bean id="org.jahia.toolbar.manager.content.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="items">
@@ -166,7 +168,9 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             </list>
         </property>
+        <property name="contextMenu" value="true"/>
     </bean>
+
     <bean id="org.jahia.toolbar.manager.documents.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="items">
             <list>
@@ -2045,9 +2049,9 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CreatePageActionItem"/>
         </property>
         <property name="titleKey" value="toolbar.edit.button.newpage"/>
+        <property name="descriptionKey" value="toolbar.edit.button.newpage"/>        
         <property name="minIconStyle" value="gwt-toolbar-icon-newpage"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newpage"/>
-        <property name="descriptionKey" value="New Page"/>
     </bean>
 
 
@@ -2152,14 +2156,14 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentListActionItem"/>
         </property>
-        <property name="minIconStyle" value="gwt-toolbar-icon-newFolder"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-newFolder"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-addContentList"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-addContentList"/>
     </bean>
 
-    <!-- TO DO: change icon-->
+    <!-- TO DO: add an actionItem-->
     <bean id="org.jahia.toolbar.item.createContent" class="org.jahia.services.toolbar.bean.Item">
-        <property name="minIconStyle" value="gwt-toolbar-icon-newFolder"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-newFolder"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-addContent"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-addContent"/>
     </bean>
 
     <bean id="org.jahia.toolbar.item.createFolder" class="org.jahia.services.toolbar.bean.Item">

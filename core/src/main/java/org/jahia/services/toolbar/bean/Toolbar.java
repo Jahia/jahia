@@ -47,16 +47,13 @@ public class Toolbar implements Serializable, BeanNameAware {
 
     private int index;
     private String name;
-    private boolean settings;
     private String titleKey;
     private String type;
-    private String state = "top";
-    private boolean draggable = false;
-    private boolean mandatory = false;
     private boolean displayed  = true;
     private boolean displayTitle = false;
     private List<Item> items = new ArrayList<Item>();
     private Visibility visibility;
+    private boolean contextMenu;
 
     public static List<Toolbar> getAlls() {
         return alls;
@@ -86,14 +83,6 @@ public class Toolbar implements Serializable, BeanNameAware {
         return name;
     }
 
-    public boolean isSettings() {
-        return settings;
-    }
-
-    public void setSettings(boolean settings) {
-        this.settings = settings;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -104,22 +93,6 @@ public class Toolbar implements Serializable, BeanNameAware {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public boolean isDraggable() {
-        return draggable;
-    }
-
-    public void setDraggable(boolean draggable) {
-        this.draggable = draggable;
-    }
-
-    public boolean isMandatory() {
-        return mandatory;
-    }
-
-    public void setMandatory(boolean mandatory) {
-        this.mandatory = mandatory;
     }
 
     public boolean isDisplayed() {
@@ -137,15 +110,6 @@ public class Toolbar implements Serializable, BeanNameAware {
     public void setDisplayTitle(boolean displayTitle) {
         this.displayTitle = displayTitle;
     }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
 
     public List<Item> getItems() {
         return items;
@@ -165,6 +129,14 @@ public class Toolbar implements Serializable, BeanNameAware {
 
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
+    }
+
+    public boolean isContextMenu() {
+        return contextMenu;
+    }
+
+    public void setContextMenu(boolean contextMenu) {
+        this.contextMenu = contextMenu;
     }
 
     public void setBeanName(String name) {

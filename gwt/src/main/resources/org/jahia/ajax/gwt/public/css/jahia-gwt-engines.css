@@ -35,11 +35,23 @@
     background-image: url( ../images/add-file.png ) !important;
 }
 
+.gwt-toolbar-icon-addContent {
+    background-image: url( ../images/add_content.png) !important;
+}
+
+.gwt-toolbar-icon-addContentList {
+    background-image: url( ../images/add_content_list.png) !important;
+}
+
 .gwt-toolbar-icon-newfolder {
     background-image: url( ../images/newfolder.png ) !important;
 }
 
 .gwt-toolbar-icon-newcontent {
+    background-image: url( ../images/add-file.png ) !important;
+}
+
+.gwt-toolbar-icon-newpage {
     background-image: url( ../images/add-file.png ) !important;
 }
 

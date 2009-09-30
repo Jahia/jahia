@@ -99,7 +99,7 @@ public class ActionToolbar extends ToolBar {
                 actionItem.init(gwtToolbarItem,linker);
 
                 Log.debug(gwtToolbarItem.getType() + " - items group layout =" + gwtToolbarItemsGroup.getLayout());
-                if (gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_MENU || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_MENU_RADIO || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_MENU_CHECKBOX) {
+                if (gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_RADIO || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_CHECKBOX) {
                     // handle case of menuSeparator
                     if (isSeparator(gwtToolbarItem)) {
                         // add menu separator only if we have at least one menuitem
@@ -122,28 +122,7 @@ public class ActionToolbar extends ToolBar {
                         }
                         addMenu = true;
                     }
-                } else if (gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_SELECT) {
-                    // handle case of menuSeparator
-                    if (isSeparator(gwtToolbarItem)) {
-                        // add menu separator only if we have at least one menuitem
-                        if (menu.getItemCount() > 0) {
-                            menu.add(new SeparatorMenuItem());
-                        } else {
-                            Log.debug("Fill item not allowed in menu");
-                        }
-                    }
-                    // case of other items
-                    else {
-                        toolItem = actionItem.getMenuItem();
-                        if (toolItem != null) {
-                            if (gwtToolbarItem.getType().equalsIgnoreCase(ToolbarConstants.ITEMS_TOOLBARLABEL)) {
-                                toolItem.setEnabled(false);
-                            }
-                            menu.add(toolItem);
-                        }
-                        addMenu = true;
-                    }
-                } else if (gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_BUTTON || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_LABEL || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_BUTTON_LABEL) {
+                } else if (gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_BUTTON || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_ONLY_LABEL || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_BUTTON_LABEL) {
                     if (isSeparator(gwtToolbarItem)) {
                         add(new SeparatorToolItem());
                     } else {
@@ -151,7 +130,7 @@ public class ActionToolbar extends ToolBar {
                         add(toolItem);
                     }
                 } else {
-                    gwtToolbarItemsGroup.setLayout(ToolbarConstants.ITEMSGROUP_BUTTON);
+                    gwtToolbarItemsGroup.setLayout(ToolbarConstants.LAYOUT_BUTTON);
                     if (isSeparator(gwtToolbarItem)) {
                         add(new SeparatorToolItem());
                     } else {
@@ -159,8 +138,6 @@ public class ActionToolbar extends ToolBar {
                         add(toolItem);
                     }
                 }
-
-
             }
 
             if (actionItem != null) {

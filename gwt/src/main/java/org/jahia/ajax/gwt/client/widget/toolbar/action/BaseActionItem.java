@@ -63,7 +63,8 @@ public abstract class BaseActionItem implements ActionItem {
     private transient MenuItem contextMenuItem = null;
     protected transient Linker linker;
 
-    public BaseActionItem() {}
+    public BaseActionItem() {
+    }
 
 
     /**
@@ -76,7 +77,10 @@ public abstract class BaseActionItem implements ActionItem {
             return textToolitem;
         }
         textToolitem = createNewToolItem();
-        int layout = getGwtToolbarItem().getParentItemsGroup().getLayout();
+        int layout = getGwtToolbarItem().getLayout();
+        if (layout == -1) {
+            layout = getGwtToolbarItem().getParentItemsGroup().getLayout();
+        }
 
         // set properties that are specific to a ToggleToolItem
         if (textToolitem instanceof ToggleButton) {
@@ -85,15 +89,15 @@ public abstract class BaseActionItem implements ActionItem {
 
         // set properties that are specific to a Button
         if (textToolitem instanceof Button) {
-            if (layout == ToolbarConstants.ITEMSGROUP_BUTTON_LABEL || layout == ToolbarConstants.ITEMSGROUP_LABEL) {
+            if (layout == ToolbarConstants.LAYOUT_BUTTON_LABEL || layout == ToolbarConstants.LAYOUT_ONLY_LABEL) {
                 if (getGwtToolbarItem().isDisplayTitle()) {
                     ((Button) textToolitem).setText(getGwtToolbarItem().getTitle());
                 }
             }
-            if (layout == ToolbarConstants.ITEMSGROUP_BUTTON_LABEL) {
+            if (layout == ToolbarConstants.LAYOUT_BUTTON_LABEL) {
                 ((Button) textToolitem).setIconStyle(getGwtToolbarItem().getMinIconStyle());
             }
-            if (layout == ToolbarConstants.ITEMSGROUP_BUTTON) {
+            if (layout == ToolbarConstants.LAYOUT_BUTTON) {
                 ((Button) textToolitem).setIconStyle(getGwtToolbarItem().getMinIconStyle());
                 // toolbarItem.setHeight("30px");
             }
@@ -141,14 +145,14 @@ public abstract class BaseActionItem implements ActionItem {
     private MenuItem createMenuItem() {
         final MenuItem menuItem;
         int layout = getGwtToolbarItem().getParentItemsGroup().getLayout();
-        if (layout == ToolbarConstants.ITEMSGROUP_MENU) {
+        if (layout == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU) {
             menuItem = new MenuItem();
             menuItem.setIconStyle(getGwtToolbarItem().getMinIconStyle());
-        } else if (layout == ToolbarConstants.ITEMSGROUP_MENU_RADIO) {
+        } else if (layout == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_RADIO) {
             menuItem = new CheckMenuItem();
             ((CheckMenuItem) menuItem).setGroup(getGwtToolbarItem().getParentItemsGroup().getId());
             ((CheckMenuItem) menuItem).setChecked(getGwtToolbarItem().isSelected());
-        } else if (layout == ToolbarConstants.ITEMSGROUP_MENU_CHECKBOX) {
+        } else if (layout == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_CHECKBOX) {
             menuItem = new CheckMenuItem();
             ((CheckMenuItem) menuItem).setChecked(getGwtToolbarItem().isSelected());
         } else {

@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Item;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.client.service.JahiaServiceAsync;
@@ -83,7 +84,7 @@ public class LanguageSwitcherActionItem implements ActionItem {
         return null;
     }
 
-    public Item getContextMenuItem() {
+    public MenuItem getContextMenuItem() {
         return null;
     }
 

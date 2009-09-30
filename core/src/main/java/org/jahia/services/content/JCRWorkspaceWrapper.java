@@ -435,7 +435,10 @@ public class JCRWorkspaceWrapper implements Workspace {
             QueryResultAdapter results = new QueryResultAdapter();
             for (Map.Entry<JCRStoreProvider,Query> entry : queries.entrySet()) {
                 // should gather results
-                QueryResultWrapper subResults = new QueryResultWrapper(entry.getKey(), entry.getValue().execute(), user);
+                final Query query = entry.getValue();
+                if(limit > 0) query.setLimit(limit);
+                if(offset > 0) query.setOffset(offset);
+                QueryResultWrapper subResults = new QueryResultWrapper(entry.getKey(), query.execute(), user);
                 results.addResult(subResults);
             }
             return results;

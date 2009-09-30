@@ -68,7 +68,10 @@
     </jcr:jqom>
     <ul class="pressRealeseList"><!--start pressRealeses List -->
         <c:forEach items="${results.nodes}" var="node">
-            <template:module node="${node}" template="${currentResource.resolvedTemplate}" nodeTypes="web_templates:pressContainer"/>
+            <li class="pressRealeseItem">
+                <template:module node="${node}" template="${currentResource.resolvedTemplate}"
+                                 nodeTypes="web_templates:pressContainer"/>
+            </li>
         </c:forEach>
     </ul>
     <!--stop pressRealeseList -->

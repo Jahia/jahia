@@ -172,15 +172,17 @@ public class ContentManagerHelper {
     }
 
     public boolean checkExistence(String path) throws GWTJahiaServiceException {
+    	boolean exists = false;
         try {
             sessionFactory.getCurrentUserSession().getNode(path);
-            return false;
+            exists = true;
         } catch (PathNotFoundException e) {
-            return true;
+        	exists = false;
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException("Error:\n" + e.toString());
         }
+        return exists;
     }
 
     public void createFolder(String parentPath, String name, ProcessingContext context) throws GWTJahiaServiceException {

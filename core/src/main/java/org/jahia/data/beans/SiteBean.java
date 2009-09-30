@@ -328,7 +328,7 @@ public class SiteBean {
     }
 
     public String getJCRPath() throws JahiaException {
-        return jahiaSite.getJCRPath(this.processingContext);
+        return jahiaSite.getJCRPath();
     }
     
    public String getExternalUrl() {

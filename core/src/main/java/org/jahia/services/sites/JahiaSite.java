@@ -1109,11 +1109,10 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     /**
      * Return jcr path "/siteKey/ContentPage_10/ContainerList_332"
      *
-     * @param context
      * @return
      * @throws JahiaException
      */
-    public String getJCRPath(ProcessingContext context) throws JahiaException {
+    public String getJCRPath() throws JahiaException {
         try {
             return JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID("jahia", getUUID()).getPath();
         } catch (RepositoryException e) {

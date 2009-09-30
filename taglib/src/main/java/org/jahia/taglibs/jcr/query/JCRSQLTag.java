@@ -60,6 +60,7 @@ public class JCRSQLTag extends AbstractJahiaTag {
     private int scope = PageContext.PAGE_SCOPE;
     private String var;
     private String sql;
+    private long limit;
 
     public int doEndTag() {
         resetState();
@@ -113,6 +114,7 @@ public class JCRSQLTag extends AbstractJahiaTag {
 
                 if (queryManager != null) {
                     Query q = queryManager.createQuery(path, Query.JCR_SQL2);
+                    if (limit > 0) { q.setLimit(limit);}
                     // execute query
                     queryResult = q.execute();
                     if (logger.isDebugEnabled()) {
@@ -165,4 +167,7 @@ public class JCRSQLTag extends AbstractJahiaTag {
         this.sql = sql;
     }
 
+    public void setLimit(long limit) {
+        this.limit = limit;
+    }
 }

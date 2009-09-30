@@ -130,6 +130,13 @@
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
+        <attribute>
+            <description>the maximum size of the result set, expressed in terms of the number of Rows</description>
+            <name>limit</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Long</type>
+        </attribute>
     </tag>
     <tag>
         <description>

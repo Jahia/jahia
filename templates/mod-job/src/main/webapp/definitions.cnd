@@ -7,7 +7,7 @@
 	bigText         text
 
 [jnt:job] > jnt:container, mix:title, jmix:structuredContent
-	smallText       title  primary 
+	smallText       title primary 
 	smallText       reference
 	smallText       businessUnit facetable
 	sharedSmallText contract (choicelist[resourceBundle]) facetable  < contract1, contract2, contract3, contract4
@@ -18,3 +18,7 @@
 	bigText         description
 	bigText         skills
 	+ * (jnt:jobApplication)
+
+[jnt:jobOffers] > jnt:container, jmix:structuredContent
+	smallText       title
+	+ * (jnt:job)

@@ -149,6 +149,7 @@
         <property name="jcrService"  ref="JCRStoreService"/>
         <property name="versioning"  ref="VersioningHelper"/>
         <property name="sitesService"  ref="JahiaSitesService"/>
+        <property name="properties" ref="PropertiesHelper"/>
     </bean>
 
     <bean name="MashupHelper" class="org.jahia.ajax.gwt.helper.MashupHelper" >

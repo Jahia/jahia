@@ -1,9 +1,0 @@
-<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
-
-[jnt:press] > jnt:container, jmix:structuredContent
- bigText         body
- date            date
- file            pdfVersion
-
-[jnt:pressReleases] > jnt:container, jmix:interactiveContent
-file searchPath (file[folder])

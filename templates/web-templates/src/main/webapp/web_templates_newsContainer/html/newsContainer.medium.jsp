@@ -12,8 +12,6 @@
  <jcr:nodeProperty node="${currentNode}" name="newsImage" var="newsImage"/>
 <li class="summary">
     <!--start newsListItem -->
-    <template:field name="newsImage" var="newsImage" display="false"/>
-
     <div class="summaryImg"><img src="${newsImage.node.url}" alt='${newsTitle.string}'/></div>
     <h4><a href="${url.current}">${newsTitle.string}</a></h4>
     <p class="summaryresume"> ${fn:substring(newsDesc.string,0,120)}</p>

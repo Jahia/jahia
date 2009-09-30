@@ -41,8 +41,8 @@
         <version>6.5-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.templates</groupId>
-    <artifactId>mod-people</artifactId>
-    <name>Jahia People</name>
+    <artifactId>mod-press</artifactId>
+    <name>Jahia Press Release</name>
     <version>6.5-SNAPSHOT</version>
     <packaging>war</packaging>
     <url>jahia.org</url>

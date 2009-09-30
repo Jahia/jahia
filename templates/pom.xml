@@ -64,6 +64,8 @@
         <module>mod-default</module>
         <module>mod-forum</module>
         <module>mod-job</module>
+        <module>mod-people</module>
+        <module>mod-press</module>
         <module>test-templates</module>
         <module>web-templates</module>
   </modules>

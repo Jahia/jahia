@@ -1,18 +1,9 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:people] > jnt:container, jmix:structuredContent
- sharedSmallText peopleFirstname
- sharedSmallText peopleLastname primary
- smallText peopleFunction
- sharedSmallText peopleBusinessUnit (choicelist[resourceBundle]) analyzer='keyword' facetable <
-    sales,
-    marketing,
-    GA,
-    production,
-    humanressources
- sharedSmallText peopleTelephone
- sharedSmallText peopleCellular
- sharedSmallText peopleFax
- sharedSmallText peopleEmail
- bigText peopleBiography
- file peoplePicture (file[mime='image/*'])
+[jnt:press] > jnt:container, jmix:structuredContent
+ bigText         body
+ date            date
+ file            pdfVersion
+
+[jnt:pressReleases] > jnt:container, jmix:interactiveContent
+file searchPath (file[folder])

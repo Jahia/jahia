@@ -121,19 +121,6 @@
 [jnt:portletsBox] > jnt:box
  containerList portletContainer (jnt:portletContainer)
 
-[jnt:peopleContainer] > jnt:container, jmix:structuredContent
- sharedSmallText peopleFirstname
- sharedSmallText peopleLastname
- date peopleBirthdate
- sharedSmallText peopleCivility (choicelist) analyzer='keyword' < 'M.','Mme.','Mlle.'
- sharedSmallText peopleGender (choicelist) analyzer='keyword' < 'male','female'
- smallText peopleTitle
- smallText peopleNationality facetable
- file peoplePicture (file[mime='image/*'])
-
-[jnt:peopleBox] > jnt:box
- containerList peopleContainer (jnt:peopleContainer)
-
 [jnt:locationContainer] > jnt:container, jmix:structuredContent
  sharedSmallText locationStreet
  sharedSmallText locationZipCode analyzer='keyword'

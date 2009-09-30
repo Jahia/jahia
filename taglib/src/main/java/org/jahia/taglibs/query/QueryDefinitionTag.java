@@ -216,12 +216,12 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
         this.qomBuilder.setOrderings(orderingsList);
     }
 
-    public void addOrdering(String propertyName, String order) throws RepositoryException {
+    public void addOrdering(String selectorName, String propertyName, String order) throws RepositoryException {
         Ordering ordering = null;
         QueryObjectModelFactory queryFactory = getQueryFactory();
-        PropertyValue propValue = queryFactory.propertyValue(null, propertyName.trim());
+        PropertyValue propValue = queryFactory.propertyValue(selectorName, propertyName.trim());
 
-        if (order != null && order.length() > 0 && QueryObjectModelConstants.JCR_ORDER_DESCENDING.equals(order)) {
+        if (order != null && order.length() > 0 && "desc".equals(order)) {
             ordering = queryFactory.descending(propValue);
         } else {
             ordering = queryFactory.ascending(propValue);

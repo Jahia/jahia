@@ -55,6 +55,8 @@ public class SortByTag extends AbstractJahiaTag {
 
     private String order;
 
+    private String selectorName;
+
     public int doStartTag() throws JspException {
         queryModelDefTag = (QueryDefinitionTag) findAncestorWithClass(this, QueryDefinitionTag.class);
         if (queryModelDefTag == null || queryModelDefTag.getQueryFactory()==null) {
@@ -64,7 +66,7 @@ public class SortByTag extends AbstractJahiaTag {
             return EVAL_BODY_BUFFERED;
         }
         try {
-            this.queryModelDefTag.addOrdering(getPropertyName(), getOrder());
+            this.queryModelDefTag.addOrdering(getSelectorName(),getPropertyName(), getOrder());
         } catch ( Exception t ){
             logger.debug("Error creating ordering clause",t);
             throw new JspException("Error creating Ordering node in SortBy Tag",t);
@@ -94,5 +96,13 @@ public class SortByTag extends AbstractJahiaTag {
 
     public void setOrder(String order) {
         this.order = order;
+    }
+
+    public String getSelectorName() {
+        return selectorName;
+    }
+
+    public void setSelectorName(String selectorName) {
+        this.selectorName = selectorName;
     }
 }

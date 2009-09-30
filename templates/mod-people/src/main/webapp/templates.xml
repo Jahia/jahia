@@ -35,8 +35,8 @@
 -->
 
 <template-set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.jahia.org/jahia/templates" xsi:schemaLocation="http://www.jahia.org/jahia/templates http://www.jahia.org/shemas/templates_2_0.xsd">
-    <package-name>Jahia People</package-name>
-    <root-folder>people</root-folder>
+    <package-name>Jahia Press Release</package-name>
+    <root-folder>press</root-folder>
     <provider>jahia.org</provider>
 </template-set>
 

@@ -106,7 +106,7 @@
                 <c:if test="${!empty param.searchString}">
                     <query:fullTextSearch searchExpression="${param.searchString}"/>
                 </c:if>
-                <query:sortBy propertyName="newsDate" order="${queryConstants.ORDER_DESCENDING}"/>
+                <query:sortBy propertyName="newsDate" order="desc" selectorName="newsList"/>
             </query:containerQuery>
             <%@ include file="newsDisplay.jspf" %>
         </template:containerList>

@@ -7,11 +7,14 @@
 	bigText         text
 
 [jnt:job] > jnt:container, mix:title, jmix:structuredContent
+	smallText       title  primary 
 	smallText       reference
 	smallText       businessUnit facetable
-	sharedSmallText contract (choicelist) facetable  < contract1, contract2, contract3, contract4
+	sharedSmallText contract (choicelist[resourceBundle]) facetable  < contract1, contract2, contract3, contract4
+	date       		date 
 	smallText       town
 	smallText       country (choicelist) facetable  < country()
 	smallText       educationLevel analyzer='keyword' 
+	bigText         description
 	bigText         skills
-	containerList   applications (jnt:jobApplication)
+	+ * (jnt:jobApplication)

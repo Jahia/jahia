@@ -25,7 +25,7 @@
                                                                            name="peopleEmail"/></a></p>
 
         <div class="peopleAction">
-            <a class="peopleDownload" href="${picture.node.url}" rel="facebox"><fmt:message
+            <a class="peopleDownload" href="${picture.node.url}" rel="facebox" target="blank"><fmt:message
                     key='web_templates_peopleContainer.peopleViewFullSize'/></a>
             <a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer('${currentNode.identifier}');"><fmt:message
                     key='web_templates_peopleContainer.peopleBiography'/></a>

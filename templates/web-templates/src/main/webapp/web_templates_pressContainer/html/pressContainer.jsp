@@ -14,6 +14,6 @@
                     categoryKeys="${pressReleaseContainerCatKeys}"/>
             </span>
 </c:if>
-<h4><a href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty node="${currentNode}" name='title'/></a></h4>
+<h4><a href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty node="${currentNode}" name='jcr:title'/></a></h4>
 
 <div class="clear"></div>

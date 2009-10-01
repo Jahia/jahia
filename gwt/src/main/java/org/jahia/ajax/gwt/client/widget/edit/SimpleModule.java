@@ -60,8 +60,7 @@ public class SimpleModule extends LayoutContainer implements Module {
             sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
             Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent ce) {
-                    Log.info("click" + path);
-                    Info.display("Clicked", path + "\n"+scriptInfo);
+                    Log.info("click" + path + " : " + scriptInfo);
                     mainModule.getEditLinker().onModuleSelection(SimpleModule.this);
                 }
             };

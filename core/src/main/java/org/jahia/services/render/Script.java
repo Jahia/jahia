@@ -45,4 +45,12 @@ public interface Script {
      * @throws IOException
      */
     public String execute() throws IOException ;
+
+    /**
+     * Return printable information about the script : type, localization, file, .. in order to help
+     * template developer to find the original source of the script
+     * @return
+     */
+    public String getInfo();
+
 }

@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -29,17 +30,19 @@ public class SimpleModule extends LayoutContainer implements Module {
     private HTML html;
     private String path;
     private String template;
+    private String scriptInfo;
     private Module parentModule;
     private MainModule mainModule;
     private String nodetypes;
     private boolean isDraggable=false;
 
-    public SimpleModule(String id, final String path, String s, String template, String nodetypes, final MainModule mainModule) {
+    public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodetypes, final MainModule mainModule) {
         this.id = id;
         setBorders(false);
         this.path = path;
         this.mainModule = mainModule;
         this.template = template;
+        this.scriptInfo = scriptInfo;
         this.nodetypes = nodetypes;
 
         html = new HTML(s);
@@ -58,6 +61,7 @@ public class SimpleModule extends LayoutContainer implements Module {
             Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent ce) {
                     Log.info("click" + path);
+                    Info.display("Clicked", path + "\n"+scriptInfo);
                     mainModule.getEditLinker().onModuleSelection(SimpleModule.this);
                 }
             };

@@ -6,6 +6,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -25,15 +26,17 @@ public class ListModule extends ContentPanel implements Module {
     private HTML html;
     private String path;
     private String template;
+    private String scriptInfo;
     private Module parentModule;
     private MainModule mainModule;
     private boolean isDraggable = true;
 
-    public ListModule(String id, String path, String s, String template, MainModule mainModule) {
+    public ListModule(String id, String path, String s, String template, String scriptInfo, MainModule mainModule) {
 //        super(new FitLayout());
         this.id = id;
         this.path = path;
         this.template = template;
+        this.scriptInfo = scriptInfo;
         this.mainModule = mainModule;
         setCollapsible(true);
         setBodyStyleName("pad-text");
@@ -47,7 +50,7 @@ public class ListModule extends ContentPanel implements Module {
         getHeader().sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
-                Log.info("click" + path);
+                Log.info("click" + path + " : " + scriptInfo);
                 mainModule.getEditLinker().onModuleSelection(ListModule.this);
             }
         };

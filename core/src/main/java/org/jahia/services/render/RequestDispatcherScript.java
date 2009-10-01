@@ -71,6 +71,7 @@ public class RequestDispatcherScript implements Script {
     private RequestDispatcher rd;
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private String templatePath;
 
     /**
      * Builds the script, tries to resolve the jsp template
@@ -91,7 +92,7 @@ public class RequestDispatcherScript implements Script {
 
             this.request = context.getRequest();
             this.response = context.getResponse();
-
+            this.templatePath = templatePath;
             rd = request.getRequestDispatcher(templatePath);
 
         } catch (RepositoryException e) {            
@@ -177,6 +178,16 @@ public class RequestDispatcherScript implements Script {
             return s;
         }
 
+    }
+
+    /**
+     * Return printable information about the script : type, localization, file, .. in order to help
+     * template developer to find the original source of the script
+     *
+     * @return
+     */
+    public String getInfo() {
+        return "JSP dispatch : " + templatePath;
     }
 
     class PackageComparator implements Comparator<JahiaTemplatesPackage> {

@@ -146,7 +146,7 @@ public class RenderService extends JahiaService {
      * @throws RepositoryException
      * @throws IOException
      */
-    private Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, IOException {
+    public Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, IOException {
         for (ScriptResolver scriptResolver : scriptResolvers) {
             Script s = scriptResolver.resolveScript(resource,  context);
             if (s != null) {

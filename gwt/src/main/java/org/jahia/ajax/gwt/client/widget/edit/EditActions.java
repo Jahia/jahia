@@ -21,9 +21,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -37,7 +34,6 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +58,7 @@ public class EditActions {
                 }
 
                 public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
-                    new EditContentEngine(linker, linker.getMainNode(), gwtJahiaNodeType, null, false, true).show();
+                    new EditContentEngine(linker, linker.getMainNode(), gwtJahiaNodeType, null, false).show();
                 }
             });
         }
@@ -77,7 +73,7 @@ public class EditActions {
      */
     public static void edit(Linker linker) {
         if (linker.getMainNode() != null) {
-            new EditContentEngine(linker.getMainNode(),linker).show();
+            new EditContentEngine(linker.getSelectedNode(),linker).show();
         }
     }
 
@@ -157,9 +153,11 @@ public class EditActions {
      * @param linker
      */
     public static void delete(final Linker linker) {
-        if (linker.getSelectedNode() != null) {
-            List<String> paths = new ArrayList<String>(1);
-            paths.add(linker.getSelectedNode().getPath());
+        if (!linker.getSelectedNodes().isEmpty()) {
+            List<String> paths = new ArrayList<String>();
+            for (GWTJahiaNode node : linker.getSelectedNodes()) {
+                paths.add(node.getPath());
+            }
             JahiaContentManagementService.App.getInstance().deletePaths(paths, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
                     Log.error("", throwable);

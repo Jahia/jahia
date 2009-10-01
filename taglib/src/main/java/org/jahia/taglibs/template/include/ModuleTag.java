@@ -38,6 +38,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Script;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -210,7 +211,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	                            currentResource.getMissingResources().add(path);
 
 	                            if (renderContext.isEditMode()) {
-	                                printModuleStart("placeholder", nodeWrapper.getPath()+"/"+path, null);
+	                                printModuleStart("placeholder", nodeWrapper.getPath()+"/"+path, null, null);
 	                                printModuleEnd();
 	                            }
 	                        }
@@ -224,7 +225,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	                            }
 
 	                            if (renderContext.isEditMode()) {
-	                                printModuleStart("placeholder", path, null);
+	                                printModuleStart("placeholder", path, null, null);
 	                                printModuleEnd();
 	                            }
 	                        }
@@ -238,7 +239,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
 	                if (node.getPath().endsWith("/*")) {
 	                    if (renderContext.isEditMode() && editable) {
-	                        printModuleStart("placeholder", node.getPath(), null);
+	                        printModuleStart("placeholder", node.getPath(), null, null);
 	                        printModuleEnd();
 	                    }
 
@@ -303,7 +304,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	                            if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
 	                                type = "list";
 	                            }
-	                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate());
+                                Script script = RenderService.getInstance().resolveScript(resource, renderContext);
+	                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), script.getInfo());
 
 	                            JCRNodeWrapper w = new JCRNodeDecorator(node) {
 	                                @Override
@@ -354,13 +356,15 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return EVAL_PAGE;
     }
 
-    private void printModuleStart(String type, String path, String resolvedTemplate) throws IOException {
+    private void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo) throws IOException {
 
         buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ")
                 .append("id=\"module")
                 .append(UUID.randomUUID().toString())
                 .append("\" type=\"")
                 .append(type)
+                .append("\" ")
+                .append((scriptInfo != null) ? " scriptInfo=\"" + scriptInfo + "\"" : "")
                 .append("\" path=\"").append(path)
                 .append("\" ")
                 .append((nodeTypes != null) ? "nodetypes=\"" + nodeTypes + "\"" : "")

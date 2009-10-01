@@ -10,7 +10,6 @@ import java.util.List;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow;
 
 /**
  * Created by IntelliJ IDEA.
@@ -121,7 +120,7 @@ public class EditModeDNDListener extends DNDListener {
                 GWTJahiaNodeType type = e.getStatus().getData(SOURCE_NODETYPE);
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
-                new EditContentEngine(editLinker, parent, type,targetPath.substring(targetPath.lastIndexOf("/")+1),true,false).show();
+                new EditContentEngine(editLinker, parent, type,targetPath.substring(targetPath.lastIndexOf("/")+1),true).show();
             } else if (QUERY_SOURCE_TYPE.equals(e.getStatus().getData(SOURCE_TYPE))) {
                 // Item creation
                 String q = e.getStatus().getData(SOURCE_QUERY);

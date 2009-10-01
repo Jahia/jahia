@@ -766,6 +766,9 @@
             <list>
                 <ref bean="org.jahia.toolbar.item.refresh"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.listview"/>
+                <ref bean="org.jahia.toolbar.item.thumsview"/>
+                <ref bean="org.jahia.toolbar.item.detailedview"/>
             </list>
         </property>
     </bean>
@@ -2275,6 +2278,37 @@
         <property name="mediumIconStyle" value="gwt-toolbar-icon-refresh"/>
     </bean>
 
+    <bean id="org.jahia.toolbar.item.listview" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchViewActionItem">
+                <property name="view" value="list"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.manager.button.list"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-refresh"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-refresh"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.thumsview" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchViewActionItem">
+                <property name="view" value="thumbs"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.manager.button.thumbs"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-refresh"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-refresh"/>
+    </bean>
+    <bean id="org.jahia.toolbar.item.detailedview" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchViewActionItem">
+                <property name="view" value="detailed"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="toolbar.manager.button.detailed"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-refresh"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-refresh"/>
+    </bean>
+
     <bean id="org.jahia.toolbar.item.rename" class="org.jahia.services.toolbar.bean.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RenameActionItem"/>
@@ -2355,5 +2389,4 @@
 
     </bean>
     <!-- end of new content action buttons -->
-
 </beans>

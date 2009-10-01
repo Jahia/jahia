@@ -104,7 +104,7 @@
 
 [jmix:workflowed] mixin
  + j:workflow (jnt:workflow)
- - j:workflowState (string) internationalized
+ - j:workflowState (string) internationalized hidden
 
 //---------------------------------------------------------
 // Hierarchy nodes

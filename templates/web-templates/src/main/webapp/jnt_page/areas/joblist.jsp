@@ -2,4 +2,4 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <template:module path="introduction" template="default"/>
-<template:module path="job" template="default" autoCreateType="jnt:jobList"/>
+<template:module path="job" template="default" autoCreateType="web_templates:jobContainerList"/>

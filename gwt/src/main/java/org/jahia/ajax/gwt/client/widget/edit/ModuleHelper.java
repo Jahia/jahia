@@ -1,20 +1,21 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.google.gwt.user.client.Element;
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
-import com.allen_sauer.gwt.log.client.Log;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-
-import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
+import org.jahia.ajax.gwt.client.widget.form.CalendarField;
+
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -65,6 +66,26 @@ public class ModuleHelper {
                     modulesByPath.get(path).add(module);
                     modules.put(id, module);
                 }
+            } else if (JahiaType.DATE_FIELD.equals(jahiatype)) {
+                String datePattern = DOM.getElementAttribute(divElement, "datepattern");
+                boolean displayTime = Boolean.parseBoolean(DOM.getElementAttribute(divElement, "displaytime"));
+                boolean readOnly = Boolean.parseBoolean(DOM.getElementAttribute(divElement, "readonly"));
+                boolean shadow = Boolean.parseBoolean(DOM.getElementAttribute(divElement, "shadow"));
+                String fieldName = DOM.getElementAttribute(divElement, "fieldname");
+                String valueString = DOM.getElementAttribute(divElement, "value");
+                Date value = null;
+                if (valueString != null && valueString.length() > 0) {
+                    value = new Date(Long.parseLong(valueString));
+                }
+                final CalendarField calendarField = new CalendarField(datePattern, displayTime, readOnly, fieldName,
+                                                                      shadow, value);
+                final Element div = divElement;
+                calendarField.addListener(Events.Render,new Listener<BaseEvent>() {
+                    public void handleEvent(BaseEvent be) {
+                        DOM.appendChild(div,calendarField.getElement());
+                    }
+                });
+                RootPanel.get().add(calendarField);
             }
         }
 

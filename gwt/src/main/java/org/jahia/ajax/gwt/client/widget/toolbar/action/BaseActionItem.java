@@ -111,7 +111,7 @@ public abstract class BaseActionItem implements ActionItem {
 
         // description
         String description = getGwtToolbarItem().getDescription();
-        if (getGwtToolbarItem().getDescription() != null && description.length() > 0 && textToolitem.getToolTip() != null) {
+        if (getGwtToolbarItem().getDescription() != null && description.length() > 0 && textToolitem.getToolTip() == null) {
             textToolitem.setToolTip(description);
         }
 

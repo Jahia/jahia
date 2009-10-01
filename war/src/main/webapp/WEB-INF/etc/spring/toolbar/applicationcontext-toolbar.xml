@@ -94,13 +94,21 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.Switchingmode"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <!--
+                ToDo : activate LanguageSwitcher
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>-->
                 <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
-                <!--<ref bean="org.jahia.toolbar.itemsgroup.ContentAction"/>-->
+                <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.Tools"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.Cache"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.Preview"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.User"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.Admin"/>
             </list>
         </property>
@@ -334,7 +342,9 @@
 
     <!-- User-->
     <bean id="org.jahia.toolbar.itemsgroup.User" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="button-label"/>
+        <property name="layout" value="menu"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-user-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-user-normal"/>
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="needAuthentication" value="true"/>
@@ -343,9 +353,9 @@
         <property name="titleKey" value="toolbar.itemgroups.user"/>
         <property name="items">
             <list>
-                <ref bean="org.jahia.toolbar.item.User"/>
-                <ref bean="org.jahia.toolbar.item.Logout"/>
                 <ref bean="org.jahia.toolbar.item.MySettings"/>
+                <!-- ToDo : <ref bean="org.jahia.toolbar.item.myDashBoard"/-->                
+                <ref bean="org.jahia.toolbar.item.Logout"/>
             </list>
         </property>
     </bean>
@@ -381,28 +391,11 @@
                 <ref bean="org.jahia.toolbar.item.Live"/>
                 <ref bean="org.jahia.toolbar.item.Preview"/>
                 <ref bean="org.jahia.toolbar.item.Compare"/>
-                <!--<ref bean="org.jahia.toolbar.item.AdvancedCompare" display-title="false"/>-->
                 <ref bean="org.jahia.toolbar.item.Edit"/>
             </list>
         </property>
     </bean>
 
-    <!-- switching mode: tabs-->
-    <bean id="org.jahia.toolbar.itemsgroup.SwitchingMode.tab" class="org.jahia.services.toolbar.bean.ItemsGroup"
-          parent="org.jahia.toolbar.itemsgroup.SwitchingMode">
-        <property name="layout" value="tab"/>
-    </bean>
-    <!-- SwitchinkMode:  menu-radio -->
-    <bean id="org.jahia.toolbar.itemsgroup.SwitchingMode.radio" class="org.jahia.services.toolbar.bean.ItemsGroup"
-          parent="org.jahia.toolbar.itemsgroup.SwitchingMode">
-        <property name="layout" value="menu-radio"/>
-    </bean>
-
-    <!-- SwitchinkMode:  menu-checkbox -->
-    <bean id="org.jahia.toolbar.itemsgroup.SwitchingMode.checkbox" class="org.jahia.services.toolbar.bean.ItemsGroup"
-          parent="org.jahia.toolbar.itemsgroup.SwitchingMode">
-        <property name="layout" value="menu-checkbox"/>
-    </bean>
 
     <bean id="org.jahia.toolbar.itemsgroup.View" class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="menu-checkbox"/>
@@ -413,7 +406,6 @@
                 <ref bean="org.jahia.toolbar.item.timebasepublishing"/>
                 <ref bean="org.jahia.toolbar.item.integrity"/>
                 <ref bean="org.jahia.toolbar.item.inlineediting"/>
-                <ref bean="org.jahia.toolbar.item.Separator"/>
             </list>
         </property>
     </bean>
@@ -434,16 +426,6 @@
         </property>
     </bean>
 
-    <!-- items that are visible only during the preview mode context-->
-    <bean id="org.jahia.toolbar.itemsgroup.PreviewMode" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="button-label"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-                <property name="mode" value="preview"/>
-            </bean>
-        </property>
-    </bean>
 
     <!-- tools-->
     <bean id="org.jahia.toolbar.itemsgroup.Tools" class="org.jahia.services.toolbar.bean.ItemsGroup">
@@ -666,10 +648,18 @@
     </bean>
 
     <bean id="org.jahia.toolbar.itemsgroup.Preview" class="org.jahia.services.toolbar.bean.ItemsGroup">
-        <property name="layout" value="button-label"/>
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="operationMode.preview"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-preview-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-preview-normal"/>
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.Preview"/>
+                <!--
+                ToDo : <ref bean="org.jahia.toolbar.item.TimeBasedPreview"/>
+                ToDo : <ref bean="org.jahia.toolbar.item.CompareLive"/>
+                ToDo : <ref bean="org.jahia.toolbar.item.CompareVersion"/>
+                -->
             </list>
         </property>
     </bean>
@@ -2061,9 +2051,9 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem"/>
         </property>
         <property name="titleKey" value="toolbar.edit.button.publish"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-newcontent"/>
+        <property name="descriptionKey" value="toolbar.edit.button.publish"/>        
+        <property name="minIconStyle" value="gwt-toolbar-icon-publish"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcontent"/>
-        <property name="descriptionKey" value="publish"/>
     </bean>
 
     <!-- new edit mode buttons: unpublish -->
@@ -2072,9 +2062,9 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem"/>
         </property>
         <property name="titleKey" value="toolbar.edit.button.unpublish"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-newcontent"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-newcontent"/>
-        <property name="descriptionKey" value="unpublish"/>
+        <property name="descriptionKey" value="toolbar.edit.button.unpublish"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-unpublish"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-unpublish"/>
     </bean>
 
     <!-- new edit mode buttons: unpublish -->
@@ -2084,7 +2074,7 @@
         </property>
         <property name="titleKey" value="toolbar.edit.button.status"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newcontent"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-newcontent"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-viewpublishstatus"/>
         <property name="descriptionKey" value="toolbar.edit.button.status"/>
     </bean>
 
@@ -2094,9 +2084,9 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.LockActionItem"/>
         </property>
         <property name="titleKey" value="toolbar.edit.button.lock"/>
+        <property name="descriptionKey" value="toolbar.edit.button.lock"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-lock"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-lock"/>
-        <property name="descriptionKey" value="lock"/>
     </bean>
 
     <!-- new edit mode buttons: unlock -->
@@ -2105,9 +2095,9 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnlockActionItem"/>
         </property>
         <property name="titleKey" value="toolbar.edit.button.unlock"/>
+        <property name="descriptionKey" value="toolbar.edit.button.unlock"/>        
         <property name="minIconStyle" value="gwt-toolbar-icon-unlock"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-unlock"/>
-        <property name="descriptionKey" value="unlock"/>
     </bean>
 
     <!-- new edit mode buttons: edit -->
@@ -2116,8 +2106,8 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.EditContentActionItem"/>
         </property>
         <property name="titleKey" value="toolbar.edit.button.edit"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-edit"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-edit"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-editcontent"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-editcontent"/>
         <property name="descriptionKey" value="edit"/>
     </bean>
 

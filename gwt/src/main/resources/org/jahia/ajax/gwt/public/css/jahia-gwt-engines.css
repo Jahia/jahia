@@ -48,11 +48,27 @@
 }
 
 .gwt-toolbar-icon-newcontent {
-    background-image: url( ../images/add-file.png ) !important;
+    background-image: url( ../images/add_content.png ) !important;
+}
+
+.gwt-toolbar-icon-editcontent {
+    background-image: url( ../images/edit.png) !important;
+}
+
+.gwt-toolbar-icon-publish {
+    background-image: url( ../images/publish.png) !important;
+}
+
+.gwt-toolbar-icon-unpublish {
+    background-image: url( ../images/unpublish.png) !important;    
 }
 
 .gwt-toolbar-icon-newpage {
-    background-image: url( ../images/add-file.png ) !important;
+    background-image: url( ../images/page_add.png ) !important;
+}
+
+.gwt-toolbar-icon-viewpublishstatus{
+    background-image: url( ../images/viewStatus.png ) !important;  
 }
 
 .gwt-toolbar-icon-newmashup {

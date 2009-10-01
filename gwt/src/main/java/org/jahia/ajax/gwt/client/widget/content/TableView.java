@@ -277,7 +277,7 @@ public class TableView extends TopRightComponent {
             ColumnConfig col = null;
 	        
             if ("providerKey".equals(columnName)) {
-                col = new ColumnConfig("providerKey", Messages.getResource("fm_column_provider"), 60);
+                col = new ColumnConfig("providerKey", Messages.getResource("fm_column_provider"), 100);
                 col.setSortable(true);
                 col.setResizable(true);
             } else if ("ext".equals(columnName)) {
@@ -293,15 +293,16 @@ public class TableView extends TopRightComponent {
                 col.setSortable(false);
                 col.setResizable(true);
             } else if ("name".equals(columnName)) {
-	            col = new ColumnConfig("name", Messages.getResource("fm_column_name"), 140);
+	            col = new ColumnConfig("name", Messages.getResource("fm_column_name"), 240);
 	            col.setSortable(true);
 	            col.setResizable(true);
             } else if ("path".equals(columnName)) {
 	            col = new ColumnConfig("path", Messages.getResource("fm_column_path"), 270);
 	            col.setSortable(true);
 	            col.setResizable(true);
+                col.setHidden(true);
             } else if ("size".equals(columnName)) {
-                col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 60);
+                col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 160);
                 col.setResizable(true);
                 col.setAlignment(Style.HorizontalAlignment.LEFT);
                 col.setRenderer(SIZE_RENDERER);

@@ -3,6 +3,9 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import org.jahia.ajax.gwt.client.widget.toolbar.handler.ModuleSelectionHandler;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 import org.jahia.ajax.gwt.client.widget.edit.Module;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,5 +20,9 @@ public class ViewPublishStatusActionItem extends BaseActionItem implements Modul
     }
 
     public void handleNewModuleSelection(Module selectedModule) {
+    }
+
+    public Component createNewToolItem() {
+        return new ToggleButton();
     }
 }

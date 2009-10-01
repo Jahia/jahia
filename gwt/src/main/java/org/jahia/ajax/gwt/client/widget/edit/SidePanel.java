@@ -71,9 +71,7 @@ public class SidePanel extends ContentPanel {
     public SidePanel() {
         super();
         setHeaderVisible(true);
-
         VBoxLayout layout = new VBoxLayout();
-        layout.setPadding(new Padding(5));
         layout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(layout);
 
@@ -213,9 +211,11 @@ public class SidePanel extends ContentPanel {
         });
 
         ListView<GWTJahiaNodeType> createView = new ListView<GWTJahiaNodeType>();
+        createView.setBorders(false);
         createView.setTemplate(getTemplate());
         createView.setStore(createStore);
-        createView.setItemSelector("div.thumb");
+        createView.setItemSelector("div.x-view-item");
+        createView.setDisplayProperty("label");
         createView.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         createView.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNodeType>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNodeType> gwtJahiaNodeSelectionChangedEvent) {
@@ -344,7 +344,7 @@ public class SidePanel extends ContentPanel {
     private void search(String query, Date date, String searchRoot) {
         JahiaContentManagementService.App.getInstance().search(query, 500, new AsyncCallback<List<GWTJahiaNode>>() {
             public void onFailure(Throwable throwable) {
-                // TODO
+                // TODO : implement search
             }
 
             public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
@@ -380,7 +380,7 @@ public class SidePanel extends ContentPanel {
 
     private native String getTemplate() /*-{
     return ['<tpl for=".">',
-        '<div class="thumb" >{iconHtml} {label}</div>',
+        '<div class=x-view-item> {iconHtml} {label}</div>',
         '</tpl>',
         '<div class="x-clear"></div>'].join("");
 

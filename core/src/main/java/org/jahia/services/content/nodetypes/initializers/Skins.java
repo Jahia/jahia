@@ -68,8 +68,8 @@ public class Skins implements ValueInitializer {
 
         List<Value> vs = new ArrayList<Value>();
         for (Template template : templates) {
-            if (template.getKey().startsWith("skin.")) {
-                vs.add(new ValueImpl(template.getKey().substring(5), PropertyType.STRING, false));
+            if (template.getKey().startsWith("skins.")) {
+                vs.add(new ValueImpl(template.getKey(), PropertyType.STRING, false));
             }
         }
         return vs.toArray(new Value[vs.size()]);

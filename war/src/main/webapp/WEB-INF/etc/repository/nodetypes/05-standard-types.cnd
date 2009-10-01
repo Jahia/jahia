@@ -10,10 +10,13 @@
 [jmix:skinnable] > jmix:layout mixin
  sharedSmallText skin (choicelist[resourceBundle,image]) indexed=no < skins()
 
-[jmix:positionnable] > jmix:layout mixin
+[jmix:positionnable] > jmix:layout,jmix:contentListMixin mixin
  integer rowIndex hidden indexed=no
  integer columnIndex  hidden indexed=no
  sharedSmallText status hidden indexed=no
+
+[jmix:filteredList] > jmix:contentListMixin mixin
+ sharedSmallText filter (choicelist[resourceBundle]) indexed=no < 'jcr:category','jcr:author'
 
 [jmix:containerExtension] mixin
 
@@ -38,7 +41,6 @@
  smallText separator
 
 [jnt:box] > jnt:container abstract
- smallText boxTitle primary mandatory
 
 [jnt:fileContainer] > jnt:container
  file file primary

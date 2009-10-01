@@ -39,6 +39,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import javax.jcr.RepositoryException;
 import javax.jcr.Property;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.jsp.JspException;
 import java.io.IOException;
 
@@ -88,6 +89,8 @@ public class JCRPropertyTag extends AbstractJahiaTag {
             }
         } catch (PathNotFoundException e) {
             logger.warn("Property : "+name+" not found in node "+node.getPath());
+        } catch (ConstraintViolationException e) {
+            logger.warn("Property : "+name+" not defined in node "+node.getPath());
         } catch (RepositoryException e) {
             throw new JspException(e);
         } catch (IOException e) {

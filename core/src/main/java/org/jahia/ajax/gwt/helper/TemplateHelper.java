@@ -93,9 +93,9 @@ public class TemplateHelper {
                     tpl = s.getOwnerPackage().getName();
                 }
                 if (s.getKey().equals(def)) {
-                    templatesPath.add(new String[]{s.getKey(), "* " + tpl + " : " + s.getKey()});
+                    templatesPath.add(new String[]{s.getKey(), "* " + s.getKey() + "(" + tpl + ")"});
                 } else {
-                    templatesPath.add(new String[]{s.getKey(), tpl + " : " + s.getKey()});
+                    templatesPath.add(new String[]{s.getKey(), s.getKey() + "(" + tpl + ")"});
                 }
             }
         } catch (RepositoryException e) {

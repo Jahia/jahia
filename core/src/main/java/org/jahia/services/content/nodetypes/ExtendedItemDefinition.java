@@ -176,11 +176,14 @@ public class ExtendedItemDefinition implements ItemDefinition {
     }
 
     public boolean isMetadataItem() {
-        return getDeclaringNodeType().isMetadataType();
+        return !name.toString().equals("jcr:title") && getDeclaringNodeType().isMetadataType();
     }
 
     public boolean isJahiaContentItem() {
-        return getDeclaringNodeType().isJahiaContentType();
+        boolean b = true;
+        b &= !isSystemItem();
+        b &= !isMetadataItem();
+        return b;
     }
 
 

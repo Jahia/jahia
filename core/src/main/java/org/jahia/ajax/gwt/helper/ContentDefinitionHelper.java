@@ -299,8 +299,9 @@ public class ContentDefinitionHelper {
                             gwtNodeTypes.add(getGWTJahiaNodeType(ctx, extendedNodeType));
                         }
 
-                        while (extendedNodeType.getSubtypes().hasNext()) {
-                            ExtendedNodeType nodeType = (ExtendedNodeType) extendedNodeType.getSubtypes().next();
+                        NodeTypeIterator subtypes = extendedNodeType.getSubtypes();
+                        while (subtypes.hasNext()) {
+                            ExtendedNodeType nodeType = (ExtendedNodeType) subtypes.next();
                             if (!excludedTypes.contains(nodeType.getName()) && !nodeType.isMixin() && !nodeType.isAbstract()) {
                                 gwtNodeTypes.add(getGWTJahiaNodeType(ctx, nodeType));
                             }
@@ -429,4 +430,22 @@ public class ContentDefinitionHelper {
 
         return value;
     }
+
+    public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNode node, ProcessingContext ctx) {
+        ArrayList<GWTJahiaNodeType> res = new ArrayList<GWTJahiaNodeType>();
+        if (node.getNodeTypes().contains("jnt:contentList")) {
+            try {
+                ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:contentListMixin");
+                NodeTypeIterator it = baseMixin.getSubtypes();
+                while (it.hasNext()) {
+                    ExtendedNodeType nodeType = (ExtendedNodeType) it.next();
+                    res.add(getGWTJahiaNodeType(ctx, nodeType));                    
+                }
+            } catch (NoSuchNodeTypeException e) {
+
+            }
+        }
+        return res;
+    }
+
 }

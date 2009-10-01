@@ -1261,6 +1261,11 @@ public class ImportHandler extends DefaultHandler {
             }
         } else {
             def = JahiaFieldDefinitionsRegistry.getInstance().getDefinition(site.getID(), defPrefix+"_"+localName);
+
+            if (def == null && (localName.endsWith("Title") || localName.endsWith("title"))) {
+                def = JahiaFieldDefinitionsRegistry.getInstance().getDefinition(site.getID(), defPrefix+"_jcr_title");
+            }
+            
             if (def != null) {
                 isField = true;
             }

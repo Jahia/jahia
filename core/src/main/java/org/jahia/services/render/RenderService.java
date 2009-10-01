@@ -98,7 +98,7 @@ public class RenderService extends JahiaService {
 
         if (resource.getNode().hasProperty("skin")) {
             String skin = resource.getNode().getPropertyAsString("skin");
-            resource.pushWrapper("skin." + skin);
+            resource.pushWrapper(skin);
         }
 
         String output;

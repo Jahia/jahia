@@ -21,7 +21,6 @@ bigText       introduction primary
 singleContainer introduction (web_templates:introductionContainer)
 
 [web_templates:title] mixin
-smallText       title  primary 
 
 // Web templates content definitions
 

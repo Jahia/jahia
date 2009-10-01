@@ -944,7 +944,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
 //                    declareContainer(subContainerName, propDef.getName(), subContainerFields,windowSize,windowOffset, null, null, new String[] {propDef.getName()});
 //                    containerFields.add("@c " + subContainerName);
 //                } else {
-                String name = containerName + "_"+ ext.getName();
+                String name = containerName + "_"+ ext.getName().replace(':','_');
                 declareField(containerName, name, ext, containerFields, declaredFieldDefProps, siteId, pageDefId, theSet);
 //                }
         } else {
@@ -968,7 +968,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
                 }
             }
             if (isJahiaField) {
-                String name = containerName + "_"+ ext.getName();
+                String name = containerName + "_"+ ext.getName().replace(':','_');
                 declareField(containerName, name, ext, containerFields, declaredFieldDefProps, siteId, pageDefId, theSet);
             } else if (defTypes.length() == 0) {
                 logger.error("Definition for subcontainer "+ nodeDef.getName() + " not found, skip it");

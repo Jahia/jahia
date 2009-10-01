@@ -72,7 +72,7 @@ public class MetadataBaseService extends MetadataService {
 
     private JahiaEventListenerInterface metadataEventListener;
     private JahiaFieldDefinitionsRegistry fieldDefinitionsRegistry;
-    public static final String METADATA_TYPE = "jmix:contentmetadata";
+    public static final String METADATA_TYPE = "jmix:metadata";
 
     protected MetadataBaseService() {
     }
@@ -115,25 +115,26 @@ public class MetadataBaseService extends MetadataService {
 
         ExtendedNodeType metadataType = null;
         try {
+            allTypes.add(NodeTypeRegistry.getInstance().getNodeType("mix:title"));
             allTypes.add(NodeTypeRegistry.getInstance().getNodeType("mix:created"));
+            allTypes.add(NodeTypeRegistry.getInstance().getNodeType("mix:lastModified"));
             metadataType = NodeTypeRegistry.getInstance().getNodeType(METADATA_TYPE);
+            for (ExtendedNodeType type : metadataType.getMixinSubtypes()) {
+                allTypes.add(type);
+            }
         } catch (NoSuchNodeTypeException e) {
             e.printStackTrace();
             return;
         }
 
-        for (ExtendedNodeType nodeType : metadataType.getSupertypes()) {
-            allTypes.add(nodeType);
-        }
-        allTypes.add(metadataType);
-        for (ExtendedNodeType type : metadataType.getMixinSubtypes()) {
-            allTypes.add(type);
-        }
 
         for (ExtendedNodeType type : allTypes) {
             ExtendedPropertyDefinition[] propDefs = type.getDeclaredPropertyDefinitions();
             for (ExtendedPropertyDefinition propDef : propDefs) {
                 String name = propDef.getLocalName();
+                if (propDef.getName().equals("jcr:title")) {
+                    continue;
+                }
                 JahiaFieldDefinition fieldDef = fieldDefinitionsRegistry.getDefinition(0, name);
 
                 if (fieldDef == null) {

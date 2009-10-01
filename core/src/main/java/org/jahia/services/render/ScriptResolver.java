@@ -13,7 +13,7 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public interface ScriptResolver {
-    public Script resolveScript(Resource resource, RenderContext context) throws IOException;
+    public Script resolveScript(Resource resource, RenderContext context) throws TemplateNotFoundException;
 
     public boolean hasTemplate(ExtendedNodeType nt, String s);
 

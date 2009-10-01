@@ -60,6 +60,7 @@ import org.jahia.exceptions.JahiaServerOverloadedException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.render.TemplateNotFoundException;
 
 /**
  * Handler class for captured exceptions.
@@ -138,6 +139,8 @@ public class ErrorHandler {
         }
 
         if (e instanceof PathNotFoundException) {
+        	code = SC_NOT_FOUND;
+        } else if (e instanceof TemplateNotFoundException) {
         	code = SC_NOT_FOUND;
         } else if (e instanceof AccessDeniedException) {
             code = SC_UNAUTHORIZED;            

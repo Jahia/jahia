@@ -32,34 +32,34 @@
 package org.jahia.services.render;
 
 import org.apache.log4j.Logger;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.bin.Jahia;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
-import javax.servlet.http.HttpServletResponseWrapper;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletException;
-import javax.servlet.RequestDispatcher;
 import javax.jcr.RepositoryException;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.ByteArrayOutputStream;
-import java.util.*;
 import java.net.MalformedURLException;
+import java.util.*;
 
 /**
  * This class uses the standard request dispatcher to execute a JSP script.
- *
+ * <p/>
  * It will try to resolve the JSP from the following schema :
- *
+ * <p/>
  * /templates/[currentTemplateSet]/modules/[nodetypenamespace]/[nodetypename]/[templatetype]/[templatename].jsp
  * /templates/[parentTemplateSet]/modules/[nodetypenamespace]/[nodetypename]/[templatetype]/[templatename].jsp
  * /templates/default/modules/[nodetypenamespace]/[nodetypename]/[templatetype]/[templatename].jsp
- *
+ * <p/>
  * And then iterates on the supertype of the resource, until nt:base
  *
  * @author toto
@@ -67,7 +67,7 @@ import java.net.MalformedURLException;
 public class RequestDispatcherScript implements Script {
 
     private static final Logger logger = Logger.getLogger(RequestDispatcherScript.class);
-    
+
     private RequestDispatcher rd;
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -75,6 +75,7 @@ public class RequestDispatcherScript implements Script {
 
     /**
      * Builds the script, tries to resolve the jsp template
+     *
      * @param resource resource to display
      * @param context
      * @throws IOException if template cannot be found, or something wrong happens
@@ -83,11 +84,11 @@ public class RequestDispatcherScript implements Script {
         try {
             String templatePath = getTemplatePath(resource);
             if (templatePath == null) {
-                throw new IOException("Template not found for : "+resource);
+                throw new IOException("Template not found for : " + resource);
             } else {
-            	if (logger.isDebugEnabled()) {
-            		logger.debug("Template '" + templatePath + "' resolved for resource: " + resource);
-            	}
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Template '" + templatePath + "' resolved for resource: " + resource);
+                }
             }
 
             this.request = context.getRequest();
@@ -95,7 +96,7 @@ public class RequestDispatcherScript implements Script {
             this.templatePath = templatePath;
             rd = request.getRequestDispatcher(templatePath);
 
-        } catch (RepositoryException e) {            
+        } catch (RepositoryException e) {
             e.printStackTrace();
             throw new IOException();
         }
@@ -111,7 +112,7 @@ public class RequestDispatcherScript implements Script {
             nodeTypeList.add(nt);
             Collections.reverse(nodeTypeList);
             for (ExtendedNodeType st : nodeTypeList) {
-                List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(st.getName().replace(":","_"));
+                List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(st.getAlias().replace(":", "_"));
                 SortedSet<JahiaTemplatesPackage> sortedPackages = new TreeSet<JahiaTemplatesPackage>(new PackageComparator());
                 sortedPackages.addAll(packages);
 
@@ -129,10 +130,15 @@ public class RequestDispatcherScript implements Script {
     }
 
     private String getTemplatePath(String templateType, String template, ExtendedNodeType nt, String currentTemplatePath) {
-        String templatePath = nt.getLocalName() + ( template.equals("default")?"":"." + template )  + ".jsp";
-        String modulePath = currentTemplatePath + "/" + nt.getAlias().replace(':','_') + "/" + templateType +   "/" + templatePath;
+        String n = nt.getAlias();
+        if (nt.getPrefix().length() > 0) {
+            n = n.substring(nt.getPrefix().length() + 1);
+        }
+
+        String templatePath = n + (template.equals("default") ? "" : "." + template) + ".jsp";
+        String modulePath = currentTemplatePath + "/" + nt.getAlias().replace(':', '_') + "/" + templateType + "/" + templatePath;
         try {
-                if (Jahia.getStaticServletConfig().getServletContext().getResource(modulePath) != null) {
+            if (Jahia.getStaticServletConfig().getServletContext().getResource(modulePath) != null) {
                 return modulePath;
             }
         } catch (MalformedURLException e) {
@@ -142,6 +148,7 @@ public class RequestDispatcherScript implements Script {
 
     /**
      * Execute the script and return the result as a string
+     *
      * @return the rendered resource
      * @throws IOException
      */
@@ -171,7 +178,7 @@ public class RequestDispatcherScript implements Script {
             logger.error(e.getMessage(), e);
             throw new IOException(e.getMessage());
         }
-        if(isWriter[0]) {
+        if (isWriter[0]) {
             return stringWriter.getBuffer().toString();
         } else {
             String s = outputStream.toString("UTF-8");

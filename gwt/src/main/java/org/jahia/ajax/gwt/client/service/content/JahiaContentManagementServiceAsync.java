@@ -136,7 +136,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion,AsyncCallback async);    
 
-    void getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, boolean editMode, AsyncCallback<String> async);
+    void getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String,String> contextParams, boolean editMode, AsyncCallback<String> async);
 
     void isFileAccessibleForCurrentContainer(String path, AsyncCallback<Boolean> async);
 

@@ -7,10 +7,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.RenderService;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.Template;
+import org.jahia.services.render.*;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -45,10 +42,11 @@ public class TemplateHelper {
      * @param locale
      * @param template
      * @param templateWrapper
+     * @param contextParams
      * @param editMode
      * @param ctx             @return   @throws GWTJahiaServiceException
      */
-    public String getRenderedContent(String path, String workspace, Locale locale, String template, String templateWrapper, boolean editMode, ParamBean ctx) throws GWTJahiaServiceException {
+    public String getRenderedContent(String path, String workspace, Locale locale, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode, ParamBean ctx) throws GWTJahiaServiceException {
         String res = null;
         try {
             if (locale == null) {
@@ -62,10 +60,17 @@ public class TemplateHelper {
             renderContext.setSite(ctx.getSite());
             renderContext.setEditMode(editMode);
             renderContext.setMainResource(r);
+            if (contextParams != null) {
+                for (Map.Entry<String, String> entry : contextParams.entrySet()) {
+                    renderContext.getModuleParams().put(entry.getKey(), entry.getValue());
+                }
+            }
             r.pushWrapper(templateWrapper);
 //            renderContext.setTemplateWrapper(templateWrapper);
             res = renderService.render(r, renderContext);
         } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        } catch (TemplateNotFoundException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
@@ -93,9 +98,9 @@ public class TemplateHelper {
                     tpl = s.getOwnerPackage().getName();
                 }
                 if (s.getKey().equals(def)) {
-                    templatesPath.add(new String[]{s.getKey(), "* " + s.getKey() + "(" + tpl + ")"});
+                    templatesPath.add(new String[]{s.getKey(), "* " + s.getKey() + " (" + tpl + ")"});
                 } else {
-                    templatesPath.add(new String[]{s.getKey(), s.getKey() + "(" + tpl + ")"});
+                    templatesPath.add(new String[]{s.getKey(), s.getKey() + " (" + tpl + ")"});
                 }
             }
         } catch (RepositoryException e) {
@@ -109,20 +114,20 @@ public class TemplateHelper {
         ExtendedNodeType nt = node.getPrimaryNodeType();
         SortedSet<Template> set;
         SortedSet<Template> result = new TreeSet<Template>();
-        if (node.getPrimaryNodeTypeName().equals("jnt:nodeReference")) {
-
-            set = getTemplatesSet((JCRNodeWrapper) node.getProperty("j:node").getNode());
-        } else if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
+//        if (node.getPrimaryNodeTypeName().equals("jnt:nodeReference")) {
+//
+//            set = getTemplatesSet((JCRNodeWrapper) node.getProperty("j:node").getNode());
+//        } else if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
+//            set = renderService.getTemplatesSet(nt);
+//            List<JCRNodeWrapper> l = node.getChildren();
+//            for (JCRNodeWrapper c : l) {
+//                set.addAll(getTemplatesSet(c));
+//            }
+//        } else {
             set = renderService.getTemplatesSet(nt);
-            List<JCRNodeWrapper> l = node.getChildren();
-            for (JCRNodeWrapper c : l) {
-                set.addAll(getTemplatesSet(c));
-            }
-        } else {
-            set = renderService.getTemplatesSet(nt);
-        }
+//        }
         for (Template template : set) {
-            if (!template.getKey().startsWith("wrapper") && !template.getKey().startsWith("skin")) {
+            if (!template.getKey().startsWith("wrapper.") && !template.getKey().startsWith("skins.") && !template.getKey().startsWith("debug.")) {
                 result.add(template);
             }
         }

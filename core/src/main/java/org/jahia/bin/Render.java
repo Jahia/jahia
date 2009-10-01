@@ -43,6 +43,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
@@ -139,7 +140,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         return new RenderContext(req, resp, user);
     }
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws RepositoryException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext, Resource resource) throws RepositoryException, TemplateNotFoundException, IOException {
         String out = RenderService.getInstance().render(resource, renderContext);
 
         resp.setContentType("text/html");

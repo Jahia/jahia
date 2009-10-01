@@ -460,8 +460,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.uploadedFile(location, tmpName, operation, newName);
     }
 
-    public String getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, boolean editMode) throws GWTJahiaServiceException {
-        return this.template.getRenderedContent(path, workspace, LanguageCodeConverters.languageCodeToLocale(locale), template, templateWrapper, editMode, retrieveParamBean());
+    public String getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String,String> contextParams, boolean editMode) throws GWTJahiaServiceException {
+        return this.template.getRenderedContent(path, workspace, LanguageCodeConverters.languageCodeToLocale(locale), template, templateWrapper, contextParams, editMode, retrieveParamBean());
     }
 
     public Boolean isFileAccessibleForCurrentContainer(String path) throws GWTJahiaServiceException {
@@ -568,6 +568,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void saveNodeTemplate(String path, String template) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
+
+//jmix:renderableReference
+
             if ("--unset--".equals(template)) {
                 if (node.hasProperty("j:defaultTemplate")) {
                     node.getProperty("j:defaultTemplate").remove();

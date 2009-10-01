@@ -67,7 +67,7 @@ public class MainModule extends ContentPanel implements Module {
     }
 
     public void refresh() {
-        JahiaContentManagementService.App.getInstance().getRenderedContent(path, null, editLinker.getLocale(), template, "wrapper.bodywrapper", true, new AsyncCallback<String>() {
+        JahiaContentManagementService.App.getInstance().getRenderedContent(path, null, editLinker.getLocale(), template, "wrapper.bodywrapper", null, true, new AsyncCallback<String>() {
             public void onSuccess(String result) {
                 int i = getVScrollPosition();
 

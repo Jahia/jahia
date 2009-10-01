@@ -116,6 +116,7 @@ public class Resource {
 
         if (forcedTemplate != null && forcedTemplate.length() > 0) {
             l.add(forcedTemplate);
+            return l;
         }
         try {
             if (node.isNodeType("jmix:renderable") && node.hasProperty("j:defaultTemplate")) {

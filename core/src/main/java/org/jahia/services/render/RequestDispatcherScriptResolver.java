@@ -18,8 +18,12 @@ import java.io.File;
  */
 public class RequestDispatcherScriptResolver implements ScriptResolver {
 
-    public Script resolveScript(Resource resource, RenderContext context) throws IOException {
-        return new RequestDispatcherScript(resource, context);
+    public Script resolveScript(Resource resource, RenderContext context) throws TemplateNotFoundException {
+        try {
+            return new RequestDispatcherScript(resource, context);
+        } catch (IOException e) {
+            throw new TemplateNotFoundException(e);
+        }
     }
 
     public boolean hasTemplate(ExtendedNodeType nt, String key) {

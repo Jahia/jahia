@@ -49,7 +49,7 @@ import org.jahia.utils.i18n.ResourceBundleMarker;
  * To change this template use File | Settings | File Templates.
  */
 public class ExtendedItemDefinition implements ItemDefinition {
-    
+
     private static final transient Logger logger = Logger
             .getLogger(ExtendedItemDefinition.class);
     
@@ -169,21 +169,32 @@ public class ExtendedItemDefinition implements ItemDefinition {
         return getName().replace(':','_');
     }
 
-
-
     public boolean isSystemItem() {
-        return getDeclaringNodeType().isSystemType();
+        return !isMetadataItem() && !isLayoutItem() && !name.toString().equals("jcr:title") &&
+                (declaringNodeType.getName().startsWith("mix:") ||
+                        declaringNodeType.getName().startsWith("nt:") ||
+                        declaringNodeType.getName().equals("jmix:i18n"));
     }
 
     public boolean isMetadataItem() {
-        return !name.toString().equals("jcr:title") && getDeclaringNodeType().isMetadataType();
+        return !name.toString().equals("jcr:title") &&
+                (declaringNodeType.isMixin() && declaringNodeType.isNodeType("jmix:metadata") ||
+                        declaringNodeType.getName().equals("jmix:hierarchyNode") ||
+                        declaringNodeType.getName().equals("mix:created") ||
+                        declaringNodeType.getName().equals("mix:lastModified") ||
+                        declaringNodeType.getName().equals("mix:title"));
+    }
+
+    public boolean isLayoutItem() {
+        return declaringNodeType.isMixin() && declaringNodeType.isNodeType("jmix:layout");
+    }
+
+    public boolean isContentItem() {
+        return !isSystemItem() && !isMetadataItem() && !isLayoutItem();
     }
 
     public boolean isJahiaContentItem() {
-        boolean b = true;
-        b &= !isSystemItem();
-        b &= !isMetadataItem();
-        return b;
+        return !isSystemItem() && !isMetadataItem();
     }
 
 

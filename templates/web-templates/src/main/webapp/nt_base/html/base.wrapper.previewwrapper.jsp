@@ -34,6 +34,9 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="../../common/declarations.jspf" %>
+<div id="scriptInfo">
+    ${scriptInfo}
+</div>
 <div id="bodywrapper">
     ${wrappedContent}
 </div>

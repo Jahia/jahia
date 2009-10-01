@@ -77,40 +77,62 @@ public class RenderService extends JahiaService {
      * @throws RepositoryException
      * @throws IOException
      */
-    public String render(Resource resource, RenderContext context) throws RepositoryException, IOException {
+    public String render(Resource resource, RenderContext context) throws RepositoryException, TemplateNotFoundException, IOException {
         final HttpServletRequest request = context.getRequest();
 
         Script script = resolveScript(resource, context);
 
         request.setAttribute("renderContext", context);
 
-        Object old = request.getAttribute("currentNode");
-        request.setAttribute("currentNode", resource.getNode());
+        Map<String, Object> old = new HashMap<String, Object>();
+        JCRNodeWrapper node = resource.getNode();
 
-        request.setAttribute("workspace", resource.getNode().getSession().getWorkspace().getName());
-        request.setAttribute("locale", resource.getNode().getSession().getWorkspace().getName());
+        pushAttribute(request, "currentNode", node, old);
 
-        Resource oldResource = (Resource) request.getAttribute("currentResource");
-        request.setAttribute("currentResource", resource);
+        pushAttribute(request, "workspace", node.getSession().getWorkspace().getName(), old);
+        pushAttribute(request, "locale", node.getSession().getWorkspace().getName(), old);
 
-        URLGenerator oldUrl = (URLGenerator) request.getAttribute("url");
-        request.setAttribute("url",new URLGenerator(context, resource, storeService));
+        pushAttribute(request, "currentResource", resource, old);
+        pushAttribute(request, "scriptInfo", script.getInfo(), old);
 
-        if (resource.getNode().hasProperty("skin")) {
-            String skin = resource.getNode().getPropertyAsString("skin");
-            resource.pushWrapper(skin);
+        if (node.isNodeType("jnt:contentList")) {
+            if (context.getModuleParams().containsKey("forcedSubNodesTemplate")) {
+                pushAttribute(request, "subNodesTemplate",  context.getModuleParams().get("forcedSubNodesTemplate"), old);
+            } else if (node.hasProperty("j:subNodesTemplate")) {
+                pushAttribute(request, "subNodesTemplate", node.getProperty("subNodeTemplate"), old);
+            } else if (context.getModuleParams().containsKey("subNodesTemplate")) {
+                pushAttribute(request, "subNodesTemplate",  context.getModuleParams().get("subNodesTemplate"), old);
+            }
+        } else if (node.isNodeType("jnt:nodeReference")) {
+            if (context.getModuleParams().containsKey("forcedReferenceTemplate")) {
+                pushAttribute(request, "referenceTemplate", context.getModuleParams().get("forcedReferenceTemplate"), old);
+            } else if (node.hasProperty("j:referenceTemplate")) {
+                pushAttribute(request, "referenceTemplate",  node.getProperty("referenceTemplate"), old);
+            } else if (context.getModuleParams().containsKey("referenceTemplate")) {
+                pushAttribute(request, "referenceTemplate", context.getModuleParams().get("referenceTemplate"), old);
+            }
+        }
+
+        pushAttribute(request, "url",new URLGenerator(context, resource, storeService), old);
+
+        if (context.getModuleParams().containsKey("forcedSkin")) {
+            resource.pushWrapper((String) context.getModuleParams().get("forcedSkin"));
+        } else if (node.hasProperty("skin")) {
+            resource.pushWrapper(node.getPropertyAsString("skin"));
+        } else if (context.getModuleParams().containsKey("skin")) {
+            resource.pushWrapper((String) context.getModuleParams().get("skin"));
         }
 
         String output;
         try {
-            setJahiaAttributes(request, resource.getNode(), (ParamBean) Jahia.getThreadParamBean());
+            setJahiaAttributes(request, node, (ParamBean) Jahia.getThreadParamBean());
             output = script.execute();
 
             while (resource.hasWrapper()) {
                 String wrapper = resource.popWrapper();
                 try {
-                    Resource wrappedResource = new Resource(resource.getNode(), resource.getTemplateType(), null, wrapper);
-                    if (hasTemplate(resource.getNode().getPrimaryNodeType(), wrapper)) {
+                    Resource wrappedResource = new Resource(node, resource.getTemplateType(), null, wrapper);
+                    if (hasTemplate(node.getPrimaryNodeType(), wrapper)) {
                         script = resolveScript(wrappedResource, context);
                         request.setAttribute("wrappedContent", output);
                         output = script.execute();
@@ -122,16 +144,25 @@ public class RenderService extends JahiaService {
                 }
             }
         } finally {
-            request.setAttribute("currentNode",old);
-            request.setAttribute("currentResource",oldResource);
-            request.setAttribute("url",oldUrl);
+            popAttributes(request, old);
         }
 
-        if (oldResource != null) {
-            oldResource.getDependencies().addAll(resource.getDependencies());
+        if (request.getAttribute("currentResource") != null) {
+            ((Resource)request.getAttribute("currentResource")).getDependencies().addAll(resource.getDependencies());
         }
 
         return output;
+    }
+
+    private void pushAttribute(HttpServletRequest request, String key, Object value, Map<String,Object> oldMap) {
+        oldMap.put(key, request.getAttribute(key));
+        request.setAttribute(key, value);
+    }
+
+    private void popAttributes(HttpServletRequest request, Map<String,Object> oldMap) {
+        for (Map.Entry<String,Object> entry : oldMap.entrySet()) {
+            request.setAttribute(entry.getKey(), entry.getValue());
+        }
     }
 
     /**
@@ -146,7 +177,7 @@ public class RenderService extends JahiaService {
      * @throws RepositoryException
      * @throws IOException
      */
-    public Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, IOException {
+    public Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, TemplateNotFoundException {
         for (ScriptResolver scriptResolver : scriptResolvers) {
             Script s = scriptResolver.resolveScript(resource,  context);
             if (s != null) {

@@ -297,6 +297,15 @@
  - j:defaultTemplate (string, choicelist[resourceBundle,image]) < templates()
  - j:theme (string)
 
+[jmix:renderableList] > jmix:layout, jmix:contentListMixin mixin
+ - j:subNodesTemplate (string, choicelist[resourceBundle,image]) < templates()
+
+[jmix:renderableReference] > jmix:layout mixin
+ - j:referenceTemplate (string, choicelist[resourceBundle,image]) < templates()
+
+[jmix:skinnable] > jmix:layout mixin
+ - skin (string, choicelist[resourceBundle,image]) indexed=no < skins()
+
 [jmix:positionable] > jmix:layout mixin
  - j:columnIndex (long)
  - j:rowIndex (long)
@@ -340,11 +349,11 @@
 [jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, mix:title
  + * (nt:base) version
 
-[jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, jmix:containerContent, mix:title
+[jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title
  orderable
  + * (nt:base) version
 
-[jnt:gridContentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, jmix:containerContent, mix:title
+[jnt:gridContentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title
  - j:nbColumns (long)
  + * (jmix:positionable) version
 
@@ -390,7 +399,7 @@
 
 [jnt:container] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title, jmix:categorized, jmix:keywords
 
-[jnt:containerList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata
+[jnt:containerList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:renderableList
  orderable
  + * (jnt:container)
 

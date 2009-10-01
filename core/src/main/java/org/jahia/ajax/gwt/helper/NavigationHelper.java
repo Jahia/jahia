@@ -25,6 +25,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
 import org.jahia.utils.FileUtils;
@@ -242,6 +243,8 @@ public class NavigationHelper {
                 }
             }
         } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        } catch (TemplateNotFoundException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);

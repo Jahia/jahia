@@ -35,10 +35,7 @@ import org.jahia.data.beans.ContentBean;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.JahiaData;
-import org.jahia.services.render.RenderService;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Script;
+import org.jahia.services.render.*;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -304,8 +301,13 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 	                            if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
 	                                type = "list";
 	                            }
-                                Script script = RenderService.getInstance().resolveScript(resource, renderContext);
-	                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), script.getInfo());
+                                Script script = null;
+                                try {
+                                    script = RenderService.getInstance().resolveScript(resource, renderContext);
+                                    printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), script.getInfo());
+                                } catch (TemplateNotFoundException e) {
+                                    printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), "Script not found");
+                                } 
 
 	                            JCRNodeWrapper w = new JCRNodeDecorator(node) {
 	                                @Override
@@ -396,7 +398,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-        } catch (IOException io) {
+        } catch (TemplateNotFoundException io) {
             buffer.append(io);
             if (var == null) {
                 pageContext.getOut().print(buffer);

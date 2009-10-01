@@ -9,14 +9,14 @@
 <script type="text/javascript">
 
 
-function replace() {
+function replace(id, url) {
     var http = false;
     if(navigator.appName == "Microsoft Internet Explorer") {
         http = new ActiveXObject("Microsoft.XMLHTTP");
     } else {
         http = new XMLHttpRequest();
     }
-    http.open("GET", '${url.current}?ajaxcall=true&categorykey='+document.forms.filter.categorykey.value, true);
+    http.open("GET", url, true);
     http.onreadystatechange=function() {
         if(http.readyState == 4) {
             document.getElementById('${currentNode.UUID}').innerHTML = http.responseText;
@@ -30,7 +30,7 @@ function replace() {
 
 <jcr:node var="category" path="/content/categories"/>
 <form id="filter">
-    Category : <select name="categorykey" onchange="javascript:replace()"/>
+    Category : <select name="categorykey" onchange="javascript:replace('${currentNode.UUID}','${url.current}?ajaxcall=true&categorykey='+document.forms.filter.categorykey.value)"/>
     <c:if test="${empty param.categorykey}"><option selected value="">All</option></c:if>
     <c:if test="${not empty param.categorykey}"><option value="">All</option></c:if>
     <c:forEach items="${category.children}" var="cat">
@@ -45,7 +45,7 @@ function replace() {
 <c:forEach items="${currentNode.children}" var="subchild">
     <p>
         <c:if test="${empty param.categorykey}">
-            <template:module node="${subchild}" />
+            <template:module node="${subchild}" template="${subNodesTemplate}"/>
         </c:if>
 
         <c:if test="${not empty param.categorykey}">
@@ -58,7 +58,7 @@ function replace() {
                 </c:if>
             </c:forEach>
             <c:if test="${contains eq true}">
-                <template:module node="${subchild}" />
+                <template:module node="${subchild}" template="${subNodesTemplate}" />
             </c:if>
         </c:if>
     </p>

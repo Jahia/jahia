@@ -580,28 +580,6 @@ public class ExtendedNodeType implements NodeType {
         return getName().replace(':','_');
     }
 
-    public boolean isSystemType() {
-        final boolean b = !isMetadataType() && (getName().startsWith("mix:") || getName().startsWith("nt:") || getName().equals("jmix:i18n"));
-        return b;
-    }
-
-    public boolean isMetadataType() {
-        boolean b = isMixin() && isNodeType("jmix:metadata");
-        b |= getName().equals("jmix:hierarchyNode");
-        b |= getName().equals("mix:created");
-        b |= getName().equals("mix:lastModified");
-        b |= getName().equals("mix:title");
-
-        return b;
-    }
-
-    public boolean isJahiaContentType() {
-        boolean b = true;
-        b &= !isSystemType();
-        b &= !isMetadataType();
-        return b;
-    }
-
     public NodeTypeDefinition getNodeTypeDefinition() {
         return new Definition();
     }

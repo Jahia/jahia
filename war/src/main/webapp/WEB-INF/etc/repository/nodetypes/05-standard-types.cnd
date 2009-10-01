@@ -5,16 +5,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jmix:layout] mixin
-
-[jmix:skinnable] > jmix:layout mixin
- sharedSmallText skin (choicelist[resourceBundle,image]) indexed=no < skins()
-
-[jmix:positionnable] > jmix:layout,jmix:contentListMixin mixin
- integer rowIndex hidden indexed=no
- integer columnIndex  hidden indexed=no
- sharedSmallText status hidden indexed=no
-
 [jmix:filteredList] > jmix:contentListMixin mixin
  sharedSmallText filter (choicelist[resourceBundle]) indexed=no < 'jcr:category','jcr:author'
 

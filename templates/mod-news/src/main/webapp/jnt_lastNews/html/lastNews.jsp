@@ -17,5 +17,5 @@
 </c:if>
 
 <c:forEach items="${newsList.nodes}" var="news">
-    <template:module node="${news}"/>
+    <template:module node="${news}" editable="false" />
 </c:forEach>

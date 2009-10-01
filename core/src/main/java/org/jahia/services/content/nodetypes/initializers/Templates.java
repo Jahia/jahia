@@ -64,7 +64,7 @@ public class Templates implements ValueInitializer {
 
         List<Value> vs = new ArrayList<Value>();
         for (Template template : templates) {
-            if (!template.getKey().startsWith("wrapper.") && !template.getKey().startsWith("skin.")) {
+            if (!template.getKey().startsWith("wrapper.") && !template.getKey().startsWith("skins.") && !template.getKey().startsWith("debug.")) {
                 vs.add(new ValueImpl(template.getKey(), PropertyType.STRING, false));
             }
         }

@@ -47,7 +47,7 @@ public class NodeRender extends HTML {
 
     public NodeRender(final GWTJahiaNode node) {
         setHTML("Loading...");
-        JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(),null, null, null, null, false, new AsyncCallback<String>() {
+        JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(),null, null, null, null, null, false, new AsyncCallback<String>() {
            public void onSuccess(String s) {
                setHTML(s);
            }

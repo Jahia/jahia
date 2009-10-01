@@ -882,13 +882,6 @@
     <bean id="org.jahia.toolbar.itemsgroup.DocumentManager.shortcuts.file.new"
           class="org.jahia.services.toolbar.bean.ItemsGroup">
         <property name="layout" value="button"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver"
-                          value="org.jahia.services.toolbar.resolver.impl.UserAgentVisibilityResolver"/>
-                <property name="inputResolver" value="ie"/>
-            </bean>
-        </property>
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.createFolder"/>

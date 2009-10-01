@@ -8,7 +8,6 @@
         <property name="mappings">
             <value>
                 /**/acl.gwt=aclServiceController
-                /**/actionmenus.gwt=actionMenuServiceController
                 /**/base.gwt=baseServiceController
                 /**/contentLegacy.gwt=contentLegacyServiceController
                 /**/contentDefinition.gwt=contentDefinitionServiceController
@@ -30,10 +29,6 @@
     </bean>
     <bean name="gwtACLService" class="org.jahia.ajax.gwt.aclmanagement.server.ACLServiceImpl" scope="prototype">
         <property name="acl" ref="ACLHelper"/>
-    </bean>
-
-    <bean name="actionMenuServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
-        <property name="remoteServiceName" value="gwtActionMenuService"/>
     </bean>
 
     <bean name="baseServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">

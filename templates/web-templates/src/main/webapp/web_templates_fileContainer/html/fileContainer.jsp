@@ -6,7 +6,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
- <jcr:nodeProperty node="${currentNode}" name="title" var="title"/>
+ <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
  <jcr:nodeProperty node="${currentNode}" name="file" var="file"/>
  <jcr:nodeProperty node="${currentNode}" name="fileDisplayDetails" var="fileDisplayDetails"/>
  <jcr:nodeProperty node="${currentNode}" name="fileDesc" var="fileDesc"/>

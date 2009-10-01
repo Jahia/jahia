@@ -5,7 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 
- <jcr:nodeProperty node="${currentNode}" name="title" var="title"/>
+ <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
  <jcr:nodeProperty node="${currentNode}" name="positionTop" var="positionTop"/>
  <jcr:nodeProperty node="${currentNode}" name="positionLeft" var="positionLeft"/>
  <jcr:nodeProperty node="${currentNode}" name="background" var="background"/>

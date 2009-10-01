@@ -343,6 +343,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.addNode(s, s1);
     }
 
+    public JCRPlaceholderNode getPlaceholder() throws RepositoryException {
+        return new JCRPlaceholderNode(node);
+    }
+
     public void orderBefore(String s, String s1) throws UnsupportedRepositoryOperationException, VersionException, ConstraintViolationException, ItemNotFoundException, LockException, RepositoryException {
         node.orderBefore(s, s1);
     }

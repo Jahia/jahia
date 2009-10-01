@@ -37,28 +37,27 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.files.JahiaFile;
 import org.jahia.data.files.JahiaFileField;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.manager.JahiaFieldXRefManager;
+import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.hibernate.model.JahiaFieldXRef;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.content.decorator.JCRPlaceholderNode;
 import org.jahia.services.content.decorator.JCRVersion;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.webdav.UsageEntry;
-import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.fields.ContentField;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.webdav.UsageEntry;
 import org.jahia.spring.aop.interceptor.SilentJamonPerformanceMonitorInterceptor;
 import org.jahia.urls.URI;
-import org.jahia.hibernate.model.JahiaFieldXRef;
-import org.jahia.hibernate.manager.JahiaFieldXRefManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.exceptions.JahiaException;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
 import javax.jcr.lock.LockException;
-import javax.jcr.lock.LockManager;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
@@ -220,6 +219,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
         Node n = objectNode.addNode(provider.encodeInternalName(name), type);
         return provider.getNodeWrapper(n, session);
+    }
+
+    public JCRPlaceholderNode getPlaceholder() throws RepositoryException {
+        return new JCRPlaceholderNode(this);
     }
 
     public JahiaFileField getJahiaFileField() {

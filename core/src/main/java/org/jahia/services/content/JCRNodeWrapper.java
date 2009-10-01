@@ -41,6 +41,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.decorator.JCRFileContent;
+import org.jahia.services.content.decorator.JCRPlaceholderNode;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -2807,4 +2808,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     JCRNodeWrapper addNode(String s) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException;
 
     JCRNodeWrapper addNode(String s, String s1) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException;
+
+    JCRPlaceholderNode getPlaceholder() throws RepositoryException;
 }

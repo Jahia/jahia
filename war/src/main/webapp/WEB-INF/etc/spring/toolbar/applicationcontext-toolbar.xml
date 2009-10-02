@@ -2291,8 +2291,8 @@
             </bean>
         </property>
         <property name="titleKey" value="toolbar.manager.button.list"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-refresh"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-refresh"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-tableview"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-tableview"/>
     </bean>
     <bean id="org.jahia.toolbar.item.thumsview" class="org.jahia.services.toolbar.bean.Item">
         <property name="actionItem">
@@ -2301,8 +2301,8 @@
             </bean>
         </property>
         <property name="titleKey" value="toolbar.manager.button.thumbs"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-refresh"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-refresh"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-iconview"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-iconview"/>
     </bean>
     <bean id="org.jahia.toolbar.item.detailedview" class="org.jahia.services.toolbar.bean.Item">
         <property name="actionItem">
@@ -2311,8 +2311,8 @@
             </bean>
         </property>
         <property name="titleKey" value="toolbar.manager.button.detailed"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-refresh"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-refresh"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-iconview-detailed"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-iconview-detailed"/>
     </bean>
 
     <bean id="org.jahia.toolbar.item.rename" class="org.jahia.services.toolbar.bean.Item">

@@ -19,7 +19,6 @@
                 /**/subscription.gwt=subscriptionServiceController
                 /**/toolbar.gwt=toolbarServiceController
                 /**/userManager.gwt=userManagerServiceController
-                /**/workflow.gwt=workflowServiceController
             </value>
         </property>
     </bean>
@@ -116,12 +115,7 @@
         <property name="sitesService" ref="JahiaSitesService"/>
     </bean>
 
-    <bean name="workflowServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
-        <property name="remoteServiceName" value="gwtWorkflowService"/>
-    </bean>
-    <bean name="gwtWorkflowService" class="org.jahia.ajax.gwt.engines.workflow.server.WorkflowServiceImpl" scope="prototype"/>
-
-
+   
     <bean name="ACLHelper" class="org.jahia.ajax.gwt.helper.ACLHelper" >
         <property name="jahiaUserManagerService" ref="JahiaUserManagerService" />
         <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService" />

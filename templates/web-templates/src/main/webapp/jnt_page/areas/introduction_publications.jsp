@@ -2,4 +2,4 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <template:module path="introduction" template="default"/>
-<template:module path="publication" template="default" autoCreateType="jnt:publicationList"/>
+<template:module path="publication" template="default" autoCreateType="web_templates:publicationContainerList"/>

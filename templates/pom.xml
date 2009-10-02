@@ -66,6 +66,8 @@
         <module>mod-job</module>
         <module>mod-people</module>
         <module>mod-press</module>
+        <module>mod-publication</module>
+        <module>mod-news</module>
         <module>test-templates</module>
         <module>web-templates</module>
   </modules>

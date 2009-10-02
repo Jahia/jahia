@@ -1,0 +1,9 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:publication] > jmix:basemetadata, jmix:structuredContent, mix:title
+file           file
+file           preview
+smallText      author analyzer='simple'
+smallText      source
+smallText      date indexed=untokenized
+bigText        body

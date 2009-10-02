@@ -32,14 +32,8 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActionItemGroup;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 
@@ -86,66 +80,7 @@ public class ContentToolbar extends TopBar {
     }
 
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelectionEl) {
-        List<GWTJahiaNode> topTableSelection = (List<GWTJahiaNode>) topTableSelectionEl;
-
-        boolean isTreeSelection = leftTreeSelection != null;
-        boolean isParentWriteable = (isTreeSelection) ? (((GWTJahiaNode) leftTreeSelection).isWriteable() && !((GWTJahiaNode) leftTreeSelection).isLocked()) : false;
-        boolean isWritable = false;
-        boolean isDeleteable = false;
-        boolean isLockable = false;
-        boolean isLocked = false;
-        boolean isSingleFile = false;
-        boolean isSingleFolder = false;
-        boolean isPasteAllowed = isTreeSelection ? CopyPasteEngine.getInstance().canCopyTo((GWTJahiaNode) leftTreeSelection) : false;
-        boolean isZip = false;
-        boolean isImage = false;
-        boolean isTableSelection = false;
-        boolean isMount = false;
-        if (topTableSelection != null && topTableSelection.size() > 0) {
-            if (leftTreeSelection != null) {
-                isTreeSelection = true;
-            }
-            if (!isTreeSelection) {
-                GWTJahiaNode parent = (GWTJahiaNode) topTableSelection.get(0).getParent();
-                if (parent != null) {
-                    isParentWriteable = parent.isWriteable();
-                }
-            }
-            isTableSelection = true;
-            isWritable = true;
-            isDeleteable = true;
-            isLockable = true;
-            isLocked = true;
-            for (GWTJahiaNode gwtJahiaNode : topTableSelection) {
-                isWritable &= gwtJahiaNode.isWriteable() && !gwtJahiaNode.isLocked();
-                isDeleteable &= gwtJahiaNode.isDeleteable() && !gwtJahiaNode.isLocked();
-                isLockable &= gwtJahiaNode.isLockable();
-                isLocked &= gwtJahiaNode.isLocked();
-            }
-            if (topTableSelection.size() == 1) {
-                isSingleFile = topTableSelection.get(0).isFile();
-                isSingleFolder = !isSingleFile;
-            }
-            if (isSingleFolder) {
-                isMount = topTableSelection.get(0).getInheritedNodeTypes().contains("jnt:mountPoint") || topTableSelection.get(0).getNodeTypes().contains("jnt:mountPoint");
-            }
-            if (!isTreeSelection) {
-                if (isSingleFolder) {
-                    isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo(topTableSelection.get(0));
-                } else {
-                    isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo((GWTJahiaNode) topTableSelection.get(0).getParent());
-                }
-            }
-            int extIndex = topTableSelection.get(0).getName().lastIndexOf(".");
-            if (extIndex > 0 && topTableSelection.get(0).getName().substring(extIndex).equalsIgnoreCase(".zip")) {
-                isZip = true;
-            }
-            isImage = topTableSelection.get(0).getNodeTypes().contains("jmix:image");
-        }
-
-
-        m_component.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWriteable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
-
+        m_component.handleNewLinkerSelection();
     }
 
     public Component getComponent() {

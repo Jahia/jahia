@@ -8,11 +8,9 @@ import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
-import org.jahia.ajax.gwt.client.widget.edit.Module;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 
@@ -83,7 +81,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
         }
 
         // no node is selected
-        handleNewModuleSelection(null);
+        handleNewLinkerSelection();
     }
 
     /**
@@ -119,44 +117,10 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
     /**
      * Handle module selection
      *
-     * @param selectedModule
      */
-    public void handleNewModuleSelection(Module selectedModule) {
-        for (int i = 0; i < actionToolbars.size(); i++) {
-            actionToolbars.get(i).handleNewModuleSelection(selectedModule);
-        }
-    }
-
-    /**
-     * Handle new side panel selection
-     *
-     * @param node
-     */
-    public void handleNewSidePanelSelection(GWTJahiaNode node) {
-        for (int i = 0; i < actionToolbars.size(); i++) {
-            actionToolbars.get(i).handleNewSidePanelSelection(node);
-        }
-    }
-
-    /**
-     * TO DO Refactor this method
-     * @param isTreeSelection
-     * @param isTableSelection
-     * @param isWritable
-     * @param isDeleteable
-     * @param isParentWritable
-     * @param isSingleFile
-     * @param isSingleFolder
-     * @param isPasteAllowed
-     * @param isLockable
-     * @param isLocked
-     * @param isZip
-     * @param isImage
-     * @param isMount
-     */
-    public void enableOnConditions(boolean isTreeSelection, boolean isTableSelection, boolean isWritable, boolean isDeleteable, boolean isParentWritable, boolean isSingleFile, boolean isSingleFolder, boolean isPasteAllowed, boolean isLockable, boolean isLocked, boolean isZip, boolean isImage, boolean isMount) {
+    public void handleNewLinkerSelection() {
         for (ActionToolbar actionToolbar : actionToolbars) {
-            actionToolbar.enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWritable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
+            actionToolbar.handleNewLinkerSelection();
         }
     }
 

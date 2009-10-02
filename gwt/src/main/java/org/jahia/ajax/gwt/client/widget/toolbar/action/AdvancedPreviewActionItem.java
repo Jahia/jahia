@@ -66,17 +66,17 @@ import java.util.Map;
  */
 public class AdvancedPreviewActionItem extends BaseActionItem {
 
-    SessionManagerServiceAsync sessionServ = SessionManagerService.App.getInstance();
+    private transient SessionManagerServiceAsync sessionServ = SessionManagerService.App.getInstance();
 
-    private Window window = new Window();
-    private CheckBox enabledCheckBox;
-    private TriggerField<String> aliasingName;
-    private CalendarField previewDateField;
-    private FormPanel panel = new FormPanel();
-    private Button save;
-    private Button cancel;
+    private transient Window window = new Window();
+    private transient CheckBox enabledCheckBox;
+    private transient TriggerField<String> aliasingName;
+    private transient CalendarField previewDateField;
+    private transient FormPanel panel = new FormPanel();
+    private transient Button save;
+    private transient Button cancel;
 
-    public AdvancedPreviewActionItem(){
+    public AdvancedPreviewActionItem() {
         window = new Window();
         window.setMaximizable(true);
         window.setAutoHeight(true);
@@ -94,7 +94,7 @@ public class AdvancedPreviewActionItem extends BaseActionItem {
         enabledCheckBox = new CheckBox();
         enabledCheckBox.setValue(enabled);
         enabledCheckBox.setFieldLabel(Messages.getNotEmptyResource("advp_enable",
-                            "Enable advanced preview settings"));
+                "Enable advanced preview settings"));
         panel.add(enabledCheckBox);
 
         aliasingName = new TriggerField<String>() {
@@ -118,15 +118,15 @@ public class AdvancedPreviewActionItem extends BaseActionItem {
         aliasingName.setTriggerStyle("um-user");
 
         // principal key
-        aliasingName.setFieldLabel(Messages.getNotEmptyResource("advp_username","Preview content for user"));
+        aliasingName.setFieldLabel(Messages.getNotEmptyResource("advp_username", "Preview content for user"));
         aliasingName.setValue(JahiaGWTParameters.getCurrentUser());
         aliasingName.setAllowBlank(true);
         panel.add(aliasingName);
 
         previewDateField = new CalendarField();
-        previewDateField.setFieldLabel(Messages.getNotEmptyResource("advp_dateofpreview","Date of preview"));
+        previewDateField.setFieldLabel(Messages.getNotEmptyResource("advp_dateofpreview", "Date of preview"));
 
-        if (previewDate != null && !"".equals(previewDate.trim())){
+        if (previewDate != null && !"".equals(previewDate.trim())) {
             previewDateField.setValue(new Date(Long.parseLong(previewDate)));
         }
         panel.add(previewDateField);
@@ -135,17 +135,17 @@ public class AdvancedPreviewActionItem extends BaseActionItem {
 
 
     @Override
-    public void onSelection() {
+    public void onComponentSelection() {
         window.setHeading(getGwtToolbarItem().getTitle());
 
-        if (save == null){
-            save = new Button(Messages.getNotEmptyResource("save","Save"));
+        if (save == null) {
+            save = new Button(Messages.getNotEmptyResource("save", "Save"));
             save.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
 
                 public void componentSelected(ButtonEvent event) {
                     Log.debug("*****  advanced item clicked:" + enabledCheckBox.isEnabled() + ","
-                            +previewDateField.getRawValue() + "," + aliasingName.getRawValue());
+                            + previewDateField.getRawValue() + "," + aliasingName.getRawValue());
                     Map<String, GWTJahiaProperty> properties = getGwtToolbarItem().getProperties();
                     if (properties == null) {
                         properties = new HashMap<String, GWTJahiaProperty>();
@@ -162,8 +162,8 @@ public class AdvancedPreviewActionItem extends BaseActionItem {
                     properties.put("enabled", property);
 
                     // principal key
-                    String selectedAliasingName = (String)aliasingName.getValue();
-                    if (selectedAliasingName == null || "".equals(selectedAliasingName)){
+                    String selectedAliasingName = (String) aliasingName.getValue();
+                    if (selectedAliasingName == null || "".equals(selectedAliasingName)) {
                         selectedAliasingName = JahiaGWTParameters.getCurrentUser();
                     }
 
@@ -171,14 +171,14 @@ public class AdvancedPreviewActionItem extends BaseActionItem {
 
                     property = new GWTJahiaProperty();
                     property.setName("principalKey");
-                    property.setValue((String)aliasingName.getValue());
+                    property.setValue((String) aliasingName.getValue());
                     properties.put("principalKey", property);
 
                     // date
                     property = new GWTJahiaProperty();
                     property.setName("date");
                     Date dateValue = previewDateField.getValue();
-                    if (dateValue != null){
+                    if (dateValue != null) {
                         property.setValue(String.valueOf(dateValue.getTime()));
                         properties.put("date", property);
                     }
@@ -201,7 +201,7 @@ public class AdvancedPreviewActionItem extends BaseActionItem {
                     });
                 }
             });
-            cancel = new Button(Messages.getNotEmptyResource("cancel","Cancel"));
+            cancel = new Button(Messages.getNotEmptyResource("cancel", "Cancel"));
             cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
                     window.hide();
@@ -217,31 +217,40 @@ public class AdvancedPreviewActionItem extends BaseActionItem {
         final MessageBox alertMsg = new MessageBox();
         sessionServ.getCoreSessionContext(new AsyncCallback<GWTJahiaContext>() {
             public void onFailure(Throwable throwable) {
-                alertMsg.setMessage("Failed to retrieve jahia gwt context " +  "\n\n" + throwable) ;
+                alertMsg.setMessage("Failed to retrieve jahia gwt context " + "\n\n" + throwable);
             }
+
             public void onSuccess(GWTJahiaContext context) {
                 if (context != null) {
                     gwtContext.setAdvPreviewSettings(context.getAdvPreviewSettings());
-                    if ( gwtContext.getAdvPreviewSettings() != null ){
-                        if (enabledCheckBox != null){
+                    if (gwtContext.getAdvPreviewSettings() != null) {
+                        if (enabledCheckBox != null) {
                             enabledCheckBox.setValue(gwtContext.getAdvPreviewSettings().isEnabled());
                         }
-                        if ( gwtContext.getAdvPreviewSettings().getAliasedUser() != null ){
-                            if (aliasingName != null){
+                        if (gwtContext.getAdvPreviewSettings().getAliasedUser() != null) {
+                            if (aliasingName != null) {
                                 aliasingName.setValue(gwtContext.getAdvPreviewSettings().getAliasedUser()
                                         .getUsername());
                             }
                         }
-                        if ( gwtContext.getAdvPreviewSettings().getPreviewDate() != 0 ){
-                            if (previewDateField != null){
+                        if (gwtContext.getAdvPreviewSettings().getPreviewDate() != 0) {
+                            if (previewDateField != null) {
                                 previewDateField.setValue(new Date(gwtContext.getAdvPreviewSettings().getPreviewDate()));
                             }
                         }
                     }
                     window.show();
                 }
-            }}
+            }
+        }
         );
+    }
+
+    public void handleNewLinkerSelection() {
+
+    }
+
+    public void onButtonSelection() {
     }
 
 

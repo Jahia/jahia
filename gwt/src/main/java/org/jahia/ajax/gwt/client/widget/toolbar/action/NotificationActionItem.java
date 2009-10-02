@@ -175,7 +175,7 @@ public class NotificationActionItem extends BaseActionItem {
 
 
     @Override
-    public void onSelection() {
+    public void onComponentSelection() {
         ToolbarService.App.getInstance().updateGWTJahiaStateInfo(getJahiaGWTPageContext(), gwtJahiaStateInfo, new AsyncCallback<GWTJahiaStateInfo>() {
             public void onFailure(Throwable throwable) {
                 Log.error("Unable to update pdisplay info timer", throwable);

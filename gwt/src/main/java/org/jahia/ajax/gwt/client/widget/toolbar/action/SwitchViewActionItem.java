@@ -18,7 +18,7 @@ public class SwitchViewActionItem extends BaseActionItem {
         this.view = view;
     }
 
-    public void onSelection() {
+    public void onComponentSelection() {
         if (linker instanceof ManagerLinker) {
             TopRightComponent trc = ((ManagerLinker)linker).getTopRightObject();
             if (trc instanceof ContentViews) {

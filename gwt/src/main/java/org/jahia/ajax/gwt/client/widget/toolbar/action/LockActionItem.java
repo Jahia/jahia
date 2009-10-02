@@ -1,9 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
-
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.ModuleSelectionHandler;
-import org.jahia.ajax.gwt.client.widget.edit.Module;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
 
@@ -14,22 +12,20 @@ import com.extjs.gxt.ui.client.widget.button.Button;
  * Time: 6:58:11 PM
  * To change this template use File | Settings | File Templates.
  */
-public class LockActionItem extends BaseActionItem implements ManagerSelectionHandler, ModuleSelectionHandler {
+public class LockActionItem extends BaseActionItem   {
     private boolean locked;
 
-    public void onSelection() {
+    public void onComponentSelection() {
         ContentActions.lock(locked, linker);
         locked = !locked;
     }
 
-    public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-        setEnabled(tableSelection && lockable && writable);
-    }
 
-    public void handleNewModuleSelection(Module selectedModule) {
-        if (selectedModule != null) {
-            setLocked(!selectedModule.getNode().isLocked());
-            setEnabled(selectedModule.getNode().isLockable());
+    public void handleNewLinkerSelection() {
+        final GWTJahiaNode gwtJahiaNode = linker.getSelectedNode();        
+        if (gwtJahiaNode != null) {
+            LinkerSelectionContext lh = linker.getSelectionContext();
+            setEnabled(lh.isTableSelection() && lh.isLockable() && lh.isWriteable());
         }
     }
 

@@ -120,8 +120,7 @@ public class ContentPathBar extends TopBar {
     }
 
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelection) {
-        List<GWTJahiaNode> selection = (List<GWTJahiaNode>) topTableSelection ;
-
+        List<GWTJahiaNode> selection = (List<GWTJahiaNode>)getLinker().getSelectionContext().getSelectedNodes();// (List<GWTJahiaNode>) topTableSelection ;
         String[] n = config.getNodeTypes().split(",");
         if (selection != null && selection.size() > 0) {
             boolean found = false;

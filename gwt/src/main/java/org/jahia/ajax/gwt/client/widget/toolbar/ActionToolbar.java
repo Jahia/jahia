@@ -12,14 +12,9 @@ import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.SeparatorActionItem;
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.SidePanelSelectionHandler;
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.ModuleSelectionHandler;
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
-import org.jahia.ajax.gwt.client.widget.edit.Module;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.List;
@@ -96,7 +91,7 @@ public class ActionToolbar extends ToolBar {
             if (actionItem == null && !isSeparator(gwtToolbarItem)) {
                 printProviderNotFoundError(gwtToolbarItem);
             } else if (actionItem != null) {
-                actionItem.init(gwtToolbarItem,linker);
+                actionItem.init(gwtToolbarItem, linker);
 
                 Log.debug(gwtToolbarItem.getType() + " - items group layout =" + gwtToolbarItemsGroup.getLayout());
                 if (gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_RADIO || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.LAYOUT_ITEMSGROUP_MENU_CHECKBOX) {
@@ -176,53 +171,11 @@ public class ActionToolbar extends ToolBar {
 
 
     /**
-     * Handle module selection
-     *
-     * @param selectedModule
+     * Handle linker selection
      */
-    public void handleNewModuleSelection(Module selectedModule) {
+    public void handleNewLinkerSelection() {
         for (ActionItem item : items) {
-            if (item instanceof ModuleSelectionHandler) {
-                ((ModuleSelectionHandler)item).handleNewModuleSelection(selectedModule);
-            }
-        }
-    }
-
-    /**
-     * Handle new side panel selection
-     *
-     * @param node
-     */
-    public void handleNewSidePanelSelection(GWTJahiaNode node) {
-        for (ActionItem item : items) {
-            if (item instanceof SidePanelSelectionHandler) {
-                ((SidePanelSelectionHandler)item).handleNewSidePanelSelection(node);
-            }
-        }
-    }
-
-    /**
-     * To DO: REFACTOR THIS METHOD / take only 2 nodes as parameters (tree selection / table selection )
-     *
-     * @param isTreeSelection
-     * @param isTableSelection
-     * @param isWritable
-     * @param isDeleteable
-     * @param isParentWritable
-     * @param isSingleFile
-     * @param isSingleFolder
-     * @param isPasteAllowed
-     * @param isLockable
-     * @param isLocked
-     * @param isZip
-     * @param isImage
-     * @param isMount
-     */
-    public void enableOnConditions(boolean isTreeSelection, boolean isTableSelection, boolean isWritable, boolean isDeleteable, boolean isParentWritable, boolean isSingleFile, boolean isSingleFolder, boolean isPasteAllowed, boolean isLockable, boolean isLocked, boolean isZip, boolean isImage, boolean isMount) {
-        for (ActionItem item : items) {
-            if (item instanceof ManagerSelectionHandler) {
-                ((ManagerSelectionHandler)item).enableOnConditions(isTreeSelection, isTableSelection, isWritable, isDeleteable, isParentWritable, isSingleFile, isSingleFolder, isPasteAllowed, isLockable, isLocked, isZip, isImage, isMount);
-            }
+            item.handleNewLinkerSelection();
         }
     }
 

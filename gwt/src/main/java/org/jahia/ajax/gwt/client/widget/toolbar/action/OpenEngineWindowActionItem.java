@@ -45,7 +45,7 @@ import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 public class OpenEngineWindowActionItem extends OpenWindowActionItem {
 
     @Override
-    public void onSelection() {
+    public void onComponentSelection() {
         final Map<String, GWTJahiaProperty> preferences = getGwtToolbarItem().getProperties();
 
         EngineOpener.openEngine(preferences.get(ToolbarConstants.URL).getValue(),

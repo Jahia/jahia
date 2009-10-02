@@ -66,8 +66,5 @@ public class InfoActionItem extends BaseActionItem {
         return item;
     }
 
-    @Override
-    public void onSelection() {
-    }
 
 }

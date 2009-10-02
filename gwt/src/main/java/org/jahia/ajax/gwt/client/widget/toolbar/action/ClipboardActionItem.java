@@ -47,6 +47,6 @@ public class ClipboardActionItem extends BaseActionItem {
     }
 
     @Override
-    public void onSelection() {
+    public void onComponentSelection() {
     }
 }

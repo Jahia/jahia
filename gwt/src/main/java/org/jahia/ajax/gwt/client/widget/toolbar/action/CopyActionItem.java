@@ -1,6 +1,5 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 
 /**
@@ -10,12 +9,12 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 * Time: 6:57:46 PM
 * To change this template use File | Settings | File Templates.
 */
-public class CopyActionItem extends BaseActionItem  implements ManagerSelectionHandler {
-    public void onSelection() {
+public class CopyActionItem extends BaseActionItem{
+    public void onComponentSelection() {
         ContentActions.copy(linker);
     }
 
-    public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-        setEnabled(tableSelection);
+    public void handleNewLinkerSelection() {
+        setEnabled(linker.getSelectionContext().isTableSelection());
     }
 }

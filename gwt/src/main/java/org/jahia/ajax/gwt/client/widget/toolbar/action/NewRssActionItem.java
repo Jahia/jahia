@@ -1,7 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,12 +10,14 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 * Time: 6:58:27 PM
 * To change this template use File | Settings | File Templates.
 */
-public class NewRssActionItem extends BaseActionItem implements ManagerSelectionHandler {
-    public void onSelection() {
+public class NewRssActionItem extends BaseActionItem   {
+    public void onComponentSelection() {
         ContentActions.showRSSForm(linker);
     }
 
-    public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-        setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+    public void handleNewLinkerSelection() {
+        LinkerSelectionContext lh = linker.getSelectionContext();
+
+        setEnabled(lh.isLeftTreeSelection() && lh.isParentWriteable() || lh.isTableSelection() && lh.isSingleFolder() && lh.isWriteable());
     }
 }

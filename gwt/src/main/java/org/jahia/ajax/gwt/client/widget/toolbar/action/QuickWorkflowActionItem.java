@@ -55,7 +55,7 @@ public class QuickWorkflowActionItem extends BaseActionItem {
 
 
     @Override
-    public void onSelection() {
+    public void onComponentSelection() {
         Map<String, GWTJahiaProperty> props = getGwtToolbarItem().getProperties() ;
         if (!props.containsKey("mode") || props.get("mode").getValue().equals("quick")) {
             new QuickWorkflowDialog(getGwtToolbarItem()).show();

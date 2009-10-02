@@ -45,7 +45,7 @@ import java.util.Map;
 public class OpenHTMLWindowActionItem extends BaseActionItem {
 
     @Override
-    public void onSelection() {
+    public void onComponentSelection() {
         Map preferences = getGwtToolbarItem().getProperties();
         final GWTJahiaProperty htmlProperty = (GWTJahiaProperty) preferences.get(ToolbarConstants.HTML);
         if (htmlProperty != null && htmlProperty.getValue() != null) {

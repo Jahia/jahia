@@ -39,6 +39,7 @@ import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 
 import com.extjs.gxt.ui.client.event.*;
@@ -68,7 +69,7 @@ public abstract class BaseActionItem implements ActionItem {
 
 
     /**
-     * Get texxt tooliem
+     * Get text toolitem
      *
      * @return
      */
@@ -183,7 +184,7 @@ public abstract class BaseActionItem implements ActionItem {
     private <T extends ComponentEvent> SelectionListener<T> getSelectListener() {
         return new SelectionListener<T>() {
             public void componentSelected(T event) {
-                onSelection();
+                onComponentSelection();
             }
         };
     }
@@ -212,10 +213,19 @@ public abstract class BaseActionItem implements ActionItem {
     }
 
 
+    /**
+     * Get the corresponding gwt item
+     * @return
+     */
     public GWTJahiaToolbarItem getGwtToolbarItem() {
         return gwtToolbarItem;
     }
 
+    /**
+     * Init the action item.
+     * @param gwtToolbarItem
+     * @param linker
+     */
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         this.linker = linker;
         this.gwtToolbarItem = gwtToolbarItem;
@@ -236,7 +246,18 @@ public abstract class BaseActionItem implements ActionItem {
         return property != null ? property.getValue() : null;
     }
 
+    /**
+     * Called when the action component is selected. Override this method to provide custom behaviour
+     */
+    public  void onComponentSelection(){
 
-    public abstract void onSelection();
+    }
+
+    /**
+     *  Called when there is a new liker selection. Override this method to provide custom behaviour
+     */
+    public  void handleNewLinkerSelection(){
+
+    }
 
 }

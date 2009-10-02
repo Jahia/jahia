@@ -44,13 +44,14 @@ import java.util.List;
  *        Created : 23 sept. 2009
  */
 public interface Linker {
-    GWTJahiaNode getMainNode();
-    GWTJahiaNode getSelectedNode();
-    List<GWTJahiaNode> getSelectedNodes();
-    void loaded();
-    void loading(String resource);
-    void refresh();
-    void refreshMainComponent();
-    void select(Object o);
-    void setSelectPathAfterDataUpdate(String path);
+    public GWTJahiaNode getMainNode();
+    public GWTJahiaNode getSelectedNode();
+    public List<GWTJahiaNode> getSelectedNodes();
+    public void loaded();
+    public void loading(String resource);
+    public void refresh();
+    public void refreshMainComponent();
+    public void select(Object o);
+    public void setSelectPathAfterDataUpdate(String path);
+    public LinkerSelectionContext getSelectionContext();
 }

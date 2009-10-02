@@ -49,7 +49,7 @@ public class OpenWindowActionItem extends BaseActionItem {
 
 
     @Override
-    public void onSelection() {
+    public void onComponentSelection() {
         Map preferences = getGwtToolbarItem().getProperties();
         final GWTJahiaProperty windowUrl = (GWTJahiaProperty) preferences.get(ToolbarConstants.URL);
         if (Log.isDebugEnabled()) {

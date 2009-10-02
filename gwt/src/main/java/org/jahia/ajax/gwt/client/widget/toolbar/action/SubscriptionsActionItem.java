@@ -96,7 +96,7 @@ public class SubscriptionsActionItem extends BaseActionItem {
     }
 
     @Override
-    public void onSelection() {
+    public void onComponentSelection() {
         List<SubscriptionInfo> subscriptions = new LinkedList<SubscriptionInfo>();
         String source = "ContentPage_" + pageContext.getPid();
         GWTJahiaProperty eventsProperty = getGwtToolbarItem().getProperties()

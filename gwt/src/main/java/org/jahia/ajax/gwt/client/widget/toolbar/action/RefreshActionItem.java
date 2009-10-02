@@ -8,7 +8,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 * To change this template use File | Settings | File Templates.
 */
 public class RefreshActionItem extends BaseActionItem {
-    public void onSelection() {
+    public void onComponentSelection() {
         linker.refresh();
     }
 }

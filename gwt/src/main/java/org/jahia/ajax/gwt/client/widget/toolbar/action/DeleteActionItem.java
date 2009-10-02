@@ -1,27 +1,26 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.ModuleSelectionHandler;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
-import org.jahia.ajax.gwt.client.widget.edit.Module;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 /**
  * Created by IntelliJ IDEA.
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:59:06 PM
-* To change this template use File | Settings | File Templates.
 */
-public class DeleteActionItem extends BaseActionItem implements ModuleSelectionHandler {
+public class DeleteActionItem extends BaseActionItem {
     public DeleteActionItem() {
     }
 
-    public void onSelection() {
+    public void onComponentSelection() {
         EditActions.delete(linker);
     }
 
-    public void handleNewModuleSelection(Module selectedModule) {
-        if (selectedModule != null) {
-            setEnabled(selectedModule.getNode().isWriteable());
+    public void handleNewLinkerSelection() {
+        final GWTJahiaNode gwtJahiaNode = linker.getSelectedNode();
+        if (gwtJahiaNode != null) {
+            setEnabled(gwtJahiaNode.isWriteable());
         }
     }
 }

@@ -1,6 +1,5 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
-
-import org.jahia.ajax.gwt.client.widget.toolbar.handler.ManagerSelectionHandler;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 
 /**
@@ -10,12 +9,14 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 * Time: 6:58:45 PM
 * To change this template use File | Settings | File Templates.
 */
-public class ExportActionItem extends BaseActionItem  implements ManagerSelectionHandler {
-    public void onSelection() {
+public class ExportActionItem extends BaseActionItem    {
+    public void onComponentSelection() {
         ContentActions.exportContent(linker);
     }
 
-    public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean deleteable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean locked, boolean isZip, boolean isImage, boolean isMount) {
-        setEnabled(tableSelection || treeSelection);
+    public void handleNewLinkerSelection() {
+        LinkerSelectionContext lh = linker.getSelectionContext();
+
+        setEnabled(lh.isTableSelection() || lh.isLeftTreeSelection());
     }
 }

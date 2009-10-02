@@ -35,6 +35,7 @@ import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.List;
 
@@ -53,16 +54,19 @@ public class ManagerLinker implements Linker {
     private TopBar m_topBar;
     private BottomBar m_bottomBar;
     private DNDListener dndListener;
+    private LinkerSelectionContext selectionContext = new LinkerSelectionContext();
 
-    public ManagerLinker() {}
+    public ManagerLinker() {
+    }
 
     /**
      * deprecated please use no args constructor and then registerComponents method
-     * @param leftComponent a left tree browser (can be null)
-     * @param topRightComponent a top table or tree table (cannot be null)
+     *
+     * @param leftComponent        a left tree browser (can be null)
+     * @param topRightComponent    a top table or tree table (cannot be null)
      * @param bottomRightComponent a bottom panel displaying details (can be null)
-     * @param topBar a toolbar for interaction(cannot be null)
-     * @param bottomBar a status bar displaying short info on current events
+     * @param topBar               a toolbar for interaction(cannot be null)
+     * @param bottomBar            a status bar displaying short info on current events
      */
     public ManagerLinker(LeftComponent leftComponent, TopRightComponent topRightComponent, BottomRightComponent bottomRightComponent, TopBar topBar, BottomBar bottomBar) {
         m_topRightComponent = topRightComponent;
@@ -74,12 +78,11 @@ public class ManagerLinker implements Linker {
     }
 
     /**
-     *
-     * @param leftComponent a left tree browser (can be null)
-     * @param topRightComponent a top table or tree table (cannot be null)
+     * @param leftComponent        a left tree browser (can be null)
+     * @param topRightComponent    a top table or tree table (cannot be null)
      * @param bottomRightComponent a bottom panel displaying details (can be null)
-     * @param topBar a toolbar for interaction(cannot be null)
-     * @param bottomBar a status bar displaying short info on current events
+     * @param topBar               a toolbar for interaction(cannot be null)
+     * @param bottomBar            a status bar displaying short info on current events
      */
     public void registerComponents(LeftComponent leftComponent, TopRightComponent topRightComponent, BottomRightComponent bottomRightComponent, TopBar topBar, BottomBar bottomBar) {
         m_topRightComponent = topRightComponent;
@@ -94,22 +97,22 @@ public class ManagerLinker implements Linker {
      * Set up linker (callback for each member).
      */
     protected void registerLinker() {
-        
+
         dndListener = new DNDListener();
         if (m_bottomBar != null) {
-            m_bottomBar.initWithLinker(this) ;
+            m_bottomBar.initWithLinker(this);
         }
         if (m_topBar != null) {
-            m_topBar.initWithLinker(this) ;
+            m_topBar.initWithLinker(this);
         }
         if (m_leftComponent != null) {
-            m_leftComponent.initWithLinker(this) ;
+            m_leftComponent.initWithLinker(this);
         }
         if (m_topRightComponent != null) {
-            m_topRightComponent.initWithLinker(this) ;
+            m_topRightComponent.initWithLinker(this);
         }
         if (m_bottomRightComponent != null) {
-            m_bottomRightComponent.initWithLinker(this) ;
+            m_bottomRightComponent.initWithLinker(this);
         }
     }
 
@@ -123,24 +126,22 @@ public class ManagerLinker implements Linker {
         if (m_topRightComponent != null && m_leftComponent != null) {
             m_topRightComponent.setContent(m_leftComponent.getSelectedItem());
         }
-        if (m_topBar != null) {
-            m_topBar.handleNewSelection(m_leftComponent != null ? m_leftComponent.getSelectedItem() : null, m_topRightComponent != null ? m_topRightComponent.getSelection() : null);
-        }
+        handleNewSelection();
     }
 
     /**
      * Called when the table selection changes.
      */
     public void onTableItemSelected() {
-        if (m_topBar != null) {
-            m_topBar.handleNewSelection(m_leftComponent != null ? m_leftComponent.getSelectedItem() : null, m_topRightComponent != null ? m_topRightComponent.getSelection() : null);
-        }
+        handleNewSelection();
         if (m_bottomRightComponent != null && m_topRightComponent != null) {
             m_bottomRightComponent.fillData(m_topRightComponent.getSelection());
         }
     }
 
+
     public void handleNewSelection() {
+        refreshSelectionContext();
         if (m_topBar != null) {
             m_topBar.handleNewSelection(m_leftComponent != null ? m_leftComponent.getSelectedItem() : null, m_topRightComponent != null ? m_topRightComponent.getSelection() : null);
         }
@@ -154,7 +155,7 @@ public class ManagerLinker implements Linker {
 
     public void onTreeItemInserted() {
         if (m_leftComponent != null) {
-            m_leftComponent.refresh() ;
+            m_leftComponent.refresh();
         }
     }
 
@@ -198,17 +199,17 @@ public class ManagerLinker implements Linker {
     ////////////////////////
     public Object getTreeSelection() {
         if (m_leftComponent != null) {
-            return m_leftComponent.getSelectedItem() ;
+            return m_leftComponent.getSelectedItem();
         } else {
-            return null ;
+            return null;
         }
     }
 
     public Object getTableSelection() {
         if (m_topRightComponent != null) {
-            return m_topRightComponent.getSelection() ;
+            return m_topRightComponent.getSelection();
         } else {
-            return null ;
+            return null;
         }
     }
 
@@ -219,7 +220,7 @@ public class ManagerLinker implements Linker {
         if (m_bottomRightComponent != null) {
             return m_bottomRightComponent.getComponent();
         } else {
-            return null ;
+            return null;
         }
     }
 
@@ -227,7 +228,7 @@ public class ManagerLinker implements Linker {
         if (m_leftComponent != null) {
             return m_leftComponent.getComponent();
         } else {
-            return null ;
+            return null;
         }
     }
 
@@ -235,7 +236,7 @@ public class ManagerLinker implements Linker {
         if (m_topRightComponent != null) {
             return m_topRightComponent.getComponent();
         } else {
-            return null ;
+            return null;
         }
     }
 
@@ -243,7 +244,7 @@ public class ManagerLinker implements Linker {
         if (m_topBar != null) {
             return m_topBar.getComponent();
         } else {
-            return null ;
+            return null;
         }
     }
 
@@ -251,7 +252,7 @@ public class ManagerLinker implements Linker {
         if (m_bottomBar != null) {
             return m_bottomBar.getComponent();
         } else {
-            return null ;
+            return null;
         }
     }
 
@@ -259,23 +260,23 @@ public class ManagerLinker implements Linker {
     // Specific getters   //
     ////////////////////////
     public BottomRightComponent getBottomRightObject() {
-        return m_bottomRightComponent ;
+        return m_bottomRightComponent;
     }
 
     public LeftComponent getLeftObject() {
-            return m_leftComponent ;
+        return m_leftComponent;
     }
 
     public TopRightComponent getTopRightObject() {
-            return m_topRightComponent ;
+        return m_topRightComponent;
     }
 
     public TopBar getTopObject() {
-            return m_topBar ;
+        return m_topBar;
     }
 
     public BottomBar getBottomObject() {
-        return m_bottomBar ;
+        return m_bottomBar;
     }
 
     public DNDListener getDndListener() {
@@ -295,7 +296,7 @@ public class ManagerLinker implements Linker {
 
     public GWTJahiaNode getSelectedNode() {
         Object node = getTableSelection();
-        if(node == null) {
+        if (node == null) {
             node = getTreeSelection();
         } else {
             node = ((List<GWTJahiaNode>) node).get(0);
@@ -317,5 +318,17 @@ public class ManagerLinker implements Linker {
 
     public List<GWTJahiaNode> getSelectedNodes() {
         return (List<GWTJahiaNode>) getTableSelection();
+    }
+
+    public LinkerSelectionContext getSelectionContext() {
+        return selectionContext;
+    }
+
+    private void refreshSelectionContext() {
+        if (getTreeSelection() instanceof GWTJahiaNode) {
+            selectionContext.setTreeNodeSelection((GWTJahiaNode)getTreeSelection());
+        }
+        selectionContext.setSelectedNodes(getSelectedNodes());
+        selectionContext.refresh();
     }
 }

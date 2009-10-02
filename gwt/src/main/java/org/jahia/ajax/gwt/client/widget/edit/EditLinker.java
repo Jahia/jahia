@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -51,12 +52,14 @@ import java.util.ArrayList;
  */
 public class EditLinker implements Linker {
     private GWTJahiaNode sidePanelSelectedNode;
+    private LinkerSelectionContext selectionContext = new LinkerSelectionContext();
     private Module selectedModule;
     private Module previouslySelectedModule;
     private EditModeDNDListener dndListener;
     private ActionToolbarLayoutContainer toolbar;
     private MainModule mainModule;
     private SidePanel sidePanel;
+
 
     private String locale;
 
@@ -138,22 +141,28 @@ public class EditLinker implements Linker {
 
     public void refresh() {
         mainModule.refresh();
-        toolbar.handleNewModuleSelection(getSelectedModule());
+        refreshSelectionContext();
+        toolbar.handleNewLinkerSelection();
     }
 
     public GWTJahiaNode getSelectedNode() {
-        return getSelectedModule().getNode();
+        if (getSelectedModule() != null) {
+            return getSelectedModule().getNode();
+        }
+        return null;
     }
 
     public void handleNewModuleSelection() {
         previouslySelectedModule = selectedModule;
-        toolbar.handleNewModuleSelection(selectedModule);
+        refreshSelectionContext();
+        toolbar.handleNewLinkerSelection();
         mainModule.handleNewModuleSelection(selectedModule);
         sidePanel.handleNewModuleSelection(selectedModule);
     }
 
     public void handleNewSidePanelSelection() {
-        toolbar.handleNewSidePanelSelection(sidePanelSelectedNode);
+        refreshSelectionContext();
+        toolbar.handleNewLinkerSelection();
         mainModule.handleNewSidePanelSelection(sidePanelSelectedNode);
         sidePanel.handleNewSidePanelSelection(sidePanelSelectedNode);
     }
@@ -163,19 +172,19 @@ public class EditLinker implements Linker {
      */
     protected void registerLinker() {
         if (mainModule != null) {
-            mainModule.initWithLinker(this) ;
+            mainModule.initWithLinker(this);
         }
         if (sidePanel != null) {
-            sidePanel.initWithLinker(this) ;
+            sidePanel.initWithLinker(this);
         }
         if (toolbar != null) {
-            toolbar.initWithLinker(this) ;
+            toolbar.initWithLinker(this);
         }
     }
 
 
     public void select(Object o) {
-        if(o==null || o instanceof Module) {
+        if (o == null || o instanceof Module) {
             onModuleSelection((Module) o);
         }
     }
@@ -204,5 +213,15 @@ public class EditLinker implements Linker {
 
     public void setSelectPathAfterDataUpdate(String path) {
         // todo:implements
+    }
+
+    public LinkerSelectionContext getSelectionContext() {
+        return selectionContext;
+    }
+
+    private void refreshSelectionContext() {
+        selectionContext.setTreeNodeSelection(null);
+        selectionContext.setSelectedNodes(getSelectedNodes());
+        selectionContext.refresh();
     }
 }

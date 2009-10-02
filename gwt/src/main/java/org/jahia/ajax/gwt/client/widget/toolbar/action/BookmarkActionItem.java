@@ -39,6 +39,6 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 public class BookmarkActionItem extends BaseActionItem {
 
     @Override
-    public void onSelection() {
+    public void onComponentSelection() {
     }
 }

@@ -10,7 +10,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 * To change this template use File | Settings | File Templates.
 */
 public class CreatePageActionItem extends BaseActionItem {
-    public void onSelection() {
+    public void onComponentSelection() {
         EditActions.createPage(linker);
     }
 }

@@ -99,7 +99,7 @@ public class AjaxActionActionItem extends BaseActionItem {
 
 
     @Override
-    public void onSelection() {
+    public void onComponentSelection() {
         if (handleAddCommentProperty(getGwtToolbarItem())) {
             return;
         }

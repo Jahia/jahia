@@ -50,7 +50,4 @@ public class FillActionItem extends BaseActionItem {
         return menuItem;
     }
 
-    public void onSelection() {
-    }
-
 }

@@ -64,4 +64,8 @@ public class SeparatorActionItem implements ActionItem {
 
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
     }
+
+    public void handleNewLinkerSelection() {
+
+    }
 }

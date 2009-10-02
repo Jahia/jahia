@@ -26,7 +26,7 @@
     </c:when>
 </c:choose>
 <c:forEach items="${newsList.nodes}" var="news">
-    <template:module node="${news}" template="${display.string}"/>
+    <template:module node="${news}" template="${display.string}" editable="false"/>
 </c:forEach>
 <c:choose>
     <c:when test="${display.string == 'small' || display.string == 'medium'}">

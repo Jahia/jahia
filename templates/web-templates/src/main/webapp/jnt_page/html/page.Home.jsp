@@ -42,4 +42,5 @@
     <jsp:param name="areaB" value="areas/search_login_boxes.jsp"/>
     <jsp:param name="useGWT" value="true"/>
     <jsp:param name="footerNav" value="true"/>
+    <jsp:param name="displayCrumb" value="false"/>
 </jsp:include>

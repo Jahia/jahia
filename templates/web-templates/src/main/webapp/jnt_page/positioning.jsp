@@ -37,21 +37,22 @@
 <div id="pageData">
     <div id="wrapper">
         <%--rssfeed may be need for some template which need it--%>
-        <c:if test="${ !empty param.mainArea }">
-            <div id="${param.position}">
-                <div class="spacer">
-                    <h2>Page : ${currentNode.name}</h2>
+        <div id="${param.position}">
+            <div class="spacer">
+                <c:if test="${empty param.displayCrumb || param.displayCrumb == true}">
+                    <h2>${currentNode.propertiesAsString['jcr:title']}</h2>
                     <c:set var="currentPath" value=""/>
-                    <c:forTokens items="${currentNode.path}" delims="/" var="itemPath">
+                    <c:forTokens items="${currentNode.path}" delims="/" var="itemPath" varStatus="status">
                         <c:set var="currentPath" value="${currentPath}/${itemPath}"/>
-                        <a href="${url.base}${currentPath}.html">${itemPath}</a> /
+                        <jcr:node var="node" path="${currentPath}"/>
+                        <c:if test="${jcr:isNodeType(node, 'jnt:page')}">
+                        <c:if test="${not status.last}"><a href="${url.base}${currentPath}.html"></c:if>${node.propertiesAsString['jcr:title']}<c:if test="${not status.last}"></a> /</c:if>
+                        </c:if>
                     </c:forTokens>
-
-
-                    <jsp:include page="${param.mainArea}"/>
-                </div>
+                </c:if>
+                <jsp:include page="${param.mainArea}"/>
             </div>
-        </c:if>
+        </div>
     </div>
     <c:if test="${ !empty param.areaA }">
         <div id="areaA">

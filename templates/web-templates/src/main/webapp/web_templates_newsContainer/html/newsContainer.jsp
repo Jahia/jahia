@@ -12,7 +12,7 @@
 
     <div class="newsListItem"><!--start newsListItem -->
 
-        <h4><a href="${url.current}">${newsTitle.string}</a></h4>
+        <h4><a href="${url.base}${currentNode.path}.detail.html">${newsTitle.string}</a></h4>
 
         <p class="newsInfo">
             <span class="newsLabelDate"><fmt:message key="news.date"/> :</span>

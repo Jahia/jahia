@@ -66,7 +66,7 @@
 
 [jmix:publication] mixin
 
-[jmix:manuallyPublished] mixin > jmix:publication
+[jmix:manuallyPublished] > jmix:publication mixin 
  - j:unpublished (boolean)
 
 [jmix:timebasedPublished] mixin

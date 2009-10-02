@@ -11,7 +11,6 @@ import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
@@ -389,7 +388,9 @@ public class SidePanel extends ContentPanel {
     public void handleNewModuleSelection(Module selectedModule) {
         preview.handleNewModuleSelection(selectedModule);
         if (selectedModule != null) {
-            displayProperties(selectedModule.getNode());
+            if (displayTabs.getSelectedItem() == propertiesTabItem) {
+                displayProperties(selectedModule.getNode());
+            }
         } else {
             displayProperties(null);
         }
@@ -418,7 +419,7 @@ public class SidePanel extends ContentPanel {
                     final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
                     elements.add(node);
 
-                    final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, GWTJahiaItemDefinition.METADATA, null, null,node.isWriteable());
+                    final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, GWTJahiaItemDefinition.METADATA, null, null,node.isWriteable(), false);
 
                     ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
                     Button item = new Button(Messages.getResource("fm_save"));

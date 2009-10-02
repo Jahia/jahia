@@ -59,6 +59,7 @@ public class GWTJahiaItemDefinition implements Serializable {
     public static final String METADATA = "metadata";
     public static final String CONTENT = "content";
     public static final String LAYOUT = "layout";
+    public static final String PUBLICATION = "publication";
 
     public GWTJahiaItemDefinition() {
     }

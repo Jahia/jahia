@@ -36,10 +36,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.ListField;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -58,7 +55,7 @@ public class PropertiesEditor extends FormPanel {
     private List<GWTJahiaNodeType> nodeTypes = null;
     private Map<String, GWTJahiaNodeProperty> currentProperties = null;
     private Map<String, GWTJahiaNodeProperty> originalProperties = null;
-    private Map<String, Field> fields;
+    private Map<String, Field<?>> fields;
 //    private ComboBox<GWTJahiaNodeType> combo;
 //    private GWTJahiaNodeType nodeType;
     private boolean isMultipleEdit = false;
@@ -67,22 +64,13 @@ public class PropertiesEditor extends FormPanel {
     private List<String> excludedTypes;
     private String dataType;
     private boolean isWriteable;
+    private boolean fieldSetGrouping;
 
     public PropertiesEditor(List<GWTJahiaNodeType> types, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes) {
-        super();
-        nodeTypes = types;
-        this.isMultipleEdit = isMultipleEdit;
-        this.dataType = datatype;
-        originalProperties = properties;
-        cloneProperties();
-        this.viewInheritedItems = viewInheritedItems;
-        this.excludedItems = excludedItems;
-        this.excludedTypes = excludedTypes;
-        this.isWriteable = true;
-        renderNewFormPanel();
+        this(types, properties, isMultipleEdit, viewInheritedItems, datatype, excludedItems, excludedTypes, true, false);
     }
 
-    public PropertiesEditor(List<GWTJahiaNodeType> types, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes,boolean isWriteable) {
+    public PropertiesEditor(List<GWTJahiaNodeType> types, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes, boolean isWriteable, boolean fieldSetGrouping) {
         super();
         nodeTypes = types;
         this.isMultipleEdit = isMultipleEdit;
@@ -93,6 +81,7 @@ public class PropertiesEditor extends FormPanel {
         this.excludedItems = excludedItems;
         this.excludedTypes = excludedTypes;
         this.isWriteable = isWriteable;
+        this.fieldSetGrouping = fieldSetGrouping;
         renderNewFormPanel();
     }
 
@@ -116,7 +105,7 @@ public class PropertiesEditor extends FormPanel {
         setBorders(false);
         setBodyBorder(false);
         setHeaderVisible(false);
-        setFrame(false);
+        setFrame(true);
         setButtonAlign(Style.HorizontalAlignment.CENTER);
 
 //        final ListStore<GWTJahiaNodeType> listStore = new ListStore<GWTJahiaNodeType>();
@@ -172,7 +161,7 @@ public class PropertiesEditor extends FormPanel {
     private void renderForm() {
 //        if (combo.getSelection().size() > 0) {
             removeAll();
-            fields = new HashMap<String, Field>();
+            fields = new HashMap<String, Field<?>>();
 
         for (GWTJahiaNodeType nodeType : nodeTypes) {
             if (viewInheritedItems) {
@@ -184,6 +173,10 @@ public class PropertiesEditor extends FormPanel {
     }
 
     private void addItems(List<GWTJahiaItemDefinition> items) {
+
+        FieldSet fieldSet = null;
+        FormPanel sub = this;
+
         for (GWTJahiaItemDefinition definition : items) {
             if ((excludedTypes != null && excludedTypes.contains(definition.getDeclaringNodeType())) ||
                     (excludedItems != null && excludedItems.contains(definition.getName()))) {
@@ -207,6 +200,19 @@ public class PropertiesEditor extends FormPanel {
 
             final Field field = FormFieldCreator.createField(definition, currentProperties.get(definition.getName()));
             if (field != null) {
+                if (fieldSetGrouping && (fieldSet == null || !fieldSet.getId().equals(definition.getDeclaringNodeType()))) {
+                    fieldSet = new FieldSet();
+                    fieldSet.setId(definition.getDeclaringNodeType());
+                    fieldSet.add(field);
+                    fieldSet.setCollapsible(true);
+                    fieldSet.setHeading(definition.getDeclaringNodeType());
+                    sub = new FormPanel();
+                    sub.setFieldWidth(500);
+                    sub.setLabelWidth(140);
+                    sub.setHeaderVisible(false);
+                    fieldSet.add(sub);
+                    add(fieldSet);
+                }
                 if (isMultipleEdit && !definition.isProtected()) {
                     field.setEnabled(false);
                     final CheckBox checkbox = new CheckBox();
@@ -226,7 +232,7 @@ public class PropertiesEditor extends FormPanel {
                     add(checkbox);
                 }
                 field.setEnabled(isWriteable);
-                add(field);
+                sub.add(field);
                 fields.put(field.getName(), field);
             }
         }
@@ -338,5 +344,9 @@ public class PropertiesEditor extends FormPanel {
             }
         }
         return new GWTJahiaNodePropertyValue(propValueString, requiredType);
+    }
+
+    public Map<String, Field<?>> getFieldsMap() {
+        return fields;
     }
 }

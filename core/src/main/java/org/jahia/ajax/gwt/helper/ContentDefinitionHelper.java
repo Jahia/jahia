@@ -186,10 +186,14 @@ public class ContentDefinitionHelper {
                 item.setDeclaringNodeType(def.getDeclaringNodeType().getName());
                 item.setSelector(def.getSelector());
                 item.setSelectorOptions(new HashMap<String, String>(def.getSelectorOptions()));
-                if (def.isContentItem()|| def.isLayoutItem()) {
+                if (def.isContentItem()) {
                     item.setDataType(GWTJahiaItemDefinition.CONTENT);
+                } else if (def.isLayoutItem())  {
+                    item.setDataType(GWTJahiaItemDefinition.LAYOUT);
                 } else if (def.isMetadataItem())  {
                     item.setDataType(GWTJahiaItemDefinition.METADATA);
+                } else if (def.isPublicationItem())  {
+                    item.setDataType(GWTJahiaItemDefinition.PUBLICATION);
                 } else if (def.isSystemItem()) {
                     item.setDataType(GWTJahiaItemDefinition.SYSTEM);
                 }
@@ -368,7 +372,7 @@ public class ContentDefinitionHelper {
                 type = GWTJahiaNodePropertyType.PATH;
                 theValue = val.getString();
                 break;
-            case ExtendedPropertyType.WEAKREFERENCE:
+            case PropertyType.WEAKREFERENCE:
             case PropertyType.REFERENCE:
                 return new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper) val).getNode(), false));
             case PropertyType.STRING:

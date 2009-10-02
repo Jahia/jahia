@@ -164,7 +164,6 @@ public class PreviewPanel extends ContentPanel {
                 public void onSuccess(String result) {
                     HTML html = new HTML(result);
                     setHTML(html);
-                    PreviewPanel.this.node = node;
                     layout();
                 }
 

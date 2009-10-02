@@ -190,7 +190,11 @@ public class ExtendedItemDefinition implements ItemDefinition {
     }
 
     public boolean isContentItem() {
-        return !isSystemItem() && !isMetadataItem() && !isLayoutItem();
+        return declaringNodeType.isNodeType("jmix:content") || name.toString().equals("jcr:title");
+    }
+
+    public boolean isPublicationItem() {
+        return declaringNodeType.isMixin() && declaringNodeType.isNodeType("jmix:publication");
     }
 
     public boolean isJahiaContentItem() {

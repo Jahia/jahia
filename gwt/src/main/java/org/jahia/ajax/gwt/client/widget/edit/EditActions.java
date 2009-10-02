@@ -254,7 +254,6 @@ public class EditActions {
             setHeading("Publish");
             setSize(800, 500);
             setResizable(false);
-            ButtonBar buttons = new ButtonBar() ;
 
             setModal(true);
 
@@ -264,17 +263,17 @@ public class EditActions {
             form.setBodyBorder(false);
             form.setBorders(false);
 
-            final TextArea area = new TextArea();
-            area.setName("comments");
-            area.setFieldLabel(Messages.getResource("publication_publicationComments"));
-            form.add(area);
+            final TextArea comments = new TextArea();
+            comments.setName("comments");
+            comments.setFieldLabel(Messages.getResource("publication_publicationComments"));
+            form.add(comments);
 
 
             List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
             
-            CheckBoxSelectionModel<GWTJahiaPublicationInfo> sm = new CheckBoxSelectionModel<GWTJahiaPublicationInfo>();
-            sm.setSelectionMode(SelectionMode.MULTI);
-            configs.add(sm.getColumn()); 
+//            CheckBoxSelectionModel<GWTJahiaPublicationInfo> sm = new CheckBoxSelectionModel<GWTJahiaPublicationInfo>();
+//            sm.setSelectionMode(SelectionMode.MULTI);
+//            configs.add(sm.getColumn());
             
             ColumnConfig column = new ColumnConfig();  
             column.setId("path");
@@ -340,8 +339,8 @@ public class EditActions {
             	
             };
             g.setStripeRows(true);
-            g.setSelectionModel(sm);
-            g.addPlugin(sm);
+//            g.setSelectionModel(sm);
+//            g.addPlugin(sm);
             add(g);
 
             final Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
@@ -358,7 +357,7 @@ public class EditActions {
                     for (GWTJahiaPublicationInfo info : g.getSelectionModel().getSelectedItems()) {
 	                    selectedPaths.add(info.getPath());
                     }
-                    JahiaContentManagementService.App.getInstance().publish(selectedPaths, new AsyncCallback() {
+                    JahiaContentManagementService.App.getInstance().publish(linker.getSelectedNode().getPath(), null, comments.getValue(), new AsyncCallback() {
                         public void onFailure(Throwable caught) {
                             Log.error("Cannot publish", caught);
                             com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
@@ -375,10 +374,9 @@ public class EditActions {
                 }
             };
             ok.addSelectionListener(selectionListener);
-            buttons.add(ok) ;
-            buttons.add(cancel) ;
             setButtonAlign(Style.HorizontalAlignment.CENTER);
-            setBottomComponent(buttons);
+            addButton(ok);
+            addButton(cancel);
             add(form);
         }
     }

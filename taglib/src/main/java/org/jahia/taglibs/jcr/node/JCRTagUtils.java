@@ -31,18 +31,22 @@
  */
 package org.jahia.taglibs.jcr.node;
 
+import org.apache.jackrabbit.rmi.iterator.ArrayIterator;
+import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.NodeIteratorImpl;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRNodeWrapperImpl;
 import org.jahia.utils.LanguageCodeConverters;
-import org.apache.log4j.Logger;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
+import javax.jcr.query.InvalidQueryException;
+import javax.jcr.query.Query;
 import java.util.Locale;
 
 /**
@@ -125,6 +129,7 @@ public class JCRTagUtils {
     public static String label(Object nodeObject, String locale) {
         return label(nodeObject, LanguageCodeConverters.languageCodeToLocale(locale));
     }
+
     public static boolean isNodeType(JCRNodeWrapper node, String type) {
         try {
             return node.isNodeType(type);
@@ -132,5 +137,17 @@ public class JCRTagUtils {
             logger.error(e, e);
             return false;
         }
+    }
+
+    public static NodeIterator getNodes(JCRNodeWrapper node, String type) {
+        try {
+            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where ischildnode(sel,['"+node.getPath()+"'])",
+                                                                                  Query.JCR_SQL2).execute().getNodes();
+        } catch (InvalidQueryException e) {
+            logger.error(e);
+        } catch (RepositoryException e) {
+            logger.error(e);
+        }
+        return new NodeIteratorImpl(new ArrayIterator(new Object[0]), 0);
     }
 }

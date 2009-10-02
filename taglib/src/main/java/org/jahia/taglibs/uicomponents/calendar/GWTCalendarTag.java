@@ -113,7 +113,7 @@ public class GWTCalendarTag extends AbstractJahiaTag {
         buf.append("activedate=\"");
         buf.append(activeDate);
         buf.append("\" ");
-        buf.append("/>");
+        buf.append("></div>");
         try {
             pageContext.getOut().print(buf.toString());
         } catch (Exception e) {

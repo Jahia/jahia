@@ -171,7 +171,54 @@
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
-    </tag>    
+    </tag>
+    <tag>
+        <description>display a navigation menu</description>
+        <name>navigationMenu</name>
+        <tag-class>org.jahia.taglibs.uicomponents.navigation.JCRNavigationMenuTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The node on which you want to find the property</description>
+            <name>node</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>org.jahia.services.content.JCRNodeWrapper</type>
+        </attribute>
+        <attribute>
+            <name>kind</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>startLevel</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>maxDepth</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>expandOnlyPageInPath</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <name>onlyTop</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>        
+    </tag>
     <function>
         <description>
             Get label value depending on the current local
@@ -206,5 +253,13 @@
 			${jcr:propertyTypeName(myProperty.type)}
 		</example>
     </function>
-
+    <function>
+        <description>Returns childNodes of a certain type</description>
+        <name>getNodes</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>javax.jcr.NodeIterator getNodes(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
+        <example>
+            ${jcr:getNodes(currentNode,'jnt:page')}
+        </example>
+    </function>
 </taglib>

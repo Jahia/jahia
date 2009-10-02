@@ -12,11 +12,7 @@
  <jcr:nodeProperty node="${currentNode}" name="newsImage" var="newsImage"/>
 
     <div class="newsListItem"><!--start newsListItem -->
-        <c:url var="detailsUrl" value="${currentPage.url}" context="/">
-            <c:param name="template" value="tpl.newsDetail"/>
-            <c:param name="queryPath" value="${newsContainer.JCRPath}"/>
-        </c:url>
-        <h4><a href="${detailsUrl}">${newsTitle.string}</a></h4>
+        <h4><a href="${url.base}${currentNode.path}.large.html">${newsTitle.string}</a></h4>
 
         <p class="newsInfo">
             <span class="newsLabelDate"><fmt:message key="news.date"/> :</span>
@@ -30,7 +26,7 @@
             ${newsDesc.string}
         </p>
 
-        <div class="more"><span><a href="${detailsUrl}">
+        <div class="more"><span><a href="${url.base}${currentNode.path}.large.html">
             <fmt:message key="news.readmore"/>
         </a></span></div>
 

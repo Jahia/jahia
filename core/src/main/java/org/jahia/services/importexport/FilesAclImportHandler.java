@@ -35,9 +35,9 @@ import org.apache.log4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.webdav.JahiaWebdavBaseService;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -65,60 +65,61 @@ public class FilesAclImportHandler extends DefaultHandler {
         if ("file".equals(localName) && ImportExportBaseService.JAHIA_URI.equals(uri)) {
             String path = attributes.getValue(ImportExportBaseService.JAHIA_URI, "path");
             String acl = attributes.getValue(ImportExportBaseService.JAHIA_URI, "fileacl");
-            JCRNodeWrapper f = JahiaWebdavBaseService.getInstance().getDAVFileAccess(path, jParams.getUser());
-            if (acl != null && acl.length() > 0) {
-                StringTokenizer st = new StringTokenizer(acl, "|");
-                while (st.hasMoreElements()) {
-                    String s = st.nextToken();
-                    int beginIndex = s.lastIndexOf(":");
-
-                    String principal = s.substring(0, beginIndex);
-                    String userName = principal.substring(2);
-                    String value = null;
-
-                    if (principal.charAt(0) == 'u') {
-                        JahiaUser user = ServicesRegistry
-                                .getInstance()
-                                .getJahiaSiteUserManagerService()
-                                .getMember(jParams.getSiteID(),
-                                        userName);
-                        if (user != null) {
-                            value = "/users/" + user.getUsername();
-                        }
-                    } else {
-                        JahiaGroup group = ServicesRegistry
-                                .getInstance()
-                                .getJahiaGroupManagerService()
-                                .lookupGroup(jParams.getSiteID(),
-                                        userName);
-                        if (group != null) {
-                            value = "+/groups/"
-                                    + group.getGroupname()
-                                    + "/members";
-                        }
-                    }
-
-                    if (value != null) {
-                        f.changePermissions(value, s
-                                .substring(beginIndex + 1));
-                    }
-                }
-            }
-            for (int i = 0; i < attributes.getLength(); i++) {
-                String attUri = attributes.getURI(i);
-                String attName = attributes.getLocalName(i);
-                if (!ImportExportBaseService.JAHIA_URI.equals(attUri)
-                        || (!"path".equals(attName) && !"fileacl".equals(attName) && !"lastModification".equals(attName))) {
-                    String attValue = attributes.getValue(i);
-                    try {
-                        f.setProperty(attUri, attName, attValue);
-                    } catch (RepositoryException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
             try {
-                f.save();
+                JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
+                JCRNodeWrapper f = session.getNode(path);
+                if (acl != null && acl.length() > 0) {
+                    StringTokenizer st = new StringTokenizer(acl, "|");
+                    while (st.hasMoreElements()) {
+                        String s = st.nextToken();
+                        int beginIndex = s.lastIndexOf(":");
+
+                        String principal = s.substring(0, beginIndex);
+                        String userName = principal.substring(2);
+                        String value = null;
+
+                        if (principal.charAt(0) == 'u') {
+                            JahiaUser user = ServicesRegistry
+                                    .getInstance()
+                                    .getJahiaSiteUserManagerService()
+                                    .getMember(jParams.getSiteID(),
+                                            userName);
+                            if (user != null) {
+                                value = "/users/" + user.getUsername();
+                            }
+                        } else {
+                            JahiaGroup group = ServicesRegistry
+                                    .getInstance()
+                                    .getJahiaGroupManagerService()
+                                    .lookupGroup(jParams.getSiteID(),
+                                            userName);
+                            if (group != null) {
+                                value = "+/groups/"
+                                        + group.getGroupname()
+                                        + "/members";
+                            }
+                        }
+
+                        if (value != null) {
+                            f.changePermissions(value, s
+                                    .substring(beginIndex + 1));
+                        }
+                    }
+                }
+                for (int i = 0; i < attributes.getLength(); i++) {
+                    String attUri = attributes.getURI(i);
+                    String attName = attributes.getLocalName(i);
+                    if (!ImportExportBaseService.JAHIA_URI.equals(attUri)
+                            || (!"path".equals(attName) && !"fileacl".equals(attName) && !"lastModification".equals(attName))) {
+                        String attValue = attributes.getValue(i);
+                        try {
+                            f.setProperty(attUri, attName, attValue);
+                        } catch (RepositoryException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                session.save();
             } catch (RepositoryException e) {
                 logger.error("error", e);
             }

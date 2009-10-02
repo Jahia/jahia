@@ -235,14 +235,6 @@
         <property name="jahiaAclService" ref="JahiaACLManagerService"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
-    <bean id="JahiaWebdavService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.webdav.JahiaWebdavBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="fieldsDataManager" ref="org.jahia.hibernate.manager.JahiaFieldsDataManager" />
-                <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager" />
-            </bean>
-        </property>
-    </bean>
 
     <bean id="JahiaVersionService" parent="proxyTemplate">
         <property name="target">

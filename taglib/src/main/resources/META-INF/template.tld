@@ -1349,44 +1349,6 @@
     </tag>
 
     <tag>
-        <description>Processes a submitted form and maps the parameters to fields in
-            a container and adds the container to the specified container list.
-        </description>
-        <name>formContentMapperHandler</name>
-        <tag-class>org.jahia.taglibs.template.form.FormContentMapperHandlerTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>listName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>submitMarker</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>immediatePublication</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>storeAsUserName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>storeAsGroupName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>captchaFieldName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
         <description>Retrieves a category from the backend and gives access to
             category child objects
         </description>

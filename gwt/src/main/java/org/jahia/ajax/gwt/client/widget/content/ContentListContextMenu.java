@@ -103,7 +103,7 @@ public class ContentListContextMenu extends Menu {
             if (gwtJahiaToolbar.isContextMenu()) {
                 for (int i = 0; i < gwtJahiaToolbar.getGwtToolbarItemsGroups().size(); i++) {
                     GWTJahiaToolbarItemsGroup itemsGroup = gwtJahiaToolbar.getGwtToolbarItemsGroups().get(i);
-                    if (i > 0 && !itemsGroup.getGwtToolbarItems().isEmpty()) {
+                    if (i > 0 && i<=gwtJahiaToolbar.getGwtToolbarItemsGroups().size() && itemsGroup.getGwtToolbarItems().isEmpty()) {
                         add(new SeparatorMenuItem());
                     }
                     for (GWTJahiaToolbarItem gwtJahiaToolbarItem : itemsGroup.getGwtToolbarItems()) {

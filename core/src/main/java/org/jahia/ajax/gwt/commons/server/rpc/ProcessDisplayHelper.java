@@ -182,6 +182,7 @@ public class ProcessDisplayHelper {
                 try {
                     ContentObject obj = JahiaObjectCreator.getContentObjectFromKey(objectKey) ;
                     if (WorkflowService.getInstance().getWorkflowMode(obj) != WorkflowService.LINKED) {
+
                         wfStates = WorkflowServiceHelper.getWorkflowStates(JahiaObjectCreator.getContentObjectFromKey(objectKey)) ;
                     }
                 } catch (ClassNotFoundException e) {

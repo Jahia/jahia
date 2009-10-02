@@ -218,7 +218,15 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                         if (currentPath.equals(path)) {
                             navMenuItemBean.setSelected(true);
                         } else {
-                            navMenuItemBean.setInPath(true);
+                            for (int i = 0; i < pathElement.length; i++) {
+                                String s = pathElement[i];
+                                if(i < currentPathElement.length && s.equals(currentPathElement[i])) {
+                                    navMenuItemBean.setInPath(true);
+                                } else {
+                                    navMenuItemBean.setInPath(false);
+                                    break;
+                                }
+                            }
                         }
                         navMenuItemsBean.add(navMenuItemBean);
                     }

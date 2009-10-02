@@ -2146,12 +2146,14 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentListActionItem"/>
         </property>
+        <property name="titleKey" value="toolbar.manager.button.newContentList"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-addContentList"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-addContentList"/>
     </bean>
 
     <!-- TO DO: add an actionItem-->
     <bean id="org.jahia.toolbar.item.createContent" class="org.jahia.services.toolbar.bean.Item">
+        <property name="titleKey" value="toolbar.manager.button.newContent"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-addContent"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-addContent"/>
     </bean>

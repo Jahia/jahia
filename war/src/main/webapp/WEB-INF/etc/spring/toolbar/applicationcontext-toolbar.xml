@@ -2069,7 +2069,7 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewPublishStatusActionItem"/>
         </property>
         <property name="titleKey" value="toolbar.edit.button.status"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-newcontent"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-viewpublishstatus"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-viewpublishstatus"/>
         <property name="descriptionKey" value="toolbar.edit.button.status"/>
     </bean>

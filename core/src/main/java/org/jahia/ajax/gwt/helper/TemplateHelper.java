@@ -84,9 +84,9 @@ public class TemplateHelper {
         try {
             JCRNodeWrapper node = sessionFactory.getCurrentUserSession().getNode(path);
             String def = null;
-            if (node.hasProperty("j:defaultTemplate")) {
+            if (node.hasProperty("j:template")) {
                 templatesPath.add(new String[]{"--unset--", "--unset--"});
-                def = node.getProperty("j:defaultTemplate").getString();
+                def = node.getProperty("j:template").getString();
             }
 
             SortedSet<Template> set = getTemplatesSet(node);

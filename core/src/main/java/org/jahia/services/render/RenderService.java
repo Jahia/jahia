@@ -117,8 +117,8 @@ public class RenderService extends JahiaService {
 
         if (context.getModuleParams().containsKey("forcedSkin")) {
             resource.pushWrapper((String) context.getModuleParams().get("forcedSkin"));
-        } else if (node.hasProperty("skin")) {
-            resource.pushWrapper(node.getPropertyAsString("skin"));
+        } else if (node.hasProperty("j:skin")) {
+            resource.pushWrapper(node.getPropertyAsString("j:skin"));
         } else if (context.getModuleParams().containsKey("skin")) {
             resource.pushWrapper((String) context.getModuleParams().get("skin"));
         }

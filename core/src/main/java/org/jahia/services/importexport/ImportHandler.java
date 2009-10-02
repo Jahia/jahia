@@ -1265,6 +1265,9 @@ public class ImportHandler extends DefaultHandler {
             if (def == null && (localName.endsWith("Title") || localName.endsWith("title"))) {
                 def = JahiaFieldDefinitionsRegistry.getInstance().getDefinition(site.getID(), defPrefix+"_jcr_title");
             }
+            if (def == null && (localName.equals("skin"))) {
+                def = JahiaFieldDefinitionsRegistry.getInstance().getDefinition(site.getID(), defPrefix+"_j_skin");
+            }
             
             if (def != null) {
                 isField = true;

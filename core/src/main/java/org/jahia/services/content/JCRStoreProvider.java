@@ -610,7 +610,7 @@ public class JCRStoreProvider {
 
 //                            try {
 //                                Node home = siteNode.getNode("home");
-//                                home.setProperty("j:defaultTemplate", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(site.getTemplatePackageName()).getHomePageName());
+//                                home.setProperty("j:template", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(site.getTemplatePackageName()).getHomePageName());
 //                            } catch (RepositoryException e1) {
 //                                e1.printStackTrace();
 //                            }

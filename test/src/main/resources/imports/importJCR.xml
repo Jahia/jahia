@@ -12,7 +12,7 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
         <sv:value>4039c984-99da-43c5-8a19-e6627f6e1833</sv:value>
     </sv:property>
-    <sv:property sv:name="j:defaultTemplate" sv:type="String">
+    <sv:property sv:name="j:template" sv:type="String">
         <sv:value>Simple</sv:value>
     </sv:property>
     <sv:property sv:name="j:fullpath" sv:type="String">
@@ -1447,7 +1447,7 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>81daedbf-1562-4663-8d72-0247ac2cdffd</sv:value>
         </sv:property>
-        <sv:property sv:name="j:defaultTemplate" sv:type="String">
+        <sv:property sv:name="j:template" sv:type="String">
             <sv:value>Container-types</sv:value>
         </sv:property>
         <sv:property sv:name="j:fullpath" sv:type="String">
@@ -2435,7 +2435,7 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>cc68ed93-8f4d-4625-8eac-8c3fd5fc14a2</sv:value>
         </sv:property>
-        <sv:property sv:name="j:defaultTemplate" sv:type="String">
+        <sv:property sv:name="j:template" sv:type="String">
             <sv:value>All-fields</sv:value>
         </sv:property>
         <sv:property sv:name="j:fullpath" sv:type="String">
@@ -3095,7 +3095,7 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>15f67736-6a96-4c33-b99a-8a631a1f7836</sv:value>
         </sv:property>
-        <sv:property sv:name="j:defaultTemplate" sv:type="String">
+        <sv:property sv:name="j:template" sv:type="String">
             <sv:value>All-fields-twice</sv:value>
         </sv:property>
         <sv:property sv:name="j:fullpath" sv:type="String">
@@ -3812,7 +3812,7 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>1722472d-1e07-47b1-bef0-b70c9dc869dc</sv:value>
         </sv:property>
-        <sv:property sv:name="j:defaultTemplate" sv:type="String">
+        <sv:property sv:name="j:template" sv:type="String">
             <sv:value>All-selectors</sv:value>
         </sv:property>
         <sv:property sv:name="j:fullpath" sv:type="String">
@@ -4383,7 +4383,7 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>40f5dec5-d9d1-4eff-92b6-0c9adb1310e0</sv:value>
         </sv:property>
-        <sv:property sv:name="j:defaultTemplate" sv:type="String">
+        <sv:property sv:name="j:template" sv:type="String">
             <sv:value>Custom-index-options</sv:value>
         </sv:property>
         <sv:property sv:name="j:fullpath" sv:type="String">
@@ -4607,7 +4607,7 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>774d1566-904a-43be-babf-9d6eb6eb869f</sv:value>
         </sv:property>
-        <sv:property sv:name="j:defaultTemplate" sv:type="String">
+        <sv:property sv:name="j:template" sv:type="String">
             <sv:value>Validation</sv:value>
         </sv:property>
         <sv:property sv:name="j:fullpath" sv:type="String">
@@ -4881,7 +4881,7 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>dbb5d4a0-e763-450d-b64b-233ddd5cce6d</sv:value>
         </sv:property>
-        <sv:property sv:name="j:defaultTemplate" sv:type="String">
+        <sv:property sv:name="j:template" sv:type="String">
             <sv:value>Extensions</sv:value>
         </sv:property>
         <sv:property sv:name="j:fullpath" sv:type="String">
@@ -5212,7 +5212,7 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>da1da1f7-2ac6-4532-b498-378ea53d82df</sv:value>
         </sv:property>
-        <sv:property sv:name="j:defaultTemplate" sv:type="String">
+        <sv:property sv:name="j:template" sv:type="String">
             <sv:value>Mixin-Types</sv:value>
         </sv:property>
         <sv:property sv:name="j:fullpath" sv:type="String">
@@ -5586,7 +5586,7 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>158d928a-8b21-4abf-ad23-37d4ad999c7e</sv:value>
         </sv:property>
-        <sv:property sv:name="j:defaultTemplate" sv:type="String">
+        <sv:property sv:name="j:template" sv:type="String">
             <sv:value>All-fields</sv:value>
         </sv:property>
         <sv:property sv:name="j:fullpath" sv:type="String">

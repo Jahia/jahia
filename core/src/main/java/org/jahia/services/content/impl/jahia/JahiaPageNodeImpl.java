@@ -140,7 +140,7 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
             }
 
             fields.add(new PropertyImpl(getSession(),this,
-                pageType.getPropertyDefinitionsAsMap().get("j:defaultTemplate"),null,
+                pageType.getPropertyDefinitionsAsMap().get("j:template"),null,
                     new ValueImpl(contentPage.getPageTemplate(getProcessingContext()).getName(), PropertyType.STRING)));
         }
     }

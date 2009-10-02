@@ -256,7 +256,7 @@ public class NavigationHelper {
         }
 
         try {
-            if (!displayAllVirtualSites && viewTemplateAreas && node.isNodeType("jmix:renderable") && node.hasProperty("j:defaultTemplate")) {
+            if (!displayAllVirtualSites && viewTemplateAreas && node.isNodeType("jmix:renderable") && node.hasProperty("j:template")) {
                 Resource r = new Resource(node, "html", null, null);
                 RenderContext renderContext = new RenderContext(((ParamBean) context).getRequest(), ((ParamBean) context).getResponse(), user);
                 renderContext.setSite(context.getSite());
@@ -696,8 +696,8 @@ public class NavigationHelper {
                 n.setWidth(Long.valueOf(f.getProperty("j:width").getLong()).intValue());
             }
             // add node template
-            if (f.hasProperty("j:defaultTemplate")) {
-                n.setTemplate(f.getProperty("j:defaultTemplate").getValue().getString());
+            if (f.hasProperty("j:template")) {
+                n.setTemplate(f.getProperty("j:template").getValue().getString());
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

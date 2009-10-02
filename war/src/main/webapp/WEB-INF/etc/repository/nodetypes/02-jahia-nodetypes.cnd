@@ -64,13 +64,18 @@
 // Time based publishing
 //---------------------------------------------------------
 
+[jmix:publication] mixin
+
+[jmix:manuallyPublished] mixin > jmix:publication
+ - j:unpublished (boolean)
+
 [jmix:timebasedPublished] mixin
 
-[jmix:simpleTimebasedPublished] > jmix:timebasedPublished mixin
+[jmix:simpleTimebasedPublished] > jmix:publication, jmix:timebasedPublished mixin
  - j:startDate (date)
  - j:endDate (date)
 
- [jmix:hourlyTimebasedPublished] > jmix:timebasedPublished mixin
+ [jmix:hourlyTimebasedPublished] > jmix:publication,jmix:timebasedPublished mixin
  - j:fromHour (long)
  - j:fromMinutes (long)
  - j:toHour (long)
@@ -78,7 +83,7 @@
 
 [jnt:hourlyTimebasedPublished] > nt:base, jmix:hourlyTimebasedPublished
 
- [jmix:dailyTimebasedPublished] > jmix:timebasedPublished mixin
+ [jmix:dailyTimebasedPublished] > jmix:publication,jmix:timebasedPublished mixin
  + * (jnt:hourlyTimebasedPublished)
 
 //---------------------------------------------------------
@@ -294,7 +299,7 @@
 [jmix:layout] mixin
 
 [jmix:renderable] > jmix:layout mixin
- - j:defaultTemplate (string, choicelist[resourceBundle,image]) < templates()
+ - j:template (string, choicelist[resourceBundle,image]) < templates()
  - j:theme (string)
 
 [jmix:renderableList] > jmix:layout, jmix:renderable, jmix:skinnable, jmix:contentListMixin mixin
@@ -304,7 +309,7 @@
  - j:referenceTemplate (string, choicelist[resourceBundle,image]) < templates()
 
 [jmix:skinnable] > jmix:layout mixin
- - skin (string, choicelist[resourceBundle,image]) indexed=no < skins()
+ - j:skin (string, choicelist[resourceBundle,image]) indexed=no < skins()
 
 [jmix:positionable] > jmix:layout mixin
  - j:columnIndex (long)

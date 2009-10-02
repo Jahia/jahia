@@ -119,8 +119,8 @@ public class Resource {
             return l;
         }
         try {
-            if (node.isNodeType("jmix:renderable") && node.hasProperty("j:defaultTemplate")) {
-                l.add( node.getProperty("j:defaultTemplate").getString() );
+            if (node.isNodeType("jmix:renderable") && node.hasProperty("j:template")) {
+                l.add( node.getProperty("j:template").getString() );
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

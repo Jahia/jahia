@@ -68,6 +68,7 @@ import java.util.Set;
 import javax.jcr.PropertyType;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeIterator;
 
 public class JahiaContainerDefinitionsRegistry implements CacheListener {
 
@@ -414,8 +415,9 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
                 nt = NodeTypeRegistry.getInstance().getNodeType(containerType);
                 if (!availableTypesFound) {
                     if (nt.isAbstract()) {
-                        while (nt.getSubtypes().hasNext()) {
-                            ExtendedNodeType sub = (ExtendedNodeType) nt.getSubtypes().next();
+                        NodeTypeIterator subtypes = nt.getSubtypes();
+                        while (subtypes.hasNext()) {
+                            ExtendedNodeType sub = (ExtendedNodeType) subtypes.next();
                             if (!sub.getSystemId().equals("system-standard")) {
                                 JahiaTemplatesPackage defPackage = templateManagerService.getTemplatePackage(sub.getSystemId());
                                 if (defPackage != null)  {

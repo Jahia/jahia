@@ -61,6 +61,7 @@ import org.jahia.services.version.*;
 import org.jahia.services.workflow.WorkflowEvent;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeTypeIterator;
 import java.util.*;
 
 public class JahiaContainersBaseService extends JahiaContainersService {
@@ -2318,8 +2319,9 @@ public class JahiaContainersBaseService extends JahiaContainersService {
     private Set<String> getAllSubTypeNames(String typeName) {
         Set<String> subTypeNames = new HashSet<String>();
         try {
-            while (NodeTypeRegistry.getInstance().getNodeType(typeName).getSubtypes().hasNext()) {
-                ExtendedNodeType nodeType = (ExtendedNodeType) NodeTypeRegistry.getInstance().getNodeType(typeName).getSubtypes().next();
+            NodeTypeIterator subtypes = NodeTypeRegistry.getInstance().getNodeType(typeName).getSubtypes();
+            while (subtypes.hasNext()) {
+                ExtendedNodeType nodeType = (ExtendedNodeType) subtypes.next();
                 subTypeNames.add(nodeType.getName());
                 subTypeNames.addAll(getAllSubTypeNames(nodeType.getName()));
             }

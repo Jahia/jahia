@@ -193,7 +193,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<String> groups = new ArrayList<String>();
                     if (session.getWorkspace().getQueryManager() != null) {
-                        String query = "SELECT group.[j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group ORDER BY group.[j:nodename]";
+                        String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group ORDER BY group.[j:nodename]";
                         Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                         QueryResult qr = q.execute();
                         RowIterator rows = qr.getRows();
@@ -229,7 +229,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     try {
                         if (session.getWorkspace().getQueryManager() != null) {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
-                            String query = "SELECT group.[j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[jcr:path] LIKE '/" + Constants.CONTENT + "/sites/" + siteName + "/groups/%' ORDER BY group.[j:nodename]";
+                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[jcr:path] LIKE '/" + Constants.CONTENT + "/sites/" + siteName + "/groups/%' ORDER BY group.[j:nodename]";
                             Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                             QueryResult qr = q.execute();
                             RowIterator rows = qr.getRows();
@@ -267,7 +267,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<String> groups = new ArrayList<String>();
                     if (session.getWorkspace().getQueryManager() != null) {
-                        String query = "SELECT group[j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group ORDER BY group.[j:nodename]";
+                        String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group ORDER BY group.[j:nodename]";
                         Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                         QueryResult qr = q.execute();
                         RowIterator rows = qr.getRows();
@@ -302,7 +302,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     try {
                         if (session.getWorkspace().getQueryManager() != null) {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
-                            String query = "SELECT group.[j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[jcr:path] LIKE '/" + Constants.CONTENT + "/sites/" + siteName + "/groups/%' ORDER BY group.[j:nodename]";
+                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[jcr:path] LIKE '/" + Constants.CONTENT + "/sites/" + siteName + "/groups/%' ORDER BY group.[j:nodename]";
                             Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                             QueryResult qr = q.execute();
                             RowIterator rows = qr.getRows();

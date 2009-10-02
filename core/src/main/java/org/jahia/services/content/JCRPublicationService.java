@@ -123,18 +123,17 @@ public class JCRPublicationService extends JahiaService {
      * @param sourceWorkspace      the source workspace of the publication
      * @param destinationWorkspace the destination workspace of the publication
      * @param languages            set of languages you wish to publish
-     * @param user                 the user
      * @param publishParent        Recursively publish the parents
      * @param system               use system session or not
      * @throws javax.jcr.RepositoryException in case of error
      */
     public void publish(String path, String sourceWorkspace, String destinationWorkspace, Set<String> languages,
-                        JahiaUser user, boolean publishParent, boolean system) throws RepositoryException {
-        publish(path, sourceWorkspace, destinationWorkspace, languages, user, publishParent, system, new HashSet<String>());
+                        boolean publishParent, boolean system) throws RepositoryException {
+        publish(path, sourceWorkspace, destinationWorkspace, languages, publishParent, system, new HashSet<String>());
     }
 
     private void publish(String path, String sourceWorkspace, String destinationWorkspace, Set<String> languages,
-                         JahiaUser user, boolean publishParent, boolean system, Set<String> pathes) throws RepositoryException {
+                         boolean publishParent, boolean system, Set<String> pathes) throws RepositoryException {
         pathes.add(path);
 
         JCRSessionWrapper sourceSession = getSessionFactory().getCurrentUserSession(sourceWorkspace);
@@ -148,7 +147,7 @@ public class JCRPublicationService extends JahiaService {
         } catch (PathNotFoundException e) {
             if (publishParent) {
                 if (!pathes.contains(parentPath)) {
-                    publish(parentPath, sourceWorkspace, destinationWorkspace, languages, user, true, system, pathes);
+                    publish(parentPath, sourceWorkspace, destinationWorkspace, languages, true, system, pathes);
                 }
             } else {
                 return;
@@ -163,7 +162,7 @@ public class JCRPublicationService extends JahiaService {
         for (String node : referencedNodes) {
             try {
                 if (!pathes.contains(node)) {
-                    publish(node, sourceWorkspace, destinationWorkspace, languages, user, true, system, pathes);
+                    publish(node, sourceWorkspace, destinationWorkspace, languages, true, system, pathes);
                 }
             } catch (AccessDeniedException e) {
                 logger.warn("Cannot publish node at : " + node);
@@ -177,11 +176,11 @@ public class JCRPublicationService extends JahiaService {
 
         JCRSessionWrapper liveSessionForPublish;
         if (system) {
-            liveSessionForPublish = getSessionFactory().login(JahiaLoginModule.getSystemCredentials(user.getUsername(),
+            liveSessionForPublish = getSessionFactory().login(JahiaLoginModule.getSystemCredentials(sourceSession.getUserID(),
                                                                                                                     deniedPathes),
                                                                               destinationWorkspace);
         } else {
-            liveSessionForPublish = getSessionFactory().login(JahiaLoginModule.getCredentials(user.getUsername(),
+            liveSessionForPublish = getSessionFactory().login(JahiaLoginModule.getCredentials(sourceSession.getUserID(),
                                                                                                               deniedPathes),
                                                                               destinationWorkspace);
         }
@@ -189,11 +188,7 @@ public class JCRPublicationService extends JahiaService {
             Node liveNode = liveSessionForPublish.getNode(path);
             liveNode.update(sourceWorkspace);
         } catch (PathNotFoundException e) {
-            try {
-                liveSessionForPublish.getWorkspace().clone(sourceWorkspace, path, path, true);
-            } catch (RepositoryException ee) {
-                ee.printStackTrace();
-            }
+            liveSessionForPublish.getWorkspace().clone(sourceWorkspace, path, path, true);
         } finally {
             liveSessionForPublish.logout();
         }
@@ -205,10 +200,9 @@ public class JCRPublicationService extends JahiaService {
      *
      * @param path      path of the node to unpublish
      * @param languages
-     * @param user
      * @throws javax.jcr.RepositoryException
      */
-    public void unpublish(String path, Set<String> languages, JahiaUser user) throws RepositoryException {
+    public void unpublish(String path, Set<String> languages) throws RepositoryException {
         JCRSessionWrapper session = getSessionFactory().getCurrentUserSession();
         JCRNodeWrapper w = session.getNode(path);
 
@@ -217,7 +211,7 @@ public class JCRPublicationService extends JahiaService {
         final JCRNodeWrapper parentNode = liveSession.getNode(parentPath);
         final JCRNodeWrapper node = liveSession.getNode(path);
         node.remove();
-        parentNode.save();
+        liveSession.save();
         liveSession.logout();
     }
 

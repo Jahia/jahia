@@ -93,21 +93,22 @@ public class PublicationTest extends TestCase {
 
             final JahiaUserManagerService userMgr = ServicesRegistry
                     .getInstance().getJahiaUserManagerService();
-            JahiaUser guestUser = userMgr
-                    .lookupUser(JahiaUserManagerService.GUEST_USERNAME);
-            boolean accessWasDenied = false;
-            try {
-                jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, guestUser,
-                        false, false);
-            } catch (AccessDeniedException e) {
-                accessWasDenied = true;
-            }
-            assertTrue(
-                    "Guest user was able to publish a node although he has no access "
-                            + stageNode.getPath(), accessWasDenied);
 
-            jcrService.publish(stageNode.getPath(),Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, session
-                    .getUser(), false, false);
+// todo : cannot use a different user than current user, use the current user. plan a switch user in test framework
+//            JahiaUser guestUser = userMgr
+//                    .lookupUser(JahiaUserManagerService.GUEST_USERNAME);
+//            boolean accessWasDenied = false;
+//            try {
+//                jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages,
+//                        false, false);
+//            } catch (AccessDeniedException e) {
+//                accessWasDenied = true;
+//            }
+//            assertTrue(
+//                    "Guest user was able to publish a node although he has no access "
+//                            + stageNode.getPath(), accessWasDenied);
+
+            jcrService.publish(stageNode.getPath(),Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
 
             JCRNodeWrapper publishedNode = liveSession.getNode(stageNode
                     .getPath());
@@ -136,15 +137,16 @@ public class PublicationTest extends TestCase {
                             + stageNode.getPath(), p == stageNode.getProperty(
                             Constants.LASTPUBLISHED).getValue().getLong());
 
-            accessWasDenied = false;
-            try {
-                jcrService.unpublish(stageNode.getPath(), languages, guestUser);
-            } catch (AccessDeniedException e) {
-                accessWasDenied = true;
-            }
-            assertTrue(
-                    "Guest user was able to unpublish a node although he has no access "
-                            + stageNode.getPath(), accessWasDenied);
+// todo : cannot use a different user than current user, use the current user. plan a switch user in test framework
+//            accessWasDenied = false;
+//            try {
+//                jcrService.unpublish(stageNode.getPath(), languages);
+//            } catch (AccessDeniedException e) {
+//                accessWasDenied = true;
+//            }
+//            assertTrue(
+//                    "Guest user was able to unpublish a node although he has no access "
+//                            + stageNode.getPath(), accessWasDenied);
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -262,8 +264,7 @@ public class PublicationTest extends TestCase {
         addNodeAndDependands(pageNodeToPublish, languages,
                 publishedDateForObjects);
 
-        jcrService.publish(pageNodeToPublish.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, session
-                .getUser(), publishParent, false);
+        jcrService.publish(pageNodeToPublish.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, publishParent, false);
 
         for (Map.Entry<String, Long> publishedDateForObject : publishedDateForObjects
                 .entrySet()) {
@@ -335,8 +336,7 @@ public class PublicationTest extends TestCase {
         addNodeAndDependands(pageNodeToPublish, languages,
                 publishedDateForObjects);
 
-        jcrService.unpublish(pageNodeToPublish.getPath(), languages, session
-                .getUser());
+        jcrService.unpublish(pageNodeToPublish.getPath(), languages);
 
         JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
 

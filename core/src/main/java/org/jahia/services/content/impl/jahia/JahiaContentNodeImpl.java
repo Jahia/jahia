@@ -347,7 +347,6 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                         fields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), v, contentField, locale));
                     }
                 } catch (RepositoryException e) {
-                    e.printStackTrace();
                 }
                 break;
             }

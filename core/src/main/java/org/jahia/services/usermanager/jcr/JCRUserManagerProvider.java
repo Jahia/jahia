@@ -34,7 +34,6 @@ package org.jahia.services.usermanager.jcr;
 
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.Cache;
@@ -154,7 +153,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                     }
                     jcrSessionWrapper.save();
                     publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                                         Jahia.getThreadParamBean().getUser(), true, true);
+                            true, true);
                     return new JCRUser(userNode.getIdentifier(), jcrTemplate.getSessionFactory());
                 }
             });

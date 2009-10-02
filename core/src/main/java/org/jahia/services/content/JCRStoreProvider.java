@@ -616,7 +616,7 @@ public class JCRStoreProvider {
 //                            }
 
                             session.save();
-                            publicationService.publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, user, false, true);
+                            publicationService.publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
                         }
                     }
                 } catch (IOException e) {
@@ -666,7 +666,7 @@ public class JCRStoreProvider {
                                         JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
                                     }
                                     session.save();
-                                    publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, Jahia.getThreadParamBean().getUser(), true, true);
+                                    publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, true);
                                 } catch (RepositoryException e1) {
                                     logger.error("Cannot save", e1);
                                 }

@@ -656,6 +656,12 @@ public class JahiaSitesBaseService extends JahiaSitesService {
      */
     public synchronized void removeSite (JahiaSite site) throws JahiaException {
 //        JahiaSitesPersistance.getInstance ().dbRemoveSite (site.getID ());
+
+        JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+        List<String> groups = groupManagerService.getGroupList(site.getID());
+        for (String group : groups) {
+            groupManagerService.deleteGroup(groupService.lookupGroup(group));
+        }
         sitePropertyManager.remove(site);
         siteManager.remove(site.getID());
         siteCacheByID.remove (new Integer (site.getID ()));

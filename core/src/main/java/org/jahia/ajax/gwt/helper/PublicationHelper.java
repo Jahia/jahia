@@ -81,7 +81,7 @@ public class PublicationHelper {
      */
     public void publish(String path, Set<String> languages, JahiaUser user, boolean publishParent) throws GWTJahiaServiceException {
         try {
-            publicationService.publish(path, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, user, publishParent, false);
+            publicationService.publish(path, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, publishParent, false);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -116,7 +116,7 @@ public class PublicationHelper {
      */
     public void unpublish(String path, Set<String> languages, JahiaUser user) throws GWTJahiaServiceException {
         try {
-            publicationService.unpublish(path, languages, user);
+            publicationService.unpublish(path, languages);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException(e.getMessage());

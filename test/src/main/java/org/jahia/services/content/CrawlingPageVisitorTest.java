@@ -124,7 +124,7 @@ public class CrawlingPageVisitorTest extends TestCase {
                         Query.JCR_SQL2).execute();
                 for (NodeIterator ni = queryResult.getNodes(); ni.hasNext();) {
                     jcrService.publish(((Node) ni.next()).getPath(), Constants.EDIT_WORKSPACE,
-                            Constants.LIVE_WORKSPACE, null, ctx.getUser(), true, true);
+                            Constants.LIVE_WORKSPACE, null, true, true);
                 }
             }
             try {

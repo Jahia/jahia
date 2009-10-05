@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -176,7 +177,7 @@ public interface JahiaContentManagementServiceAsync {
      * @param async Local implementation of callback to react on return for asynchronous call to publish
      * @throws forward GWTJahiaServiceException
      */
-    void publish(String path, AsyncCallback async);
+    void publish(String path, Set<String> languages, String comments, AsyncCallback async);
 
     /**
      * Publish the specified paths.

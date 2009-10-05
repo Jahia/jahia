@@ -64,10 +64,7 @@ import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -572,15 +569,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 //jmix:renderableReference
 
             if ("--unset--".equals(template)) {
-                if (node.hasProperty("j:defaultTemplate")) {
-                    node.getProperty("j:defaultTemplate").remove();
+                if (node.hasProperty("j:template")) {
+                    node.getProperty("j:template").remove();
                 }
             } else {
                 if (!node.isNodeType("jmix:renderable")) {
                     node.addMixin("jmix:renderable");
                     node.save();
                 }
-                node.setProperty("j:defaultTemplate",template);
+                node.setProperty("j:template",template);
             }
             node.save();
         } catch (RepositoryException e) {
@@ -594,8 +591,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param path the path to publish, will not auto publish the parents
      * @throws  GWTJahiaServiceException
      */
-    public void publish(String path) throws GWTJahiaServiceException {
-        publication.publish(path, null, retrieveParamBean().getUser(), false);
+    public void publish(String path, Set<String> languages, String comments) throws GWTJahiaServiceException {
+        publication.publish(path, languages, retrieveParamBean().getUser(), false);
     }
 
     /**

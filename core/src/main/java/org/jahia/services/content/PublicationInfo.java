@@ -11,9 +11,10 @@ import java.util.HashMap;
  * To change this template use File | Settings | File Templates.
  */
 public class PublicationInfo {
-    public static final int UNPUBLISHED = 0;
+    public static final int NOT_PUBLISHED = 0;
     public static final int PUBLISHED = 1;
     public static final int MODIFIED = 2;
+    public static final int MANUALLY_UNPUBLISHED = 2;
 
     public static final int LIVE_ONLY = 4;
     public static final int LIVE_MODIFIED = 5;

@@ -1,6 +1,7 @@
 package org.jahia.services.content;
 
 import org.apache.log4j.Logger;
+import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -99,7 +100,8 @@ public class JCRPublicationService extends JahiaService {
         NodeIterator ni = start.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
-            if (n.isNodeType("jnt:page") || n.isNodeType("jnt:folder") || n.isNodeType("jnt:file")) {
+            if (n.isNodeType("jnt:page") || n.isNodeType("jnt:folder") || n.isNodeType("jnt:file") ||
+                    (n.hasProperty("j:unpublished") && n.getProperty("j:unpublished").getBoolean())) {
                 pruneNodes.add(n.getPath());
             } else if (languages != null && n.isNodeType("jnt:translation")) {
                 String translationLanguage = n.getProperty("jcr:language").getString();
@@ -130,6 +132,13 @@ public class JCRPublicationService extends JahiaService {
     public void publish(String path, String sourceWorkspace, String destinationWorkspace, Set<String> languages,
                         boolean publishParent, boolean system) throws RepositoryException {
         publish(path, sourceWorkspace, destinationWorkspace, languages, publishParent, system, new HashSet<String>());
+
+        JCRSessionWrapper session = getSessionFactory().getCurrentUserSession(sourceWorkspace);
+        JCRNodeWrapper n = session.getNode(path);
+        if (n.hasProperty("j:unpublished") && n.getProperty("j:unpublished").getBoolean()) {
+            n.setProperty("j:unpublished", false);
+        }
+        session.save();
     }
 
     private void publish(String path, String sourceWorkspace, String destinationWorkspace, Set<String> languages,
@@ -206,13 +215,16 @@ public class JCRPublicationService extends JahiaService {
         JCRSessionWrapper session = getSessionFactory().getCurrentUserSession();
         JCRNodeWrapper w = session.getNode(path);
 
-        String parentPath = w.getParent().getPath();
+        if (!w.isNodeType("jmix:manuallyPublished")) {
+            w.addMixin("jmix:manuallyPublished");
+        }
+        w.setProperty("j:unpublished", true);
         JCRSessionWrapper liveSession = getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
-        final JCRNodeWrapper parentNode = liveSession.getNode(parentPath);
         final JCRNodeWrapper node = liveSession.getNode(path);
         node.remove();
         liveSession.save();
         liveSession.logout();
+        session.save();
     }
 
     /**
@@ -259,7 +271,11 @@ public class JCRPublicationService extends JahiaService {
             // node has not been published yet, check if parent is published
             try {
                 liveSession.getNode(stageNode.getParent().getPath());
-                info.setStatus(PublicationInfo.UNPUBLISHED);
+                if (stageNode.hasProperty("j:unpublished") && stageNode.getProperty("j:unpublished").getBoolean()) {
+                    info.setStatus(PublicationInfo.MANUALLY_UNPUBLISHED);
+                } else {
+                    info.setStatus(PublicationInfo.NOT_PUBLISHED);
+                }
             } catch (AccessDeniedException e) {
                 info.setStatus(PublicationInfo.UNPUBLISHABLE);
             } catch (PathNotFoundException e) {

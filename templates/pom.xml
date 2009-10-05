@@ -70,6 +70,8 @@
         <module>mod-news</module>
         <module>test-templates</module>
         <module>web-templates</module>
+        <module>mod-event</module>
+        <module>mod-6.0</module>
   </modules>
 
 

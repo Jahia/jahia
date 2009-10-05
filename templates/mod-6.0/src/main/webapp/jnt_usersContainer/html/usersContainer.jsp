@@ -1,0 +1,40 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
+
+<jcr:nodeProperty node="${currentNode}" name="boxUserDisplayLimit" var="boxUserDisplayLimit"/>
+<jcr:nodeProperty node="${currentNode}" name="boxUserQuery" var="boxUserQuery"/>
+
+<jcr:sql var="savedSearchIterator" sql="select ${boxUserQuery.string} from [jnt:user]"/>
+<c:if test="${savedSearchIterator.nodes.size == 0}">
+    <p>No search results found</p>
+</c:if>
+<c:if test="${savedSearchIterator.nodes.size != 0}">
+    <p>${savedSearchIterator.nodes.size}&nbsp;results found:</p>
+    <c:set var="itemsPerPage" value="10"/>
+    <pg:pager maxPageItems="${itemsPerPage}" url="${url.current}" export="currentPageNumber=pageNumber">
+        <c:forEach var="aParam" items="${paramValues}">
+            <c:if test="${not fn:startsWith(aParam.key, 'pager.')}"><pg:param name="${aParam.key}"/></c:if>
+        </c:forEach>
+        <ol start="${itemsPerPage * (currentPageNumber - 1) + 1}">
+        <c:forEach items="${savedSearchIterator.nodes}" var="hit">
+            <pg:item>
+                <li><template:module node="${hit}" forcedTemplate="link" editable="false"/></li>
+            </pg:item>
+        </c:forEach>
+        </ol>
+        <pg:index export="itemCount">
+            <p>
+            <pg:pages>
+                <c:if test="${pageNumber != currentPageNumber}"><a href="${pageUrl}">${pageNumber}</a></c:if>
+                <c:if test="${pageNumber == currentPageNumber}">${pageNumber}</c:if>
+                &nbsp;
+            </pg:pages>
+            </p>
+            <p>${itemsPerPage * (currentPageNumber - 1) + 1}&nbsp;-&nbsp;${itemsPerPage * currentPageNumber < itemCount ? itemsPerPage * currentPageNumber : itemCount}&nbsp;of&nbsp;${itemCount}</p>
+        </pg:index>
+
+    </pg:pager>
+</c:if>

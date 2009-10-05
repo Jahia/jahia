@@ -1,0 +1,9 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:event] > jnt:container
+smallText       title
+date            startDate
+date            endDate
+smallText       location facetable
+sharedSmallText eventsType (choicelist[resourceBundle]) facetable  < meeting,consumer.show,road.show,conference
+bigText         body

@@ -16,3 +16,59 @@
 [jnt:navLink] > jnt:container
  page navLink primary
  smallText separator
+
+[jnt:image] > jnt:container
+file image (file[mime='image/*'])
+
+[jnt:frame] > jnt:container
+ sharedSmallText source indexed=no
+ sharedSmallText name indexed=no
+ integer width indexed=no
+ integer height indexed=no
+ integer frameborder = '0' indexed=no
+ integer marginwidth = '0' indexed=no
+ integer marginheight = '0' indexed=no
+ sharedSmallText scrolling (choicelist) indexed=no < 'yes','no','auto'
+ smallText alt indexed=no
+
+[jnt:video] > jnt:container
+ sharedSmallText name
+ file source
+ integer width = '0'
+ integer height = '0'
+ integer hspace = '0'
+ integer vspace = '0'
+ sharedSmallText autostart (choicelist) analyzer='keyword' nofulltext < 'true','false'
+ sharedSmallText invokeURLs (choicelist) analyzer='keyword' nofulltext < 'true','false'
+ sharedSmallText enablecontextmenu (choicelist) analyzer='keyword' nofulltext < '0','1'
+ sharedSmallText showstatusbar (choicelist) analyzer='keyword' nofulltext < '0','1'
+ sharedSmallText showcontrols (choicelist) analyzer='keyword' nofulltext < '0','1'
+ sharedSmallText autosize (choicelist) analyzer='keyword' nofulltext < 'true','false'
+ integer displaysize = '0' analyzer='keyword' nofulltext
+ sharedSmallText loop (choicelist) analyzer='keyword' nofulltext < 'true','false'
+
+[jnt:flash] > jnt:container
+ file flashSource
+ sharedSmallText width analyzer='keyword' nofulltext
+ sharedSmallText height analyzer='keyword' nofulltext
+ sharedSmallText flashPlayer = '9' analyzer='keyword' nofulltext
+ sharedSmallText id analyzer='keyword' nofulltext
+ sharedSmallText name
+ sharedSmallText swliveconnect (choicelist) analyzer='keyword' nofulltext < 'true', 'false'
+ sharedSmallText play (choicelist) indexed=no < 'true','false'
+ sharedSmallText loop (choicelist) indexed=no < 'true','false'
+ sharedSmallText menu (choicelist) indexed=no < 'true','false'
+ sharedSmallText quality (choicelist) analyzer='keyword' nofulltext < 'low','high','autolow','autohigh','best'
+ sharedSmallText scale (choicelist) analyzer='keyword' nofulltext < 'default','noborder','exactfit'
+ sharedSmallText align (choicelist) indexed=no < 'l','r','t','b'
+ sharedSmallText salign (choicelist) indexed=no < 'l','r','t','b','tl','tr','bl','br'
+ sharedSmallText wmode (choicelist) indexed=no < 'window','opaque','transparent'
+ color bgcolor
+ sharedSmallText base indexed=no
+ sharedSmallText flashvars indexed=no
+
+[jnt:text] > jnt:container
+ smallText text
+
+[jnt:bigText] > jnt:container
+ bigText text

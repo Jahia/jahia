@@ -72,7 +72,8 @@
         <module>web-templates</module>
         <module>mod-event</module>
         <module>mod-6.0</module>
-  </modules>
+        <module>mod-location</module>
+    </modules>
 
 
 </project>

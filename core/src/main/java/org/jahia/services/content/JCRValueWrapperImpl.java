@@ -36,7 +36,6 @@ import org.apache.log4j.Logger;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.bin.Jahia;
@@ -73,18 +72,22 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
      * @throws RepositoryException for all other errors
      */
     public CategoryBean getCategory() throws ValueFormatException,RepositoryException {
-        if(getType() == PropertyType.STRING) {
-            try {
-                // As we are storing path inside the jcr and taht actually we cannot search by path on the
-                // category service we need to get the last value to have the "real" key of the category
-                Category category = Category.getCategory(getString().substring(getString().lastIndexOf("/")+1));
-                if(category==null) throw new ValueFormatException(getString()+" is not a valid Jahia Category");
-                return new CategoryBean(category, Jahia.getThreadParamBean());
-            } catch (JahiaException e) {
-                logger.error("Category not found");
+        try {
+            // As we are storing path inside the jcr and taht actually we cannot search by path on the
+            // category service we need to get the last value to have the "real" key of the category
+            Category category = null;
+            if (getType() == PropertyType.STRING) {
+                category = Category.getCategory(getString().substring(getString().lastIndexOf("/") + 1));
+            } else if (getType() == PropertyType.REFERENCE) {
+                category = Category.getCategoryByUUID(getString());
             }
+            if (category == null) throw new ValueFormatException(getString() + " is not a valid Jahia Category");
+            return new CategoryBean(category, Jahia.getThreadParamBean());
+        } catch (JahiaException e) {
+            logger.error("Category not found");
         }
-        return null;
+
+    throw new ItemNotFoundException("category " + getString() + " not found");
     }
 
     public PropertyDefinition getDefinition() throws RepositoryException {

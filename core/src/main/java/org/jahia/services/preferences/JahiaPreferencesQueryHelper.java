@@ -123,15 +123,15 @@ public class JahiaPreferencesQueryHelper {
             boolean isFirstProperty = true;
             while (propertiesIterator.hasNext()) {
                 String propertyName = (String) propertiesIterator.next();
-                String propertyvalue = propertiesMap.get(propertyName).toString();
+                Object propertyValue = propertiesMap.get(propertyName);
                 // add only if value is not null
-                if (propertyvalue != null) {
+                if (propertyValue != null) {
                     if (isFirstProperty) {
                         isFirstProperty = false;
                     } else {
                         prefPath.append(" and ");
                     }
-                    prefPath.append("p.[").append(propertyName).append("]='").append(propertyvalue).append("'");
+                    prefPath.append("p.[").append(propertyName).append("]='").append(propertyValue.toString()).append("'");
                 }
             }
         }

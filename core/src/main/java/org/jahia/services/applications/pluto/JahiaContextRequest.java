@@ -36,6 +36,8 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.data.applications.EntryPointInstance;
+import org.jahia.bin.Jahia;
+import org.jahia.exceptions.JahiaException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -56,9 +58,16 @@ public class JahiaContextRequest extends HttpServletRequestWrapper {
     private String servletPath = null;
     private EntryPointInstance entryPointInstance;
 
-    public JahiaContextRequest(ParamBean paramBean, HttpServletRequest httpServletRequest) {
+    public JahiaContextRequest(ParamBean paramBean, HttpServletRequest httpServletRequest) throws JahiaException {
         super(httpServletRequest);
         this.paramBean = paramBean;
+        if (Jahia.getServletPath() != null && !Jahia.getServletPath().equals(getServletPath())) {
+            String pageURL = paramBean.composePageUrl(paramBean.getPageID());
+            setServletPath(Jahia.getServletPath());
+            pageURL = pageURL.substring(Jahia.getServletPath().length());
+            setPathInfo(paramBean.getPathInfo());
+            setQueryString(paramBean.getQueryString());
+        }
     }
 
     public String getServletPath() {

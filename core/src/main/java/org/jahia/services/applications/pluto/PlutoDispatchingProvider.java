@@ -102,13 +102,6 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
             }
         }
         JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jParams, jParams.getRealRequest());
-        if (Jahia.getServletPath() != null && !Jahia.getServletPath().equals(jahiaContextRequest.getServletPath())) {
-            String pageURL = jParams.composePageUrl(jParams.getPageID());
-            jahiaContextRequest.setServletPath(Jahia.getServletPath());
-            pageURL = pageURL.substring(Jahia.getServletPath().length());
-            jahiaContextRequest.setPathInfo(jParams.getPathInfo());
-            jahiaContextRequest.setQueryString(jParams.getQueryString());
-        }
         jahiaContextRequest.setEntryPointInstance(entryPointInstance);
 
         PortalRequestContext portalContext = new PortalRequestContext(jParams.getContext(), jahiaContextRequest, jParams.getResponse());

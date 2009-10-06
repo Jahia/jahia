@@ -54,7 +54,7 @@ public interface ApplicationsManagerProvider {
         EntryPointDefinition entryPointDefinition)
         throws JahiaException;
 
-    public abstract PortletWindow getPortletWindow(EntryPointInstance entryPointInstance, String windowID, ParamBean jParams);
+    public abstract PortletWindow getPortletWindow(EntryPointInstance entryPointInstance, String windowID, ParamBean jParams) throws JahiaException;
 
     public List<EntryPointDefinition> getAppEntryPointDefinitions(ApplicationBean appBean)
         throws JahiaException;

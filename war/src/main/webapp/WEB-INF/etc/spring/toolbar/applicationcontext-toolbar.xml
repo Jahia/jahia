@@ -113,6 +113,11 @@
                 <ref bean="org.jahia.toolbar.item.Admin"/>
             </list>
         </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="editmode"/>
+            </bean>
+        </property>
     </bean>
 
     <!-- Category Manager -->
@@ -121,9 +126,13 @@
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.CategoryManager.menu.file"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="categories.menu"/>
+            </bean>
         </property>
         <property name="contextMenu" value="true"/>
     </bean>
@@ -135,6 +144,11 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
             </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="categories.shortcuts"/>
+            </bean>
         </property>
     </bean>
     <!-- end of the Category Manager -->
@@ -152,6 +166,11 @@
             </list>
         </property>
         <property name="contextMenu" value="true"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="content.menu"/>
+            </bean>
+        </property>
     </bean>
     <bean id="org.jahia.toolbar.manager.content.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="items">
@@ -161,6 +180,11 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
             </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="content.shortcuts"/>
+            </bean>
         </property>
     </bean>
     <!-- end of the Content Manager -->
@@ -178,6 +202,11 @@
             </list>
         </property>
         <property name="contextMenu" value="true"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="documents.menu"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="org.jahia.toolbar.manager.documents.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
@@ -188,6 +217,11 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
             </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="documents.shortcuts"/>
+            </bean>
         </property>
     </bean>
     <!-- end of the Document Manager -->
@@ -202,6 +236,11 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             </list>
         </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="mashups.menu"/>
+            </bean>
+        </property>
     </bean>
     <bean id="org.jahia.toolbar.manager.mashups.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="contextMenu" value="true"/>
@@ -212,6 +251,11 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
             </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="mashups.shortcuts"/>
+            </bean>
         </property>
     </bean>
     <!-- end of the Mashup Manager -->
@@ -225,6 +269,11 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
             </list>
         </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="portletDefinitions.shortcuts"/>
+            </bean>
+        </property>
     </bean>
     <!-- end of the Portlet Definition Manager -->
 
@@ -234,11 +283,15 @@
             <list>
                 <ref bean="org.jahia.toolbar.itemsgroup.SiteManager.menu.file"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
                 <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
             </list>
         </property>
         <property name="contextMenu" value="true"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="sites.menu"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="org.jahia.toolbar.manager.sites.shortcuts" class="org.jahia.services.toolbar.bean.Toolbar">
@@ -250,76 +303,14 @@
                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
             </list>
         </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="sites.shortcuts"/>
+            </bean>
+        </property>
     </bean>
     <!-- end of the Site Manager -->
 
-    <!-- user -->
-    <bean id="org.jahia.toolbar.user" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="titleKey" value="toolbar.user"/>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.itemsgroup.bookmarks"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.history"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- bookmarks -->
-    <bean id="org.jahia.toolbar.bookmarks" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="titleKey" value="toolbar.bookmarks"/>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.itemsgroup.bookmarks"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- breadcrumb -->
-    <bean id="org.jahia.toolbar.breadcrumb" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="titleKey" value="toolbar.breadcrumb"/>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.itemsgroup.history"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- caches -->
-    <bean id="org.jahia.toolbar.caches" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="titleKey" value="toolbar.caches"/>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.itemsgroup.Flush"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.Cache"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.toolbar.statistics" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="titleKey" value="toolbar.itemgroups.statistics"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="classResolver"
-                          value="org.jahia.services.toolbar.resolver.impl.SimpleVisibilityResolver"/>
-                <property name="inputResolver" value="statistics"/>
-            </bean>
-        </property>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.itemsgroup.Statistics"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- subscriptions -->
-    <bean id="org.jahia.toolbar.subscriptions" class="org.jahia.services.toolbar.bean.Toolbar">
-        <property name="titleKey" value="toolbar.subscriptions.toolbar.title"/>
-        <property name="items">
-            <list>
-                <ref bean="org.jahia.toolbar.itemsgroup.Subscriptions"/>
-            </list>
-        </property>
-    </bean>
 
     <!-- fill: allows to 'push' itemsgroup after this one to the rigth -->
     <bean id="org.jahia.toolbar.itemsgroup.Fill" class="org.jahia.services.toolbar.bean.ItemsGroup">

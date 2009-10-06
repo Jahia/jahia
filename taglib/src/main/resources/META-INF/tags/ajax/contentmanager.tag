@@ -503,11 +503,11 @@ while (selectedNodeIter.hasNext()) {
                             aliasResourceName="fm_username"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.password.label"
                             aliasResourceName="fm_password"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.import.label"
+<internal:gwtResourceBundle resourceName="toolbar.manager.button.import"
                             aliasResourceName="fm_import"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.importfile.label"
                             aliasResourceName="fm_importfile"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.export.label"
+<internal:gwtResourceBundle resourceName="toolbar.manager.button.export"
                             aliasResourceName="fm_export"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.exportlink.label"
                             aliasResourceName="fm_exportlink"/>

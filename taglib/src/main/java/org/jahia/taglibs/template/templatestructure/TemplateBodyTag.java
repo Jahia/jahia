@@ -468,9 +468,9 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         addGwtDictionaryMessage("fm_logout", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.logout.label"));
         addGwtDictionaryMessage("fm_username", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.username.label"));
         addGwtDictionaryMessage("fm_password", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.password.label"));
-        addGwtDictionaryMessage("fm_import", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.import.label"));
+        addGwtDictionaryMessage("fm_import", getJahiaInternalResourceValue("toolbar.manager.button.import"));
         addGwtDictionaryMessage("fm_importfile", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.importfile.label"));
-        addGwtDictionaryMessage("fm_export", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.export.label"));
+        addGwtDictionaryMessage("fm_export", getJahiaInternalResourceValue("toolbar.manager.button.export"));
         addGwtDictionaryMessage("fm_exportlink", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.exportlink.label"));
 
         addGwtDictionaryMessage("ae_principal", getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.principal.label"));

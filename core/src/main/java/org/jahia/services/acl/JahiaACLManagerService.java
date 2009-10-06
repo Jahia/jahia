@@ -48,6 +48,7 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.toolbar.bean.Toolbar;
+import org.jahia.services.toolbar.bean.Visibility;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserAliasing;
@@ -645,7 +646,12 @@ public class JahiaACLManagerService extends JahiaService {
             List<Toolbar> toolbars = Toolbar.getAlls();
             permissionList = new ArrayList<String>(toolbars.size());
             for (Toolbar toolbar : toolbars) {
-                permissionList.add(ManageSitePermissions.SITE_PERMISSIONS_PREFIX + "*." + toolbar.getVisibility().getSiteActionPermission());
+                Visibility toolbarVisibility = toolbar.getVisibility();
+                if(toolbarVisibility != null && toolbar.getVisibility().getSiteActionPermission() != null){
+                    permissionList.add(ManageSitePermissions.SITE_PERMISSIONS_PREFIX + "*." + toolbar.getVisibility().getSiteActionPermission());
+                }else{
+                    logger.debug("Toolbar["+toolbar.getName()+"] has no sitePermission");
+                }
             }
 
         }

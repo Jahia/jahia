@@ -1,0 +1,9 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+
+[jnt:faq] > jnt:container, jmix:structuredContent
+smallText question
+smallText answer      
+
+[jnt:faqList] > jnt:container, jmix:structuredContent
++ * (jnt:faq)

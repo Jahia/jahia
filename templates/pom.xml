@@ -73,6 +73,7 @@
         <module>mod-event</module>
         <module>mod-6.0</module>
         <module>mod-location</module>
+        <module>mod-faq</module>
     </modules>
 
 

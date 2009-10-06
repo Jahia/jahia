@@ -8,8 +8,10 @@
 		<div class="box4-bottomleft"></div>
 		<div class="clear"> </div>
 </div>
+<div class="box4-text">
 <c:forEach items="${currentNode.nodes}" var="node" varStatus="status">
     <template:module node="${node}">
-        <template:param name="loop" value="${status.count}"/>
+        <template:param name="loop" value="${status.count + 1}"/>
     </template:module>
 </c:forEach>
+</div>

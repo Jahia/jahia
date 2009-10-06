@@ -35,7 +35,6 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<div class="box4-text">
 	<jcr:nodeProperty node="${currentNode}" name='file' var="file"/>
 	<jcr:nodeProperty node="${currentNode}" name='preview' var="preview"/>
 	<jcr:nodeProperty node="${currentNode}" name='author' var="author"/>
@@ -79,5 +78,3 @@
            <div class="clear"> </div>
         </c:when>
     </c:choose>
-
-</div>

@@ -24,6 +24,8 @@ editors such as JetBrains' Intellij IDEA or other resource bundle translation ut
 XML files
 ---------
 - XML files should always validate.
+- Use identation and keep the files easy to read
+- Insert comments to help understand the file
 
 Singletons
 ----------
@@ -85,3 +87,65 @@ Tomcat
 - Always test your developments by performing a clean shutdown of Tomcat, not by simply killing the JVM. This will help
 fix quickly resource freeing bugs. Use the destroy() method on the main servlets or simply integrate with Spring which
 will do this for you.
+
+Developing services
+-------------------
+- New services should always be developed with injection and should NEVER use singletons. If you're not using Spring or
+Google Guice or some other type of injection, you're probably doing it wrong. Your service should also be started and
+stopped using Spring lifecycle methods.
+- AVOID IMPLEMENTING SINGLETONS ! If you re-use existing singleton and have no way of doing otherwise except
+rewriting a lot of code that's acceptable, but should be avoided at all costs.
+- When performing JCR operations with a system sessions, make sure you always use the JCRTemplate mechanism, as is
+illustrated in the example below :
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JahiaUser>() {
+                public JahiaUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name.trim());
+                    if (usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
+                        JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate.getSessionFactory());
+                        cache.put(name, user);
+                        return user;
+                    }
+                    return null;
+                }
+            });
+This will make sure that all the exceptions handling, session handling etc is properly done for you, and you can
+concentrate on implementing the actual JCR operations. This will also in the future offer services such as transaction
+participating, etc. Make sure also you use the proper callback and not just the one illustrated above.
+- For normal JCR session, the JCRSessionFilter will close the session for you at the end of the request processing. If
+you are performing operations OUTSIDE of a request, make sure you close the session at the end of the handling (TODO:
+might be a good idea to offer a more generic Spring-based framework for "transaction" handling).
+- When developing a GWT back-end service, make sure you declare it as the others are declared in the
+applicationcontext-gwt.xml services. Again, make sure you use dependency injection *everywhere*. For URL mapping, you
+should either add it to the SimpleUrlHandlerMapping or dynamically register with the HandlerMapping (this will be great
+when we go the OSGi route).
+- When referencing files, make sure you always use Spring' Resource class instead of a String or a File reference. This
+makes it easier to modify the location of the file at deployment time.
+- Take the time to modify legacy services to make them more modern. Little by little, this will help migrate to the new
+way of doing things. If you need more time, make sure the product owner is informed that we will have to do this later.
+- Design your service so that it can automatically register itself into the system, and not that it must be declared in
+a list of service. Imagine that your service might be deployed dynamically in an already running system (even if it
+isn't the case right now), and that it should be able to do so.
+- Get familiar with OSGi
+- Make sure you leverage Spring as much as possible
+
+Exception handling
+------------------
+- NEVER do this :
+        } catch (Exception e) {
+            logger.error(e);
+        }
+This will not log the stack trace of the exception, only the error message.
+- Except in cases you really master and expect, always remount the exception because it might impact the global
+operation and it might need to be handled at a higher level (ie transactions).
+- When throwing an exception from an existing exception, always include the source exception in the new exception being
+thrown.
+
+Javadoc
+-------
+- Document the class, describe it's responsability, what it does, and how it fits into the global system
+- Sometimes it's more important to document the method's parameters and return values than what it does if the name
+of the method is very explicit
+- Make sure you mark deprecated methods
+- For tags, also supply the TLD doc
+- If javadocs are missing to a class you are modifying, try to add as much as possible, correcting any errors too.
+- Use TODOs to mark stuff that still needs to be done at a later time.

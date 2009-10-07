@@ -8,7 +8,6 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
 import javax.jcr.version.VersionManager;
@@ -121,12 +120,12 @@ public class JCRPublicationService extends JahiaService {
      * @param sourceWorkspace      the source workspace of the publication
      * @param destinationWorkspace the destination workspace of the publication
      * @param languages            set of languages you wish to publish
-     * @param publishParent        Recursively publish the parents
      * @param system               use system session or not
+     * @param allSubTree
      * @throws javax.jcr.RepositoryException in case of error
      */
     public void publish(String path, String sourceWorkspace, String destinationWorkspace, Set<String> languages,
-                        boolean publishParent, boolean system) throws RepositoryException {
+                        boolean system, boolean allSubTree) throws RepositoryException {
         JCRSessionWrapper session = getSessionFactory().getCurrentUserSession(sourceWorkspace);
         JCRNodeWrapper n = session.getNode(path);
 
@@ -141,7 +140,7 @@ public class JCRPublicationService extends JahiaService {
                     session.save();
                 }
             }
-            publish(n, sourceWorkspace, destinationWorkspace, languages, publishParent, system, new HashSet<String>());
+            publish(n, sourceWorkspace, destinationWorkspace, languages, system, allSubTree, new HashSet<String>());
         } finally {
             JahiaAccessManager.setPublication(null);
         }
@@ -151,7 +150,7 @@ public class JCRPublicationService extends JahiaService {
     }
 
     private void publish(final JCRNodeWrapper sourceNode, final String sourceWorkspace, final String destinationWorkspace, Set<String> languages,
-                         boolean publishParent, boolean system, Set<String> pathes) throws RepositoryException {
+                         boolean system, boolean allSubTree, Set<String> pathes) throws RepositoryException {
         pathes.add(sourceNode.getPath());
 
 
@@ -161,7 +160,7 @@ public class JCRPublicationService extends JahiaService {
         final List<JCRNodeWrapper> referencedNodes = new ArrayList<JCRNodeWrapper>();
         final List<JCRNodeWrapper> toPublish = new ArrayList<JCRNodeWrapper>();
 
-        getBlockedAndReferencesList(sourceNode, toPublish, pruneNodes, referencedNodes, languages, false);
+        getBlockedAndReferencesList(sourceNode, toPublish, pruneNodes, referencedNodes, languages, allSubTree);
 //        for (Node s : toPublish) {
 //            s.setProperty("j:publishedLanguage")
 //        }
@@ -169,7 +168,7 @@ public class JCRPublicationService extends JahiaService {
         for (JCRNodeWrapper node : referencedNodes) {
             try {
                 if (!pathes.contains(node.getPath())) {
-                    publish(node, sourceWorkspace, destinationWorkspace, languages, true, system, pathes);
+                    publish(node, sourceWorkspace, destinationWorkspace, languages, system, false, pathes);
                 }
             } catch (AccessDeniedException e) {
                 logger.warn("Cannot publish node at : " + node);

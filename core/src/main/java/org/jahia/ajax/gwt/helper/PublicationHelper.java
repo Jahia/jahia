@@ -73,14 +73,12 @@ public class PublicationHelper {
      *
      * @param path          Path of the node to publish
      * @param languages     Set of languages to publish if null publish all languages
-     * @param user          the user for obtaining the jcr session
-     * @param publishParent Recursively publish the parents
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */
-    public void publish(String path, Set<String> languages, JahiaUser user, boolean publishParent) throws GWTJahiaServiceException {
+    public void publish(String path, Set<String> languages, boolean allSubTree) throws GWTJahiaServiceException {
         try {
-            publicationService.publish(path, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, publishParent, false);
+            publicationService.publish(path, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, allSubTree);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException(e.getMessage());

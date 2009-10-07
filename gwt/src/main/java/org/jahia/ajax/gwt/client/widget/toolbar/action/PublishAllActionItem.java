@@ -12,9 +12,9 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 * Time: 6:58:56 PM
 * To change this template use File | Settings | File Templates.
 */
-public class PublishActionItem extends BaseActionItem {
+public class PublishAllActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        EditActions.publish(linker);
+        EditActions.publishAll(linker);
     }
 
     /**

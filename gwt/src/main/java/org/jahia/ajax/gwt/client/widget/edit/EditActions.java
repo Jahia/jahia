@@ -2,7 +2,6 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
@@ -12,10 +11,8 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
-import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -84,11 +81,16 @@ public class EditActions {
      * @param linker
      */
     public static void publish(final Linker linker) {
-        if (linker.getSelectedNode() != null) {
-            JahiaContentManagementService.App.getInstance().getPublicationInfo(linker.getSelectedNode().getPath(), true,
+        GWTJahiaNode selectedNode = linker.getSelectedNode();
+        if (selectedNode == null) {
+            selectedNode = linker.getMainNode();
+        }
+        if (selectedNode != null) {
+            final GWTJahiaNode s = selectedNode;
+            JahiaContentManagementService.App.getInstance().getPublicationInfo(s.getPath(), true,
                     new AsyncCallback<GWTJahiaPublicationInfo>() {
                         public void onSuccess(GWTJahiaPublicationInfo result) {
-                            new PublicationStatusWindow(linker, result).show();
+                            new PublicationStatusWindow(linker, s, result).show();
                         }
 
                         public void onFailure(Throwable caught) {
@@ -101,13 +103,32 @@ public class EditActions {
     }
 
     /**
+     * Publish all content under selected node
+     *
+     * @param linker
+     */
+    public static void publishAll(final Linker linker) {
+        GWTJahiaNode selectedNode = linker.getSelectedNode();
+        if (selectedNode == null) {
+            selectedNode = linker.getMainNode();
+        }
+        if (selectedNode != null) {
+            new PublishAllConfirmWindow(linker, selectedNode).show();
+        }
+    }
+
+    /**
      * Unpublish selected content
      *
      * @param linker
      */
     public static void unpublish(final Linker linker) {
-        if (linker.getSelectedNode() != null) {
-            JahiaContentManagementService.App.getInstance().unpublish(linker.getSelectedNode().getPath(), new AsyncCallback() {
+        GWTJahiaNode selectedNode = linker.getSelectedNode();
+        if (selectedNode == null) {
+            selectedNode = linker.getMainNode();
+        }
+        if (selectedNode != null) {
+            JahiaContentManagementService.App.getInstance().unpublish(selectedNode.getPath(), new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
                     com.google.gwt.user.client.Window.alert("Cannot unpublish " + caught.getMessage());
@@ -247,9 +268,65 @@ public class EditActions {
 
     }
 
+    private static class PublishAllConfirmWindow extends Window {
+
+        private PublishAllConfirmWindow(final Linker linker, final GWTJahiaNode selectedNode) {
+            setScrollMode(Style.Scroll.AUTO);
+            setHeading("Publish");
+            setSize(800, 500);
+            setResizable(false);
+
+            setModal(true);
+
+            final FormPanel form = new FormPanel() ;
+            form.setFrame(false);
+            form.setHeaderVisible(false);
+            form.setBodyBorder(false);
+            form.setBorders(false);
+
+            final TextArea comments = new TextArea();
+            comments.setName("comments");
+            comments.setFieldLabel(Messages.getResource("publication_publicationComments"));
+            form.add(comments);
+
+            final Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
+                    hide() ;
+                }
+            });
+            final Button ok = new Button(Messages.getResource("publication_publish")) ;
+            SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
+                    ok.setEnabled(false);
+                    cancel.setEnabled(false);
+                    List<String> selectedPaths = new ArrayList<String>();
+                    JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), null, true, comments.getValue(), new AsyncCallback() {
+                        public void onFailure(Throwable caught) {
+                            Log.error("Cannot publish", caught);
+                            com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
+                            hide();
+                        }
+
+                        public void onSuccess(Object result) {
+                            Info.display(Messages.getResource("publication_published_title"), Messages.getResource("publication_published_text"));
+                            linker.refresh();
+                            hide();
+                        }
+                    });
+
+                }
+            };
+            ok.addSelectionListener(selectionListener);
+            setButtonAlign(Style.HorizontalAlignment.CENTER);
+            addButton(ok);
+            addButton(cancel);
+            add(form);
+        }
+    }
+
     private static class PublicationStatusWindow extends Window {
 
-        private PublicationStatusWindow(final Linker linker, GWTJahiaPublicationInfo info) {
+        private PublicationStatusWindow(final Linker linker, final GWTJahiaNode selectedNode, GWTJahiaPublicationInfo info) {
             setScrollMode(Style.Scroll.AUTO);
             setHeading("Publish");
             setSize(800, 500);
@@ -324,7 +401,9 @@ public class EditActions {
             ListStore<GWTJahiaPublicationInfo> store = new ListStore<GWTJahiaPublicationInfo>();
             store.add(info);
             for (ModelData data : info.getChildren()) {
-                store.add((GWTJahiaPublicationInfo) data);
+                if (!((GWTJahiaPublicationInfo) data).isCanPublish() || ((GWTJahiaPublicationInfo) data).getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
+                    store.add((GWTJahiaPublicationInfo) data);
+                }
             }
 //            store.add((List<GWTJahiaPublicationInfo>) info.getChildren(), true);
             ColumnModel cm = new ColumnModel(configs);
@@ -353,11 +432,7 @@ public class EditActions {
                 public void componentSelected(ButtonEvent event) {
                     ok.setEnabled(false);
                     cancel.setEnabled(false);
-                    List<String> selectedPaths = new ArrayList<String>();
-                    for (GWTJahiaPublicationInfo info : g.getSelectionModel().getSelectedItems()) {
-	                    selectedPaths.add(info.getPath());
-                    }
-                    JahiaContentManagementService.App.getInstance().publish(linker.getSelectedNode().getPath(), null, comments.getValue(), new AsyncCallback() {
+                    JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), null, false, comments.getValue(), new AsyncCallback() {
                         public void onFailure(Throwable caught) {
                             Log.error("Cannot publish", caught);
                             com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());

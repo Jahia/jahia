@@ -41,9 +41,9 @@ import java.util.List; /**
  * Time: 3:38:07 PM
  */
 public class LinkerSelectionContext {
-    private GWTJahiaNode selectedTreeNode;
+    private GWTJahiaNode mainNode;
     private List<GWTJahiaNode> selectedNodes;
-    private boolean leftTreeSelection;
+    private boolean mainSelection;
     private boolean tableSelection;
     private boolean writeable;
     private boolean deleteable;
@@ -58,8 +58,8 @@ public class LinkerSelectionContext {
     public boolean mount;
 
 
-    public void setTreeNodeSelection(GWTJahiaNode selectedTreeNode) {
-        this.selectedTreeNode = selectedTreeNode;
+    public void setMainNode(GWTJahiaNode selectedTreeNode) {
+        this.mainNode = selectedTreeNode;
     }
 
     public void setSelectedNodes(List<GWTJahiaNode> selectedNodes) {
@@ -67,24 +67,24 @@ public class LinkerSelectionContext {
     }
 
     public void refresh() {
-        leftTreeSelection = selectedTreeNode != null;
-        parentWriteable = (leftTreeSelection) ? (selectedTreeNode).isWriteable() && !selectedTreeNode.isLocked() : false;
+        mainSelection = mainNode != null;
+        parentWriteable = (mainSelection) ? (mainNode).isWriteable() && !mainNode.isLocked() : false;
         writeable = false;
         deleteable = false;
         lockable = false;
         locked = false;
         singleFile = false;
         singleFolder = false;
-        pasteAllowed = leftTreeSelection ? CopyPasteEngine.getInstance().canCopyTo(selectedTreeNode) : false;
+        pasteAllowed = mainSelection ? CopyPasteEngine.getInstance().canCopyTo(mainNode) : false;
         zip = false;
         image = false;
         tableSelection = false;
         mount = false;
         if (selectedNodes != null && selectedNodes.size() > 0) {
-            if (selectedTreeNode != null) {
-                leftTreeSelection = true;
+            if (mainNode != null) {
+                mainSelection = true;
             }
-            if (!leftTreeSelection) {
+            if (!mainSelection) {
                 GWTJahiaNode parent = (GWTJahiaNode) selectedNodes.get(0).getParent();
                 if (parent != null) {
                     parentWriteable = parent.isWriteable();
@@ -108,7 +108,7 @@ public class LinkerSelectionContext {
             if (singleFolder) {
                 mount = selectedNodes.get(0).getInheritedNodeTypes().contains("jnt:mountPoint") || selectedNodes.get(0).getNodeTypes().contains("jnt:mountPoint");
             }
-            if (!leftTreeSelection) {
+            if (!mainSelection) {
                 if (singleFolder) {
                     pasteAllowed = CopyPasteEngine.getInstance().canCopyTo((selectedNodes).get(0));
                 } else {
@@ -124,16 +124,16 @@ public class LinkerSelectionContext {
 
     }
 
-    public GWTJahiaNode getSelectedTreeNode() {
-        return selectedTreeNode;
+    public GWTJahiaNode getMainNode() {
+        return mainNode;
     }
 
     public List<GWTJahiaNode> getSelectedNodes() {
         return selectedNodes;
     }
 
-    public boolean isLeftTreeSelection() {
-        return leftTreeSelection;
+    public boolean isMainSelection() {
+        return mainSelection;
     }
 
     public boolean isTableSelection() {

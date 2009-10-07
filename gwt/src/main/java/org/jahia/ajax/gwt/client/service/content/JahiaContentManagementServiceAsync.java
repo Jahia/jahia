@@ -177,7 +177,7 @@ public interface JahiaContentManagementServiceAsync {
      * @param async Local implementation of callback to react on return for asynchronous call to publish
      * @throws forward GWTJahiaServiceException
      */
-    void publish(String path, Set<String> languages, String comments, AsyncCallback async);
+    void publish(String path, Set<String> languages, boolean allSubTree, String comments, AsyncCallback async);
 
     /**
      * Publish the specified paths.

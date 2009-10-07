@@ -199,7 +199,9 @@ public class EditLinker implements Linker {
 
     public List<GWTJahiaNode> getSelectedNodes() {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-        nodes.add(getSelectedNode());
+        if (getSelectedNode() != null) {
+            nodes.add(getSelectedNode());
+        }
         return nodes;
     }
 
@@ -220,7 +222,7 @@ public class EditLinker implements Linker {
     }
 
     private void refreshSelectionContext() {
-        selectionContext.setTreeNodeSelection(null);
+        selectionContext.setMainNode(getMainNode());
         selectionContext.setSelectedNodes(getSelectedNodes());
         selectionContext.refresh();
     }

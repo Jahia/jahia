@@ -326,7 +326,7 @@ public class ManagerLinker implements Linker {
 
     private void refreshSelectionContext() {
         if (getTreeSelection() instanceof GWTJahiaNode) {
-            selectionContext.setTreeNodeSelection((GWTJahiaNode)getTreeSelection());
+            selectionContext.setMainNode((GWTJahiaNode)getTreeSelection());
         }
         selectionContext.setSelectedNodes(getSelectedNodes());
         selectionContext.refresh();

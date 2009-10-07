@@ -30,7 +30,7 @@ public class ModuleHelper {
 
     private static Map<String, List<String>> children;
 
-    public static void initAllModules(MainModule m, HTML html) {
+    public static void initAllModules(final MainModule m, HTML html) {
         modules = new HashMap<String, Module>();
         modulesByPath = new HashMap<String, List<Module>>();
 
@@ -104,6 +104,7 @@ public class ModuleHelper {
                         module.setNode(gwtJahiaNode);
                     }
                 }
+                m.getEditLinker().handleNewModuleSelection();
             }
 
             public void onFailure(Throwable caught) {

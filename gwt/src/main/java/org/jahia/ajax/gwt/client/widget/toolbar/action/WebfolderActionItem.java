@@ -16,6 +16,6 @@ public class WebfolderActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection(){
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isLeftTreeSelection() || lh.isTableSelection() && lh.isSingleFolder());
+        setEnabled(lh.isMainSelection() || lh.isTableSelection() && lh.isSingleFolder());
     }
 }

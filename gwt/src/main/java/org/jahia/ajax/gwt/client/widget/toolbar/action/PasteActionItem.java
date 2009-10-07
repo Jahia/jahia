@@ -16,6 +16,6 @@ public class PasteActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isLeftTreeSelection() && lh.isParentWriteable() && lh.isPasteAllowed() || lh.isTableSelection() && lh.isWriteable() && lh.isPasteAllowed());
+        setEnabled(lh.isMainSelection() && lh.isParentWriteable() && lh.isPasteAllowed() || lh.isTableSelection() && lh.isWriteable() && lh.isPasteAllowed());
     }
 }

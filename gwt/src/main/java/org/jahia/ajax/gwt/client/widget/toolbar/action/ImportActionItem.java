@@ -17,6 +17,6 @@ public class ImportActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isLeftTreeSelection() && lh.isParentWriteable());
+        setEnabled(lh.isMainSelection() && lh.isParentWriteable());
     }
 }

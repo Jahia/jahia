@@ -591,8 +591,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param path the path to publish, will not auto publish the parents
      * @throws  GWTJahiaServiceException
      */
-    public void publish(String path, Set<String> languages, String comments) throws GWTJahiaServiceException {
-        publication.publish(path, languages, retrieveParamBean().getUser(), false);
+    public void publish(String path, Set<String> languages, boolean allSubTree, String comments) throws GWTJahiaServiceException {
+        publication.publish(path, languages, allSubTree);
     }
 
     /**

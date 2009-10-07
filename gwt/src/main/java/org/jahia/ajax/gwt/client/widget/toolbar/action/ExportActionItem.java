@@ -17,6 +17,6 @@ public class ExportActionItem extends BaseActionItem    {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
 
-        setEnabled(lh.isTableSelection() || lh.isLeftTreeSelection());
+        setEnabled(lh.isTableSelection() || lh.isMainSelection());
     }
 }

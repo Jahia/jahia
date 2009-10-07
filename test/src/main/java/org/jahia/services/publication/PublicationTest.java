@@ -39,7 +39,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.TestHelper;
 
@@ -264,7 +263,7 @@ public class PublicationTest extends TestCase {
         addNodeAndDependands(pageNodeToPublish, languages,
                 publishedDateForObjects);
 
-        jcrService.publish(pageNodeToPublish.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, publishParent, false);
+        jcrService.publish(pageNodeToPublish.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, false);
 
         for (Map.Entry<String, Long> publishedDateForObject : publishedDateForObjects
                 .entrySet()) {

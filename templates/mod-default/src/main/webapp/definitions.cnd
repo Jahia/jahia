@@ -10,17 +10,17 @@
 [jmix:filteredList] > jmix:contentListMixin mixin
  sharedSmallText filter (choicelist[resourceBundle]) indexed=no < 'jcr:category','jcr:author'
 
-[jnt:fileList] > jnt:container, jmix:structuredContent
+[jnt:fileList] > jnt:container, jmix:contentListMixin mixin
  file folder (file[folder])
 
 [jnt:navLink] > jnt:container
  page navLink primary
  smallText separator
 
-[jnt:image] > jnt:container
+[jnt:image] > jnt:container    jmix:structuredContent
 file image (file[mime='image/*'])
 
-[jnt:frame] > jnt:container
+[jnt:frame] > jnt:container     jmix:structuredContent
  sharedSmallText source indexed=no
  sharedSmallText name indexed=no
  integer width indexed=no
@@ -31,7 +31,7 @@ file image (file[mime='image/*'])
  sharedSmallText scrolling (choicelist) indexed=no < 'yes','no','auto'
  smallText alt indexed=no
 
-[jnt:video] > jnt:container
+[jnt:video] > jnt:container, jmix:interactiveContent
  sharedSmallText name
  file source
  integer width = '0'
@@ -47,7 +47,7 @@ file image (file[mime='image/*'])
  integer displaysize = '0' analyzer='keyword' nofulltext
  sharedSmallText loop (choicelist) analyzer='keyword' nofulltext < 'true','false'
 
-[jnt:flash] > jnt:container
+[jnt:flash] > jnt:container, jmix:interactiveContent
  file flashSource
  sharedSmallText width analyzer='keyword' nofulltext
  sharedSmallText height analyzer='keyword' nofulltext
@@ -67,8 +67,19 @@ file image (file[mime='image/*'])
  sharedSmallText base indexed=no
  sharedSmallText flashvars indexed=no
 
-[jnt:text] > jnt:container
+[jnt:text] > jnt:container, jmix:structuredContent
  smallText text
 
-[jnt:bigText] > jnt:container
+[jnt:bigText] > jnt:container, jmix:structuredContent
  bigText text
+
+ [jnt:Iframe] > jnt:container, jmix:structuredContent
+ sharedSmallText IframeSource indexed=no
+ sharedSmallText IframeName indexed=no
+ integer IframeWidth indexed=no
+ integer IframeHeight indexed=no
+ integer IframeFrameborder = '0' indexed=no
+ integer IframeMarginwidth = '0' indexed=no
+ integer IframeMarginheight = '0' indexed=no
+ sharedSmallText IframeScrolling (choicelist) indexed=no < 'yes','no','auto'
+ smallText IframeAlt indexed=no

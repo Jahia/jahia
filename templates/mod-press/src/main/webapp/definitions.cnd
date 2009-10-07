@@ -5,5 +5,5 @@
  date            date
  file            pdfVersion
 
-[jnt:pressReleases] > jnt:container, jmix:interactiveContent
+[jnt:pressReleases] > jnt:container, jmix:queryContent
 file searchPath (file[folder])

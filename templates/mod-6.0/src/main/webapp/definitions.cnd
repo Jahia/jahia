@@ -168,7 +168,7 @@
 [jnt:IframeBox] > jnt:box
  containerList IframeContainer (jnt:IframeContainer)
 
-[jnt:videoContainer] > jnt:container, jmix:structuredContent
+[jnt:videoContainer] > jnt:container
  sharedSmallText videoName
  file videoSource
  integer videoWidth = '0'
@@ -193,7 +193,7 @@
 [jnt:fileContentBox] > jnt:box
  containerList fileContentContainer (jnt:fileContentContainer)
 
-[jnt:flashContainer] > jnt:container, jmix:structuredContent
+[jnt:flashContainer] > jnt:container
  file flashSourceFlashContainer
  sharedSmallText widthFlashContainer analyzer='keyword' nofulltext
  sharedSmallText heightFlashContainer analyzer='keyword' nofulltext

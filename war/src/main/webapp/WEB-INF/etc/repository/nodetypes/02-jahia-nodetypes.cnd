@@ -23,19 +23,20 @@
  + thumbnail (jnt:extraResource)
 
 [jmix:lastPublished] > jmix:metadata mixin
+  - j:published (boolean) = false
   - j:lastPublished (date) protected
   - j:lastPublishedBy (string) protected
 
 [jmix:originWS] > jmix:metadata mixin
   - j:originWS (string) protected hidden
 
-[jmix:basemetadata] > mix:referenceable, mix:created, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS mixin
+[jmix:basemetadata] > mix:referenceable, mix:created, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable mixin
 
 //---------------------------------------------------------
 // Multi language
 //---------------------------------------------------------
 
-[jnt:translation] > nt:base, mix:language
+[jnt:translation] > nt:base, mix:language, mix:lastModified, jmix:lastPublished, mix:versionable
   - * (undefined) multiple
   - * (undefined)
 
@@ -61,13 +62,10 @@
  + j:acl (jnt:acl) mandatory
 
 //---------------------------------------------------------
-// Time based publishing
+// Publication
 //---------------------------------------------------------
 
 [jmix:publication] mixin
-
-[jmix:manuallyPublished] > jmix:publication mixin 
- - j:unpublished (boolean)
 
 [jmix:timebasedPublished] mixin
 
@@ -85,13 +83,6 @@
 
  [jmix:dailyTimebasedPublished] > jmix:publication,jmix:timebasedPublished mixin
  + * (jnt:hourlyTimebasedPublished)
-
-//---------------------------------------------------------
-// Navigation
-//---------------------------------------------------------
-
-//[jmix:navigation] mixin
-// - j:navigationType (string)
 
 //---------------------------------------------------------
 // Locks
@@ -125,7 +116,7 @@
 // Query
 //---------------------------------------------------------
 
-[jnt:query] > nt:query, jmix:hierarchyNode, jmix:basemetadata
+[jnt:query] > nt:query, jmix:hierarchyNode, jmix:basemetadata, jmix:publication
 
 //---------------------------------------------------------
 // Files
@@ -138,12 +129,12 @@
 [jnt:extraResource] > nt:resource
  - j:name
 
-[jnt:folder] > nt:folder, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
+[jnt:folder] > nt:folder, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:publication
  + * (jmix:hierarchyNode) version
 
 [jnt:systemfolder] > jnt:folder
 
-[jnt:file] > nt:file, jmix:lockable, jmix:hierarchyNode, jmix:basemetadata, jmix:thumbnail
+[jnt:file] > nt:file, jmix:lockable, jmix:hierarchyNode, jmix:basemetadata, jmix:thumbnail, jmix:publication
 
 //---------------------------------------------------------
 // Text extracts
@@ -162,8 +153,8 @@
 // Categories
 //---------------------------------------------------------
 
-[jnt:category] > nt:base, jmix:basemetadata, mix:title, jmix:hierarchyNode, jmix:collection
-+ * (jnt:category)
+[jnt:category] > nt:base, jmix:basemetadata, mix:title, jmix:hierarchyNode, jmix:collection, jmix:publication
++ * (jnt:category) version
 - * (reference) multiple < jnt:category
 
 //---------------------------------------------------------
@@ -271,7 +262,7 @@
  - j:virtualsitesFolderConfig (string)
  - j:virtualsitesFolderSkeleton (string)
 
-[jnt:virtualsite] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
+[jnt:virtualsite] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:publication
  - j:title (string) protected
  - j:serverName (string) protected
  - j:description (string) protected
@@ -287,7 +278,7 @@
 // Repository mounts
 //---------------------------------------------------------
 
-[jnt:mountPoint] > nt:hierarchyNode, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
+[jnt:mountPoint] > nt:hierarchyNode, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:publication
 
 [jnt:vfsMountPoint] > jnt:mountPoint
  - j:root (string)
@@ -351,14 +342,14 @@
 // Pages, content lists
 //---------------------------------------------------------
 
-[jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, mix:title
+[jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication
  + * (nt:base) version
 
 [jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title, jmix:renderableList
  orderable
  + * (nt:base) version
 
-[jnt:gridContentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title
+[jnt:gridContentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title, jmix:renderableList
  - j:nbColumns (long)
  + * (jmix:positionable) version
 
@@ -376,7 +367,7 @@
 [jnt:portletDefinitions] > nt:hierarchyNode, jmix:collection
 + * (jnt:portletDefinition)
 
-[jnt:portlet] > nt:base, jmix:hierarchyNode, jmix:thumbnail, jmix:basemetadata, jmix:interactiveContent
+[jnt:portlet] > nt:base, jmix:hierarchyNode, jmix:thumbnail, jmix:basemetadata, jmix:interactiveContent, jmix:publication
  - j:application (string,portletdefinition) protected
  - j:applicationRef (reference) protected < jnt:portletDefinition
  - j:definition (string)
@@ -387,8 +378,11 @@
 // Internal //
 //---------------------------------------------------------
 
-[jnt:systemRoot] > nt:base, jmix:collection
- + * (jnt:virtualsite) multiple
+[jnt:systemRoot] > nt:folder, jmix:hierarchyNode, jmix:collection
+ + * (jmix:hierarchyNode)
+
+[jnt:jahiaLegacyRoot] > nt:base, jmix:collection
+ + * (jnt:virtualsite) version
 
 [jnt:reference] > nt:base, jmix:hierarchyNode
  - j:node (weakreference)
@@ -406,7 +400,7 @@
 
 [jnt:containerList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:renderableList
  orderable
- + * (jnt:container)
+ + * (jnt:container) version
 
 [jnt:internalPageLink] > jnt:nodeLink
 

@@ -113,25 +113,20 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JahiaUser>() {
                 public JahiaUser doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
                     JCRNodeWrapper parentNodeWrapper = jcrSessionWrapper.getNode("/" + Constants.CONTENT + "/users");
-                    Node userNode;
+
+                    jcrSessionWrapper.getWorkspace().getVersionManager().checkout(parentNodeWrapper.getPath());
+                    Node userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
                     if (parentNodeWrapper.hasProperty("j:usersFolderSkeleton")) {
-                        Session providerSession = jcrSessionWrapper.getProviderSession(
-                                jcrTemplate.getSessionFactory().getProvider(parentNodeWrapper.getPath()));
                         try {
-                            providerSession.importXML(parentNodeWrapper.getPath(), new FileInputStream(
+                            jcrSessionWrapper.importXMLWithoutRoot(parentNodeWrapper.getPath() + "/" + name, new FileInputStream(
                                     org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + parentNodeWrapper.getProperty(
                                             "j:usersFolderSkeleton").getString()),
                                                       ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                         } catch (IOException e) {
                             throw new RepositoryException("Could not create user due to some import issues", e);
                         }
-                        providerSession.move(parentNodeWrapper.getPath() + "/user",
-                                             parentNodeWrapper.getPath() + "/" + name);
-                        providerSession.save();
-                        userNode = parentNodeWrapper.getNode(name);
                         JCRNodeWrapperImpl.changePermissions(userNode, "u:" + name, "rw");
                     } else {
-                        userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
                         JCRNodeWrapperImpl.changePermissions(userNode, "u:" + name, "rw");
                     }
                     String l_password;
@@ -152,6 +147,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                         userNode.setProperty(key, (String) entry.getValue());
                     }
                     jcrSessionWrapper.save();
+                    jcrSessionWrapper.getWorkspace().getVersionManager().checkin(parentNodeWrapper.getPath());
                     publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                             true, true);
                     return new JCRUser(userNode.getIdentifier(), jcrTemplate.getSessionFactory());
@@ -459,7 +455,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      * updated because the value has changed and needs to be transmitted to the
      * other nodes in a clustering environment.
      *
-     * @param jahiaGroup JahiaGroup the group to be updated in the cache.
+     * @param jahiaUser JahiaUser the user to be updated in the cache.
      */
     public void updateCache(JahiaUser jahiaUser) {
         cache.remove(jahiaUser.getName());

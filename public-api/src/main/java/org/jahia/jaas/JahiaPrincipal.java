@@ -45,20 +45,16 @@ public class JahiaPrincipal implements Principal {
     private boolean isSystem = false;
     private boolean isGuest = false;
 
-    private List<String> deniedPathes;
-
     private String name;
 
-    public JahiaPrincipal(String name, boolean system, boolean guest, List<String> deniedPathes) {
+    public JahiaPrincipal(String name, boolean system, boolean guest) {
         this.name = name;
         isSystem = system;
         isGuest = guest;
-        this.deniedPathes = deniedPathes;
     }
 
-    public JahiaPrincipal(String name, List<String> deniedPathes) {
+    public JahiaPrincipal(String name) {
         this.name = name;
-        this.deniedPathes = deniedPathes;
     }
 
     public String getName() {
@@ -71,10 +67,6 @@ public class JahiaPrincipal implements Principal {
 
     public boolean isGuest() {
         return isGuest;
-    }
-
-    public List<String> getDeniedPathes() {
-        return deniedPathes;
     }
 
 }

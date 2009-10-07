@@ -87,7 +87,7 @@
     <!--
         Configures the versioning
     -->
-    <Versioning rootPath="${rep.home}/version">
+    <Versioning rootPath="${rep.home}/version">        
         <!--
             Configures the filesystem to use for versioning for the respective
             persistence manager

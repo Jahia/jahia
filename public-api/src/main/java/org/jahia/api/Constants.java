@@ -155,7 +155,7 @@ public class Constants {
     public static final String JAHIANT_CATEGORY = "jnt:category";
     public static final String JAHIANT_TRANSLATION = "jnt:translation";
 
-    public static final String JAHIANT_SYSTEM_ROOT = "jnt:systemRoot";
+    public static final String JAHIANT_LEGACY_ROOT = "jnt:jahiaLegacyRoot";
     public static final String JAHIANT_JAHIACONTENT = "jnt:jahiacontent";
     public static final String JAHIANT_PAGE = "jnt:page";
     public static final String JAHIANT_CONTAINER = "jnt:container";

@@ -1,4 +1,4 @@
-<content jcr:primaryType="jnt:systemfolder"
+<content jcr:primaryType="jnt:systemRoot"
 
          xmlns:jcr="http://www.jcp.org/jcr/1.0"
          xmlns:j="http://www.jahia.org/jahia/1.0"

@@ -54,7 +54,7 @@ public class JahiaRootNodeImpl extends NodeImpl {
 
     public JahiaRootNodeImpl(SessionImpl session) throws RepositoryException {
         super(session);
-        setNodetype(NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_SYSTEM_ROOT));
+        setNodetype(NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_LEGACY_ROOT));
     }
 
     @Override

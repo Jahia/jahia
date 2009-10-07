@@ -182,8 +182,8 @@ public class JCRWorkspaceWrapper implements Workspace {
         throw new UnsupportedRepositoryOperationException();
     }
 
-    public VersionManager getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+    public VersionManager getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {      
+        return getSession().getProviderSession(service.getProvider("/")).getWorkspace().getVersionManager();
     }
 
     public void createWorkspace(String name) throws AccessDeniedException, UnsupportedRepositoryOperationException, RepositoryException {

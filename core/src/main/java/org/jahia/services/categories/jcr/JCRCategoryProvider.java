@@ -151,6 +151,9 @@ public class JCRCategoryProvider {
                     .getCurrentUserSession();
             JCRNodeWrapper parentNodeWrapper = getParentNode(parentCategory,
                     jcrSessionWrapper);
+            if (!parentNodeWrapper.isCheckedOut()) {
+                parentNodeWrapper.checkout();
+            }
             final JCRNodeWrapper wrapper = parentNodeWrapper.addNode(key,
                     Constants.JAHIANT_CATEGORY);
             jcrSessionWrapper.save();

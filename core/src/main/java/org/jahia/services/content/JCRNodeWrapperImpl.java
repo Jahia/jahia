@@ -62,10 +62,7 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.version.Version;
-import javax.jcr.version.VersionException;
-import javax.jcr.version.VersionHistory;
-import javax.jcr.version.VersionIterator;
+import javax.jcr.version.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -196,6 +193,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public JCRNodeWrapper uploadFile(String name, final InputStream is, final String contentType) throws RepositoryException {
+        if (!isCheckedOut()) {
+            checkout();
+        }
         JCRNodeWrapper file = null;
         try {
             file = getNode(name);
@@ -990,6 +990,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public boolean renameFile(String newName) throws RepositoryException {
+        if (!isCheckedOut()) {
+            checkout();
+        }
 
         objectNode.getSession().move(objectNode.getPath(), objectNode.getParent().getPath() + "/" + provider.encodeInternalName(newName));
 
@@ -1052,10 +1055,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             copy = (JCRNodeWrapper) session
                     .getItem(dest.getPath() + "/" + name);
+            if (!copy.isCheckedOut()) {
+                copy.checkout();
+            }
         } catch (PathNotFoundException ex) {
             // node does not exist
         }
         if (copy == null || copy.getDefinition().allowsSameNameSiblings()) {
+            if (!dest.isCheckedOut()) {
+                dest.checkout();
+            }
             copy = dest.addNode(name, getPrimaryNodeTypeName());
         }
         if (isFile()) {
@@ -1503,19 +1512,35 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public JCRVersion checkin() throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
-        return (JCRVersion) provider.getNodeWrapper(objectNode.checkin(), session);
+        VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
+        JCRVersion result = (JCRVersion) provider.getNodeWrapper(versionManager.checkin(objectNode.getPath()), session);
+        if (session.getLocale() != null) {
+            versionManager.checkin(getI18N(session.getLocale()).getPath());
+        }
+
+        return result;
     }
 
     public void checkout() throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
-        objectNode.checkout();
+        VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
+        versionManager.checkout(objectNode.getPath());
+        if (session.getLocale() != null) {
+            try {
+                versionManager.checkout(getI18N(session.getLocale()).getPath());
+            } catch (ItemNotFoundException e) {
+                // no i18n node
+            }
+        }
     }
 
     public void doneMerge(Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
-        objectNode.doneMerge(((JCRVersion) version).getRealNode());
+        VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
+        versionManager.doneMerge(objectNode.getPath(), ((JCRVersion) version).getRealNode());
     }
 
     public void cancelMerge(Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
-        objectNode.cancelMerge(((JCRVersion) version).getRealNode());
+        VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
+        versionManager.cancelMerge(objectNode.getPath(), ((JCRVersion) version).getRealNode());
     }
 
     public void update(String s) throws NoSuchWorkspaceException, AccessDeniedException, LockException, InvalidItemStateException, RepositoryException {
@@ -1535,7 +1560,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public boolean isCheckedOut() throws RepositoryException {
-        return objectNode.isCheckedOut();
+        VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
+        boolean co = versionManager.isCheckedOut(objectNode.getPath());
+        if (co && session.getLocale() != null) {
+            try {
+                co &= versionManager.isCheckedOut(getI18N(session.getLocale()).getPath());
+            } catch (ItemNotFoundException e) {
+                // no i18n node
+            }
+        }
+
+        return co;
     }
 
     public void restore(String s, boolean b) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {

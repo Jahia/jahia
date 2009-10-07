@@ -52,7 +52,7 @@ public class JahiaSiteNodeImpl extends NodeImpl {
 
     public JahiaSiteNodeImpl(SessionImpl session, JahiaSite jahiaSite) throws RepositoryException {
         super(session);
-        setDefinition(NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_SYSTEM_ROOT).getDeclaredChildNodeDefinitions()[0]);
+        setDefinition(NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_LEGACY_ROOT).getDeclaredChildNodeDefinitions()[0]);
         setNodetype(NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_VIRTUALSITE));
         this.jahiaSite = jahiaSite;
     }

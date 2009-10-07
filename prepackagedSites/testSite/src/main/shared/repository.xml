@@ -47,12 +47,6 @@
     </users>
     <sites j:nodename="sites" jcr:created="2009-06-02T17:08:06.568+02:00" jcr:lastModified="2009-06-02T17:09:11.005+02:00" jcr:createdBy="root" jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:virtualsitesFolder" jcr:uuid="72b8dd10-eb62-4898-982f-7460afbc1c67" jcr:lastModifiedBy="root" j:fullpath="/content/sites" j:virtualsitesFolderSkeleton="site.xml"></sites>
     <imports j:nodename="imports" jcr:created="2009-06-02T17:08:06.569+02:00" jcr:lastModified="2009-06-02T17:08:07.625+02:00" jcr:createdBy="root" jcr:primaryType="jnt:importDropBox" jcr:uuid="f5d4bb3d-7740-4cda-9d47-6201e39f3de3" jcr:lastModifiedBy="root" j:fullpath="/content/imports"></imports>
-    <layoutmanager j:nodename="layoutmanager" jcr:created="2009-06-02T17:08:06.569+02:00" jcr:lastModified="2009-06-02T17:08:07.621+02:00" jcr:createdBy="root" jcr:primaryType="jnt:layoutManager" jcr:uuid="57b78081-aa2a-44e0-b825-68846d6c02a6" jcr:lastModifiedBy="root" j:fullpath="/content/layoutmanager" jcr:mixinTypes="jmix:accessControlled">
-        <j:acl jcr:primaryType="jnt:acl">
-            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"></GRANT_jcr_read_g_users>
-            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"></GRANT_jcr_write_g_users>
-        </j:acl>
-    </layoutmanager>
     <referencesKeeper jcr:primaryType="jnt:referencesKeeper" jcr:uuid="06f9a0de-4ceb-498e-aac3-2c3fef4cdabd"></referencesKeeper>
     <mounts j:nodename="mounts" jcr:created="2009-06-02T17:08:06.571+02:00" jcr:lastModified="2009-06-02T17:08:07.618+02:00" jcr:createdBy="root" jcr:primaryType="jnt:systemfolder" jcr:uuid="4f506c9a-bc2c-4d57-b6b2-148e604aeb97" jcr:lastModifiedBy="root" j:fullpath="/content/mounts" jcr:mixinTypes="jmix:accessControlled">
         <j:acl jcr:primaryType="jnt:acl">

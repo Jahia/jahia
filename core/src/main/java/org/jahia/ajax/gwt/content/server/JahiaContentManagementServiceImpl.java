@@ -622,7 +622,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTJahiaPublicationInfo getPublicationInfo(String path, boolean includeReferences) throws GWTJahiaServiceException {
-        return publication.getPublicationInfo(path, null, includeReferences, retrieveParamBean().getUser());
+        return publication.getPublicationInfo(path, null, includeReferences);
     }
 
     /**
@@ -634,7 +634,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public Map<String,GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException {
         Map<String, GWTJahiaPublicationInfo> map = new HashMap<String, GWTJahiaPublicationInfo>();
         for (String path : pathes) {
-            map.put(path, publication.getPublicationInfo(path, null, false, retrieveParamBean().getUser()));
+            map.put(path, publication.getPublicationInfo(path, null, false));
         }
 
         return map;

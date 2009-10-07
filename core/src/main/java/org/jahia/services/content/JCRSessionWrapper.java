@@ -31,34 +31,37 @@
  */
 package org.jahia.services.content;
 
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.jaas.JahiaLoginModule;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.apache.jackrabbit.commons.xml.Exporter;
 import org.apache.jackrabbit.commons.xml.DocumentViewExporter;
+import org.apache.jackrabbit.commons.xml.Exporter;
+import org.apache.jackrabbit.commons.xml.ParsingContentHandler;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
+import org.jahia.jaas.JahiaLoginModule;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 
 import javax.jcr.*;
-import javax.jcr.retention.RetentionManager;
-import javax.jcr.security.AccessControlManager;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.retention.RetentionManager;
+import javax.jcr.security.AccessControlManager;
 import javax.jcr.version.VersionException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.AccessControlException;
 import java.util.*;
-import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -69,7 +72,7 @@ import java.util.Locale;
  */
 public class JCRSessionWrapper implements Session {
     private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(JCRSessionWrapper.class);
+            org.apache.log4j.Logger.getLogger(JCRSessionWrapper.class);
 
     private JCRSessionFactory sessionFactory;
     private JahiaUser user;
@@ -82,8 +85,8 @@ public class JCRSessionWrapper implements Session {
 
     private Map<JCRStoreProvider, Session> sessions = new HashMap<JCRStoreProvider, Session>();
 
-    private Map<String,String> nsToPrefix = new HashMap<String,String>();
-    private Map<String,String> prefixToNs = new HashMap<String,String>();
+    private Map<String, String> nsToPrefix = new HashMap<String, String>();
+    private Map<String, String> prefixToNs = new HashMap<String, String>();
 
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale, JCRSessionFactory sessionFactory) {
         this.user = user;
@@ -93,7 +96,6 @@ public class JCRSessionWrapper implements Session {
         this.locale = locale;
         this.sessionFactory = sessionFactory;
     }
-
 
 
     public Node getRootNode() throws RepositoryException {
@@ -106,7 +108,7 @@ public class JCRSessionWrapper implements Session {
     }
 
     public String getUserID() {
-        return ((SimpleCredentials)credentials).getUserID();
+        return ((SimpleCredentials) credentials).getUserID();
     }
 
     public Object getAttribute(String s) {
@@ -142,9 +144,9 @@ public class JCRSessionWrapper implements Session {
             } catch (ItemNotFoundException ee) {
                 // All good
             } catch (UnsupportedRepositoryOperationException uso) {
-                logger.debug("getNodeByUUID unsupported by : "+provider.getKey() + " / " + provider.getClass().getName());
+                logger.debug("getNodeByUUID unsupported by : " + provider.getKey() + " / " + provider.getClass().getName());
             } catch (RepositoryException ex) {
-                logger.warn("repository exception : "+provider.getKey() + " / " + provider.getClass().getName() + " : "+ex.getMessage());
+                logger.warn("repository exception : " + provider.getKey() + " / " + provider.getClass().getName() + " : " + ex.getMessage());
             }
         }
         throw new ItemNotFoundException(uuid);
@@ -162,7 +164,7 @@ public class JCRSessionWrapper implements Session {
 
     public JCRItemWrapper getItem(String path) throws PathNotFoundException, RepositoryException {
         Map<String, JCRStoreProvider> dynamicMountPoints = sessionFactory.getDynamicMountPoints();
-        for (Map.Entry<String,JCRStoreProvider> mp : dynamicMountPoints.entrySet()) {
+        for (Map.Entry<String, JCRStoreProvider> mp : dynamicMountPoints.entrySet()) {
             if (path.startsWith(mp + "/")) {
                 String localPath = path.substring(mp.getKey().length());
                 JCRStoreProvider provider = mp.getValue();
@@ -176,7 +178,7 @@ public class JCRSessionWrapper implements Session {
             }
         }
         Map<String, JCRStoreProvider> mountPoints = sessionFactory.getMountPoints();
-        for (Map.Entry<String,JCRStoreProvider> mp : mountPoints.entrySet()) {
+        for (Map.Entry<String, JCRStoreProvider> mp : mountPoints.entrySet()) {
             String key = mp.getKey();
             if (key.equals("/") || path.equals(key) || path.startsWith(key + "/")) {
                 String localPath = path;
@@ -214,7 +216,7 @@ public class JCRSessionWrapper implements Session {
     }
 
     public void move(String source, String dest) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
-        ((JCRNodeWrapper)getItem(source)).moveFile(dest);
+        ((JCRNodeWrapper) getItem(source)).moveFile(dest);
     }
 
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
@@ -255,10 +257,35 @@ public class JCRSessionWrapper implements Session {
         JCRStoreProvider jcrStoreProvider = node.getProvider();
         String mp = jcrStoreProvider.getMountPoint();
         if (mp.equals("/")) {
-            mp="";
+            mp = "";
         }
         getProviderSession(jcrStoreProvider).importXML(path.substring(mp.length()), inputStream, uuidBehavior);
     }
+
+    public void importXMLWithoutRoot(String path, InputStream inputStream, int uuidBehavior) throws IOException, InvalidSerializedDataException, RepositoryException {
+        JCRNodeWrapper node = getNode(path);
+        JCRStoreProvider jcrStoreProvider = node.getProvider();
+        String mp = jcrStoreProvider.getMountPoint();
+        if (mp.equals("/")) {
+            mp = "";
+        }
+
+        try {
+            ContentHandler handler = getProviderSession(jcrStoreProvider).getImportContentHandler(path.substring(mp.length()), uuidBehavior);
+            ContentHandler w = new RemoveRootContentHandler(handler);
+            new ParsingContentHandler(w).parse(inputStream);
+        } catch (SAXException e) {
+            Throwable exception = e.getException();
+            if (exception instanceof RepositoryException) {
+                throw (RepositoryException) exception;
+            } else if (exception instanceof IOException) {
+                throw (IOException) exception;
+            } else {
+                throw new InvalidSerializedDataException("XML parse error", e);
+            }
+        }
+    }
+
 
     public void setNamespacePrefix(String prefix, String uri) throws NamespaceException, RepositoryException {
         nsToPrefix.put(uri, prefix);
@@ -373,13 +400,13 @@ public class JCRSessionWrapper implements Session {
      * Generates a document view export using a {@link org.apache.jackrabbit.commons.xml.DocumentViewExporter}
      * instance.
      *
-     * @param path of the node to be exported
-     * @param handler handler for the SAX events of the export
+     * @param path       of the node to be exported
+     * @param handler    handler for the SAX events of the export
      * @param skipBinary whether binary values should be skipped
-     * @param noRecurse whether to export just the identified node
+     * @param noRecurse  whether to export just the identified node
      * @throws PathNotFoundException if a node at the given path does not exist
-     * @throws SAXException if the SAX event handler failed
-     * @throws RepositoryException if another error occurs
+     * @throws SAXException          if the SAX event handler failed
+     * @throws RepositoryException   if another error occurs
      */
     public void exportDocumentView(
             String path, ContentHandler handler,
@@ -393,13 +420,13 @@ public class JCRSessionWrapper implements Session {
      * Generates a system view export using a {@link org.apache.jackrabbit.commons.xml.SystemViewExporter}
      * instance.
      *
-     * @param path of the node to be exported
-     * @param handler handler for the SAX events of the export
+     * @param path       of the node to be exported
+     * @param handler    handler for the SAX events of the export
      * @param skipBinary whether binary values should be skipped
-     * @param noRecurse whether to export just the identified node
+     * @param noRecurse  whether to export just the identified node
      * @throws PathNotFoundException if a node at the given path does not exist
-     * @throws SAXException if the SAX event handler failed
-     * @throws RepositoryException if another error occurs
+     * @throws SAXException          if the SAX event handler failed
+     * @throws RepositoryException   if another error occurs
      */
     public void exportSystemView(
             String path, ContentHandler handler,
@@ -414,11 +441,11 @@ public class JCRSessionWrapper implements Session {
      * with the given arguments and a {@link ContentHandler} that serializes
      * SAX events to the given output stream.
      *
-     * @param absPath passed through
-     * @param out output stream to which the SAX events are serialized
+     * @param absPath    passed through
+     * @param out        output stream to which the SAX events are serialized
      * @param skipBinary passed through
-     * @param noRecurse passed through
-     * @throws IOException if the SAX serialization failed
+     * @param noRecurse  passed through
+     * @throws IOException         if the SAX serialization failed
      * @throws RepositoryException if another error occurs
      */
     public void exportDocumentView(
@@ -446,11 +473,11 @@ public class JCRSessionWrapper implements Session {
      * with the given arguments and a {@link ContentHandler} that serializes
      * SAX events to the given output stream.
      *
-     * @param absPath passed through
-     * @param out output stream to which the SAX events are serialized
+     * @param absPath    passed through
+     * @param out        output stream to which the SAX events are serialized
      * @param skipBinary passed through
-     * @param noRecurse passed through
-     * @throws IOException if the SAX serialization failed
+     * @param noRecurse  passed through
+     * @throws IOException         if the SAX serialization failed
      * @throws RepositoryException if another error occurs
      */
     public void exportSystemView(
@@ -476,9 +503,9 @@ public class JCRSessionWrapper implements Session {
     /**
      * Exports content at the given path using the given exporter.
      *
-     * @param path of the node to be exported
+     * @param path     of the node to be exported
      * @param exporter document or system view exporter
-     * @throws SAXException if the SAX event handler failed
+     * @throws SAXException        if the SAX event handler failed
      * @throws RepositoryException if another error occurs
      */
     private synchronized void export(String path, Exporter exporter)
@@ -504,7 +531,7 @@ public class JCRSessionWrapper implements Session {
             throws RepositoryException {
         try {
             SAXTransformerFactory stf = (SAXTransformerFactory)
-                SAXTransformerFactory.newInstance();
+                    SAXTransformerFactory.newInstance();
             TransformerHandler handler = stf.newTransformerHandler();
 
             Transformer transformer = handler.getTransformer();
@@ -560,11 +587,11 @@ public class JCRSessionWrapper implements Session {
     }
 
     public Map<String, String> getStoredPasswordsProviders() {
-        Map<String, String> results = new HashMap<String,String>();
+        Map<String, String> results = new HashMap<String, String>();
         results.put(null, user.getUsername());
         for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
             if ("storedPasswords".equals(provider.getAuthenticationType())) {
-                results.put (provider.getKey(), user.getProperty("storedUsername_"+provider.getKey()));
+                results.put(provider.getKey(), user.getProperty("storedUsername_" + provider.getKey()));
             }
         }
         return results;
@@ -572,17 +599,91 @@ public class JCRSessionWrapper implements Session {
 
     public void storePasswordForProvider(String providerKey, String username, String password) {
         if (username == null) {
-            user.removeProperty("storedUsername_"+providerKey);
+            user.removeProperty("storedUsername_" + providerKey);
         } else {
-            user.setProperty("storedUsername_"+providerKey, username);
+            user.setProperty("storedUsername_" + providerKey, username);
         }
         if (password == null) {
-            user.removeProperty("storedPassword_"+providerKey);
+            user.removeProperty("storedPassword_" + providerKey);
         } else {
-            user.setProperty("storedPassword_"+providerKey, password);
+            user.setProperty("storedPassword_" + providerKey, password);
         }
     }
 
+
+    private class RemoveRootContentHandler implements ContentHandler {
+        private Map<String,String> mapping = new HashMap<String,String>();
+        private ContentHandler handler;
+        private int level = 0;
+
+        private RemoveRootContentHandler(ContentHandler handler) {
+            this.handler = handler;
+        }
+
+        public void setDocumentLocator(Locator locator) {
+            handler.setDocumentLocator(locator);
+        }
+
+        public void startDocument() throws SAXException {
+            handler.startDocument();
+        }
+
+        public void endDocument() throws SAXException {
+            handler.endDocument();
+        }
+
+        public void startPrefixMapping(String prefix, String uri) throws SAXException {
+            if (level <= 1) {
+                mapping.put(prefix, uri);
+            } else {
+                handler.startPrefixMapping(prefix, uri);
+            }
+        }
+
+        public void endPrefixMapping(String prefix) throws SAXException {
+            handler.endPrefixMapping(prefix);
+        }
+
+        public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+            if (level++ > 0) {
+                if (level == 2) {
+                    for (Map.Entry<String, String> entry : NodeTypeRegistry.getInstance().getNamespaces().entrySet()) {
+                        handler.startPrefixMapping(entry.getKey(), entry.getValue());
+                    }
+                    for (Map.Entry<String, String> entry : mapping.entrySet()) {
+                        handler.startPrefixMapping(entry.getKey(), entry.getValue());
+                    }
+                }
+                handler.startElement(uri, localName, qName, atts);
+            }
+        }
+
+        public void endElement(String uri, String localName, String qName) throws SAXException {
+            if (--level > 0) {
+                handler.endElement(uri, localName, qName);
+            }
+        }
+
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            if (level > 1) {
+                handler.characters(ch, start, length);
+            }
+        }
+
+        public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
+            if (level > 1) {
+                handler.ignorableWhitespace(ch, start, length);
+            }
+        }
+
+        public void processingInstruction(String target, String data) throws SAXException {
+            handler.processingInstruction(target, data);
+        }
+
+        public void skippedEntity(String name) throws SAXException {
+            handler.skippedEntity(name);
+        }
+    }
 
 
 }

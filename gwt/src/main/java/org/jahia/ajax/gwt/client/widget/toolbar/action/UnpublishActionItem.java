@@ -31,8 +31,10 @@
  **/
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,6 +46,18 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 public class UnpublishActionItem extends BaseActionItem {
     public void onComponentSelection() {
         EditActions.unpublish(linker);
+    }
+
+    /**
+     * Init the action item.
+     *
+     * @param gwtToolbarItem
+     * @param linker
+     */
+    @Override
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
+        super.init(gwtToolbarItem, linker);    //To change body of overridden methods use File | Settings | File Templates.
+        setEnabled(false);
     }
 
     public void handleNewLinkerSelection() {

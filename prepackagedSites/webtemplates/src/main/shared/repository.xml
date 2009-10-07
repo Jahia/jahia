@@ -144,19 +144,6 @@
     </users>
     <sites j:nodename="sites" jcr:created="2009-05-19T15:19:25.401+02:00" jcr:lastModified="2009-05-19T17:13:04.204+02:00" jcr:createdBy="root" jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:virtualsitesFolder" jcr:uuid="f22b1220-94f6-40e8-acfd-15b425ddc46f" jcr:lastModifiedBy="root" j:fullpath="/content/sites" j:virtualsitesFolderSkeleton="site.xml"></sites>
     <imports j:nodename="imports" jcr:created="2009-05-19T15:19:25.401+02:00" jcr:lastModified="2009-05-19T15:19:51.542+02:00" jcr:createdBy="root" jcr:primaryType="jnt:importDropBox" jcr:uuid="b524ae40-fcb7-4f33-adc5-db412cb3fdad" jcr:lastModifiedBy="root" j:fullpath="/content/imports"></imports>
-    <layoutmanager j:nodename="layoutmanager" jcr:created="2009-05-19T15:19:25.402+02:00" jcr:lastModified="2009-05-19T15:19:26.264+02:00" jcr:createdBy="root" jcr:primaryType="jnt:layoutManager" jcr:uuid="15657230-9e06-447e-b567-1da66ffa3287" jcr:lastModifiedBy="root" j:fullpath="/content/layoutmanager" jcr:mixinTypes="jmix:accessControlled">
-        <j:acl jcr:primaryType="jnt:acl">
-            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"></GRANT_jcr_read_g_users>
-            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"></GRANT_jcr_write_g_users>
-        </j:acl>
-        <j:layout j:liveEditable="true" j:page="3806fa68-e3b4-4c38-86fc-460a6e487c6c" j:nbColumns="3" j:liveDraggable="true" jcr:primaryType="jnt:layout" jcr:uuid="913fbf1c-aece-4aff-8f9a-bbf9081fb42e">
-            <j:item j:portlet="2dea87f7-a95f-4512-82a5-20ec772ac67a" j:rowIndex="0" j:status="normalState" j:columnIndex="0" jcr:primaryType="jnt:layoutItem" jcr:uuid="6101fb09-ad30-480b-a2a2-5c1eb1b54cad"></j:item>
-            <j:item j:portlet="6e60f1da-567c-467a-ad69-5277951f56b2" j:rowIndex="0" j:status="normalState" j:columnIndex="1" jcr:primaryType="jnt:layoutItem" jcr:uuid="9bd64527-57b5-42f2-a7c4-5338b22d5268"></j:item>
-            <j:item j:portlet="dd4b1e30-7c6e-4e5d-8416-24723796afa7" j:rowIndex="0" j:status="normalState" j:columnIndex="2" jcr:primaryType="jnt:layoutItem" jcr:uuid="a3294c73-e25d-4b1c-875c-d2115c41ac39"></j:item>
-            <j:item j:portlet="5bb09230-660b-4eef-8132-683b476b1949" j:rowIndex="2" j:status="normalState" j:columnIndex="0" jcr:primaryType="jnt:layoutItem" jcr:uuid="ad710fe1-88c7-41b7-9dbf-4e675b8b71dd"></j:item>
-            <j:item j:portlet="db316cf8-8d89-4d9a-b06d-2c76407c9a3a" j:rowIndex="1" j:status="normalState" j:columnIndex="0" jcr:primaryType="jnt:layoutItem" jcr:uuid="20996b53-0e86-45fb-8848-a839201bd395"></j:item>
-        </j:layout>
-    </layoutmanager>
     <referencesKeeper jcr:primaryType="jnt:referencesKeeper" jcr:uuid="5df17146-dc8e-4bba-b6d3-dfe81205c409"></referencesKeeper>
     <mounts j:nodename="mounts" jcr:created="2009-05-19T15:19:25.403+02:00" jcr:lastModified="2009-05-19T15:19:26.268+02:00" jcr:createdBy="root" jcr:primaryType="jnt:systemfolder" jcr:uuid="163e4e11-9b71-4c0c-a52c-7baf3932d1be" jcr:lastModifiedBy="root" j:fullpath="/content/mounts" jcr:mixinTypes="jmix:accessControlled">
         <j:acl jcr:primaryType="jnt:acl">

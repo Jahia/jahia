@@ -373,7 +373,7 @@ public class JCRStoreProvider {
 
     protected void initContent() throws RepositoryException, IOException {
         if ("/".equals(mountPoint)) {
-            Session session = getSystemSession();
+            JCRSessionWrapper session = service.getSessionFactory().getSystemSession();
             FileInputStream stream = null;
             try {
                 Node rootNode = session.getRootNode();
@@ -579,7 +579,7 @@ public class JCRStoreProvider {
 
 
     public void deployNewSite(JahiaSite site, JahiaUser user) throws RepositoryException {
-        Session session = getSystemSession(user.getUsername());
+        JCRSessionWrapper session = sessionFactory.getSystemSession(user.getUsername());
         try {
             if (session.getWorkspace().getQueryManager() != null) {
                 Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jmix:virtualsitesFolder]", Query.JCR_SQL2);
@@ -597,11 +597,10 @@ public class JCRStoreProvider {
                         try {
                             f.getNode(site.getSiteKey());
                         } catch (PathNotFoundException e) {
+                            session.getWorkspace().getVersionManager().checkout(f.getPath());
+                            f.addNode(site.getSiteKey(), Constants.JAHIANT_VIRTUALSITE);
                             if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
-                                session.importXML(f.getPath(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/"+ sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
-                                session.move(f.getPath()+"/site", f.getPath()+"/"+site.getSiteKey());
-                            } else {
-                                f.addNode(site.getSiteKey(), Constants.JAHIANT_VIRTUALSITE);
+                                session.importXMLWithoutRoot(f.getPath()+"/"+site.getSiteKey(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/"+ sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                             }
 
                             Node siteNode = f.getNode(site.getSiteKey());
@@ -616,7 +615,8 @@ public class JCRStoreProvider {
 //                            }
 
                             session.save();
-                            publicationService.publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+                            session.getWorkspace().getVersionManager().checkin(f.getPath());
+                            publicationService.publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, true);
                         }
                     }
                 } catch (IOException e) {
@@ -629,7 +629,7 @@ public class JCRStoreProvider {
     }
 
     public void deployExternalUser(String username, String providerName) throws RepositoryException {
-        Session session = getSystemSession(username);
+        JCRSessionWrapper session = sessionFactory.getSystemSession(username);
         try {
             if (session.getWorkspace().getQueryManager() != null) {
             Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jmix:usersFolder]", Query.JCR_SQL2);
@@ -653,19 +653,18 @@ public class JCRStoreProvider {
                                 f.getNode(username);
                             } catch (PathNotFoundException ee) {
                                 try {
-                                    Node userNode;
+                                    session.getWorkspace().getVersionManager().checkout(f.getPath());
+                                    Node userNode = f.addNode(username, Constants.JAHIANT_USER);
                                     if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
-                                        session.importXML(f.getPath(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
-                                        session.move(f.getPath()+"/user", f.getPath()+"/"+username);
-                                        userNode = f.getNode(username);
-                                        userNode.setProperty(JCRUser.J_EXTERNAL,true);
-                                        userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE,providerName);
-                                        JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
-                                    } else {
-                                        userNode = f.addNode(username, Constants.JAHIANT_USER);
-                                        JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
+                                        session.importXMLWithoutRoot(f.getPath()+"/"+username, new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                                     }
+
+                                    userNode.setProperty(JCRUser.J_EXTERNAL,true);
+                                    userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE,providerName);
+                                    JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
+
                                     session.save();
+                                    session.getWorkspace().getVersionManager().checkin(f.getPath());
                                     publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, true);
                                 } catch (RepositoryException e1) {
                                     logger.error("Cannot save", e1);
@@ -845,11 +844,11 @@ public class JCRStoreProvider {
     }
 
     public String encodeInternalName(String name) {
-        return JCRContentUtils.encodeInternalName(name);
+        return name; //JCRContentUtils.encodeInternalName(name);
     }
 
     public String decodeInternalName(String name) {
-        return JCRContentUtils.decodeInternalName(name);
+        return name; //JCRContentUtils.decodeInternalName(name);
     }
 
     public Session getCurrentUserSession() throws RepositoryException {

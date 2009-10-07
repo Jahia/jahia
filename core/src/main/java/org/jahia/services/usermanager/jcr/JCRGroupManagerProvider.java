@@ -114,15 +114,16 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 public JahiaGroup doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         JCRNodeWrapper nodeWrapper;
+                        JCRNodeWrapper parentNodeWrapper;
                         if (siteID == 0) {
-                            JCRNodeWrapper parentNodeWrapper = session.getNode("/" + Constants.CONTENT + "/groups");
-                            nodeWrapper = parentNodeWrapper.addNode(name, Constants.JAHIANT_GROUP);
+                            parentNodeWrapper = session.getNode("/" + Constants.CONTENT + "/groups");
                         } else {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
-                            JCRNodeWrapper parentNodeWrapper = session.getNode(
+                            parentNodeWrapper = session.getNode(
                                     "/" + Constants.CONTENT + "/sites/" + siteName + "/groups");
-                            nodeWrapper = parentNodeWrapper.addNode(name, Constants.JAHIANT_GROUP);
                         }
+                        session.getWorkspace().getVersionManager().checkout(parentNodeWrapper.getPath());
+                        nodeWrapper = parentNodeWrapper.addNode(name, Constants.JAHIANT_GROUP);
                         nodeWrapper.setProperty(JCRGroup.J_HIDDEN, hidden);
                         if (properties != null) {
                             for (Map.Entry<Object, Object> entry : properties.entrySet()) {
@@ -130,6 +131,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             }
                         }
                         session.save();
+                        session.getWorkspace().getVersionManager().checkin(parentNodeWrapper.getPath());
                         return new JCRGroup(nodeWrapper, jcrTemplate.getSessionFactory(), siteID);
                     } catch (JahiaException e) {
                         logger.error(e);

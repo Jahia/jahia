@@ -39,14 +39,13 @@ public class PublicationHelper {
      * Get the publication status information for a particular path.
      *
      * @param path to get publication info from
-     * @param user the user for obtaining the jcr session
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */
-    public GWTJahiaPublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences, JahiaUser user) throws GWTJahiaServiceException {
+    public GWTJahiaPublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences) throws GWTJahiaServiceException {
         try {
-            PublicationInfo pubInfo = publicationService.getPublicationInfo(path, user, languages, includesReferences);
+            PublicationInfo pubInfo = publicationService.getPublicationInfo(path, languages, includesReferences);
             return convert(path, pubInfo);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);

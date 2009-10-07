@@ -33,10 +33,7 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -61,56 +58,44 @@ public class ContentHubHelper {
         this.sessionFactory = sessionFactory;
     }
 
-    public void mount(String name, String root, JahiaUser user) throws GWTJahiaServiceException {
+    public void mount(final String name, final String root, final JahiaUser user) throws GWTJahiaServiceException {
         if (user.isAdminMember(0)) {
-            JCRSessionWrapper session = null;
             try {
-                session = sessionFactory.getSystemSession(user.getName());
-                JCRNodeWrapper parent = session.getNode("/content");
-                JCRNodeWrapper mounts;
-                try {
-                    mounts = parent.getNode("mounts");
-                } catch (PathNotFoundException nfe) {
-                    try {
-                        mounts = parent.addNode("mounts", "jnt:systemFolder");
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                        throw new GWTJahiaServiceException("Could not create 'mounts' folder");
-                    }
-                }
-
-                JCRMountPointNode childNode = null;
-                if (!mounts.isFile()) {
-                    try {
-                        childNode = (JCRMountPointNode) mounts.addNode(name, "jnt:vfsMountPoint");
-                        childNode.setProperty("j:root", root);
-
-                        boolean valid = childNode.checkValidity();
-                        if (!valid) {
-                            childNode.remove();
-                            throw new GWTJahiaServiceException("Invalid path");
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        JCRNodeWrapper parent = session.getNode("/content");
+                        JCRNodeWrapper mounts;
+                        try {
+                            mounts = parent.getNode("mounts");
+                        } catch (PathNotFoundException nfe) {
+                            mounts = parent.addNode("mounts", "jnt:systemFolder");
                         }
-                    } catch (RepositoryException e) {
-                        logger.error("Exception", e);
-                        throw new GWTJahiaServiceException("A system error happened");
+
+                        JCRMountPointNode childNode = null;
+                        if (!mounts.isFile()) {
+                            if (!mounts.isCheckedOut()) {
+                                mounts.checkout();
+                            }
+
+                            childNode = (JCRMountPointNode) mounts.addNode(name, "jnt:vfsMountPoint");
+                            childNode.setProperty("j:root", root);
+
+                            boolean valid = childNode.checkValidity();
+                            if (!valid) {
+                                childNode.remove();
+                                throw new RepositoryException("Invalid path");
+                            }
+                            session.save();
+                        }
+                        if (childNode == null) {
+                            throw new RepositoryException("A system error happened");
+                        }
+                        return null;
                     }
-                    try {
-                        parent.save();
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                        throw new GWTJahiaServiceException("A system error happened");
-                    }
-                }
-                if (childNode == null) {
-                    throw new GWTJahiaServiceException("A system error happened");
-                }
+                }, user.getName());
             } catch (RepositoryException e) {
                 logger.error("A system error happened", e);
                 throw new GWTJahiaServiceException("A system error happened");
-            } finally {
-                if (session != null) {
-                    session.logout();
-                }
             }
         } else {
             throw new GWTJahiaServiceException("Only root can mount folders");

@@ -108,21 +108,23 @@ public class SearchHelper {
             JCRNodeWrapper queryStore;
             boolean createdSearchFolder = false;
             if (!user.hasNode("savedSearch")) {
+                if (!user.isCheckedOut()) {
+                    user.checkout();
+                }
                 queryStore = user.createCollection("savedSearch");
                 createdSearchFolder = true;
             } else {
                 queryStore = sessionFactory.getCurrentUserSession(workspace, context.getLocale()).getNode(user.getPath() + "/savedSearch");
+                if (!queryStore.isCheckedOut()) {
+                    queryStore.checkout();
+                }
             }
             String path = queryStore.getPath() + "/" + name;
             if (contentManager.checkExistence(path)) {
                 throw new ExistingFileException("The node " + path + " alreadey exists.");
             }
             q.storeAsNode(path);
-            if (createdSearchFolder) {
-                user.save();
-            } else {
-                queryStore.save();
-            }
+            user.getSession().save();
             return navigation.getGWTJahiaNode(sessionFactory.getCurrentUserSession(workspace, context.getLocale()).getNode(path), true);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

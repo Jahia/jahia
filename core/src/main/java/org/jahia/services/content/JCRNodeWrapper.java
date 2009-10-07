@@ -1778,8 +1778,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *                                       If the checkout conflicts with the activity
      *                                       present on the current session.
      * @throws javax.jcr.RepositoryException If another error occurs.
-     * @deprecated As of JCR 2.0, {@link javax.jcr.version.VersionManager#checkout}
-     *             should be used instead.
      */
     void checkout() throws UnsupportedRepositoryOperationException, LockException, ActivityViolationException, RepositoryException;
 
@@ -2109,8 +2107,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return a boolean
      * @throws javax.jcr.RepositoryException If another error occurs.
-     * @deprecated As of JCR 2.0, {@link javax.jcr.version.VersionManager#isCheckedOut}
-     *             should be used instead.
      */
     boolean isCheckedOut() throws RepositoryException;
 

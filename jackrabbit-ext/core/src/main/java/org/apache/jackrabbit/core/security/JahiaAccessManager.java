@@ -101,6 +101,17 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
     private Map<String,Boolean> cache = new HashMap<String,Boolean>();
 
+    private static ThreadLocal<Collection<String>> deniedPathes = new ThreadLocal<Collection<String>>();
+    private static ThreadLocal<Boolean> publication = new ThreadLocal<Boolean>();
+
+    public static void setDeniedPathes(Collection<String> denied) {
+        JahiaAccessManager.deniedPathes.set(denied);
+    }
+
+    public static void setPublication(Boolean published) {
+        JahiaAccessManager.publication.set(published);
+    }
+
     /**
      * Empty constructor
      */
@@ -158,7 +169,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
     public void checkPermission(Path path, int permissions) throws AccessDeniedException, RepositoryException {
         if (!isGranted(path, permissions)) {
-            throw new AccessDeniedException("Not sufficient privileges for permissions : " + permissions + " on " + path);
+            throw new AccessDeniedException("Not sufficient privileges for permissions : " + permissions + " on " + path + " ["+deniedPathes.get()+"]");
         }
     }
 
@@ -186,7 +197,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
     public boolean isGranted(Path absPath, int permissions) throws RepositoryException {
 
-        if (p.isSystem() && p.getDeniedPathes() == null) {
+        if (p.isSystem() && deniedPathes.get() == null) {
             return true;
         }
 
@@ -204,7 +215,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
             PathResolver pr = new DefaultNamePathResolver(nr);
             String jcrPath = pr.getJCRPath(absPath);
 
-            if (p.getDeniedPathes() != null && p.getDeniedPathes().contains(jcrPath)) {
+            if (deniedPathes.get() != null && deniedPathes.get().contains(jcrPath)) {
                 cache.put(absPath.toString() + " : " + permissions, false);
                 return false;
             }
@@ -213,6 +224,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                 cache.put(absPath.toString() + " : " + permissions, true);
                 return true;
             }
+
             // Always deny write access on system folders
             if (securitySession.itemExists(jcrPath)) {
                 Item i = securitySession.getItem(jcrPath);
@@ -221,6 +233,18 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                     if (ntName.equals(Constants.JAHIANT_SYSTEMFOLDER) || ntName.equals("rep:root")) {
                         cache.put(absPath.toString() + " : " + permissions, false);
                         return false;
+                    }
+                }
+
+                if (publication.get() == null) {
+                    if ("live".equals(workspaceName) && i.isNode()) {
+                        Node n = (Node) i;
+                        if (n.isNodeType("jmix:lastPublished")) {
+                            if (!n.hasProperty("j:published") || !n.getProperty("j:published").getBoolean()) {
+                                cache.put(absPath.toString() + " : " + permissions, false);
+                                return false;
+                            }
+                        }
                     }
                 }
             }

@@ -560,7 +560,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * creates the entry in the database.
      *
      * @param entryPointDefinition EntryPointDefinition
-     * @param s
+     * @param path
      * @return the created instance for the entry point definition.
      * @throws JahiaException
      */
@@ -582,24 +582,23 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         if (epInstance != null) {
             try {
                 final EntryPointInstance epInstance1 = epInstance;
-                return jcrTemplate.doExecute(new JCRCallback<EntryPointInstance>() {
-                    public EntryPointInstance doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        final JCRNodeWrapper parentNode = session.getNode(path);
-                        final String name = epInstance1.getResKeyName() != null ? epInstance1.getResKeyName() : appBean.getName().replaceAll(
-                                "/", "___") + Math.round(Math.random() * 1000000l);
-                        final JCRPortletNode wrapper = (JCRPortletNode) parentNode.addNode(name, "jnt:portlet");
-                        final String scope = epInstance1.getCacheScope();
-                        if (scope != null) {
-                            wrapper.setProperty("j:cacheScope", scope);
-                        }
-                        wrapper.setApplication(appBean.getID(), epInstance1.getDefName());
-                        wrapper.setProperty("j:expirationTime", epInstance1.getExpirationTime());
-                        session.save();
-                        epInstance1.setID(wrapper.getUUID());
-                        return epInstance1;
-                    }
-                }, false, Jahia.getThreadParamBean().getUser(), null, null);
-
+                JCRSessionWrapper session = jcrTemplate.getSessionFactory().getCurrentUserSession();
+                final JCRNodeWrapper parentNode = session.getNode(path);
+                if (!parentNode.isCheckedOut()) {
+                    parentNode.checkout();
+                }
+                final String name = epInstance1.getResKeyName() != null ? epInstance1.getResKeyName() : appBean.getName().replaceAll(
+                        "/", "___") + Math.round(Math.random() * 1000000l);
+                final JCRPortletNode wrapper = (JCRPortletNode) parentNode.addNode(name, "jnt:portlet");
+                final String scope = epInstance1.getCacheScope();
+                if (scope != null) {
+                    wrapper.setProperty("j:cacheScope", scope);
+                }
+                wrapper.setApplication(appBean.getID(), epInstance1.getDefName());
+                wrapper.setProperty("j:expirationTime", epInstance1.getExpirationTime());
+                session.save();
+                epInstance1.setID(wrapper.getUUID());
+                return epInstance1;
             } catch (RepositoryException e) {
                 logger.error(e, e);
             }
@@ -660,22 +659,18 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         if (entryPointInstanceByID[0] == null && epInstanceID != null && !"".equals(epInstanceID) && !"<empty>".equals(
                 epInstanceID)) {
             try {
-                return jcrTemplate.doExecute(new JCRCallback<EntryPointInstance>() {
-                    public EntryPointInstance doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        final JCRPortletNode node = (JCRPortletNode) session.getNodeByUUID(epInstanceID);
-                        entryPointInstanceByID[0] = new EntryPointInstance(node.getUUID(), node.getContextName(),
-                                                                           node.getDefinitionName(), node.getName());
-                        if (node.hasProperty("j:cacheScope")) {
-                            entryPointInstanceByID[0].setCacheScope(node.getProperty("j:cacheScope").getString());
-                        }
-                        if (node.hasProperty("j:expirationTime")) {
-                            entryPointInstanceByID[0].setExpirationTime(node.getProperty("j:expirationTime").getLong());
-                        }
-                        entryPointCache.put(ENTRY_POINT_INSTANCE + epInstanceID, entryPointInstanceByID[0]);
-                        return entryPointInstanceByID[0];
-                    }
-                }, false, Jahia.getThreadParamBean().getUser(), null, null);
-
+                JCRSessionWrapper session = jcrTemplate.getSessionFactory().getCurrentUserSession();
+                final JCRPortletNode node = (JCRPortletNode) session.getNodeByUUID(epInstanceID);
+                entryPointInstanceByID[0] = new EntryPointInstance(node.getUUID(), node.getContextName(),
+                        node.getDefinitionName(), node.getName());
+                if (node.hasProperty("j:cacheScope")) {
+                    entryPointInstanceByID[0].setCacheScope(node.getProperty("j:cacheScope").getString());
+                }
+                if (node.hasProperty("j:expirationTime")) {
+                    entryPointInstanceByID[0].setExpirationTime(node.getProperty("j:expirationTime").getLong());
+                }
+                entryPointCache.put(ENTRY_POINT_INSTANCE + epInstanceID, entryPointInstanceByID[0]);
+                return entryPointInstanceByID[0];
             } catch (javax.jcr.ItemNotFoundException e) {
                 // user can't not access to portlet instance: intance doen't exist or user has no reqs ACL
                 logger.debug(
@@ -699,16 +694,11 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     public void removeEntryPointInstance(final String epInstanceID) throws JahiaException {
         try {
             if (epInstanceID != null) {
-                jcrTemplate.doExecute(new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        final Node node = session.getNodeByUUID(epInstanceID);
-                        node.remove();
-                        session.save();
-                        entryPointCache.remove(ENTRY_POINT_INSTANCE + epInstanceID);
-                        return null;
-                    }
-                }, false, Jahia.getThreadParamBean().getUser(), null, null);
-
+                JCRSessionWrapper session = jcrTemplate.getSessionFactory().getCurrentUserSession();
+                final Node node = session.getNodeByUUID(epInstanceID);
+                node.remove();
+                session.save();
+                entryPointCache.remove(ENTRY_POINT_INSTANCE + epInstanceID);
             }
         } catch (RepositoryException e) {
             logger.error(e, e);

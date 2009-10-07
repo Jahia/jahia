@@ -104,34 +104,35 @@ public class PropertyWrapper implements Updateable {
         }
     }
     private void copyToStaging(Node node, KnowledgeHelper drools) {
-        try {
-            JCRStoreProvider provider = (JCRStoreProvider)drools.getWorkingMemory().getGlobal("provider");
-            String username = ((User)drools.getWorkingMemory().getGlobal("user")).getName();
-            Session s = provider.getSystemSession(username, "default");
-            try {
-                Node stagingNode = s.getNodeByUUID(node.getUUID());
-                ExtendedPropertyDefinition propDef = getPropertyDefinition(node, name);
-                if (propDef == null) {
-                    logger.error("Property " + name + " does not exist in "
-                            + node.getPath() + " !");
-                    return;
-                }
-                if (propDef.isMultiple()) {
-                    stagingNode.setProperty(property.getName(), property
-                            .getValues());
-                } else {
-                    stagingNode.setProperty(property.getName(), property
-                            .getValue());
-                }
-                s.save();
-            } catch (RepositoryException e) {
-                logger.error("Cannot set property", e);
-            } finally {
-                s.logout();
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get session", e);
-        }
+        return;
+//        try {
+//            JCRStoreProvider provider = (JCRStoreProvider)drools.getWorkingMemory().getGlobal("provider");
+//            String username = ((User)drools.getWorkingMemory().getGlobal("user")).getName();
+//            Session s = provider.getSystemSession(username, "default");
+//            try {
+//                Node stagingNode = s.getNodeByUUID(node.getUUID());
+//                ExtendedPropertyDefinition propDef = getPropertyDefinition(node, name);
+//                if (propDef == null) {
+//                    logger.error("Property " + name + " does not exist in "
+//                            + node.getPath() + " !");
+//                    return;
+//                }
+//                if (propDef.isMultiple()) {
+//                    stagingNode.setProperty(property.getName(), property
+//                            .getValues());
+//                } else {
+//                    stagingNode.setProperty(property.getName(), property
+//                            .getValue());
+//                }
+//                s.save();
+//            } catch (RepositoryException e) {
+//                logger.error("Cannot set property", e);
+//            } finally {
+//                s.logout();
+//            }
+//        } catch (RepositoryException e) {
+//            logger.error("Cannot get session", e);
+//        }
     }
     
     public void doUpdate(Session s, List<Updateable> delayedUpdates) throws RepositoryException {
@@ -142,6 +143,10 @@ public class PropertyWrapper implements Updateable {
                 logger.debug("Node is still locked, delay property update to later");
                 delayedUpdates.add(this);
             } else {
+                if (!node.isCheckedOut()) {
+                    node.checkout();
+                }
+
                 setProperty(node, name, value,true);
             }
         } catch (PathNotFoundException e) {
@@ -186,9 +191,9 @@ public class PropertyWrapper implements Updateable {
                 }
             }
             // deal with versioning. this method is called at restore(...)
-            if (node.isNodeType(Constants.MIX_VERSIONABLE)) {
-                node.checkout();
-            }
+//            if (node.isNodeType(Constants.MIX_VERSIONABLE)) {
+//                node.checkout();
+//            }
 
             ExtendedPropertyDefinition propDef = getPropertyDefinition(node, name);
             if (propDef == null) {

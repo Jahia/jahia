@@ -48,6 +48,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.*;
+import javax.jcr.version.VersionManager;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.NodeTypeDefinition;
@@ -85,6 +86,9 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
             }
             super.start();
             if (liveWorkspaceCreated) {
+                session = getSystemSession();
+                Node n = session.getNode("/content");
+                recurseCheckin(n, session.getWorkspace().getVersionManager());
                 session = getSystemSession(null, "live");
                 session.getWorkspace().clone("default",
                         "/content", "/content", false);
@@ -96,6 +100,17 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
             if(session!=null && session.isLive()) {
                 session.logout();
             }
+        }
+    }
+
+    private void recurseCheckin(Node node, VersionManager versionManager) throws RepositoryException {
+        if (node.isNodeType("mix:versionable")) {
+            versionManager.checkin(node.getPath());
+        }
+        NodeIterator ni = node.getNodes();
+        while (ni.hasNext()) {
+            Node sub = ni.nextNode();
+            recurseCheckin(sub, versionManager);
         }
     }
 
@@ -140,12 +155,8 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
 
     protected void initializeAcl(Session session) throws RepositoryException, IOException {
         Node rootNode = session.getRootNode();
-        Node node = rootNode.getNode(Constants.JCR_SYSTEM);
-        // Import default ACLs
-        if (!node.hasNode("j:acl")) {
-            JCRNodeWrapperImpl.changePermissions(rootNode,"g:guest","r----");
-            JCRNodeWrapperImpl.changePermissions(rootNode,"g:users","re---");
-        }
+        JCRNodeWrapperImpl.changePermissions(rootNode,"g:guest","r----");
+        JCRNodeWrapperImpl.changePermissions(rootNode,"g:users","re---");
     }
 
 }

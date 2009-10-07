@@ -284,10 +284,10 @@ public class RulesListener extends DefaultEventListener {
                                     Property p = (Property) s.getItem(path);
 
                                     Node parent = p.getParent();
-                                    if (parent.isNodeType("jnt:translation")) {
-                                        parent = parent.getParent();
-                                    }
-                                    if (parent.isNodeType(Constants.JAHIAMIX_HIERARCHYNODE) || parent.isNodeType(Constants.NT_RESOURCE) || parent.isNodeType("jnt:workflowState")) {
+//                                    if (parent.isNodeType("jnt:translation")) {
+//                                        parent = parent.getParent();
+//                                    }
+                                    if (parent.isNodeType(Constants.JAHIAMIX_HIERARCHYNODE) || parent.isNodeType(Constants.NT_RESOURCE) || parent.isNodeType("jnt:workflowState") || parent.isNodeType("jnt:translation")) {
                                         NodeWrapper rn;
                                         if (parent .isNodeType(Constants.MIX_REFERENCEABLE)) {
                                             rn = eventsMap.get(parent.getUUID());
@@ -382,10 +382,10 @@ public class RulesListener extends DefaultEventListener {
                     for (Iterator<Object> iterator = objects.iterator(); iterator.hasNext();) {
                         NodeWrapper nodeWrapper = (NodeWrapper) iterator.next();
                         Node n = nodeWrapper.getNode();
-                        if (n.isNodeType(Constants.MIX_VERSIONABLE)) {
-                            n.checkin();
-                            n.checkout();
-                        }
+//                        if (n.isNodeType(Constants.MIX_VERSIONABLE)) {
+//                            n.checkin();
+//                            n.checkout();
+//                        }
                     }
                 }
             } finally {

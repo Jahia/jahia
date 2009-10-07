@@ -37,9 +37,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
@@ -72,7 +70,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     protected static final String METHOD_POST = "POST";
     protected static final String METHOD_PUT = "PUT";
     protected static final String METHOD_TRACE = "TRACE";
-    
+
     protected static final String HEADER_IFMODSINCE = "If-Modified-Since";
     protected static final String HEADER_LASTMOD = "Last-Modified";
 
@@ -96,7 +94,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     private transient ServletConfig servletConfig;
-    
+
     /**
      * Returns the time the <code>HttpServletRequest</code>
      * object was last modified,
@@ -279,43 +277,43 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         	logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         }
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
-        JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getSystemSession(null, workspace);
 
         JCRNodeWrapper node = null;
 
         String ext = null;
         String tpl = null;
 
-        try {
-            while (true) {
-                int i = path.lastIndexOf('.');
-                if (i > path.lastIndexOf('/')) {
-                    if (ext == null) {
-                        ext = path.substring(i + 1);
-                    } else if (tpl == null) {
-                        tpl = path.substring(i + 1);
-                    } else {
-                        tpl = path.substring(i + 1) + "." + tpl;
-                    }
-                    path = path.substring(0, i);
+        while (true) {
+            int i = path.lastIndexOf('.');
+            if (i > path.lastIndexOf('/')) {
+                if (ext == null) {
+                    ext = path.substring(i + 1);
+                } else if (tpl == null) {
+                    tpl = path.substring(i + 1);
                 } else {
-                    throw new PathNotFoundException("not found");
+                    tpl = path.substring(i + 1) + "." + tpl;
                 }
+                path = path.substring(0, i);
+            } else {
+                throw new PathNotFoundException("not found");
+            }
+            try {
+                node = session.getNode(path);
+                break;
+            } catch (PathNotFoundException e) {
                 try {
-                    node = session.getNode(path);
-                    break;
-                } catch (PathNotFoundException e) {
-                    try {
-                        // node unreadable ?
-                        systemSession.getNode(path);
-                        throw new AccessDeniedException(path);
-                    } catch (PathNotFoundException e1) {
-                        // continue
-                    }
+                    // node unreadable ?
+                    final String p = path;
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            return session.getNode(p);
+                        }
+                    }, null, workspace);
+                    throw new AccessDeniedException(path);
+                } catch (PathNotFoundException e1) {
+                    // continue
                 }
             }
-        } finally {
-            systemSession.logout();
         }
         Resource r = new Resource(node, ext, null, tpl);
         if (logger.isDebugEnabled()) {
@@ -366,7 +364,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             req.getSession(true).setAttribute(ParamBean.SESSION_SITE, old);
 
             path = path.substring(path.indexOf('/', 1));
-            
+
             int index = path.indexOf('/', 1);
             String workspace = path.substring(1, index);
             path = path.substring(index);

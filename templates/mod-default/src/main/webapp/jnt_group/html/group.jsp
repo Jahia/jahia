@@ -21,12 +21,12 @@
     <ul>
         <c:set var="parent" value="${currentNode.parent}"/>
         <c:if test="${parent.name != ''}">
-            <li><a href="${baseUrl}${parent.path}.html">..</a></li>
+            <li><a href="${url.base}${parent.path}.html">..</a></li>
         </c:if>
     <c:forEach items="${currentNode.nodes}" var="child">
         <c:if test="${not jcr:isNodeType(child, 'jnt:members')}">
         <li>
-            <a href="${baseUrl}${child.path}.html">${child.name}</a>            
+            <a href="${url.base}${child.path}.html">${child.name}</a>
         </li>
         </c:if>
     </c:forEach>
@@ -40,7 +40,7 @@
                     <jcr:nodeProperty node="${subchild}" name="j:member" var="memberRef"/>
                     <c:set var="uuid" value="${memberRef.string}"/> 
                     <%
-                    pageContext.setAttribute("member", ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID((String) pageContext.getAttribute("uuid"), (JahiaUser)pageContext.getAttribute("currentUser")));
+                    pageContext.setAttribute("member", ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession().getNodeByUUID((String) pageContext.getAttribute("uuid")));
                     %>
                     <div>
                         <c:if test="${jcr:isNodeType(member, 'jnt:group')}" var="isGroup">
@@ -50,7 +50,7 @@
                             <img src="${pageContext.request.contextPath}/engines/images/types/gwt/large/icon-user.png" alt=" " style="float: left" />
                         </c:if>
                         <jcr:nodeProperty node="${member}" name="jcr:title" var="title"/>
-                        <a href="${baseUrl}${member.path}.html"><strong>
+                        <a href="${url.base}${member.path}.html"><strong>
                         <c:if test="${not empty title}">
                             ${title.string}&nbsp(${member.name})
                         </c:if>

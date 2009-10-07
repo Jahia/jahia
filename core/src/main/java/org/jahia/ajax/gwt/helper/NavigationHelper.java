@@ -237,7 +237,7 @@ public class NavigationHelper {
                     GWTJahiaNode theNode = getGWTJahiaNode(f, true);
                     if (displayAllVirtualSites) {
                         try {
-                            theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false, context.getUser()));
+                            theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), null, false));
                         } catch (GWTJahiaServiceException e) {
                             logger.error(e.getMessage(), e);
                         }

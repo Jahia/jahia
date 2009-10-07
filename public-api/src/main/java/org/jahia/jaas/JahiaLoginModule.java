@@ -86,21 +86,21 @@ public class JahiaLoginModule implements LoginModule {
                     String key = new String(pass);
                     Token token = removeToken(name, key);
                     if (token != null) {
-                        user = new JahiaPrincipal(SYSTEM, true, false, token.deniedPath);
+                        user = new JahiaPrincipal(SYSTEM, true, false);
                     }
                 } else if (name.startsWith(SYSTEM)) {
                     String key = new String(pass);
                     Token token = removeToken(name, key);
                     if (token != null) {
-                        user = new JahiaPrincipal(name.substring(SYSTEM.length()), true, false, token.deniedPath);
+                        user = new JahiaPrincipal(name.substring(SYSTEM.length()), true, false);
                     }
                 } else if (GUEST.equals(name)) {
-                    user = new JahiaPrincipal(GUEST, false, true, null);
+                    user = new JahiaPrincipal(GUEST, false, true);
                 } else {
                     String key = new String(pass);
                     Token token = removeToken(name, key);
                     if ((token != null) || getUserService().checkPassword(name,key)) {
-                        user = new JahiaPrincipal(name, token != null ? token.deniedPath : null);
+                        user = new JahiaPrincipal(name);
                     }
                 }
                 if (user == null) {

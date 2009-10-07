@@ -230,6 +230,10 @@ public class ContentManagerHelper {
                 missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - ACCESS DENIED").toString());
             } else if (!getRecursedLocksAndFileUsages(nodeToDelete, missedPaths, user.getUsername())) {
                 try {
+                    if (!nodeToDelete.getParent().isCheckedOut()) {
+                        nodeToDelete.getParent().checkout();
+                    }
+
                     nodeToDelete.remove();
                     nodeToDelete.saveSession();
                 } catch (AccessDeniedException e) {
@@ -399,6 +403,9 @@ public class ContentManagerHelper {
 
     private void doPasteReference(JCRNodeWrapper dest, JCRNodeWrapper node, String name) throws RepositoryException, JahiaException {
         /*Property p = */
+        if (!dest.isCheckedOut()) {
+            dest.checkout();
+        }
         if (dest.getPrimaryNodeTypeName().equals("jnt:members")) {
             if (node.getPrimaryNodeTypeName().equals("jnt:user")) {
                 Node member = dest.addNode(name, Constants.JAHIANT_MEMBER);
@@ -483,6 +490,9 @@ public class ContentManagerHelper {
         JCRNodeWrapper childNode = null;
         if (!parentNode.isFile() && parentNode.isWriteable()) {
             try {
+                if (!parentNode.isCheckedOut()) {
+                    parentNode.checkout();
+                }
                 childNode = parentNode.addNode(name, nodeType);
                 properties.setProperties(childNode, props);
             } catch (Exception e) {
@@ -530,6 +540,9 @@ public class ContentManagerHelper {
         JCRNodeWrapper childNode = null;
         if (!parentNode.isFile()) {
             try {
+                if (!parentNode.isCheckedOut()) {
+                    parentNode.checkout();
+                }
                 childNode = parentNode.addNode(name, nodeType);
                 properties.setProperties(childNode, props);
             } catch (Exception e) {
@@ -603,10 +616,14 @@ public class ContentManagerHelper {
         JCRNodeWrapper node;
         try {
             node = sessionFactory.getCurrentUserSession().getNode(path);
+            if (!node.isCheckedOut()) {
+                node.checkout();
+            }
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
+
         node.revokeAllPermissions();
         for (GWTJahiaNodeACE ace : acl.getAce()) {
             String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
@@ -840,6 +857,10 @@ public class ContentManagerHelper {
                     switch (format) {
                         case XMLFormatDetectionHandler.JCR_DOCVIEW: {
                             JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
+                            JCRNodeWrapper node = session.getNode(parentPath);
+                            if (!node.isCheckedOut()) {
+                                node.checkout();
+                            }
 
                             session.importXML(parentPath, new FileInputStream(tempFile), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                             session.save();
@@ -876,14 +897,22 @@ public class ContentManagerHelper {
         final JCRNodeWrapper srcNode = session.getNode(sourcePath);
         final JCRNodeWrapper targetNode = session.getNode(targetPath);
         final JCRNodeWrapper targetParent = (JCRNodeWrapper) targetNode.getParent();
+        if (!targetParent.isCheckedOut()) {
+            targetParent.checkout();
+        }
         if (srcNode.getParent().getPath().equals(targetParent.getPath())) {
             targetParent.orderBefore(srcNode.getName(), targetNode.getName());
         } else {
+            if (!srcNode.isCheckedOut()) {
+                srcNode.checkout();
+            }
+            if (!srcNode.getParent().isCheckedOut()) {
+                srcNode.getParent().checkout();
+            }
             String newname = findAvailableName(targetParent, srcNode.getName());
             session.getWorkspace().move(sourcePath, targetParent.getPath() + "/" + newname);
             targetParent.orderBefore(newname, targetNode.getName());
         }
-        targetParent.save();
         session.save();
     }
 
@@ -891,14 +920,23 @@ public class ContentManagerHelper {
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
         final JCRNodeWrapper srcNode = session.getNode(sourcePath);
         final JCRNodeWrapper targetNode = session.getNode(targetPath);
+        if (!targetNode.isCheckedOut()) {
+            targetNode.checkout();
+        }
+
         if (srcNode.getParent().getPath().equals(targetNode.getPath())) {
             targetNode.orderBefore(srcNode.getName(), null);
         } else {
+            if (!srcNode.isCheckedOut()) {
+                srcNode.checkout();
+            }
+            if (!srcNode.getParent().isCheckedOut()) {
+                srcNode.getParent().checkout();
+            }
             String newname = findAvailableName(targetNode, srcNode.getName());
             session.getWorkspace().move(sourcePath, targetNode.getPath() + "/" + newname);
             targetNode.orderBefore(newname, null);
         }
-        targetNode.save();
         session.save();
     }
 
@@ -911,6 +949,9 @@ public class ContentManagerHelper {
                 targetParent = (JCRNodeWrapper) targetNode.getParent();
             else targetParent = targetNode;
             if (targetParent.isCollection() && targetParent.isWriteable()) {
+                if (!targetParent.isCheckedOut()) {
+                    targetParent.checkout();
+                }
                 JCRNodeWrapper node = session.getNode(aNode.getPath());
                 if (node.hasPermission(JCRNodeWrapper.READ)) {
                     name = findAvailableName(targetParent, name);

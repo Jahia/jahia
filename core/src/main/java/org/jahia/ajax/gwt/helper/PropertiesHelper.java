@@ -158,8 +158,8 @@ public class PropertiesHelper {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(aNode.getDisplayName()).append(" could not be accessed :\n").append(e.toString()).toString());
             }
-            setProperties(objectNode, newProps);
             try {
+                setProperties(objectNode, newProps);
                 objectNode.save();
             } catch (RepositoryException e) {
                 logger.error("error", e);
@@ -168,7 +168,11 @@ public class PropertiesHelper {
         }
     }
 
-    public void setProperties(Node objectNode, List<GWTJahiaNodeProperty> newProps) {
+    public void setProperties(JCRNodeWrapper objectNode, List<GWTJahiaNodeProperty> newProps) throws RepositoryException {
+        if (!objectNode.isCheckedOut()) {
+            objectNode.checkout();
+        }
+
         for (GWTJahiaNodeProperty prop : newProps) {
             try {
                 if (prop != null && !prop.getName().equals("*")) {
@@ -231,23 +235,15 @@ public class PropertiesHelper {
 
                 }
             } catch (PathNotFoundException e) {
-                try {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Property with the name '"
-                                + prop.getName() + "' not found on the node "
-                                + objectNode.getPath() + ". Skipping.", e);
-                    } else {
-                        logger.info("Property with the name '" + prop.getName()
-                                + "' not found on the node "
-                                + objectNode.getPath() + ". Skipping.");
-                    }
-                } catch (RepositoryException re) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Property with the name '"
+                            + prop.getName() + "' not found on the node "
+                            + objectNode.getPath() + ". Skipping.", e);
+                } else {
                     logger.info("Property with the name '" + prop.getName()
-                            + "' not found on the node " + objectNode
-                            + ". Skipping.");
+                            + "' not found on the node "
+                            + objectNode.getPath() + ". Skipping.");
                 }
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
             }
         }
     }

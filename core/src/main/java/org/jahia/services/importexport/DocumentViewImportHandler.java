@@ -145,6 +145,10 @@ public class DocumentViewImportHandler extends DefaultHandler {
             boolean isValid = true;
             try {
                 child = session.getNode(path);
+                if (child.isWriteable() && child.isVersioned() && !child.isCheckedOut()) {
+                    child.checkout();
+                }
+
             } catch (PathNotFoundException e) {
                 isValid = false;
             }
@@ -178,7 +182,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     }
                 }
             } else {
-                if (child.isWriteable()) {
+                if (child.isWriteable() && child.isCheckedOut()) {
                     addMixins(child, atts);
                     setAttributes(child, atts);
                 }

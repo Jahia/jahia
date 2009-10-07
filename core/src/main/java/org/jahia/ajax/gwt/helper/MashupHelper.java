@@ -173,6 +173,10 @@ public class MashupHelper {
                 throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
             }
             JCRNodeWrapper parentNode = sessionFactory.getCurrentUserSession().getNode(parentPath);
+            if (!parentNode.isCheckedOut()) {
+                parentNode.checkout();
+            }
+
             JCRPortletNode node = (JCRPortletNode) contentManager.addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), gwtJahiaNewPortletInstance.getProperties());
 
             node.setApplication(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getApplicationId(), gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName());

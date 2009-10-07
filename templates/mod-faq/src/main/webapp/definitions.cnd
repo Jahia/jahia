@@ -3,7 +3,7 @@
 
 [jnt:faq] > jnt:container, jmix:structuredContent
 smallText question
-smallText answer      
+bigText answer
 
 [jnt:faqList] > jnt:container, jmix:structuredContent
 + * (jnt:faq)

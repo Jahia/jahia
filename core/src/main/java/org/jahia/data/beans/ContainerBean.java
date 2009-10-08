@@ -532,7 +532,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                         isPicker = false;
                     }
                 } catch (JahiaException e) {
-                    logger.error(e);
+                    logger.error("Error while building action menu for picked content", e);
                 }
             }
 
@@ -797,7 +797,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
         try {
             return importExportService.isPicker(jahiaContainer.getContentContainer());
         } catch (JahiaException e) {
-            logger.error(e);
+            logger.error("Error while trying to resolve picker status", e);
         }
         return false;
     }

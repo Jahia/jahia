@@ -65,7 +65,7 @@ public class JahiaWorkflowSettingsNodeImpl extends NodeImpl {
             setDefinition(NodeTypeRegistry.getInstance().getNodeType("jmix:workflowed").getChildNodeDefinitionsAsMap().get("j:workflow"));
             setNodetype(NodeTypeRegistry.getInstance().getNodeType("jnt:workflow"));
         } catch (NoSuchNodeTypeException e) {
-            logger.error(e);
+            logger.error("Error while setting workflow node type", e);
         }
     }
 

@@ -77,7 +77,7 @@ public class JCRGroup extends JahiaGroup {
             this.hidden = nodeWrapper.getProperty(J_HIDDEN).getBoolean();
             this.mMembers = getMembersMap(nodeWrapper);
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while accessing repository", e);
         }
     }
 
@@ -98,7 +98,7 @@ public class JCRGroup extends JahiaGroup {
                 properties.put(property.getName(), property.getString());
             }
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while retrieving group properties", e);
         } finally {
             if (session != null) {
                 session.logout();
@@ -208,7 +208,7 @@ public class JCRGroup extends JahiaGroup {
             }
 
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while adding group member", e);
         } finally {
             if (session != null) {
                 session.logout();
@@ -227,7 +227,7 @@ public class JCRGroup extends JahiaGroup {
         try {
             return ServicesRegistry.getInstance().getJahiaSitesService().getSite(mSiteID).getHomePageID();
         } catch (JahiaException e) {
-            logger.error(e);
+            logger.error("Error while retrieving home page ID", e);
         }
         return 0;
     }
@@ -264,7 +264,7 @@ public class JCRGroup extends JahiaGroup {
             final Node node = getNode(session);
             return getMembersMap(node);
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while retrieving group member map", e);
         } finally {
             if (session != null) {
                 session.logout();
@@ -310,7 +310,7 @@ public class JCRGroup extends JahiaGroup {
                 removeMember(session, members, jcrUser);
             }
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while removing member", e);
         } finally {
             if (session != null) {
                 session.logout();

@@ -355,7 +355,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
                 }
             }
         } catch (NoSuchNodeTypeException e) {
-            logger.error(e);
+            logger.error("Error while building container definition for template", e);
         }
         return containerNamesAndDefId;
     }

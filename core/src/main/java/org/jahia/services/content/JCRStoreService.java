@@ -168,7 +168,7 @@ public class JCRStoreService extends JahiaService  {
                 }
             }
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while decorating node", e);
         }
         return w;
     }

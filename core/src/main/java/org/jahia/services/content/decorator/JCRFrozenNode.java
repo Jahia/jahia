@@ -65,7 +65,7 @@ public class JCRFrozenNode extends JCRNodeDecorator {
             try {
                 return getProvider().getHttpPath() + this.getPropertyAsString("j:fullpath") + "?v=" + getParent().getName();
             } catch (RepositoryException e) {
-                logger.error(e);
+                logger.error("Error while retrieving fullpath property", e);
             }
 
         }

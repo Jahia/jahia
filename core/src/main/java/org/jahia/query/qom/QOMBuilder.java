@@ -66,7 +66,7 @@ public class QOMBuilder implements QueryObjectModelFactory {
         try {
             queryManager = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while retrieving query manager", e);
         }
         qomFactory = queryManager.getQOMFactory();
         orderings = new ArrayList<Ordering>();

@@ -1652,7 +1652,7 @@ public class ImportHandler extends DefaultHandler {
             try {
                 ServicesRegistry.getInstance ().getJahiaEventService ().fireSetRights(setRightsEvent);
             } catch (JahiaException e) {
-                logger.error(e);
+                logger.error("Error while firing set rights event", e);
             }
         }
 
@@ -1668,7 +1668,7 @@ public class ImportHandler extends DefaultHandler {
                     try {
                         ServicesRegistry.getInstance().getJahiaEventService().fireSetRights(setRightsEvent);
                     } catch (JahiaException e) {
-                        logger.error(e);
+                        logger.error("Error while firing set rights event",e);
                     }
                 }
             }

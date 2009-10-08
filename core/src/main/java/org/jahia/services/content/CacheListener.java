@@ -125,13 +125,13 @@ public class CacheListener extends DefaultEventListener {
                                 cache.remove(n.getPath());
                             }
                         } catch (JahiaException e) {
-                            logger.error(e);
+                            logger.error("Error flushing node references", e);
                         }
                         return null;
                     }
                 });
             } catch (RepositoryException e) {
-                logger.error(e);
+                logger.error("Error while accessing repository", e);
             }
         }
 //        System.out.println("----------------> "+nodes);

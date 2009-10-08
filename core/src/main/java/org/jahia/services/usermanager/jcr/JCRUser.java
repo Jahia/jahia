@@ -194,7 +194,7 @@ public class JCRUser implements JahiaUser {
                     }
                 }
             } catch (RepositoryException e) {
-                logger.error(e);
+                logger.error("Error while retrieving user properties", e);
             } finally {
                 if (session != null) {
                     session.logout();

@@ -134,13 +134,13 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         session.getWorkspace().getVersionManager().checkin(parentNodeWrapper.getPath());
                         return new JCRGroup(nodeWrapper, jcrTemplate.getSessionFactory(), siteID);
                     } catch (JahiaException e) {
-                        logger.error(e);
+                        logger.error("Error while creating group", e);
                     }
                     return null;
                 }
             });
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while creating group", e);
             return null;
         }
     }
@@ -159,7 +159,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 });
 
             } catch (RepositoryException e) {
-                logger.error(e);
+                logger.error("Error while deleting group", e);
             }
         }
         return false;
@@ -211,7 +211,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error retrieving group list", e);
             return new ArrayList<String>();
         }
     }
@@ -245,14 +245,14 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             }
                         }
                     } catch (JahiaException e) {
-                        logger.error(e);
+                        logger.error("Error retrieving group list for site " + siteID, e);
                     }
                     return groups;
                 }
             });
 
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error retrieving group list for site " + siteID, e);
             return new ArrayList<String>();
         }
     }
@@ -285,7 +285,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error retrieving group name list", e);
             return new ArrayList<String>();
         }
     }
@@ -317,13 +317,13 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             }
                         }
                     } catch (JahiaException e) {
-                        logger.error(e);
+                        logger.error("Error retrieving group name list for site " + siteID, e);
                     }
                     return groups;
                 }
             });
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error retrieving group name list for site " + siteID, e);
             return new ArrayList<String>();
         }
     }
@@ -372,13 +372,13 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                                 }
                             }
                         } catch (JahiaException e) {
-                            logger.error(e);
+                            logger.error("Error retrieving membership for user ", e);
                         }
                         return groups;
                     }
                 });
             } catch (RepositoryException e) {
-                logger.error(e);
+                logger.error("Error retrieving membership for user ", e);
             }
         }
         return new ArrayList<String>();
@@ -417,16 +417,16 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         }
                         return usersFolderNode != null;
                     } catch (JahiaException e) {
-                        logger.error(e);
+                        logger.error("Error testing existence of group " + name + " for site "+ siteID, e);
                         return false;
                     }
                 }
             });
 
         } catch (PathNotFoundException e) {
-            logger.debug(e);
+            logger.debug("Error testing existence of group " + name + " for site "+ siteID, e);
         } catch (RepositoryException e) {
-            logger.warn(e);
+            logger.warn("Error testing existence of group " + name + " for site "+ siteID, e);
         }
         return false;
     }
@@ -478,19 +478,19 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         cache.put(trueGroupKey, group);
                         return group;
                     } catch (JahiaException e) {
-                        logger.error(e);
+                        logger.error("Error while looking up group " + trueGroupKey, e);
                         return null;
                     }
                 }
             });
         } catch (PathNotFoundException e) {
-            logger.debug(e);
+            logger.debug("Error while looking up group " + groupKey, e);
         } catch (RepositoryException e) {
-            logger.warn(e);
+            logger.warn("Error while looking up group " + groupKey, e);
         } catch (JahiaInitializationException e) {
-            logger.error(e);
+            logger.error("Error while looking up group " + groupKey, e);
         } catch (JahiaException e) {
-            logger.error(e);
+            logger.error("Error while looking up group " + groupKey, e);
         }
         return null;
     }
@@ -534,18 +534,18 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         cache.put(trueGroupKey, group);
                         return group;
                     } catch (JahiaException e) {
-                        logger.error(e);
+                        logger.error("Error while retrieving group " + name + " for site " + siteID1, e);
                         return null;
                     }
                 }
             });
 
         } catch (PathNotFoundException e) {
-            logger.debug(e);
+            logger.debug("Error while retrieving group " + name + " for site " + siteID, e);
         } catch (RepositoryException e) {
-            logger.warn(e);
+            logger.warn("Error while retrieving group " + name + " for site " + siteID, e);
         } catch (JahiaInitializationException e) {
-            logger.error(e);
+            logger.error("Error while retrieving group " + name + " for site " + siteID, e);
         }
         return null;
     }
@@ -579,7 +579,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 });
             }
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while removing user from all groups", e);
         }
         return false;
     }
@@ -642,7 +642,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             });
 
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while searching groups", e);
             return new HashSet<JahiaGroup>();
         }
     }

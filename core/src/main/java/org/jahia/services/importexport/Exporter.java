@@ -120,7 +120,7 @@ public abstract class Exporter {
                                 value = "";
                             }
                         } catch (RepositoryException e) {
-                            logger.error(e);
+                            logger.error("Error retrieving node", e);
                             value = "";
                         }
                     }
@@ -155,7 +155,7 @@ public abstract class Exporter {
                 try {
                     return JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(epi.getID()).getPath();
                 } catch (RepositoryException e) {
-                    logger.error(e);
+                    logger.error("Error while retrieving node by UUID", e);
                 }
             }
             return null;
@@ -203,7 +203,7 @@ public abstract class Exporter {
                     files.add(file);
                 }
             } catch (RepositoryException e) {
-                logger.error(e);
+                logger.error("Error while retrieving node", e);
             }
         } else if (object instanceof ContentBigTextField) {
             String value = ((ContentBigTextField)object).getValue(jParams, entryState);

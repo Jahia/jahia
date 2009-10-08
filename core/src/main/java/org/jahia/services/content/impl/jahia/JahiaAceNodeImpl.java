@@ -65,7 +65,7 @@ public class JahiaAceNodeImpl extends NodeImpl {
             setDefinition(parent.nodetype.getUnstructuredChildNodeDefinitions().get("jnt:ace"));
             setNodetype(type);
         } catch (NoSuchNodeTypeException e) {
-            logger.error(e);
+            logger.error("Error while setting ACE node type", e);
         }
     }
 

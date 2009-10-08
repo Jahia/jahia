@@ -154,7 +154,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while creating user " + name, e);
             return null;
         }
     }
@@ -180,7 +180,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                     }
                 });
             } catch (RepositoryException e) {
-                logger.error(e);
+                logger.error("Error while deleting user", e);
                 return false;
             }
         }
@@ -223,7 +223,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while retrieving user list", e);
             return new ArrayList<String>();
         }
     }
@@ -255,7 +255,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while retrieving user name list", e);
             return new ArrayList<String>();
         }
     }
@@ -299,9 +299,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 }
             });
         } catch (JahiaInitializationException e) {
-            logger.error(e);
+            logger.error("Error while looking up user by key " + userKey, e);
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while looking up user by key " + userKey, e);
         }
         return null;
     }
@@ -332,9 +332,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 }
             });
         } catch (JahiaInitializationException e) {
-            logger.error(e);
+            logger.error("Error while looking up user by name " + name, e);
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while looking up user by name " + name, e);
         }
         return null;
     }
@@ -359,9 +359,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 }
             });
         } catch (JahiaInitializationException e) {
-            logger.error(e);
+            logger.error("Error while looking up external user by name " + name, e);
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while looking up external user by name " + name, e);
         }
         return null;
     }
@@ -445,7 +445,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while searching for users", e);
             return new HashSet<JahiaUser>();
         }
     }
@@ -483,7 +483,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error when testing user existence", e);
             return false;
         }
     }

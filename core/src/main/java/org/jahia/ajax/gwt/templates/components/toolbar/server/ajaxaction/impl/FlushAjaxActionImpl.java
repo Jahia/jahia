@@ -96,7 +96,7 @@ public class FlushAjaxActionImpl extends AjaxAction {
             ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance().flushPage(key,localeArrayList);
             return "Page Flushed ";
         } catch (JahiaException e) {
-            logger.error(e);
+            logger.error("Error while flushing page", e);
         }
         return "Page not flushed";
     }
@@ -109,7 +109,7 @@ public class FlushAjaxActionImpl extends AjaxAction {
             ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance().flushContainersForSite(id);
             return "Site Flushed ";
         } catch (JahiaException e) {
-            logger.error(e);
+            logger.error("Error while flushing site", e);
         }
         return "Site not flushed";
     }

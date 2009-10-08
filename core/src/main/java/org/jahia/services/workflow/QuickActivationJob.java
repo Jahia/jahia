@@ -201,11 +201,11 @@ public class QuickActivationJob extends AbstractActivationJob {
                         .setStatus(ActivationTestResults.COMPLETED_OPERATION_STATUS);
             }
         } catch (IllegalArgumentException e) {
-            logger.error(e);
+            logger.error("Error during activation", e);
             activationTestResults.appendError(new NodeOperationResult(null,
                     null, e.getMessage()));
         } catch (IllegalStateException e) {
-            logger.error(e);
+            logger.error("Error during activation", e);
             activationTestResults.appendError(new NodeOperationResult(null,
                     null, e.getMessage()));
         } finally {

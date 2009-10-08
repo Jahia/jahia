@@ -152,7 +152,7 @@ public class UserListTag extends AbstractJahiaTag {
         try {
             out.println(sb.toString());
         } catch (IOException e) {
-            logger.error(e);
+            logger.error("Error while rendering the user list tag", e);
         }
         return SKIP_BODY;
     }

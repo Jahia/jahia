@@ -140,7 +140,7 @@ public class CacheEventListener extends JahiaEventListener {
                         .getSite(ce.getProcessingContext().getSiteID())
                         .getLanguageSettingsAsLocales(true);
             } catch (JahiaException e) {
-                logger.error(e);
+                logger.error("Error while retrieving language settings", e);
             }
         }
         for (Object[] objs : myEvents) {
@@ -170,7 +170,7 @@ public class CacheEventListener extends JahiaEventListener {
                     }
                 }
             } catch (ClassNotFoundException e) {
-                logger.error(e);
+                logger.error("Error while retrieving content page " + contentObjectKey, e);
             } catch (JahiaException e) {
                 logger.error(e.getMessage(), e);
             }

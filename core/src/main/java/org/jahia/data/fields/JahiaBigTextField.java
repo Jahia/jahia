@@ -231,7 +231,7 @@ public class JahiaBigTextField extends JahiaField implements
                     }
                 }
             } catch (RepositoryException e) {
-                logger.error(e);
+                logger.error("Error while retrieving file versions", e);
             }
             if (file != null) {
                 String target;
@@ -752,7 +752,7 @@ public class JahiaBigTextField extends JahiaField implements
                             hrefValue = node.getUrl();            
                         }
                     } catch (RepositoryException e) {
-                        logger.error(e);
+                        logger.error("Error while retrieving file versions", e);
                     }
                 } catch (UnsupportedEncodingException e) {
                     logger.error(e.getMessage(), e);

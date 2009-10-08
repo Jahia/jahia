@@ -187,7 +187,7 @@ public class ThemeSelectorTag extends AbstractJahiaTag {
                     buff.append("\">");
                 }
             } catch (JahiaSessionExpirationException e) {
-                logger.error(e);
+                logger.error("Session expired while checking if in admin mode", e);
             }
             if(!isInEngine)
             buff.append("</form>");
@@ -196,7 +196,7 @@ public class ThemeSelectorTag extends AbstractJahiaTag {
         } catch (IOException e) {
             logger.error("IOException rendering the menu", e);
         } catch (JahiaException e) {
-            logger.error(e);
+            logger.error("Error while rendering theme selector tag", e);
         }
         return SKIP_BODY;
     }

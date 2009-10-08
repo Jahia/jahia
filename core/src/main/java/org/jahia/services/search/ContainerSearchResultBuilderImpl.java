@@ -201,7 +201,7 @@ public class ContainerSearchResultBuilderImpl extends
                         try {
                             value = (new RE("<(.*?)>")).subst(value, "");
                         } catch (RESyntaxException e) {
-                            logger.error(e);
+                            logger.error("Error while removing tags", e);
                         } catch (Exception t) {
                             logger.error(t);
                         }

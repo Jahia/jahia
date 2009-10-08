@@ -281,7 +281,7 @@ int sitecount = 0;
 try {
     sitecount = siteService.getNbSites();
 } catch (JahiaException e) {
-    logger.error(e);
+    logger.error("Error while retrieving the number of sites", e);
 }
 // server path
 String serverpath = "http://" + request.getServerName() + ":" + request.getServerPort();
@@ -1108,7 +1108,7 @@ for (int z = 2; z < 5; z++) {
               </td>
             </tr>
           <%} catch (JahiaException e) {
-            logger.error(e);
+            logger.error("Error while displaying sites", e);
           }%>
         </table>
         <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">

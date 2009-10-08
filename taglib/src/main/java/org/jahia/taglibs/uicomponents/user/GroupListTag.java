@@ -184,7 +184,7 @@ public class GroupListTag extends AbstractJahiaTag {
         try {
             out.println(sb.toString());
         } catch (IOException e) {
-            logger.error(e);
+            logger.error("Error while rendering the group list tag", e);
         }
         return SKIP_BODY;
     }

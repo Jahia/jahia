@@ -1826,7 +1826,7 @@ public abstract class ContentObject extends JahiaObject {
                 object.resetPicked();
                 ServicesRegistry.getInstance().getWorkflowService().flushCacheForPageCreatedOrDeleted((ContentObjectKey) object.getObjectKey());
             } catch (Exception e) {
-                logger.debug(e);
+                logger.debug("Error while adding picker object", e);
             }
         }
     }

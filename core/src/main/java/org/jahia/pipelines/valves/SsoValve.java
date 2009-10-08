@@ -99,7 +99,6 @@ public abstract class SsoValve implements Valve {
         try {
             credentials = retrieveCredentials(processingContext);
         } catch (Exception e) {
-            logger.error(e);
             throw new PipelineException("exception was thrown while retrieving credentials!", e);
         }
         if (credentials == null) {

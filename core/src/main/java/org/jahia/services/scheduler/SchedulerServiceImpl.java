@@ -322,7 +322,7 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
                 }
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error("Error while starting schedulers", e);
         }
 
         logger.debug("Starting scheduler...\n instanceId:"
@@ -347,7 +347,7 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
                     }
                 }
             } catch (JahiaException e) {
-                logger.error(e);
+                logger.error("Error while retrieving job details", e);
             }
         }
     }
@@ -873,7 +873,7 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
         try {
             loadData();
         } catch (JahiaException e) {
-            logger.error(e);
+            logger.error("Error while loading data", e);
         }
         int t = 0;
         for (int i = 0; i < JOBTYPES.length; i++) {

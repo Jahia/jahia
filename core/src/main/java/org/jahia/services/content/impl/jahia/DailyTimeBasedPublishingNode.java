@@ -65,7 +65,7 @@ public class DailyTimeBasedPublishingNode extends NodeImpl {
             setDefinition(parent.nodetype.getUnstructuredChildNodeDefinitions().get("jnt:hourlyTimebasedPublished"));
             setNodetype(type);
         } catch (NoSuchNodeTypeException e) {
-            logger.error(e);
+            logger.error("Error while setting timebased publishing type", e);
         }
     }
 

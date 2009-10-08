@@ -1083,7 +1083,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 copy.addMixin(aMixin.getName());
             }
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error adding mixin types to copy", e);
         }
 
         if (copy != null) {
@@ -1269,7 +1269,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             objectNode.addMixin(Constants.MIX_VERSIONABLE);
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while adding versionable mixin type", e);
         }
     }
 
@@ -1277,7 +1277,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             return objectNode.isNodeType(Constants.MIX_VERSIONABLE);
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while checking if object node is versioned", e);
         }
         return false;
     }
@@ -1287,7 +1287,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             objectNode.checkin();
             objectNode.checkout();
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error setting checkpoint", e);
         }
     }
 
@@ -1305,7 +1305,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 results.add(version.getName());
             }
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while retrieving versions", e);
         }
         return results;
     }
@@ -1316,7 +1316,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             Node frozen = v.getNode(Constants.JCR_FROZENNODE);
             return provider.getNodeWrapper(frozen, session);
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while retrieving frozen version", e);
         }
         return null;
     }

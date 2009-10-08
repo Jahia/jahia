@@ -71,7 +71,7 @@ public class ThemeValve implements Valve {
                     try {
                         ServicesRegistry.getInstance().getJahiaSitesService().updateSite(theSite);
                     } catch (JahiaException e) {
-                        logger.error(e);
+                        logger.error("Error while updating site" + theSite.getSiteKey(), e);
                     }
                 } else if (request.getParameter("jahiathemeSelectorScope").equals("user")) {
                     if (JahiaUserManagerService.isGuest(jParams.getUser())) {
@@ -102,7 +102,7 @@ public class ThemeValve implements Valve {
                     jahiaThemeCurrent = theSite.getSettings().getProperty(THEME_ATTRIBUTE_NAME);
                 }
             } catch (JahiaException e) {
-                logger.error(e);
+                logger.error("Error while retrieving theme attribute", e);
             }
             if (jahiaThemeCurrent == null || "".equals(jahiaThemeCurrent.trim())) {
                 jahiaThemeCurrent = "default";

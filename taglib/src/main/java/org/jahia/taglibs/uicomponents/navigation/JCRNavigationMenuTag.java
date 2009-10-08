@@ -120,7 +120,7 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
         } catch (IOException e) {
             logger.error("IOException rendering the menu", e);
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while rendering the navigation menu tag", e);
         }
         return SKIP_BODY;
     }

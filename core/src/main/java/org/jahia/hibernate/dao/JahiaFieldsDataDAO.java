@@ -1250,7 +1250,7 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
                     }
                 }
             } catch (SQLException e) {
-                logger.error(e);
+                logger.error("SQL error while retreving sub page ID", e);
             }
         }
         if (!implicitDataConversion) {

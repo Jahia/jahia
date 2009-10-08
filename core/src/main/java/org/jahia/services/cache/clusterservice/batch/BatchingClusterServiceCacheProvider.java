@@ -159,14 +159,14 @@ public class BatchingClusterServiceCacheProvider implements CacheProvider, Clust
                         ServicesRegistry.getInstance()
                                 .getCacheKeyGeneratorService().start();
                     } catch (JahiaInitializationException e) {
-                        logger.error(e);
+                        logger.error("Error starting cache key generator service", e);
                     }
                 } else if (clusterCacheMessage.isKeyGeneratorAclUpdate()) {
                     try {
                         ServicesRegistry.getInstance()
                                 .getCacheKeyGeneratorService().rightsUpdated();
                     } catch (JahiaInitializationException e) {
-                        logger.error(e);
+                        logger.error("Error updating rights in cache key generator service", e);
                     }
                 }
             }
@@ -181,14 +181,14 @@ public class BatchingClusterServiceCacheProvider implements CacheProvider, Clust
                         ServicesRegistry.getInstance()
                                 .getCacheKeyGeneratorService().start();
                     } catch (JahiaInitializationException e) {
-                        logger.error(e);
+                        logger.error("Error starting cache key generator service", e);
                     }
                 } else if (clusterCacheMessage.isKeyGeneratorAclUpdate()) {
                     try {
                         ServicesRegistry.getInstance()
                                 .getCacheKeyGeneratorService().rightsUpdated();
                     } catch (JahiaInitializationException e) {
-                        logger.error(e);
+                        logger.error("Error updating rights in cache key generator service", e);
                     }
                 }
             }

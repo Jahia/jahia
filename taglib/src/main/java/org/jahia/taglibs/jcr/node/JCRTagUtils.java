@@ -144,9 +144,9 @@ public class JCRTagUtils {
             return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where ischildnode(sel,['"+node.getPath()+"'])",
                                                                                   Query.JCR_SQL2).execute().getNodes();
         } catch (InvalidQueryException e) {
-            logger.error(e);
+            logger.error("Error while retrieving nodes", e);
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while retrieving nodes", e);
         }
         return new NodeIteratorImpl(new ArrayIterator(new Object[0]), 0);
     }

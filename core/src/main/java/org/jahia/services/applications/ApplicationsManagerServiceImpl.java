@@ -283,7 +283,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while retrieving applicaion by context", e);
             return null;
         }
     }
@@ -318,7 +318,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error("Error while retrieving the list of applications", e);
             return new ArrayList<ApplicationBean>();
         }
     }
@@ -715,7 +715,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         try {
             apps = getApplications();
         } catch (JahiaException e) {
-            logger.error(e);
+            logger.error("Error while loading all the applications", e);
         }
         if (apps != null) {
             ApplicationBean app;

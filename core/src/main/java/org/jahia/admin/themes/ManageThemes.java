@@ -160,7 +160,7 @@ public class ManageThemes extends AbstractAdministrationModule {
                     try {
                         ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
                     } catch (JahiaException e) {
-                        logger.error(e);
+                        logger.error("Error while updating site" + site.getSiteKey(), e);
                     }
                 }
             }

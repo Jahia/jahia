@@ -116,7 +116,6 @@ public class QueryService extends JahiaService {
         try {
             return sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager().getQOMFactory();
         } catch (RepositoryException e) {
-            logger.error(e);
             throw new JahiaException("Error while creating QOMFactory","Error while creating QOMFactory",
                                      JahiaException.REGISTRY_ERROR,JahiaException.ERROR_SEVERITY,e);
         }

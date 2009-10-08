@@ -398,7 +398,7 @@ public class LuceneCoreSearcher {
           logger.info("Registered new searcher " + newSearcher);
 
         } catch (Exception e) {
-          logger.error(e);
+          logger.error("Error while registering searcher", e);
         } finally {
           // wake up anyone waiting for a searcher
           // even in the face of errors.

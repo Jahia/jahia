@@ -137,7 +137,7 @@ public class UpdateVariableAjaxActionImpl extends AjaxAction {
             ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance().flushPage(key,localeArrayList);
             return "Page Flushed ";
         } catch (JahiaException e) {
-            logger.error(e);
+            logger.error("Error while flushing page", e);
         }
         return "Page not flushed";
     }

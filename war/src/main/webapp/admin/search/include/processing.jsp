@@ -333,7 +333,7 @@
         try {
             service.deleteJob(deljob, request.getParameter("delgroup"));
         } catch (JahiaException e) {
-            logger.error(e);
+            logger.error("Error while deleting job", e);
         }
     }
 

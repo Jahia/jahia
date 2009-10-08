@@ -23,7 +23,7 @@
  + thumbnail (jnt:extraResource)
 
 [jmix:lastPublished] > jmix:metadata mixin
-  - j:published (boolean) = false
+  - j:published (boolean) = false hidden
   - j:lastPublished (date) protected
   - j:lastPublishedBy (string) protected
 

@@ -88,13 +88,13 @@ public class ViewPublishStatusActionItem extends BaseActionItem {
 
         for (Module module : list) {
             GWTJahiaPublicationInfo info = module.getNode().getPublicationInfo();
-            if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
+            if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
                 LayoutContainer infoLayer = new LayoutContainer();
                 RootPanel.get().add(infoLayer);
                 infoLayer.el().makePositionable(true);
                 LayoutContainer container = module.getContainer();
                 El el = container.el();
-                if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED) {
                     if (lastUnpublished != null && module.getNode().getPath().startsWith(lastUnpublished)) {
                         continue;
                     }

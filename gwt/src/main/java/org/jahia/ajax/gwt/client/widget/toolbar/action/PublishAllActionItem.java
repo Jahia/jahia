@@ -36,7 +36,7 @@ public class PublishAllActionItem extends BaseActionItem {
         }
         if (gwtJahiaNode != null) {
             GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
-            setEnabled(info.isCanPublish() && (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED));
+            setEnabled(info.isCanPublish());
         }
     }
 }

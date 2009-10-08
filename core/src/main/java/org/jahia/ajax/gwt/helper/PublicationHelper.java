@@ -13,6 +13,7 @@ import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,7 +46,7 @@ public class PublicationHelper {
      */
     public GWTJahiaPublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences) throws GWTJahiaServiceException {
         try {
-            PublicationInfo pubInfo = publicationService.getPublicationInfo(path, languages, includesReferences);
+            PublicationInfo pubInfo = publicationService.getPublicationInfo(path, languages, includesReferences, true);
             return convert(path, pubInfo);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
@@ -55,13 +56,24 @@ public class PublicationHelper {
     }
 
     public GWTJahiaPublicationInfo convert(String path, PublicationInfo pubInfo) {
-        List<GWTJahiaPublicationInfo> list = new ArrayList<GWTJahiaPublicationInfo>();
+
 
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(path, pubInfo.getStatus(), pubInfo.isCanPublish());
         for (String p : pubInfo.getReferences().keySet()) {
             PublicationInfo pi = pubInfo.getReferences().get(p);
             gwtInfo.add(convert(p, pi));
         }
+
+        int subStatus=0;
+
+        for (Map.Entry<String, PublicationInfo> entry : pubInfo.getSubnodes().entrySet()) {
+            PublicationInfo pi = entry.getValue();
+            if (pi.getStatus() > subStatus) {
+                subStatus = pi.getStatus();
+            }
+        }
+
+        gwtInfo.setSubnodesStatus(subStatus);
 
         return gwtInfo;
     }

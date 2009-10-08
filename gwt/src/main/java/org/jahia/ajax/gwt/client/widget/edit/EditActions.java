@@ -299,7 +299,7 @@ public class EditActions {
                 @Override
                 public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
                     switch (model.getStatus()) {
-                        case GWTJahiaPublicationInfo.UNPUBLISHED:
+                        case GWTJahiaPublicationInfo.NOT_PUBLISHED:
                             return Messages.getResource("publication_status_notyetpublished");
                         case GWTJahiaPublicationInfo.PUBLISHED:
                             return Messages.getResource("publication_status_published");

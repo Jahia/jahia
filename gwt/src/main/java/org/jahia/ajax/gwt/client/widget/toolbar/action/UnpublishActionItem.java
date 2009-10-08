@@ -67,7 +67,7 @@ public class UnpublishActionItem extends BaseActionItem {
         }
         if (gwtJahiaNode != null) {
             GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
-            setEnabled(info.isCanPublish() && (info.getStatus() == GWTJahiaPublicationInfo.PUBLISHED));
+            setEnabled(info.isCanPublish() && (info.getStatus() == GWTJahiaPublicationInfo.PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED));
         }
     }
 }

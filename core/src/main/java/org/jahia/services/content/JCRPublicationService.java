@@ -414,14 +414,15 @@ public class JCRPublicationService extends JahiaService {
 
     /**
      * @param path
+     * @param includesSubnodes
      * @return
      * @throws javax.jcr.RepositoryException
      */
-    public PublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences) throws RepositoryException {
-        return getPublicationInfo(path, languages, includesReferences, new HashSet<String>());
+    public PublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences, boolean includesSubnodes) throws RepositoryException {
+        return getPublicationInfo(path, languages, includesReferences, includesSubnodes, new HashSet<String>());
     }
 
-    public PublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences, Set<String> pathes)
+    public PublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences, boolean includesSubnodes, Set<String> pathes)
             throws RepositoryException {
         pathes.add(path);
 
@@ -440,15 +441,27 @@ public class JCRPublicationService extends JahiaService {
 
         JCRNodeWrapper stageNode = session.getNode(path);
 
-        if (includesReferences) {
+
+        if (includesReferences || includesSubnodes) {
             List<JCRNodeWrapper> toPublish = new ArrayList<JCRNodeWrapper>();
             List<JCRNodeWrapper> blocked = new ArrayList<JCRNodeWrapper>();
             List<JCRNodeWrapper> referencedNodes = new ArrayList<JCRNodeWrapper>();
 
             getBlockedAndReferencesList(stageNode, toPublish, blocked, referencedNodes, languages, false);
-            for (JCRNodeWrapper referencedNode : referencedNodes) {
-                if (!pathes.contains(referencedNode.getPath())) {
-                    info.addReference(referencedNode.getPath(), getPublicationInfo(referencedNode.getPath(), languages, true, pathes));
+
+            if (includesReferences) {
+                for (JCRNodeWrapper referencedNode : referencedNodes) {
+                    if (!pathes.contains(referencedNode.getPath())) {
+                        info.addReference(referencedNode.getPath(), getPublicationInfo(referencedNode.getPath(), languages, true, false, pathes));
+                    }
+                }
+            }
+            if (includesSubnodes) {
+                toPublish.remove(0);
+                for (JCRNodeWrapper sub : toPublish) {
+                    if (!pathes.contains(sub.getPath())) {
+                        info.addSubnode(sub.getPath(), getPublicationInfo(sub.getPath(), languages, false, false, pathes));
+                    }
                 }
             }
         }

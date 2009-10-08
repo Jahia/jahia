@@ -14,12 +14,9 @@ public class PublicationInfo {
     public static final int NOT_PUBLISHED = 0;
     public static final int PUBLISHED = 1;
     public static final int MODIFIED = 2;
-    public static final int MANUALLY_UNPUBLISHED = 2;
-
-    public static final int LIVE_ONLY = 4;
-    public static final int LIVE_MODIFIED = 5;
-
     public static final int UNPUBLISHABLE = 3;
+
+
 
     private int status;
 
@@ -30,9 +27,11 @@ public class PublicationInfo {
     private String stagingVersion;
 
     private Map<String, PublicationInfo> references;
+    private Map<String, PublicationInfo> subnodes;
 
     public PublicationInfo() {
         this.references = new HashMap<String, PublicationInfo>();
+        this.subnodes = new HashMap<String, PublicationInfo>();
     }
 
     public int getStatus() {
@@ -81,5 +80,13 @@ public class PublicationInfo {
 
     public void addReference(String path, PublicationInfo info) {
         this.references.put(path, info);
+    }
+
+    public Map<String, PublicationInfo> getSubnodes() {
+        return subnodes;
+    }
+
+    public void addSubnode(String path, PublicationInfo info) {
+        this.subnodes.put(path, info);
     }
 }

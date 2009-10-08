@@ -17,13 +17,9 @@ import java.util.List;
  */
 public class GWTJahiaPublicationInfo extends BaseTreeModel implements Serializable {
 
-    public static final int UNPUBLISHED = 0;
+    public static final int NOT_PUBLISHED = 0;
     public static final int PUBLISHED = 1;
     public static final int MODIFIED = 2;
-
-    public static final int LIVE_ONLY = 4;
-    public static final int LIVE_MODIFIED = 5;
-
     public static final int UNPUBLISHABLE = 3;
 
 
@@ -51,6 +47,14 @@ public class GWTJahiaPublicationInfo extends BaseTreeModel implements Serializab
 
     public void setStatus(Integer status) {
         set("status", status);
+    }
+
+    public Integer getSubnodesStatus() {
+        return get("subnodesStatus");
+    }
+
+    public void setSubnodesStatus(Integer status) {
+        set("subnodesStatus", status);
     }
 
     public Boolean isCanPublish() {

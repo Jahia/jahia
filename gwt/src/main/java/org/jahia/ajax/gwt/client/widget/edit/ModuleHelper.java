@@ -25,19 +25,21 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class ModuleHelper {
+    private static List<Module> modules;
     private static Map<String, List<Module>> modulesByPath;
-    private static Map<String, Module> modules;
+    private static Map<String, Module> modulesById;
 
     private static Map<String, List<String>> children;
 
     public static void initAllModules(final MainModule m, HTML html) {
-        modules = new HashMap<String, Module>();
+        modules = new ArrayList<Module>();
+        modulesById = new HashMap<String, Module>();
         modulesByPath = new HashMap<String, List<Module>>();
 
-        modules.put(m.getModuleId(), m);
-        ArrayList<Module> moduleArrayList = new ArrayList<Module>();
-        modulesByPath.put(m.getPath(), moduleArrayList);
-        moduleArrayList.add(m);
+        modulesByPath.put(m.getPath(), new ArrayList<Module>());
+        modules.add(m);
+        modulesByPath.get(m.getPath()).add(m);
+        modulesById.put(m.getModuleId(), m);
 
         List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(html.getElement());
         for (Element divElement : el) {
@@ -63,8 +65,9 @@ public class ModuleHelper {
                     if (!modulesByPath.containsKey(path)) {
                         modulesByPath.put(path, new ArrayList<Module>());
                     }
+                    modules.add(module);
                     modulesByPath.get(path).add(module);
-                    modules.put(id, module);
+                    modulesById.put(id, module);
                 }
             } else if (JahiaType.DATE_FIELD.equals(jahiatype)) {
                 String datePattern = DOM.getElementAttribute(divElement, "datepattern");
@@ -153,7 +156,7 @@ public class ModuleHelper {
             if ("module".equals(jahiatype)) {
                 String id = DOM.getElementAttribute(divElement, "id");
                 if (children.get(module.getModuleId()).contains(id)) {
-                    Module subModule = modules.get(id);
+                    Module subModule = modulesById.get(id);
 
                     if (subModule != null) {
                         m.putAll(parse(subModule));                        
@@ -175,6 +178,10 @@ public class ModuleHelper {
             divElement.setInnerHTML("");
             DOM.appendChild(divElement, moduleElement);
         }
+    }
+
+    public static List<Module> getModules() {
+        return modules;
     }
 
     public static Map<String, List<Module>> getModulesByPath() {

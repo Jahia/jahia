@@ -72,8 +72,10 @@ public class Selection extends LayoutContainer {
         m.addScrollListener(new ScrollListener() {
             @Override
             public void widgetScrolled(ComponentEvent ce) {
-                setPosition(currentContainer.getAbsoluteLeft(), currentContainer.getAbsoluteTop(),currentContainer.getWidth(), currentContainer.getHeight());
-                super.widgetScrolled(ce);
+                if (currentContainer != null) {
+                    setPosition(currentContainer.getAbsoluteLeft(), currentContainer.getAbsoluteTop(),currentContainer.getWidth(), currentContainer.getHeight());
+                    super.widgetScrolled(ce);
+                }
             }
         });
     }

@@ -639,6 +639,8 @@ public class NavigationHelper {
         } else {
             n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, aclContext, f.getProvider().getKey(), f.isWriteable(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner(), f.isVersioned());
 
+            n.setCollection(f.isCollection());
+
             if (sessionFactory.getMountPoints().containsKey(f.getPath())) {
                 n.setDeleteable(false);
             }

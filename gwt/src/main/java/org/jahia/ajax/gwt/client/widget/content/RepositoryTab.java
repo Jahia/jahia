@@ -33,6 +33,10 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.util.SwallowEvent;
+import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
+import com.extjs.gxt.ui.client.dnd.TreePanelDropTarget;
+import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -45,11 +49,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * User: rfelden
@@ -160,24 +166,56 @@ public class RepositoryTab extends ContentPanel {
     public void init() {
         loader.load() ;
 
-//        TreePanelDragSource source = new TreePanelDragSource(m_tree);
-//        source.addDNDListener(getLinker().getDndListener());
-//
-//        TreePanelDropTarget target = new TreePanelDropTarget(m_tree) {
-//            @Override
-//            protected void handleInsert(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
-//                super.handleInsert(dndEvent, treeNode);    //To change body of overridden methods use File | Settings | File Templates.
-//            }
-//
-//            @Override
-//            protected void handleAppendDrop(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
-//                ContentActions.move(getLinker(), (List<GWTJahiaNode>) dndEvent.getData(), (GWTJahiaNode) treeNode.getModel());
-//                super.handleAppendDrop(dndEvent, treeNode);    //To change body of overridden methods use File | Settings | File Templates.
-//            }
-//        };
-//        target.setFeedback(DND.Feedback.BOTH);
-//        target.setAllowSelfAsSource(true);
-//        target.setAutoExpand(true);
+        TreePanelDragSource source = new TreePanelDragSource(m_tree) {
+            @Override
+            protected void onDragStart(DNDEvent e) {
+                super.onDragStart(e);
+                List<BaseTreeModel> l = e.getData();
+                List<GWTJahiaNode> r = new ArrayList<GWTJahiaNode>();
+                for (BaseTreeModel model : l) {
+                    r.add((GWTJahiaNode) model.get("model"));
+                }
+                e.setData(r);
+            }
+        };
+        source.addDNDListener(getLinker().getDndListener());
+
+        TreePanelDropTarget target = new TreePanelDropTarget(m_tree) {
+            @Override
+            protected void handleInsert(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
+                handleAppend(dndEvent, treeNode);
+            }
+
+            @Override
+            protected void handleAppend(DNDEvent event, TreePanel.TreeNode item) {
+                super.handleAppend(event, item);
+                if (((List)event.getData()).contains(activeItem.getModel())) {
+                    event.getStatus().setStatus(false);
+                }
+            }
+
+            @Override
+            protected void handleAppendDrop(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
+                if (dndEvent.getStatus().getStatus()) {
+                    ContentActions.move(getLinker(), (List<GWTJahiaNode>) dndEvent.getData(), (GWTJahiaNode) treeNode.getModel());
+                    boolean folder = false;
+                    for (GWTJahiaNode node : (List<GWTJahiaNode>) dndEvent.getData()) {
+                        folder |= node.isCollection();
+                    }
+                    if (folder) {
+                        init = true ;
+                        loader.load() ;
+                    }
+                }
+            }
+
+            @Override
+            protected void handleInsertDrop(DNDEvent event, TreePanel.TreeNode item, int index) {                
+            }
+        };
+        target.setFeedback(DND.Feedback.BOTH);
+        target.setAllowSelfAsSource(true);
+        target.setAutoExpand(true);
     }
 
 //    public void expandAllPreviousPaths() {

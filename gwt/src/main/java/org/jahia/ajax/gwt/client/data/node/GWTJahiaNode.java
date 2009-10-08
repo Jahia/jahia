@@ -69,6 +69,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public GWTJahiaNode() {
         super();
         setFile(Boolean.FALSE);
+        setCollection(Boolean.FALSE);
     }
 
     public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date lastModified, List<String> nodetypes, List<String> inheritedTypes, String aclContext, String providerKey, boolean writeable, boolean deleteable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
@@ -250,6 +251,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setLastPublishedBy(String lastPublicationUser) {
         set("lastPublishedBy", lastPublicationUser);
+    }
+
+    public void setCollection(Boolean collection) {
+        set("collection", collection);
+    }
+
+    public Boolean isCollection() {
+        return get("collection");
     }
 
     public void setFile(Boolean file) {

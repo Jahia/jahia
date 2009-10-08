@@ -33,10 +33,12 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.dnd.*;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -46,6 +48,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -58,6 +61,7 @@ import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
+import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -203,8 +207,45 @@ public class TableView extends TopRightComponent {
     @Override
     public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
-//        DragSource source = new GridDragSource(m_table);
-//        source.addDNDListener(linker.getDndListener());
+        DragSource source = new GridDragSource(m_table);
+        source.addDNDListener(linker.getDndListener());
+
+        GridDropTarget target = new GridDropTarget(m_table) {
+            @Override
+            protected void showFeedback(DNDEvent event) {
+                event.getStatus().setStatus(true);
+                Element row = grid.getView().findRow(event.getTarget()).cast();
+
+                if (row != null) {
+                    int height = row.getOffsetHeight();
+                    int mid = height / 2;
+                    mid += row.getAbsoluteTop();
+                    int y = event.getClientY();
+                    before = y < mid;
+                    int idx = grid.getView().findRowIndex(row);
+                    activeItem = grid.getStore().getAt(idx);
+                    if (((List)event.getData()).contains(activeItem)) {
+                        event.getStatus().setStatus(false);
+                    } else if (((GWTJahiaNode)activeItem).isCollection()) {
+                        event.getStatus().setStatus(true);
+                    } else {
+                        event.getStatus().setStatus(false);
+                    }
+                } else {
+                    activeItem = getLinker().getMainNode();
+                    event.getStatus().setStatus(false);
+                }
+            }
+
+            @Override
+            protected void onDragDrop(DNDEvent dndEvent) {
+                if (dndEvent.getStatus().getStatus()) {
+                    ContentActions.move(getLinker(), (List<GWTJahiaNode>) dndEvent.getData(), (GWTJahiaNode) activeItem);
+                }
+            }
+        };
+        target.setAllowSelfAsSource(true);
+        target.addDNDListener(linker.getDndListener());
     }
 
     public void setContextMenu(Menu menu) {

@@ -320,8 +320,11 @@ public class ContentManagerHelper {
                         String destPath = dest.getPath();
                         name = findAvailableName(dest, name);
                         if (dest.isWriteable()) {
+                            dest.checkout();
                             if (cut) {
                                 try {
+                                    node.checkout();
+                                    node.getParent().checkout();
                                     if (!node.moveFile(destPath, name)) {
                                         missedPaths.add(new StringBuilder("File ").append(name).append(" could not be moved in ").append(dest.getPath()).toString());
                                         continue;

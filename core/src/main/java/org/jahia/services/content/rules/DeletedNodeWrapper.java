@@ -45,6 +45,8 @@ import javax.jcr.RepositoryException;
 public class DeletedNodeWrapper {
     private String path;
 
+    private NodeWrapper parent;
+
     public DeletedNodeWrapper(NodeWrapper nodeWrapper, KnowledgeHelper drools) throws RepositoryException {
         path = nodeWrapper.getPath();
         nodeWrapper.getNode().remove();
@@ -53,11 +55,20 @@ public class DeletedNodeWrapper {
         // should also retract properties and subnodes
     }
 
-    public DeletedNodeWrapper(String path) throws RepositoryException {
+    public DeletedNodeWrapper(NodeWrapper parent, String path) throws RepositoryException {
+        this.parent = parent;
         this.path = path;
     }
 
     public String toString() {
         return "deleted "+path;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public NodeWrapper getParent() {
+        return parent;
     }
 }

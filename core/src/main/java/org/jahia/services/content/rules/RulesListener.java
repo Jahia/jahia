@@ -32,6 +32,7 @@
 package org.jahia.services.content.rules;
 
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -265,7 +266,7 @@ public class RulesListener extends DefaultEventListener {
                         continue;
                     }
                     try {
-                        if (!event.getUserID().equals(JahiaLoginModule.SYSTEM)) {
+                        if (!event.getUserID().equals(JahiaLoginModule.SYSTEM) && !event.getPath().startsWith("/jcr:system/")) {
                             if (event.getType() == Event.NODE_ADDED) {
                                 Node n = (Node) s.getItem(event.getPath());
                                 if (n.isNodeType(Constants.JAHIAMIX_HIERARCHYNODE)) {
@@ -276,8 +277,7 @@ public class RulesListener extends DefaultEventListener {
                                     }
                                     list.add(rn);
                                 }
-                            } else
-                            if (event.getType() == Event.PROPERTY_ADDED || event.getType() == Event.PROPERTY_CHANGED) {
+                            } else if (event.getType() == Event.PROPERTY_ADDED || event.getType() == Event.PROPERTY_CHANGED) {
                                 String path = event.getPath();
                                 String propertyName = path.substring(path.lastIndexOf('/') + 1);
                                 if (!propertiesToIgnore.contains(propertyName)) {
@@ -302,7 +302,19 @@ public class RulesListener extends DefaultEventListener {
                                     }
                                 }
                             } else if (event.getType() == Event.NODE_REMOVED) {
-                                list.add(new DeletedNodeWrapper(provider.decodeInternalName(event.getPath())));
+                                String parentPath = null;
+                                try {
+                                    parentPath = StringUtils.substringBeforeLast(event.getPath(),"/");
+                                    Node parent = s.getNode(parentPath);
+                                    NodeWrapper w = eventsMap.get(parent.getUUID());
+                                    if (w == null) {
+                                        w = new NodeWrapper(parent);
+                                        eventsMap.put(parent.getUUID(), w);
+                                    }
+
+                                    list.add(new DeletedNodeWrapper(w, provider.decodeInternalName(event.getPath())));
+                                } catch (PathNotFoundException e) {
+                                }
                             } else if (event.getType() == Event.PROPERTY_REMOVED) {
                                 String path = event.getPath();
                                 int index = path.lastIndexOf('/');

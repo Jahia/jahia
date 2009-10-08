@@ -17,10 +17,10 @@
  page navLink primary
  smallText separator
 
-[jnt:image] > jnt:container    jmix:structuredContent
+[jnt:image] > jnt:container, jmix:structuredContent
 file image (file[mime='image/*'])
 
-[jnt:frame] > jnt:container     jmix:structuredContent
+[jnt:frame] > jnt:container, jmix:structuredContent
  sharedSmallText source indexed=no
  sharedSmallText name indexed=no
  integer width indexed=no
@@ -82,4 +82,4 @@ file image (file[mime='image/*'])
  integer IframeMarginwidth = '0' indexed=no
  integer IframeMarginheight = '0' indexed=no
  sharedSmallText IframeScrolling (choicelist) indexed=no < 'yes','no','auto'
- smallText IframeAlt indexed=no
+ smallText IframeAlt indexed=no 

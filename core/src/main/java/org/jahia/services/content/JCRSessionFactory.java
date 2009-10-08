@@ -210,7 +210,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         Set<JahiaPrincipal> p = s.getPrincipals(JahiaPrincipal.class);
         for (JahiaPrincipal jahiaPrincipal : p) {
             JahiaUser user = null;
-            if (!jahiaPrincipal.getName().equals(JahiaLoginModule.SYSTEM)) {
+            if (!jahiaPrincipal.getName().startsWith(JahiaLoginModule.SYSTEM)) {
                 if (jahiaPrincipal.isGuest()) {
                     user = userService.lookupUser(JahiaUserManagerService.GUEST_USERNAME);
                 } else {

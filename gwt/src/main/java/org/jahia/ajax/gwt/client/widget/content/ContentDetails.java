@@ -818,7 +818,7 @@ public class ContentDetails extends BottomRightComponent {
         if (selectedNodes.size() == 1) {
             final GWTJahiaNode selectedNode = selectedNodes.get(0);
             if (!versioningTabItem.isProcessed()) {
-                if (selectedNode.getNodeTypes().contains("mix:versionable") || selectedNode.getNodeTypes().contains("mix:simpleVersionable")) {
+                if (selectedNode.isVersioned()) {
                     VersioningPanel versionPanel = new VersioningPanel(selectedNode, config.isEnableFileDoubleClick()) {
                         @Override
                         public void onRowDoubleClick(GWTJahiaNodeVersion version) {

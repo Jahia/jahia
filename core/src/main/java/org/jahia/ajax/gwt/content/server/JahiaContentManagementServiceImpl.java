@@ -565,7 +565,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void saveNodeTemplate(String path, String template) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
-
+            if (!node.isCheckedOut()) {
+                node.checkout();
+            }
 //jmix:renderableReference
 
             if ("--unset--".equals(template)) {

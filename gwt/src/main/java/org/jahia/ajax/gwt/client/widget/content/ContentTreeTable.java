@@ -106,7 +106,7 @@ public class ContentTreeTable extends TopRightComponent {
                     }
                     init = false;
                 } else {
-                    service.ls((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, !configuration.isAllowCollections(), listAsyncCallback);
+                    service.ls(null,(GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, !configuration.isAllowCollections(), listAsyncCallback);
                 }
             }
         };
@@ -118,7 +118,9 @@ public class ContentTreeTable extends TopRightComponent {
                 return parent.hasChildren();
             }
 
-            protected void onLoadSuccess(Object parent, List<GWTJahiaNode> children) {
+
+
+           /* protected void onLoadSuccess(Object parent, List<GWTJahiaNode> children) {
                 super.onLoadSuccess(parent, children);
                 for (GWTJahiaNode n : children) {
                     n.setParent((GWTJahiaNode) parent);
@@ -128,7 +130,7 @@ public class ContentTreeTable extends TopRightComponent {
                     ((ContentPickerContainer) getLinker().getTopRightObject()).handleNewSelection();
                     setSelectPathAfterDataUpdate(null);
                 }
-            }
+            }  */
 
             protected void expandPreviousPaths() {
                 expandAllPreviousPaths(selectedNodes);

@@ -34,14 +34,11 @@ package org.jahia.ajax.gwt.client.util.tree;
 import java.util.List;
 import java.util.ArrayList;
 
-import com.extjs.gxt.ui.client.widget.tree.TreeItem;
-import com.extjs.gxt.ui.client.widget.tree.Tree;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.extjs.gxt.ui.client.data.TreeModel;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.allen_sauer.gwt.log.client.Log;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 /**
  * User: rfelden
@@ -51,33 +48,69 @@ public class PreviousPathsOpener<T extends ModelData> {
 
     // TODO GXT 2
 
-    private TreePanel m_tree ;
-    private TreeStore<T> store ;
+    private TreePanel m_tree;
+    private TreeStore<T> store;
 
     public PreviousPathsOpener(TreePanel t, TreeStore<T> s) {
-        m_tree = t ;
-        store = s ;
+        m_tree = t;
+        store = s;
     }
 
     public void expandPreviousPaths() {
-        List<T> nodes = new ArrayList<T>() ;
-        for (T aNode: store.getAllItems()) {
-            nodes.add(aNode) ;
+        List<T> nodes = new ArrayList<T>();
+        for (T aNode : store.getAllItems()) {
+            nodes.add(aNode);
         }
         // check if sublevels are available
         for (T root : nodes) {
             if (store.getChildren(root).size() > 0) {
-                for (T node: nodes) {
+                for (T node : nodes) {
                     appendChildrenNodesToStore(node);
                 }
-                for (T node: nodes) {
+                for (T node : nodes) {
                     renderChildrenNodesRec(node);
                 }
                 expandAllExistingChildrenRec(store.getRootItems());
             }
         }
-        m_tree.setCaching(false);
     }
+
+
+    public void expandPreviousPaths2() {
+      /**  List<GWTJahiaNode> rootNodes = (List<GWTJahiaNode>) store.getRootItems();
+        Log.debug("Register children " + rootNodes.size());
+        for (GWTJahiaNode rootNode : rootNodes) {
+            registerLoadedChildren(rootNode);
+        }  **/
+
+       /*DeferredCommand.addCommand(new Command() {
+            public void execute() {
+                Log.debug("deferred command called");
+                m_tree.expandAll();
+
+              //  expandAll(nodes);
+
+            }
+        });*/
+    }
+
+    private void expandAll(List<T> nodes) {
+        for (T child : nodes) {
+            List<T> subNodes = store.getChildren(child);
+            Log.debug("******** nb of subNodes: "+subNodes.size());
+            m_tree.setExpanded(child, true, true);
+        }
+    }
+
+    private void registerLoadedChildren(GWTJahiaNode parentNode) {
+        List<ModelData> rootNodesChilden = parentNode.getChildren();
+        Log.debug("Register children " + rootNodesChilden.size() + " of " + parentNode.getPath());
+        appendChildrenNodesToStore((T)parentNode);
+        for (ModelData node : rootNodesChilden) {
+            registerLoadedChildren((GWTJahiaNode) node);
+        }
+    }
+
 
     private void appendChildrenNodesToStore(T node) {
         Log.debug("Appending children of " + node.get("name"));
@@ -86,14 +119,14 @@ public class PreviousPathsOpener<T extends ModelData> {
     }
 
     private void renderChildrenNodesRec(T node) {
-        Log.debug("Rendering children of " + node.get("name")) ;
+        Log.debug("Rendering children of " + node.get("name"));
         List<T> nodes = store.getChildren(node);
         if (nodes.size() > 0) {
             List<T> l = new ArrayList<T>();
-            for (ModelData aNode: nodes) {
+            for (ModelData aNode : nodes) {
                 l.add((T) aNode);
             }
-            for (ModelData aNode: nodes) {
+            for (ModelData aNode : nodes) {
                 renderChildrenNodesRec((T) aNode);
             }
         }
@@ -103,7 +136,7 @@ public class PreviousPathsOpener<T extends ModelData> {
         if (items != null) {
             for (T item : items) {
                 if (store.getChildCount(item) > 0 && !m_tree.isExpanded(item)) {
-                    m_tree.setExpanded(item,true);
+                    m_tree.setExpanded(item, true);
                     expandAllExistingChildrenRec(store.getChildren(item));
                 }
             }

@@ -31,11 +31,12 @@
  */
 package org.jahia.ajax.gwt.client.util.tree;
 
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.BaseTreeModel;
-import com.extjs.gxt.ui.client.data.DataProxy;
+import com.extjs.gxt.ui.client.data.*;
+import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
+
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 /**
  * User: rfelden
@@ -43,7 +44,7 @@ import java.util.List;
  */
 public abstract class CustomTreeLoader<M extends BaseTreeModel> extends BaseTreeLoader<M> {
 
-    protected boolean openPreviousPaths = true ;
+    protected boolean openPreviousPaths = true;
 
     /**
      * Constructor with automatic restore of previous state
@@ -51,32 +52,43 @@ public abstract class CustomTreeLoader<M extends BaseTreeModel> extends BaseTree
      * @param proxy the data proxy
      */
     public CustomTreeLoader(DataProxy<List<M>> proxy) {
-        super(proxy) ;
+        super(proxy);
+
+
     }
 
     /**
      * Alt constructor
      *
-     * @param proxy the data proxy
+     * @param proxy             the data proxy
      * @param openPreviousPaths false to deactivate last state restore
      */
     public CustomTreeLoader(DataProxy<List<M>> proxy, boolean openPreviousPaths) {
-        this(proxy) ;
-        this.openPreviousPaths = openPreviousPaths ;
+        this(proxy);
+        this.openPreviousPaths = openPreviousPaths;
     }
 
- /*   @Override
-    protected void onLoadSuccess(M parent, List<M> children) {
-        super.onLoadSuccess(parent, children);
+
+    @Override
+    public void onLoadSuccess(Object o, List<M> ms) {
+        super.onLoadSuccess(o, ms);
         if (openPreviousPaths) {
-            openPreviousPaths = false ;
-            expandPreviousPaths();
+            openPreviousPaths = false;
+            //expandPreviousPaths();
         }
-    } */
+    }
 
-    protected abstract void expandPreviousPaths() ;
+    /**
+     * Override this method to customize behavior
+     */
+    protected abstract void expandPreviousPaths();
 
-    
+    @Override
+    public boolean load() {
+        openPreviousPaths = true;
+        return super.load();
+    }
+
 
 
 

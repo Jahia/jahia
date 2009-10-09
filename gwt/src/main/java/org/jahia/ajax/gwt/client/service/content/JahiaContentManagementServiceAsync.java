@@ -51,7 +51,7 @@ import java.util.Set;
  */
 public interface JahiaContentManagementServiceAsync {
 
-    void ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders, AsyncCallback<List<GWTJahiaNode>> async);
+    void ls(String repositoryType,GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders, AsyncCallback<List<GWTJahiaNode>> async);
 
     void lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders, AsyncCallback<ListLoadResult<GWTJahiaNode>> async);
 

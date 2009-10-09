@@ -240,7 +240,7 @@ public class SidePanel extends ContentPanel {
                 if (init) {
                     JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.GLOBAL_REPOSITORY, "", "", "", null, listAsyncCallback);
                 } else {
-                    JahiaContentManagementService.App.getInstance().ls((GWTJahiaNode) gwtJahiaFolder, "", "", "", null, false, listAsyncCallback);
+                    JahiaContentManagementService.App.getInstance().ls(null,(GWTJahiaNode) gwtJahiaFolder, "", "", "", null, false, listAsyncCallback);
                 }
             }
         };
@@ -268,7 +268,7 @@ public class SidePanel extends ContentPanel {
                 GWTJahiaNode selected = gwtJahiaNodeSelectionChangedEvent.getSelectedItem();
                 if (selected != null) {
                     if (selected.hasChildren()) {
-                        JahiaContentManagementService.App.getInstance().ls(gwtJahiaNodeSelectionChangedEvent.getSelectedItem(), null, null, null, null, false, new AsyncCallback<List<GWTJahiaNode>>() {
+                        JahiaContentManagementService.App.getInstance().ls(null,gwtJahiaNodeSelectionChangedEvent.getSelectedItem(), null, null, null, null, false, new AsyncCallback<List<GWTJahiaNode>>() {
                             public void onFailure(Throwable throwable) {
                                 // TODO
                             }

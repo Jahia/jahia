@@ -141,21 +141,24 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.acl = acl;
     }
 
-    public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> ls(String repositoryType, GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
+        if (openPaths == null || openPaths.length() == 0) {
+            openPaths = getOpenPathsForRepository(repositoryType);
+        }
         return navigation.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, true, retrieveParamBean());
     }
 
-    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
-        return new BaseListLoadResult<GWTJahiaNode>(navigation.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, true, retrieveParamBean())) ;
+    public ListLoadResult<GWTJahiaNode> lsLoad( GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
+        return new BaseListLoadResult<GWTJahiaNode>(navigation.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, true, retrieveParamBean()));
     }
 
     public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, String openPaths) throws GWTJahiaServiceException {
         if (openPaths == null || openPaths.length() == 0) {
             openPaths = getOpenPathsForRepository(repositoryType);
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
-        }
+
+        logger.debug(new StringBuilder("**************** retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
+
         return navigation.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, openPaths);
     }
 
@@ -170,7 +173,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     }
                     logger.debug(s.toString());
                 }
-                preferencesService.setGenericPreferenceValue(navigation.SAVED_OPEN_PATHS + repositoryType, navigation.concatOpenPathsList(paths), retrieveParamBean());
+
+                // ToDo: save opened path as a preference
+                getThreadLocalRequest().getSession().setAttribute(navigation.SAVED_OPEN_PATHS + repositoryType, navigation.concatOpenPathsList(paths));
+                //preferencesService.setGenericPreferenceValue(navigation.SAVED_OPEN_PATHS + repositoryType, navigation.concatOpenPathsList(paths), retrieveParamBean());
             } else if (logger.isDebugEnabled()) {
                 logger.debug(new StringBuilder("no paths to save for ").append(repositoryType).toString());
                 //deleteGenericPreferenceValue(contentManager.SAVED_OPEN_PATHS + repositoryType);
@@ -179,7 +185,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     private String getOpenPathsForRepository(String repositoryType) {
-        return preferencesService.getGenericPreferenceValue(navigation.SAVED_OPEN_PATHS + repositoryType, retrieveParamBean());
+        return (String) getThreadLocalRequest().getSession().getAttribute(navigation.SAVED_OPEN_PATHS + repositoryType);
+        // ToDo: get opened path as from preference
+        // return preferencesService.getGenericPreferenceValue(navigation.SAVED_OPEN_PATHS + repositoryType, retrieveParamBean());
     }
 
     public List<GWTJahiaNode> search(String searchString, int limit) throws GWTJahiaServiceException {
@@ -435,12 +443,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return mashup.createPortletInstance(path, wiz);
     }
 
-    public GWTJahiaNode createRSSPortletInstance(String path,String name,String url) throws GWTJahiaServiceException {
+    public GWTJahiaNode createRSSPortletInstance(String path, String name, String url) throws GWTJahiaServiceException {
         return mashup.createRSSPortletInstance(path, name, url, retrieveParamBean());
     }
 
-    public GWTJahiaNode createGoogleGadgetPortletInstance(String path, String name, String script) throws GWTJahiaServiceException{
-      return mashup.createGoogleGadgetPortletInstance(path, name, script, retrieveParamBean());
+    public GWTJahiaNode createGoogleGadgetPortletInstance(String path, String name, String script) throws GWTJahiaServiceException {
+        return mashup.createGoogleGadgetPortletInstance(path, name, script, retrieveParamBean());
     }
 
     public GWTJahiaNodeACE createDefaultUsersGroupACE(List<String> permissions, boolean grand) throws GWTJahiaServiceException {
@@ -450,14 +458,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion) throws GWTJahiaServiceException {
         String nodeUuid = gwtJahiaNodeVersion.getNode().getUUID();
         String versiOnUuid = gwtJahiaNodeVersion.getUUID();
-        versioning.restoreNode(nodeUuid,versiOnUuid,retrieveParamBean());
+        versioning.restoreNode(nodeUuid, versiOnUuid, retrieveParamBean());
     }
 
-    public void uploadedFile(String location, String tmpName, int operation, String newName)  throws GWTJahiaServiceException {
+    public void uploadedFile(String location, String tmpName, int operation, String newName) throws GWTJahiaServiceException {
         contentManager.uploadedFile(location, tmpName, operation, newName);
     }
 
-    public String getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String,String> contextParams, boolean editMode) throws GWTJahiaServiceException {
+    public String getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode) throws GWTJahiaServiceException {
         return this.template.getRenderedContent(path, workspace, LanguageCodeConverters.languageCodeToLocale(locale), template, templateWrapper, contextParams, editMode, retrieveParamBean());
     }
 
@@ -474,7 +482,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public String getExportUrl(String path) throws GWTJahiaServiceException {
-        return retrieveParamBean().composeSiteUrl() + "/engineName/export" +path +".xml?path="+path+"&exportformat=jcr";
+        return retrieveParamBean().composeSiteUrl() + "/engineName/export" + path + ".xml?path=" + path + "&exportformat=jcr";
     }
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {
@@ -483,7 +491,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void move(String sourcePath, String targetPath) throws GWTJahiaServiceException {
         try {
-            contentManager.move(sourcePath,targetPath);
+            contentManager.move(sourcePath, targetPath);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -491,7 +499,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void moveOnTopOf(String sourcePath, String targetPath) throws GWTJahiaServiceException {
         try {
-            contentManager.moveOnTopOf(getUser(),sourcePath,targetPath);
+            contentManager.moveOnTopOf(getUser(), sourcePath, targetPath);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -499,7 +507,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void moveAtEnd(String sourcePath, String targetPath) throws GWTJahiaServiceException {
         try {
-            contentManager.moveAtEnd(sourcePath,targetPath);
+            contentManager.moveAtEnd(sourcePath, targetPath);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -515,7 +523,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getPath(), false));
                 list.add(gwtJahiaNode);
             } catch (GWTJahiaServiceException e) {
-                logger.error(e,e);
+                logger.error(e, e);
             }
         }
         return list;
@@ -539,23 +547,23 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final GWTJahiaNode parentNode = navigation.getParentNode(path, "default", context);
         final GWTJahiaNode jahiaNode = contentManager.createNode(parentNode.getPath(), name, nodeType, properties, context);
         try {
-            contentManager.moveOnTopOf(context.getUser(),jahiaNode.getPath(),path);
+            contentManager.moveOnTopOf(context.getUser(), jahiaNode.getPath(), path);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-    public void saveSearch(String searchString, String path, String name) throws GWTJahiaServiceException  {
+    public void saveSearch(String searchString, String path, String name) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
         final GWTJahiaNode jahiaNode = search.saveSearch(searchString, path, name, context);
     }
 
-    public void saveSearchOnTopOf(String searchString, String path, String name) throws GWTJahiaServiceException  {
+    public void saveSearchOnTopOf(String searchString, String path, String name) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
         final GWTJahiaNode parentNode = navigation.getParentNode(path, "default", context);
         final GWTJahiaNode jahiaNode = search.saveSearch(searchString, parentNode.getPath(), name, context);
         try {
-            contentManager.moveOnTopOf(context.getUser(),jahiaNode.getPath(),path);
+            contentManager.moveOnTopOf(context.getUser(), jahiaNode.getPath(), path);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -579,7 +587,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     node.addMixin("jmix:renderable");
                     node.save();
                 }
-                node.setProperty("j:template",template);
+                node.setProperty("j:template", template);
             }
             node.save();
         } catch (RepositoryException e) {
@@ -590,8 +598,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     /**
      * Publish the specified path.
+     *
      * @param path the path to publish, will not auto publish the parents
-     * @throws  GWTJahiaServiceException
+     * @throws GWTJahiaServiceException
      */
     public void publish(String path, Set<String> languages, boolean allSubTree, String comments) throws GWTJahiaServiceException {
         publication.publish(path, languages, allSubTree);
@@ -599,8 +608,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     /**
      * Publish the specified paths.
+     *
      * @param paths the list of node paths to publish, will not auto publish the parents
-     * @throws  GWTJahiaServiceException
+     * @throws GWTJahiaServiceException
      */
     public void publish(List<String> paths) throws GWTJahiaServiceException {
         publication.publish(paths, null, retrieveParamBean().getUser(), false);
@@ -608,17 +618,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     /**
      * Unpublish the specified path and its subnodes.
+     *
      * @param path the path to unpublish, will not unpublish the references
      * @throws GWTJahiaServiceException
      */
     public void unpublish(String path) throws GWTJahiaServiceException {
         long l = System.currentTimeMillis();
-        publication.unpublish(path,null, retrieveParamBean().getUser());
-        System.out.println("-->"+(System.currentTimeMillis() - l));
+        publication.unpublish(path, null, retrieveParamBean().getUser());
+        System.out.println("-->" + (System.currentTimeMillis() - l));
     }
 
     /**
      * Get the publication status information for a particular path.
+     *
      * @param path path to get publication info from
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws GWTJahiaServiceException
@@ -629,11 +641,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     /**
      * Get the publication status information for multiple pathes.
+     *
      * @param pathes path to get publication info from
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws GWTJahiaServiceException
      */
-    public Map<String,GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException {
+    public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException {
         Map<String, GWTJahiaPublicationInfo> map = new HashMap<String, GWTJahiaPublicationInfo>();
         for (String path : pathes) {
             map.put(path, publication.getPublicationInfo(path, null, false));

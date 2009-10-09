@@ -219,7 +219,7 @@ public class JahiaPortletPicker extends ContentPanel {
         selection = folder;
 
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-        service.ls(folder, "",  null , null, null,false, new AsyncCallback<List<GWTJahiaNode>>() {
+        service.ls(null,folder, "",  null , null, null,false, new AsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                 if (gwtJahiaNodes != null) {
                     listView.addPortlets(gwtJahiaNodes);

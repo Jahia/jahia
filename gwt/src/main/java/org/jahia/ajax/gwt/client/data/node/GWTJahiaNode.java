@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.extjs.gxt.ui.client.data.ListLoadConfig;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.Style;
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 
 /**
@@ -58,11 +59,12 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private boolean portlet = false;
     private String normalizedName = null;
     private boolean versioned = false;
-    private int width = 0 ;
-    private int height = 0 ;
+    private int width = 0;
+    private int height = 0;
     private SortInfo sortInfo = new SortInfo("name", Style.SortDir.ASC);
     private List<GWTJahiaNodeVersion> versions;
     private String selectedVersion;
+    private boolean expandOnLoad = false;
     private GWTJahiaNode referencedNode;
     private GWTJahiaPublicationInfo publicationInfo;
 
@@ -96,7 +98,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     }
 
     public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date lastModified, List<String> nodetypes, List<String> inheritedTypes, String aclContext, String providerKey, Long size, boolean writeable, boolean deleteable, boolean lockable, boolean locked, String lockOwner, boolean versioned) {
-        this(uuid, name,description, path, url, lastModified, nodetypes, inheritedTypes, aclContext, providerKey, writeable, deleteable, lockable, locked, lockOwner,versioned);
+        this(uuid, name, description, path, url, lastModified, nodetypes, inheritedTypes, aclContext, providerKey, writeable, deleteable, lockable, locked, lockOwner, versioned);
         setSize(size);
         setFile(Boolean.TRUE);
     }
@@ -194,7 +196,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     }
 
     public String getDisplayName() {
-        return get("displayName") ;
+        return get("displayName");
     }
 
     public void setUUID(String uuid) {
@@ -343,19 +345,19 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
 
     public int getHeight() {
-        return height ;
+        return height;
     }
 
     public void setHeight(int h) {
-        height = h ;
+        height = h;
     }
 
     public int getWidth() {
-        return width ;
+        return width;
     }
 
     public void setWidth(int w) {
-        width = w ;
+        width = w;
     }
 
     public boolean isVersioned() {
@@ -400,7 +402,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
                 return getNormalizedName().compareToIgnoreCase(o.getNormalizedName());
             }
         }
-
     }
 
 
@@ -433,7 +434,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     }
 
     public void setSortInfo(SortInfo sortInfo) {
-        this.sortInfo = sortInfo ;
+        this.sortInfo = sortInfo;
     }
 
     public boolean isPortlet() {
@@ -465,8 +466,9 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     }
 
     public void setTemplate(String template) {
-       set("template",template);
+        set("template", template);
     }
+
 
     public GWTJahiaNode getReferencedNode() {
         return referencedNode;
@@ -474,6 +476,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setReferencedNode(GWTJahiaNode referencedNode) {
         this.referencedNode = referencedNode;
+    }
+
+    public boolean isExpandOnLoad() {
+        return expandOnLoad;
+    }
+
+    public void setExpandOnLoad(boolean expandOnLoad) {
+        this.expandOnLoad = expandOnLoad;
     }
 
     @Override

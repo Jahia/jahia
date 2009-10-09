@@ -73,6 +73,8 @@ import javax.jcr.version.VersionIterator;
 import java.io.IOException;
 import java.util.*;
 
+import com.extjs.gxt.ui.client.data.ModelData;
+
 /**
  * Created by IntelliJ IDEA.
  * User: toto
@@ -91,7 +93,7 @@ public class NavigationHelper {
 
     private PublicationHelper publication;
 
-    public Map<String,String> nodetypeIcons;
+    public Map<String, String> nodetypeIcons;
 
     public void setJcrService(JCRStoreService jcrService) {
         this.jcrService = jcrService;
@@ -141,19 +143,20 @@ public class NavigationHelper {
      * @param noFolders don't retrieve folders if true
      * @throws GWTJahiaServiceException sthg bad happened
      */
-/*    private void appendChildren(GWTJahiaNode node, String[] openPaths, ProcessingContext context, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {
-        logger.debug("appending children for node " + node.getPath());
-        if (node.isFile()) {
+    /* private void appendChildren(GWTJahiaNode parentNode, String[] openPaths, ProcessingContext context, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {
+        logger.error("appending children for node " + parentNode.getPath());
+        if (parentNode.isFile()) {
             return;
         }
-        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-        List<GWTJahiaNode> lsResult = ls(node, nodeTypes, mimeTypes, filters, null, noFolders, context);
+        List<ModelData> nodes = new ArrayList<ModelData>();
+        List<GWTJahiaNode> childrenNodes = ls(parentNode, nodeTypes, mimeTypes, filters, null, noFolders, false, context);
+        logger.error("appending children for node " + parentNode.getPath() + ", found " + childrenNodes.size() + " nodes");
         boolean addAll = false;
-        for (GWTJahiaNode aNode : lsResult) {
+        for (GWTJahiaNode childNode : childrenNodes) {
             for (String openPath : openPaths) {
-                if (openPath.indexOf(aNode.getPath()) == 0) {
+                if (openPath.indexOf(childNode.getPath()) == 0) {
                     addAll = true;
-                    logger.debug("found at least one child in the path");
+                    logger.error("found at least one child in the path");
                     break;
                 }
             }
@@ -161,8 +164,9 @@ public class NavigationHelper {
                 break;
             }
         }
+
         if (addAll) {
-            for (GWTJahiaNode aNode : lsResult) {
+            for (GWTJahiaNode aNode : childrenNodes) {
                 boolean enableRec = false;
                 for (String openPath : openPaths) {
                     if (openPath.indexOf(aNode.getPath()) == 0) {
@@ -170,23 +174,74 @@ public class NavigationHelper {
                         break;
                     }
                 }
-                logger.debug("adding " + aNode.getName());
-                aNode.setParent(node);
+                logger.error("adding " + aNode.getName());
+                aNode.setParent(parentNode);
                 nodes.add(aNode);
                 if (!aNode.isFile() && enableRec) {
-                    logger.debug("enable recursion for " + aNode.getName());
+                    logger.error("enable recursion for " + aNode.getName());
                     appendChildren(aNode, openPaths, context, nodeTypes, mimeTypes, filters, noFolders);
                 }
             }
-            node.setChildren(nodes);
+            parentNode.setChildren(nodes);
         } else {
-            logger.debug(node.getPath() + " does not contain any more node to expand");
+            logger.error(parentNode.getPath() + " does not contain any more node to expand");
         }
     }*/
 
+    /**
+     * Chech if node is expanded or not
+     *
+     * @param parentNode
+     * @param openPaths
+     * @return
+     */
+    private boolean expandOnLoad(GWTJahiaNode parentNode, String[] openPaths) {
+        // check if parentNode is expanded
+        boolean expand = false;
+        for (String openPath : openPaths) {
+            if (openPath.indexOf(parentNode.getPath()) == 0) {
+                expand = true;
 
+                break;
+            }
+        }
+        return expand;
+    }
+
+    /**
+     * Chech if node is expanded or not
+     *
+     * @param parentNode
+     * @param openPathsAsStrg
+     * @return
+     */
+    private boolean expandOnLoad(GWTJahiaNode parentNode, String openPathsAsStrg) {
+        if (openPathsAsStrg == null) {
+            logger.debug(parentNode.getPath()+": openpath null");
+            return false;
+        }
+        logger.debug("open the following pathes: "+openPathsAsStrg);
+        return expandOnLoad(parentNode, splitOpenPathList(openPathsAsStrg));
+    }
+
+
+    /**
+     * like ls unix command on the folder
+     *
+     * @param folder
+     * @param nodeTypes
+     * @param mimeTypes
+     * @param filters
+     * @param openPaths
+     * @param noFolders
+     * @param viewTemplateAreas
+     * @param context
+     * @return
+     * @throws GWTJahiaServiceException
+     */
     public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders, boolean viewTemplateAreas, ProcessingContext context) throws GWTJahiaServiceException {
         Locale locale = Jahia.getThreadParamBean().getCurrentLocale();
+
 
         String workspace = "default";
         JahiaUser user = context.getUser();
@@ -242,10 +297,11 @@ public class NavigationHelper {
                             logger.error(e.getMessage(), e);
                         }
                     }
-//                    if (openPaths != null && openPaths.length() > 0) {
-//                        logger.debug("trying to append children");
-//                        appendChildren(theNode, splitOpenPathList(openPaths), context, nodeTypes, mimeTypes, filters, noFolders);
-//                    }
+                    /*if (openPaths != null && openPaths.length() > 0) {
+                        logger.error("trying to append children");
+                        logger.error("********** " + openPaths);
+                        appendChildren(theNode, splitOpenPathList(openPaths), context, nodeTypes, mimeTypes, filters, noFolders);
+                    }  */
                     result.add(theNode);
                 } else {
                     if (logger.isDebugEnabled()) {
@@ -279,6 +335,11 @@ public class NavigationHelper {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        }
+
+        // ToDo : find a better way to implement this. Avoid multiple ajax request
+        for (GWTJahiaNode gwtJahiaNode : result) {
+            gwtJahiaNode.setExpandOnLoad(expandOnLoad(gwtJahiaNode,openPaths));
         }
 
         Collections.sort(result);
@@ -360,7 +421,7 @@ public class NavigationHelper {
                     userNodes.add(jahiaNode);
                 }
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             }
             Collections.sort(userNodes, new Comparator<GWTJahiaNode>() {
                 public int compare(GWTJahiaNode o1, GWTJahiaNode o2) {
@@ -477,11 +538,16 @@ public class NavigationHelper {
             }
         }
 
-//        for (GWTJahiaNode userNode : userNodes) {
-//            if (openPaths != null && openPaths.length() > 0) {
-//                appendChildren(userNode, splitOpenPathList(openPaths), jParams, nodeTypes, mimeTypes, filters, false);
-//            }
-//        }
+        for (GWTJahiaNode userNode : userNodes) {
+            if (openPaths != null && openPaths.length() > 0) {
+                logger.debug("Path to open " + openPaths);
+                //appendChildren(userNode, splitOpenPathList(openPaths), jParams, nodeTypes, mimeTypes, filters, false);
+                userNode.setExpandOnLoad(expandOnLoad(userNode,openPaths));
+
+
+            }
+        }
+
 
         return userNodes;
     }

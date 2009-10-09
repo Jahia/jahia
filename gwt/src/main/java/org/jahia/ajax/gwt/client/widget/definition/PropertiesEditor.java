@@ -99,13 +99,15 @@ public class PropertiesEditor extends FormPanel {
     }
 
     public void renderNewFormPanel() {
-        setFieldWidth(550);
-        setLabelWidth(180);
-        setScrollMode(Style.Scroll.AUTO);
+        if (!fieldSetGrouping) {
+            setFieldWidth(550);
+            setLabelWidth(180);
+        }
+        setFrame(true);
         setBorders(false);
         setBodyBorder(false);
         setHeaderVisible(false);
-        setFrame(true);
+        setScrollMode(Style.Scroll.AUTO);
         setButtonAlign(Style.HorizontalAlignment.CENTER);
 
 //        final ListStore<GWTJahiaNodeType> listStore = new ListStore<GWTJahiaNodeType>();
@@ -146,15 +148,15 @@ public class PropertiesEditor extends FormPanel {
 //        }
 //        combo.setSelection(s);
 //
-        ToolBar toolBar = new ToolBar();
-        toolBar.setVisible(true);
+//        ToolBar toolBar = new ToolBar();
+//        toolBar.setVisible(true);
 //
 //        if (nodeTypes.size() > 1) {
 //            toolBar.add(combo);
 //            toolBar.setVisible(true);
 //        }
 //
-        setTopComponent(toolBar);
+//        setTopComponent(toolBar);
         renderForm();
     }
 
@@ -206,10 +208,14 @@ public class PropertiesEditor extends FormPanel {
                     fieldSet.add(field);
                     fieldSet.setCollapsible(true);
                     fieldSet.setHeading(definition.getDeclaringNodeType());
+                    fieldSet.setStyleAttribute("padding", "0");
                     sub = new FormPanel();
                     sub.setFieldWidth(500);
                     sub.setLabelWidth(140);
                     sub.setHeaderVisible(false);
+                    sub.setFrame(false);
+                    setBorders(false);
+                    setBodyBorder(false);
                     fieldSet.add(sub);
                     add(fieldSet);
                 }

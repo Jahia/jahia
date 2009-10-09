@@ -223,15 +223,12 @@ public class EditContentEngine extends Window {
         tabs.setAutoHeight(true);
 
         contentTab = new AsyncTabItem(Messages.get("ece_content", "Content"));
-        contentTab.setScrollMode(Style.Scroll.ALWAYS);
         tabs.add(contentTab);
 
         layoutTab = new AsyncTabItem(Messages.get("ece_layout", "Layout"));
-        layoutTab.setScrollMode(Style.Scroll.ALWAYS);
         tabs.add(layoutTab);
 
         metadataTab = new AsyncTabItem(Messages.get("ece_metadata", "Metadata"));
-        metadataTab.setScrollMode(Style.Scroll.ALWAYS);
         tabs.add(metadataTab);
 
 //        publicationTab = new AsyncTabItem(Messages.get("ece_publication", "Publication"));
@@ -279,11 +276,13 @@ public class EditContentEngine extends Window {
             if (!existingNode || (!isReference && node != null)) {
                 contentTab.setProcessed(true);
                 propertiesEditor = new PropertiesEditor(nodeTypes, props, false, true, GWTJahiaItemDefinition.CONTENT, null, null, !existingNode || node.isWriteable(), true);
+                propertiesEditor.setHeight(504);
                 contentTab.add(propertiesEditor);
                 contentTab.layout();
             } else if (isReference && referencedNode != null) {
                 contentTab.setProcessed(true);
                 propertiesEditor = new PropertiesEditor(referencedNodeTypes, referencedProps, false, true, GWTJahiaItemDefinition.CONTENT, null, null, referencedNode.isWriteable(), true);
+                propertiesEditor.setHeight(504);
                 contentTab.add(propertiesEditor);
                 contentTab.layout();
             }
@@ -296,6 +295,7 @@ public class EditContentEngine extends Window {
             if (!existingNode || (node != null)) {
                 layoutTab.setProcessed(true);
                 layoutEditor = new PropertiesEditor(this.nodeTypes, this.props, false, true, GWTJahiaItemDefinition.LAYOUT, null, null, !existingNode || node.isWriteable(), true);
+                layoutEditor.setHeight(200);
                 layoutTab.add(layoutEditor);
 
                 if (node != null) {
@@ -323,9 +323,10 @@ public class EditContentEngine extends Window {
                     if (subNodesTemplateField != null) {
                         subNodesTemplateField.addSelectionChangedListener(listener);
                     }
-
-                    htmlPreview = new LayoutContainer();
-                    htmlPreview.add(new HTML("preview.."));
+                    htmlPreview = new LayoutContainer(new FitLayout());
+                    htmlPreview.setHeight(304);
+                    htmlPreview.addStyleName("x-panel");
+                    htmlPreview.setScrollMode(Style.Scroll.AUTO);
                     layoutTab.add(htmlPreview);
                 }
 //            layoutTab.layout();
@@ -339,6 +340,7 @@ public class EditContentEngine extends Window {
             if (!existingNode || (node != null)) {
                 metadataTab.setProcessed(true);
                 metadataEditor = new PropertiesEditor(nodeTypes, props, false, true, GWTJahiaItemDefinition.METADATA, null, null, !existingNode || node.isWriteable(), true);
+                metadataEditor.setHeight(504);
                 metadataTab.add(metadataEditor);
                 layout();
             }
@@ -350,7 +352,7 @@ public class EditContentEngine extends Window {
             if (!existingNode || (node != null)) {
                 publicationTab.setProcessed(true);
                 publicationEditor = new PropertiesEditor(nodeTypes, props, false, true, GWTJahiaItemDefinition.PUBLICATION, null, null, !existingNode || node.isWriteable(), true);
-                publicationTab.add(metadataEditor);
+                publicationTab.add(publicationEditor);
 //            metadataTab.layout();
                 publicationTab.setHeight("400px");
                 layout();
@@ -423,6 +425,7 @@ public class EditContentEngine extends Window {
         if (html != null) {
             htmlPreview.add(html);
         }
+        htmlPreview.layout();
     }
 
 

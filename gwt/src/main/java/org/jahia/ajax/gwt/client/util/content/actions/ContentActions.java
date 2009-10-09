@@ -594,7 +594,10 @@ public class ContentActions {
      * @param nodeType
      */
     public static void showContentWizardByNodeType(final Linker linker, final GWTJahiaNodeType nodeType) {
-        GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
+        GWTJahiaNode parent = linker.getSelectedNode();
+        if (parent == null) {
+            parent = linker.getMainNode();
+        }
         if (parent == null) {
             final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes();
             if (selectedItems != null && selectedItems.size() == 1) {

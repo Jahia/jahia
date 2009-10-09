@@ -10,7 +10,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 * Time: 6:58:38 PM
 * To change this template use File | Settings | File Templates.
 */
-public class NewBaseActionItem extends BaseActionItem  {
+public class NewContentActionItem extends BaseActionItem  {
     public void onComponentSelection() {
         ContentActions.showContentWizard(linker);
     }

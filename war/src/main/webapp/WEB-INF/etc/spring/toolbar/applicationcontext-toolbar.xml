@@ -622,6 +622,7 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.createPage"/>
+                <ref bean="org.jahia.toolbar.item.createContent"/>
                 <ref bean="org.jahia.toolbar.item.publish"/>
                 <ref bean="org.jahia.toolbar.item.publishall"/>
                 <ref bean="org.jahia.toolbar.item.unpublish"/>
@@ -2157,6 +2158,9 @@
 
     <!-- TO DO: add an actionItem-->
     <bean id="org.jahia.toolbar.item.createContent" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem"/>
+        </property>
         <property name="titleKey" value="toolbar.manager.button.newContent"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-addContent"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-addContent"/>

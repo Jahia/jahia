@@ -222,7 +222,7 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public String[] getDeclaredSupertypeNames() {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return declaredSupertypeNames;
     }
 
 

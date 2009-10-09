@@ -15,7 +15,7 @@
 <c:if test="${newsList.nodes.size == 0}">
     No News Found
 </c:if>
-<
+
 <c:forEach items="${newsList.nodes}" var="news">
     <template:module node="${news}" editable="false"/>
 </c:forEach>

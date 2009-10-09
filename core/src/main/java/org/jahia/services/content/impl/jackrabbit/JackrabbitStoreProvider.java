@@ -89,6 +89,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                 session = getSystemSession();
                 Node n = session.getNode("/content");
                 recurseCheckin(n, session.getWorkspace().getVersionManager());
+                session.logout();
                 session = getSystemSession(null, "live");
                 session.getWorkspace().clone("default",
                         "/content", "/content", false);

@@ -291,7 +291,6 @@
 
 [jmix:renderable] > jmix:layout mixin
  - j:template (string, choicelist[resourceBundle,image]) < templates()
- - j:theme (string)
 
 [jmix:renderableList] > jmix:layout, jmix:renderable, jmix:skinnable, jmix:contentListMixin mixin
  - j:subNodesTemplate (string, choicelist[resourceBundle,image]) < templates()

@@ -17,5 +17,7 @@ public interface ScriptResolver {
 
     public boolean hasTemplate(ExtendedNodeType nt, String s);
 
+    public SortedSet<Template> getAllTemplatesSet();
+
     public SortedSet<Template> getTemplatesSet(ExtendedNodeType nt);
 }

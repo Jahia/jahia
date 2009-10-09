@@ -226,6 +226,14 @@ public class RenderService extends JahiaService {
         return false;
     }
 
+    public SortedSet<Template> getAllTemplatesSet() {
+        SortedSet<Template> set = new TreeSet<Template>();
+        for (ScriptResolver scriptResolver : scriptResolvers) {
+            set.addAll(scriptResolver.getAllTemplatesSet());
+        }
+        return set;
+    }
+
     public SortedSet<Template> getTemplatesSet(ExtendedNodeType nt) {
         SortedSet<Template> set = new TreeSet<Template>();
         for (ScriptResolver scriptResolver : scriptResolvers) {

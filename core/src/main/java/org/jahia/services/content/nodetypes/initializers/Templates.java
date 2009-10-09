@@ -37,6 +37,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.Template;
 import org.jahia.services.render.RenderService;
 import org.jahia.settings.SettingsBean;
@@ -60,7 +61,13 @@ public class Templates implements ValueInitializer {
         if (nt == null) {
             return new Value[0];
         }
-        SortedSet<Template> templates = RenderService.getInstance().getTemplatesSet(nt);
+
+        SortedSet<Template> templates;
+        if ("j:template".equals(declaringPropertyDefinition.getName())) {
+            templates = RenderService.getInstance().getTemplatesSet(nt);
+        } else {
+            templates = RenderService.getInstance().getAllTemplatesSet();
+        }
 
         List<Value> vs = new ArrayList<Value>();
         for (Template template : templates) {

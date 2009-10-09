@@ -295,7 +295,7 @@ public class EditContentEngine extends Window {
             if (!existingNode || (node != null)) {
                 layoutTab.setProcessed(true);
                 layoutEditor = new PropertiesEditor(this.nodeTypes, this.props, false, true, GWTJahiaItemDefinition.LAYOUT, null, null, !existingNode || node.isWriteable(), true);
-                layoutEditor.setHeight(200);
+                layoutEditor.setHeight(254);
                 layoutTab.add(layoutEditor);
 
                 if (node != null) {
@@ -309,7 +309,7 @@ public class EditContentEngine extends Window {
                                 contextParams.put("forcedSkin", skinField.getValue().getValue());
                             }
                             if (subNodesTemplateField != null && subNodesTemplateField.getValue() != null) {
-                                contextParams.put("forcedSubNodesTemplateField", subNodesTemplateField.getValue().getValue());
+                                contextParams.put("forcedSubNodesTemplate", subNodesTemplateField.getValue().getValue());
                             }
                             updatePreview((templateField != null && templateField.getValue() != null)? templateField.getValue().getValue():null, contextParams);
                         }
@@ -324,7 +324,7 @@ public class EditContentEngine extends Window {
                         subNodesTemplateField.addSelectionChangedListener(listener);
                     }
                     htmlPreview = new LayoutContainer(new FitLayout());
-                    htmlPreview.setHeight(304);
+                    htmlPreview.setHeight(250);
                     htmlPreview.addStyleName("x-panel");
                     htmlPreview.setScrollMode(Style.Scroll.AUTO);
                     layoutTab.add(htmlPreview);

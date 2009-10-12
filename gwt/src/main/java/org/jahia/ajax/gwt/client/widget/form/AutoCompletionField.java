@@ -128,7 +128,8 @@ public class AutoCompletionField extends TriggerField<String> {
                         choices.add((String)data.get(completionItems.getValueKey()));
                     }
                     if (choices.iterator().hasNext()){
-                        menu.show(wrap.dom, "tl-bl?");
+                        // Todo fix this for migration 2.0.2
+                        //menu.show(wrap.dom, "tl-bl?");
                         focus();
                     } else {
                         menu.hide();

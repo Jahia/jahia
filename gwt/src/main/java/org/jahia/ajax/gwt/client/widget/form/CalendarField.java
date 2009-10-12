@@ -308,8 +308,8 @@ public class CalendarField extends TriggerField<Date> {
       picker.setValue(d, true);
       picker.setMinDate(minValue);
       picker.setMaxDate(maxValue);
-
-      menu.show(wrap.dom, "tl-bl?");
+        // Todo fix this for migration 2.0.2
+//      menu.show(wrap.dom, "tl-bl?");
       menu.focus();
     }
 

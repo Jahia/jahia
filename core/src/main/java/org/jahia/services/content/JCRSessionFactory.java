@@ -142,7 +142,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return s;
     }
 
-    public JCRSessionWrapper getSystemSession() throws RepositoryException {
+    protected JCRSessionWrapper getSystemSession() throws RepositoryException {
         return login(JahiaLoginModule.getSystemCredentials());
     }
 

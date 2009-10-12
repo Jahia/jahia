@@ -63,4 +63,8 @@ public class JCRTemplate {
         }
         return instance;
     }
+
+    public JCRStoreProvider getProvider(String path) {
+        return sessionFactory.getProvider(path);
+    }
 }

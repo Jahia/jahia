@@ -34,8 +34,9 @@ package org.jahia.services.usermanager.jcr;
 
 import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.JCRCallback;
 import org.jahia.services.usermanager.*;
 
 import javax.jcr.Node;
@@ -46,7 +47,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Created by IntelliJ IDEA.
+ * Implementation of JahiaUser using the JCR API
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -57,7 +58,7 @@ public class JCRUser implements JahiaUser {
     private static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
     private static final String PROVIDER_NAME = "jcr";
     private final String nodeUuid;
-    private final JCRSessionFactory sessionFactory;
+    private final JCRTemplate jcrTemplate;
     static final String J_PASSWORD = "j:password";
     public static final String J_EXTERNAL = "j:external";
     public static final String J_EXTERNAL_SOURCE = "j:externalSource";
@@ -65,9 +66,9 @@ public class JCRUser implements JahiaUser {
     private Properties properties;
     private UserProperties userProperties;
 
-    public JCRUser(String nodeUuid, JCRSessionFactory sessionFactory) {
+    public JCRUser(String nodeUuid, JCRTemplate jcrTemplate) {
         this.nodeUuid = nodeUuid;
-        this.sessionFactory = sessionFactory;
+        this.jcrTemplate = jcrTemplate;
     }
 
 
@@ -78,19 +79,18 @@ public class JCRUser implements JahiaUser {
      *         corresponds to the user key, which is unique within a Jahia system.
      */
     public String getName() {
-        JCRSessionWrapper session = null;
         try {
-            if (name == null) {
-                session = sessionFactory.getSystemSession();
-                name = getNode(session).getName();
-            }
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<String>() {
+                public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    if (name == null) {
+                        name = getNode(session).getName();
+                    }
             return name;
+                }
+            });
         } catch (RepositoryException e) {
+            logger.error("Error while retrieving the user's name", e);
             return "";
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
         }
     }
 
@@ -133,6 +133,7 @@ public class JCRUser implements JahiaUser {
      * @return false on error
      */
     public boolean setHomepageID(int id) {
+        // TODO home pages are not implemented.
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -148,22 +149,21 @@ public class JCRUser implements JahiaUser {
     public Properties getProperties() {
         if (properties == null) {
             properties = new Properties();
-            JCRSessionWrapper session = null;
             try {
-                session = sessionFactory.getSystemSession();
-                PropertyIterator iterator = getNode(session).getProperties();
-                for (; iterator.hasNext();) {
-                    Property property = iterator.nextProperty();
-                    if (!property.getDefinition().isMultiple()) {
-                        properties.put(property.getName(), property.getString());
+                return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Properties>() {
+                    public Properties doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        PropertyIterator iterator = getNode(session).getProperties();
+                        for (; iterator.hasNext();) {
+                            Property property = iterator.nextProperty();
+                            if (!property.getDefinition().isMultiple()) {
+                                properties.put(property.getName(), property.getString());
+                            }
+                        }
+                        return properties;
                     }
-                }
+                });
             } catch (RepositoryException e) {
-                logger.error("",e);
-            } finally {
-                if (session != null) {
-                    session.logout();
-                }
+                logger.error("Error while retrieving properties",e);
             }
         }
         return properties;
@@ -181,24 +181,23 @@ public class JCRUser implements JahiaUser {
     public UserProperties getUserProperties() {
         if (userProperties == null) {
             userProperties = new UserProperties();
-            JCRSessionWrapper session = null;
             try {
-                session = sessionFactory.getSystemSession();
-                PropertyIterator iterator = getNode(session).getProperties();
-                for (; iterator.hasNext();) {
-                    Property property = iterator.nextProperty();
-                    if (!property.getDefinition().isMultiple()) {
-                        userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(),
-                                                                                            property.getString(),
-                                                                                            false));
+                return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<UserProperties>() {
+                    public UserProperties doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        PropertyIterator iterator = getNode(session).getProperties();
+                        for (; iterator.hasNext();) {
+                            Property property = iterator.nextProperty();
+                            if (!property.getDefinition().isMultiple()) {
+                                userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(),
+                                                                                                    property.getString(),
+                                                                                                    false));
+                            }
+                        }
+                        return userProperties;
                     }
-                }
+                });
             } catch (RepositoryException e) {
                 logger.error("Error while retrieving user properties", e);
-            } finally {
-                if (session != null) {
-                    session.logout();
-                }
             }
         }
         return userProperties;
@@ -234,25 +233,24 @@ public class JCRUser implements JahiaUser {
      * @param key Property's name.
      * @return true if everything went well
      */
-    public boolean removeProperty(String key) {
-        JCRSessionWrapper session = null;
+    public boolean removeProperty(final String key) {
         try {
-            session = sessionFactory.getSystemSession();
-            Node node = getNode(session);
-            Property property = node.getProperty(key);
-            if (property != null) {
-                property.remove();
-                node.save();
-                properties = null;
-                userProperties = null;
-                return true;
-            }
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Node node = getNode(session);
+                    Property property = node.getProperty(key);
+                    if (property != null) {
+                        property.remove();
+                        node.save();
+                        properties = null;
+                        userProperties = null;
+                        return Boolean.TRUE;
+                    }
+                    return Boolean.FALSE;
+                }
+            });
         } catch (RepositoryException e) {
-            logger.warn(e);
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
+            logger.warn("Error while removing property", e);
         }
         return false;
     }
@@ -267,22 +265,20 @@ public class JCRUser implements JahiaUser {
      * @param value Property's value.
      * @return true if everything went well
      */
-    public boolean setProperty(String key, String value) {
-        JCRSessionWrapper session = null;
+    public boolean setProperty(final String key, final String value) {
         try {
-            session = sessionFactory.getSystemSession();
-            Node node = getNode(session);
-            node.setProperty(key, value);
-            node.save();
-            properties = null;
-            userProperties = null;
-            return true;
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Node node = getNode(session);
+                    node.setProperty(key, value);
+                    node.save();
+                    properties = null;
+                    userProperties = null;
+                    return Boolean.TRUE;
+                }
+            });
         } catch (RepositoryException e) {
-            logger.warn(e);
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
+            logger.warn("Error while setting user property " + key + " with value " + value, e);
         }
         return false;
     }
@@ -380,6 +376,7 @@ public class JCRUser implements JahiaUser {
      *         the List may be empty if this property was never set for the user.
      */
     public List<String> getLanguageCodes() {
+        // TODO not implemented
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -393,7 +390,7 @@ public class JCRUser implements JahiaUser {
      *                      important one last.
      */
     public void setLanguageCodes(List<String> userLanguages) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // TODO not implemented
     }
 
     /**
@@ -404,6 +401,8 @@ public class JCRUser implements JahiaUser {
      * @return true if the property is active.
      */
     public boolean isMixLanguagesActive() {
+        // TODO not implemented
+
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -414,6 +413,8 @@ public class JCRUser implements JahiaUser {
      * @param mixLanguagesActive a boolean set to true to allow language mixing
      */
     public void setMixLanguagesActive(boolean mixLanguagesActive) {
+        // TODO not implemented
+
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -427,6 +428,8 @@ public class JCRUser implements JahiaUser {
      *         and never the ones configured in his browser or in the site settings.
      */
     public boolean isUserLanguagesOnlyActive() {
+        // TODO not implemented
+
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -439,6 +442,8 @@ public class JCRUser implements JahiaUser {
      *                                browser or site settings.
      */
     public void setUserLanguagesOnlyActive(boolean userLanguagesOnlyActive) {
+        // TODO not implemented
+
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -452,10 +457,14 @@ public class JCRUser implements JahiaUser {
     }
 
     public boolean isProxied() {
+        // TODO not implemented
+
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void setProxied(boolean proxied) {
+        // TODO not implemented
+
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -465,6 +474,8 @@ public class JCRUser implements JahiaUser {
      * @return true if option  byPassUserAliasing is set
      */
     public boolean byPassUserAliasing() {
+        // TODO not implemented
+
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -474,6 +485,8 @@ public class JCRUser implements JahiaUser {
      * @param bypassUserAliasing set to true to activate option byPassUserAliasing
      */
     public void setByPassUserAliasing(boolean bypassUserAliasing) {
+        // TODO not implemented
+
         //To change body of implemented methods use File | Settings | File Templates.
     }
 

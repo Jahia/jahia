@@ -56,7 +56,7 @@ import javax.jcr.query.RowIterator;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * JCR-based implementation of the Group manager provider interface
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -132,7 +132,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         }
                         session.save();
                         session.getWorkspace().getVersionManager().checkin(parentNodeWrapper.getPath());
-                        return new JCRGroup(nodeWrapper, jcrTemplate.getSessionFactory(), siteID);
+                        return new JCRGroup(nodeWrapper, jcrTemplate, siteID);
                     } catch (JahiaException e) {
                         logger.error("Error while creating group", e);
                     }
@@ -397,8 +397,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      * This function checks on a gived site if the groupname has already been
      * assigned to another group.
      *
-     * @param int       siteID the site id
-     * @param groupname String representing the unique group name.
+     * @param siteID       siteID the site id
+     * @param name String representing the unique group name.
      * @return Return true if the specified username has not been assigned yet,
      *         return false on any failure.
      */
@@ -436,12 +436,11 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      * Try to lookup the group into the cache, if it's not in the cache, then
      * load it into the cahce from the database.
      *
-     * @param String groupKey Group's unique identification key.
+     * @param groupKey Group's unique identification key.
      * @return Return a reference on a the specified group name. Return null
      *         if the group doesn't exist or when any error occured.
      */
     public JahiaGroup lookupGroup(String groupKey) {
-        JCRSessionWrapper session = null;
         try {
             if (cache == null) {
                 start();
@@ -474,7 +473,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             usersFolderNode = session.getNode(
                                     "/" + Constants.CONTENT + "/sites/" + siteName + "/groups/" + name.trim());
                         }
-                        JCRGroup group = new JCRGroup(usersFolderNode, jcrTemplate.getSessionFactory(), siteID1);
+                        JCRGroup group = new JCRGroup(usersFolderNode, jcrTemplate, siteID1);
                         cache.put(trueGroupKey, group);
                         return group;
                     } catch (JahiaException e) {
@@ -500,13 +499,12 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      * Try to lookup the group into the cache, if it's not in the cache, then
      * load it into the cahce from the database.
      *
-     * @param int  siteID the site id
+     * @param siteID the site id
      * @param name Group's unique identification name.
      * @return Return a reference on a the specified group name. Return null
      *         if the group doesn't exist or when any error occured.
      */
     public JahiaGroup lookupGroup(int siteID, final String name) {
-        JCRSessionWrapper session = null;
         try {
             if (cache == null) {
                 start();
@@ -530,7 +528,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             usersFolderNode = session.getNode(
                                     "/" + Constants.CONTENT + "/sites/" + siteName + "/groups/" + name.trim());
                         }
-                        JCRGroup group = new JCRGroup(usersFolderNode, jcrTemplate.getSessionFactory(), siteID1);
+                        JCRGroup group = new JCRGroup(usersFolderNode, jcrTemplate, siteID1);
                         cache.put(trueGroupKey, group);
                         return group;
                     } catch (JahiaException e) {
@@ -585,8 +583,6 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     }
 
     public Set<JahiaGroup> searchGroups(final int siteID, final Properties searchCriterias) {
-
-        Session session = null;
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Set<JahiaGroup>>() {
                 public Set<JahiaGroup> doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -634,7 +630,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         NodeIterator ni = qr.getNodes();
                         while (ni.hasNext()) {
                             Node usersFolderNode = ni.nextNode();
-                            users.add(new JCRGroup(usersFolderNode, jcrTemplate.getSessionFactory(), siteID));
+                            users.add(new JCRGroup(usersFolderNode, jcrTemplate, siteID));
                         }
                     }
                     return users;

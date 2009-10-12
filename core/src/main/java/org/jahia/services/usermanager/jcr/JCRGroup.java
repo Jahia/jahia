@@ -37,8 +37,9 @@ import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.JCRCallback;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerRoutingService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -54,7 +55,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Created by IntelliJ IDEA.
+ * Implementation of the JahiaGroup interface that uses the JCR API for storage
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -63,12 +64,12 @@ import java.util.Properties;
 public class JCRGroup extends JahiaGroup {
     private transient static Logger logger = Logger.getLogger(JCRGroup.class);
     private String nodeUuid;
-    private final JCRSessionFactory sessionFactory;
+    private final JCRTemplate jcrTemplate;
     static final String J_HIDDEN = "j:hidden";
     private static final String PROVIDER_NAME = "jcr";
 
-    public JCRGroup(Node nodeWrapper, JCRSessionFactory sessionFactory, int siteID) {
-        this.sessionFactory = sessionFactory;
+    public JCRGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
+        this.jcrTemplate = jcrTemplate;
         this.mSiteID = siteID;
         try {
             this.nodeUuid = nodeWrapper.getIdentifier();
@@ -88,23 +89,22 @@ public class JCRGroup extends JahiaGroup {
      *         property is present.
      */
     public Properties getProperties() {
-        Properties properties = new Properties();
-        JCRSessionWrapper session = null;
         try {
-            session = sessionFactory.getSystemSession();
-            PropertyIterator iterator = getNode(session).getProperties();
-            for (; iterator.hasNext();) {
-                Property property = iterator.nextProperty();
-                properties.put(property.getName(), property.getString());
-            }
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Properties>() {
+                 public Properties doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                     Properties properties = new Properties();
+                     PropertyIterator iterator = getNode(session).getProperties();
+                     for (; iterator.hasNext();) {
+                         Property property = iterator.nextProperty();
+                         properties.put(property.getName(), property.getString());
+                     }
+                     return properties;
+                 }
+            });
         } catch (RepositoryException e) {
             logger.error("Error while retrieving group properties", e);
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
         }
-        return properties;
+        return null;
     }
 
     /**
@@ -114,17 +114,19 @@ public class JCRGroup extends JahiaGroup {
      * @return Return the property's value of the specified key, or null if the
      *         property does not exist.
      */
-    public String getProperty(String key) {
-        JCRSessionWrapper session = null;
+    public String getProperty(final String key) {
         try {
-            session = sessionFactory.getSystemSession();
-            return getNode(session).getProperty(key).getString();
-        } catch (RepositoryException e) {
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<String>() {
+                 public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    return getNode(session).getProperty(key).getString();
+                 }
+            });
+        } catch (PathNotFoundException pnfe) {
+            // This is expected in the case the property doesn't exist in the repository. We will simply return null.
             return null;
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
+        } catch (RepositoryException e) {
+            logger.error("Error while retrieving group property " + key, e);
+            return null;
         }
     }
 
@@ -133,23 +135,22 @@ public class JCRGroup extends JahiaGroup {
      *
      * @param key Property's name.
      */
-    public boolean removeProperty(String key) {
-        JCRSessionWrapper session = null;
+    public boolean removeProperty(final String key) {
         try {
-            session = sessionFactory.getSystemSession();
-            Node node = getNode(session);
-            Property property = node.getProperty(key);
-            if (property != null) {
-                property.remove();
-                node.save();
-                return true;
-            }
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Node node = getNode(session);
+                    Property property = node.getProperty(key);
+                    if (property != null) {
+                        property.remove();
+                        node.save();
+                        return Boolean.TRUE;
+                    }
+                    return Boolean.FALSE;
+                 }
+            }).booleanValue();
         } catch (RepositoryException e) {
-            logger.warn(e);
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
+            logger.warn("Error while removing property " + key, e);
         }
         return false;
     }
@@ -161,20 +162,18 @@ public class JCRGroup extends JahiaGroup {
      * @param key   Property's name.
      * @param value Property's value.
      */
-    public boolean setProperty(String key, String value) {
-        JCRSessionWrapper session = null;
+    public boolean setProperty(final String key, final String value) {
         try {
-            session = sessionFactory.getSystemSession();
-            Node node = getNode(session);
-            node.setProperty(key, value);
-            node.save();
-            return true;
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Node node = getNode(session);
+                    node.setProperty(key, value);
+                    node.save();
+                    return Boolean.TRUE;
+                }
+            }).booleanValue();
         } catch (RepositoryException e) {
-            logger.warn(e);
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
+            logger.warn("Error while setting property " + key + " with value " + value, e);
         }
         return false;
     }
@@ -186,33 +185,31 @@ public class JCRGroup extends JahiaGroup {
      * @return Return true if the member was successfully added, false if the
      *         principal was already a member.
      */
-    public boolean addMember(Principal principal) {
-        JCRSessionWrapper session = null;
+    public boolean addMember(final Principal principal) {
         try {
-            session = sessionFactory.getSystemSession();
-            JCRUser jcrUser = null;
-            if (principal instanceof JCRUser) {
-                jcrUser = (JCRUser) principal;
-            } else if (principal instanceof JahiaUser) {
-                sessionFactory.getProvider("/").deployExternalUser(principal.getName(),
-                                                                   ((JahiaUser) principal).getProviderName());
-                jcrUser = (JCRUser) JCRUserManagerProvider.getInstance().lookupExternalUser(principal.getName());
-            }
-            if (jcrUser != null) {
-                Node node = getNode(session);
-                Node members = node.getNode("j:members");
-                Node member = members.addNode(principal.getName(), Constants.JAHIANT_MEMBER);
-                member.setProperty("j:member", jcrUser.getNodeUuid());
-                session.save();
-                return true;
-            }
-
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRUser jcrUser = null;
+                    if (principal instanceof JCRUser) {
+                        jcrUser = (JCRUser) principal;
+                    } else if (principal instanceof JahiaUser) {
+                        jcrTemplate.getProvider("/").deployExternalUser(principal.getName(),
+                                                                           ((JahiaUser) principal).getProviderName());
+                        jcrUser = (JCRUser) JCRUserManagerProvider.getInstance().lookupExternalUser(principal.getName());
+                    }
+                    if (jcrUser != null) {
+                        Node node = getNode(session);
+                        Node members = node.getNode("j:members");
+                        Node member = members.addNode(principal.getName(), Constants.JAHIANT_MEMBER);
+                        member.setProperty("j:member", jcrUser.getNodeUuid());
+                        session.save();
+                        return true;
+                    }
+                    return false;
+                }
+            }).booleanValue();
         } catch (RepositoryException e) {
             logger.error("Error while adding group member", e);
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
         }
         return false;
     }
@@ -239,6 +236,7 @@ public class JCRGroup extends JahiaGroup {
      * @return false on error
      */
     public boolean setHomepageID(int id) {
+        // TODO we will need to implement this if we want to support group homepages again.
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -258,17 +256,15 @@ public class JCRGroup extends JahiaGroup {
      * @return members of this group
      */
     protected Map<String, Principal> getMembersMap() {
-        JCRSessionWrapper session = null;
         try {
-            session = sessionFactory.getSystemSession();
-            final Node node = getNode(session);
-            return getMembersMap(node);
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Map<String, Principal>>() {
+                public Map<String, Principal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    final Node node = getNode(session);
+                    return getMembersMap(node);
+                }
+            });
         } catch (RepositoryException e) {
             logger.error("Error while retrieving group member map", e);
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
         }
         return new HashMap<String, Principal>();
     }
@@ -299,27 +295,26 @@ public class JCRGroup extends JahiaGroup {
      * @return Return true if the principal was removed, or false if the
      *         principal was not a member.
      */
-    public boolean removeMember(Principal principal) {
-        JCRSessionWrapper session = null;
+    public boolean removeMember(final Principal principal) {
         try {
-            session = sessionFactory.getSystemSession();
-            Node group = getNode(session);
-            Node members = group.getNode("j:members");
-            if (principal instanceof JCRUser) {
-                JCRUser jcrUser = (JCRUser) principal;
-                removeMember(session, members, jcrUser);
-            }
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Node group = getNode(session);
+                    Node members = group.getNode("j:members");
+                    if (principal instanceof JCRUser) {
+                        JCRUser jcrUser = (JCRUser) principal;
+                        return removeMember(session, members, jcrUser);
+                    }
+                    return Boolean.FALSE;
+                }
+            });
         } catch (RepositoryException e) {
             logger.error("Error while removing member", e);
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
         }
         return false;
     }
 
-    private void removeMember(JCRSessionWrapper session, Node members, JCRUser jcrUser) throws RepositoryException {
+    private boolean removeMember(JCRSessionWrapper session, Node members, JCRUser jcrUser) throws RepositoryException {
         if (session.getWorkspace().getQueryManager() != null) {
             String query = "SELECT * FROM [jnt:member] as m where m.[j:member] = '" + jcrUser.getNodeUuid() + "' AND m.[jcr:path] LIKE '" + members.getPath() + "/%' ORDER BY m.[j:nodename]";
             Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
@@ -330,7 +325,9 @@ public class JCRGroup extends JahiaGroup {
                 memberNode.remove();
             }
             session.save();
+            return true;
         }
+        return false;
     }
 
     /**

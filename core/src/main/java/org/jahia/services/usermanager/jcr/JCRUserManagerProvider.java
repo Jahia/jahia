@@ -55,7 +55,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * JCR implementation of the user manager provider interface. This class stores and
+ * retrieves users from a JCR backend.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -150,7 +151,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                     jcrSessionWrapper.getWorkspace().getVersionManager().checkin(parentNodeWrapper.getPath());
                     publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                             true, true);
-                    return new JCRUser(userNode.getIdentifier(), jcrTemplate.getSessionFactory());
+                    return new JCRUser(userNode.getIdentifier(), jcrTemplate);
                 }
             });
         } catch (RepositoryException e) {
@@ -193,6 +194,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      * @return Return the number of users in the system.
      */
     public int getNbUsers() {
+        // TODO to be implemented or removed.
         return 0;
     }
 
@@ -291,13 +293,15 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 public JahiaUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name);
                     if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                        JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate.getSessionFactory());
+                        JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate);
                         cache.put(name, user);
                         return user;
                     }
                     return null;
                 }
             });
+        } catch (PathNotFoundException pnfe) {
+            // This is expected in the case the user doesn't exist in the repository. We will simply return null.
         } catch (JahiaInitializationException e) {
             logger.error("Error while looking up user by key " + userKey, e);
         } catch (RepositoryException e) {
@@ -324,13 +328,15 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 public JahiaUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name.trim());
                     if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                        JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate.getSessionFactory());
+                        JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate);
                         cache.put(name, user);
                         return user;
                     }
                     return null;
                 }
             });
+        } catch (PathNotFoundException pnfe) {
+            // This is expected in the case the user doesn't exist in the repository. We will simply return null.
         } catch (JahiaInitializationException e) {
             logger.error("Error while looking up user by name " + name, e);
         } catch (RepositoryException e) {
@@ -351,13 +357,15 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 public JahiaUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name.trim());
                     if (usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                        JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate.getSessionFactory());
+                        JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate);
                         cache.put(name, user);
                         return user;
                     }
                     return null;
                 }
             });
+        } catch (PathNotFoundException pnfe) {
+            // This is expected in the case the user doesn't exist in the repository. We will simply return null.
         } catch (JahiaInitializationException e) {
             logger.error("Error while looking up external user by name " + name, e);
         } catch (RepositoryException e) {
@@ -368,6 +376,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
 
 
     public JahiaUser lookupUserByKey(String name, String searchAttributeName) {
+        // TODO this should be removed, implemented or throw an unsupported exception
         return null;
     }
 
@@ -437,7 +446,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                         NodeIterator ni = qr.getNodes();
                         while (ni.hasNext()) {
                             Node usersFolderNode = ni.nextNode();
-                            users.add(new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate.getSessionFactory()));
+                            users.add(new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate));
                         }
                     }
 

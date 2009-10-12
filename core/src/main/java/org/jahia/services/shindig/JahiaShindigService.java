@@ -222,7 +222,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
                 Node usersFolderNode = session.getNode("/" + Constants.CONTENT + "/users/" + name);
                 JCRUser jcrUser = null;
                 if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                    jcrUser = new JCRUser(usersFolderNode.getUUID(), jcrTemplate.getSessionFactory());
+                    jcrUser = new JCRUser(usersFolderNode.getUUID(), jcrTemplate);
                 } else {
                     return null;
                 }

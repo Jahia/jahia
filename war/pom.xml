@@ -67,11 +67,11 @@
                 <plugins>
                    <plugin>
                         <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>gwt-maven-plugin</artifactId>
+                        <artifactId>gwt-maven-plugin</artifactId>                       
                         <version>1.1</version>
                         <configuration>
                             <localWorkers>5</localWorkers>
-                            <extraJvmArgs>-Xmx1024m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
+                            <extraJvmArgs>-Xmx1280m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
                             <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
                             <modules>
@@ -433,7 +433,7 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
-            <version>1.6.4</version>
+            <version>1.7.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

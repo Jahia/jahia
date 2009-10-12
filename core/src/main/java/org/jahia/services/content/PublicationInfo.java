@@ -4,11 +4,10 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Sep 16, 2009
- * Time: 10:57:49 AM
- * To change this template use File | Settings | File Templates.
+ * Object to return publication status info for a node and if requested 
+ * also contains the infos for the referenced nodes or the subnodes. 
+ *
+ * @author toto
  */
 public class PublicationInfo {
     public static final int NOT_PUBLISHED = 0;

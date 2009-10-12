@@ -36,12 +36,11 @@ import javax.jcr.query.QueryManager;
 
 import javax.jcr.query.qom.QueryObjectModelFactory;
 
+
 /**
- * Created by IntelliJ IDEA.
- * User: hollis
- * Date: 13 nov. 2008
- * Time: 15:16:18
- * To change this template use File | Settings | File Templates.
+ * This is an adapter to support Jackrabbit's query manager functionality.
+ *
+ * @author toto
  */
 public class JCRStoreQueryManagerAdapter implements QueryManager {
 

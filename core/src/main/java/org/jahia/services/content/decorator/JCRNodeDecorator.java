@@ -235,8 +235,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getPropertyAsString(name);
     }
 
-    public void setProperty(String namespace, String name, String value) throws RepositoryException {
-        node.setProperty(namespace, name, value);
+    public JCRPropertyWrapper setProperty(String namespace, String name, String value) throws RepositoryException {
+        return node.setProperty(namespace, name, value);
     }
 
     public List<JCRItemWrapper> getAncestors() throws RepositoryException {

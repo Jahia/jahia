@@ -42,6 +42,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.jaas.JahiaLoginModule;
@@ -72,11 +73,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: 20 nov. 2007
- * Time: 18:09:21
- * To change this template use File | Settings | File Templates.
+ * A store provider to handle different backend stores within a site. There are multiple 
+ * subclasses for the different repository vendors. 
+ * 
+ * The main and default repository in Jahia is based on the {@link JackrabbitStoreProvider}, 
+ * but you can have different repositories mounted, which are based on other store providers.
+ *
+ * @author toto
  */
 public class JCRStoreProvider {
 

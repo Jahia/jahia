@@ -38,11 +38,9 @@ import javax.jcr.PropertyIterator;
 import java.util.Iterator;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Serge Huber
- * Date: 17 d�c. 2007
- * Time: 10:09:23
- * To change this template use File | Settings | File Templates.
+ * Jahia's wrapper of the JCR <code>javax.jcr.PropertyIterator</code>.
+ * 
+ * @author toto 
  */
 public class PropertyIteratorImpl extends RangeIteratorImpl implements PropertyIterator {
 

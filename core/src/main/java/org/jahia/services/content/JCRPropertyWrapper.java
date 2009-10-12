@@ -39,10 +39,9 @@ import javax.jcr.ValueFormatException;
 import javax.jcr.RepositoryException;
 
 /**
- * Wrapper for javax.jcr.property to allow more data format.
+ * Interface for wrappers for javax.jcr.property to allow more data format.
  *
- * @author : $Author$
- * Last Modified : $Date$
+ * @author : toto
  */
 public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
     /**

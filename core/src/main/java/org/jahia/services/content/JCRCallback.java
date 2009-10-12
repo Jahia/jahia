@@ -35,12 +35,29 @@ package org.jahia.services.content;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by IntelliJ IDEA.
+ * Callback interface for JCR code. To be used with JCRTemplate's execute methods,
+ * assumably often as anonymous classes within a method implementation. 
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 23 sept. 2009
+ * @author Cédric Mailleux
  */
+
 public interface JCRCallback<T> {
+
+    /**
+     * Called by {@link JCRTemplate} within an active JCR
+     * {@link javax.jcr.JCRSession}. It is not responsible for logging
+     * out of the <code>Session</code> or handling transactions.
+     *
+     * Allows for returning a result object created within the
+     * callback, i.e. a domain object or a collection of domain
+     * objects. A thrown {@link RuntimeException} is treated as an
+     * application exeception; it is propagated to the caller of the
+     * template.
+     * 
+     * @param session
+     *            session passed by the JCRTemplate 
+     * @return a result object returned by the action, or null
+     * @throws RepositoryException in case of JCR errors
+     */
     T doInJCR(JCRSessionWrapper session) throws RepositoryException;
 }

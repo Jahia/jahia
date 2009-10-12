@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Aug 18, 2009
- * Time: 12:16:09 PM
- * To change this template use File | Settings | File Templates.
+ * Jahia's implementation of the JCR <code>javax.jcr.NamespaceRegistry</code>. 
+ * The namespace registry contains the default prefixes of the registered
+ * namespaces. 
+ *
+ * @author toto
  */
 public class NamespaceRegistryWrapper implements NamespaceRegistry {
     private Map nsToPrefix = new HashMap();

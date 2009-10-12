@@ -70,11 +70,9 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 /**
- * Created by IntelliJ IDEA.
- * User: hollis
- * Date: 13 nov. 2008
- * Time: 15:43:10
- * To change this template use File | Settings | File Templates.
+ * This is an adapter to support query object model factory of JCR.
+ *
+ * @author toto
  */
 public class QueryObjectModelFactoryAdapter implements QueryObjectModelFactory {
 

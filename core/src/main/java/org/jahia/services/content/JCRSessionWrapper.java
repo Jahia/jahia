@@ -45,6 +45,7 @@ import org.xml.sax.SAXException;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
+import javax.jcr.lock.LockManager;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.retention.RetentionManager;
@@ -64,11 +65,15 @@ import java.security.AccessControlException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Mar 6, 2009
- * Time: 12:11:22 PM
- * To change this template use File | Settings | File Templates.
+ * Jahia specific wrapper around <code>javax.jcr.Session</code> to be able to inject
+ * Jahia specific actions and to manage sessions to multiple repository providers in
+ * the backend. 
+ * 
+ * Jahia services should use this wrapper rather than the original session interface to 
+ * ensure that we manipulate wrapped nodes and not the ones from the underlying 
+ * implementation.
+ *
+ * @author toto
  */
 public class JCRSessionWrapper implements Session {
     private static org.apache.log4j.Logger logger =
@@ -243,7 +248,16 @@ public class JCRSessionWrapper implements Session {
     public ValueFactory getValueFactory() throws UnsupportedRepositoryOperationException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
-
+    
+    /**
+     * Normally determines whether this <code>Session</code> has permission to perform
+     * the specified actions at the specified <code>absPath</code>.
+     * This method is not supported.
+     * 
+     * @param absPath an absolute path.
+     * @param actions a comma separated list of action strings.
+     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
+     */
     public void checkPermission(String s, String s1) throws AccessControlException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
@@ -330,6 +344,15 @@ public class JCRSessionWrapper implements Session {
         return isLive;
     }
 
+    /**
+     * Adds the specified lock token to the wrapped sessions. Holding a
+     * lock token makes the <code>Session</code> the owner of the lock
+     * specified by that particular lock token.
+     *
+     * @param lt a lock token (a string).
+     * @deprecated As of JCR 2.0, {@link LockManager#addLockToken(String)}
+     * should be used instead.
+     */    
     public void addLockToken(String token) {
         tokens.add(token);
         for (Session session : sessions.values()) {
@@ -348,6 +371,10 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    /**
+     * Get sessions from all providers used in this wrapper. 
+     * @return a <code>Collection</code> of <code>JCRSessionWrapper</code> objects
+     */
     public Collection<Session> getAllSessions() {
         return sessions.values();
     }
@@ -550,7 +577,7 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
-    public Node getNodeByIdentifier(String id) throws ItemNotFoundException, RepositoryException {
+    public JCRNodeWrapper getNodeByIdentifier(String id) throws ItemNotFoundException, RepositoryException {
         return getNodeByUUID(id);
     }
 
@@ -578,6 +605,16 @@ public class JCRSessionWrapper implements Session {
         throw new UnsupportedRepositoryOperationException();
     }
 
+    /**
+     * Returns the access control manager for this <code>Session</code>.
+     * <p>
+     * Jahia throws an <code>UnsupportedRepositoryOperationException</code>.
+     *
+     * @return the access control manager for this <code>Session</code>
+     * @throws UnsupportedRepositoryOperationException if access control
+     *         is not supported.
+     * @since JCR 2.0
+     */    
     public AccessControlManager getAccessControlManager() throws UnsupportedRepositoryOperationException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }

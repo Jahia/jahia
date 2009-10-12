@@ -11,11 +11,15 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.*;
 import javax.jcr.version.VersionManager;
-import javax.jcr.version.VersionIterator;
 import javax.jcr.version.Version;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.util.*;
 
+/**
+ * This is a Jahia service, which offers functionality to publish, unpublish or get publication info of JCR nodes 
+ *
+ * @author toto
+ */
 public class JCRPublicationService extends JahiaService {
     private static transient Logger logger = Logger.getLogger(JCRPublicationService.class);
     private JCRSessionFactory sessionFactory;
@@ -24,13 +28,26 @@ public class JCRPublicationService extends JahiaService {
     private JCRPublicationService() {
     }
 
+    /**
+     * Get the JCR session factory
+     * @return The JCR session factory
+     */
     public JCRSessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
+    /**
+     * Set the JCR session factory
+     * @param sessionFactory The JCR session factory
+     */
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
+    
+    /**
+     * Get the singleton instance of the JCRPublicationService
+     * @return the singleton instance of the JCRPublicationService
+     */
     public synchronized static JCRPublicationService getInstance() {
         if (instance == null) {
             instance = new JCRPublicationService();
@@ -200,9 +217,9 @@ public class JCRPublicationService extends JahiaService {
         sourceNode.getSession().save();
         system = true;
         if (system) {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
-                    return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                    return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper destinationSession) throws RepositoryException {
                             publish(toPublish, pruneNodes, sourceNode.getSession(), destinationSession);
                             return null;
@@ -300,23 +317,6 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
-    private String logVersion(String path, VersionManager versionManager) throws RepositoryException {
-        StringBuffer sb = new StringBuffer();
-        VersionIterator vi = versionManager.getVersionHistory(path).getAllLinearVersions();
-        sb.append("Node at "+path + ", base:"+versionManager.getBaseVersion(path).getName() + " co:" +versionManager.isCheckedOut(path)+" , versions=");
-        while (vi.hasNext()) {
-            Version version = (Version) vi.next();
-            sb.append(version.getName() + " (<- ");
-            Version[] versions = version.getPredecessors();
-            for (int i = 0; i < versions.length; i++) {
-                Version version1 = versions[i];
-                sb.append(version1.getName()+ " ");
-            }
-            sb.append(")");
-        }
-        return sb.toString();
-    }
-
     private void cloneToLiveWorkspace(List<JCRNodeWrapper> toPublish, List<JCRNodeWrapper> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
         JCRNodeWrapper sourceNode = toPublish.iterator().next();
 
@@ -388,17 +388,6 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
-    private void recurseCheckout(Node node, VersionManager versionManager) throws RepositoryException {
-        if (node.isNodeType("mix:versionable")) {
-            versionManager.checkout(node.getPath());
-        }
-        NodeIterator ni = node.getNodes();
-        while (ni.hasNext()) {
-            Node sub = ni.nextNode();
-            recurseCheckout(sub, versionManager);
-        }
-    }
-
     /**
      * Unpublish a node from live workspace.
      * Referenced Node will not be unpublished.
@@ -442,15 +431,34 @@ public class JCRPublicationService extends JahiaService {
     }
 
     /**
-     * @param path
-     * @param includesSubnodes
-     * @return
-     * @throws javax.jcr.RepositoryException
+     * Gets the publication info for the current node and if acquired also for referenced nodes and subnodes. 
+     * The returned <code>PublicationInfo</code> has the publication info for the current node (NOT_PUBLISHED, PUBLISHED, MODIFIED, UNPUBLISHABLE) 
+     * and if requested you will be able to get the infos also for the subnodes and the referenced nodes.
+     * As language dependent data is always stored in subnodes you need to set includesSubnodes to true, if you also specify a list of languages.   
+     * @param path The path of the node to get publication info
+     * @param languages Languages list to use for publication info, or null for all languages (only appplied if includesSubnodes is true)
+     * @param includesReferences If true include info for referenced nodes
+     * @param includesSubnodes If true include info for subnodes
+     * @return the <code>PublicationInfo</code> for the requested node(s)
+     * @throws RepositoryException
      */
     public PublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences, boolean includesSubnodes) throws RepositoryException {
         return getPublicationInfo(path, languages, includesReferences, includesSubnodes, new HashSet<String>());
     }
 
+    /**
+     * Gets the publication info for the current node and if acquired also for referenced nodes and subnodes. 
+     * The returned <code>PublicationInfo</code> has the publication info for the current node (NOT_PUBLISHED, PUBLISHED, MODIFIED, UNPUBLISHABLE) 
+     * and if requested you will be able to get the infos also for the subnodes and the referenced nodes.
+     * As language dependent data is always stored in subnodes you need to set includesSubnodes to true, if you also specify a list of languages.   
+     * @param path The path of the node to get publication info
+     * @param languages Languages list to use for publication info, or null for all languages (only appplied if includesSubnodes is true)
+     * @param includesReferences If true include info for referenced nodes
+     * @param includesSubnodes If true include info for subnodes
+     * @param pathes a Set of pathes, which don't need to be checked or have already been checked
+     * @return the <code>PublicationInfo</code> for the requested node(s)
+     * @throws RepositoryException
+     */
     public PublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences, boolean includesSubnodes, Set<String> pathes)
             throws RepositoryException {
         pathes.add(path);
@@ -523,10 +531,16 @@ public class JCRPublicationService extends JahiaService {
         return info;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void start() throws JahiaInitializationException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void stop() throws JahiaException {
         //To change body of implemented methods use File | Settings | File Templates.
     }

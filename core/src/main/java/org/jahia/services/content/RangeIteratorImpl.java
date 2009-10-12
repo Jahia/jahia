@@ -36,11 +36,9 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Serge Huber
- * Date: 17 d�c. 2007
- * Time: 10:09:55
- * To change this template use File | Settings | File Templates.
+ * Jahia's wrapper of the JCR <code>javax.jcr.RangeIterator</code>.
+ * 
+ * @author toto 
  */
 public class RangeIteratorImpl implements RangeIterator {
 

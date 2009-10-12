@@ -57,11 +57,15 @@ import java.io.InputStream;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Mar 6, 2009
- * Time: 2:13:00 PM
- * To change this template use File | Settings | File Templates.
+ * Jahia specific wrapper around <code>javax.jcr.Workspace</code> to be able to inject
+ * Jahia specific actions and to manage workspaces on multiple repository providers in
+ * the backend. 
+ * 
+ * Jahia services should use this wrapper rather than the original workspace interface to 
+ * ensure that we manipulate wrapped nodes and not the ones from the underlying 
+ * implementation.
+ *
+ * @author toto
  */
 public class JCRWorkspaceWrapper implements Workspace {
     private JCRSessionFactory service;

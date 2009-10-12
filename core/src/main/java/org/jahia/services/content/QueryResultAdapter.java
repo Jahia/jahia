@@ -44,11 +44,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: hollis
- * Date: 13 nov. 2008
- * Time: 12:58:03
- * To change this template use File | Settings | File Templates.
+ * This is an adapter to support Jackrabbit's query result functionality.
+ *
+ * @author toto
  */
 public class QueryResultAdapter implements QueryResult {
 

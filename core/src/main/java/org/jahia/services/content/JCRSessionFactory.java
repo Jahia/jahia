@@ -19,6 +19,15 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.*;
 
+/**
+ * The entry point into the content repositories provided by the <code>JCRStoreProvider</code> list.
+ *  
+ * Instead of using this class for creating and using sessions, please rather use the JCRTemplate.
+ * 
+ * @see JCRTemplate
+ * 
+ * @author toto
+ */
 public class JCRSessionFactory implements Repository, ServletContextAware {
     private static transient org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(
             JCRSessionFactory.class);

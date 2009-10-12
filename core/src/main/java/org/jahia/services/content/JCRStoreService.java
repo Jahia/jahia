@@ -46,8 +46,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * User: toto
- * Date: 15 nov. 2007 - 15:18:34
+ * This is a Jahia service, which manages the delegation of JCR store related deployment
+ * and export functions to the right <code>JCRStoreProvider</code>.
+ *
+ * @author toto
  */
 public class JCRStoreService extends JahiaService  {
     private static org.apache.log4j.Logger logger =

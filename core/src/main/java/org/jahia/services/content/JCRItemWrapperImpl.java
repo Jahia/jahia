@@ -40,11 +40,10 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Sep 5, 2008
- * Time: 6:56:00 PM
- * To change this template use File | Settings | File Templates.
+ * Jahia wrappers around <code>javax.jcr.Item</code> to be able to inject
+ * Jahia specific actions. 
+ *
+ * @author toto
  */
 public class JCRItemWrapperImpl implements JCRItemWrapper {
     protected JCRStoreProvider provider;
@@ -63,6 +62,9 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
         this.item = item;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getPath() {
         if ("/".equals(provider.getMountPoint())) {
             return localPath;
@@ -73,10 +75,17 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
         return provider.getMountPoint() + localPath.substring(provider.getRelativeRoot().length());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getName() throws RepositoryException {
         return item.getName();
     }
 
+    /**
+     * {@inheritDoc}
+     * <code>Item</code> at the specified <code>depth</code>. 
+     */
     public JCRItemWrapper getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         if (i >= provider.getDepth()) {
             return provider.getNodeWrapper((Node) item.getAncestor(i-provider.getDepth()), getSession());
@@ -84,6 +93,10 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
         return session.getItem(StringUtils.substringBeforeLast(provider.getMountPoint(),"/")).getAncestor(i);
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it  
+     */
     public JCRNodeWrapper getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         throw new UnsupportedOperationException();
 
@@ -91,46 +104,81 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
 //        return parent;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int getDepth() throws RepositoryException {
         return provider.getDepth() + item.getDepth();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public JCRSessionWrapper getSession() {
         return session;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isNode() {
         return item.isNode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isNew() {
         return item.isNew();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isModified() {
         return item.isModified();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isSame(Item item) throws RepositoryException {
         return item.isSame(item);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void accept(ItemVisitor itemVisitor) throws RepositoryException {
         item.accept(itemVisitor);
     }
 
+    /**
+     * {@inheritDoc}
+     * @deprecated As of JCR 2.0, {@link javax.jcr.Session#save()} should
+     *             be used instead. 
+     */
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         item.save();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void saveSession()  throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         item.getSession().save();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void refresh(boolean b) throws InvalidItemStateException, RepositoryException {
         item.refresh(b);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         item.remove();
     }

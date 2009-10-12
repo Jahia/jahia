@@ -44,11 +44,9 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Aug 22, 2008
- * Time: 4:03:30 PM
- * To change this template use File | Settings | File Templates.
+ * Wrapper for javax.jcr.property to allow more data format.
+ *
+ * @author : toto
  */
 public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPropertyWrapper {
 
@@ -96,6 +94,9 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         property.setValue(strings);
     }
 
+    /**
+     * @deprecated As of JCR 2.0, {@link #setValue(Binary)} should be used instead.
+     */
     public void setValue(InputStream inputStream) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         property.setValue(inputStream);
     }
@@ -146,6 +147,9 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         return property.getString();
     }
 
+    /**
+     * @deprecated As of JCR 2.0, {@link #getBinary()} should be used instead.
+     */
     public InputStream getStream() throws ValueFormatException, RepositoryException {
         return property.getStream();
     }
@@ -248,6 +252,10 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         property.accept(itemVisitor);
     }
 
+    /**
+     * @deprecated As of JCR 2.0, {@link Session#save()} should
+     * be used instead.
+     */
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         property.save();
     }

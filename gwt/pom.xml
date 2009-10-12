@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.allen_sauer.gwt.log</groupId>
             <artifactId>gwt-log</artifactId>
-            <version>1.5.6</version>
+            <version>2.6.2</version>
         </dependency>
     </dependencies>
 
